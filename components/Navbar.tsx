@@ -14,15 +14,22 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b" style={{ background: 'rgba(6,8,10,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,106,0,0.12)' }}>
+    <nav
+      className="fixed top-0 left-0 right-0 z-50"
+      style={{
+        background: 'rgba(10,10,10,0.92)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo — monospace */}
+        {/* Logo */}
         <Link
           href="/"
-          className="tracking-tight"
-          style={{ fontFamily: 'var(--font-ibm-mono)', fontSize: '1rem', fontWeight: 600, color: '#F0EDE8' }}
+          style={{ fontFamily: 'var(--font-ibm-mono)', fontSize: '0.95rem', fontWeight: 600 }}
         >
-          MaxPromo<span style={{ color: '#FF6A00' }}>.digital</span>
+          <span style={{ color: '#FFFFFF' }}>MaxPromo</span>
+          <span style={{ color: '#F97316' }}>.digital</span>
         </Link>
 
         {/* Desktop nav */}
@@ -31,25 +38,21 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium transition-colors"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(240,237,232,0.6)', letterSpacing: '0.02em' }}
-              onMouseEnter={e => ((e.target as HTMLElement).style.color = '#FF6A00')}
-              onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(240,237,232,0.6)')}
+              className="nav-link text-sm font-medium"
+              style={{ fontFamily: 'var(--font-dm-sans)' }}
             >
               {link.label}
             </Link>
           ))}
           <Link
             href="/automation-audit"
-            className="text-sm font-semibold px-5 py-2 rounded-sm transition-all"
+            className="text-sm font-semibold px-5 py-2 transition-opacity hover:opacity-85"
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
-              background: '#FF6A00',
-              color: '#06080A',
-              letterSpacing: '0.02em',
+              fontFamily: 'var(--font-dm-sans)',
+              background: '#F97316',
+              color: '#0A0A0A',
+              borderRadius: '2px',
             }}
-            onMouseEnter={e => ((e.target as HTMLElement).style.background = '#E55F00')}
-            onMouseLeave={e => ((e.target as HTMLElement).style.background = '#FF6A00')}
           >
             Free Audit
           </Link>
@@ -58,7 +61,7 @@ export default function Navbar() {
         {/* Mobile hamburger */}
         <button
           className="md:hidden p-1"
-          style={{ color: '#F0EDE8' }}
+          style={{ color: '#FFFFFF' }}
           onClick={() => setMenuOpen((v) => !v)}
           aria-label="Toggle navigation"
         >
@@ -75,15 +78,15 @@ export default function Navbar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div
-          className="md:hidden border-t px-6 py-4 flex flex-col gap-4"
-          style={{ background: '#0D1014', borderColor: 'rgba(255,106,0,0.12)' }}
+          className="md:hidden px-6 py-5 flex flex-col gap-4"
+          style={{ background: '#111111', borderTop: '1px solid rgba(255,255,255,0.08)' }}
         >
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm font-medium py-1"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(240,237,232,0.7)' }}
+              className="text-sm font-medium"
+              style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-dm-sans)' }}
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
@@ -91,8 +94,8 @@ export default function Navbar() {
           ))}
           <Link
             href="/automation-audit"
-            className="text-sm font-semibold px-5 py-2.5 rounded-sm text-center"
-            style={{ fontFamily: 'var(--font-ibm-mono)', background: '#FF6A00', color: '#06080A' }}
+            className="text-sm font-semibold px-5 py-3 text-center mt-1"
+            style={{ background: '#F97316', color: '#0A0A0A', borderRadius: '2px', fontFamily: 'var(--font-dm-sans)' }}
             onClick={() => setMenuOpen(false)}
           >
             Free Audit

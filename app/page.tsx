@@ -11,17 +11,17 @@ const MARQUEE_TERMS = [
 
 const SERVICES = [
   {
-    icon: '⬡',
+    icon: '↗',
     title: 'AI Agentic Workflows',
     desc: 'Autonomous agents that perceive, decide, and act — replacing repetitive human tasks end-to-end.',
   },
   {
-    icon: '⬡',
+    icon: '⟳',
     title: 'Process Automation',
     desc: 'Connect your tools and eliminate manual steps. From lead routing to invoice reconciliation.',
   },
   {
-    icon: '⬡',
+    icon: '◻',
     title: 'AI-Powered Websites',
     desc: 'Next.js sites with embedded AI features — chat agents, smart forms, personalised content.',
   },
@@ -33,32 +33,31 @@ const SERVICES = [
 ]
 
 const TERMINAL_LINES = [
-  { line: '> maxpromo.audit --org "Acme Ltd"', color: '#FF6A00' },
-  { line: '  scanning 12 operational workflows...', color: 'rgba(240,237,232,0.5)' },
-  { line: '  ✓ lead qualification  [automatable]', color: '#FF6A00' },
-  { line: '  ✓ invoice processing  [automatable]', color: '#FF6A00' },
-  { line: '  ✗ complex negotiation [human required]', color: 'rgba(240,237,232,0.35)' },
-  { line: '  ✓ support triage      [automatable]', color: '#FF6A00' },
-  { line: '', color: '' },
-  { line: '  Automation potential: 78%', color: '#F0EDE8' },
-  { line: '  Est. time saved: 32 hrs/week', color: '#F0EDE8' },
-  { line: '  Report ready → /audit/acme-ltd', color: 'rgba(240,237,232,0.4)' },
+  { text: '$ maxpromo audit --org "Acme Ltd"',              accent: true  },
+  { text: '  scanning 12 operational workflows...',         accent: false },
+  { text: '  ✓  lead qualification    [automatable]',       accent: true  },
+  { text: '  ✓  invoice processing    [automatable]',       accent: true  },
+  { text: '  ✗  complex negotiation   [human required]',    accent: false },
+  { text: '  ✓  support triage        [automatable]',       accent: true  },
+  { text: '',                                                accent: false },
+  { text: '  Automation potential:  78%',                   accent: false },
+  { text: '  Est. time saved:       32 hrs / week',         accent: false },
 ]
 
 const PROCESS_STEPS = [
-  { num: '01', title: 'Discovery Call', desc: 'We map your current workflows and identify the highest-impact automation opportunities.' },
-  { num: '02', title: 'System Design', desc: 'We architect the solution — agents, integrations, and data flows — before a line of code is written.' },
-  { num: '03', title: 'Build & Test', desc: 'We deploy, connect, and rigorously test every automation in a staging environment.' },
+  { num: '01', title: 'Discovery Call',   desc: 'We map your current workflows and identify the highest-impact automation opportunities.' },
+  { num: '02', title: 'System Design',    desc: 'We architect the solution — agents, integrations, and data flows — before a line of code is written.' },
+  { num: '03', title: 'Build & Test',     desc: 'We deploy, connect, and rigorously test every automation in a staging environment.' },
   { num: '04', title: 'Launch & Monitor', desc: 'Go live with full observability. We monitor, optimise, and iterate based on real performance data.' },
 ]
 
 const INDUSTRIES = [
-  { name: 'Business & Enterprise', icon: '🏢' },
-  { name: 'NGOs & Charities', icon: '🤝' },
+  { name: 'Business & Enterprise',      icon: '🏢' },
+  { name: 'NGOs & Charities',           icon: '🤝' },
   { name: 'Government & Public Sector', icon: '🏛️' },
-  { name: 'Healthcare', icon: '🏥' },
-  { name: 'Legal & Professional', icon: '⚖️' },
-  { name: 'E-commerce & Retail', icon: '🛒' },
+  { name: 'Healthcare',                 icon: '🏥' },
+  { name: 'Legal & Professional',       icon: '⚖️' },
+  { name: 'E-commerce & Retail',        icon: '🛒' },
 ]
 
 const STACK = [
@@ -67,119 +66,126 @@ const STACK = [
   'Xero', 'Twilio', 'Cloudflare', 'Resend',
 ]
 
+/* ─── DIVIDER ────────────────────────────────────────────────── */
+function Divider() {
+  return <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)' }} />
+}
+
 /* ─── PAGE ──────────────────────────────────────────────────── */
 
 export default function HomePage() {
   return (
-    <main style={{ background: '#06080A' }}>
+    <main style={{ background: '#0A0A0A' }}>
 
       {/* 1. Hero */}
       <Hero />
 
+      <Divider />
+
       {/* 2. Marquee ticker */}
-      <div
-        className="py-5 overflow-hidden"
-        style={{ borderTop: '1px solid rgba(255,106,0,0.1)', borderBottom: '1px solid rgba(255,106,0,0.1)', background: '#0D1014' }}
-      >
+      <div className="py-4 overflow-hidden" style={{ background: '#0A0A0A' }}>
         <div className="flex animate-marquee whitespace-nowrap">
           {[...MARQUEE_TERMS, ...MARQUEE_TERMS].map((term, i) => (
             <span
               key={i}
-              className="flex items-center gap-3 mx-6 text-xs font-medium"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(240,237,232,0.5)' }}
+              className="flex items-center gap-3 mx-7 text-xs"
+              style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(255,255,255,0.4)' }}
             >
-              <span style={{ color: '#FF6A00' }}>●</span>
+              <span style={{ color: '#F97316', fontSize: '0.45rem' }}>●</span>
               {term}
             </span>
           ))}
         </div>
       </div>
 
+      <Divider />
+
       {/* 3. Services grid — 2×2 */}
-      <section
-        className="py-28 px-6 grid-overlay"
-        style={{ background: '#06080A' }}
-      >
+      <section className="py-24 px-6" style={{ background: '#0A0A0A' }}>
         <div className="max-w-7xl mx-auto">
-          <div className="mb-16">
-            <span
-              className="text-xs font-medium tracking-widest uppercase mb-4 block"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#FF6A00' }}
+          {/* Section header */}
+          <div className="flex items-end justify-between mb-14 flex-wrap gap-4">
+            <div>
+              <span
+                className="text-xs font-semibold tracking-widest uppercase mb-3 block"
+                style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}
+              >
+                What We Build
+              </span>
+              <h2
+                className="text-4xl md:text-5xl font-extrabold"
+                style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
+              >
+                Services
+              </h2>
+            </div>
+            <Link
+              href="/services"
+              className="text-sm font-medium transition-colors"
+              style={{ color: '#888888', fontFamily: 'var(--font-dm-sans)', textDecoration: 'none' }}
             >
-              ◈ What We Build
-            </span>
-            <h2
-              className="text-4xl md:text-5xl font-extrabold"
-              style={{ fontFamily: 'var(--font-syne)', color: '#F0EDE8' }}
-            >
-              Services
-            </h2>
+              View all →
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px" style={{ background: 'rgba(255,106,0,0.1)' }}>
+          {/* 2×2 grid — thin white dividers */}
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 gap-px"
+            style={{ background: 'rgba(255,255,255,0.08)' }}
+          >
             {SERVICES.map((s) => (
-              <div
-                key={s.title}
-                className="service-card p-10"
-              >
+              <div key={s.title} className="service-card p-10">
                 <span
-                  className="text-2xl mb-6 block"
-                  style={{ color: '#FF6A00' }}
+                  className="text-base font-bold mb-5 block"
+                  style={{ color: '#F97316', fontFamily: 'var(--font-ibm-mono)' }}
                 >
                   {s.icon}
                 </span>
                 <h3
-                  className="text-xl font-bold mb-3"
-                  style={{ fontFamily: 'var(--font-syne)', color: '#F0EDE8' }}
+                  className="text-lg font-bold mb-3"
+                  style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
                 >
                   {s.title}
                 </h3>
                 <p
                   className="text-sm leading-relaxed"
-                  style={{ color: 'rgba(240,237,232,0.55)' }}
+                  style={{ color: '#888888', fontFamily: 'var(--font-dm-sans)' }}
                 >
                   {s.desc}
                 </p>
               </div>
             ))}
           </div>
-
-          <div className="mt-10">
-            <Link
-              href="/services"
-              className="text-sm font-semibold px-7 py-3.5 rounded-sm"
-              style={{ fontFamily: 'var(--font-ibm-mono)', border: '1px solid rgba(255,106,0,0.3)', color: '#FF6A00', background: 'rgba(255,106,0,0.05)' }}
-            >
-              View All Services →
-            </Link>
-          </div>
         </div>
       </section>
 
+      <Divider />
+
       {/* 4. Audit terminal section */}
-      <section
-        className="py-28 px-6"
-        style={{ background: '#0D1014', borderTop: '1px solid rgba(255,106,0,0.1)' }}
-      >
+      <section className="py-24 px-6" style={{ background: '#0A0A0A' }}>
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Terminal */}
+          {/* Terminal window */}
           <div
-            className="rounded-sm overflow-hidden"
-            style={{ border: '1px solid rgba(255,106,0,0.15)', background: '#06080A' }}
+            style={{
+              background: '#111111',
+              border: '1px solid rgba(255,255,255,0.08)',
+              borderRadius: '2px',
+              overflow: 'hidden',
+            }}
           >
-            {/* Terminal title bar */}
+            {/* Title bar */}
             <div
               className="flex items-center gap-2 px-4 py-3"
-              style={{ background: '#111519', borderBottom: '1px solid rgba(255,106,0,0.1)' }}
+              style={{ background: '#0A0A0A', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
             >
-              <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(255,106,0,0.4)' }} />
-              <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(255,106,0,0.2)' }} />
-              <span className="w-3 h-3 rounded-full" style={{ background: 'rgba(255,106,0,0.1)' }} />
+              <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(255,255,255,0.12)' }} />
+              <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
+              <span className="w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(255,255,255,0.04)' }} />
               <span
                 className="text-xs ml-3"
-                style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(240,237,232,0.3)' }}
+                style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(255,255,255,0.25)' }}
               >
-                automation-audit — bash
+                automation-audit — zsh
               </span>
             </div>
             {/* Terminal body */}
@@ -188,16 +194,29 @@ export default function HomePage() {
                 <p
                   key={i}
                   className="text-xs leading-relaxed"
-                  style={{ fontFamily: 'var(--font-ibm-mono)', color: l.color || 'transparent', minHeight: '1.25rem' }}
+                  style={{
+                    fontFamily: 'var(--font-ibm-mono)',
+                    color: l.accent ? '#FFFFFF' : '#888888',
+                    minHeight: '1.25rem',
+                  }}
                 >
-                  {l.line}
+                  {l.text.startsWith('$') ? (
+                    <>
+                      <span style={{ color: '#F97316' }}>$</span>
+                      {l.text.slice(1)}
+                    </>
+                  ) : l.text.includes('✓') ? (
+                    <>
+                      <span style={{ color: '#F97316' }}>  ✓</span>
+                      {l.text.slice(3)}
+                    </>
+                  ) : (
+                    l.text
+                  )}
                 </p>
               ))}
-              <p
-                className="text-xs mt-2"
-                style={{ fontFamily: 'var(--font-ibm-mono)', color: '#FF6A00' }}
-              >
-                &gt; _<span className="cursor-blink">▊</span>
+              <p className="text-xs mt-2" style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}>
+                $ <span className="cursor-blink">▊</span>
               </p>
             </div>
           </div>
@@ -205,24 +224,24 @@ export default function HomePage() {
           {/* Copy */}
           <div>
             <span
-              className="text-xs font-medium tracking-widest uppercase mb-4 block"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#FF6A00' }}
+              className="text-xs font-semibold tracking-widest uppercase mb-4 block"
+              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}
             >
-              ◈ Free Automation Audit
+              Free Automation Audit
             </span>
             <h2
-              className="text-4xl md:text-5xl font-extrabold mb-6"
-              style={{ fontFamily: 'var(--font-syne)', color: '#F0EDE8' }}
+              className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight"
+              style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
             >
               Find out exactly what can be automated
             </h2>
             <p
               className="text-base leading-relaxed mb-8"
-              style={{ color: 'rgba(240,237,232,0.6)' }}
+              style={{ color: '#888888', fontFamily: 'var(--font-dm-sans)' }}
             >
-              Our AI audit scans your workflows, identifies automation opportunities,
-              and delivers a prioritised action plan — in under 5 minutes. No calls,
-              no commitments.
+              Our AI audit scans your workflows, identifies automation
+              opportunities, and delivers a prioritised action plan —
+              in under 5 minutes. No calls, no commitments.
             </p>
             <ul className="space-y-3 mb-10">
               {[
@@ -234,17 +253,22 @@ export default function HomePage() {
                 <li
                   key={item}
                   className="flex items-start gap-3 text-sm"
-                  style={{ color: 'rgba(240,237,232,0.7)' }}
+                  style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-dm-sans)' }}
                 >
-                  <span style={{ color: '#FF6A00', marginTop: '2px', flexShrink: 0 }}>✓</span>
+                  <span style={{ color: '#F97316', flexShrink: 0, marginTop: '2px' }}>✓</span>
                   {item}
                 </li>
               ))}
             </ul>
             <Link
               href="/automation-audit"
-              className="inline-block text-sm font-semibold px-7 py-4 rounded-sm"
-              style={{ fontFamily: 'var(--font-ibm-mono)', background: '#FF6A00', color: '#06080A' }}
+              className="inline-block text-sm font-semibold px-7 py-3.5 transition-opacity hover:opacity-85"
+              style={{
+                fontFamily: 'var(--font-dm-sans)',
+                background: '#F97316',
+                color: '#0A0A0A',
+                borderRadius: '2px',
+              }}
             >
               Run My Free Audit →
             </Link>
@@ -252,53 +276,44 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Process steps — 4 horizontal */}
-      <section
-        className="py-28 px-6 grid-overlay"
-        style={{ background: '#06080A', borderTop: '1px solid rgba(255,106,0,0.1)' }}
-      >
+      <Divider />
+
+      {/* 5. Process steps */}
+      <section className="py-24 px-6" style={{ background: '#0A0A0A' }}>
         <div className="max-w-7xl mx-auto">
-          <div className="mb-16">
+          <div className="mb-14">
             <span
-              className="text-xs font-medium tracking-widest uppercase mb-4 block"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#FF6A00' }}
+              className="text-xs font-semibold tracking-widest uppercase mb-3 block"
+              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}
             >
-              ◈ How It Works
+              How It Works
             </span>
             <h2
               className="text-4xl md:text-5xl font-extrabold"
-              style={{ fontFamily: 'var(--font-syne)', color: '#F0EDE8' }}
+              style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
             >
               From idea to automated
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px" style={{ background: 'rgba(255,255,255,0.08)' }}>
             {PROCESS_STEPS.map((step) => (
-              <div
-                key={step.num}
-                className="p-8 rounded-sm"
-                style={{ background: '#0D1014', border: '1px solid rgba(255,106,0,0.1)' }}
-              >
+              <div key={step.num} className="p-8" style={{ background: '#0A0A0A' }}>
                 <span
-                  className="text-4xl font-extrabold block mb-6"
-                  style={{
-                    fontFamily: 'var(--font-syne)',
-                    color: '#FF6A00',
-                    textShadow: '0 0 40px rgba(255,106,0,0.3)',
-                  }}
+                  className="text-3xl font-extrabold block mb-6"
+                  style={{ fontFamily: 'var(--font-syne)', color: '#F97316' }}
                 >
                   {step.num}
                 </span>
                 <h3
-                  className="text-lg font-bold mb-3"
-                  style={{ fontFamily: 'var(--font-syne)', color: '#F0EDE8' }}
+                  className="text-base font-bold mb-3"
+                  style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
                 >
                   {step.title}
                 </h3>
                 <p
                   className="text-sm leading-relaxed"
-                  style={{ color: 'rgba(240,237,232,0.5)' }}
+                  style={{ color: '#888888', fontFamily: 'var(--font-dm-sans)' }}
                 >
                   {step.desc}
                 </p>
@@ -308,38 +323,37 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. Industries grid */}
-      <section
-        className="py-24 px-6"
-        style={{ background: '#0D1014', borderTop: '1px solid rgba(255,106,0,0.1)' }}
-      >
+      <Divider />
+
+      {/* 6. Industries */}
+      <section className="py-24 px-6" style={{ background: '#0A0A0A' }}>
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="text-center mb-12">
             <span
-              className="text-xs font-medium tracking-widest uppercase mb-4 block"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#FF6A00' }}
+              className="text-xs font-semibold tracking-widest uppercase mb-3 block"
+              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}
             >
-              ◈ Who We Serve
+              Who We Serve
             </span>
             <h2
               className="text-4xl md:text-5xl font-extrabold"
-              style={{ fontFamily: 'var(--font-syne)', color: '#F0EDE8' }}
+              style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
             >
               Industries Served
             </h2>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
             {INDUSTRIES.map((ind) => (
               <div
                 key={ind.name}
-                className="industry-card p-6 rounded-sm text-center"
-                style={{ background: '#06080A' }}
+                className="industry-card p-6 text-center"
+                style={{ background: '#111111', borderRadius: '2px' }}
               >
-                <div className="text-3xl mb-3">{ind.icon}</div>
+                <div className="text-2xl mb-3">{ind.icon}</div>
                 <p
                   className="text-xs font-medium leading-snug"
-                  style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(240,237,232,0.6)' }}
+                  style={{ fontFamily: 'var(--font-dm-sans)', color: '#888888' }}
                 >
                   {ind.name}
                 </p>
@@ -349,29 +363,23 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7. Stack pills row */}
-      <section
-        className="py-16 px-6"
-        style={{ background: '#06080A', borderTop: '1px solid rgba(255,106,0,0.1)', borderBottom: '1px solid rgba(255,106,0,0.1)' }}
-      >
+      <Divider />
+
+      {/* 7. Stack pills */}
+      <section className="py-14 px-6" style={{ background: '#0A0A0A' }}>
         <div className="max-w-5xl mx-auto text-center">
           <p
-            className="text-xs font-medium tracking-widest uppercase mb-8"
-            style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(240,237,232,0.3)' }}
+            className="text-xs font-semibold tracking-widest uppercase mb-7"
+            style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(255,255,255,0.25)' }}
           >
-            Platforms &amp; Technologies We Use
+            Platforms &amp; Technologies
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2.5">
             {STACK.map((p) => (
               <span
                 key={p}
-                className="text-xs font-medium px-4 py-2 rounded-sm"
-                style={{
-                  fontFamily: 'var(--font-ibm-mono)',
-                  color: 'rgba(240,237,232,0.6)',
-                  background: '#0D1014',
-                  border: '1px solid rgba(255,106,0,0.15)',
-                }}
+                className="stack-pill text-xs font-medium px-4 py-2"
+                style={{ fontFamily: 'var(--font-ibm-mono)', borderRadius: '2px' }}
               >
                 {p}
               </span>
@@ -380,48 +388,48 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 8. CTA section */}
-      <section
-        className="py-32 px-6 relative overflow-hidden"
-        style={{ background: '#06080A' }}
-      >
-        <div className="absolute inset-0 orange-glow-bg pointer-events-none" />
-        <div className="relative max-w-4xl mx-auto text-center">
+      <Divider />
+
+      {/* 8. CTA */}
+      <section className="py-32 px-6" style={{ background: '#111111' }}>
+        <div className="max-w-3xl mx-auto text-center">
           <span
-            className="text-xs font-medium tracking-widest uppercase mb-6 block"
-            style={{ fontFamily: 'var(--font-ibm-mono)', color: '#FF6A00' }}
+            className="text-xs font-semibold tracking-widest uppercase mb-5 block"
+            style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}
           >
-            ◈ Ready to Automate?
+            Ready to Automate?
           </span>
           <h2
-            className="text-5xl md:text-6xl font-extrabold mb-6"
-            style={{ fontFamily: 'var(--font-syne)', color: '#F0EDE8' }}
+            className="text-5xl md:text-6xl font-extrabold mb-5 leading-tight"
+            style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
           >
-            Stop doing work machines can do
+            Stop doing work{' '}
+            <span style={{ color: '#F97316' }}>machines</span> can do
           </h2>
           <p
-            className="text-lg mb-14 max-w-2xl mx-auto leading-relaxed"
-            style={{ color: 'rgba(240,237,232,0.55)' }}
+            className="text-base mb-12 max-w-xl mx-auto leading-relaxed"
+            style={{ color: '#888888', fontFamily: 'var(--font-dm-sans)' }}
           >
-            Get a free, personalised automation audit and discover exactly how AI can
-            transform your operations — in under 5 minutes.
+            Get a free, personalised automation audit and discover exactly how AI
+            can transform your operations — in under 5 minutes.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/automation-audit"
-              className="text-sm font-semibold px-9 py-4 rounded-sm"
-              style={{ fontFamily: 'var(--font-ibm-mono)', background: '#FF6A00', color: '#06080A' }}
+              className="text-sm font-semibold px-8 py-4 transition-opacity hover:opacity-85"
+              style={{ fontFamily: 'var(--font-dm-sans)', background: '#F97316', color: '#0A0A0A', borderRadius: '2px' }}
             >
               Run Free Automation Audit
             </Link>
             <Link
               href="/contact"
-              className="text-sm font-semibold px-9 py-4 rounded-sm"
+              className="text-sm font-semibold px-8 py-4"
               style={{
-                fontFamily: 'var(--font-ibm-mono)',
-                color: '#F0EDE8',
-                border: '1px solid rgba(255,106,0,0.3)',
-                background: 'rgba(255,106,0,0.05)',
+                fontFamily: 'var(--font-dm-sans)',
+                color: '#FFFFFF',
+                border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: '2px',
+                background: 'transparent',
               }}
             >
               Talk to Our Team

@@ -1,13 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #06080A;
-  --foreground: #F0EDE8;
-  --accent: #FF6A00;
-  --accent-dim: rgba(255, 106, 0, 0.12);
-  --border: rgba(255, 106, 0, 0.15);
-  --surface: #0D1014;
-  --surface-2: #111519;
+  --background: #0A0A0A;
+  --foreground: #FFFFFF;
+  --muted: #888888;
+  --accent: #F97316;
+  --border: rgba(255, 255, 255, 0.08);
+  --surface: #111111;
 }
 
 @theme inline {
@@ -32,16 +31,8 @@ html {
 }
 
 :focus-visible {
-  outline: 2px solid #FF6A00;
+  outline: 2px solid #F97316;
   outline-offset: 2px;
-}
-
-/* Dark grid overlay with orange tint */
-.grid-overlay {
-  background-image:
-    linear-gradient(rgba(255, 106, 0, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 106, 0, 0.025) 1px, transparent 1px);
-  background-size: 60px 60px;
 }
 
 /* Marquee */
@@ -50,7 +41,7 @@ html {
   to   { transform: translateX(-50%); }
 }
 .animate-marquee {
-  animation: marquee 35s linear infinite;
+  animation: marquee 40s linear infinite;
 }
 
 /* Cursor blink */
@@ -71,24 +62,46 @@ html {
   animation: status-pulse 2s ease-in-out infinite;
 }
 
-/* Orange radial glow for CTA */
-.orange-glow-bg {
-  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255, 106, 0, 0.18) 0%, transparent 70%);
-}
-
-/* Hover effects — server-component safe (CSS only) */
+/* Hover effects — CSS only (server-component safe) */
 .service-card {
-  background: #06080A;
-  transition: background 0.2s;
+  background: #111111;
+  transition: background 0.15s;
 }
 .service-card:hover {
-  background: #0D1014;
+  background: #181818;
 }
 
 .industry-card {
-  border: 1px solid rgba(255, 106, 0, 0.1);
-  transition: border-color 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.15s;
 }
 .industry-card:hover {
-  border-color: rgba(255, 106, 0, 0.35);
+  border-color: rgba(249, 115, 22, 0.5);
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.15s;
+}
+.nav-link:hover {
+  color: #F97316;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 0.15s;
+}
+.footer-link:hover {
+  color: #F97316;
+}
+
+.stack-pill {
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.55);
+  transition: border-color 0.15s, color 0.15s;
+}
+.stack-pill:hover {
+  border-color: rgba(249, 115, 22, 0.4);
+  color: #FFFFFF;
 }

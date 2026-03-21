@@ -58,7 +58,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${syne.variable} ${ibmMono.variable} ${dmSans.variable} antialiased`}
-        style={{ background: '#06080A', color: '#F0EDE8' }}
+        style={{ background: '#0A0A0A', color: '#FFFFFF' }}
       >
         <Navbar />
         {children}
