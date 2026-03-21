@@ -1,31 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  --background: #06080A;
+  --foreground: #F0EDE8;
+  --accent: #FF6A00;
+  --accent-dim: rgba(255, 106, 0, 0.12);
+  --border: rgba(255, 106, 0, 0.15);
+  --surface: #0D1014;
+  --surface-2: #111519;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --font-sans: var(--font-dm-sans);
+  --font-mono: var(--font-ibm-mono);
+  --font-display: var(--font-syne);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Smooth scroll */
 html {
   scroll-behavior: smooth;
 }
 
-/* Focus styles */
 :focus-visible {
-  outline: 2px solid #4f46e5;
+  outline: 2px solid #FF6A00;
   outline-offset: 2px;
+}
+
+/* Dark grid overlay with orange tint */
+.grid-overlay {
+  background-image:
+    linear-gradient(rgba(255, 106, 0, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 106, 0, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+
+/* Cursor blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Status pulse */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.status-pulse {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* Orange radial glow for CTA */
+.orange-glow-bg {
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(255, 106, 0, 0.18) 0%, transparent 70%);
+}
+
+/* Hover effects — server-component safe (CSS only) */
+.service-card {
+  background: #06080A;
+  transition: background 0.2s;
+}
+.service-card:hover {
+  background: #0D1014;
+}
+
+.industry-card {
+  border: 1px solid rgba(255, 106, 0, 0.1);
+  transition: border-color 0.2s;
+}
+.industry-card:hover {
+  border-color: rgba(255, 106, 0, 0.35);
 }

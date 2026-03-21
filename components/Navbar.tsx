@@ -5,9 +5,8 @@ import { useState } from 'react'
 
 const NAV_LINKS = [
   { href: '/services', label: 'Services' },
-  { href: '/automation-lab', label: 'Automation Lab' },
+  { href: '/automation-lab', label: 'Lab' },
   { href: '/ai-websites', label: 'AI Websites' },
-  { href: '/automation-audit', label: 'Free Audit' },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -15,26 +14,42 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-slate-100 shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b" style={{ background: 'rgba(6,8,10,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,106,0,0.12)' }}>
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl text-slate-900 tracking-tight">
-          MaxPromo<span className="text-indigo-600">.digital</span>
+        {/* Logo — monospace */}
+        <Link
+          href="/"
+          className="tracking-tight"
+          style={{ fontFamily: 'var(--font-ibm-mono)', fontSize: '1rem', fontWeight: 600, color: '#F0EDE8' }}
+        >
+          MaxPromo<span style={{ color: '#FF6A00' }}>.digital</span>
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-7">
-          {NAV_LINKS.filter((l) => l.label !== 'Free Audit').map((link) => (
+        <div className="hidden md:flex items-center gap-8">
+          {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-slate-600 hover:text-indigo-600 transition-colors font-medium"
+              className="text-sm font-medium transition-colors"
+              style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(240,237,232,0.6)', letterSpacing: '0.02em' }}
+              onMouseEnter={e => ((e.target as HTMLElement).style.color = '#FF6A00')}
+              onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(240,237,232,0.6)')}
             >
               {link.label}
             </Link>
           ))}
           <Link
             href="/automation-audit"
-            className="bg-indigo-600 text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-indigo-700 transition-colors"
+            className="text-sm font-semibold px-5 py-2 rounded-sm transition-all"
+            style={{
+              fontFamily: 'var(--font-ibm-mono)',
+              background: '#FF6A00',
+              color: '#06080A',
+              letterSpacing: '0.02em',
+            }}
+            onMouseEnter={e => ((e.target as HTMLElement).style.background = '#E55F00')}
+            onMouseLeave={e => ((e.target as HTMLElement).style.background = '#FF6A00')}
           >
             Free Audit
           </Link>
@@ -42,7 +57,8 @@ export default function Navbar() {
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden p-1 text-slate-700"
+          className="md:hidden p-1"
+          style={{ color: '#F0EDE8' }}
           onClick={() => setMenuOpen((v) => !v)}
           aria-label="Toggle navigation"
         >
@@ -58,17 +74,29 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-slate-100 bg-white px-6 py-4 flex flex-col gap-3">
+        <div
+          className="md:hidden border-t px-6 py-4 flex flex-col gap-4"
+          style={{ background: '#0D1014', borderColor: 'rgba(255,106,0,0.12)' }}
+        >
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-slate-700 font-medium py-1"
+              className="text-sm font-medium py-1"
+              style={{ fontFamily: 'var(--font-ibm-mono)', color: 'rgba(240,237,232,0.7)' }}
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/automation-audit"
+            className="text-sm font-semibold px-5 py-2.5 rounded-sm text-center"
+            style={{ fontFamily: 'var(--font-ibm-mono)', background: '#FF6A00', color: '#06080A' }}
+            onClick={() => setMenuOpen(false)}
+          >
+            Free Audit
+          </Link>
         </div>
       )}
     </nav>
