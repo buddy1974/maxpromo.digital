@@ -1,84 +1,94 @@
 import Link from 'next/link'
 
+const columns = [
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Services', href: '/services' },
+      { label: 'Automation Lab', href: '/automation-lab' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+  {
+    title: 'Services',
+    links: [
+      { label: 'AI Agentic Workflows', href: '/services' },
+      { label: 'Process Automation', href: '/services' },
+      { label: 'AI-Powered Websites', href: '/ai-websites' },
+      { label: 'Custom Integration', href: '/services' },
+    ],
+  },
+  {
+    title: 'Tools',
+    links: [
+      { label: 'Free Automation Audit', href: '/automation-audit' },
+      { label: 'Automation Lab', href: '/automation-lab' },
+      { label: 'AI Websites', href: '/ai-websites' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Service', href: '/terms' },
+    ],
+  },
+]
+
 export default function Footer() {
-  const year = new Date().getFullYear()
-
   return (
-    <footer style={{ background: '#0A0A0A', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-14">
-          {/* Brand */}
-          <div className="md:col-span-1">
-            <p
-              className="text-base font-semibold mb-3"
-              style={{ fontFamily: 'var(--font-ibm-mono)' }}
-            >
-              <span style={{ color: '#FFFFFF' }}>MaxPromo</span>
-              <span style={{ color: '#F97316' }}>.digital</span>
-            </p>
-            <p className="text-sm leading-relaxed" style={{ color: '#888888', maxWidth: '220px' }}>
-              AI agents and automation systems for businesses, NGOs, and government organisations.
-            </p>
-          </div>
-
-          {/* Services */}
-          <div>
-            <p
-              className="text-xs font-semibold mb-5 tracking-widest uppercase"
-              style={{ fontFamily: 'var(--font-dm-sans)', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}
-            >
-              Services
-            </p>
-            <ul className="space-y-3 text-sm">
-              <li><Link href="/services" className="footer-link">AI Agentic Workflows</Link></li>
-              <li><Link href="/ai-websites" className="footer-link">AI Websites</Link></li>
-              <li><Link href="/services" className="footer-link">Custom Automation</Link></li>
-            </ul>
-          </div>
-
-          {/* Platform */}
-          <div>
-            <p
-              className="text-xs font-semibold mb-5 tracking-widest uppercase"
-              style={{ fontFamily: 'var(--font-dm-sans)', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}
-            >
-              Platform
-            </p>
-            <ul className="space-y-3 text-sm">
-              <li><Link href="/automation-lab" className="footer-link">Automation Lab</Link></li>
-              <li><Link href="/automation-audit" className="footer-link">Free Audit</Link></li>
-              <li><Link href="/contact" className="footer-link">Contact</Link></li>
-            </ul>
-          </div>
-
-          {/* Coming soon */}
-          <div>
-            <p
-              className="text-xs font-semibold mb-5 tracking-widest uppercase"
-              style={{ fontFamily: 'var(--font-dm-sans)', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.1em' }}
-            >
-              Coming Soon
-            </p>
-            <ul className="space-y-3 text-sm" style={{ color: 'rgba(255,255,255,0.2)' }}>
-              <li>Case Studies</li>
-              <li>Template Library</li>
-              <li>Blog</li>
-              <li>Client Portal</li>
-              <li>Pricing Calculator</li>
-            </ul>
-          </div>
+    <footer style={{ background: '#0E0E12', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '4rem 2rem' }}>
+        <div
+          style={{ display: 'grid', gap: '2.5rem', gridTemplateColumns: 'repeat(2, 1fr)' }}
+          className="md:grid-cols-4"
+        >
+          {columns.map((col) => (
+            <div key={col.title}>
+              <p
+                style={{
+                  fontFamily: 'var(--font-space-mono)',
+                  fontSize: '10px',
+                  color: '#E8FF3D',
+                  letterSpacing: '0.2em',
+                  marginBottom: '16px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {col.title}
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="footer-link">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         <div
-          className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+          style={{
+            marginTop: '3rem',
+            paddingTop: '1.5rem',
+            borderTop: '1px solid rgba(255,255,255,0.06)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '1rem',
+          }}
         >
-          <p className="text-xs" style={{ color: '#888888' }}>
-            &copy; {year} MaxPromo Digital. All rights reserved.
-          </p>
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>
-            Built with Next.js &amp; deployed on Vercel
-          </p>
+          <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>
+            © 2025 MaxPromo Digital
+          </span>
+          <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>
+            Built with Next.js · Deployed on Vercel
+          </span>
         </div>
       </div>
     </footer>

@@ -1,12 +1,12 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
+import Link from 'next/link'
 
 const NAV_LINKS = [
   { href: '/services', label: 'Services' },
-  { href: '/automation-lab', label: 'Lab' },
-  { href: '/ai-websites', label: 'AI Websites' },
+  { href: '/automation-lab', label: 'Automation Lab' },
+  { href: '/automation-audit', label: 'Audit' },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -15,93 +15,144 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50"
       style={{
-        background: 'rgba(10,10,10,0.92)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        background: 'rgba(3,3,5,0.85)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          href="/"
-          style={{ fontFamily: 'var(--font-ibm-mono)', fontSize: '0.95rem', fontWeight: 600 }}
+      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 2rem' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '64px',
+          }}
         >
-          <span style={{ color: '#FFFFFF' }}>MaxPromo</span>
-          <span style={{ color: '#F97316' }}>.digital</span>
-        </Link>
-
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="nav-link text-sm font-medium"
-              style={{ fontFamily: 'var(--font-dm-sans)' }}
+          {/* Logo */}
+          <Link href="/" style={{ textDecoration: 'none' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-space-grotesk)',
+                fontWeight: 700,
+                fontSize: '18px',
+                color: '#FAFAFF',
+                letterSpacing: '-0.04em',
+              }}
             >
-              {link.label}
+              MaxPromo<span style={{ color: '#E8FF3D' }}>.digital</span>
+            </span>
+          </Link>
+
+          {/* Desktop links */}
+          <div className="hidden md:flex" style={{ gap: '2rem', alignItems: 'center' }}>
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="nav-link"
+                style={{
+                  fontFamily: 'var(--font-dm-sans)',
+                  fontWeight: 500,
+                  fontSize: '14px',
+                  textDecoration: 'none',
+                }}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="hidden md:flex">
+            <Link
+              href="/automation-audit"
+              style={{
+                fontFamily: 'var(--font-space-mono)',
+                fontWeight: 700,
+                fontSize: '12px',
+                color: '#030305',
+                background: '#E8FF3D',
+                padding: '8px 20px',
+                textDecoration: 'none',
+                display: 'inline-block',
+                transition: 'opacity 150ms ease',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+            >
+              Get a Free Audit →
             </Link>
-          ))}
-          <Link
-            href="/automation-audit"
-            className="text-sm font-semibold px-5 py-2 transition-opacity hover:opacity-85"
+          </div>
+
+          {/* Mobile toggle */}
+          <button
+            className="md:hidden"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label="Toggle navigation"
+            style={{ background: 'none', border: 'none', color: '#FAFAFF', cursor: 'pointer', padding: '4px' }}
+          >
+            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {menuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div
             style={{
-              fontFamily: 'var(--font-dm-sans)',
-              background: '#F97316',
-              color: '#0A0A0A',
-              borderRadius: '2px',
+              borderTop: '1px solid rgba(255,255,255,0.06)',
+              padding: '16px 0 20px',
             }}
           >
-            Free Audit
-          </Link>
-        </div>
-
-        {/* Mobile hamburger */}
-        <button
-          className="md:hidden p-1"
-          style={{ color: '#FFFFFF' }}
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label="Toggle navigation"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            {menuOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            )}
-          </svg>
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div
-          className="md:hidden px-6 py-5 flex flex-col gap-4"
-          style={{ background: '#111111', borderTop: '1px solid rgba(255,255,255,0.08)' }}
-        >
-          {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  fontFamily: 'var(--font-dm-sans)',
+                  fontWeight: 500,
+                  fontSize: '15px',
+                  color: '#6B6B7A',
+                  textDecoration: 'none',
+                  padding: '10px 0',
+                }}
+              >
+                {link.label}
+              </Link>
+            ))}
             <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium"
-              style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-dm-sans)' }}
+              href="/automation-audit"
               onClick={() => setMenuOpen(false)}
+              style={{
+                display: 'inline-block',
+                marginTop: '12px',
+                fontFamily: 'var(--font-space-mono)',
+                fontWeight: 700,
+                fontSize: '12px',
+                color: '#030305',
+                background: '#E8FF3D',
+                padding: '10px 20px',
+                textDecoration: 'none',
+              }}
             >
-              {link.label}
+              Get a Free Audit →
             </Link>
-          ))}
-          <Link
-            href="/automation-audit"
-            className="text-sm font-semibold px-5 py-3 text-center mt-1"
-            style={{ background: '#F97316', color: '#0A0A0A', borderRadius: '2px', fontFamily: 'var(--font-dm-sans)' }}
-            onClick={() => setMenuOpen(false)}
-          >
-            Free Audit
-          </Link>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </nav>
   )
 }

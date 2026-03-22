@@ -1,247 +1,259 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-const AGENT_STATUSES = [
-  { agent: 'lead-qualifier-v2',  task: 'Scoring 14 new leads from HubSpot',   status: 'ACTIVE', uptime: '99.8%' },
-  { agent: 'invoice-processor',  task: 'Reconciling 6 invoices via Xero API', status: 'ACTIVE', uptime: '100%'  },
-  { agent: 'support-agent-01',   task: 'Resolved 3 tickets — 1 escalated',    status: 'ACTIVE', uptime: '99.2%' },
-  { agent: 'content-scheduler',  task: 'Queued 12 posts for next 7 days',      status: 'IDLE',   uptime: '98.9%' },
+interface StatConfig {
+  target: number
+  suffix: string
+  display: (n: number) => string
+  label: string
+}
+
+const STATS: StatConfig[] = [
+  {
+    target: 127,
+    suffix: '+',
+    display: (n) => `${n}+`,
+    label: 'Workflows Built',
+  },
+  {
+    target: 32,
+    suffix: '',
+    display: (n) => `${(n / 10).toFixed(1)}k`,
+    label: 'Hours Saved / Month',
+  },
+  {
+    target: 94,
+    suffix: '%',
+    display: (n) => `${n}%`,
+    label: 'Client Retention',
+  },
 ]
 
-const LOG_LINES = [
-  'agent.start("lead-qualifier-v2")',
-  'fetching leads from HubSpot CRM...',
-  '14 records retrieved',
-  'scoring against ICP criteria...',
-  '9 qualified → routed to sales slack',
-  '5 disqualified → archived',
-  'task complete [2.3s]',
-  'agent.idle()',
+function useCountUp(target: number, active: boolean, duration = 1800) {
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    if (!active) return
+    let start = 0
+    const step = target / (duration / 16)
+    const timer = setInterval(() => {
+      start += step
+      if (start >= target) {
+        setCount(target)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(start))
+      }
+    }, 16)
+    return () => clearInterval(timer)
+  }, [active, target, duration])
+
+  return count
+}
+
+function StatCounter({ stat }: { stat: StatConfig }) {
+  const [active, setActive] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const count = useCountUp(stat.target, active)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setActive(true); observer.disconnect() } },
+      { threshold: 0.5 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div ref={ref}>
+      <p
+        style={{
+          fontFamily: 'var(--font-space-grotesk)',
+          fontWeight: 700,
+          fontSize: '40px',
+          color: '#FAFAFF',
+          letterSpacing: '-0.04em',
+          lineHeight: 1,
+          marginBottom: '6px',
+        }}
+      >
+        {stat.display(count)}
+      </p>
+      <p
+        style={{
+          fontFamily: 'var(--font-dm-sans)',
+          fontSize: '13px',
+          color: '#6B6B7A',
+        }}
+      >
+        {stat.label}
+      </p>
+    </div>
+  )
+}
+
+const STATUS_PILLS = [
+  { label: '• SYSTEMS OPERATIONAL' },
+  { label: '47 automations deployed' },
+  { label: '99.9% uptime' },
 ]
 
 export default function Hero() {
-  const [tick, setTick]         = useState(0)
-  const [logIndex, setLogIndex] = useState(0)
-
-  useEffect(() => {
-    const t = setInterval(() => setTick((n) => (n + 1) % AGENT_STATUSES.length), 3000)
-    return () => clearInterval(t)
-  }, [])
-
-  useEffect(() => {
-    const t = setInterval(() => setLogIndex((n) => (n + 1) % LOG_LINES.length), 1400)
-    return () => clearInterval(t)
-  }, [])
-
-  const active = AGENT_STATUSES[tick]
-
   return (
     <section
-      className="relative pt-36 pb-28 px-6 overflow-hidden"
-      style={{ background: '#0A0A0A' }}
+      style={{
+        background: '#030305',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        padding: '6rem 2rem',
+      }}
     >
-      <div className="relative max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-        {/* ── LEFT ── */}
-        <div>
-          {/* Eyebrow */}
-          <span
-            className="inline-block text-xs font-semibold px-3 py-1.5 mb-8 tracking-widest uppercase"
-            style={{
-              fontFamily: 'var(--font-ibm-mono)',
-              background: 'rgba(249,115,22,0.1)',
-              color: '#F97316',
-              border: '1px solid rgba(249,115,22,0.2)',
-              borderRadius: '2px',
-            }}
-          >
-            AI Automation Platform
-          </span>
-
-          {/* H1 — normal flow, 2-3 lines, one accent word */}
-          <h1
-            className="font-extrabold leading-[1.05] tracking-tight mb-6"
-            style={{
-              fontFamily: 'var(--font-syne)',
-              fontSize: 'clamp(2.6rem, 5vw, 4.25rem)',
-              color: '#FFFFFF',
-            }}
-          >
-            AI Agents &amp;{' '}
-            <span style={{ color: '#F97316' }}>Automation</span>{' '}
-            for Modern Organisations
-          </h1>
-
-          {/* Sub */}
-          <p
-            className="text-base leading-relaxed mb-10 max-w-lg"
-            style={{ color: '#888888', fontFamily: 'var(--font-dm-sans)' }}
-          >
-            We design intelligent workflows and AI agents that automate business
-            processes, eliminate manual work, and improve operational efficiency
-            — 24/7, without additional headcount.
-          </p>
-
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 mb-14">
-            <Link
-              href="/automation-audit"
-              className="text-sm font-semibold px-7 py-3.5 transition-opacity hover:opacity-85 text-center"
+      <div style={{ maxWidth: '80rem', margin: '0 auto', width: '100%' }}>
+        {/* Status bar */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '3rem' }}>
+          {STATUS_PILLS.map((pill, i) => (
+            <span
+              key={pill.label}
               style={{
-                fontFamily: 'var(--font-dm-sans)',
-                background: '#F97316',
-                color: '#0A0A0A',
-                borderRadius: '2px',
+                fontFamily: 'var(--font-space-mono)',
+                fontSize: '11px',
+                color: '#6B6B7A',
+                background: '#0E0E12',
+                border: '1px solid rgba(255,255,255,0.1)',
+                padding: '6px 12px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
               }}
             >
-              Run Free Audit →
-            </Link>
-            <Link
-              href="/automation-lab"
-              className="text-sm font-semibold px-7 py-3.5 text-center transition-colors hover:border-white"
-              style={{
-                fontFamily: 'var(--font-dm-sans)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255,255,255,0.2)',
-                borderRadius: '2px',
-                background: 'transparent',
-              }}
-            >
-              Explore Automations
-            </Link>
-          </div>
-
-          {/* Stats row */}
-          <div
-            className="flex gap-10 pt-8"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
-          >
-            {[
-              { val: '50+',  label: 'Automations Built' },
-              { val: '10×',  label: 'Efficiency Gains'  },
-              { val: '24/7', label: 'Agent Uptime'       },
-            ].map((s) => (
-              <div key={s.label}>
-                <p
-                  className="text-2xl font-bold mb-0.5"
-                  style={{ fontFamily: 'var(--font-syne)', color: '#F97316' }}
-                >
-                  {s.val}
-                </p>
-                <p
-                  className="text-xs"
-                  style={{ fontFamily: 'var(--font-dm-sans)', color: '#888888' }}
-                >
-                  {s.label}
-                </p>
-              </div>
-            ))}
-          </div>
+              {i === 0 && (
+                <span
+                  className="status-pulse"
+                  style={{
+                    width: '6px',
+                    height: '6px',
+                    borderRadius: '50%',
+                    background: '#E8FF3D',
+                    display: 'inline-block',
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+              {i === 0 ? 'SYSTEMS OPERATIONAL' : pill.label}
+            </span>
+          ))}
         </div>
 
-        {/* ── RIGHT — SYS.AGENTS panel ── */}
-        <div
+        {/* Headline */}
+        <h1
           style={{
-            background: '#111111',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: '2px',
+            fontFamily: 'var(--font-space-grotesk)',
+            fontWeight: 700,
+            fontSize: 'clamp(3rem, 7vw, 6rem)',
+            letterSpacing: '-0.04em',
+            lineHeight: 1.02,
+            marginBottom: '1.5rem',
+            maxWidth: '900px',
           }}
         >
-          {/* Panel header bar */}
-          <div
-            className="flex items-center justify-between px-5 py-3"
-            style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+          <span style={{ display: 'block', color: '#FAFAFF' }}>We build the</span>
+          <span
+            className="glitch-word"
+            style={{ display: 'block', color: '#E8FF3D' }}
           >
-            <span
-              className="text-xs font-medium tracking-widest uppercase"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#888888' }}
-            >
-              SYS.AGENTS
-            </span>
-            <span
-              className="flex items-center gap-1.5 text-xs status-pulse"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}
-            >
-              <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#F97316' }} />
-              LIVE
-            </span>
-          </div>
+            machines
+          </span>
+          <span style={{ display: 'block', color: '#FAFAFF' }}>that run your business.</span>
+        </h1>
 
-          {/* Agent rows */}
-          <div className="px-2 pt-3 pb-2 space-y-1">
-            {AGENT_STATUSES.map((agent, i) => (
-              <div
-                key={agent.agent}
-                className="flex items-center justify-between px-3 py-2.5 transition-all duration-500"
-                style={{
-                  background: i === tick ? 'rgba(249,115,22,0.06)' : 'transparent',
-                  border: i === tick ? '1px solid rgba(249,115,22,0.15)' : '1px solid transparent',
-                  borderRadius: '2px',
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  <span
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ background: agent.status === 'ACTIVE' ? '#F97316' : 'rgba(255,255,255,0.15)' }}
-                  />
-                  <span
-                    className="text-xs"
-                    style={{ fontFamily: 'var(--font-ibm-mono)', color: i === tick ? '#FFFFFF' : '#888888' }}
-                  >
-                    {agent.agent}
-                  </span>
-                </div>
-                <span
-                  className="text-xs font-medium"
-                  style={{
-                    fontFamily: 'var(--font-ibm-mono)',
-                    color: agent.status === 'ACTIVE' ? '#F97316' : 'rgba(255,255,255,0.2)',
-                  }}
-                >
-                  {agent.status}
-                </span>
-              </div>
-            ))}
-          </div>
+        {/* Subheadline */}
+        <p
+          style={{
+            fontFamily: 'var(--font-dm-sans)',
+            fontWeight: 500,
+            fontSize: '18px',
+            color: '#6B6B7A',
+            maxWidth: '520px',
+            lineHeight: 1.7,
+            marginBottom: '2.5rem',
+          }}
+        >
+          AI agents, workflow automation, and intelligent systems for businesses
+          that are serious about growth.
+        </p>
 
-          {/* Current task */}
-          <div
-            className="mx-4 mb-3 p-4"
-            style={{ background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '2px' }}
+        {/* CTA row */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '4rem' }}>
+          <Link
+            href="/automation-audit"
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontWeight: 700,
+              fontSize: '13px',
+              color: '#030305',
+              background: '#E8FF3D',
+              padding: '14px 28px',
+              textDecoration: 'none',
+              display: 'inline-block',
+              transition: 'opacity 150ms ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
           >
-            <p
-              className="text-xs mb-1.5"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#888888' }}
-            >
-              // current task
-            </p>
-            <p
-              className="text-xs leading-relaxed"
-              style={{ fontFamily: 'var(--font-ibm-mono)', color: '#FFFFFF' }}
-            >
-              {active.task}
-            </p>
-            <div className="flex gap-3 mt-3">
-              <span className="text-xs" style={{ fontFamily: 'var(--font-ibm-mono)', color: '#888888' }}>uptime</span>
-              <span className="text-xs font-medium" style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}>{active.uptime}</span>
-            </div>
-          </div>
-
-          {/* Live log */}
-          <div
-            className="mx-4 mb-4 px-4 py-3"
-            style={{ background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '2px' }}
+            $ run --free-audit
+          </Link>
+          <Link
+            href="/contact"
+            style={{
+              fontFamily: 'var(--font-dm-sans)',
+              fontWeight: 500,
+              fontSize: '14px',
+              color: '#FAFAFF',
+              background: 'transparent',
+              border: '1px solid rgba(255,255,255,0.15)',
+              padding: '14px 28px',
+              textDecoration: 'none',
+              display: 'inline-block',
+              transition: 'border-color 150ms ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)')}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}
           >
-            <p className="text-xs" style={{ fontFamily: 'var(--font-ibm-mono)', color: '#888888' }}>
-              <span style={{ color: '#F97316' }}>$ </span>
-              {LOG_LINES[logIndex]}
-              <span className="cursor-blink" style={{ color: '#F97316' }}>▊</span>
-            </p>
-          </div>
+            Talk to our team →
+          </Link>
         </div>
 
+        {/* Stats row */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0',
+            paddingTop: '2rem',
+            borderTop: '1px solid rgba(255,255,255,0.07)',
+            maxWidth: '600px',
+          }}
+        >
+          {STATS.map((stat, i) => (
+            <div
+              key={stat.label}
+              style={{
+                flex: '1 1 120px',
+                paddingRight: i < STATS.length - 1 ? '2rem' : 0,
+                borderRight: i < STATS.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none',
+                marginRight: i < STATS.length - 1 ? '2rem' : 0,
+              }}
+            >
+              <StatCounter stat={stat} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

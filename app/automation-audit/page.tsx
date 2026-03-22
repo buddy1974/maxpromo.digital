@@ -9,33 +9,86 @@ export const metadata: Metadata = {
 
 export default function AutomationAuditPage() {
   return (
-    <main>
+    <main style={{ background: '#030305', minHeight: '100vh' }}>
       {/* Header */}
-      <section className="bg-white py-20 px-6 border-b border-slate-100">
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="inline-block bg-green-50 text-green-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase">
+      <section
+        style={{
+          padding: '5rem 2rem 3rem',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
+        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
+          <p
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '11px',
+              color: '#E8FF3D',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginBottom: '16px',
+            }}
+          >
             Free — No Commitment
-          </span>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-5">
+          </p>
+          <h1
+            style={{
+              fontFamily: 'var(--font-space-grotesk)',
+              fontWeight: 700,
+              fontSize: 'clamp(2rem, 5vw, 3rem)',
+              letterSpacing: '-0.04em',
+              color: '#FAFAFF',
+              marginBottom: '16px',
+            }}
+          >
             Automation Audit
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Answer 5 quick questions about your business. Our AI will identify your top 3
-            automation opportunities with specific tool recommendations.
+          <p
+            style={{
+              fontFamily: 'var(--font-dm-sans)',
+              fontSize: '16px',
+              color: '#6B6B7A',
+              lineHeight: 1.7,
+              maxWidth: '500px',
+            }}
+          >
+            Answer 5 questions about your business. Our AI identifies your top 3 automation
+            opportunities with specific tool recommendations.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mt-10">
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '2rem',
+              marginTop: '2rem',
+            }}
+          >
             {[
-              { icon: '⚡', label: '5 minutes', sub: 'to complete' },
-              { icon: '🤖', label: 'AI-powered', sub: 'analysis' },
-              { icon: '🎯', label: '3 specific', sub: 'opportunities' },
+              { label: '5 min', sub: 'to complete' },
+              { label: 'AI-powered', sub: 'analysis' },
+              { label: '3 specific', sub: 'opportunities' },
             ].map((item) => (
-              <div key={item.label} className="flex items-center gap-3 text-left">
-                <span className="text-2xl">{item.icon}</span>
-                <div>
-                  <p className="font-semibold text-slate-900 text-sm">{item.label}</p>
-                  <p className="text-slate-500 text-xs">{item.sub}</p>
-                </div>
+              <div key={item.label}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-space-mono)',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    color: '#FAFAFF',
+                    marginBottom: '2px',
+                  }}
+                >
+                  {item.label}
+                </p>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-dm-sans)',
+                    fontSize: '12px',
+                    color: '#6B6B7A',
+                  }}
+                >
+                  {item.sub}
+                </p>
               </div>
             ))}
           </div>
@@ -43,7 +96,7 @@ export default function AutomationAuditPage() {
       </section>
 
       {/* Audit form */}
-      <section className="py-16 px-6 bg-slate-50 min-h-[500px]">
+      <section style={{ padding: '4rem 2rem', minHeight: '500px' }}>
         <AuditForm />
       </section>
     </main>

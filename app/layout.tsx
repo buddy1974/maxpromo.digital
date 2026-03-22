@@ -1,49 +1,48 @@
 import type { Metadata } from 'next'
-import { Syne, IBM_Plex_Mono, DM_Sans } from 'next/font/google'
+import { Space_Grotesk, Space_Mono, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ChatAgent from '@/components/ChatAgent'
 
-const syne = Syne({
-  variable: '--font-syne',
+const spaceGrotesk = Space_Grotesk({
+  variable: '--font-space-grotesk',
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
+  weight: ['400', '500', '600', '700'],
 })
 
-const ibmMono = IBM_Plex_Mono({
-  variable: '--font-ibm-mono',
+const spaceMono = Space_Mono({
+  variable: '--font-space-mono',
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '700'],
 })
 
 const dmSans = DM_Sans({
   variable: '--font-dm-sans',
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500'],
 })
 
 export const metadata: Metadata = {
   title: {
-    default: 'MaxPromo Digital — AI Agents & Automation Systems',
+    default: 'MaxPromo Digital — AI Automation Platform',
     template: '%s | MaxPromo Digital',
   },
   description:
-    'We design intelligent workflows and AI agents that automate business processes, reduce manual work, and improve operational efficiency for businesses, NGOs, and government organisations.',
+    'AI agents, workflow automation, and intelligent systems for businesses that are serious about growth.',
   keywords: [
     'AI automation',
     'AI agents',
     'workflow automation',
     'business automation',
     'n8n',
-    'Claude AI',
+    'Claude API',
     'automation systems',
-    'AI websites',
   ],
   openGraph: {
-    title: 'MaxPromo Digital — AI Agents & Automation Systems',
+    title: 'MaxPromo Digital — AI Automation Platform',
     description:
-      'Intelligent workflows and AI agents that automate business processes and improve operational efficiency.',
+      'AI agents, workflow automation, and intelligent systems for businesses serious about growth.',
     type: 'website',
     locale: 'en_GB',
   },
@@ -57,8 +56,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${syne.variable} ${ibmMono.variable} ${dmSans.variable} antialiased`}
-        style={{ background: '#0A0A0A', color: '#FFFFFF' }}
+        className={`${spaceGrotesk.variable} ${spaceMono.variable} ${dmSans.variable} antialiased`}
+        style={{ background: '#030305', color: '#FAFAFF' }}
       >
         <Navbar />
         {children}

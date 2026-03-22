@@ -3,306 +3,466 @@
 import { useState } from 'react'
 import AuditResults, { AuditResult } from './AuditResults'
 
-type Stage = 'questions' | 'lead' | 'loading' | 'results'
+type Stage = 'questions' | 'loading' | 'results'
 
-interface QuestionnaireData {
+interface FormData {
   businessType: string
   companySize: string
-  timeConsumingTasks: string
-  currentTools: string
-  processToAutomate: string
+  tasks: string[]
+  tools: string[]
+  process: string
 }
 
-interface LeadData {
-  name: string
-  email: string
-  company: string
-}
+const BUSINESS_TYPES = [
+  'E-commerce', 'Agency', 'Consultant', 'Local Business',
+  'Healthcare', 'Education', 'Government', 'Other',
+]
+const COMPANY_SIZES = ['1–5', '6–20', '21–50', '50+']
+const TASK_OPTIONS = [
+  'Email replies', 'Data entry', 'Lead management', 'Customer support',
+  'Scheduling', 'Reporting', 'Invoicing', 'Document processing',
+]
+const TOOL_OPTIONS = [
+  'Google Workspace', 'CRM', 'Slack', 'Notion',
+  'Excel', 'Xero', 'None',
+]
 
-const COMPANY_SIZES = ['1–10', '11–50', '51–200', '201–1,000', '1,000+']
 const TOTAL_STEPS = 5
 
+const LOADING_LINES = [
+  'connecting to audit engine...',
+  'scanning business profile...',
+  'identifying automation opportunities...',
+  'generating report...',
+]
+
+/* ─── CHIP ────────────────────────────────────────────────── */
+function Chip({
+  label,
+  selected,
+  onClick,
+}: {
+  label: string
+  selected: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`audit-chip${selected ? ' selected' : ''}`}
+      style={{
+        fontFamily: 'var(--font-space-mono)',
+        fontSize: '12px',
+        padding: '10px 18px',
+        border: '1px solid rgba(255,255,255,0.1)',
+        cursor: 'pointer',
+      }}
+    >
+      {label}
+    </button>
+  )
+}
+
+/* ─── QUESTION LABEL ──────────────────────────────────────── */
+function QuestionLabel({ children }: { children: string }) {
+  return (
+    <h2
+      style={{
+        fontFamily: 'var(--font-space-grotesk)',
+        fontWeight: 700,
+        fontSize: '22px',
+        letterSpacing: '-0.04em',
+        color: '#FAFAFF',
+        marginBottom: '24px',
+      }}
+    >
+      {children}
+    </h2>
+  )
+}
+
+/* ─── MAIN COMPONENT ──────────────────────────────────────── */
 export default function AuditForm() {
   const [step, setStep] = useState(1)
   const [stage, setStage] = useState<Stage>('questions')
-  const [questionnaire, setQuestionnaire] = useState<QuestionnaireData>({
+  const [loadingLine, setLoadingLine] = useState(0)
+  const [form, setForm] = useState<FormData>({
     businessType: '',
     companySize: '',
-    timeConsumingTasks: '',
-    currentTools: '',
-    processToAutomate: '',
+    tasks: [],
+    tools: [],
+    process: '',
   })
-  const [lead, setLead] = useState<LeadData>({ name: '', email: '', company: '' })
   const [results, setResults] = useState<AuditResult[]>([])
   const [error, setError] = useState('')
 
-  const update = (field: keyof QuestionnaireData, value: string) =>
-    setQuestionnaire((prev) => ({ ...prev, [field]: value }))
-
-  const updateLead = (field: keyof LeadData, value: string) =>
-    setLead((prev) => ({ ...prev, [field]: value }))
+  const toggleMulti = (field: 'tasks' | 'tools', value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: prev[field].includes(value)
+        ? prev[field].filter((v) => v !== value)
+        : [...prev[field], value],
+    }))
+  }
 
   const canProceed = (): boolean => {
-    if (step === 1) return questionnaire.businessType.trim().length > 0
-    if (step === 2) return questionnaire.companySize.length > 0
-    if (step === 3) return questionnaire.timeConsumingTasks.trim().length > 0
-    if (step === 4) return questionnaire.currentTools.trim().length > 0
-    if (step === 5) return questionnaire.processToAutomate.trim().length > 0
+    if (step === 1) return form.businessType !== ''
+    if (step === 2) return form.companySize !== ''
+    if (step === 3) return form.tasks.length > 0
+    if (step === 4) return form.tools.length > 0
+    if (step === 5) return form.process.trim().length > 0
     return true
   }
 
+  const runAudit = async () => {
+    setStage('loading')
+    setError('')
+
+    // Stagger loading lines
+    let i = 0
+    const interval = setInterval(() => {
+      i++
+      setLoadingLine(i)
+      if (i >= LOADING_LINES.length - 1) clearInterval(interval)
+    }, 800)
+
+    try {
+      await new Promise((r) => setTimeout(r, 3200)) // let loading animation play
+      const res = await fetch('/api/audit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          questionnaire: {
+            businessType: form.businessType,
+            companySize: form.companySize,
+            timeConsumingTasks: form.tasks.join(', '),
+            currentTools: form.tools.join(', '),
+            processToAutomate: form.process,
+          },
+          lead: { name: '', email: '', company: '' },
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Audit failed')
+      setResults(data.results as AuditResult[])
+      setStage('results')
+    } catch (e) {
+      clearInterval(interval)
+      setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.')
+      setStage('questions')
+    }
+  }
+
   const next = () => {
-    if (step < TOTAL_STEPS) setStep((s) => s + 1)
-    else setStage('lead')
+    if (step < TOTAL_STEPS) {
+      setStep((s) => s + 1)
+    } else {
+      void runAudit()
+    }
   }
 
   const back = () => {
     if (step > 1) setStep((s) => s - 1)
   }
 
-  const submitLead = async () => {
-    if (!lead.name || !lead.email || !lead.company) return
-    setStage('loading')
-    setError('')
-
-    try {
-      const res = await fetch('/api/audit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questionnaire, lead }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Audit failed')
-      setResults(data.results)
-      setStage('results')
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.')
-      setStage('lead')
-    }
-  }
-
+  /* Loading state */
   if (stage === 'loading') {
     return (
-      <div className="flex flex-col items-center justify-center py-24 gap-5">
-        <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" />
-        <div className="text-center">
-          <p className="text-slate-900 font-semibold text-lg mb-1">Analysing your operations...</p>
-          <p className="text-slate-500 text-sm">Our AI is identifying your automation opportunities.</p>
+      <div
+        style={{
+          background: '#0E0E12',
+          border: '1px solid rgba(255,255,255,0.08)',
+          padding: '40px 48px',
+          maxWidth: '680px',
+          margin: '0 auto',
+        }}
+        className="px-6 md:px-12"
+      >
+        <p
+          style={{
+            fontFamily: 'var(--font-space-mono)',
+            fontSize: '11px',
+            color: '#6B6B7A',
+            letterSpacing: '0.2em',
+            marginBottom: '24px',
+          }}
+        >
+          ANALYSING...
+        </p>
+        <div style={{ background: '#030305', padding: '20px' }}>
+          {LOADING_LINES.map((line, i) => (
+            <p
+              key={line}
+              style={{
+                fontFamily: 'var(--font-space-mono)',
+                fontSize: '12px',
+                lineHeight: '1.8',
+                color: i <= loadingLine ? '#FAFAFF' : 'transparent',
+                transition: 'color 300ms ease',
+              }}
+            >
+              <span style={{ color: '#E8FF3D', marginRight: '8px' }}>
+                {i <= loadingLine ? '✓' : ' '}
+              </span>
+              {line}
+            </p>
+          ))}
+          <p
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '12px',
+              color: '#E8FF3D',
+              marginTop: '8px',
+            }}
+          >
+            $ <span className="cursor-blink">▊</span>
+          </p>
         </div>
       </div>
     )
   }
 
+  /* Results state */
   if (stage === 'results') {
-    return <AuditResults results={results} />
+    return (
+      <div style={{ maxWidth: '680px', margin: '0 auto' }}>
+        <AuditResults results={results} businessType={form.businessType} />
+      </div>
+    )
   }
 
-  if (stage === 'lead') {
-    return (
-      <div className="max-w-lg mx-auto">
-        <div className="text-center mb-8">
-          <span className="inline-block bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full mb-4 uppercase tracking-wide">
-            Almost There
-          </span>
-          <h2 className="text-2xl font-bold text-slate-900 mb-2">
-            Your report is ready
-          </h2>
-          <p className="text-slate-600 text-sm">
-            Enter your details to receive your personalised automation report.
-          </p>
+  /* Question steps */
+  const progress = (step / TOTAL_STEPS) * 100
+
+  return (
+    <div style={{ maxWidth: '680px', margin: '0 auto' }}>
+      {/* Card */}
+      <div
+        style={{
+          background: '#0E0E12',
+          border: '1px solid rgba(255,255,255,0.08)',
+          padding: '40px 48px',
+        }}
+        className="px-6 md:px-12"
+      >
+        {/* Progress */}
+        <div style={{ marginBottom: '32px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '8px',
+            }}
+          >
+            <span
+              style={{
+                fontFamily: 'var(--font-space-mono)',
+                fontSize: '11px',
+                color: '#6B6B7A',
+                letterSpacing: '0.1em',
+              }}
+            >
+              0{step} / 0{TOTAL_STEPS}
+            </span>
+          </div>
+          <div
+            style={{
+              height: '2px',
+              background: 'rgba(255,255,255,0.07)',
+              position: 'relative',
+            }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                height: '100%',
+                width: `${progress}%`,
+                background: '#E8FF3D',
+                transition: 'width 250ms ease',
+              }}
+            />
+          </div>
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-100 text-red-700 text-sm px-4 py-3 rounded-xl mb-5">
+          <p
+            style={{
+              fontFamily: 'var(--font-dm-sans)',
+              fontSize: '13px',
+              color: '#FF3D6B',
+              marginBottom: '16px',
+            }}
+          >
             {error}
+          </p>
+        )}
+
+        {/* Step 1 */}
+        {step === 1 && (
+          <div>
+            <QuestionLabel>What type of business do you run?</QuestionLabel>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {BUSINESS_TYPES.map((bt) => (
+                <Chip
+                  key={bt}
+                  label={bt}
+                  selected={form.businessType === bt}
+                  onClick={() => setForm((prev) => ({ ...prev, businessType: bt }))}
+                />
+              ))}
+            </div>
           </div>
         )}
 
-        <div className="space-y-4">
+        {/* Step 2 */}
+        {step === 2 && (
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
-            <input
-              type="text"
-              value={lead.name}
-              onChange={(e) => updateLead('name', e.target.value)}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="Jane Smith"
-            />
+            <QuestionLabel>How many people work in your organisation?</QuestionLabel>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {COMPANY_SIZES.map((size) => (
+                <Chip
+                  key={size}
+                  label={size}
+                  selected={form.companySize === size}
+                  onClick={() => setForm((prev) => ({ ...prev, companySize: size }))}
+                />
+              ))}
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Work Email</label>
-            <input
-              type="email"
-              value={lead.email}
-              onChange={(e) => updateLead('email', e.target.value)}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="jane@company.com"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
-              Company / Organisation
-            </label>
-            <input
-              type="text"
-              value={lead.company}
-              onChange={(e) => updateLead('company', e.target.value)}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              placeholder="Acme Corporation"
-            />
-          </div>
-          <button
-            onClick={submitLead}
-            disabled={!lead.name || !lead.email || !lead.company}
-            className="w-full bg-indigo-600 text-white font-semibold py-3.5 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm mt-2"
-          >
-            Generate My Automation Report →
-          </button>
-          <p className="text-xs text-slate-400 text-center">
-            We&apos;ll never spam you. Your data is used only to generate your report.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  // Questions stage
-  return (
-    <div className="max-w-lg mx-auto">
-      {/* Progress */}
-      <div className="mb-8">
-        <div className="flex justify-between text-xs text-slate-500 mb-2">
-          <span>Step {step} of {TOTAL_STEPS}</span>
-          <span>{Math.round((step / TOTAL_STEPS) * 100)}% complete</span>
-        </div>
-        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-indigo-600 rounded-full transition-all duration-300"
-            style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Step 1 */}
-      {step === 1 && (
-        <div>
-          <label className="block text-xl font-semibold text-slate-900 mb-2">
-            What type of business do you run?
-          </label>
-          <p className="text-slate-500 text-sm mb-5">
-            This helps us tailor automation suggestions to your industry and context.
-          </p>
-          <textarea
-            value={questionnaire.businessType}
-            onChange={(e) => update('businessType', e.target.value)}
-            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-            rows={4}
-            placeholder="e.g. Digital marketing agency serving SMEs in retail and hospitality..."
-          />
-        </div>
-      )}
-
-      {/* Step 2 */}
-      {step === 2 && (
-        <div>
-          <label className="block text-xl font-semibold text-slate-900 mb-2">
-            How large is your team?
-          </label>
-          <p className="text-slate-500 text-sm mb-5">
-            Team size helps us recommend the right scale of automation.
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            {COMPANY_SIZES.map((size) => (
-              <button
-                key={size}
-                onClick={() => update('companySize', size)}
-                className={`py-3.5 px-4 rounded-xl border text-sm font-medium transition-colors ${
-                  questionnaire.companySize === size
-                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
-                    : 'border-slate-200 text-slate-700 hover:border-indigo-300 hover:bg-indigo-50'
-                }`}
-              >
-                {size} people
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Step 3 */}
-      {step === 3 && (
-        <div>
-          <label className="block text-xl font-semibold text-slate-900 mb-2">
-            What tasks take up the most time?
-          </label>
-          <p className="text-slate-500 text-sm mb-5">
-            Describe the repetitive or manual tasks your team spends time on each week.
-          </p>
-          <textarea
-            value={questionnaire.timeConsumingTasks}
-            onChange={(e) => update('timeConsumingTasks', e.target.value)}
-            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-            rows={5}
-            placeholder="e.g. Manually sorting emails, copying data between spreadsheets, chasing invoices, scheduling meetings..."
-          />
-        </div>
-      )}
-
-      {/* Step 4 */}
-      {step === 4 && (
-        <div>
-          <label className="block text-xl font-semibold text-slate-900 mb-2">
-            What tools do you currently use?
-          </label>
-          <p className="text-slate-500 text-sm mb-5">
-            List the software, platforms, or systems your team relies on day-to-day.
-          </p>
-          <textarea
-            value={questionnaire.currentTools}
-            onChange={(e) => update('currentTools', e.target.value)}
-            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-            rows={4}
-            placeholder="e.g. Slack, HubSpot CRM, Google Workspace, Xero, Shopify, Notion..."
-          />
-        </div>
-      )}
-
-      {/* Step 5 */}
-      {step === 5 && (
-        <div>
-          <label className="block text-xl font-semibold text-slate-900 mb-2">
-            What would you most like to automate?
-          </label>
-          <p className="text-slate-500 text-sm mb-5">
-            Describe your ideal outcome if a key process was running on autopilot.
-          </p>
-          <textarea
-            value={questionnaire.processToAutomate}
-            onChange={(e) => update('processToAutomate', e.target.value)}
-            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-            rows={5}
-            placeholder="e.g. Automatically qualify incoming leads, score them, and add to HubSpot with a personalised follow-up email..."
-          />
-        </div>
-      )}
-
-      {/* Navigation */}
-      <div className="flex gap-3 mt-8">
-        {step > 1 && (
-          <button
-            onClick={back}
-            className="flex-1 border border-slate-200 text-slate-700 font-medium py-3 rounded-xl text-sm hover:bg-slate-50 transition-colors"
-          >
-            ← Back
-          </button>
         )}
-        <button
-          onClick={next}
-          disabled={!canProceed()}
-          className="flex-1 bg-indigo-600 text-white font-semibold py-3 rounded-xl text-sm hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+
+        {/* Step 3 */}
+        {step === 3 && (
+          <div>
+            <QuestionLabel>Which tasks eat the most time each week?</QuestionLabel>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {TASK_OPTIONS.map((task) => (
+                <Chip
+                  key={task}
+                  label={task}
+                  selected={form.tasks.includes(task)}
+                  onClick={() => toggleMulti('tasks', task)}
+                />
+              ))}
+            </div>
+            <p
+              style={{
+                fontFamily: 'var(--font-space-mono)',
+                fontSize: '10px',
+                color: '#6B6B7A',
+                marginTop: '12px',
+                letterSpacing: '0.1em',
+              }}
+            >
+              SELECT ALL THAT APPLY
+            </p>
+          </div>
+        )}
+
+        {/* Step 4 */}
+        {step === 4 && (
+          <div>
+            <QuestionLabel>Which tools do you currently use?</QuestionLabel>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {TOOL_OPTIONS.map((tool) => (
+                <Chip
+                  key={tool}
+                  label={tool}
+                  selected={form.tools.includes(tool)}
+                  onClick={() => toggleMulti('tools', tool)}
+                />
+              ))}
+            </div>
+            <p
+              style={{
+                fontFamily: 'var(--font-space-mono)',
+                fontSize: '10px',
+                color: '#6B6B7A',
+                marginTop: '12px',
+                letterSpacing: '0.1em',
+              }}
+            >
+              SELECT ALL THAT APPLY
+            </p>
+          </div>
+        )}
+
+        {/* Step 5 */}
+        {step === 5 && (
+          <div>
+            <QuestionLabel>What process would you most like to automate?</QuestionLabel>
+            <textarea
+              value={form.process}
+              onChange={(e) => setForm((prev) => ({ ...prev, process: e.target.value }))}
+              rows={5}
+              placeholder="Describe your biggest operational headache..."
+              style={{
+                width: '100%',
+                background: '#030305',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#FAFAFF',
+                fontFamily: 'var(--font-space-mono)',
+                fontSize: '13px',
+                padding: '14px',
+                resize: 'vertical',
+                outline: 'none',
+                lineHeight: 1.6,
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = '#E8FF3D')}
+              onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
+            />
+          </div>
+        )}
+
+        {/* Navigation */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '12px',
+            marginTop: '32px',
+          }}
         >
-          {step === TOTAL_STEPS ? 'See My Results →' : 'Continue →'}
-        </button>
+          {step > 1 && (
+            <button
+              onClick={back}
+              style={{
+                fontFamily: 'var(--font-dm-sans)',
+                fontWeight: 500,
+                fontSize: '14px',
+                color: '#6B6B7A',
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.1)',
+                padding: '12px 24px',
+                cursor: 'pointer',
+                transition: 'color 150ms ease, border-color 150ms ease',
+                flex: '0 0 auto',
+              }}
+            >
+              ← Back
+            </button>
+          )}
+          <button
+            onClick={next}
+            disabled={!canProceed()}
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontWeight: 700,
+              fontSize: '13px',
+              color: '#030305',
+              background: canProceed() ? '#E8FF3D' : 'rgba(232,255,61,0.3)',
+              padding: '12px 28px',
+              border: 'none',
+              cursor: canProceed() ? 'pointer' : 'not-allowed',
+              transition: 'background 150ms ease',
+              flex: '1',
+            }}
+          >
+            {step === TOTAL_STEPS ? '$ analyse --my-business →' : 'Continue →'}
+          </button>
+        </div>
       </div>
     </div>
   )
