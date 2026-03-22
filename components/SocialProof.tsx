@@ -10,8 +10,8 @@ const RESULTS = [
     client: 'Consulting firm, UK',
   },
   {
-    metric: '3 days → 4 hrs',
-    label: 'invoice cycle time',
+    metric: '3→4 hrs',
+    label: 'invoice cycle (was 3 days)',
     client: 'SME, logistics sector',
   },
 ]
@@ -21,7 +21,8 @@ export default function SocialProof() {
     <section
       style={{
         background: '#FFFFFF',
-        padding: '5rem 2rem',
+        padding: '80px 2rem',
+        borderTop: '1px solid #F0F0F0',
         borderBottom: '1px solid #F0F0F0',
       }}
     >
@@ -35,19 +36,44 @@ export default function SocialProof() {
               key={r.metric}
               style={{
                 background: '#FFFFFF',
-                borderLeft: '2px solid #F97316',
-                padding: '36px 32px',
+                borderLeft: '3px solid #F97316',
+                padding: '40px 36px',
+                position: 'relative',
+                overflow: 'hidden',
               }}
             >
+              {/* Watermark number */}
+              <span
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  right: '-20px',
+                  transform: 'translateY(-50%)',
+                  fontFamily: 'var(--font-space-grotesk)',
+                  fontWeight: 700,
+                  fontSize: '120px',
+                  color: 'rgba(249,115,22,0.04)',
+                  lineHeight: 1,
+                  pointerEvents: 'none',
+                  userSelect: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {r.metric}
+              </span>
+
+              {/* Content */}
               <p
                 style={{
                   fontFamily: 'var(--font-space-grotesk)',
                   fontWeight: 700,
-                  fontSize: '36px',
+                  fontSize: '48px',
                   color: '#F97316',
                   letterSpacing: '-0.04em',
                   lineHeight: 1,
-                  marginBottom: '10px',
+                  marginBottom: '12px',
+                  position: 'relative',
+                  zIndex: 1,
                 }}
               >
                 {r.metric}
@@ -55,10 +81,12 @@ export default function SocialProof() {
               <p
                 style={{
                   fontFamily: 'var(--font-dm-sans)',
-                  fontSize: '17px',
-                  color: '#0A0A0A',
+                  fontSize: '16px',
+                  color: '#333333',
                   lineHeight: 1.6,
                   marginBottom: '16px',
+                  position: 'relative',
+                  zIndex: 1,
                 }}
               >
                 {r.label}
@@ -66,9 +94,11 @@ export default function SocialProof() {
               <p
                 style={{
                   fontFamily: 'var(--font-space-mono)',
-                  fontSize: '11px',
-                  color: '#888888',
+                  fontSize: '12px',
+                  color: '#999999',
                   letterSpacing: '0.05em',
+                  position: 'relative',
+                  zIndex: 1,
                 }}
               >
                 — {r.client}

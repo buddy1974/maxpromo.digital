@@ -15,10 +15,10 @@ export interface AIResponse {
 export async function callAI(
   messages: AIMessage[],
   systemPrompt?: string,
-  options?: { maxTokens?: number }
+  options?: { maxTokens?: number; model?: string }
 ): Promise<AIResponse> {
   if (process.env.ANTHROPIC_API_KEY) {
-    return callClaude(messages, systemPrompt, options?.maxTokens)
+    return callClaude(messages, systemPrompt, options?.maxTokens, options?.model)
   }
   if (process.env.OPENAI_API_KEY) {
     return callOpenAI(messages, systemPrompt, options?.maxTokens)
@@ -29,10 +29,11 @@ export async function callAI(
 async function callClaude(
   messages: AIMessage[],
   systemPrompt?: string,
-  maxTokens = 1024
+  maxTokens = 1024,
+  model = 'claude-sonnet-4-6'
 ): Promise<AIResponse> {
   const body: Record<string, unknown> = {
-    model: 'claude-sonnet-4-6',
+    model,
     max_tokens: maxTokens,
     messages: messages
       .filter((m) => m.role !== 'system')
@@ -102,11 +103,11 @@ function getMockResponse(messages: AIMessage[]): string {
   if (last.includes('automat') || last.includes('workflow') || last.includes('agent')) {
     return "MaxPromo Digital specialises in AI agents and automation systems that save organisations 10–30 hours per week. Common automations include lead qualification agents, document processing AI, and customer support bots. Would you like a free audit to see what we can automate for you?"
   }
-  if (last.includes('price') || last.includes('cost') || last.includes('how much')) {
-    return "Our pricing depends on the complexity and scope of the automation. The best starting point is our free Automation Audit — it identifies your top opportunities and gives you a clear picture of what's possible. Shall I point you there?"
+  if (last.includes('price') || last.includes('cost') || last.includes('how much') || last.includes('pricing')) {
+    return "Our pricing starts from £2,500 for a Starter automation project, £6,500 for the Growth package (up to 4 workflows + AI agents), and custom rates for Enterprise. The best starting point is our free Automation Audit — shall I point you there?"
   }
   if (last.includes('website') || last.includes('ai website')) {
-    return "We build AI-enhanced websites with built-in chat assistants, automated lead capture, knowledge bots, and smart search. These go far beyond static brochure sites — they actively engage visitors and qualify leads automatically."
+    return "We build AI-enhanced websites with built-in chat assistants, automated lead capture, knowledge bots, and smart search — built with Next.js and deployed on Vercel. These go far beyond static brochure sites."
   }
-  return "MaxPromo Digital builds AI agents and automation systems for businesses, NGOs, and government organisations. I can tell you more about our services, or you can run our free Automation Audit to get personalised recommendations. What would you like to know?"
+  return "MaxPromo Digital builds AI agents and automation systems for businesses, NGOs, and government organisations. I can tell you about our services and pricing, or you can run our free Automation Audit for personalised recommendations. What would you like to know?"
 }

@@ -6,18 +6,18 @@ interface ContactBody {
   email: string
   organisation: string
   message: string
+  automation?: string
 }
 
-// Contact email is server-side only — never exposed to the client
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL!
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'contact@maxpromo.digital'
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'djstranger2000@gmail.com'
+const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as ContactBody
-    const { name, email, organisation, message } = body
+    const { name, email, organisation, message, automation } = body
 
-    // Validate
+    // Validate required fields
     if (!name?.trim() || !email?.trim() || !organisation?.trim() || !message?.trim()) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 })
     }
@@ -34,13 +34,14 @@ export async function POST(request: NextRequest) {
       email: email.trim().slice(0, 200),
       organisation: organisation.trim().slice(0, 200),
       message: message.trim().slice(0, 5000),
+      automation: automation?.trim().slice(0, 200),
     }
 
     const result = await sendEmail({
       to: CONTACT_EMAIL,
       from: FROM_EMAIL,
       replyTo: sanitised.email,
-      subject: `New enquiry from ${sanitised.name} — ${sanitised.organisation}`,
+      subject: `New enquiry from ${sanitised.name} — MaxPromo Digital`,
       html: buildContactEmailHtml(sanitised),
     })
 

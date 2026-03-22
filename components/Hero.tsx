@@ -71,10 +71,10 @@ function StatCounter({ stat }: { stat: StatConfig }) {
 
   return (
     <div ref={ref}>
-      <p style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '44px', color: '#0A0A0A', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '6px' }}>
+      <p style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '44px', color: '#FAFAFF', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '6px' }}>
         {stat.display(count)}
       </p>
-      <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#888888' }}>
+      <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#6B6B7A' }}>
         {stat.label}
       </p>
     </div>
@@ -110,12 +110,11 @@ export default function Hero() {
   return (
     <section
       style={{
-        background: '#FFFFFF',
+        background: 'linear-gradient(135deg, #0A0A0A 0%, #1A0A00 50%, #0A0A0A 100%)',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         padding: '6rem 2rem',
-        borderBottom: '1px solid #F0F0F0',
       }}
     >
       <div
@@ -124,154 +123,172 @@ export default function Hero() {
       >
 
         {/* ── LEFT ─────────────────────────────────────────── */}
-        <div>
-          {/* Status pills */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '2.5rem' }}>
-            {STATUS_PILLS.map((pill) => (
-              <span
-                key={pill.label}
-                style={{
-                  fontFamily: 'var(--font-space-mono)',
-                  fontSize: '12px',
-                  color: '#555555',
-                  background: '#F5F5F5',
-                  border: '1px solid rgba(0,0,0,0.08)',
-                  padding: '6px 14px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                }}
-              >
-                {pill.dot && (
-                  <span
-                    className="status-pulse"
-                    style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F97316', display: 'inline-block', flexShrink: 0 }}
-                  />
-                )}
-                {pill.label}
-              </span>
-            ))}
-          </div>
-
-          {/* Headline */}
-          <h1
+        <div style={{ position: 'relative' }}>
+          {/* Orange radial glow behind headline */}
+          <div
             style={{
-              fontFamily: 'var(--font-space-grotesk)',
-              fontWeight: 700,
-              fontSize: 'clamp(3.5rem, 6vw, 5.5rem)',
-              letterSpacing: '-0.04em',
-              lineHeight: 1.02,
-              marginBottom: '1.5rem',
+              position: 'absolute',
+              top: '50%',
+              left: '0',
+              transform: 'translateY(-50%)',
+              width: '800px',
+              height: '400px',
+              background: 'radial-gradient(ellipse 800px 400px at 30% 50%, rgba(249,115,22,0.12) 0%, transparent 70%)',
+              pointerEvents: 'none',
+              zIndex: 0,
             }}
-          >
-            <span style={{ display: 'block', color: '#0A0A0A' }}>We build the</span>
-            <span className="glitch-word" style={{ display: 'block', color: '#F97316' }}>machines</span>
-            <span style={{ display: 'block', color: '#0A0A0A' }}>that run your business.</span>
-          </h1>
+          />
 
-          {/* Sub */}
-          <p
-            style={{
-              fontFamily: 'var(--font-dm-sans)',
-              fontWeight: 500,
-              fontSize: '18px',
-              color: '#555555',
-              maxWidth: '480px',
-              lineHeight: 1.8,
-              marginBottom: '2.5rem',
-            }}
-          >
-            AI agents, workflow automation, and intelligent systems for
-            businesses that are serious about growth.
-          </p>
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            {/* Status pills */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '2.5rem' }}>
+              {STATUS_PILLS.map((pill) => (
+                <span
+                  key={pill.label}
+                  style={{
+                    fontFamily: 'var(--font-space-mono)',
+                    fontSize: '12px',
+                    color: '#AAAAAA',
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    padding: '6px 14px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                  }}
+                >
+                  {pill.dot && (
+                    <span
+                      className="status-pulse"
+                      style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F97316', display: 'inline-block', flexShrink: 0 }}
+                    />
+                  )}
+                  {pill.label}
+                </span>
+              ))}
+            </div>
 
-          {/* CTAs */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '3.5rem' }}>
-            <Link
-              href="/automation-audit"
+            {/* Headline */}
+            <h1
               style={{
-                fontFamily: 'var(--font-space-mono)',
+                fontFamily: 'var(--font-space-grotesk)',
                 fontWeight: 700,
-                fontSize: '15px',
-                color: '#FFFFFF',
-                background: '#F97316',
-                padding: '14px 28px',
-                textDecoration: 'none',
-                display: 'inline-block',
-                transition: 'opacity 150ms ease',
+                fontSize: 'clamp(3.5rem, 6vw, 5.5rem)',
+                letterSpacing: '-0.04em',
+                lineHeight: 1.02,
+                marginBottom: '1.5rem',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
             >
-              $ run --free-audit
-            </Link>
-            <Link
-              href="/contact"
+              <span style={{ display: 'block', color: '#FAFAFF' }}>We build the</span>
+              <span className="glitch-word" style={{ display: 'block', color: '#F97316' }}>machines</span>
+              <span style={{ display: 'block', color: '#FAFAFF' }}>that run your business.</span>
+            </h1>
+
+            {/* Sub */}
+            <p
               style={{
                 fontFamily: 'var(--font-dm-sans)',
                 fontWeight: 500,
-                fontSize: '15px',
-                color: '#0A0A0A',
-                background: 'transparent',
-                border: '1px solid rgba(0,0,0,0.15)',
-                padding: '14px 28px',
-                textDecoration: 'none',
-                display: 'inline-block',
-                transition: 'border-color 150ms ease',
+                fontSize: '18px',
+                color: '#AAAAAA',
+                maxWidth: '480px',
+                lineHeight: 1.8,
+                marginBottom: '2.5rem',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(0,0,0,0.4)')}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(0,0,0,0.15)')}
             >
-              Talk to our team →
-            </Link>
-          </div>
+              AI agents, workflow automation, and intelligent systems for
+              businesses that are serious about growth.
+            </p>
 
-          {/* Urgency line */}
-          <p
-            style={{
-              fontFamily: 'var(--font-space-mono)',
-              fontSize: '11px',
-              color: '#888888',
-              marginBottom: '2.5rem',
-              letterSpacing: '0.05em',
-            }}
-          >
-            // Free audit · No commitment · 3 onboarding slots open this month
-          </p>
-
-          {/* Stats */}
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0',
-              paddingTop: '2rem',
-              borderTop: '1px solid rgba(0,0,0,0.07)',
-              maxWidth: '540px',
-            }}
-          >
-            {STATS.map((stat, i) => (
-              <div
-                key={stat.label}
+            {/* CTAs */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '3.5rem' }}>
+              <Link
+                href="/automation-audit"
                 style={{
-                  flex: '1 1 110px',
-                  paddingRight: i < STATS.length - 1 ? '2rem' : 0,
-                  borderRight: i < STATS.length - 1 ? '1px solid rgba(0,0,0,0.07)' : 'none',
-                  marginRight: i < STATS.length - 1 ? '2rem' : 0,
+                  fontFamily: 'var(--font-space-mono)',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  color: '#000000',
+                  background: '#F97316',
+                  padding: '14px 28px',
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                  transition: 'opacity 150ms ease',
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
               >
-                <StatCounter stat={stat} />
-              </div>
-            ))}
+                $ run --free-audit
+              </Link>
+              <Link
+                href="/contact"
+                style={{
+                  fontFamily: 'var(--font-dm-sans)',
+                  fontWeight: 500,
+                  fontSize: '15px',
+                  color: '#FAFAFF',
+                  background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                  padding: '14px 28px',
+                  textDecoration: 'none',
+                  display: 'inline-block',
+                  transition: 'border-color 150ms ease',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)')}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)')}
+              >
+                Talk to our team →
+              </Link>
+            </div>
+
+            {/* Urgency line */}
+            <p
+              style={{
+                fontFamily: 'var(--font-space-mono)',
+                fontSize: '11px',
+                color: '#666666',
+                marginBottom: '2.5rem',
+                letterSpacing: '0.05em',
+              }}
+            >
+              // Free audit · No commitment · 3 onboarding slots open this month
+            </p>
+
+            {/* Stats */}
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0',
+                paddingTop: '2rem',
+                borderTop: '1px solid rgba(255,255,255,0.07)',
+                maxWidth: '540px',
+              }}
+            >
+              {STATS.map((stat, i) => (
+                <div
+                  key={stat.label}
+                  style={{
+                    flex: '1 1 110px',
+                    paddingRight: i < STATS.length - 1 ? '2rem' : 0,
+                    borderRight: i < STATS.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none',
+                    marginRight: i < STATS.length - 1 ? '2rem' : 0,
+                  }}
+                >
+                  <StatCounter stat={stat} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* ── RIGHT — SYS.AGENTS panel (stays dark) ───────── */}
+        {/* ── RIGHT — SYS.AGENTS panel ───────────────────── */}
         <div
           style={{
             background: '#111111',
             border: '1px solid rgba(255,255,255,0.08)',
             borderRadius: '2px',
+            boxShadow: '0 0 40px rgba(249,115,22,0.08)',
           }}
         >
           {/* Panel header */}

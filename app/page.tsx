@@ -15,22 +15,26 @@ const SERVICES = [
   {
     icon: '↗',
     title: 'AI Agentic Workflows',
-    desc: 'Autonomous agents that perceive, decide, and act.',
+    desc: 'Autonomous agents that perceive, decide, and act — without human intervention.',
+    href: '/services',
   },
   {
     icon: '⟳',
     title: 'Process Automation',
-    desc: 'Connect your tools. Eliminate manual steps end-to-end.',
+    desc: 'Connect every tool in your stack. Eliminate manual steps from end to end.',
+    href: '/services',
   },
   {
     icon: '◻',
     title: 'AI-Powered Websites',
-    desc: 'Next.js sites with embedded agents and smart forms.',
+    desc: 'Next.js sites with embedded agents, smart forms, and automated lead capture.',
+    href: '/ai-websites',
   },
   {
     icon: '⬡',
     title: 'Custom Integration',
-    desc: 'We connect every tool in your stack via API and webhook.',
+    desc: 'We connect every tool in your stack via API, webhook, and event-driven logic.',
+    href: '/services',
   },
 ]
 
@@ -78,7 +82,7 @@ function SectionTitle({ children, dark }: { children: React.ReactNode; dark?: bo
       style={{
         fontFamily: 'var(--font-space-grotesk)',
         fontWeight: 700,
-        fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
+        fontSize: 'clamp(2.5rem, 5vw, 4rem)',
         letterSpacing: '-0.04em',
         color: dark ? '#FAFAFF' : '#0A0A0A',
         marginBottom: '0',
@@ -98,7 +102,7 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
           fontFamily: 'var(--font-space-mono)',
           fontWeight: 700,
           fontSize: '15px',
-          color: '#0A0A0A',
+          color: '#000000',
           background: '#F97316',
           padding: '14px 28px',
           textDecoration: 'none',
@@ -118,7 +122,7 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
         fontSize: '15px',
         color: '#FAFAFF',
         background: 'transparent',
-        border: '1px solid rgba(255,255,255,0.15)',
+        border: '1px solid rgba(255,255,255,0.25)',
         padding: '14px 28px',
         textDecoration: 'none',
         display: 'inline-block',
@@ -151,9 +155,7 @@ function renderTerminalLine(line: typeof TERMINAL_LINES[number]) {
     )
   }
   if (line.type === 'cross') {
-    return (
-      <p style={{ ...mono, color: '#6B6B7A' }}>{line.text}</p>
-    )
+    return <p style={{ ...mono, color: '#6B6B7A' }}>{line.text}</p>
   }
   if (line.type === 'stat') {
     return <p style={{ ...mono, color: '#FAFAFF' }}>{line.text}</p>
@@ -165,9 +167,9 @@ function renderTerminalLine(line: typeof TERMINAL_LINES[number]) {
 
 export default function HomePage() {
   return (
-    <main style={{ background: '#FFFFFF' }}>
+    <main>
 
-      {/* 1 — Hero */}
+      {/* 1 — Hero (dark gradient, SYS.AGENTS panel) */}
       <Hero />
 
       {/* 2 — Social proof */}
@@ -177,8 +179,8 @@ export default function HomePage() {
       <div
         style={{
           background: '#0A0A0A',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
           padding: '14px 0',
           overflow: 'hidden',
         }}
@@ -190,7 +192,7 @@ export default function HomePage() {
               style={{
                 fontFamily: 'var(--font-space-mono)',
                 fontSize: '11px',
-                color: '#6B6B7A',
+                color: 'rgba(255,255,255,0.5)',
                 textTransform: 'uppercase',
                 letterSpacing: '0.15em',
                 marginRight: '2rem',
@@ -207,7 +209,7 @@ export default function HomePage() {
       </div>
 
       {/* 4 — Services */}
-      <section style={{ background: '#FFFFFF', padding: '6rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+      <section style={{ background: '#FAFAFA', padding: '6rem 2rem', borderBottom: '1px solid #E5E5E5' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
             <SectionLabel>What We Build</SectionLabel>
@@ -219,7 +221,7 @@ export default function HomePage() {
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
               gap: '1px',
-              background: '#E5E5E5',
+              background: '#EEEEEE',
             }}
             className="grid-cols-1 sm:grid-cols-2"
           >
@@ -230,12 +232,15 @@ export default function HomePage() {
                 style={{
                   background: '#FFFFFF',
                   padding: '40px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  border: '1px solid #EEEEEE',
                 }}
               >
                 <span
                   style={{
                     fontFamily: 'var(--font-space-mono)',
-                    fontSize: '18px',
+                    fontSize: '24px',
                     color: '#F97316',
                     display: 'block',
                     marginBottom: '20px',
@@ -247,9 +252,9 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
-                    fontSize: '22px',
+                    fontSize: '20px',
                     color: '#0A0A0A',
-                    letterSpacing: '-0.04em',
+                    letterSpacing: '-0.03em',
                     marginBottom: '10px',
                   }}
                 >
@@ -258,13 +263,28 @@ export default function HomePage() {
                 <p
                   style={{
                     fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '17px',
+                    fontSize: '15px',
                     color: '#555555',
-                    lineHeight: 1.8,
+                    lineHeight: 1.7,
+                    flex: 1,
+                    marginBottom: '20px',
                   }}
                 >
                   {s.desc}
                 </p>
+                <Link
+                  href={s.href}
+                  style={{
+                    fontFamily: 'var(--font-space-mono)',
+                    fontSize: '13px',
+                    color: '#F97316',
+                    textDecoration: 'none',
+                    letterSpacing: '0.05em',
+                    alignSelf: 'flex-start',
+                  }}
+                >
+                  Learn more →
+                </Link>
               </div>
             ))}
           </div>
@@ -275,16 +295,32 @@ export default function HomePage() {
       <ROICalculator />
 
       {/* 6 — Audit terminal */}
-      <section style={{ background: '#030305', padding: '6rem 2rem' }}>
+      <section
+        style={{
+          background: '#0A0A0A',
+          padding: '6rem 2rem',
+          position: 'relative',
+        }}
+      >
+        {/* Grid overlay */}
         <div
-          style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '4rem', alignItems: 'center' }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'linear-gradient(rgba(249,115,22,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.03) 1px, transparent 1px)',
+            backgroundSize: '40px 40px',
+            pointerEvents: 'none',
+          }}
+        />
+        <div
+          style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '4rem', alignItems: 'center', position: 'relative', zIndex: 1 }}
           className="grid-cols-1 lg:grid-cols-2"
         >
           {/* Terminal window */}
           <div
             style={{
               background: '#0E0E12',
-              border: '1px solid rgba(255,255,255,0.08)',
+              border: '1px solid rgba(249,115,22,0.15)',
               overflow: 'hidden',
             }}
           >
@@ -302,37 +338,20 @@ export default function HomePage() {
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.12)', display: 'inline-block' }} />
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.07)', display: 'inline-block' }} />
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', display: 'inline-block' }} />
-              <span
-                style={{
-                  fontFamily: 'var(--font-space-mono)',
-                  fontSize: '11px',
-                  color: '#6B6B7A',
-                  marginLeft: '8px',
-                }}
-              >
+              <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A', marginLeft: '8px' }}>
                 audit — zsh
               </span>
             </div>
-
             {/* Body */}
             <div style={{ background: '#030305', padding: '20px' }}>
               {TERMINAL_LINES.map((line, i) => (
-                <div
-                  key={i}
-                  className="terminal-line"
-                  style={{ animationDelay: `${i * 300}ms` }}
-                >
+                <div key={i} className="terminal-line" style={{ animationDelay: `${i * 300}ms` }}>
                   {renderTerminalLine(line)}
                 </div>
               ))}
               <p
                 className="terminal-line"
-                style={{
-                  fontFamily: 'var(--font-space-mono)',
-                  fontSize: '12px',
-                  color: '#F97316',
-                  animationDelay: `${TERMINAL_LINES.length * 300}ms`,
-                }}
+                style={{ fontFamily: 'var(--font-space-mono)', fontSize: '12px', color: '#F97316', animationDelay: `${TERMINAL_LINES.length * 300}ms` }}
               >
                 $ <span className="cursor-blink">▊</span>
               </p>
@@ -347,7 +366,7 @@ export default function HomePage() {
               style={{
                 fontFamily: 'var(--font-dm-sans)',
                 fontSize: '17px',
-                color: '#6B6B7A',
+                color: '#888888',
                 lineHeight: 1.8,
                 marginTop: '1.25rem',
                 marginBottom: '1.75rem',
@@ -387,7 +406,7 @@ export default function HomePage() {
       {/* 7 — Process */}
       <section
         style={{
-          background: '#FAFAFA',
+          background: '#FFFFFF',
           padding: '6rem 2rem',
           borderTop: '1px solid #E5E5E5',
           borderBottom: '1px solid #E5E5E5',
@@ -412,19 +431,21 @@ export default function HomePage() {
               <div
                 key={step.num}
                 style={{
-                  padding: '2.5rem 2rem 2.5rem',
+                  padding: '2.5rem 2rem',
                   position: 'relative',
                   borderRight: i < PROCESS_STEPS.length - 1 ? '1px solid #E5E5E5' : 'none',
                 }}
               >
-                <span className="step-ghost" style={{ color: 'rgba(0,0,0,0.04)' }}>{step.num}</span>
                 <p
                   style={{
-                    fontFamily: 'var(--font-space-mono)',
-                    fontSize: '12px',
+                    fontFamily: 'var(--font-space-grotesk)',
+                    fontWeight: 700,
+                    fontSize: '64px',
                     color: '#F97316',
-                    letterSpacing: '0.1em',
-                    marginBottom: '16px',
+                    letterSpacing: '-0.04em',
+                    lineHeight: 1,
+                    marginBottom: '20px',
+                    opacity: 0.9,
                   }}
                 >
                   {step.num}
@@ -433,9 +454,9 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
-                    fontSize: '22px',
+                    fontSize: '20px',
                     color: '#0A0A0A',
-                    letterSpacing: '-0.04em',
+                    letterSpacing: '-0.03em',
                     marginBottom: '10px',
                   }}
                 >
@@ -444,9 +465,9 @@ export default function HomePage() {
                 <p
                   style={{
                     fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '17px',
+                    fontSize: '16px',
                     color: '#666666',
-                    lineHeight: 1.8,
+                    lineHeight: 1.75,
                   }}
                 >
                   {step.desc}
@@ -458,8 +479,21 @@ export default function HomePage() {
       </section>
 
       {/* 8 — CTA */}
-      <section style={{ background: '#0A0A0A', padding: '7rem 2rem' }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
+      <section style={{ background: '#0A0A0A', padding: '7rem 2rem', position: 'relative', overflow: 'hidden' }}>
+        {/* Orange glow behind heading */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '700px',
+            height: '300px',
+            background: 'radial-gradient(ellipse at center, rgba(249,115,22,0.10) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }}
+        />
+        <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
           <SectionLabel>Ready to Automate?</SectionLabel>
           <h2
             style={{
@@ -479,7 +513,7 @@ export default function HomePage() {
             style={{
               fontFamily: 'var(--font-dm-sans)',
               fontSize: '17px',
-              color: '#6B6B7A',
+              color: '#888888',
               marginBottom: '2.5rem',
               lineHeight: 1.8,
             }}
@@ -495,7 +529,7 @@ export default function HomePage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '11px',
-              color: '#6B6B7A',
+              color: '#666666',
               marginTop: '20px',
               letterSpacing: '0.05em',
             }}

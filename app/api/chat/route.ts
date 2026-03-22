@@ -22,7 +22,10 @@ export async function POST(request: NextRequest) {
       .filter((m) => m.role === 'user' || m.role === 'assistant')
       .slice(-MAX_MESSAGES)
 
-    const response = await callAI(trimmed, CHAT_SYSTEM_PROMPT, { maxTokens: 400 })
+    const response = await callAI(trimmed, CHAT_SYSTEM_PROMPT, {
+      maxTokens: 400,
+      model: 'claude-haiku-4-5-20251001',
+    })
 
     return NextResponse.json({ message: response.content, model: response.model })
   } catch (error) {

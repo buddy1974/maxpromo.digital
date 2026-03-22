@@ -15,20 +15,14 @@ export interface EmailResult {
 /**
  * Send an email using the Resend API.
  * Requires RESEND_API_KEY environment variable.
- *
- * To use Resend: https://resend.com
- * Set RESEND_API_KEY in your Vercel environment variables.
- * Set RESEND_FROM_EMAIL to a verified sender address (e.g. noreply@maxpromo.digital)
  */
 export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
   const apiKey = process.env.RESEND_API_KEY
 
   if (!apiKey) {
-    // Development fallback — log to console
     console.log('[email] RESEND_API_KEY not set. Email would have been sent:')
     console.log('[email] To:', payload.to)
     console.log('[email] Subject:', payload.subject)
-    console.log('[email] Body:', payload.html)
     return { success: true, id: 'dev-mock' }
   }
 
@@ -62,37 +56,53 @@ export function buildContactEmailHtml(fields: {
   email: string
   organisation: string
   message: string
+  automation?: string
 }): string {
+  const automationRow = fields.automation
+    ? `<tr>
+        <td style="padding: 8px 0; font-weight: bold; color: #666666; width: 160px; vertical-align: top;">Automation Interest:</td>
+        <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.automation)}</td>
+      </tr>`
+    : ''
+
   return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #1e293b; border-bottom: 2px solid #4f46e5; padding-bottom: 8px;">
-        New Contact Form Submission
-      </h2>
-      <table style="width: 100%; border-collapse: collapse;">
-        <tr>
-          <td style="padding: 8px 0; font-weight: bold; color: #475569; width: 140px;">Name:</td>
-          <td style="padding: 8px 0; color: #1e293b;">${escapeHtml(fields.name)}</td>
-        </tr>
-        <tr>
-          <td style="padding: 8px 0; font-weight: bold; color: #475569;">Email:</td>
-          <td style="padding: 8px 0; color: #1e293b;">
-            <a href="mailto:${escapeHtml(fields.email)}">${escapeHtml(fields.email)}</a>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding: 8px 0; font-weight: bold; color: #475569;">Organisation:</td>
-          <td style="padding: 8px 0; color: #1e293b;">${escapeHtml(fields.organisation)}</td>
-        </tr>
-      </table>
-      <div style="margin-top: 16px;">
-        <p style="font-weight: bold; color: #475569; margin-bottom: 8px;">Message:</p>
-        <div style="background: #f8fafc; border-left: 4px solid #4f46e5; padding: 16px; border-radius: 4px; color: #1e293b; white-space: pre-wrap;">
-          ${escapeHtml(fields.message)}
-        </div>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+      <div style="background: #0A0A0A; padding: 24px; border-bottom: 3px solid #F97316;">
+        <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700;">
+          New Enquiry — MaxPromo Digital
+        </h2>
+        <p style="color: #888888; margin: 4px 0 0; font-size: 13px;">
+          Submitted: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}
+        </p>
       </div>
-      <p style="margin-top: 24px; font-size: 12px; color: #94a3b8;">
-        Sent via MaxPromo Digital contact form
-      </p>
+      <div style="padding: 24px;">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #666666; width: 160px;">Name:</td>
+            <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.name)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #666666;">Email:</td>
+            <td style="padding: 8px 0; color: #111111;">
+              <a href="mailto:${escapeHtml(fields.email)}" style="color: #F97316;">${escapeHtml(fields.email)}</a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #666666;">Organisation:</td>
+            <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.organisation)}</td>
+          </tr>
+          ${automationRow}
+        </table>
+        <div style="margin-top: 20px; border-top: 1px solid #eeeeee; padding-top: 20px;">
+          <p style="font-weight: bold; color: #666666; margin-bottom: 10px;">Message:</p>
+          <div style="background: #f9f9f9; border-left: 4px solid #F97316; padding: 16px; color: #111111; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">
+            ${escapeHtml(fields.message)}
+          </div>
+        </div>
+        <p style="margin-top: 24px; font-size: 12px; color: #aaaaaa; border-top: 1px solid #eeeeee; padding-top: 16px;">
+          Sent via MaxPromo Digital contact form · maxpromo.digital
+        </p>
+      </div>
     </div>
   `
 }
@@ -107,44 +117,51 @@ export function buildAuditLeadEmailHtml(fields: {
     .map(
       ([key, value]) => `
         <tr>
-          <td style="padding: 6px 0; font-weight: bold; color: #475569; width: 180px; vertical-align: top;">
+          <td style="padding: 6px 0; font-weight: bold; color: #666666; width: 200px; vertical-align: top;">
             ${escapeHtml(camelToLabel(key))}:
           </td>
-          <td style="padding: 6px 0; color: #1e293b;">${escapeHtml(value)}</td>
+          <td style="padding: 6px 0; color: #111111;">${escapeHtml(value)}</td>
         </tr>
       `
     )
     .join('')
 
   return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #1e293b; border-bottom: 2px solid #4f46e5; padding-bottom: 8px;">
-        New Automation Audit Lead
-      </h2>
-      <h3 style="color: #4f46e5;">Lead Details</h3>
-      <table style="width: 100%; border-collapse: collapse;">
-        <tr>
-          <td style="padding: 8px 0; font-weight: bold; color: #475569; width: 140px;">Name:</td>
-          <td style="padding: 8px 0; color: #1e293b;">${escapeHtml(fields.name)}</td>
-        </tr>
-        <tr>
-          <td style="padding: 8px 0; font-weight: bold; color: #475569;">Email:</td>
-          <td style="padding: 8px 0; color: #1e293b;">
-            <a href="mailto:${escapeHtml(fields.email)}">${escapeHtml(fields.email)}</a>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding: 8px 0; font-weight: bold; color: #475569;">Company:</td>
-          <td style="padding: 8px 0; color: #1e293b;">${escapeHtml(fields.company)}</td>
-        </tr>
-      </table>
-      <h3 style="color: #4f46e5; margin-top: 24px;">Questionnaire Responses</h3>
-      <table style="width: 100%; border-collapse: collapse;">
-        ${questionnaireRows}
-      </table>
-      <p style="margin-top: 24px; font-size: 12px; color: #94a3b8;">
-        Sent via MaxPromo Digital Automation Audit
-      </p>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+      <div style="background: #0A0A0A; padding: 24px; border-bottom: 3px solid #F97316;">
+        <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700;">
+          New Automation Audit Lead
+        </h2>
+        <p style="color: #888888; margin: 4px 0 0; font-size: 13px;">
+          Submitted: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}
+        </p>
+      </div>
+      <div style="padding: 24px;">
+        <h3 style="color: #F97316; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Lead Details</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #666666; width: 160px;">Name:</td>
+            <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.name)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #666666;">Email:</td>
+            <td style="padding: 8px 0; color: #111111;">
+              <a href="mailto:${escapeHtml(fields.email)}" style="color: #F97316;">${escapeHtml(fields.email)}</a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #666666;">Company:</td>
+            <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.company)}</td>
+          </tr>
+        </table>
+        <h3 style="color: #F97316; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">Questionnaire</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          ${questionnaireRows}
+        </table>
+        <p style="margin-top: 24px; font-size: 12px; color: #aaaaaa; border-top: 1px solid #eeeeee; padding-top: 16px;">
+          Sent via MaxPromo Digital Automation Audit · maxpromo.digital
+        </p>
+      </div>
     </div>
   `
 }

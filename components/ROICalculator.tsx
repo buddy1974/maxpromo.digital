@@ -24,7 +24,7 @@ function SliderInput({ label, value, min, max, prefix, suffix, onChange }: Slide
         <label style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '15px', color: '#444444' }}>
           {label}
         </label>
-        <span style={{ fontFamily: 'var(--font-space-mono)', fontWeight: 700, fontSize: '18px', color: '#F97316' }}>
+        <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '20px', color: '#F97316', letterSpacing: '-0.03em' }}>
           {prefix}{value}{suffix}
         </span>
       </div>
@@ -58,8 +58,30 @@ export default function ROICalculator() {
   const annualROI = monthlySaved * 12
 
   return (
-    <section style={{ background: '#FFFFFF', padding: '6rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
-      <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+    <section
+      style={{
+        background: 'linear-gradient(180deg, #FAFAFA 0%, #FFF4ED 100%)',
+        padding: '6rem 2rem',
+        borderBottom: '1px solid #F0F0F0',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Decorative background glow */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          right: '-200px',
+          transform: 'translateY(-50%)',
+          width: '600px',
+          height: '600px',
+          background: 'radial-gradient(circle, rgba(249,115,22,0.05) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      <div style={{ maxWidth: '80rem', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         {/* Header */}
         <div style={{ marginBottom: '3rem' }}>
           <p
@@ -78,7 +100,7 @@ export default function ROICalculator() {
             style={{
               fontFamily: 'var(--font-space-grotesk)',
               fontWeight: 700,
-              fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
               letterSpacing: '-0.04em',
               color: '#0A0A0A',
               marginBottom: '12px',
@@ -91,13 +113,19 @@ export default function ROICalculator() {
           </p>
         </div>
 
-        {/* Calculator */}
+        {/* Calculator card */}
         <div
-          style={{ display: 'grid', gap: '1px', background: '#E5E5E5', border: '1px solid #E5E5E5' }}
+          style={{
+            display: 'grid',
+            gap: '1px',
+            background: 'rgba(249,115,22,0.15)',
+            border: '1px solid rgba(249,115,22,0.15)',
+            boxShadow: '0 4px 32px rgba(249,115,22,0.08)',
+          }}
           className="grid-cols-1 lg:grid-cols-2"
         >
           {/* Inputs */}
-          <div style={{ background: '#FFFFFF', padding: '40px' }}>
+          <div style={{ background: '#FAFAFA', padding: '40px' }}>
             <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
               // your team
             </p>
@@ -107,7 +135,7 @@ export default function ROICalculator() {
           </div>
 
           {/* Outputs */}
-          <div style={{ background: '#FAFAFA', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div style={{ background: '#FFFFFF', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
               <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
                 // your savings
@@ -121,12 +149,12 @@ export default function ROICalculator() {
                 ].map((row) => (
                   <div
                     key={row.label}
-                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '16px 0', borderBottom: '1px solid #E5E5E5' }}
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '16px 0', borderBottom: '1px solid #F0F0F0' }}
                   >
                     <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '15px', color: '#666666' }}>
                       {row.label}
                     </span>
-                    <span style={{ fontFamily: 'var(--font-space-mono)', fontWeight: 700, fontSize: '22px', color: '#F97316', letterSpacing: '-0.02em' }}>
+                    <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '28px', color: '#F97316', letterSpacing: '-0.03em' }}>
                       {row.value}
                     </span>
                   </div>
@@ -142,7 +170,7 @@ export default function ROICalculator() {
                   fontFamily: 'var(--font-space-mono)',
                   fontWeight: 700,
                   fontSize: '15px',
-                  color: '#FFFFFF',
+                  color: '#000000',
                   background: '#F97316',
                   padding: '16px 24px',
                   textDecoration: 'none',

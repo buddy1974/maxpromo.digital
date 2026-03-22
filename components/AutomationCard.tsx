@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 
 interface AutomationCardProps {
@@ -50,7 +51,7 @@ export default function AutomationCard({ title, description, tools }: Automation
       >
         {description}
       </p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
         {tools.map((tool) => (
           <span
             key={tool}
@@ -68,6 +69,23 @@ export default function AutomationCard({ title, description, tools }: Automation
           </span>
         ))}
       </div>
+      <Link
+        href={`/contact?automation=${encodeURIComponent(title)}`}
+        style={{
+          fontFamily: 'var(--font-space-mono)',
+          fontSize: '12px',
+          color: '#F97316',
+          textDecoration: 'none',
+          letterSpacing: '0.05em',
+          alignSelf: 'flex-start',
+          borderBottom: '1px solid transparent',
+          transition: 'border-color 150ms ease',
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.borderBottomColor = '#F97316')}
+        onMouseLeave={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
+      >
+        Request This →
+      </Link>
     </div>
   )
 }

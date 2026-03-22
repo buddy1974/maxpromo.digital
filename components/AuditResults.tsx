@@ -4,10 +4,13 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 export interface AuditResult {
-  title: string
+  title?: string
   problem: string
   solution: string
   tools: string[]
+  roi?: string
+  complexity?: string
+  timeline?: string
 }
 
 interface AuditResultsProps {
@@ -114,18 +117,41 @@ export default function AuditResults({ results, businessType }: AuditResultsProp
             }}
           >
             {/* Title */}
-            <h3
-              style={{
-                fontFamily: 'var(--font-space-grotesk)',
-                fontWeight: 700,
-                fontSize: '18px',
-                letterSpacing: '-0.04em',
-                color: '#FAFAFF',
-                marginBottom: '20px',
-              }}
-            >
-              {r.title || `Opportunity ${i + 1}`}
-            </h3>
+            {r.title && (
+              <h3
+                style={{
+                  fontFamily: 'var(--font-space-grotesk)',
+                  fontWeight: 700,
+                  fontSize: '18px',
+                  letterSpacing: '-0.04em',
+                  color: '#FAFAFF',
+                  marginBottom: '20px',
+                }}
+              >
+                {r.title}
+              </h3>
+            )}
+
+            {/* Metadata badges */}
+            {(r.roi || r.complexity || r.timeline) && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+                {r.roi && (
+                  <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '3px 10px' }}>
+                    ↑ {r.roi}
+                  </span>
+                )}
+                {r.complexity && (
+                  <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', background: '#16161C', border: '1px solid rgba(255,255,255,0.08)', padding: '3px 10px' }}>
+                    {r.complexity}
+                  </span>
+                )}
+                {r.timeline && (
+                  <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', background: '#16161C', border: '1px solid rgba(255,255,255,0.08)', padding: '3px 10px' }}>
+                    {r.timeline}
+                  </span>
+                )}
+              </div>
+            )}
 
             {/* Problem */}
             <p

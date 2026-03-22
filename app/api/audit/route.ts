@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callAI } from '@/lib/ai'
+import { AUDIT_SYSTEM_PROMPT } from '@/lib/prompts'
 import { sendEmail, buildAuditLeadEmailHtml } from '@/lib/email'
 import type { AuditResult } from '@/components/AuditResults'
 
@@ -18,23 +19,6 @@ interface AuditRequestBody {
   }
 }
 
-const AUDIT_PROMPT = `You are an expert automation consultant specialising in n8n, AI agents, and API integrations.
-A business has submitted the following profile:
-- Business type: {businessType}
-- Team size: {size}
-- Most time-consuming tasks: {tasks}
-- Current tools: {tools}
-- Process they want automated: {process}
-
-Identify exactly 3 automation opportunities.
-For each opportunity respond with:
-- title: Short name for the automation
-- problem: One sentence describing the pain
-- solution: Two sentences describing the AI/automation solution
-- tools: Array of 2-4 tool names (e.g. n8n, Claude API, Zapier, CRM name)
-
-Respond ONLY with a valid JSON array. No preamble. No markdown fences.`
-
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as AuditRequestBody
@@ -44,17 +28,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Questionnaire data is required.' }, { status: 400 })
     }
 
-    const systemPrompt = AUDIT_PROMPT
-      .replace('{businessType}', questionnaire.businessType)
-      .replace('{size}', questionnaire.companySize)
-      .replace('{tasks}', questionnaire.timeConsumingTasks)
-      .replace('{tools}', questionnaire.currentTools)
-      .replace('{process}', questionnaire.processToAutomate)
+    const userMessage = `Business type: ${questionnaire.businessType}
+Company size: ${questionnaire.companySize}
+Time-consuming tasks: ${questionnaire.timeConsumingTasks}
+Current tools: ${questionnaire.currentTools}
+Process to automate: ${questionnaire.processToAutomate}
+
+Identify their top 3 automation opportunities. Return only a valid JSON array.`
 
     const aiResponse = await callAI(
-      [{ role: 'user', content: 'Generate the automation opportunities JSON array now.' }],
-      systemPrompt,
-      { maxTokens: 1400 }
+      [{ role: 'user', content: userMessage }],
+      AUDIT_SYSTEM_PROMPT,
+      { maxTokens: 1500 }
     )
 
     let results: AuditResult[]
@@ -72,8 +57,8 @@ export async function POST(request: NextRequest) {
     // Fire-and-forget lead notification
     if (lead?.name && lead?.email) {
       sendEmail({
-        to: process.env.CONTACT_EMAIL ?? '',
-        from: process.env.RESEND_FROM_EMAIL ?? 'audit@maxpromo.digital',
+        to: process.env.CONTACT_EMAIL ?? 'djstranger2000@gmail.com',
+        from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
         subject: `New Audit Lead: ${lead.name} — ${lead.company}`,
         html: buildAuditLeadEmailHtml({
           name: lead.name,
@@ -106,22 +91,28 @@ function getMockResults(q: AuditRequestBody['questionnaire']): AuditResult[] {
 
   return [
     {
-      title: 'Automated Lead Qualification',
       problem: `Your team spends significant time manually qualifying leads from ${tasks}.`,
-      solution: `Deploy an AI agent that scores incoming leads against your ideal customer profile, routes qualified leads to your CRM, and sends personalised follow-up sequences automatically.`,
-      tools: ['n8n', 'Claude API', 'HubSpot'],
+      solution: `Deploy an AI agent that scores incoming leads against your ideal customer profile and routes qualified leads to your CRM automatically. Personalised follow-up sequences are triggered without any manual action.`,
+      tools: ['n8n', 'Claude AI', 'HubSpot'],
+      roi: '8–12 hours/week',
+      complexity: 'Medium',
+      timeline: '2–3 weeks',
     },
     {
-      title: 'Cross-Platform Data Sync',
       problem: `Data across your tools (${tools}) is siloed, requiring manual copying and reconciliation.`,
-      solution: `Build an automated integration layer that syncs data across all platforms in real time. Eliminate duplicate entry and maintain a single source of truth across your stack.`,
+      solution: `Build an automated integration layer that syncs data across all platforms in real time. Eliminate duplicate entry and maintain a single source of truth across your entire stack.`,
       tools: ['n8n', 'Zapier', 'REST APIs'],
+      roi: '6–10 hours/week',
+      complexity: 'Simple',
+      timeline: '1 week',
     },
     {
-      title: 'AI Customer Communications Agent',
-      problem: `Customer enquiries and follow-ups require manual effort and often experience delays outside business hours.`,
+      problem: `Customer enquiries require manual effort and often experience delays outside business hours.`,
       solution: `Implement an AI agent that handles initial customer communications 24/7, qualifies enquiries, and escalates to your team only when human judgment is required.`,
-      tools: ['Claude API', 'Slack', 'Resend'],
+      tools: ['Claude AI', 'Slack', 'Resend'],
+      roi: '5–8 hours/week',
+      complexity: 'Medium',
+      timeline: '2–3 weeks',
     },
   ]
 }

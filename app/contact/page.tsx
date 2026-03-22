@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 interface FormData {
@@ -8,6 +8,7 @@ interface FormData {
   email: string
   organisation: string
   message: string
+  automation: string
 }
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
@@ -36,9 +37,23 @@ export default function ContactPage() {
     email: '',
     organisation: '',
     message: '',
+    automation: '',
   })
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+
+  // Pre-fill message from ?automation= query param
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const automation = params.get('automation')
+    if (automation) {
+      setForm((prev) => ({
+        ...prev,
+        automation,
+        message: `I'm interested in: ${automation}.\nPlease tell me more about this automation and how it could work for my business.`,
+      }))
+    }
+  }, [])
 
   const update = (field: keyof FormData, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -56,7 +71,13 @@ export default function ContactPage() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          organisation: form.organisation,
+          message: form.message,
+          automation: form.automation || undefined,
+        }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Submission failed')
@@ -161,11 +182,17 @@ export default function ContactPage() {
                 <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '28px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '12px' }}>
                   Message sent!
                 </h2>
-                <p style={{ ...sans, fontSize: '15px', color: '#666666', marginBottom: '1.5rem', lineHeight: 1.7 }}>
-                  Thank you for getting in touch. We&apos;ll get back to you within one business day.
+                <p style={{ ...sans, fontSize: '17px', color: '#F97316', marginBottom: '8px', lineHeight: 1.7, fontWeight: 500 }}>
+                  Message sent. We&apos;ll be in touch within 24 hours.
+                </p>
+                <p style={{ ...sans, fontSize: '14px', color: '#888888', marginBottom: '1.5rem' }}>
+                  If you don&apos;t hear from us, email us directly at{' '}
+                  <a href="mailto:info@maxpromo.digital" style={{ color: '#F97316', textDecoration: 'none' }}>
+                    info@maxpromo.digital
+                  </a>
                 </p>
                 <button
-                  onClick={() => { setStatus('idle'); setForm({ name: '', email: '', organisation: '', message: '' }) }}
+                  onClick={() => { setStatus('idle'); setForm({ name: '', email: '', organisation: '', message: '', automation: '' }) }}
                   style={{ ...mono, fontSize: '13px', color: '#F97316', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}
                 >
                   Send another message →
@@ -194,7 +221,15 @@ export default function ContactPage() {
                       padding: '12px 16px',
                     }}
                   >
-                    {errorMsg}
+                    {errorMsg || 'Something went wrong. Please email us directly at info@maxpromo.digital'}
+                  </div>
+                )}
+
+                {form.automation && (
+                  <div style={{ background: '#FFF4ED', border: '1px solid rgba(249,115,22,0.2)', padding: '10px 14px' }}>
+                    <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.05em' }}>
+                      // Enquiring about: {form.automation}
+                    </p>
                   </div>
                 )}
 
@@ -270,8 +305,8 @@ export default function ContactPage() {
                     ...mono,
                     fontWeight: 700,
                     fontSize: '15px',
-                    color: '#0A0A0A',
-                    background: !isValid || status === 'loading' ? '#AAAAAA' : '#F97316',
+                    color: '#000000',
+                    background: !isValid || status === 'loading' ? '#CCCCCC' : '#F97316',
                     border: 'none',
                     padding: '16px 28px',
                     cursor: !isValid || status === 'loading' ? 'not-allowed' : 'pointer',

@@ -97,12 +97,13 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Service cards ── */
 .service-card {
-  transition: transform 200ms ease, border-left-color 200ms ease;
+  transition: transform 200ms ease, border-left-color 200ms ease, box-shadow 200ms ease;
   border-left: 3px solid transparent;
 }
 .service-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   border-left-color: #F97316;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
 /* ── Audit chips ── */
