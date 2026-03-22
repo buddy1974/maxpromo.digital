@@ -45,7 +45,7 @@ export default function Navbar() {
                 letterSpacing: '-0.04em',
               }}
             >
-              MaxPromo<span style={{ color: '#E8FF3D' }}>.digital</span>
+              MAXPROMO<span style={{ color: '#F97316' }}>.DIGITAL</span>
             </span>
           </Link>
 
@@ -59,7 +59,7 @@ export default function Navbar() {
                 style={{
                   fontFamily: 'var(--font-dm-sans)',
                   fontWeight: 500,
-                  fontSize: '14px',
+                  fontSize: '15px',
                   textDecoration: 'none',
                 }}
               >
@@ -75,10 +75,10 @@ export default function Navbar() {
               style={{
                 fontFamily: 'var(--font-space-mono)',
                 fontWeight: 700,
-                fontSize: '12px',
+                fontSize: '15px',
                 color: '#030305',
-                background: '#E8FF3D',
-                padding: '8px 20px',
+                background: '#F97316',
+                padding: '10px 22px',
                 textDecoration: 'none',
                 display: 'inline-block',
                 transition: 'opacity 150ms ease',
@@ -143,7 +143,7 @@ export default function Navbar() {
                 fontWeight: 700,
                 fontSize: '12px',
                 color: '#030305',
-                background: '#E8FF3D',
+                background: '#F97316',
                 padding: '10px 20px',
                 textDecoration: 'none',
               }}

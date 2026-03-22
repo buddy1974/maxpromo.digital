@@ -201,7 +201,7 @@ export default function AuditForm() {
                 transition: 'color 300ms ease',
               }}
             >
-              <span style={{ color: '#E8FF3D', marginRight: '8px' }}>
+              <span style={{ color: '#F97316', marginRight: '8px' }}>
                 {i <= loadingLine ? '✓' : ' '}
               </span>
               {line}
@@ -211,7 +211,7 @@ export default function AuditForm() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '12px',
-              color: '#E8FF3D',
+              color: '#F97316',
               marginTop: '8px',
             }}
           >
@@ -280,7 +280,7 @@ export default function AuditForm() {
                 top: 0,
                 height: '100%',
                 width: `${progress}%`,
-                background: '#E8FF3D',
+                background: '#F97316',
                 transition: 'width 250ms ease',
               }}
             />
@@ -411,7 +411,7 @@ export default function AuditForm() {
                 outline: 'none',
                 lineHeight: 1.6,
               }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = '#E8FF3D')}
+              onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
               onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
             />
           </div>
@@ -452,7 +452,7 @@ export default function AuditForm() {
               fontWeight: 700,
               fontSize: '13px',
               color: '#030305',
-              background: canProceed() ? '#E8FF3D' : 'rgba(232,255,61,0.3)',
+              background: canProceed() ? '#F97316' : 'rgba(232,255,61,0.3)',
               padding: '12px 28px',
               border: 'none',
               cursor: canProceed() ? 'pointer' : 'not-allowed',

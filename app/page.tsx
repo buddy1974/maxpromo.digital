@@ -58,8 +58,8 @@ function SectionLabel({ children }: { children: string }) {
     <p
       style={{
         fontFamily: 'var(--font-space-mono)',
-        fontSize: '11px',
-        color: '#E8FF3D',
+        fontSize: '12px',
+        color: '#F97316',
         letterSpacing: '0.2em',
         textTransform: 'uppercase',
         marginBottom: '12px',
@@ -76,7 +76,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
       style={{
         fontFamily: 'var(--font-space-grotesk)',
         fontWeight: 700,
-        fontSize: 'clamp(2rem, 4vw, 3.25rem)',
+        fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
         letterSpacing: '-0.04em',
         color: '#FAFAFF',
         marginBottom: '0',
@@ -95,9 +95,9 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
         style={{
           fontFamily: 'var(--font-space-mono)',
           fontWeight: 700,
-          fontSize: '13px',
+          fontSize: '15px',
           color: '#030305',
-          background: '#E8FF3D',
+          background: '#F97316',
           padding: '14px 28px',
           textDecoration: 'none',
           display: 'inline-block',
@@ -113,7 +113,7 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
       style={{
         fontFamily: 'var(--font-dm-sans)',
         fontWeight: 500,
-        fontSize: '14px',
+        fontSize: '15px',
         color: '#FAFAFF',
         background: 'transparent',
         border: '1px solid rgba(255,255,255,0.15)',
@@ -128,14 +128,14 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
 }
 
 function renderTerminalLine(line: typeof TERMINAL_LINES[number]) {
-  const mono = { fontFamily: 'var(--font-space-mono)', fontSize: '12px', lineHeight: '1.8' }
+  const mono = { fontFamily: 'var(--font-space-mono)', fontSize: '13px', lineHeight: '1.8' }
 
   if (line.type === 'blank') return <p style={{ ...mono, minHeight: '1.8em' }}>&nbsp;</p>
 
   if (line.type === 'cmd') {
     return (
       <p style={{ ...mono, color: '#FAFAFF' }}>
-        <span style={{ color: '#E8FF3D' }}>$</span>
+        <span style={{ color: '#F97316' }}>$</span>
         {line.text.slice(1)}
       </p>
     )
@@ -143,7 +143,7 @@ function renderTerminalLine(line: typeof TERMINAL_LINES[number]) {
   if (line.type === 'check') {
     return (
       <p style={{ ...mono, color: '#FAFAFF' }}>
-        <span style={{ color: '#E8FF3D' }}>  ✓</span>
+        <span style={{ color: '#F97316' }}>  ✓</span>
         {line.text.slice(3)}
       </p>
     )
@@ -195,7 +195,7 @@ export default function HomePage() {
               }}
             >
               {item}
-              <span style={{ color: '#E8FF3D', opacity: 0.5 }}>◆</span>
+              <span style={{ color: '#F97316', opacity: 0.5 }}>◆</span>
             </span>
           ))}
         </div>
@@ -231,7 +231,7 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-space-mono)',
                     fontSize: '18px',
-                    color: '#E8FF3D',
+                    color: '#F97316',
                     display: 'block',
                     marginBottom: '20px',
                   }}
@@ -242,7 +242,7 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
-                    fontSize: '18px',
+                    fontSize: '22px',
                     color: '#FAFAFF',
                     letterSpacing: '-0.04em',
                     marginBottom: '10px',
@@ -253,9 +253,9 @@ export default function HomePage() {
                 <p
                   style={{
                     fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '14px',
+                    fontSize: '17px',
                     color: '#6B6B7A',
-                    lineHeight: 1.7,
+                    lineHeight: 1.8,
                   }}
                 >
                   {s.desc}
@@ -322,7 +322,7 @@ export default function HomePage() {
                 style={{
                   fontFamily: 'var(--font-space-mono)',
                   fontSize: '12px',
-                  color: '#E8FF3D',
+                  color: '#F97316',
                   animationDelay: `${TERMINAL_LINES.length * 300}ms`,
                 }}
               >
@@ -338,9 +338,9 @@ export default function HomePage() {
             <p
               style={{
                 fontFamily: 'var(--font-dm-sans)',
-                fontSize: '16px',
+                fontSize: '17px',
                 color: '#6B6B7A',
-                lineHeight: 1.7,
+                lineHeight: 1.8,
                 marginTop: '1.25rem',
                 marginBottom: '1.75rem',
                 maxWidth: '440px',
@@ -362,11 +362,11 @@ export default function HomePage() {
                     alignItems: 'flex-start',
                     gap: '10px',
                     fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '14px',
+                    fontSize: '17px',
                     color: 'rgba(250,250,255,0.7)',
                   }}
                 >
-                  <span style={{ color: '#E8FF3D', flexShrink: 0 }}>✓</span>
+                  <span style={{ color: '#F97316', flexShrink: 0 }}>✓</span>
                   {item}
                 </li>
               ))}
@@ -414,8 +414,8 @@ export default function HomePage() {
                 <p
                   style={{
                     fontFamily: 'var(--font-space-mono)',
-                    fontSize: '11px',
-                    color: '#E8FF3D',
+                    fontSize: '12px',
+                    color: '#F97316',
                     letterSpacing: '0.1em',
                     marginBottom: '16px',
                   }}
@@ -426,7 +426,7 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
-                    fontSize: '16px',
+                    fontSize: '22px',
                     color: '#FAFAFF',
                     letterSpacing: '-0.04em',
                     marginBottom: '10px',
@@ -437,9 +437,9 @@ export default function HomePage() {
                 <p
                   style={{
                     fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '14px',
+                    fontSize: '17px',
                     color: '#6B6B7A',
-                    lineHeight: 1.7,
+                    lineHeight: 1.8,
                   }}
                 >
                   {step.desc}
@@ -458,7 +458,7 @@ export default function HomePage() {
             style={{
               fontFamily: 'var(--font-space-grotesk)',
               fontWeight: 700,
-              fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
+              fontSize: 'clamp(2.75rem, 5vw, 4rem)',
               letterSpacing: '-0.04em',
               color: '#FAFAFF',
               marginBottom: '1.25rem',
@@ -466,15 +466,15 @@ export default function HomePage() {
             }}
           >
             Stop doing work{' '}
-            <span style={{ color: '#E8FF3D' }}>machines</span> can do
+            <span style={{ color: '#F97316' }}>machines</span> can do
           </h2>
           <p
             style={{
               fontFamily: 'var(--font-dm-sans)',
-              fontSize: '16px',
+              fontSize: '17px',
               color: '#6B6B7A',
               marginBottom: '2.5rem',
-              lineHeight: 1.7,
+              lineHeight: 1.8,
             }}
           >
             Get a free, personalised audit and discover exactly how AI can transform your

@@ -50,7 +50,7 @@ export default function Footer() {
                 style={{
                   fontFamily: 'var(--font-space-mono)',
                   fontSize: '10px',
-                  color: '#E8FF3D',
+                  color: '#F97316',
                   letterSpacing: '0.2em',
                   marginBottom: '16px',
                   textTransform: 'uppercase',

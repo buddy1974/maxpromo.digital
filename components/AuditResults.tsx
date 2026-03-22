@@ -44,7 +44,7 @@ export default function AuditResults({ results, businessType }: AuditResultsProp
     setLead((prev) => ({ ...prev, [field]: value }))
 
   const handleFocusBorder = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.currentTarget.style.borderBottomColor = '#E8FF3D'
+    e.currentTarget.style.borderBottomColor = '#F97316'
   }
   const handleBlurBorder = (e: React.FocusEvent<HTMLInputElement>) => {
     e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.15)'
@@ -226,7 +226,7 @@ export default function AuditResults({ results, businessType }: AuditResultsProp
               style={{
                 fontFamily: 'var(--font-space-mono)',
                 fontSize: '11px',
-                color: '#E8FF3D',
+                color: '#F97316',
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 marginBottom: '12px',
@@ -316,7 +316,7 @@ export default function AuditResults({ results, businessType }: AuditResultsProp
                 fontWeight: 700,
                 fontSize: '13px',
                 color: '#030305',
-                background: '#E8FF3D',
+                background: '#F97316',
                 padding: '14px 28px',
                 border: 'none',
                 cursor: lead.name && lead.email && lead.company && !submitting ? 'pointer' : 'not-allowed',
@@ -339,7 +339,7 @@ export default function AuditResults({ results, businessType }: AuditResultsProp
             fontWeight: 500,
             fontSize: '14px',
             color: '#030305',
-            background: '#E8FF3D',
+            background: '#F97316',
             padding: '12px 24px',
             textDecoration: 'none',
           }}

@@ -22,7 +22,7 @@ export default function AutomationAuditPage() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '11px',
-              color: '#E8FF3D',
+              color: '#F97316',
               letterSpacing: '0.2em',
               textTransform: 'uppercase',
               marginBottom: '16px',
