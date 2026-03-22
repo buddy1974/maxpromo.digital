@@ -18,22 +18,39 @@ export default function AutomationCard({ title, description, tools }: Automation
       onMouseLeave={() => setHovered(false)}
       style={{
         background: hovered ? '#161616' : '#0F0F0F',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderLeft: hovered ? '2px solid #F97316' : '2px solid transparent',
-        padding: '28px',
+        border: `1px solid ${hovered ? 'rgba(249,115,22,0.2)' : 'rgba(255,255,255,0.07)'}`,
+        borderRadius: '2px',
+        padding: '32px',
         display: 'flex',
         flexDirection: 'column',
-        transition: 'all 0.2s ease',
+        position: 'relative',
+        overflow: 'hidden',
+        transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
+        boxShadow: hovered ? '0 8px 32px rgba(0,0,0,0.5)' : 'none',
+        transition: 'all 0.25s ease',
         cursor: 'default',
       }}
     >
+      {/* Top accent line */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.5) 50%, transparent 100%)',
+          pointerEvents: 'none',
+        }}
+      />
+
       <h3
         style={{
           fontFamily: 'var(--font-space-grotesk)',
           fontWeight: 700,
-          fontSize: '18px',
+          fontSize: '16px',
           color: '#FFFFFF',
-          letterSpacing: '-0.03em',
+          letterSpacing: '-0.02em',
           marginBottom: '10px',
         }}
       >
@@ -42,8 +59,8 @@ export default function AutomationCard({ title, description, tools }: Automation
       <p
         style={{
           fontFamily: 'var(--font-dm-sans)',
-          fontSize: '15px',
-          color: '#999999',
+          fontSize: '13px',
+          color: '#888888',
           lineHeight: 1.7,
           flex: 1,
           marginBottom: '20px',
@@ -56,12 +73,12 @@ export default function AutomationCard({ title, description, tools }: Automation
           <span
             key={tool}
             style={{
-              background: '#1A1A1A',
+              background: 'rgba(249,115,22,0.08)',
               color: '#F97316',
               border: '1px solid rgba(249,115,22,0.2)',
               fontFamily: 'var(--font-space-mono)',
-              fontSize: '11px',
-              padding: '4px 10px',
+              fontSize: '10px',
+              padding: '3px 10px',
               borderRadius: '2px',
             }}
           >
@@ -73,16 +90,14 @@ export default function AutomationCard({ title, description, tools }: Automation
         href={`/contact?automation=${encodeURIComponent(title)}`}
         style={{
           fontFamily: 'var(--font-space-mono)',
-          fontSize: '12px',
+          fontSize: '11px',
           color: '#F97316',
           textDecoration: 'none',
-          letterSpacing: '0.05em',
+          letterSpacing: '0.08em',
           alignSelf: 'flex-start',
-          borderBottom: '1px solid transparent',
-          transition: 'border-color 150ms ease',
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.borderBottomColor = '#F97316')}
-        onMouseLeave={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
+        onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
+        onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
       >
         Request This →
       </Link>

@@ -110,7 +110,7 @@ export default function Hero() {
   return (
     <section
       style={{
-        background: 'linear-gradient(135deg, #0A0A0A 0%, #1A0A00 50%, #0A0A0A 100%)',
+        background: 'linear-gradient(135deg, #050505 0%, #0D0500 40%, #050505 100%)',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
@@ -133,7 +133,7 @@ export default function Hero() {
               transform: 'translateY(-50%)',
               width: '800px',
               height: '400px',
-              background: 'radial-gradient(ellipse 800px 400px at 30% 50%, rgba(249,115,22,0.12) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse 900px 500px at 35% 50%, rgba(249,115,22,0.15) 0%, transparent 65%)',
               pointerEvents: 'none',
               zIndex: 0,
             }}
@@ -149,8 +149,9 @@ export default function Hero() {
                     fontFamily: 'var(--font-space-mono)',
                     fontSize: '12px',
                     color: '#AAAAAA',
-                    background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.12)',
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.10)',
+                    backdropFilter: 'blur(8px)',
                     padding: '6px 14px',
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -285,10 +286,10 @@ export default function Hero() {
         {/* ── RIGHT — SYS.AGENTS panel ───────────────────── */}
         <div
           style={{
-            background: '#111111',
+            background: '#0A0A0A',
             border: '1px solid rgba(255,255,255,0.08)',
             borderRadius: '2px',
-            boxShadow: '0 0 40px rgba(249,115,22,0.08)',
+            boxShadow: '0 0 0 1px rgba(249,115,22,0.05), 0 32px 80px rgba(0,0,0,0.8), 0 0 60px rgba(249,115,22,0.06)',
           }}
         >
           {/* Panel header */}

@@ -12,7 +12,7 @@ const TIERS = [
     price: '£2,500',
     period: 'one-time',
     tag: null,
-    description: 'For small businesses and teams automating their first core workflow.',
+    description: 'For businesses automating their first core workflow.',
     includes: [
       '1 automation workflow built end-to-end',
       'Up to 3 tool integrations',
@@ -29,8 +29,8 @@ const TIERS = [
     name: 'Growth',
     price: '£6,500',
     period: 'one-time',
-    tag: 'Most Popular',
-    description: 'For growing businesses ready to automate multiple workflows and integrate AI agents.',
+    tag: 'MOST POPULAR',
+    description: 'For businesses ready to automate multiple workflows and deploy AI agents.',
     includes: [
       'Up to 4 automation workflows',
       'Unlimited tool integrations',
@@ -50,7 +50,7 @@ const TIERS = [
     price: 'Custom',
     period: 'quoted',
     tag: null,
-    description: 'For organisations requiring full automation ecosystems, ongoing retainers, and dedicated support.',
+    description: 'For organisations requiring full automation ecosystems and ongoing retainers.',
     includes: [
       'Unlimited workflows and agents',
       'Full automation architecture design',
@@ -113,33 +113,42 @@ export default function PricingPage() {
       <section style={{ background: '#FAFAFA', padding: '4rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div
-            style={{ display: 'grid', gap: '1px', background: '#E5E5E5', alignItems: 'start' }}
+            style={{ display: 'grid', gap: '16px', alignItems: 'start' }}
             className="grid-cols-1 lg:grid-cols-3"
           >
             {TIERS.map((tier) => (
               <div
                 key={tier.name}
                 style={{
-                  background: tier.featured ? '#0A0A0A' : '#FFFFFF',
+                  background: '#0F0F0F',
+                  border: tier.featured
+                    ? '2px solid #F97316'
+                    : '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: tier.featured
+                    ? '0 0 60px rgba(249,115,22,0.15), 0 24px 60px rgba(0,0,0,0.5)'
+                    : 'none',
                   padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
                 }}
               >
+                {/* MOST POPULAR badge */}
                 {tier.tag && (
                   <span
                     style={{
                       ...mono,
                       fontSize: '10px',
-                      color: '#0A0A0A',
+                      fontWeight: 700,
+                      color: '#000000',
                       background: '#F97316',
-                      padding: '4px 10px',
-                      letterSpacing: '0.1em',
+                      padding: '6px 14px',
+                      letterSpacing: '0.12em',
                       textTransform: 'uppercase',
-                      display: 'inline-block',
-                      marginBottom: '20px',
-                      alignSelf: 'flex-start',
+                      position: 'absolute',
+                      top: '-1px',
+                      right: '24px',
+                      borderRadius: '0 0 4px 4px',
                     }}
                   >
                     {tier.tag}
@@ -150,11 +159,11 @@ export default function PricingPage() {
                   style={{
                     ...mono,
                     fontSize: '11px',
-                    color: tier.featured ? '#6B6B7A' : '#AAAAAA',
-                    letterSpacing: '0.15em',
+                    color: '#F97316',
+                    letterSpacing: '0.2em',
                     textTransform: 'uppercase',
                     marginBottom: '12px',
-                    marginTop: tier.tag ? '0' : '0',
+                    marginTop: tier.tag ? '24px' : '0',
                   }}
                 >
                   {tier.name}
@@ -164,8 +173,8 @@ export default function PricingPage() {
                   style={{
                     ...grotesk,
                     fontWeight: 700,
-                    fontSize: '48px',
-                    color: tier.featured ? '#FAFAFF' : '#0A0A0A',
+                    fontSize: '42px',
+                    color: '#FFFFFF',
                     letterSpacing: '-0.04em',
                     lineHeight: 1,
                     marginBottom: '4px',
@@ -173,29 +182,37 @@ export default function PricingPage() {
                 >
                   {tier.price}
                 </p>
-                <p style={{ ...mono, fontSize: '12px', color: tier.featured ? '#6B6B7A' : '#AAAAAA', marginBottom: '20px', letterSpacing: '0.05em' }}>
+                <p style={{ ...mono, fontSize: '12px', color: '#666666', marginBottom: '20px', letterSpacing: '0.05em' }}>
                   {tier.period}
                 </p>
 
-                <p style={{ ...sans, fontSize: '15px', color: tier.featured ? '#9B9BAA' : '#666666', lineHeight: 1.7, marginBottom: '28px' }}>
+                <p style={{ ...sans, fontSize: '14px', color: '#888888', lineHeight: 1.7, marginBottom: '28px' }}>
                   {tier.description}
                 </p>
 
                 <div
                   style={{
-                    borderTop: tier.featured ? '1px solid rgba(255,255,255,0.08)' : '1px solid #F0F0F0',
+                    borderTop: '1px solid rgba(255,255,255,0.08)',
                     paddingTop: '24px',
                     marginBottom: '32px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '12px',
                     flex: 1,
                   }}
                 >
                   {tier.includes.map((item) => (
-                    <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                    <div
+                      key={item}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '10px',
+                        padding: '10px 0',
+                        borderBottom: '1px solid rgba(255,255,255,0.05)',
+                      }}
+                    >
                       <span style={{ color: '#F97316', flexShrink: 0, ...mono, fontSize: '13px' }}>✓</span>
-                      <span style={{ ...sans, fontSize: '14px', color: tier.featured ? '#CCCCCC' : '#444444', lineHeight: 1.5 }}>
+                      <span style={{ ...sans, fontSize: '14px', color: '#CCCCCC', lineHeight: 1.5 }}>
                         {item}
                       </span>
                     </div>
@@ -208,12 +225,15 @@ export default function PricingPage() {
                     ...mono,
                     fontWeight: 700,
                     fontSize: '14px',
-                    color: tier.featured ? '#0A0A0A' : '#0A0A0A',
-                    background: '#F97316',
+                    color: tier.featured ? '#000000' : '#FFFFFF',
+                    background: tier.featured ? '#F97316' : 'transparent',
+                    border: tier.featured ? 'none' : '1px solid rgba(255,255,255,0.15)',
+                    boxShadow: tier.featured ? '0 4px 20px rgba(249,115,22,0.4)' : 'none',
                     padding: '14px 24px',
                     textDecoration: 'none',
                     display: 'block',
                     textAlign: 'center',
+                    borderRadius: '2px',
                   }}
                 >
                   {tier.cta} →
@@ -222,7 +242,7 @@ export default function PricingPage() {
             ))}
           </div>
 
-          <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', textAlign: 'center', marginTop: '20px', letterSpacing: '0.05em' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', textAlign: 'center', marginTop: '24px', letterSpacing: '0.05em' }}>
             // All projects begin with a free discovery call. Prices are indicative — final quote provided after scoping.
           </p>
         </div>

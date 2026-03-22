@@ -244,23 +244,27 @@ export default function HomePage() {
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '1px',
-              background: '#EEEEEE',
+              gap: '12px',
             }}
             className="grid-cols-1 sm:grid-cols-2"
           >
             {SERVICES.slice(0, 6).map((s) => (
               <div
                 key={s.title}
-                className="service-card"
+                className="dark-card"
                 style={{
-                  background: '#FFFFFF',
+                  background: '#0F0F0F',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '2px',
                   padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
-                  border: '1px solid #EEEEEE',
+                  position: 'relative',
+                  overflow: 'hidden',
                 }}
               >
+                {/* Top accent line */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.6) 50%, transparent 100%)', pointerEvents: 'none' }} />
                 <span
                   style={{
                     fontFamily: 'var(--font-space-mono)',
@@ -276,8 +280,8 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
-                    fontSize: '20px',
-                    color: '#0A0A0A',
+                    fontSize: '18px',
+                    color: '#FFFFFF',
                     letterSpacing: '-0.03em',
                     marginBottom: '10px',
                   }}
@@ -287,9 +291,9 @@ export default function HomePage() {
                 <p
                   style={{
                     fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '15px',
-                    color: '#555555',
-                    lineHeight: 1.7,
+                    fontSize: '14px',
+                    color: '#999999',
+                    lineHeight: 1.75,
                     flex: 1,
                     marginBottom: '20px',
                   }}
@@ -333,7 +337,55 @@ export default function HomePage() {
       {/* 5 — ROI Calculator */}
       <ROICalculator />
 
-      {/* 6 — Audit terminal */}
+      {/* 6 — Industries */}
+      <section style={{ background: '#F5F5F5', padding: '5rem 2rem', borderBottom: '1px solid #E5E5E5' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
+            <SectionLabel>Industries We Serve</SectionLabel>
+            <SectionTitle>Built for every sector</SectionTitle>
+          </div>
+          <div
+            style={{ display: 'grid', gap: '12px' }}
+            className="grid-cols-2 sm:grid-cols-4 lg:grid-cols-8"
+          >
+            {[
+              { label: 'Professional Services', icon: 'M20 7H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM8 7V5c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2' },
+              { label: 'Financial Services', icon: 'M23 6l-9.5 9.5-5-5L1 18M17 6h6v6' },
+              { label: 'Logistics', icon: 'M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16zM3.27 6.96L12 12.01l8.73-5.05M12 22.08V12' },
+              { label: 'Marketing & Media', icon: 'M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07' },
+              { label: 'Retail & E-Commerce', icon: 'M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0' },
+              { label: 'Tech & SaaS', icon: 'M16 18l6-6-6-6M8 6l-6 6 6 6' },
+              { label: 'Healthcare', icon: 'M22 12h-4l-3 9L9 3l-3 9H2' },
+              { label: 'Legal & Compliance', icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z' },
+            ].map((ind) => (
+              <div
+                key={ind.label}
+                className="industry-card"
+                style={{
+                  background: '#0F0F0F',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '2px',
+                  padding: '28px 20px',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '12px',
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d={ind.icon} />
+                </svg>
+                <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '12px', color: '#CCCCCC', lineHeight: 1.4, textAlign: 'center' }}>
+                  {ind.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 7 — Audit terminal */}
       <section
         style={{
           background: '#0A0A0A',
@@ -442,49 +494,46 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7 — Process */}
+      {/* 8 — Process */}
       <section
         style={{
-          background: '#FFFFFF',
+          background: '#0A0A0A',
           padding: '6rem 2rem',
-          borderTop: '1px solid #E5E5E5',
-          borderBottom: '1px solid #E5E5E5',
         }}
       >
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
             <SectionLabel>How It Works</SectionLabel>
-            <SectionTitle>From idea to automated</SectionTitle>
+            <SectionTitle dark>From idea to automated</SectionTitle>
           </div>
 
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '0',
-              borderTop: '1px solid #E5E5E5',
+              gap: '12px',
             }}
             className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
           >
-            {PROCESS_STEPS.map((step, i) => (
+            {PROCESS_STEPS.map((step) => (
               <div
                 key={step.num}
+                className="process-step"
                 style={{
-                  padding: '2.5rem 2rem',
-                  position: 'relative',
-                  borderRight: i < PROCESS_STEPS.length - 1 ? '1px solid #E5E5E5' : 'none',
+                  background: 'rgba(255,255,255,0.02)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: '2px',
+                  padding: '40px 32px',
                 }}
               >
                 <p
                   style={{
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
-                    fontSize: '64px',
+                    fontSize: '56px',
                     color: '#F97316',
                     letterSpacing: '-0.04em',
                     lineHeight: 1,
                     marginBottom: '20px',
-                    opacity: 0.9,
                   }}
                 >
                   {step.num}
@@ -493,8 +542,8 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
-                    fontSize: '20px',
-                    color: '#0A0A0A',
+                    fontSize: '17px',
+                    color: '#FFFFFF',
                     letterSpacing: '-0.03em',
                     marginBottom: '10px',
                   }}
@@ -504,8 +553,8 @@ export default function HomePage() {
                 <p
                   style={{
                     fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '16px',
-                    color: '#666666',
+                    fontSize: '14px',
+                    color: '#777777',
                     lineHeight: 1.75,
                   }}
                 >

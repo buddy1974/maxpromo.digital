@@ -17,18 +17,18 @@ const mono = { fontFamily: 'var(--font-space-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-space-grotesk)' } as const
 const sans = { fontFamily: 'var(--font-dm-sans)' } as const
 
-const inputStyle = {
+const inputBase: React.CSSProperties = {
   ...sans,
   fontSize: '15px',
-  color: '#0A0A0A',
-  background: '#FFFFFF',
-  border: '1px solid #D5D5D5',
+  color: '#FFFFFF',
+  background: 'rgba(255,255,255,0.04)',
+  border: '1px solid rgba(255,255,255,0.1)',
   borderRadius: '2px',
-  padding: '12px 14px',
+  padding: '14px 16px',
   width: '100%',
   outline: 'none',
-  boxSizing: 'border-box' as const,
-  transition: 'border-color 150ms ease',
+  boxSizing: 'border-box',
+  transition: 'border-color 150ms ease, box-shadow 150ms ease',
 }
 
 export default function ContactPage() {
@@ -88,6 +88,15 @@ export default function ContactPage() {
     }
   }
 
+  const focusInput = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)'
+    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'
+  }
+  const blurInput = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+    e.currentTarget.style.boxShadow = 'none'
+  }
+
   return (
     <main style={{ background: '#FFFFFF' }}>
       {/* Header */}
@@ -118,7 +127,7 @@ export default function ContactPage() {
                 MaxPromo Digital
               </h2>
               <p style={{ ...sans, fontSize: '15px', color: '#666666', lineHeight: 1.7 }}>
-                AI agents and automation systems for businesses, NGOs, and government organisations.
+                AI agents and automation systems for businesses serious about growth.
               </p>
             </div>
 
@@ -172,14 +181,14 @@ export default function ContactPage() {
             {status === 'success' ? (
               <div
                 style={{
-                  background: '#FFFFFF',
-                  border: '1px solid #E5E5E5',
+                  background: '#0F0F0F',
+                  border: '1px solid rgba(255,255,255,0.08)',
                   padding: '3rem',
                   textAlign: 'center',
                 }}
               >
                 <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</p>
-                <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '28px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '12px' }}>
+                <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '28px', color: '#FFFFFF', letterSpacing: '-0.03em', marginBottom: '12px' }}>
                   Message sent!
                 </h2>
                 <p style={{ ...sans, fontSize: '17px', color: '#F97316', marginBottom: '8px', lineHeight: 1.7, fontWeight: 500 }}>
@@ -202,9 +211,9 @@ export default function ContactPage() {
               <form
                 onSubmit={handleSubmit}
                 style={{
-                  background: '#FFFFFF',
-                  border: '1px solid #E5E5E5',
-                  padding: '2.5rem',
+                  background: '#0F0F0F',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  padding: '48px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '20px',
@@ -213,12 +222,13 @@ export default function ContactPage() {
                 {status === 'error' && (
                   <div
                     style={{
-                      background: '#FFF5F5',
-                      border: '1px solid #FFCCCC',
-                      color: '#CC0000',
+                      background: 'rgba(204,0,0,0.1)',
+                      border: '1px solid rgba(204,0,0,0.3)',
+                      color: '#FF6666',
                       ...sans,
                       fontSize: '14px',
                       padding: '12px 16px',
+                      borderRadius: '2px',
                     }}
                   >
                     {errorMsg || 'Something went wrong. Please email us directly at info@maxpromo.digital'}
@@ -226,7 +236,7 @@ export default function ContactPage() {
                 )}
 
                 {form.automation && (
-                  <div style={{ background: '#FFF4ED', border: '1px solid rgba(249,115,22,0.2)', padding: '10px 14px' }}>
+                  <div style={{ background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '10px 14px', borderRadius: '2px' }}>
                     <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.05em' }}>
                       // Enquiring about: {form.automation}
                     </p>
@@ -235,7 +245,7 @@ export default function ContactPage() {
 
                 <div style={{ display: 'grid', gap: '20px' }} className="grid-cols-1 sm:grid-cols-2">
                   <div>
-                    <label style={{ ...sans, fontSize: '13px', fontWeight: 500, color: '#444444', display: 'block', marginBottom: '6px' }}>
+                    <label style={{ ...mono, fontSize: '11px', fontWeight: 700, color: '#888888', display: 'block', marginBottom: '8px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                       Full Name <span style={{ color: '#F97316' }}>*</span>
                     </label>
                     <input
@@ -244,13 +254,13 @@ export default function ContactPage() {
                       value={form.name}
                       onChange={(e) => update('name', e.target.value)}
                       placeholder="Jane Smith"
-                      style={inputStyle}
-                      onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
-                      onBlur={(e) => (e.currentTarget.style.borderColor = '#D5D5D5')}
+                      style={inputBase}
+                      onFocus={focusInput}
+                      onBlur={blurInput}
                     />
                   </div>
                   <div>
-                    <label style={{ ...sans, fontSize: '13px', fontWeight: 500, color: '#444444', display: 'block', marginBottom: '6px' }}>
+                    <label style={{ ...mono, fontSize: '11px', fontWeight: 700, color: '#888888', display: 'block', marginBottom: '8px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                       Email Address <span style={{ color: '#F97316' }}>*</span>
                     </label>
                     <input
@@ -259,15 +269,15 @@ export default function ContactPage() {
                       value={form.email}
                       onChange={(e) => update('email', e.target.value)}
                       placeholder="jane@company.com"
-                      style={inputStyle}
-                      onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
-                      onBlur={(e) => (e.currentTarget.style.borderColor = '#D5D5D5')}
+                      style={inputBase}
+                      onFocus={focusInput}
+                      onBlur={blurInput}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ ...sans, fontSize: '13px', fontWeight: 500, color: '#444444', display: 'block', marginBottom: '6px' }}>
+                  <label style={{ ...mono, fontSize: '11px', fontWeight: 700, color: '#888888', display: 'block', marginBottom: '8px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                     Organisation <span style={{ color: '#F97316' }}>*</span>
                   </label>
                   <input
@@ -276,14 +286,14 @@ export default function ContactPage() {
                     value={form.organisation}
                     onChange={(e) => update('organisation', e.target.value)}
                     placeholder="Company or organisation name"
-                    style={inputStyle}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = '#D5D5D5')}
+                    style={inputBase}
+                    onFocus={focusInput}
+                    onBlur={blurInput}
                   />
                 </div>
 
                 <div>
-                  <label style={{ ...sans, fontSize: '13px', fontWeight: 500, color: '#444444', display: 'block', marginBottom: '6px' }}>
+                  <label style={{ ...mono, fontSize: '11px', fontWeight: 700, color: '#888888', display: 'block', marginBottom: '8px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                     Message <span style={{ color: '#F97316' }}>*</span>
                   </label>
                   <textarea
@@ -292,9 +302,9 @@ export default function ContactPage() {
                     value={form.message}
                     onChange={(e) => update('message', e.target.value)}
                     placeholder="Tell us about your project, the processes you'd like to automate, or the challenges you're facing..."
-                    style={{ ...inputStyle, resize: 'none' }}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = '#D5D5D5')}
+                    style={{ ...inputBase, resize: 'none' }}
+                    onFocus={focusInput}
+                    onBlur={blurInput}
                   />
                 </div>
 
@@ -306,18 +316,20 @@ export default function ContactPage() {
                     fontWeight: 700,
                     fontSize: '15px',
                     color: '#000000',
-                    background: !isValid || status === 'loading' ? '#CCCCCC' : '#F97316',
+                    background: !isValid || status === 'loading' ? 'rgba(249,115,22,0.3)' : '#F97316',
                     border: 'none',
                     padding: '16px 28px',
                     cursor: !isValid || status === 'loading' ? 'not-allowed' : 'pointer',
                     width: '100%',
-                    transition: 'opacity 150ms ease',
+                    borderRadius: '2px',
+                    boxShadow: !isValid || status === 'loading' ? 'none' : '0 4px 20px rgba(249,115,22,0.35)',
+                    transition: 'all 150ms ease',
                   }}
                 >
                   {status === 'loading' ? 'Sending...' : 'Send Message →'}
                 </button>
 
-                <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', textAlign: 'center', letterSpacing: '0.05em' }}>
+                <p style={{ ...mono, fontSize: '11px', color: '#555555', textAlign: 'center', letterSpacing: '0.05em' }}>
                   // Your information is never shared with third parties.
                 </p>
               </form>

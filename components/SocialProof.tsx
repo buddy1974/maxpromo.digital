@@ -25,21 +25,21 @@ export default function SocialProof() {
     >
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
         <div
-          style={{ display: 'grid', gap: '1px', background: '#E5E5E5' }}
+          style={{ display: 'grid', gap: '16px' }}
           className="grid-cols-1 md:grid-cols-3"
         >
           {RESULTS.map((r) => (
             <div
               key={r.metric}
               style={{
-                background: '#FFFFFF',
+                background: '#0F0F0F',
                 borderLeft: '3px solid #F97316',
-                padding: '40px 36px',
+                padding: '32px 40px',
                 position: 'relative',
                 overflow: 'hidden',
               }}
             >
-              {/* Watermark number */}
+              {/* Watermark */}
               <span
                 style={{
                   position: 'absolute',
@@ -48,8 +48,8 @@ export default function SocialProof() {
                   transform: 'translateY(-50%)',
                   fontFamily: 'var(--font-space-grotesk)',
                   fontWeight: 700,
-                  fontSize: '120px',
-                  color: 'rgba(249,115,22,0.04)',
+                  fontSize: '100px',
+                  color: 'rgba(255,255,255,0.02)',
                   lineHeight: 1,
                   pointerEvents: 'none',
                   userSelect: 'none',
@@ -64,7 +64,7 @@ export default function SocialProof() {
                 style={{
                   fontFamily: 'var(--font-space-grotesk)',
                   fontWeight: 700,
-                  fontSize: '48px',
+                  fontSize: '52px',
                   color: '#F97316',
                   letterSpacing: '-0.04em',
                   lineHeight: 1,
@@ -78,10 +78,9 @@ export default function SocialProof() {
               <p
                 style={{
                   fontFamily: 'var(--font-dm-sans)',
-                  fontSize: '16px',
-                  color: '#333333',
-                  lineHeight: 1.6,
-                  marginBottom: '16px',
+                  fontSize: '15px',
+                  color: '#CCCCCC',
+                  lineHeight: 1.5,
                   position: 'relative',
                   zIndex: 1,
                 }}
@@ -96,9 +95,9 @@ export default function SocialProof() {
           style={{
             fontFamily: 'var(--font-space-mono)',
             fontSize: '11px',
-            color: '#AAAAAA',
+            color: '#666666',
             textAlign: 'center',
-            marginTop: '20px',
+            marginTop: '48px',
             letterSpacing: '0.05em',
           }}
         >

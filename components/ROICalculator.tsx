@@ -19,12 +19,12 @@ interface SliderInputProps {
 
 function SliderInput({ label, value, min, max, prefix, suffix, onChange }: SliderInputProps) {
   return (
-    <div style={{ marginBottom: '28px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '10px' }}>
-        <label style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '15px', color: '#444444' }}>
+    <div style={{ marginBottom: '32px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
+        <label style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#FFFFFF' }}>
           {label}
         </label>
-        <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '20px', color: '#F97316', letterSpacing: '-0.03em' }}>
+        <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '22px', color: '#F97316', letterSpacing: '-0.03em' }}>
           {prefix}{value}{suffix}
         </span>
       </div>
@@ -34,13 +34,13 @@ function SliderInput({ label, value, min, max, prefix, suffix, onChange }: Slide
         max={max}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        style={{ width: '100%', accentColor: '#F97316', cursor: 'pointer', height: '2px' }}
+        style={{ width: '100%', accentColor: '#F97316', height: '3px' }}
       />
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#AAAAAA' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#555555' }}>
           {prefix}{min}{suffix}
         </span>
-        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#AAAAAA' }}>
+        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#555555' }}>
           {prefix}{max}{suffix}
         </span>
       </div>
@@ -51,23 +51,22 @@ function SliderInput({ label, value, min, max, prefix, suffix, onChange }: Slide
 export default function ROICalculator() {
   const [staff, setStaff] = useState(5)
   const [hours, setHours] = useState(20)
-  const [rate, setRate] = useState(30)
+  const [rate, setRate]   = useState(30)
 
-  const hoursSaved = Math.round(hours * 0.75)
-  const monthlySaved = staff * hours * 0.75 * 4 * rate
-  const annualROI = monthlySaved * 12
+  const hoursSaved    = Math.round(hours * 0.75)
+  const monthlySaved  = staff * hours * 0.75 * 4 * rate
+  const annualROI     = monthlySaved * 12
 
   return (
     <section
       style={{
-        background: 'linear-gradient(180deg, #FAFAFA 0%, #FFF4ED 100%)',
+        background: 'linear-gradient(180deg, #0A0A0A 0%, #110800 100%)',
         padding: '6rem 2rem',
-        borderBottom: '1px solid #F0F0F0',
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      {/* Decorative background glow */}
+      {/* Decorative glow */}
       <div
         style={{
           position: 'absolute',
@@ -76,7 +75,7 @@ export default function ROICalculator() {
           transform: 'translateY(-50%)',
           width: '600px',
           height: '600px',
-          background: 'radial-gradient(circle, rgba(249,115,22,0.05) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)',
           pointerEvents: 'none',
         }}
       />
@@ -102,13 +101,13 @@ export default function ROICalculator() {
               fontWeight: 700,
               fontSize: 'clamp(2.5rem, 5vw, 4rem)',
               letterSpacing: '-0.04em',
-              color: '#0A0A0A',
+              color: '#FFFFFF',
               marginBottom: '12px',
             }}
           >
             See what automation saves you
           </h2>
-          <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '17px', color: '#666666', lineHeight: 1.8 }}>
+          <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '17px', color: '#888888', lineHeight: 1.8 }}>
             Real numbers. No fluff. Based on your actual team.
           </p>
         </div>
@@ -117,44 +116,49 @@ export default function ROICalculator() {
         <div
           style={{
             display: 'grid',
-            gap: '1px',
-            background: 'rgba(249,115,22,0.15)',
-            border: '1px solid rgba(249,115,22,0.15)',
-            boxShadow: '0 4px 32px rgba(249,115,22,0.08)',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 24px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06)',
           }}
           className="grid-cols-1 lg:grid-cols-2"
         >
           {/* Inputs */}
-          <div style={{ background: '#FAFAFA', padding: '40px' }}>
-            <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
+          <div
+            style={{
+              background: 'rgba(0,0,0,0.3)',
+              borderRight: '1px solid rgba(255,255,255,0.06)',
+              padding: '40px',
+            }}
+          >
+            <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>
               // your team
             </p>
-            <SliderInput label="Staff handling manual tasks" value={staff} min={1} max={50} suffix=" people" onChange={setStaff} />
-            <SliderInput label="Hours per week on manual work" value={hours} min={1} max={40} suffix=" hrs/wk" onChange={setHours} />
-            <SliderInput label="Average hourly cost per employee" value={rate} min={10} max={100} prefix="£" suffix="/hr" onChange={setRate} />
+            <SliderInput label="Staff handling manual tasks"     value={staff} min={1}  max={50}  suffix=" people" onChange={setStaff} />
+            <SliderInput label="Hours per week on manual work"   value={hours} min={1}  max={40}  suffix=" hrs/wk" onChange={setHours} />
+            <SliderInput label="Average hourly cost per employee" value={rate}  min={10} max={100} prefix="£" suffix="/hr" onChange={setRate} />
           </div>
 
           {/* Outputs */}
-          <div style={{ background: '#FFFFFF', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div style={{ background: 'rgba(0,0,0,0.15)', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
+              <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>
                 // your savings
               </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0', marginBottom: '32px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '32px' }}>
                 {[
-                  { label: 'Hours saved per week',   value: `${hoursSaved} hrs` },
-                  { label: 'Monthly cost saved',     value: formatGBP(monthlySaved) },
-                  { label: 'Annual ROI',              value: formatGBP(annualROI) },
-                  { label: 'Typical payback period',  value: '60–90 days' },
+                  { label: 'Hours saved per week',  value: `${hoursSaved} hrs`, size: '26px' },
+                  { label: 'Monthly cost saved',    value: formatGBP(monthlySaved), size: '26px' },
+                  { label: 'Annual ROI',             value: formatGBP(annualROI), size: '26px' },
+                  { label: 'Typical payback period', value: '60–90 days', size: '22px' },
                 ].map((row) => (
                   <div
                     key={row.label}
-                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '16px 0', borderBottom: '1px solid #F0F0F0' }}
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
                   >
-                    <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '15px', color: '#666666' }}>
+                    <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#888888' }}>
                       {row.label}
                     </span>
-                    <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '28px', color: '#F97316', letterSpacing: '-0.03em' }}>
+                    <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: row.size, color: '#F97316', letterSpacing: '-0.03em' }}>
                       {row.value}
                     </span>
                   </div>
@@ -169,22 +173,30 @@ export default function ROICalculator() {
                   display: 'block',
                   fontFamily: 'var(--font-space-mono)',
                   fontWeight: 700,
-                  fontSize: '15px',
+                  fontSize: '13px',
+                  letterSpacing: '0.08em',
                   color: '#000000',
                   background: '#F97316',
                   padding: '16px 24px',
                   textDecoration: 'none',
                   textAlign: 'center',
-                  transition: 'opacity 150ms ease',
-                  marginBottom: '12px',
                   borderRadius: '2px',
+                  marginBottom: '12px',
+                  boxShadow: '0 4px 24px rgba(249,115,22,0.35)',
+                  transition: 'box-shadow 0.2s ease, transform 0.1s ease',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 6px 32px rgba(249,115,22,0.5)'
+                  e.currentTarget.style.transform = 'translateY(-1px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = '0 4px 24px rgba(249,115,22,0.35)'
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
               >
                 Get My Custom Automation Plan →
               </Link>
-              <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', textAlign: 'center', letterSpacing: '0.05em' }}>
+              <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#555555', textAlign: 'center', letterSpacing: '0.05em' }}>
                 // 3 discovery call slots remaining this month
               </p>
             </div>

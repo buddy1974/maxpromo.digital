@@ -87,44 +87,46 @@ export default function CaseStudiesPage() {
       </section>
 
       {/* Case studies */}
-      <section style={{ background: '#FFFFFF', padding: '4rem 2rem' }}>
-        <div style={{ maxWidth: '64rem', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '0' }}>
-          {CASE_STUDIES.map((cs, i) => (
+      <section style={{ background: '#FAFAFA', padding: '4rem 2rem' }}>
+        <div style={{ maxWidth: '64rem', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {CASE_STUDIES.map((cs) => (
             <div
               key={cs.id}
               style={{
-                borderTop: '1px solid #E5E5E5',
-                padding: '4rem 0',
-                borderBottom: i === CASE_STUDIES.length - 1 ? '1px solid #E5E5E5' : 'none',
+                background: '#0F0F0F',
+                border: '1px solid rgba(255,255,255,0.07)',
+                borderLeft: '3px solid #F97316',
+                padding: '48px',
               }}
             >
               {/* Top row */}
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '2rem' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <span style={{ ...mono, fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.1em' }}>
+                    <span style={{ ...mono, fontSize: '11px', color: '#555555', letterSpacing: '0.1em' }}>
                       {cs.id}
                     </span>
                     <span
                       style={{
                         ...mono,
-                        fontSize: '11px',
+                        fontSize: '10px',
                         color: '#F97316',
-                        background: '#FFF4ED',
-                        border: '1px solid #FFE0CC',
-                        padding: '3px 10px',
+                        background: 'rgba(249,115,22,0.1)',
+                        border: '1px solid rgba(249,115,22,0.25)',
+                        padding: '4px 12px',
                         letterSpacing: '0.05em',
+                        borderRadius: '2px',
                       }}
                     >
                       {cs.tag}
                     </span>
                   </div>
-                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#0A0A0A', maxWidth: '36rem' }}>
+                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#FFFFFF', maxWidth: '36rem' }}>
                     {cs.headline}
                   </h2>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <p style={{ ...mono, fontSize: '11px', color: '#888888', letterSpacing: '0.05em' }}>
+                  <p style={{ ...mono, fontSize: '11px', color: '#555555', letterSpacing: '0.05em' }}>
                     Delivered in {cs.timeline}
                   </p>
                 </div>
@@ -132,30 +134,37 @@ export default function CaseStudiesPage() {
 
               {/* Body */}
               <div
-                style={{ display: 'grid', gap: '3rem' }}
+                style={{ display: 'grid', gap: '3rem', marginBottom: '2rem' }}
                 className="grid-cols-1 lg:grid-cols-2"
               >
                 <div>
-                  <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  <p style={{ ...mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
                     // the challenge
                   </p>
-                  <p style={{ ...sans, fontSize: '16px', color: '#555555', lineHeight: 1.8 }}>
+                  <p style={{ ...sans, fontSize: '14px', color: '#888888', lineHeight: 1.8 }}>
                     {cs.challenge}
                   </p>
                 </div>
                 <div>
-                  <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  <p style={{ ...mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
                     // the solution
                   </p>
-                  <p style={{ ...sans, fontSize: '16px', color: '#555555', lineHeight: 1.8, marginBottom: '1.5rem' }}>
+                  <p style={{ ...sans, fontSize: '14px', color: '#888888', lineHeight: 1.8 }}>
                     {cs.solution}
                   </p>
                 </div>
               </div>
 
               {/* Results */}
-              <div style={{ marginTop: '2rem', padding: '24px', background: '#FAFAFA', borderLeft: '3px solid #F97316' }}>
-                <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+              <div
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  padding: '24px',
+                  marginBottom: '20px',
+                }}
+              >
+                <p style={{ ...mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
                   // results
                 </p>
                 <div
@@ -165,25 +174,26 @@ export default function CaseStudiesPage() {
                   {cs.results.map((r) => (
                     <div key={r} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                       <span style={{ color: '#F97316', flexShrink: 0, ...mono, fontSize: '13px' }}>✓</span>
-                      <span style={{ ...sans, fontSize: '15px', color: '#333333', lineHeight: 1.6 }}>{r}</span>
+                      <span style={{ ...sans, fontSize: '14px', color: '#CCCCCC', lineHeight: 1.6 }}>{r}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Tools */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '20px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {cs.tools.map((t) => (
                   <span
                     key={t}
                     style={{
                       ...mono,
-                      fontSize: '11px',
-                      color: '#888888',
-                      background: '#F5F5F5',
-                      border: '1px solid #E5E5E5',
-                      padding: '4px 10px',
+                      fontSize: '10px',
+                      color: '#F97316',
+                      background: 'rgba(249,115,22,0.08)',
+                      border: '1px solid rgba(249,115,22,0.2)',
+                      padding: '3px 10px',
                       letterSpacing: '0.05em',
+                      borderRadius: '2px',
                     }}
                   >
                     {t}

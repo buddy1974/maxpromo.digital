@@ -203,7 +203,7 @@ export default function AutomationLabPage() {
 
       {/* Category sections */}
       {CATEGORIES.map((cat) => (
-        <section key={cat.heading} style={{ background: '#0A0A0A', padding: '4rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <section key={cat.heading} style={{ background: '#FAFAFA', padding: '4rem 2rem', borderBottom: '1px solid #E5E5E5' }}>
           <div style={{ maxWidth: '90rem', margin: '0 auto' }}>
             <p
               style={{
@@ -222,15 +222,18 @@ export default function AutomationLabPage() {
                 ...grotesk,
                 fontWeight: 700,
                 fontSize: '28px',
-                color: '#FAFAFF',
+                color: '#0A0A0A',
                 letterSpacing: '-0.03em',
                 marginBottom: '2rem',
+                paddingBottom: '16px',
+                borderBottom: '2px solid #F97316',
+                display: 'inline-block',
               }}
             >
               {cat.heading}
             </h2>
             <div
-              style={{ display: 'grid', gap: '1px', background: 'rgba(255,255,255,0.06)' }}
+              style={{ display: 'grid', gap: '12px' }}
               className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
             >
               {cat.automations.map((a) => (

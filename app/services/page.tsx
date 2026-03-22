@@ -157,32 +157,39 @@ export default function ServicesPage() {
       <section style={{ background: '#FAFAFA', padding: '4rem 2rem', borderBottom: '1px solid #E5E5E5' }}>
         <div style={{ maxWidth: '90rem', margin: '0 auto' }}>
           <div
-            style={{ display: 'grid', gap: '1px', background: '#E5E5E5' }}
+            style={{ display: 'grid', gap: '12px' }}
             className="grid-cols-1 lg:grid-cols-2"
           >
             {SERVICES.map((s) => (
               <div
                 key={s.num}
+                className="dark-card"
                 style={{
-                  background: '#FFFFFF',
+                  background: '#0F0F0F',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '2px',
                   padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0',
+                  position: 'relative',
+                  overflow: 'hidden',
                 }}
               >
+                {/* Top accent line */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.6) 50%, transparent 100%)', pointerEvents: 'none' }} />
                 {/* Number + title */}
                 <div style={{ marginBottom: '16px' }}>
-                  <span style={{ ...mono, fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.1em', display: 'block', marginBottom: '8px' }}>
+                  <span style={{ ...mono, fontSize: '11px', color: '#555555', letterSpacing: '0.1em', display: 'block', marginBottom: '8px' }}>
                     {s.num}
                   </span>
-                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '22px', color: '#0A0A0A', letterSpacing: '-0.03em' }}>
+                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '22px', color: '#FFFFFF', letterSpacing: '-0.03em' }}>
                     {s.title}
                   </h2>
                 </div>
 
                 {/* Description */}
-                <p style={{ ...sans, fontSize: '15px', color: '#555555', lineHeight: 1.75, marginBottom: '24px' }}>
+                <p style={{ ...sans, fontSize: '14px', color: '#999999', lineHeight: 1.75, marginBottom: '24px' }}>
                   {s.desc}
                 </p>
 
@@ -205,20 +212,20 @@ export default function ServicesPage() {
                 </div>
 
                 {/* Who this is for */}
-                <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                <p style={{ ...mono, fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
                   // who this is for
                 </p>
-                <p style={{ ...sans, fontSize: '14px', color: '#666666', lineHeight: 1.6, marginBottom: '20px' }}>
+                <p style={{ ...sans, fontSize: '14px', color: '#888888', lineHeight: 1.6, marginBottom: '20px' }}>
                   {s.who}
                 </p>
 
                 {/* Use cases */}
-                <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>
+                <p style={{ ...mono, fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>
                   // use cases
                 </p>
                 <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {s.useCases.map((uc) => (
-                    <li key={uc} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '14px', color: '#444444' }}>
+                    <li key={uc} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '14px', color: '#CCCCCC' }}>
                       <span style={{ width: '4px', height: '4px', background: '#F97316', flexShrink: 0, display: 'inline-block' }} />
                       {uc}
                     </li>
