@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
 
 export interface AuditResult {
   title?: string
@@ -15,377 +14,242 @@ export interface AuditResult {
 
 interface AuditResultsProps {
   results: AuditResult[]
-  businessType: string
-}
-
-interface LeadData {
-  name: string
-  email: string
+  orgType: string
   company: string
 }
 
-const inputStyle: React.CSSProperties = {
-  display: 'block',
-  width: '100%',
-  background: '#030305',
-  border: 'none',
-  borderBottom: '1px solid rgba(255,255,255,0.15)',
-  color: '#FAFAFF',
-  fontFamily: 'var(--font-dm-sans)',
-  fontSize: '16px',
-  padding: '12px 0',
-  outline: 'none',
-}
+const mono = 'var(--font-space-mono)'
+const grotesk = 'var(--font-space-grotesk)'
+const sans = 'var(--font-dm-sans)'
 
-export default function AuditResults({ results, businessType }: AuditResultsProps) {
-  const [lead, setLead] = useState<LeadData>({ name: '', email: '', company: '' })
-  const [submitted, setSubmitted] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
-
-  const updateLead = (field: keyof LeadData, value: string) =>
-    setLead((prev) => ({ ...prev, [field]: value }))
-
-  const handleFocusBorder = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.currentTarget.style.borderBottomColor = '#F97316'
-  }
-  const handleBlurBorder = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.currentTarget.style.borderBottomColor = 'rgba(255,255,255,0.15)'
-  }
-
-  const submitLead = async () => {
-    if (!lead.name || !lead.email || !lead.company) return
-    setSubmitting(true)
-    setError('')
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: lead.name,
-          email: lead.email,
-          organisation: lead.company,
-          message: `Audit report request. Business type: ${businessType}`,
-        }),
-      })
-      if (!res.ok) throw new Error('Failed to send')
-      setSubmitted(true)
-    } catch {
-      setError('Failed to send. Please try again.')
-    } finally {
-      setSubmitting(false)
-    }
-  }
+export default function AuditResults({ results, orgType, company }: AuditResultsProps) {
+  const handlePrint = () => window.print()
 
   return (
-    <div>
-      {/* Header */}
-      <div style={{ marginBottom: '2.5rem' }}>
-        <h2
-          style={{
-            fontFamily: 'var(--font-space-grotesk)',
-            fontWeight: 700,
-            fontSize: '36px',
-            letterSpacing: '-0.04em',
-            color: '#FAFAFF',
-            marginBottom: '8px',
-          }}
-        >
-          Your Automation Report
-        </h2>
-        <p
-          style={{
-            fontFamily: 'var(--font-dm-sans)',
-            fontSize: '14px',
-            color: '#6B6B7A',
-          }}
-        >
-          {results.length} opportunities identified{businessType ? ` for ${businessType}` : ''}
+    <div style={{ maxWidth: '880px', margin: '0 auto', padding: '0 16px' }}>
+      <style>{`
+        @media print {
+          nav, footer, .no-print { display: none !important; }
+          body { background: white !important; color: black !important; font-size: 12px; }
+          .print-card { break-inside: avoid; background: #f9f9f9 !important; border: 1px solid #ddd !important; color: black !important; }
+          .print-card * { color: black !important; }
+          .print-header { background: #0A0A0A !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+      `}</style>
+
+      {/* ── Report Header ── */}
+      <div
+        className="print-header"
+        style={{
+          background: '#0A0A0A',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderBottom: '3px solid #F97316',
+          padding: '40px 48px',
+          marginBottom: '2px',
+        }}
+      >
+        <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+          Automation Audit Report
         </p>
+        <h1 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
+          {company ? `${company} — ` : ''}Your Automation Opportunities
+        </h1>
+        <p style={{ fontFamily: sans, fontSize: '15px', color: '#666666', marginBottom: '32px' }}>
+          {results.length} opportunities identified{orgType ? ` for ${orgType}` : ''} · Powered by Claude AI
+        </p>
+
+        {/* Stats row */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1px', background: 'rgba(255,255,255,0.06)' }}>
+          {[
+            { label: 'Opportunities', value: `${results.length}` },
+            { label: 'Avg. timeline', value: results.some(r => r.timeline) ? results.filter(r => r.timeline)[0]?.timeline ?? '2–4 weeks' : '2–4 weeks' },
+            { label: 'Implementation', value: 'Custom to your stack' },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              style={{
+                flex: '1 1 160px',
+                padding: '20px 24px',
+                background: 'rgba(255,255,255,0.03)',
+              }}
+            >
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                {stat.label}
+              </p>
+              <p style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '22px', color: '#FFFFFF', letterSpacing: '-0.03em' }}>
+                {stat.value}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Result cards */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '3.5rem' }}>
+      {/* ── Opportunity Cards ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '2px' }}>
         {results.map((r, i) => (
           <div
             key={i}
-            className="result-card"
+            className="print-card"
             style={{
-              background: '#0E0E12',
-              padding: '28px',
-              animationDelay: `${i * 200}ms`,
+              background: '#0F0F0F',
+              border: '1px solid rgba(255,255,255,0.07)',
+              borderLeft: '4px solid #F97316',
+              padding: '40px 48px',
             }}
           >
-            {/* Title */}
-            {r.title && (
-              <h3
-                style={{
-                  fontFamily: 'var(--font-space-grotesk)',
-                  fontWeight: 700,
-                  fontSize: '18px',
-                  letterSpacing: '-0.04em',
-                  color: '#FAFAFF',
-                  marginBottom: '20px',
-                }}
-              >
-                {r.title}
-              </h3>
-            )}
+            {/* Card header */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
+              <div>
+                <span style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.1em', display: 'block', marginBottom: '8px' }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)', letterSpacing: '-0.04em', color: '#FFFFFF' }}>
+                  {r.title ?? `Opportunity ${i + 1}`}
+                </h2>
+              </div>
 
-            {/* Metadata badges */}
-            {(r.roi || r.complexity || r.timeline) && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
-                {r.roi && (
-                  <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '3px 10px' }}>
-                    ↑ {r.roi}
-                  </span>
-                )}
+              {/* ROI highlight box */}
+              {r.roi && (
+                <div
+                  style={{
+                    background: 'rgba(249,115,22,0.08)',
+                    border: '1px solid rgba(249,115,22,0.2)',
+                    padding: '16px 24px',
+                    textAlign: 'center',
+                    minWidth: '140px',
+                    flexShrink: 0,
+                  }}
+                >
+                  <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '4px' }}>
+                    Est. ROI
+                  </p>
+                  <p style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '28px', color: '#F97316', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+                    {r.roi}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Meta badges */}
+            {(r.complexity || r.timeline) && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '28px' }}>
                 {r.complexity && (
-                  <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', background: '#16161C', border: '1px solid rgba(255,255,255,0.08)', padding: '3px 10px' }}>
-                    {r.complexity}
+                  <span style={{ fontFamily: mono, fontSize: '11px', color: '#888888', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '4px 12px', letterSpacing: '0.05em' }}>
+                    Complexity: {r.complexity}
                   </span>
                 )}
                 {r.timeline && (
-                  <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', background: '#16161C', border: '1px solid rgba(255,255,255,0.08)', padding: '3px 10px' }}>
-                    {r.timeline}
+                  <span style={{ fontFamily: mono, fontSize: '11px', color: '#888888', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '4px 12px', letterSpacing: '0.05em' }}>
+                    ⏱ {r.timeline}
                   </span>
                 )}
               </div>
             )}
 
-            {/* Problem */}
-            <p
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '10px',
-                color: '#6B6B7A',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                marginBottom: '6px',
-              }}
-            >
-              Problem
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-dm-sans)',
-                fontSize: '14px',
-                color: 'rgba(250,250,255,0.7)',
-                lineHeight: 1.7,
-                marginBottom: '16px',
-              }}
-            >
-              {r.problem}
-            </p>
+            {/* Problem / Solution grid */}
+            <div style={{ display: 'grid', gap: '32px', marginBottom: '28px' }} className="grid-cols-1 lg:grid-cols-2">
+              <div>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  // the problem
+                </p>
+                <p style={{ fontFamily: sans, fontSize: '14px', color: '#888888', lineHeight: 1.8 }}>
+                  {r.problem}
+                </p>
+              </div>
+              <div>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  // the solution
+                </p>
+                <p style={{ fontFamily: sans, fontSize: '14px', color: '#CCCCCC', lineHeight: 1.8 }}>
+                  {r.solution}
+                </p>
+              </div>
+            </div>
 
-            {/* Solution */}
-            <p
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '10px',
-                color: '#6B6B7A',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                marginBottom: '6px',
-              }}
-            >
-              Solution
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-dm-sans)',
-                fontSize: '14px',
-                color: 'rgba(250,250,255,0.7)',
-                lineHeight: 1.7,
-                marginBottom: '16px',
-              }}
-            >
-              {r.solution}
-            </p>
-
-            {/* Tools */}
-            <p
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '10px',
-                color: '#6B6B7A',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                marginBottom: '10px',
-              }}
-            >
-              Tools
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {r.tools.map((tool) => (
-                <span
-                  key={tool}
-                  style={{
-                    fontFamily: 'var(--font-space-mono)',
-                    fontSize: '11px',
-                    color: '#FAFAFF',
-                    background: '#16161C',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    padding: '4px 10px',
-                  }}
-                >
-                  {tool}
-                </span>
-              ))}
+            {/* Tools row */}
+            <div>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#444444', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '10px' }}>
+                // tools
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {r.tools.map((tool) => (
+                  <span
+                    key={tool}
+                    style={{
+                      fontFamily: mono,
+                      fontSize: '11px',
+                      color: '#F97316',
+                      background: 'rgba(249,115,22,0.08)',
+                      border: '1px solid rgba(249,115,22,0.2)',
+                      padding: '4px 12px',
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Lead capture */}
+      {/* ── Footer CTA ── */}
       <div
+        className="no-print"
         style={{
-          background: '#0E0E12',
-          border: '1px solid rgba(255,255,255,0.08)',
-          padding: '40px 48px',
+          background: '#0A0A0A',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderTop: '1px solid rgba(249,115,22,0.2)',
+          padding: '48px',
+          textAlign: 'center',
         }}
-        className="px-6 md:px-12"
       >
-        {submitted ? (
-          <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-            <p
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '11px',
-                color: '#F97316',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                marginBottom: '12px',
-              }}
-            >
-              Sent ✓
-            </p>
-            <p
-              style={{
-                fontFamily: 'var(--font-space-grotesk)',
-                fontWeight: 700,
-                fontSize: '22px',
-                letterSpacing: '-0.04em',
-                color: '#FAFAFF',
-                marginBottom: '8px',
-              }}
-            >
-              Check your inbox
-            </p>
-            <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#6B6B7A' }}>
-              We&apos;ll send your full report and implementation plan shortly.
-            </p>
-          </div>
-        ) : (
-          <>
-            <h3
-              style={{
-                fontFamily: 'var(--font-space-grotesk)',
-                fontWeight: 700,
-                fontSize: '22px',
-                letterSpacing: '-0.04em',
-                color: '#FAFAFF',
-                marginBottom: '8px',
-              }}
-            >
-              Get your full report by email
-            </h3>
-            <p
-              style={{
-                fontFamily: 'var(--font-dm-sans)',
-                fontSize: '14px',
-                color: '#6B6B7A',
-                marginBottom: '28px',
-              }}
-            >
-              We&apos;ll also send a detailed implementation plan. No spam.
-            </p>
-
-            {error && (
-              <p
-                style={{
-                  fontFamily: 'var(--font-dm-sans)',
-                  fontSize: '13px',
-                  color: '#FF3D6B',
-                  marginBottom: '16px',
-                }}
-              >
-                {error}
-              </p>
-            )}
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '24px' }}>
-              {[
-                { field: 'name' as const,    placeholder: 'Name',    type: 'text'  },
-                { field: 'email' as const,   placeholder: 'Email',   type: 'email' },
-                { field: 'company' as const, placeholder: 'Company', type: 'text'  },
-              ].map(({ field, placeholder, type }) => (
-                <input
-                  key={field}
-                  type={type}
-                  value={lead[field]}
-                  onChange={(e) => updateLead(field, e.target.value)}
-                  onFocus={handleFocusBorder}
-                  onBlur={handleBlurBorder}
-                  placeholder={placeholder}
-                  style={{ ...inputStyle }}
-                  className="placeholder-[#6B6B7A]"
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={submitLead}
-              disabled={!lead.name || !lead.email || !lead.company || submitting}
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontWeight: 700,
-                fontSize: '13px',
-                color: '#030305',
-                background: '#F97316',
-                padding: '14px 28px',
-                border: 'none',
-                cursor: lead.name && lead.email && lead.company && !submitting ? 'pointer' : 'not-allowed',
-                opacity: lead.name && lead.email && lead.company && !submitting ? 1 : 0.4,
-                transition: 'opacity 150ms ease',
-              }}
-            >
-              {submitting ? 'Sending...' : 'Send me the report →'}
-            </button>
-          </>
-        )}
-      </div>
-
-      {/* Secondary CTAs */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '2rem' }}>
-        <Link
-          href="/contact"
-          style={{
-            fontFamily: 'var(--font-dm-sans)',
-            fontWeight: 500,
-            fontSize: '14px',
-            color: '#030305',
-            background: '#F97316',
-            padding: '12px 24px',
-            textDecoration: 'none',
-          }}
-        >
-          Talk to our team →
-        </Link>
-        <Link
-          href="/automation-lab"
-          style={{
-            fontFamily: 'var(--font-dm-sans)',
-            fontWeight: 500,
-            fontSize: '14px',
-            color: '#FAFAFF',
-            border: '1px solid rgba(255,255,255,0.15)',
-            padding: '12px 24px',
-            textDecoration: 'none',
-          }}
-        >
-          Browse Automation Lab
-        </Link>
+        <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          Ready to Build?
+        </p>
+        <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '12px' }}>
+          Turn these opportunities into live systems
+        </h2>
+        <p style={{ fontFamily: sans, fontSize: '15px', color: '#666666', maxWidth: '440px', margin: '0 auto 32px', lineHeight: 1.7 }}>
+          Book a 30-minute discovery call. We&apos;ll scope the highest-impact automation and give you a fixed-price proposal.
+        </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+          <Link
+            href="/contact"
+            style={{
+              fontFamily: mono,
+              fontWeight: 700,
+              fontSize: '14px',
+              color: '#000000',
+              background: '#F97316',
+              padding: '14px 28px',
+              textDecoration: 'none',
+              letterSpacing: '0.05em',
+              boxShadow: '0 4px 20px rgba(249,115,22,0.3)',
+            }}
+          >
+            Book a Discovery Call →
+          </Link>
+          <button
+            onClick={handlePrint}
+            style={{
+              fontFamily: sans,
+              fontWeight: 500,
+              fontSize: '14px',
+              color: '#CCCCCC',
+              background: 'transparent',
+              border: '1px solid rgba(255,255,255,0.15)',
+              padding: '14px 28px',
+              cursor: 'pointer',
+              transition: 'border-color 150ms ease',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)')}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}
+          >
+            Download Report (PDF)
+          </button>
+        </div>
       </div>
     </div>
   )

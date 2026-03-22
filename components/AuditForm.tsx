@@ -1,102 +1,322 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AuditResults, { AuditResult } from './AuditResults'
 
 type Stage = 'questions' | 'loading' | 'results'
 
 interface FormData {
-  businessType: string
-  companySize: string
-  tasks: string[]
+  orgType: string
+  teamSize: string
+  timeDrains: string[]
+  timeDrainsOther: string
   tools: string[]
-  process: string
+  experience: string
+  goal: string
+  name: string
+  email: string
+  company: string
 }
 
-const BUSINESS_TYPES = [
-  'E-commerce', 'Agency', 'Consultant', 'Local Business',
-  'Healthcare', 'Education', 'Government', 'Other',
+const ORG_TYPES = [
+  'Agency / Consultancy',
+  'Professional Services',
+  'E-commerce / Retail',
+  'Financial Services',
+  'Logistics / Operations',
+  'Marketing / Media',
+  'Healthcare',
+  'Other',
 ]
-const COMPANY_SIZES = ['1–5', '6–20', '21–50', '50+']
-const TASK_OPTIONS = [
-  'Email replies', 'Data entry', 'Lead management', 'Customer support',
-  'Scheduling', 'Reporting', 'Invoicing', 'Document processing',
+const TEAM_SIZES = ['1–5', '6–20', '21–100', '100+']
+const TIME_DRAINS = [
+  'Data entry & processing',
+  'Email management',
+  'Report generation',
+  'Invoice & billing',
+  'Lead qualification',
+  'Customer support',
+  'Document handling',
+  'Scheduling & bookings',
+  'Social media posting',
+  'Other',
 ]
 const TOOL_OPTIONS = [
-  'Google Workspace', 'CRM', 'Slack', 'Notion',
-  'Excel', 'Xero', 'None',
+  'Google Workspace',
+  'Microsoft 365',
+  'HubSpot',
+  'Salesforce',
+  'Slack',
+  'Notion',
+  'Airtable',
+  'Xero',
+  'QuickBooks',
+  'Shopify',
+  'Zapier',
+  'Make',
+  'n8n',
+  'Zendesk',
+  'None of these',
+]
+const EXPERIENCE_OPTIONS = [
+  'No automation yet',
+  'A few simple automations',
+  'Moderate — some workflows running',
+  'Advanced — large-scale automation',
+]
+const QUICK_FILLS = [
+  'Our team spends hours on manual data entry between disconnected tools.',
+  'We manually qualify and follow up with every inbound lead.',
+  'Monthly reporting takes days to compile from multiple sources.',
+]
+const LOADING_MESSAGES = [
+  'Analysing your business profile...',
+  'Mapping automation opportunities...',
+  'Calculating potential ROI...',
+  'Preparing recommendations...',
+  'Finalising your report...',
 ]
 
 const TOTAL_STEPS = 5
+const mono = 'var(--font-space-mono)'
+const grotesk = 'var(--font-space-grotesk)'
+const sans = 'var(--font-dm-sans)'
 
-const LOADING_LINES = [
-  'connecting to audit engine...',
-  'scanning business profile...',
-  'identifying automation opportunities...',
-  'generating report...',
-]
+/* ─── STEP INDICATOR ────────────────────────────────────────── */
+function StepIndicator({ current, total }: { current: number; total: number }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
+      {Array.from({ length: total }, (_, i) => {
+        const n = i + 1
+        const done = n < current
+        const active = n === current
+        return (
+          <div
+            key={n}
+            style={{ display: 'flex', alignItems: 'center', flex: n < total ? 1 : 'none' }}
+          >
+            <div
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: mono,
+                fontSize: '11px',
+                fontWeight: 700,
+                flexShrink: 0,
+                background: done ? '#F97316' : active ? 'rgba(249,115,22,0.15)' : 'transparent',
+                border: done ? 'none' : active ? '2px solid #F97316' : '1px solid rgba(255,255,255,0.15)',
+                color: done ? '#000' : active ? '#F97316' : '#555555',
+                transition: 'all 250ms ease',
+              }}
+            >
+              {done ? '✓' : n}
+            </div>
+            {n < total && (
+              <div
+                style={{
+                  flex: 1,
+                  height: '1px',
+                  background: done ? '#F97316' : 'rgba(255,255,255,0.08)',
+                  transition: 'background 250ms ease',
+                  margin: '0 4px',
+                }}
+              />
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
 
-/* ─── CHIP ────────────────────────────────────────────────── */
-function Chip({
+/* ─── OPTION BUTTON ─────────────────────────────────────────── */
+function OptionBtn({
   label,
   selected,
   onClick,
+  multi = false,
 }: {
   label: string
   selected: boolean
   onClick: () => void
+  multi?: boolean
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`audit-chip${selected ? ' selected' : ''}`}
       style={{
-        fontFamily: 'var(--font-space-mono)',
+        fontFamily: mono,
         fontSize: '12px',
-        padding: '10px 18px',
-        border: '1px solid rgba(255,255,255,0.1)',
+        letterSpacing: '0.04em',
+        padding: '10px 16px',
+        border: selected ? '1px solid #F97316' : '1px solid rgba(255,255,255,0.12)',
+        background: selected ? 'rgba(249,115,22,0.12)' : 'rgba(255,255,255,0.02)',
+        color: selected ? '#F97316' : '#888888',
         cursor: 'pointer',
+        transition: 'all 150ms ease',
+        textAlign: 'left',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
       }}
     >
+      {multi && (
+        <span
+          style={{
+            width: '14px',
+            height: '14px',
+            border: selected ? '1px solid #F97316' : '1px solid rgba(255,255,255,0.2)',
+            background: selected ? '#F97316' : 'transparent',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '9px',
+            color: '#000',
+            flexShrink: 0,
+          }}
+        >
+          {selected ? '✓' : ''}
+        </span>
+      )}
       {label}
     </button>
   )
 }
 
-/* ─── QUESTION LABEL ──────────────────────────────────────── */
-function QuestionLabel({ children }: { children: string }) {
+/* ─── LOADING SCREEN ────────────────────────────────────────── */
+function LoadingScreen() {
+  const [msgIndex, setMsgIndex] = useState(0)
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    const msgInterval = setInterval(() => {
+      setMsgIndex((i) => Math.min(i + 1, LOADING_MESSAGES.length - 1))
+    }, 1500)
+
+    const start = Date.now()
+    const progInterval = setInterval(() => {
+      const elapsed = Date.now() - start
+      const pct = Math.min(90, (elapsed / 8000) * 90)
+      setProgress(pct)
+      if (pct >= 90) clearInterval(progInterval)
+    }, 100)
+
+    return () => {
+      clearInterval(msgInterval)
+      clearInterval(progInterval)
+    }
+  }, [])
+
   return (
-    <h2
+    <div
       style={{
-        fontFamily: 'var(--font-space-grotesk)',
-        fontWeight: 700,
-        fontSize: '22px',
-        letterSpacing: '-0.04em',
-        color: '#FAFAFF',
-        marginBottom: '24px',
+        position: 'fixed',
+        inset: 0,
+        background: '#0A0A0A',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 50,
       }}
     >
-      {children}
-    </h2>
+      <div
+        className="audit-pulse"
+        style={{
+          width: '48px',
+          height: '48px',
+          borderRadius: '50%',
+          background: '#F97316',
+          marginBottom: '40px',
+          boxShadow: '0 0 32px rgba(249,115,22,0.4)',
+        }}
+      />
+      <p
+        style={{
+          fontFamily: mono,
+          fontSize: '13px',
+          color: '#FFFFFF',
+          letterSpacing: '0.05em',
+          marginBottom: '8px',
+          minHeight: '20px',
+          textAlign: 'center',
+          padding: '0 24px',
+        }}
+      >
+        {LOADING_MESSAGES[msgIndex]}
+      </p>
+      <p
+        style={{
+          fontFamily: mono,
+          fontSize: '11px',
+          color: '#444444',
+          letterSpacing: '0.1em',
+          marginBottom: '48px',
+        }}
+      >
+        // powered by claude ai
+      </p>
+      <div
+        style={{
+          width: '280px',
+          height: '2px',
+          background: 'rgba(255,255,255,0.08)',
+          position: 'relative',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            height: '100%',
+            width: `${progress}%`,
+            background: '#F97316',
+            transition: 'width 100ms linear',
+            boxShadow: '0 0 8px rgba(249,115,22,0.6)',
+          }}
+        />
+      </div>
+      <p
+        style={{
+          fontFamily: mono,
+          fontSize: '10px',
+          color: '#333333',
+          marginTop: '12px',
+          letterSpacing: '0.1em',
+        }}
+      >
+        {Math.round(progress)}%
+      </p>
+    </div>
   )
 }
 
-/* ─── MAIN COMPONENT ──────────────────────────────────────── */
+/* ─── MAIN COMPONENT ────────────────────────────────────────── */
 export default function AuditForm() {
   const [step, setStep] = useState(1)
   const [stage, setStage] = useState<Stage>('questions')
-  const [loadingLine, setLoadingLine] = useState(0)
   const [form, setForm] = useState<FormData>({
-    businessType: '',
-    companySize: '',
-    tasks: [],
+    orgType: '',
+    teamSize: '',
+    timeDrains: [],
+    timeDrainsOther: '',
     tools: [],
-    process: '',
+    experience: '',
+    goal: '',
+    name: '',
+    email: '',
+    company: '',
   })
   const [results, setResults] = useState<AuditResult[]>([])
   const [error, setError] = useState('')
 
-  const toggleMulti = (field: 'tasks' | 'tools', value: string) => {
+  const toggleMulti = (field: 'timeDrains' | 'tools', value: string) => {
     setForm((prev) => ({
       ...prev,
       [field]: prev[field].includes(value)
@@ -106,11 +326,11 @@ export default function AuditForm() {
   }
 
   const canProceed = (): boolean => {
-    if (step === 1) return form.businessType !== ''
-    if (step === 2) return form.companySize !== ''
-    if (step === 3) return form.tasks.length > 0
-    if (step === 4) return form.tools.length > 0
-    if (step === 5) return form.process.trim().length > 0
+    if (step === 1) return form.orgType !== '' && form.teamSize !== ''
+    if (step === 2) return form.timeDrains.length > 0
+    if (step === 3) return form.tools.length > 0
+    if (step === 4) return form.goal.trim().length > 0
+    if (step === 5) return form.name !== '' && form.email !== '' && form.company !== ''
     return true
   }
 
@@ -118,28 +338,25 @@ export default function AuditForm() {
     setStage('loading')
     setError('')
 
-    // Stagger loading lines
-    let i = 0
-    const interval = setInterval(() => {
-      i++
-      setLoadingLine(i)
-      if (i >= LOADING_LINES.length - 1) clearInterval(interval)
-    }, 800)
+    const allTimeDrains =
+      form.timeDrains.includes('Other') && form.timeDrainsOther
+        ? [...form.timeDrains.filter((d) => d !== 'Other'), form.timeDrainsOther]
+        : form.timeDrains
 
     try {
-      await new Promise((r) => setTimeout(r, 3200)) // let loading animation play
       const res = await fetch('/api/audit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          questionnaire: {
-            businessType: form.businessType,
-            companySize: form.companySize,
-            timeConsumingTasks: form.tasks.join(', '),
-            currentTools: form.tools.join(', '),
-            processToAutomate: form.process,
-          },
-          lead: { name: '', email: '', company: '' },
+          orgType: form.orgType,
+          teamSize: form.teamSize,
+          timeDrains: allTimeDrains,
+          tools: form.tools,
+          experience: form.experience,
+          goal: form.goal,
+          name: form.name,
+          email: form.email,
+          company: form.company,
         }),
       })
       const data = await res.json()
@@ -147,320 +364,386 @@ export default function AuditForm() {
       setResults(data.results as AuditResult[])
       setStage('results')
     } catch (e) {
-      clearInterval(interval)
       setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.')
       setStage('questions')
     }
   }
 
   const next = () => {
-    if (step < TOTAL_STEPS) {
-      setStep((s) => s + 1)
-    } else {
-      void runAudit()
-    }
+    if (step < TOTAL_STEPS) setStep((s) => s + 1)
+    else void runAudit()
   }
 
   const back = () => {
     if (step > 1) setStep((s) => s - 1)
   }
 
-  /* Loading state */
-  if (stage === 'loading') {
-    return (
-      <div
-        style={{
-          background: '#0E0E12',
-          border: '1px solid rgba(255,255,255,0.08)',
-          padding: '40px 48px',
-          maxWidth: '680px',
-          margin: '0 auto',
-        }}
-        className="px-6 md:px-12"
-      >
-        <p
-          style={{
-            fontFamily: 'var(--font-space-mono)',
-            fontSize: '11px',
-            color: '#6B6B7A',
-            letterSpacing: '0.2em',
-            marginBottom: '24px',
-          }}
-        >
-          ANALYSING...
-        </p>
-        <div style={{ background: '#030305', padding: '20px' }}>
-          {LOADING_LINES.map((line, i) => (
-            <p
-              key={line}
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '12px',
-                lineHeight: '1.8',
-                color: i <= loadingLine ? '#FAFAFF' : 'transparent',
-                transition: 'color 300ms ease',
-              }}
-            >
-              <span style={{ color: '#F97316', marginRight: '8px' }}>
-                {i <= loadingLine ? '✓' : ' '}
-              </span>
-              {line}
-            </p>
-          ))}
-          <p
-            style={{
-              fontFamily: 'var(--font-space-mono)',
-              fontSize: '12px',
-              color: '#F97316',
-              marginTop: '8px',
-            }}
-          >
-            $ <span className="cursor-blink">▊</span>
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  /* Results state */
+  if (stage === 'loading') return <LoadingScreen />
   if (stage === 'results') {
     return (
-      <div style={{ maxWidth: '680px', margin: '0 auto' }}>
-        <AuditResults results={results} businessType={form.businessType} />
-      </div>
+      <AuditResults
+        results={results}
+        orgType={form.orgType}
+        company={form.company}
+      />
     )
   }
 
-  /* Question steps */
-  const progress = (step / TOTAL_STEPS) * 100
-
   return (
-    <div style={{ maxWidth: '680px', margin: '0 auto' }}>
-      {/* Card */}
+    <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 16px' }}>
       <div
         style={{
-          background: '#0E0E12',
-          border: '1px solid rgba(255,255,255,0.08)',
-          padding: '40px 48px',
+          background: '#111111',
+          border: '1px solid rgba(255,255,255,0.07)',
+          padding: '48px',
         }}
         className="px-6 md:px-12"
       >
-        {/* Progress */}
-        <div style={{ marginBottom: '32px' }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '8px',
-            }}
-          >
-            <span
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '11px',
-                color: '#6B6B7A',
-                letterSpacing: '0.1em',
-              }}
-            >
-              0{step} / 0{TOTAL_STEPS}
-            </span>
-          </div>
-          <div
-            style={{
-              height: '2px',
-              background: 'rgba(255,255,255,0.07)',
-              position: 'relative',
-            }}
-          >
-            <div
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                height: '100%',
-                width: `${progress}%`,
-                background: '#F97316',
-                transition: 'width 250ms ease',
-              }}
-            />
-          </div>
-        </div>
+        <StepIndicator current={step} total={TOTAL_STEPS} />
 
         {error && (
-          <p
+          <div
             style={{
-              fontFamily: 'var(--font-dm-sans)',
+              background: 'rgba(204,0,0,0.1)',
+              border: '1px solid rgba(204,0,0,0.3)',
+              padding: '12px 16px',
+              marginBottom: '24px',
+              fontFamily: sans,
               fontSize: '13px',
-              color: '#FF3D6B',
-              marginBottom: '16px',
+              color: '#FF6666',
             }}
           >
             {error}
-          </p>
+          </div>
         )}
 
-        {/* Step 1 */}
+        {/* ── STEP 1: Org type + team size ── */}
         {step === 1 && (
           <div>
-            <QuestionLabel>What type of business do you run?</QuestionLabel>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {BUSINESS_TYPES.map((bt) => (
-                <Chip
-                  key={bt}
-                  label={bt}
-                  selected={form.businessType === bt}
-                  onClick={() => setForm((prev) => ({ ...prev, businessType: bt }))}
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Step 1 of 5
+            </p>
+            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '32px' }}>
+              Tell us about your organisation
+            </h2>
+
+            <p style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              Organisation type
+            </p>
+            <div
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '8px', marginBottom: '32px' }}
+            >
+              {ORG_TYPES.map((type) => (
+                <OptionBtn
+                  key={type}
+                  label={type}
+                  selected={form.orgType === type}
+                  onClick={() => setForm((p) => ({ ...p, orgType: type }))}
                 />
               ))}
             </div>
-          </div>
-        )}
 
-        {/* Step 2 */}
-        {step === 2 && (
-          <div>
-            <QuestionLabel>How many people work in your organisation?</QuestionLabel>
+            <p style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              Team size
+            </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {COMPANY_SIZES.map((size) => (
-                <Chip
+              {TEAM_SIZES.map((size) => (
+                <OptionBtn
                   key={size}
                   label={size}
-                  selected={form.companySize === size}
-                  onClick={() => setForm((prev) => ({ ...prev, companySize: size }))}
+                  selected={form.teamSize === size}
+                  onClick={() => setForm((p) => ({ ...p, teamSize: size }))}
                 />
               ))}
             </div>
           </div>
         )}
 
-        {/* Step 3 */}
+        {/* ── STEP 2: Time drains ── */}
+        {step === 2 && (
+          <div>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Step 2 of 5
+            </p>
+            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
+              Where does your team lose the most time?
+            </h2>
+            <p style={{ fontFamily: sans, fontSize: '14px', color: '#666666', marginBottom: '24px' }}>
+              Select all that apply.
+            </p>
+            <div
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '8px', marginBottom: '20px' }}
+            >
+              {TIME_DRAINS.map((drain) => (
+                <OptionBtn
+                  key={drain}
+                  label={drain}
+                  selected={form.timeDrains.includes(drain)}
+                  onClick={() => toggleMulti('timeDrains', drain)}
+                  multi
+                />
+              ))}
+            </div>
+            {form.timeDrains.includes('Other') && (
+              <input
+                type="text"
+                value={form.timeDrainsOther}
+                onChange={(e) => setForm((p) => ({ ...p, timeDrainsOther: e.target.value }))}
+                placeholder="Describe your time drain..."
+                style={{
+                  width: '100%',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: '#FFFFFF',
+                  fontFamily: sans,
+                  fontSize: '14px',
+                  padding: '12px 16px',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  marginTop: '8px',
+                  borderRadius: '2px',
+                }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)')}
+                onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
+              />
+            )}
+          </div>
+        )}
+
+        {/* ── STEP 3: Tools + experience ── */}
         {step === 3 && (
           <div>
-            <QuestionLabel>Which tasks eat the most time each week?</QuestionLabel>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {TASK_OPTIONS.map((task) => (
-                <Chip
-                  key={task}
-                  label={task}
-                  selected={form.tasks.includes(task)}
-                  onClick={() => toggleMulti('tasks', task)}
-                />
-              ))}
-            </div>
-            <p
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '10px',
-                color: '#6B6B7A',
-                marginTop: '12px',
-                letterSpacing: '0.1em',
-              }}
-            >
-              SELECT ALL THAT APPLY
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Step 3 of 5
             </p>
-          </div>
-        )}
-
-        {/* Step 4 */}
-        {step === 4 && (
-          <div>
-            <QuestionLabel>Which tools do you currently use?</QuestionLabel>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
+              What tools does your team use?
+            </h2>
+            <p style={{ fontFamily: sans, fontSize: '14px', color: '#666666', marginBottom: '24px' }}>
+              Select all that apply.
+            </p>
+            <div
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '8px', marginBottom: '32px' }}
+            >
               {TOOL_OPTIONS.map((tool) => (
-                <Chip
+                <OptionBtn
                   key={tool}
                   label={tool}
                   selected={form.tools.includes(tool)}
                   onClick={() => toggleMulti('tools', tool)}
+                  multi
                 />
               ))}
             </div>
-            <p
+
+            <p style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              Automation experience
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {EXPERIENCE_OPTIONS.map((opt) => (
+                <OptionBtn
+                  key={opt}
+                  label={opt}
+                  selected={form.experience === opt}
+                  onClick={() => setForm((p) => ({ ...p, experience: opt }))}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── STEP 4: Goal ── */}
+        {step === 4 && (
+          <div>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Step 4 of 5
+            </p>
+            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
+              Describe your biggest operational challenge
+            </h2>
+            <p style={{ fontFamily: sans, fontSize: '14px', color: '#666666', marginBottom: '24px' }}>
+              The more specific, the better your report will be.
+            </p>
+            <textarea
+              value={form.goal}
+              onChange={(e) => setForm((p) => ({ ...p, goal: e.target.value }))}
+              rows={5}
+              placeholder="e.g. Our sales team manually copies leads from our website into HubSpot and then sends individual follow-up emails. This takes 2–3 hours per day..."
               style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '10px',
-                color: '#6B6B7A',
-                marginTop: '12px',
-                letterSpacing: '0.1em',
+                width: '100%',
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: '#FFFFFF',
+                fontFamily: sans,
+                fontSize: '14px',
+                padding: '16px',
+                resize: 'vertical',
+                outline: 'none',
+                lineHeight: 1.7,
+                minHeight: '120px',
+                boxSizing: 'border-box',
+                borderRadius: '2px',
               }}
-            >
-              SELECT ALL THAT APPLY
+              onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)')}
+              onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
+            />
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#444444', letterSpacing: '0.1em', marginTop: '16px', marginBottom: '12px' }}>
+              // QUICK FILL
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {QUICK_FILLS.map((fill) => (
+                <button
+                  key={fill}
+                  type="button"
+                  onClick={() => setForm((p) => ({ ...p, goal: fill }))}
+                  style={{
+                    fontFamily: sans,
+                    fontSize: '13px',
+                    color: '#666666',
+                    background: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    padding: '10px 14px',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    lineHeight: 1.5,
+                    transition: 'all 150ms ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#FFFFFF'
+                    e.currentTarget.style.borderColor = 'rgba(249,115,22,0.2)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = '#666666'
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
+                  }}
+                >
+                  &ldquo;{fill}&rdquo;
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── STEP 5: Lead capture ── */}
+        {step === 5 && (
+          <div>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Step 5 of 5
+            </p>
+            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
+              Where should we send your report?
+            </h2>
+            <p style={{ fontFamily: sans, fontSize: '14px', color: '#666666', marginBottom: '32px' }}>
+              Your personalised audit will be ready in under 60 seconds.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '24px' }}>
+              {[
+                { field: 'name' as const, label: 'Full Name', placeholder: 'Jane Smith', type: 'text' },
+                { field: 'email' as const, label: 'Work Email', placeholder: 'jane@company.com', type: 'email' },
+                { field: 'company' as const, label: 'Company', placeholder: 'Your company name', type: 'text' },
+              ].map(({ field, label, placeholder, type }) => (
+                <div key={field}>
+                  <label
+                    style={{
+                      fontFamily: mono,
+                      fontSize: '11px',
+                      color: '#888888',
+                      display: 'block',
+                      marginBottom: '8px',
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {label} <span style={{ color: '#F97316' }}>*</span>
+                  </label>
+                  <input
+                    type={type}
+                    required
+                    value={form[field]}
+                    onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))}
+                    placeholder={placeholder}
+                    style={{
+                      width: '100%',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      color: '#FFFFFF',
+                      fontFamily: sans,
+                      fontSize: '15px',
+                      padding: '14px 16px',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                      borderRadius: '2px',
+                      transition: 'border-color 150ms ease, box-shadow 150ms ease',
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)'
+                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                      e.currentTarget.style.boxShadow = 'none'
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+            <p style={{ fontFamily: mono, fontSize: '11px', color: '#444444', letterSpacing: '0.05em' }}>
+              // No spam. Report delivered in your browser instantly.
             </p>
           </div>
         )}
 
-        {/* Step 5 */}
-        {step === 5 && (
-          <div>
-            <QuestionLabel>What process would you most like to automate?</QuestionLabel>
-            <textarea
-              value={form.process}
-              onChange={(e) => setForm((prev) => ({ ...prev, process: e.target.value }))}
-              rows={5}
-              placeholder="Describe your biggest operational headache..."
-              style={{
-                width: '100%',
-                background: '#030305',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: '#FAFAFF',
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '13px',
-                padding: '14px',
-                resize: 'vertical',
-                outline: 'none',
-                lineHeight: 1.6,
-              }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
-              onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
-            />
-          </div>
-        )}
-
-        {/* Navigation */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '12px',
-            marginTop: '32px',
-          }}
-        >
+        {/* ── Navigation ── */}
+        <div style={{ display: 'flex', gap: '12px', marginTop: '40px' }}>
           {step > 1 && (
             <button
+              type="button"
               onClick={back}
               style={{
-                fontFamily: 'var(--font-dm-sans)',
+                fontFamily: sans,
                 fontWeight: 500,
                 fontSize: '14px',
-                color: '#6B6B7A',
+                color: '#666666',
                 background: 'transparent',
                 border: '1px solid rgba(255,255,255,0.1)',
-                padding: '12px 24px',
+                padding: '13px 24px',
                 cursor: 'pointer',
-                transition: 'color 150ms ease, border-color 150ms ease',
-                flex: '0 0 auto',
+                flexShrink: 0,
+                transition: 'border-color 150ms ease, color 150ms ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'
+                e.currentTarget.style.color = '#CCCCCC'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                e.currentTarget.style.color = '#666666'
               }}
             >
               ← Back
             </button>
           )}
           <button
+            type="button"
             onClick={next}
             disabled={!canProceed()}
             style={{
-              fontFamily: 'var(--font-space-mono)',
+              fontFamily: mono,
               fontWeight: 700,
               fontSize: '13px',
-              color: '#030305',
-              background: canProceed() ? '#F97316' : 'rgba(232,255,61,0.3)',
-              padding: '12px 28px',
+              color: '#000000',
+              background: '#F97316',
+              padding: '13px 28px',
               border: 'none',
               cursor: canProceed() ? 'pointer' : 'not-allowed',
-              transition: 'background 150ms ease',
-              flex: '1',
+              opacity: canProceed() ? 1 : 0.4,
+              flex: 1,
+              letterSpacing: '0.05em',
+              transition: 'opacity 150ms ease, box-shadow 150ms ease',
+              boxShadow: canProceed() ? '0 4px 20px rgba(249,115,22,0.3)' : 'none',
             }}
           >
-            {step === TOTAL_STEPS ? '$ analyse --my-business →' : 'Continue →'}
+            {step === TOTAL_STEPS ? 'Generate My Automation Report →' : 'Continue →'}
           </button>
         </div>
       </div>

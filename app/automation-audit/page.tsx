@@ -7,96 +7,75 @@ export const metadata: Metadata = {
     'Answer 5 quick questions and receive a personalised AI automation report — 3 specific opportunities for your business, free of charge.',
 }
 
+const mono = { fontFamily: 'var(--font-space-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-space-grotesk)' } as const
+const sans = { fontFamily: 'var(--font-dm-sans)' } as const
+
 export default function AutomationAuditPage() {
   return (
-    <main style={{ background: '#030305', minHeight: '100vh' }}>
+    <main style={{ background: '#0A0A0A', minHeight: '100vh' }}>
       {/* Header */}
-      <section
-        style={{
-          padding: '5rem 2rem 3rem',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-        }}
-      >
-        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
-          <p
-            style={{
-              fontFamily: 'var(--font-space-mono)',
-              fontSize: '11px',
-              color: '#F97316',
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              marginBottom: '16px',
-            }}
-          >
-            Free — No Commitment
+      <section style={{ padding: '4rem 2rem 3rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: '760px', margin: '0 auto' }}>
+          {/* Breadcrumb */}
+          <p style={{ ...mono, fontSize: '10px', color: '#444444', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
+            MAXPROMO.DIGITAL / FREE AUDIT
           </p>
+
           <h1
             style={{
-              fontFamily: 'var(--font-space-grotesk)',
+              ...grotesk,
               fontWeight: 700,
               fontSize: 'clamp(2rem, 5vw, 3rem)',
               letterSpacing: '-0.04em',
-              color: '#FAFAFF',
+              color: '#FFFFFF',
               marginBottom: '16px',
             }}
           >
-            Automation Audit
+            Free Automation Audit
           </h1>
           <p
             style={{
-              fontFamily: 'var(--font-dm-sans)',
+              ...sans,
               fontSize: '16px',
-              color: '#6B6B7A',
+              color: '#666666',
               lineHeight: 1.7,
-              maxWidth: '500px',
+              maxWidth: '520px',
+              marginBottom: '28px',
             }}
           >
-            Answer 5 questions about your business. Our AI identifies your top 3 automation
-            opportunities with specific tool recommendations.
+            Answer 5 questions about your business. Our AI identifies your top 3
+            automation opportunities with specific tool recommendations and ROI estimates.
           </p>
 
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '2rem',
-              marginTop: '2rem',
-            }}
-          >
+          {/* Trust pills */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {[
-              { label: '5 min', sub: 'to complete' },
-              { label: 'AI-powered', sub: 'analysis' },
-              { label: '3 specific', sub: 'opportunities' },
-            ].map((item) => (
-              <div key={item.label}>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-space-mono)',
-                    fontWeight: 700,
-                    fontSize: '13px',
-                    color: '#FAFAFF',
-                    marginBottom: '2px',
-                  }}
-                >
-                  {item.label}
-                </p>
-                <p
-                  style={{
-                    fontFamily: 'var(--font-dm-sans)',
-                    fontSize: '12px',
-                    color: '#6B6B7A',
-                  }}
-                >
-                  {item.sub}
-                </p>
-              </div>
+              '✓ Powered by Claude AI',
+              '✓ No email spam',
+              '✓ Results in under 60 seconds',
+            ].map((pill) => (
+              <span
+                key={pill}
+                style={{
+                  ...mono,
+                  fontSize: '11px',
+                  color: '#F97316',
+                  background: 'rgba(249,115,22,0.08)',
+                  border: '1px solid rgba(249,115,22,0.2)',
+                  padding: '6px 14px',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {pill}
+              </span>
             ))}
           </div>
         </div>
       </section>
 
       {/* Audit form */}
-      <section style={{ padding: '4rem 2rem', minHeight: '500px' }}>
+      <section style={{ padding: '3rem 2rem 5rem', minHeight: '500px' }}>
         <AuditForm />
       </section>
     </main>

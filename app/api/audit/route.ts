@@ -5,41 +5,39 @@ import { sendEmail, buildAuditLeadEmailHtml } from '@/lib/email'
 import type { AuditResult } from '@/components/AuditResults'
 
 interface AuditRequestBody {
-  questionnaire: {
-    businessType: string
-    companySize: string
-    timeConsumingTasks: string
-    currentTools: string
-    processToAutomate: string
-  }
-  lead: {
-    name: string
-    email: string
-    company: string
-  }
+  orgType: string
+  teamSize: string
+  timeDrains: string[]
+  tools: string[]
+  experience: string
+  goal: string
+  name: string
+  email: string
+  company: string
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as AuditRequestBody
-    const { questionnaire, lead } = body
+    const { orgType, teamSize, timeDrains, tools, experience, goal, name, email, company } = body
 
-    if (!questionnaire?.businessType) {
+    if (!orgType) {
       return NextResponse.json({ error: 'Questionnaire data is required.' }, { status: 400 })
     }
 
-    const userMessage = `Business type: ${questionnaire.businessType}
-Company size: ${questionnaire.companySize}
-Time-consuming tasks: ${questionnaire.timeConsumingTasks}
-Current tools: ${questionnaire.currentTools}
-Process to automate: ${questionnaire.processToAutomate}
+    const userMessage = `Organisation type: ${orgType}
+Team size: ${teamSize}
+Time-consuming tasks: ${timeDrains.join(', ')}
+Current tools: ${tools.join(', ')}
+Automation experience: ${experience || 'Not specified'}
+Primary challenge / goal: ${goal}
 
 Identify their top 3 automation opportunities. Return only a valid JSON array.`
 
     const aiResponse = await callAI(
       [{ role: 'user', content: userMessage }],
       AUDIT_SYSTEM_PROMPT,
-      { maxTokens: 1500 }
+      { maxTokens: 1800 }
     )
 
     let results: AuditResult[]
@@ -51,25 +49,26 @@ Identify their top 3 automation opportunities. Return only a valid JSON array.`
       results = JSON.parse(cleaned) as AuditResult[]
       if (!Array.isArray(results) || results.length === 0) throw new Error('Invalid format')
     } catch {
-      results = getMockResults(questionnaire)
+      results = getMockResults({ orgType, timeDrains, tools, goal })
     }
 
-    // Fire-and-forget lead notification
-    if (lead?.name && lead?.email) {
-      sendEmail({
+    // Send lead notification email immediately
+    if (name && email) {
+      await sendEmail({
         to: process.env.CONTACT_EMAIL ?? 'djstranger2000@gmail.com',
         from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
-        subject: `New Audit Lead: ${lead.name} — ${lead.company}`,
+        subject: `New Audit Lead: ${name} — ${company}`,
         html: buildAuditLeadEmailHtml({
-          name: lead.name,
-          email: lead.email,
-          company: lead.company,
+          name,
+          email,
+          company,
           questionnaire: {
-            businessType: questionnaire.businessType,
-            companySize: questionnaire.companySize,
-            timeConsumingTasks: questionnaire.timeConsumingTasks,
-            currentTools: questionnaire.currentTools,
-            processToAutomate: questionnaire.processToAutomate,
+            orgType,
+            teamSize,
+            timeDrains: timeDrains.join(', '),
+            tools: tools.join(', '),
+            experience: experience || 'Not specified',
+            goal,
           },
         }),
       }).catch(console.error)
@@ -85,32 +84,40 @@ Identify their top 3 automation opportunities. Return only a valid JSON array.`
   }
 }
 
-function getMockResults(q: AuditRequestBody['questionnaire']): AuditResult[] {
-  const tasks = q.timeConsumingTasks || 'manual data entry and email management'
-  const tools = q.currentTools || 'email and spreadsheets'
+function getMockResults(q: {
+  orgType: string
+  timeDrains: string[]
+  tools: string[]
+  goal: string
+}): AuditResult[] {
+  const tasks = q.timeDrains.join(', ') || 'manual data entry and reporting'
+  const toolList = q.tools.join(', ') || 'email and spreadsheets'
 
   return [
     {
+      title: 'Automated Lead Qualification & Routing',
       problem: `Your team spends significant time manually qualifying leads from ${tasks}.`,
-      solution: `Deploy an AI agent that scores incoming leads against your ideal customer profile and routes qualified leads to your CRM automatically. Personalised follow-up sequences are triggered without any manual action.`,
+      solution: `Deploy an AI agent that scores incoming leads against your ideal customer profile and routes qualified leads to your CRM automatically. Personalised follow-up sequences trigger without any manual action.`,
       tools: ['n8n', 'Claude AI', 'HubSpot'],
-      roi: '8–12 hours/week',
+      roi: '8–12 hrs/week',
       complexity: 'Medium',
       timeline: '2–3 weeks',
     },
     {
-      problem: `Data across your tools (${tools}) is siloed, requiring manual copying and reconciliation.`,
+      title: 'Data Sync & Integration Pipeline',
+      problem: `Data across your tools (${toolList}) is siloed, requiring manual copying and reconciliation.`,
       solution: `Build an automated integration layer that syncs data across all platforms in real time. Eliminate duplicate entry and maintain a single source of truth across your entire stack.`,
       tools: ['n8n', 'Zapier', 'REST APIs'],
-      roi: '6–10 hours/week',
+      roi: '6–10 hrs/week',
       complexity: 'Simple',
-      timeline: '1 week',
+      timeline: '1–2 weeks',
     },
     {
-      problem: `Customer enquiries require manual effort and often experience delays outside business hours.`,
-      solution: `Implement an AI agent that handles initial customer communications 24/7, qualifies enquiries, and escalates to your team only when human judgment is required.`,
-      tools: ['Claude AI', 'Slack', 'Resend'],
-      roi: '5–8 hours/week',
+      title: 'AI-Powered Document & Report Processing',
+      problem: `Your ${q.orgType} team handles manual document processing and report compilation that consumes disproportionate staff time.`,
+      solution: `Implement a document AI pipeline that automatically extracts, validates, and routes incoming documents. Scheduled reports are generated and distributed without manual intervention.`,
+      tools: ['Claude AI', 'Airtable', 'Resend'],
+      roi: '5–8 hrs/week',
       complexity: 'Medium',
       timeline: '2–3 weeks',
     },

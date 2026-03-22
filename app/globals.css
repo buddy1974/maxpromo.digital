@@ -234,3 +234,12 @@ input[type='range']::-moz-range-thumb {
   border: 2px solid #0A0A0A;
   box-shadow: 0 0 0 3px rgba(249,115,22,0.3);
 }
+
+/* ── Audit loading pulse ── */
+@keyframes auditPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.18); opacity: 0.75; }
+}
+.audit-pulse {
+  animation: auditPulse 1.2s ease-in-out infinite;
+}
