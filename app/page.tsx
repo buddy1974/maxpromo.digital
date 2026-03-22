@@ -1,4 +1,6 @@
 import Hero from '@/components/Hero'
+import SocialProof from '@/components/SocialProof'
+import ROICalculator from '@/components/ROICalculator'
 import Link from 'next/link'
 
 /* ─── DATA ─────────────────────────────────────────────────── */
@@ -168,7 +170,10 @@ export default function HomePage() {
       {/* 1 — Hero */}
       <Hero />
 
-      {/* 2 — Marquee ticker */}
+      {/* 2 — Social proof */}
+      <SocialProof />
+
+      {/* 3 — Marquee ticker */}
       <div
         style={{
           background: '#0E0E12',
@@ -201,7 +206,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* 3 — Services */}
+      {/* 4 — Services */}
       <section style={{ background: '#030305', padding: '6rem 2rem' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
@@ -266,7 +271,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4 — Audit terminal */}
+      {/* 5 — ROI Calculator */}
+      <ROICalculator />
+
+      {/* 6 — Audit terminal */}
       <section style={{ background: '#030305', padding: '6rem 2rem' }}>
         <div
           style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '4rem', alignItems: 'center' }}
@@ -484,6 +492,17 @@ export default function HomePage() {
             <CtaButton href="/automation-audit" primary>$ run --free-audit</CtaButton>
             <CtaButton href="/contact">Talk to our team →</CtaButton>
           </div>
+          <p
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '11px',
+              color: '#6B6B7A',
+              marginTop: '20px',
+              letterSpacing: '0.05em',
+            }}
+          >
+            // Average client goes live in 14 days. Next cohort starts soon.
+          </p>
         </div>
       </section>
 

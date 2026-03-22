@@ -225,6 +225,19 @@ export default function Hero() {
             </Link>
           </div>
 
+          {/* Urgency line */}
+          <p
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '11px',
+              color: '#6B6B7A',
+              marginBottom: '2.5rem',
+              letterSpacing: '0.05em',
+            }}
+          >
+            // Free audit · No commitment · 3 onboarding slots open this month
+          </p>
+
           {/* Stats */}
           <div
             style={{
