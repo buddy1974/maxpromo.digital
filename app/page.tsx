@@ -15,25 +15,49 @@ const SERVICES = [
   {
     icon: '↗',
     title: 'AI Agentic Workflows',
-    desc: 'Autonomous agents that perceive, decide, and act — without human intervention.',
+    desc: 'Autonomous agents that read incoming data, apply your business rules, make decisions, and take action — 24/7 without human input.',
     href: '/services',
   },
   {
     icon: '⟳',
-    title: 'Process Automation',
-    desc: 'Connect every tool in your stack. Eliminate manual steps from end to end.',
+    title: 'Process & Workflow Automation',
+    desc: 'End-to-end automation using n8n, Make, and Zapier. Invoice processing, onboarding, CRM sync — manual steps eliminated permanently.',
     href: '/services',
   },
   {
     icon: '◻',
-    title: 'AI-Powered Websites',
-    desc: 'Next.js sites with embedded agents, smart forms, and automated lead capture.',
+    title: 'Web Development + AI',
+    desc: 'Full-stack Next.js platforms with embedded AI — intelligent lead capture, live chat agents, automated qualification built in from day one.',
     href: '/ai-websites',
   },
   {
     icon: '⬡',
-    title: 'Custom Integration',
-    desc: 'We connect every tool in your stack via API, webhook, and event-driven logic.',
+    title: 'App Development + Automation',
+    desc: 'Custom web apps and internal tools with automation at the core — dashboards, client portals, workflow management systems.',
+    href: '/services',
+  },
+  {
+    icon: '▦',
+    title: 'Document & Data Intelligence',
+    desc: 'AI that reads, extracts, classifies, and routes documents without manual handling. Contracts, invoices, applications — processed by Claude.',
+    href: '/services',
+  },
+  {
+    icon: '◈',
+    title: 'Social Media Automation',
+    desc: 'AI-driven content pipelines — on-brand posts, multi-platform scheduling, mention monitoring, and weekly performance reports. Fully automated.',
+    href: '/services',
+  },
+  {
+    icon: '●',
+    title: 'AI Chatbots & Assistants',
+    desc: 'Custom AI assistants trained on your business data — support agents, sales bots, internal knowledge bases, booking assistants.',
+    href: '/services',
+  },
+  {
+    icon: '⊞',
+    title: 'Systems Integration & APIs',
+    desc: 'We connect your entire tool stack via API and webhook. CRM, ERP, accounting, support — synchronised, automated, monitored in real time.',
     href: '/services',
   },
 ]
@@ -225,7 +249,7 @@ export default function HomePage() {
             }}
             className="grid-cols-1 sm:grid-cols-2"
           >
-            {SERVICES.map((s) => (
+            {SERVICES.slice(0, 6).map((s) => (
               <div
                 key={s.title}
                 className="service-card"
@@ -287,6 +311,21 @@ export default function HomePage() {
                 </Link>
               </div>
             ))}
+          </div>
+
+          <div style={{ marginTop: '2rem', textAlign: 'right' }}>
+            <Link
+              href="/services"
+              style={{
+                fontFamily: 'var(--font-space-mono)',
+                fontSize: '13px',
+                color: '#F97316',
+                textDecoration: 'none',
+                letterSpacing: '0.05em',
+              }}
+            >
+              View all services →
+            </Link>
           </div>
         </div>
       </section>

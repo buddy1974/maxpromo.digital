@@ -10,7 +10,7 @@ interface Message {
 const INITIAL_MESSAGE: Message = {
   role: 'assistant',
   content:
-    "Hi! I'm Max, your automation assistant. Ask me anything about AI agents, workflow automation, or how MaxPromo Digital can help your organisation.",
+    "Hi — I'm Max, the MaxPromo Digital assistant. We build AI agents, automation systems, web and app development, and social media automation. What can I help you with?",
 }
 
 export default function ChatAgent() {

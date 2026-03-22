@@ -9,13 +9,12 @@ export const metadata: Metadata = {
 const CASE_STUDIES = [
   {
     id: '01',
-    tag: 'NGO / Operations',
-    client: 'NGO, West Africa',
+    tag: 'OPERATIONS',
     headline: '78% reduction in manual processing time',
     challenge:
-      'A West African NGO managing humanitarian aid programmes was spending over 60% of operational staff time on manual data entry, report compilation, and cross-referencing donor records across multiple spreadsheets. The process was error-prone, slow, and preventing the team from focusing on programme delivery.',
+      'An operations team managing complex programme delivery was spending over 60% of staff time on manual data entry, report compilation, and cross-referencing records across multiple spreadsheets. The process was error-prone, slow, and preventing the team from focusing on core delivery work.',
     solution:
-      'We deployed a document processing AI pipeline that automatically extracts, validates, and categorises incoming reports and donor records. An n8n workflow routes data into the correct Airtable bases and triggers summary reports for programme managers — without any manual intervention.',
+      'We deployed a document processing AI pipeline that automatically extracts, validates, and categorises incoming reports and records. An n8n workflow routes data into the correct Airtable bases and triggers summary reports for programme managers — without any manual intervention.',
     results: [
       '78% reduction in manual data processing time',
       '12 staff hours saved per week',
@@ -27,11 +26,10 @@ const CASE_STUDIES = [
   },
   {
     id: '02',
-    tag: 'Consulting / Finance',
-    client: 'Consulting Firm, UK',
+    tag: 'PROFESSIONAL SERVICES',
     headline: '£14,000/month saved in operational costs',
     challenge:
-      'A mid-sized UK consulting firm was manually processing client invoices, reconciling expenses, and generating monthly financial reports. Three members of the finance team spent an average of 2 days per month solely on invoice reconciliation. With a growing client base, this was becoming unsustainable.',
+      'A mid-sized consulting firm was manually processing client invoices, reconciling expenses, and generating monthly financial reports. Three members of the finance team spent an average of 2 days per month solely on invoice reconciliation. With a growing client base, this was becoming unsustainable.',
     solution:
       'We built a fully automated invoice processing system that ingests invoices via email, extracts line items using document AI, validates against purchase orders in their ERP, and posts approved invoices directly to Xero. A Slack notification alerts the finance lead only when human review is required.',
     results: [
@@ -45,13 +43,12 @@ const CASE_STUDIES = [
   },
   {
     id: '03',
-    tag: 'Logistics / SME',
-    client: 'SME, Logistics Sector',
+    tag: 'LOGISTICS',
     headline: 'Invoice cycle: 3 days → 4 hours',
     challenge:
-      'A logistics SME was losing competitive advantage due to a slow invoicing cycle. Invoices were manually compiled from multiple driver reports, fuel logs, and delivery confirmations — a process taking 3 full working days per billing cycle. Late invoices were causing cash flow problems and client dissatisfaction.',
+      'A logistics operation was losing competitive advantage due to a slow invoicing cycle. Invoices were manually compiled from multiple driver reports, fuel logs, and delivery confirmations — a process taking 3 full working days per billing cycle. Late invoices were causing cash flow problems and client dissatisfaction.',
     solution:
-      'We integrated all data sources — driver apps, GPS systems, fuel cards, and delivery confirmation emails — into a unified data pipeline. An AI agent compiles draft invoices automatically, flags exceptions, and sends approved invoices to clients via the existing billing system. The entire cycle now runs overnight.',
+      'We integrated all data sources — driver apps, GPS systems, fuel cards, and delivery confirmation data — into a unified pipeline. An AI agent compiles draft invoices automatically, flags exceptions, and sends approved invoices to clients via the existing billing system. The entire cycle now runs overnight.',
     results: [
       'Invoice cycle compressed from 3 days to 4 hours',
       'Cash flow improved by approximately 18 days per quarter',
@@ -84,7 +81,7 @@ export default function CaseStudiesPage() {
             actual outcomes from clients who have automated with us.
           </p>
           <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', marginTop: '20px', letterSpacing: '0.05em' }}>
-            // Client names withheld under NDA
+            // Results are from live production systems. Client details withheld under NDA.
           </p>
         </div>
       </section>
@@ -127,9 +124,6 @@ export default function CaseStudiesPage() {
                   </h2>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.05em', marginBottom: '4px' }}>
-                    — {cs.client}
-                  </p>
                   <p style={{ ...mono, fontSize: '11px', color: '#888888', letterSpacing: '0.05em' }}>
                     Delivered in {cs.timeline}
                   </p>
@@ -208,7 +202,7 @@ export default function CaseStudiesPage() {
             Your Turn
           </p>
           <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#FAFAFF', marginBottom: '20px' }}>
-            Results like these are possible for your organisation
+            Results like these are possible for your business
           </h2>
           <p style={{ ...sans, fontSize: '17px', color: '#6B6B7A', marginBottom: '2.5rem', lineHeight: 1.8 }}>
             Every engagement starts with a free audit. We identify your highest-impact

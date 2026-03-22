@@ -2,17 +2,14 @@ const RESULTS = [
   {
     metric: '78%',
     label: 'reduction in manual processing time',
-    client: 'NGO, West Africa',
   },
   {
     metric: '£14,000/mo',
     label: 'saved in operational costs',
-    client: 'Consulting firm, UK',
   },
   {
     metric: '3→4 hrs',
     label: 'invoice cycle (was 3 days)',
-    client: 'SME, logistics sector',
   },
 ]
 
@@ -90,18 +87,6 @@ export default function SocialProof() {
                 }}
               >
                 {r.label}
-              </p>
-              <p
-                style={{
-                  fontFamily: 'var(--font-space-mono)',
-                  fontSize: '12px',
-                  color: '#999999',
-                  letterSpacing: '0.05em',
-                  position: 'relative',
-                  zIndex: 1,
-                }}
-              >
-                — {r.client}
               </p>
             </div>
           ))}
