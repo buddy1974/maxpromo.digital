@@ -8,7 +8,9 @@ import Link from 'next/link'
 const MARQUEE_ITEMS = [
   'AI AGENTS', 'N8N WORKFLOWS', 'PROCESS AUTOMATION', 'LEAD ROUTING',
   'CLAUDE API', 'DOCUMENT AI', 'CHATBOTS', 'INVOICE AUTOMATION',
-  'CRM INTEGRATION', 'SMART FORMS', 'SCHEDULING AI', 'DATA PIPELINES',
+  'CRM INTEGRATION', 'MAKE WORKFLOWS', 'AIRTABLE AUTOMATIONS', 'SMART FORMS',
+  'SCHEDULING AI', 'DATA PIPELINES', 'CLOUDFLARE WORKERS', 'NEON POSTGRES',
+  'RENDER DEPLOYS', 'TWILIO SMS', 'SUPABASE', 'ZAPIER FLOWS',
 ]
 
 const SERVICES = [
@@ -624,6 +626,62 @@ export default function HomePage() {
           >
             // Average client goes live in 14 days. Next cohort starts soon.
           </p>
+        </div>
+      </section>
+
+
+      {/* 9 — Stack */}
+      <section
+        style={{
+          background: '#050505',
+          borderTop: '1px solid rgba(255,255,255,0.05)',
+          padding: '3rem 2rem',
+        }}
+      >
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <p
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '10px',
+              color: '#333333',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginBottom: '20px',
+              textAlign: 'center',
+            }}
+          >
+            // built on
+          </p>
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px',
+              justifyContent: 'center',
+            }}
+          >
+            {[
+              'Claude AI', 'OpenAI', 'n8n', 'Make', 'Zapier',
+              'Supabase', 'Neon', 'Vercel', 'Render', 'Next.js',
+              'Cloudflare', 'HubSpot', 'Slack', 'Notion', 'Xero',
+              'Twilio', 'Resend', 'Airtable',
+            ].map((tool) => (
+              <span
+                key={tool}
+                style={{
+                  fontFamily: 'var(--font-space-mono)',
+                  fontSize: '11px',
+                  color: '#444444',
+                  border: '1px solid rgba(255,255,255,0.05)',
+                  padding: '5px 12px',
+                  letterSpacing: '0.05em',
+                  transition: 'color 150ms ease, border-color 150ms ease',
+                }}
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
