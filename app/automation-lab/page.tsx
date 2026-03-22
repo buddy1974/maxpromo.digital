@@ -67,17 +67,44 @@ const AUTOMATIONS = [
 
 export default function AutomationLabPage() {
   return (
-    <main>
+    <main style={{ background: '#FFFFFF' }}>
       {/* Header */}
-      <section className="bg-white py-20 px-6 border-b border-slate-100">
-        <div className="max-w-4xl mx-auto text-center">
-          <span className="inline-block bg-indigo-50 text-indigo-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase">
+      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+        <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
+          <p
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '12px',
+              color: '#F97316',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginBottom: '12px',
+            }}
+          >
             Automation Lab
-          </span>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-5">
+          </p>
+          <h1
+            style={{
+              fontFamily: 'var(--font-space-grotesk)',
+              fontWeight: 700,
+              fontSize: 'clamp(2.5rem, 5vw, 3.75rem)',
+              letterSpacing: '-0.04em',
+              color: '#0A0A0A',
+              marginBottom: '20px',
+            }}
+          >
             Automation Examples
           </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+          <p
+            style={{
+              fontFamily: 'var(--font-dm-sans)',
+              fontSize: '17px',
+              color: '#555555',
+              maxWidth: '44rem',
+              margin: '0 auto',
+              lineHeight: 1.8,
+            }}
+          >
             A growing library of AI agents and automation systems we design and deploy for
             clients. Each can be customised to your tools and processes.
           </p>
@@ -85,9 +112,12 @@ export default function AutomationLabPage() {
       </section>
 
       {/* Automation grid */}
-      <section className="py-16 px-6 bg-slate-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section style={{ background: '#0A0A0A', padding: '4rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: '90rem', margin: '0 auto' }}>
+          <div
+            style={{ display: 'grid', gap: '1px', background: 'rgba(255,255,255,0.06)' }}
+            className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          >
             {AUTOMATIONS.map((a) => (
               <AutomationCard key={a.title} {...a} />
             ))}
@@ -96,35 +126,92 @@ export default function AutomationLabPage() {
       </section>
 
       {/* Coming soon */}
-      <section className="py-12 px-6 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-sm text-slate-400 mb-2 font-medium">Coming soon</p>
-          <p className="text-slate-600 text-sm">
+      <section style={{ background: '#FAFAFA', padding: '3rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+        <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
+          <p
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '11px',
+              color: '#AAAAAA',
+              letterSpacing: '0.1em',
+              marginBottom: '8px',
+            }}
+          >
+            // coming soon
+          </p>
+          <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '15px', color: '#888888', lineHeight: 1.6 }}>
             Automation Template Marketplace — browse, customise, and deploy pre-built automations for your industry.
           </p>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-6 bg-white border-t border-slate-100">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-slate-900 mb-4">
+      <section style={{ background: '#0A0A0A', padding: '5rem 2rem' }}>
+        <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
+          <p
+            style={{
+              fontFamily: 'var(--font-space-mono)',
+              fontSize: '12px',
+              color: '#F97316',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              marginBottom: '16px',
+            }}
+          >
+            Build Something Custom
+          </p>
+          <h2
+            style={{
+              fontFamily: 'var(--font-space-grotesk)',
+              fontWeight: 700,
+              fontSize: 'clamp(2rem, 4vw, 3rem)',
+              letterSpacing: '-0.04em',
+              color: '#FAFAFF',
+              marginBottom: '20px',
+            }}
+          >
             Don&apos;t see what you need?
           </h2>
-          <p className="text-slate-600 mb-8 text-lg">
+          <p
+            style={{
+              fontFamily: 'var(--font-dm-sans)',
+              fontSize: '17px',
+              color: '#6B6B7A',
+              marginBottom: '2.5rem',
+              lineHeight: 1.8,
+            }}
+          >
             We build custom automations from scratch. Run our free audit to identify your
             specific opportunities.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link
               href="/automation-audit"
-              className="bg-indigo-600 text-white font-bold px-7 py-3.5 rounded-full hover:bg-indigo-700 transition-colors text-sm"
+              style={{
+                fontFamily: 'var(--font-space-mono)',
+                fontWeight: 700,
+                fontSize: '15px',
+                color: '#0A0A0A',
+                background: '#F97316',
+                padding: '14px 28px',
+                textDecoration: 'none',
+                display: 'inline-block',
+              }}
             >
-              Free Automation Audit
+              Free Automation Audit →
             </Link>
             <Link
               href="/contact"
-              className="border border-slate-300 text-slate-700 font-bold px-7 py-3.5 rounded-full hover:bg-slate-50 transition-colors text-sm"
+              style={{
+                fontFamily: 'var(--font-dm-sans)',
+                fontWeight: 500,
+                fontSize: '15px',
+                color: '#FAFAFF',
+                border: '1px solid rgba(255,255,255,0.15)',
+                padding: '14px 28px',
+                textDecoration: 'none',
+                display: 'inline-block',
+              }}
             >
               Discuss Your Project
             </Link>

@@ -71,10 +71,10 @@ function StatCounter({ stat }: { stat: StatConfig }) {
 
   return (
     <div ref={ref}>
-      <p style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '44px', color: '#FAFAFF', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '6px' }}>
+      <p style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '44px', color: '#0A0A0A', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '6px' }}>
         {stat.display(count)}
       </p>
-      <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#6B6B7A' }}>
+      <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#888888' }}>
         {stat.label}
       </p>
     </div>
@@ -110,11 +110,12 @@ export default function Hero() {
   return (
     <section
       style={{
-        background: '#030305',
+        background: '#FFFFFF',
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         padding: '6rem 2rem',
+        borderBottom: '1px solid #F0F0F0',
       }}
     >
       <div
@@ -132,9 +133,9 @@ export default function Hero() {
                 style={{
                   fontFamily: 'var(--font-space-mono)',
                   fontSize: '12px',
-                  color: '#6B6B7A',
-                  background: '#0E0E12',
-                  border: '1px solid rgba(255,255,255,0.1)',
+                  color: '#555555',
+                  background: '#F5F5F5',
+                  border: '1px solid rgba(0,0,0,0.08)',
                   padding: '6px 14px',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -163,9 +164,9 @@ export default function Hero() {
               marginBottom: '1.5rem',
             }}
           >
-            <span style={{ display: 'block', color: '#FAFAFF' }}>We build the</span>
+            <span style={{ display: 'block', color: '#0A0A0A' }}>We build the</span>
             <span className="glitch-word" style={{ display: 'block', color: '#F97316' }}>machines</span>
-            <span style={{ display: 'block', color: '#FAFAFF' }}>that run your business.</span>
+            <span style={{ display: 'block', color: '#0A0A0A' }}>that run your business.</span>
           </h1>
 
           {/* Sub */}
@@ -174,7 +175,7 @@ export default function Hero() {
               fontFamily: 'var(--font-dm-sans)',
               fontWeight: 500,
               fontSize: '18px',
-              color: '#6B6B7A',
+              color: '#555555',
               maxWidth: '480px',
               lineHeight: 1.8,
               marginBottom: '2.5rem',
@@ -192,7 +193,7 @@ export default function Hero() {
                 fontFamily: 'var(--font-space-mono)',
                 fontWeight: 700,
                 fontSize: '15px',
-                color: '#030305',
+                color: '#FFFFFF',
                 background: '#F97316',
                 padding: '14px 28px',
                 textDecoration: 'none',
@@ -210,16 +211,16 @@ export default function Hero() {
                 fontFamily: 'var(--font-dm-sans)',
                 fontWeight: 500,
                 fontSize: '15px',
-                color: '#FAFAFF',
+                color: '#0A0A0A',
                 background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.15)',
+                border: '1px solid rgba(0,0,0,0.15)',
                 padding: '14px 28px',
                 textDecoration: 'none',
                 display: 'inline-block',
                 transition: 'border-color 150ms ease',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)')}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(0,0,0,0.4)')}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(0,0,0,0.15)')}
             >
               Talk to our team →
             </Link>
@@ -230,7 +231,7 @@ export default function Hero() {
             style={{
               fontFamily: 'var(--font-space-mono)',
               fontSize: '11px',
-              color: '#6B6B7A',
+              color: '#888888',
               marginBottom: '2.5rem',
               letterSpacing: '0.05em',
             }}
@@ -245,7 +246,7 @@ export default function Hero() {
               flexWrap: 'wrap',
               gap: '0',
               paddingTop: '2rem',
-              borderTop: '1px solid rgba(255,255,255,0.07)',
+              borderTop: '1px solid rgba(0,0,0,0.07)',
               maxWidth: '540px',
             }}
           >
@@ -255,7 +256,7 @@ export default function Hero() {
                 style={{
                   flex: '1 1 110px',
                   paddingRight: i < STATS.length - 1 ? '2rem' : 0,
-                  borderRight: i < STATS.length - 1 ? '1px solid rgba(255,255,255,0.07)' : 'none',
+                  borderRight: i < STATS.length - 1 ? '1px solid rgba(0,0,0,0.07)' : 'none',
                   marginRight: i < STATS.length - 1 ? '2rem' : 0,
                 }}
               >
@@ -265,7 +266,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT — SYS.AGENTS panel ───────────────────── */}
+        {/* ── RIGHT — SYS.AGENTS panel (stays dark) ───────── */}
         <div
           style={{
             background: '#111111',

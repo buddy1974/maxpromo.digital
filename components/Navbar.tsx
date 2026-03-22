@@ -5,7 +5,9 @@ import Link from 'next/link'
 
 const NAV_LINKS = [
   { href: '/services', label: 'Services' },
-  { href: '/automation-lab', label: 'Automation Lab' },
+  { href: '/automation-lab', label: 'Lab' },
+  { href: '/case-studies', label: 'Case Studies' },
+  { href: '/pricing', label: 'Pricing' },
   { href: '/automation-audit', label: 'Audit' },
   { href: '/contact', label: 'Contact' },
 ]
@@ -35,7 +37,7 @@ export default function Navbar() {
           }}
         >
           {/* Logo */}
-          <Link href="/" style={{ textDecoration: 'none' }}>
+          <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
             <span
               style={{
                 fontFamily: 'var(--font-space-grotesk)',
@@ -50,7 +52,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex" style={{ gap: '2rem', alignItems: 'center' }}>
+          <div className="hidden md:flex" style={{ gap: '1.5rem', alignItems: 'center' }}>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -59,7 +61,7 @@ export default function Navbar() {
                 style={{
                   fontFamily: 'var(--font-dm-sans)',
                   fontWeight: 500,
-                  fontSize: '15px',
+                  fontSize: '14px',
                   textDecoration: 'none',
                 }}
               >
@@ -69,16 +71,16 @@ export default function Navbar() {
           </div>
 
           {/* CTA */}
-          <div className="hidden md:flex">
+          <div className="hidden md:flex" style={{ flexShrink: 0 }}>
             <Link
               href="/automation-audit"
               style={{
                 fontFamily: 'var(--font-space-mono)',
                 fontWeight: 700,
-                fontSize: '15px',
+                fontSize: '13px',
                 color: '#030305',
                 background: '#F97316',
-                padding: '10px 22px',
+                padding: '10px 20px',
                 textDecoration: 'none',
                 display: 'inline-block',
                 transition: 'opacity 150ms ease',
@@ -86,7 +88,7 @@ export default function Navbar() {
               onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
             >
-              Get a Free Audit →
+              Free Audit →
             </Link>
           </div>
 
@@ -148,7 +150,7 @@ export default function Navbar() {
                 textDecoration: 'none',
               }}
             >
-              Get a Free Audit →
+              Free Audit →
             </Link>
           </div>
         )}

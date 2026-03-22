@@ -4,9 +4,10 @@ const columns = [
   {
     title: 'Company',
     links: [
-      { label: 'About', href: '/about' },
       { label: 'Services', href: '/services' },
+      { label: 'Case Studies', href: '/case-studies' },
       { label: 'Automation Lab', href: '/automation-lab' },
+      { label: 'Pricing', href: '/pricing' },
       { label: 'Contact', href: '/contact' },
     ],
   },
@@ -84,7 +85,7 @@ export default function Footer() {
           }}
         >
           <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>
-            © 2025 MaxPromo Digital
+            © 2026 MaxPromo Digital
           </span>
           <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>
             Built with Next.js · Deployed on Vercel

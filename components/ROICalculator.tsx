@@ -21,23 +21,10 @@ function SliderInput({ label, value, min, max, prefix, suffix, onChange }: Slide
   return (
     <div style={{ marginBottom: '28px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '10px' }}>
-        <label
-          style={{
-            fontFamily: 'var(--font-dm-sans)',
-            fontSize: '15px',
-            color: '#FAFAFF',
-          }}
-        >
+        <label style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '15px', color: '#444444' }}>
           {label}
         </label>
-        <span
-          style={{
-            fontFamily: 'var(--font-space-mono)',
-            fontWeight: 700,
-            fontSize: '18px',
-            color: '#F97316',
-          }}
-        >
+        <span style={{ fontFamily: 'var(--font-space-mono)', fontWeight: 700, fontSize: '18px', color: '#F97316' }}>
           {prefix}{value}{suffix}
         </span>
       </div>
@@ -47,18 +34,13 @@ function SliderInput({ label, value, min, max, prefix, suffix, onChange }: Slide
         max={max}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        style={{
-          width: '100%',
-          accentColor: '#F97316',
-          cursor: 'pointer',
-          height: '2px',
-        }}
+        style={{ width: '100%', accentColor: '#F97316', cursor: 'pointer', height: '2px' }}
       />
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#6B6B7A' }}>
+        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#AAAAAA' }}>
           {prefix}{min}{suffix}
         </span>
-        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#6B6B7A' }}>
+        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#AAAAAA' }}>
           {prefix}{max}{suffix}
         </span>
       </div>
@@ -76,7 +58,7 @@ export default function ROICalculator() {
   const annualROI = monthlySaved * 12
 
   return (
-    <section style={{ background: '#030305', padding: '6rem 2rem' }}>
+    <section style={{ background: '#FFFFFF', padding: '6rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ marginBottom: '3rem' }}>
@@ -98,126 +80,53 @@ export default function ROICalculator() {
               fontWeight: 700,
               fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
               letterSpacing: '-0.04em',
-              color: '#FAFAFF',
+              color: '#0A0A0A',
               marginBottom: '12px',
             }}
           >
             See what automation saves you
           </h2>
-          <p
-            style={{
-              fontFamily: 'var(--font-dm-sans)',
-              fontSize: '17px',
-              color: '#6B6B7A',
-              lineHeight: 1.8,
-            }}
-          >
+          <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '17px', color: '#666666', lineHeight: 1.8 }}>
             Real numbers. No fluff. Based on your actual team.
           </p>
         </div>
 
-        {/* Calculator card */}
+        {/* Calculator */}
         <div
-          style={{
-            display: 'grid',
-            gap: '1px',
-            background: 'rgba(255,255,255,0.04)',
-          }}
+          style={{ display: 'grid', gap: '1px', background: '#E5E5E5', border: '1px solid #E5E5E5' }}
           className="grid-cols-1 lg:grid-cols-2"
         >
           {/* Inputs */}
-          <div style={{ background: '#111111', padding: '40px' }}>
-            <p
-              style={{
-                fontFamily: 'var(--font-space-mono)',
-                fontSize: '11px',
-                color: '#6B6B7A',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                marginBottom: '28px',
-              }}
-            >
+          <div style={{ background: '#FFFFFF', padding: '40px' }}>
+            <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
               // your team
             </p>
-
-            <SliderInput
-              label="Staff handling manual tasks"
-              value={staff}
-              min={1}
-              max={50}
-              suffix=" people"
-              onChange={setStaff}
-            />
-            <SliderInput
-              label="Hours per week on manual work"
-              value={hours}
-              min={1}
-              max={40}
-              suffix=" hrs/wk"
-              onChange={setHours}
-            />
-            <SliderInput
-              label="Average hourly cost per employee"
-              value={rate}
-              min={10}
-              max={100}
-              prefix="£"
-              suffix="/hr"
-              onChange={setRate}
-            />
+            <SliderInput label="Staff handling manual tasks" value={staff} min={1} max={50} suffix=" people" onChange={setStaff} />
+            <SliderInput label="Hours per week on manual work" value={hours} min={1} max={40} suffix=" hrs/wk" onChange={setHours} />
+            <SliderInput label="Average hourly cost per employee" value={rate} min={10} max={100} prefix="£" suffix="/hr" onChange={setRate} />
           </div>
 
           {/* Outputs */}
-          <div style={{ background: '#0E0E12', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <div style={{ background: '#FAFAFA', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
-              <p
-                style={{
-                  fontFamily: 'var(--font-space-mono)',
-                  fontSize: '11px',
-                  color: '#6B6B7A',
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase',
-                  marginBottom: '28px',
-                }}
-              >
+              <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
                 // your savings
               </p>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '32px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0', marginBottom: '32px' }}>
                 {[
-                  { label: 'Hours saved per week',  value: `${hoursSaved} hrs` },
-                  { label: 'Monthly cost saved',    value: formatGBP(monthlySaved) },
-                  { label: 'Annual ROI',             value: formatGBP(annualROI) },
-                  { label: 'Typical payback period', value: '60–90 days' },
+                  { label: 'Hours saved per week',   value: `${hoursSaved} hrs` },
+                  { label: 'Monthly cost saved',     value: formatGBP(monthlySaved) },
+                  { label: 'Annual ROI',              value: formatGBP(annualROI) },
+                  { label: 'Typical payback period',  value: '60–90 days' },
                 ].map((row) => (
                   <div
                     key={row.label}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'baseline',
-                      paddingBottom: '20px',
-                      borderBottom: '1px solid rgba(255,255,255,0.06)',
-                    }}
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '16px 0', borderBottom: '1px solid #E5E5E5' }}
                   >
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-dm-sans)',
-                        fontSize: '15px',
-                        color: '#6B6B7A',
-                      }}
-                    >
+                    <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '15px', color: '#666666' }}>
                       {row.label}
                     </span>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-space-mono)',
-                        fontWeight: 700,
-                        fontSize: '22px',
-                        color: '#F97316',
-                        letterSpacing: '-0.02em',
-                      }}
-                    >
+                    <span style={{ fontFamily: 'var(--font-space-mono)', fontWeight: 700, fontSize: '22px', color: '#F97316', letterSpacing: '-0.02em' }}>
                       {row.value}
                     </span>
                   </div>
@@ -233,28 +142,21 @@ export default function ROICalculator() {
                   fontFamily: 'var(--font-space-mono)',
                   fontWeight: 700,
                   fontSize: '15px',
-                  color: '#030305',
+                  color: '#FFFFFF',
                   background: '#F97316',
                   padding: '16px 24px',
                   textDecoration: 'none',
                   textAlign: 'center',
                   transition: 'opacity 150ms ease',
                   marginBottom: '12px',
+                  borderRadius: '2px',
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
               >
                 Get My Custom Automation Plan →
               </Link>
-              <p
-                style={{
-                  fontFamily: 'var(--font-space-mono)',
-                  fontSize: '11px',
-                  color: '#6B6B7A',
-                  textAlign: 'center',
-                  letterSpacing: '0.05em',
-                }}
-              >
+              <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#AAAAAA', textAlign: 'center', letterSpacing: '0.05em' }}>
                 // 3 discovery call slots remaining this month
               </p>
             </div>

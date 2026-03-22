@@ -72,7 +72,7 @@ function SectionLabel({ children }: { children: string }) {
   )
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
+function SectionTitle({ children, dark }: { children: React.ReactNode; dark?: boolean }) {
   return (
     <h2
       style={{
@@ -80,7 +80,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
         fontWeight: 700,
         fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
         letterSpacing: '-0.04em',
-        color: '#FAFAFF',
+        color: dark ? '#FAFAFF' : '#0A0A0A',
         marginBottom: '0',
       }}
     >
@@ -98,7 +98,7 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
           fontFamily: 'var(--font-space-mono)',
           fontWeight: 700,
           fontSize: '15px',
-          color: '#030305',
+          color: '#0A0A0A',
           background: '#F97316',
           padding: '14px 28px',
           textDecoration: 'none',
@@ -165,7 +165,7 @@ function renderTerminalLine(line: typeof TERMINAL_LINES[number]) {
 
 export default function HomePage() {
   return (
-    <main style={{ background: '#030305' }}>
+    <main style={{ background: '#FFFFFF' }}>
 
       {/* 1 — Hero */}
       <Hero />
@@ -176,7 +176,7 @@ export default function HomePage() {
       {/* 3 — Marquee ticker */}
       <div
         style={{
-          background: '#0E0E12',
+          background: '#0A0A0A',
           borderTop: '1px solid rgba(255,255,255,0.06)',
           borderBottom: '1px solid rgba(255,255,255,0.06)',
           padding: '14px 0',
@@ -207,7 +207,7 @@ export default function HomePage() {
       </div>
 
       {/* 4 — Services */}
-      <section style={{ background: '#030305', padding: '6rem 2rem' }}>
+      <section style={{ background: '#FFFFFF', padding: '6rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
             <SectionLabel>What We Build</SectionLabel>
@@ -219,7 +219,7 @@ export default function HomePage() {
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
               gap: '1px',
-              background: 'rgba(255,255,255,0.04)',
+              background: '#E5E5E5',
             }}
             className="grid-cols-1 sm:grid-cols-2"
           >
@@ -228,7 +228,7 @@ export default function HomePage() {
                 key={s.title}
                 className="service-card"
                 style={{
-                  background: '#0E0E12',
+                  background: '#FFFFFF',
                   padding: '40px',
                 }}
               >
@@ -248,7 +248,7 @@ export default function HomePage() {
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
                     fontSize: '22px',
-                    color: '#FAFAFF',
+                    color: '#0A0A0A',
                     letterSpacing: '-0.04em',
                     marginBottom: '10px',
                   }}
@@ -259,7 +259,7 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-dm-sans)',
                     fontSize: '17px',
-                    color: '#6B6B7A',
+                    color: '#555555',
                     lineHeight: 1.8,
                   }}
                 >
@@ -342,7 +342,7 @@ export default function HomePage() {
           {/* Copy */}
           <div>
             <SectionLabel>Free Automation Audit</SectionLabel>
-            <SectionTitle>Find out exactly what can be automated</SectionTitle>
+            <SectionTitle dark>Find out exactly what can be automated</SectionTitle>
             <p
               style={{
                 fontFamily: 'var(--font-dm-sans)',
@@ -384,13 +384,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5 — Process */}
+      {/* 7 — Process */}
       <section
         style={{
-          background: '#0E0E12',
+          background: '#FAFAFA',
           padding: '6rem 2rem',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderTop: '1px solid #E5E5E5',
+          borderBottom: '1px solid #E5E5E5',
         }}
       >
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
@@ -404,7 +404,7 @@ export default function HomePage() {
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
               gap: '0',
-              borderTop: '1px solid rgba(255,255,255,0.06)',
+              borderTop: '1px solid #E5E5E5',
             }}
             className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
           >
@@ -414,11 +414,10 @@ export default function HomePage() {
                 style={{
                   padding: '2.5rem 2rem 2.5rem',
                   position: 'relative',
-                  borderRight: i < PROCESS_STEPS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                  borderRight: i < PROCESS_STEPS.length - 1 ? '1px solid #E5E5E5' : 'none',
                 }}
-                className={i < PROCESS_STEPS.length - 1 ? '' : ''}
               >
-                <span className="step-ghost">{step.num}</span>
+                <span className="step-ghost" style={{ color: 'rgba(0,0,0,0.04)' }}>{step.num}</span>
                 <p
                   style={{
                     fontFamily: 'var(--font-space-mono)',
@@ -435,7 +434,7 @@ export default function HomePage() {
                     fontFamily: 'var(--font-space-grotesk)',
                     fontWeight: 700,
                     fontSize: '22px',
-                    color: '#FAFAFF',
+                    color: '#0A0A0A',
                     letterSpacing: '-0.04em',
                     marginBottom: '10px',
                   }}
@@ -446,7 +445,7 @@ export default function HomePage() {
                   style={{
                     fontFamily: 'var(--font-dm-sans)',
                     fontSize: '17px',
-                    color: '#6B6B7A',
+                    color: '#666666',
                     lineHeight: 1.8,
                   }}
                 >
@@ -458,8 +457,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6 — CTA */}
-      <section style={{ background: '#16161C', padding: '7rem 2rem' }}>
+      {/* 8 — CTA */}
+      <section style={{ background: '#0A0A0A', padding: '7rem 2rem' }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center' }}>
           <SectionLabel>Ready to Automate?</SectionLabel>
           <h2

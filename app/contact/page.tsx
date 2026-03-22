@@ -12,6 +12,24 @@ interface FormData {
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
+const mono = { fontFamily: 'var(--font-space-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-space-grotesk)' } as const
+const sans = { fontFamily: 'var(--font-dm-sans)' } as const
+
+const inputStyle = {
+  ...sans,
+  fontSize: '15px',
+  color: '#0A0A0A',
+  background: '#FFFFFF',
+  border: '1px solid #D5D5D5',
+  borderRadius: '2px',
+  padding: '12px 14px',
+  width: '100%',
+  outline: 'none',
+  boxSizing: 'border-box' as const,
+  transition: 'border-color 150ms ease',
+}
+
 export default function ContactPage() {
   const [form, setForm] = useState<FormData>({
     name: '',
@@ -50,161 +68,222 @@ export default function ContactPage() {
   }
 
   return (
-    <main>
+    <main style={{ background: '#FFFFFF' }}>
       {/* Header */}
-      <section className="bg-white py-20 px-6 border-b border-slate-100">
-        <div className="max-w-3xl mx-auto text-center">
-          <span className="inline-block bg-indigo-50 text-indigo-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase">
+      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+        <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
+          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
             Get in Touch
-          </span>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-5">Contact Us</h1>
-          <p className="text-lg text-slate-600 max-w-xl mx-auto leading-relaxed">
+          </p>
+          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: '#0A0A0A', marginBottom: '20px' }}>
+            Contact Us
+          </h1>
+          <p style={{ ...sans, fontSize: '17px', color: '#555555', maxWidth: '36rem', margin: '0 auto', lineHeight: 1.8 }}>
             Tell us about your project or automation challenge. We&apos;ll respond within one
             business day.
           </p>
         </div>
       </section>
 
-      <section className="py-16 px-6 bg-slate-50">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <section style={{ background: '#FAFAFA', padding: '4rem 2rem' }}>
+        <div
+          style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '3rem' }}
+          className="grid-cols-1 lg:grid-cols-3"
+        >
           {/* Sidebar */}
-          <div className="space-y-8">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div>
-              <h2 className="text-lg font-bold text-slate-900 mb-2">MaxPromo Digital</h2>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                AI agents and automation systems for businesses, NGOs, and government
-                organisations.
+              <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '8px' }}>
+                MaxPromo Digital
+              </h2>
+              <p style={{ ...sans, fontSize: '15px', color: '#666666', lineHeight: 1.7 }}>
+                AI agents and automation systems for businesses, NGOs, and government organisations.
               </p>
             </div>
 
-            <div className="space-y-5">
-              <div className="flex items-start gap-3">
-                <span className="text-lg mt-0.5">⚡</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>⚡</span>
                 <div>
-                  <p className="font-semibold text-slate-900 text-sm">Free Automation Audit</p>
-                  <p className="text-slate-500 text-xs mt-0.5">
+                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: '#0A0A0A', marginBottom: '4px' }}>
+                    Free Automation Audit
+                  </p>
+                  <p style={{ ...sans, fontSize: '13px', color: '#888888', lineHeight: 1.5, marginBottom: '6px' }}>
                     Start with our free audit to identify your top opportunities.
                   </p>
-                  <Link href="/automation-audit" className="text-indigo-600 text-xs font-medium hover:underline mt-1 inline-block">
+                  <Link
+                    href="/automation-audit"
+                    style={{ ...mono, fontSize: '12px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em' }}
+                  >
                     Run the audit →
                   </Link>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <span className="text-lg mt-0.5">🤖</span>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>◻</span>
                 <div>
-                  <p className="font-semibold text-slate-900 text-sm">Chat with Max</p>
-                  <p className="text-slate-500 text-xs mt-0.5">
+                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: '#0A0A0A', marginBottom: '4px' }}>
+                    Chat with Max
+                  </p>
+                  <p style={{ ...sans, fontSize: '13px', color: '#888888', lineHeight: 1.5 }}>
                     Quick questions? Our AI assistant can answer immediately.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <span className="text-lg mt-0.5">📋</span>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>▸</span>
                 <div>
-                  <p className="font-semibold text-slate-900 text-sm">Response time</p>
-                  <p className="text-slate-500 text-xs mt-0.5">Within 1 business day.</p>
+                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: '#0A0A0A', marginBottom: '4px' }}>
+                    Response time
+                  </p>
+                  <p style={{ ...sans, fontSize: '13px', color: '#888888', lineHeight: 1.5 }}>
+                    Within 1 business day.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Form */}
-          <div className="lg:col-span-2">
+          <div style={{ gridColumn: 'span 1' }} className="lg:col-span-2">
             {status === 'success' ? (
-              <div className="bg-white rounded-2xl p-10 shadow-sm border border-slate-100 text-center">
-                <div className="text-5xl mb-5">✅</div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-3">Message sent!</h2>
-                <p className="text-slate-600 mb-6">
+              <div
+                style={{
+                  background: '#FFFFFF',
+                  border: '1px solid #E5E5E5',
+                  padding: '3rem',
+                  textAlign: 'center',
+                }}
+              >
+                <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</p>
+                <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '28px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '12px' }}>
+                  Message sent!
+                </h2>
+                <p style={{ ...sans, fontSize: '15px', color: '#666666', marginBottom: '1.5rem', lineHeight: 1.7 }}>
                   Thank you for getting in touch. We&apos;ll get back to you within one business day.
                 </p>
                 <button
                   onClick={() => { setStatus('idle'); setForm({ name: '', email: '', organisation: '', message: '' }) }}
-                  className="text-indigo-600 font-semibold text-sm hover:underline"
+                  style={{ ...mono, fontSize: '13px', color: '#F97316', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}
                 >
-                  Send another message
+                  Send another message →
                 </button>
               </div>
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 space-y-5"
+                style={{
+                  background: '#FFFFFF',
+                  border: '1px solid #E5E5E5',
+                  padding: '2.5rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px',
+                }}
               >
                 {status === 'error' && (
-                  <div className="bg-red-50 border border-red-100 text-red-700 text-sm px-4 py-3 rounded-xl">
+                  <div
+                    style={{
+                      background: '#FFF5F5',
+                      border: '1px solid #FFCCCC',
+                      color: '#CC0000',
+                      ...sans,
+                      fontSize: '14px',
+                      padding: '12px 16px',
+                    }}
+                  >
                     {errorMsg}
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div style={{ display: 'grid', gap: '20px' }} className="grid-cols-1 sm:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                      Full Name <span className="text-red-500">*</span>
+                    <label style={{ ...sans, fontSize: '13px', fontWeight: 500, color: '#444444', display: 'block', marginBottom: '6px' }}>
+                      Full Name <span style={{ color: '#F97316' }}>*</span>
                     </label>
                     <input
                       type="text"
                       required
                       value={form.name}
                       onChange={(e) => update('name', e.target.value)}
-                      className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       placeholder="Jane Smith"
+                      style={inputStyle}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
+                      onBlur={(e) => (e.currentTarget.style.borderColor = '#D5D5D5')}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                      Email Address <span className="text-red-500">*</span>
+                    <label style={{ ...sans, fontSize: '13px', fontWeight: 500, color: '#444444', display: 'block', marginBottom: '6px' }}>
+                      Email Address <span style={{ color: '#F97316' }}>*</span>
                     </label>
                     <input
                       type="email"
                       required
                       value={form.email}
                       onChange={(e) => update('email', e.target.value)}
-                      className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                       placeholder="jane@company.com"
+                      style={inputStyle}
+                      onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
+                      onBlur={(e) => (e.currentTarget.style.borderColor = '#D5D5D5')}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Organisation <span className="text-red-500">*</span>
+                  <label style={{ ...sans, fontSize: '13px', fontWeight: 500, color: '#444444', display: 'block', marginBottom: '6px' }}>
+                    Organisation <span style={{ color: '#F97316' }}>*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={form.organisation}
                     onChange={(e) => update('organisation', e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     placeholder="Company or organisation name"
+                    style={inputStyle}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = '#D5D5D5')}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                    Message <span className="text-red-500">*</span>
+                  <label style={{ ...sans, fontSize: '13px', fontWeight: 500, color: '#444444', display: 'block', marginBottom: '6px' }}>
+                    Message <span style={{ color: '#F97316' }}>*</span>
                   </label>
                   <textarea
                     required
                     rows={5}
                     value={form.message}
                     onChange={(e) => update('message', e.target.value)}
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
                     placeholder="Tell us about your project, the processes you'd like to automate, or the challenges you're facing..."
+                    style={{ ...inputStyle, resize: 'none' }}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = '#D5D5D5')}
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={!isValid || status === 'loading'}
-                  className="w-full bg-indigo-600 text-white font-semibold py-3.5 rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                  style={{
+                    ...mono,
+                    fontWeight: 700,
+                    fontSize: '15px',
+                    color: '#0A0A0A',
+                    background: !isValid || status === 'loading' ? '#AAAAAA' : '#F97316',
+                    border: 'none',
+                    padding: '16px 28px',
+                    cursor: !isValid || status === 'loading' ? 'not-allowed' : 'pointer',
+                    width: '100%',
+                    transition: 'opacity 150ms ease',
+                  }}
                 >
                   {status === 'loading' ? 'Sending...' : 'Send Message →'}
                 </button>
 
-                <p className="text-xs text-slate-400 text-center">
-                  Your information is kept private and never shared with third parties.
+                <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', textAlign: 'center', letterSpacing: '0.05em' }}>
+                  // Your information is never shared with third parties.
                 </p>
               </form>
             )}

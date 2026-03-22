@@ -20,22 +20,21 @@ export default function SocialProof() {
   return (
     <section
       style={{
-        background: '#030305',
+        background: '#FFFFFF',
         padding: '5rem 2rem',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        borderBottom: '1px solid #F0F0F0',
       }}
     >
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-        {/* Cards */}
         <div
-          style={{ display: 'grid', gap: '1px', background: 'rgba(255,255,255,0.04)' }}
+          style={{ display: 'grid', gap: '1px', background: '#E5E5E5' }}
           className="grid-cols-1 md:grid-cols-3"
         >
           {RESULTS.map((r) => (
             <div
               key={r.metric}
               style={{
-                background: '#111111',
+                background: '#FFFFFF',
                 borderLeft: '2px solid #F97316',
                 padding: '36px 32px',
               }}
@@ -57,7 +56,7 @@ export default function SocialProof() {
                 style={{
                   fontFamily: 'var(--font-dm-sans)',
                   fontSize: '17px',
-                  color: '#FAFAFF',
+                  color: '#0A0A0A',
                   lineHeight: 1.6,
                   marginBottom: '16px',
                 }}
@@ -68,8 +67,8 @@ export default function SocialProof() {
                 style={{
                   fontFamily: 'var(--font-space-mono)',
                   fontSize: '11px',
-                  color: '#6B6B7A',
-                  letterSpacing: '0.1em',
+                  color: '#888888',
+                  letterSpacing: '0.05em',
                 }}
               >
                 — {r.client}
@@ -78,12 +77,11 @@ export default function SocialProof() {
           ))}
         </div>
 
-        {/* NDA note */}
         <p
           style={{
             fontFamily: 'var(--font-space-mono)',
             fontSize: '11px',
-            color: '#6B6B7A',
+            color: '#AAAAAA',
             textAlign: 'center',
             marginTop: '20px',
             letterSpacing: '0.05em',
