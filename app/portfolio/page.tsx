@@ -135,7 +135,7 @@ const PROJECTS: Project[] = [
       { label: '🇺🇸 MM Flooring (US)', value: 'admin@mmflooringsolutions.com / mm123456' },
     ],
     primaryUrl: 'https://handwerkos.vercel.app',
-    thumbnail: null,
+    thumbnail: '/handwerk.jpg',
     color: '#22C55E',
   },
   {
