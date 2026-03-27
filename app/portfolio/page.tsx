@@ -171,7 +171,7 @@ const PROJECTS: Project[] = [
       { label: 'Role', value: 'ADMIN → CEO dashboard' },
     ],
     primaryUrl: 'https://envico.maxpromo.digital',
-    thumbnail: null,
+    thumbnail: '/envico-dashboard.jpg',
     color: '#A855F7',
   },
   {
@@ -694,6 +694,7 @@ function ProjectCard({
               width: '100%',
               height: '100%',
               objectFit: 'cover',
+              opacity: 0.55,
               transition: '0.4s ease',
               transform: hovered ? 'scale(1.03)' : 'scale(1)',
             }}
