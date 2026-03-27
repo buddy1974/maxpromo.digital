@@ -243,7 +243,7 @@ const PROJECTS: Project[] = [
       { label: 'All sections', value: 'rogers@nmi.cm / nmi2025' },
     ],
     primaryUrl: 'https://nmi.maxpromo.digital/dashboard',
-    thumbnail: null,
+    thumbnail: '/nmi-education.jpg',
     color: '#06B6D4',
   },
 ]
