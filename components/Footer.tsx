@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 
 const columns = [
@@ -90,6 +92,19 @@ export default function Footer() {
           <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>
             Built with Next.js · Deployed on Vercel
           </span>
+          <a
+            href="/portfolio"
+            style={{
+              color: '#1A1A1A',
+              fontSize: '10px',
+              textDecoration: 'none',
+              fontFamily: 'var(--font-ibm-mono)',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#333333')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#1A1A1A')}
+          >
+            staff
+          </a>
         </div>
       </div>
     </footer>
