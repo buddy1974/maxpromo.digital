@@ -65,7 +65,7 @@ const PROJECTS: Project[] = [
       { label: 'Stripe test card', value: '4242 4242 4242 4242 / 12/34 / 123' },
     ],
     primaryUrl: 'https://restaurant-os-one.vercel.app',
-    thumbnail: null,
+    thumbnail: '/restaurant.jpg',
     color: '#F97316',
   },
   {
@@ -100,7 +100,7 @@ const PROJECTS: Project[] = [
       { label: 'Password', value: 'praxis2024' },
     ],
     primaryUrl: 'https://urologie-six.vercel.app',
-    thumbnail: null,
+    thumbnail: '/urology.jpg',
     color: '#3B82F6',
   },
   {
@@ -206,7 +206,7 @@ const PROJECTS: Project[] = [
       { label: 'Stripe test card', value: '4242 4242 4242 4242 · 12/29 · 123' },
     ],
     primaryUrl: 'https://printshop.maxpromo.digital',
-    thumbnail: null,
+    thumbnail: '/printshop.jpg',
     color: '#F59E0B',
   },
   {
