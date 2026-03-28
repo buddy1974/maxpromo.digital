@@ -941,15 +941,40 @@ function ProjectModal({
       <div
         style={{
           height: '280px',
-          background: `linear-gradient(135deg, #0A0A0A, ${project.color}20)`,
+          position: 'relative',
+          overflow: 'hidden',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
           display: 'flex',
           alignItems: 'flex-end',
           padding: '32px',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
-          position: 'relative',
-          overflow: 'hidden',
         }}
       >
+        {/* Thumbnail background */}
+        {project.thumbnail && (
+          <img
+            src={project.thumbnail}
+            alt=""
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'top',
+              opacity: 0.35,
+            }}
+          />
+        )}
+        {/* Gradient overlay */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: project.thumbnail
+              ? `linear-gradient(to top, #111111 30%, rgba(10,10,10,0.6) 100%)`
+              : `linear-gradient(135deg, #0A0A0A, ${project.color}20)`,
+          }}
+        />
         <span
           style={{
             position: 'absolute',
