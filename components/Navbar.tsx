@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: '/pricing', label: 'Pricing' },
   { href: '/automation-audit', label: 'Audit' },
   { href: '/contact', label: 'Contact' },
+  { href: '/portfolio', label: 'Portfolio' },
 ]
 
 export default function Navbar() {
