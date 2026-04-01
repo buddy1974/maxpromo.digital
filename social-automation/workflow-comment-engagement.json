@@ -1,0 +1,310 @@
+{
+  "name": "MaxPromo Digital — Comment Engagement",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-engagement",
+      "name": "Schedule Trigger (Every 2h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_FB_PAGE_ID }}/feed",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "fields", "value": "id,message,created_time,comments{id,message,from,created_time}" },
+            { "name": "limit", "value": "10" },
+            { "name": "access_token", "value": "={{ $env.MAXPROMO_META_TOKEN }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-facebook-comments",
+      "name": "Fetch Facebook Comments",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "fields", "value": "id,caption,timestamp,comments{id,text,username,timestamp}" },
+            { "name": "limit", "value": "10" },
+            { "name": "access_token", "value": "={{ $env.MAXPROMO_META_TOKEN }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fetch-instagram-comments",
+      "name": "Fetch Instagram Comments",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Facebook post comments into normalised items\nconst posts = $input.first().json.data || [];\nconst results = [];\n\nfor (const post of posts) {\n  const comments = post.comments?.data || [];\n  for (const comment of comments) {\n    if (!comment.message || comment.message.trim().length < 2) continue;\n    results.push({\n      json: {\n        platform: 'Facebook',\n        commentId: comment.id,\n        postId: post.id,\n        authorName: comment.from?.name || 'Unknown',\n        text: comment.message,\n        createdAt: comment.created_time,\n        requiresReply: true\n      }\n    });\n  }\n}\n\nreturn results.length > 0 ? results : [{ json: { _empty: true } }];"
+      },
+      "id": "parse-facebook-comments",
+      "name": "Parse Facebook Comments",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Instagram comments into normalised items\nconst posts = $input.first().json.data || [];\nconst results = [];\n\nfor (const post of posts) {\n  const comments = post.comments?.data || [];\n  for (const comment of comments) {\n    if (!comment.text || comment.text.trim().length < 2) continue;\n    results.push({\n      json: {\n        platform: 'Instagram',\n        commentId: comment.id,\n        postId: post.id,\n        authorName: comment.username || 'Unknown',\n        text: comment.text,\n        createdAt: comment.timestamp,\n        requiresReply: true\n      }\n    });\n  }\n}\n\nreturn results.length > 0 ? results : [{ json: { _empty: true } }];"
+      },
+      "id": "parse-instagram-comments",
+      "name": "Parse Instagram Comments",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 400]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {}
+      },
+      "id": "merge-all-comments",
+      "name": "Merge All Comments",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [920, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter out empty results and items not needing a reply\nreturn $input.all().filter(item => {\n  if (item.json._empty) return false;\n  if (!item.json.requiresReply) return false;\n  if (!item.json.text || item.json.text.trim().length < 2) return false;\n  return true;\n});"
+      },
+      "id": "filter-needs-reply",
+      "name": "Filter: Needs Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1140, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5\",\n  \"max_tokens\": 200,\n  \"system\": \"You are the social media manager for MaxPromo Digital, an AI automation agency.\\n\\nReply rules:\\n- Professional, warm, helpful\\n- Maximum 2 sentences\\n- If they ask about services, mention maxpromo.digital\\n- Never sound automated\\n- Never say 'Great question!'\\n- 20-30% of replies end with a relevant follow-up question\\n- Vary reply structure every time\",\n  \"messages\": [{\"role\": \"user\", \"content\": \"Platform: {{ $json.platform }}\\nComment from {{ $json.authorName }}: {{ $json.text }}\\nWrite a brand reply.\"}]\n}",
+        "options": {}
+      },
+      "id": "claude-reply-gen",
+      "name": "AI Reply Generation (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1360, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $json.content;\nlet reply = '';\nif (Array.isArray(response)) {\n  reply = response\n    .filter(b => b.type === 'text')\n    .map(b => b.text)\n    .join('');\n} else if (typeof response === 'string') {\n  reply = response;\n}\nreturn [{\n  json: {\n    ...$('Filter: Needs Reply').item.json,\n    replyText: reply.trim()\n  }\n}];"
+      },
+      "id": "merge-reply",
+      "name": "Merge Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1580, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [{ "leftValue": "={{ $json.platform }}", "rightValue": "Facebook", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Facebook"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [{ "leftValue": "={{ $json.platform }}", "rightValue": "Instagram", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Instagram"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [{ "leftValue": "={{ $json.platform }}", "rightValue": "LinkedIn", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "LinkedIn"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "reply-router",
+      "name": "Reply Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [1800, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $json.commentId }}/comments",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $json.replyText }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "options": {}
+      },
+      "id": "send-facebook-reply",
+      "name": "Send Facebook Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2020, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $json.commentId }}/replies",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $json.replyText }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "options": {}
+      },
+      "id": "send-instagram-reply",
+      "name": "Send Instagram Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2020, 360]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/socialActions/urn:li:ugcPost:POST_ID/comments",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.MAXPROMO_LINKEDIN_TOKEN }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"actor\": \"urn:li:organization:{{ $env.MAXPROMO_LINKEDIN_ORG_ID }}\",\n  \"message\": {\n    \"text\": \"{{ $json.replyText }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-linkedin-reply",
+      "name": "Send LinkedIn Reply (DISABLED — setup pending)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2020, 540],
+      "disabled": true,
+      "notes": "DISABLED — enable when LinkedIn Page is set up"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO social_comments (platform, comment_id, commenter_name, comment_text, reply_text, reply_sent, replied_at) VALUES ('{{ $json.platform }}', '{{ $json.commentId }}', '{{ $json.authorName }}', '{{ $json.text.replace(/'/g, \"''\") }}', '{{ $json.replyText.replace(/'/g, \"''\") }}', true, NOW()) ON CONFLICT (comment_id) DO NOTHING"
+      },
+      "id": "log-to-neon",
+      "name": "Log Engagement (Neon)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2240, 300],
+      "credentials": {
+        "postgres": {
+          "id": "NEON_CREDENTIAL_ID",
+          "name": "MaxPromo Neon DB"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (Every 2h)": {
+      "main": [
+        [
+          { "node": "Fetch Facebook Comments", "type": "main", "index": 0 },
+          { "node": "Fetch Instagram Comments", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Fetch Facebook Comments": {
+      "main": [[{ "node": "Parse Facebook Comments", "type": "main", "index": 0 }]]
+    },
+    "Fetch Instagram Comments": {
+      "main": [[{ "node": "Parse Instagram Comments", "type": "main", "index": 0 }]]
+    },
+    "Parse Facebook Comments": {
+      "main": [[{ "node": "Merge All Comments", "type": "main", "index": 0 }]]
+    },
+    "Parse Instagram Comments": {
+      "main": [[{ "node": "Merge All Comments", "type": "main", "index": 1 }]]
+    },
+    "Merge All Comments": {
+      "main": [[{ "node": "Filter: Needs Reply", "type": "main", "index": 0 }]]
+    },
+    "Filter: Needs Reply": {
+      "main": [[{ "node": "AI Reply Generation (Claude)", "type": "main", "index": 0 }]]
+    },
+    "AI Reply Generation (Claude)": {
+      "main": [[{ "node": "Merge Reply", "type": "main", "index": 0 }]]
+    },
+    "Merge Reply": {
+      "main": [[{ "node": "Reply Router", "type": "main", "index": 0 }]]
+    },
+    "Reply Router": {
+      "main": [
+        [{ "node": "Send Facebook Reply", "type": "main", "index": 0 }],
+        [{ "node": "Send Instagram Reply", "type": "main", "index": 0 }],
+        [{ "node": "Send LinkedIn Reply (DISABLED — setup pending)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Send Facebook Reply": {
+      "main": [[{ "node": "Log Engagement (Neon)", "type": "main", "index": 0 }]]
+    },
+    "Send Instagram Reply": {
+      "main": [[{ "node": "Log Engagement (Neon)", "type": "main", "index": 0 }]]
+    },
+    "Send LinkedIn Reply (DISABLED — setup pending)": {
+      "main": [[{ "node": "Log Engagement (Neon)", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": ["maxpromo", "social-media", "engagement"],
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "maxpromo-digital"
+  }
+}

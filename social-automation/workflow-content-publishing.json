@@ -1,0 +1,384 @@
+{
+  "name": "MaxPromo Digital — Content Publishing",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "triggerAtHour": 8, "triggerAtMinute": 0 },
+            { "triggerAtHour": 19, "triggerAtMinute": 0 }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM social_posts WHERE status = 'approved' AND (scheduled_for IS NULL OR scheduled_for <= NOW()) ORDER BY created_at ASC LIMIT 10"
+      },
+      "id": "neon-read-queue",
+      "name": "Read Content Queue (Neon)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [460, 300],
+      "credentials": {
+        "postgres": {
+          "id": "NEON_CREDENTIAL_ID",
+          "name": "MaxPromo Neon DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst currentHour = now.getHours();\n\nconst isMorningRun = currentHour < 13;\nconst isEveningRun = currentHour >= 13;\n\nconst filtered = [];\n\nfor (const item of $input.all()) {\n  const window = (item.json.scheduled_window || 'ANY').toUpperCase().trim();\n\n  if (window === 'ANY' || window === '') {\n    filtered.push(item);\n    continue;\n  }\n  if (window === 'MORNING' && isMorningRun) {\n    filtered.push(item);\n    continue;\n  }\n  if (window === 'EVENING' && isEveningRun) {\n    filtered.push(item);\n    continue;\n  }\n}\n\nreturn filtered;"
+      },
+      "id": "time-window-filter",
+      "name": "Time Window Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 400,\n  \"system\": \"You are the social media voice of MaxPromo Digital, an AI automation agency.\\n\\nBRAND VOICE:\\n- Confident and expert, never salesy\\n- Use specific numbers and outcomes\\n- Short punchy sentences. High impact.\\n- No corporate buzzwords\\n\\nPLATFORM RULES:\\n- Facebook: 100-150 words, conversational, end with a question, 2-3 hashtags\\n- Instagram: 80-110 words, punchy, 8-10 hashtags at end only\\n- FB+IG: use Instagram format\\n- YouTube: 100-150 words, educational hook, direct CTA\\n\\nALWAYS end every post with:\\n\\u2192 Free audit: maxpromo.digital/automation-audit\\n\\nReturn ONLY the caption. No explanation. No JSON.\",\n  \"messages\": [{\"role\": \"user\", \"content\": \"Platform: {{ $json.platform }}\\nContent type: {{ $json.content_type }}\\nSector: {{ $json.sector }}\\nTopic: {{ $json.topic }}\\nWrite an optimised caption.\"}]\n}",
+        "options": {}
+      },
+      "id": "claude-caption-gen",
+      "name": "AI Caption Generation (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $json.content;\nlet caption = '';\nif (Array.isArray(response)) {\n  caption = response\n    .filter(b => b.type === 'text')\n    .map(b => b.text)\n    .join('');\n} else if (typeof response === 'string') {\n  caption = response;\n}\ncaption = caption.trim();\nconst finalCaption = caption.replace(/\"/g, '\\\\\"');\nreturn [{\n  json: {\n    ...$('Time Window Filter').item.json,\n    FinalCaption: finalCaption,\n    RawCaption: caption\n  }\n}];"
+      },
+      "id": "merge-caption",
+      "name": "Merge Caption",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [{ "leftValue": "={{ $json.platform }}", "rightValue": "Facebook", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Facebook"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [{ "leftValue": "={{ $json.platform }}", "rightValue": "Instagram", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Instagram"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [{ "leftValue": "={{ $json.platform }}", "rightValue": "YouTube", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "YouTube"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [{ "leftValue": "={{ $json.platform }}", "rightValue": "FB+IG", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "FB+IG"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false },
+                "conditions": [{ "leftValue": "={{ $json.platform }}", "rightValue": "LinkedIn", "operator": { "type": "string", "operation": "equals" } }],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "LinkedIn"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "platform-router",
+      "name": "Platform Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_FB_PAGE_ID }}/feed",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $json.FinalCaption }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "options": {}
+      },
+      "id": "post-facebook",
+      "name": "Post to Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1580, 80]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"caption\": \"{{ $json.FinalCaption }}\",\n  \"image_url\": \"{{ $json.image_url }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "options": {}
+      },
+      "id": "create-ig-container",
+      "name": "Create Instagram Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1580, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media_publish",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"creation_id\": \"{{ $json.id }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "options": {}
+      },
+      "id": "publish-ig-container",
+      "name": "Publish Instagram Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1800, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/youtube/v3/communityPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.MAXPROMO_YOUTUBE_TOKEN }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"snippet\": {\n    \"type\": \"textPost\",\n    \"textOriginalContent\": \"{{ $json.FinalCaption }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "post-youtube",
+      "name": "Post to YouTube Community",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1580, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  { json: { ...$json, _target: 'Facebook' } },\n  { json: { ...$json, _target: 'Instagram' } }\n];"
+      },
+      "id": "split-fb-ig",
+      "name": "Split FB+IG",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1580, 600]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_FB_PAGE_ID }}/feed",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $json.FinalCaption }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "options": {}
+      },
+      "id": "post-fb-from-fbig",
+      "name": "Post FB (from FB+IG)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1800, 540]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"caption\": \"{{ $json.FinalCaption }}\",\n  \"image_url\": \"{{ $json.image_url }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "options": {}
+      },
+      "id": "create-ig-container-fbig",
+      "name": "Create IG Container (from FB+IG)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1800, 660]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media_publish",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"creation_id\": \"{{ $json.id }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "options": {}
+      },
+      "id": "publish-ig-container-fbig",
+      "name": "Publish IG Container (from FB+IG)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2020, 660]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "=Bearer {{ $env.MAXPROMO_LINKEDIN_TOKEN }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"author\": \"urn:li:organization:{{ $env.MAXPROMO_LINKEDIN_ORG_ID }}\",\n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": {\n        \"text\": \"{{ $json.RawCaption }}\"\n      },\n      \"shareMediaCategory\": \"NONE\"\n    }\n  },\n  \"visibility\": {\n    \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\"\n  }\n}",
+        "options": {}
+      },
+      "id": "post-linkedin",
+      "name": "Post to LinkedIn (DISABLED — setup pending)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1580, 780],
+      "disabled": true,
+      "notes": "DISABLED — add MAXPROMO_LINKEDIN_TOKEN and MAXPROMO_LINKEDIN_ORG_ID to env, then enable"
+    },
+    {
+      "parameters": {
+        "jsCode": "const postResponse = $json;\nconst mergeItem = $('Merge Caption').item.json;\n\nconst postUrl = postResponse.id\n  ? `https://www.facebook.com/${postResponse.id}`\n  : postResponse.postId\n  ? `https://www.youtube.com/post/${postResponse.postId}`\n  : '';\n\nreturn [{\n  json: {\n    post_id: mergeItem.id,\n    platform_post_id: postResponse.id || postResponse.postId || '',\n    platform: mergeItem.platform,\n    postUrl\n  }\n}];"
+      },
+      "id": "collect-result",
+      "name": "Collect Post Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE social_posts SET status = 'published', published_at = NOW(), platform_post_id = '{{ $json.platform_post_id }}' WHERE id = '{{ $json.post_id }}'"
+      },
+      "id": "neon-mark-published",
+      "name": "Mark as Published (Neon)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [2460, 300],
+      "credentials": {
+        "postgres": {
+          "id": "NEON_CREDENTIAL_ID",
+          "name": "MaxPromo Neon DB"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [[{ "node": "Read Content Queue (Neon)", "type": "main", "index": 0 }]]
+    },
+    "Read Content Queue (Neon)": {
+      "main": [[{ "node": "Time Window Filter", "type": "main", "index": 0 }]]
+    },
+    "Time Window Filter": {
+      "main": [[{ "node": "AI Caption Generation (Claude)", "type": "main", "index": 0 }]]
+    },
+    "AI Caption Generation (Claude)": {
+      "main": [[{ "node": "Merge Caption", "type": "main", "index": 0 }]]
+    },
+    "Merge Caption": {
+      "main": [[{ "node": "Platform Router", "type": "main", "index": 0 }]]
+    },
+    "Platform Router": {
+      "main": [
+        [{ "node": "Post to Facebook", "type": "main", "index": 0 }],
+        [{ "node": "Create Instagram Container", "type": "main", "index": 0 }],
+        [{ "node": "Post to YouTube Community", "type": "main", "index": 0 }],
+        [{ "node": "Split FB+IG", "type": "main", "index": 0 }],
+        [{ "node": "Post to LinkedIn (DISABLED — setup pending)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Post to Facebook": {
+      "main": [[{ "node": "Collect Post Result", "type": "main", "index": 0 }]]
+    },
+    "Create Instagram Container": {
+      "main": [[{ "node": "Publish Instagram Container", "type": "main", "index": 0 }]]
+    },
+    "Publish Instagram Container": {
+      "main": [[{ "node": "Collect Post Result", "type": "main", "index": 0 }]]
+    },
+    "Post to YouTube Community": {
+      "main": [[{ "node": "Collect Post Result", "type": "main", "index": 0 }]]
+    },
+    "Split FB+IG": {
+      "main": [
+        [
+          { "node": "Post FB (from FB+IG)", "type": "main", "index": 0 },
+          { "node": "Create IG Container (from FB+IG)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Post FB (from FB+IG)": {
+      "main": [[{ "node": "Collect Post Result", "type": "main", "index": 0 }]]
+    },
+    "Create IG Container (from FB+IG)": {
+      "main": [[{ "node": "Publish IG Container (from FB+IG)", "type": "main", "index": 0 }]]
+    },
+    "Publish IG Container (from FB+IG)": {
+      "main": [[{ "node": "Collect Post Result", "type": "main", "index": 0 }]]
+    },
+    "Post to LinkedIn (DISABLED — setup pending)": {
+      "main": [[{ "node": "Collect Post Result", "type": "main", "index": 0 }]]
+    },
+    "Collect Post Result": {
+      "main": [[{ "node": "Mark as Published (Neon)", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": ["maxpromo", "social-media", "publishing"],
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "maxpromo-digital"
+  }
+}
