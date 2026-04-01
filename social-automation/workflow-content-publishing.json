@@ -50,7 +50,7 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "x-api-key", "value": "YOUR_ANTHROPIC_API_KEY_HERE" },
             { "name": "anthropic-version", "value": "2023-06-01" },
             { "name": "content-type", "value": "application/json" }
           ]
@@ -138,10 +138,10 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_FB_PAGE_ID }}/feed",
+        "url": "https://graph.facebook.com/v19.0/1897145087269032/feed",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"message\": \"{{ $json.FinalCaption }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "jsonBody": "={\n  \"message\": \"{{ $json.FinalCaption }}\",\n  \"access_token\": \"EAAZCNUZCoTJ5kBRL6GUcwHi6CyiytzAMaeybELDQ5eYBgsCVz6HHdZCxzXNTXeoV2cV3GyjkDP7bDsMsil8k7XNcVAb16s67lC5R0QPHlxfQqPgg0agnnC8ZBgP56ZCSpQZBFJ1lbst6pdNgGbFPvDgrTLBMZAV1sJnnqPVmG4tl9I1eTjhDZAT39pXRcJjdjHZBlxKIjtzzSXehUWVjtnwZDZD\"\n}",
         "options": {}
       },
       "id": "post-facebook",
@@ -153,10 +153,10 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media",
+        "url": "https://graph.facebook.com/v19.0/PENDING_IG_USER_ID/media",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"caption\": \"{{ $json.FinalCaption }}\",\n  \"image_url\": \"{{ $json.image_url }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "jsonBody": "={\n  \"caption\": \"{{ $json.FinalCaption }}\",\n  \"image_url\": \"{{ $json.image_url }}\",\n  \"access_token\": \"EAAZCNUZCoTJ5kBRL6GUcwHi6CyiytzAMaeybELDQ5eYBgsCVz6HHdZCxzXNTXeoV2cV3GyjkDP7bDsMsil8k7XNcVAb16s67lC5R0QPHlxfQqPgg0agnnC8ZBgP56ZCSpQZBFJ1lbst6pdNgGbFPvDgrTLBMZAV1sJnnqPVmG4tl9I1eTjhDZAT39pXRcJjdjHZBlxKIjtzzSXehUWVjtnwZDZD\"\n}",
         "options": {}
       },
       "id": "create-ig-container",
@@ -168,10 +168,10 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media_publish",
+        "url": "https://graph.facebook.com/v19.0/PENDING_IG_USER_ID/media_publish",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"creation_id\": \"{{ $json.id }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "jsonBody": "={\n  \"creation_id\": \"{{ $json.id }}\",\n  \"access_token\": \"EAAZCNUZCoTJ5kBRL6GUcwHi6CyiytzAMaeybELDQ5eYBgsCVz6HHdZCxzXNTXeoV2cV3GyjkDP7bDsMsil8k7XNcVAb16s67lC5R0QPHlxfQqPgg0agnnC8ZBgP56ZCSpQZBFJ1lbst6pdNgGbFPvDgrTLBMZAV1sJnnqPVmG4tl9I1eTjhDZAT39pXRcJjdjHZBlxKIjtzzSXehUWVjtnwZDZD\"\n}",
         "options": {}
       },
       "id": "publish-ig-container",
@@ -187,7 +187,7 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "Authorization", "value": "=Bearer {{ $env.MAXPROMO_YOUTUBE_TOKEN }}" },
+            { "name": "Authorization", "value": "Bearer PENDING_YOUTUBE_TOKEN" },
             { "name": "Content-Type", "value": "application/json" }
           ]
         },
@@ -215,10 +215,10 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_FB_PAGE_ID }}/feed",
+        "url": "https://graph.facebook.com/v19.0/1897145087269032/feed",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"message\": \"{{ $json.FinalCaption }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "jsonBody": "={\n  \"message\": \"{{ $json.FinalCaption }}\",\n  \"access_token\": \"EAAZCNUZCoTJ5kBRL6GUcwHi6CyiytzAMaeybELDQ5eYBgsCVz6HHdZCxzXNTXeoV2cV3GyjkDP7bDsMsil8k7XNcVAb16s67lC5R0QPHlxfQqPgg0agnnC8ZBgP56ZCSpQZBFJ1lbst6pdNgGbFPvDgrTLBMZAV1sJnnqPVmG4tl9I1eTjhDZAT39pXRcJjdjHZBlxKIjtzzSXehUWVjtnwZDZD\"\n}",
         "options": {}
       },
       "id": "post-fb-from-fbig",
@@ -230,10 +230,10 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media",
+        "url": "https://graph.facebook.com/v19.0/PENDING_IG_USER_ID/media",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"caption\": \"{{ $json.FinalCaption }}\",\n  \"image_url\": \"{{ $json.image_url }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "jsonBody": "={\n  \"caption\": \"{{ $json.FinalCaption }}\",\n  \"image_url\": \"{{ $json.image_url }}\",\n  \"access_token\": \"EAAZCNUZCoTJ5kBRL6GUcwHi6CyiytzAMaeybELDQ5eYBgsCVz6HHdZCxzXNTXeoV2cV3GyjkDP7bDsMsil8k7XNcVAb16s67lC5R0QPHlxfQqPgg0agnnC8ZBgP56ZCSpQZBFJ1lbst6pdNgGbFPvDgrTLBMZAV1sJnnqPVmG4tl9I1eTjhDZAT39pXRcJjdjHZBlxKIjtzzSXehUWVjtnwZDZD\"\n}",
         "options": {}
       },
       "id": "create-ig-container-fbig",
@@ -245,10 +245,10 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/v19.0/{{ $env.MAXPROMO_IG_USER_ID }}/media_publish",
+        "url": "https://graph.facebook.com/v19.0/PENDING_IG_USER_ID/media_publish",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"creation_id\": \"{{ $json.id }}\",\n  \"access_token\": \"{{ $env.MAXPROMO_META_TOKEN }}\"\n}",
+        "jsonBody": "={\n  \"creation_id\": \"{{ $json.id }}\",\n  \"access_token\": \"EAAZCNUZCoTJ5kBRL6GUcwHi6CyiytzAMaeybELDQ5eYBgsCVz6HHdZCxzXNTXeoV2cV3GyjkDP7bDsMsil8k7XNcVAb16s67lC5R0QPHlxfQqPgg0agnnC8ZBgP56ZCSpQZBFJ1lbst6pdNgGbFPvDgrTLBMZAV1sJnnqPVmG4tl9I1eTjhDZAT39pXRcJjdjHZBlxKIjtzzSXehUWVjtnwZDZD\"\n}",
         "options": {}
       },
       "id": "publish-ig-container-fbig",
