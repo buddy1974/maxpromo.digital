@@ -50,7 +50,7 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "x-api-key", "value": "YOUR_ANTHROPIC_API_KEY_HERE" },
+            { "name": "x-api-key", "value": "ANTHROPIC_API_KEY_ENTER_IN_N8N" },
             { "name": "anthropic-version", "value": "2023-06-01" },
             { "name": "content-type", "value": "application/json" }
           ]
@@ -187,7 +187,7 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "Authorization", "value": "Bearer PENDING_YOUTUBE_TOKEN" },
+            { "name": "Authorization", "value": "Bearer PENDING_YOUTUBE_OAUTH" },
             { "name": "Content-Type", "value": "application/json" }
           ]
         },
@@ -200,7 +200,8 @@
       "name": "Post to YouTube Community",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1580, 420]
+      "position": [1580, 420],
+      "notes": "YouTube OAuth token — obtain from MaxPromo YouTube credential in n8n after workflow import. Go to Credentials → MaxPromo YouTube → copy access token → paste into Authorization header value replacing PENDING_YOUTUBE_OAUTH."
     },
     {
       "parameters": {

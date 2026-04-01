@@ -107,7 +107,7 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "x-api-key", "value": "YOUR_ANTHROPIC_API_KEY_HERE" },
+            { "name": "x-api-key", "value": "ANTHROPIC_API_KEY_ENTER_IN_N8N" },
             { "name": "anthropic-version", "value": "2023-06-01" },
             { "name": "content-type", "value": "application/json" }
           ]
