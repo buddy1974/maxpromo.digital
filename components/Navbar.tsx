@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const NAV_LINKS = [
   { href: '/services', label: 'Services' },
@@ -38,18 +39,15 @@ export default function Navbar() {
           }}
         >
           {/* Logo */}
-          <Link href="/" style={{ textDecoration: 'none', flexShrink: 0 }}>
-            <span
-              style={{
-                fontFamily: 'var(--font-space-grotesk)',
-                fontWeight: 700,
-                fontSize: '18px',
-                color: '#FAFAFF',
-                letterSpacing: '-0.04em',
-              }}
-            >
-              MAXPROMO<span style={{ color: '#F97316' }}>.DIGITAL</span>
-            </span>
+          <Link href="/" style={{ textDecoration: 'none', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+            <Image
+              src="/logo.png"
+              alt="MaxPromo Digital"
+              width={180}
+              height={45}
+              style={{ height: '36px', width: 'auto' }}
+              priority
+            />
           </Link>
 
           {/* Desktop links */}
