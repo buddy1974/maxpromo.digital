@@ -4,6 +4,7 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ChatAgent from '@/components/ChatAgent'
+import CookieBanner from '@/components/CookieBanner'
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -63,6 +64,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <ChatAgent />
+        <CookieBanner />
       </body>
     </html>
   )
