@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import AuditResults, { AuditResult } from './AuditResults'
+import CostEstimate, { EstimateData } from './CostEstimate'
 
-type Stage = 'questions' | 'loading' | 'results'
+type Stage = 'questions' | 'loading' | 'results' | 'estimate-loading' | 'estimate'
 
 interface FormData {
   orgType: string
@@ -75,6 +76,14 @@ const LOADING_MESSAGES = [
   'Calculating potential ROI...',
   'Preparing recommendations...',
   'Finalising your report...',
+]
+
+const ESTIMATE_LOADING_MESSAGES = [
+  'Reviewing your audit results...',
+  'Researching German market rates...',
+  'Building your itemised estimate...',
+  'Calculating year-one costs...',
+  'Finalising your Kostenvoranschlag...',
 ]
 
 const TOTAL_STEPS = 5
@@ -189,13 +198,13 @@ function OptionBtn({
 }
 
 /* ─── LOADING SCREEN ────────────────────────────────────────── */
-function LoadingScreen() {
+function LoadingScreen({ messages = LOADING_MESSAGES }: { messages?: string[] }) {
   const [msgIndex, setMsgIndex] = useState(0)
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
     const msgInterval = setInterval(() => {
-      setMsgIndex((i) => Math.min(i + 1, LOADING_MESSAGES.length - 1))
+      setMsgIndex((i) => Math.min(i + 1, messages.length - 1))
     }, 1500)
 
     const start = Date.now()
@@ -248,7 +257,7 @@ function LoadingScreen() {
           padding: '0 24px',
         }}
       >
-        {LOADING_MESSAGES[msgIndex]}
+        {messages[msgIndex]}
       </p>
       <p
         style={{
@@ -314,6 +323,7 @@ export default function AuditForm() {
     company: '',
   })
   const [results, setResults] = useState<AuditResult[]>([])
+  const [estimate, setEstimate] = useState<EstimateData | null>(null)
   const [error, setError] = useState('')
 
   const toggleMulti = (field: 'timeDrains' | 'tools', value: string) => {
@@ -369,6 +379,40 @@ export default function AuditForm() {
     }
   }
 
+  const getEstimate = async () => {
+    setStage('estimate-loading')
+    setError('')
+
+    const allTimeDrains =
+      form.timeDrains.includes('Other') && form.timeDrainsOther
+        ? [...form.timeDrains.filter((d) => d !== 'Other'), form.timeDrainsOther]
+        : form.timeDrains
+
+    try {
+      const res = await fetch('/api/discovery/estimate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orgType: form.orgType,
+          teamSize: form.teamSize,
+          timeDrains: allTimeDrains,
+          tools: form.tools,
+          experience: form.experience,
+          goal: form.goal,
+          company: form.company,
+          auditResults: results,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Estimate failed')
+      setEstimate(data.estimate as EstimateData)
+      setStage('estimate')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not generate estimate. Please try again.')
+      setStage('results')
+    }
+  }
+
   const next = () => {
     if (step < TOTAL_STEPS) setStep((s) => s + 1)
     else void runAudit()
@@ -379,12 +423,26 @@ export default function AuditForm() {
   }
 
   if (stage === 'loading') return <LoadingScreen />
+  if (stage === 'estimate-loading') return <LoadingScreen messages={ESTIMATE_LOADING_MESSAGES} />
   if (stage === 'results') {
     return (
       <AuditResults
         results={results}
         orgType={form.orgType}
         company={form.company}
+        onEstimate={() => void getEstimate()}
+      />
+    )
+  }
+  if (stage === 'estimate' && estimate) {
+    return (
+      <CostEstimate
+        estimate={estimate}
+        company={form.company}
+        name={form.name}
+        email={form.email}
+        auditResults={results}
+        onBack={() => setStage('results')}
       />
     )
   }

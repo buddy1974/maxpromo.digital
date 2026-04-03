@@ -16,13 +16,14 @@ interface AuditResultsProps {
   results: AuditResult[]
   orgType: string
   company: string
+  onEstimate?: () => void
 }
 
 const mono = 'var(--font-space-mono)'
 const grotesk = 'var(--font-space-grotesk)'
 const sans = 'var(--font-dm-sans)'
 
-export default function AuditResults({ results, orgType, company }: AuditResultsProps) {
+export default function AuditResults({ results, orgType, company, onEstimate }: AuditResultsProps) {
   const handlePrint = () => window.print()
 
   return (
@@ -215,22 +216,42 @@ export default function AuditResults({ results, orgType, company }: AuditResults
           Book a 30-minute discovery call. We&apos;ll scope the highest-impact automation and give you a fixed-price proposal.
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-          <Link
-            href="/contact"
-            style={{
-              fontFamily: mono,
-              fontWeight: 700,
-              fontSize: '14px',
-              color: '#000000',
-              background: '#F97316',
-              padding: '14px 28px',
-              textDecoration: 'none',
-              letterSpacing: '0.05em',
-              boxShadow: '0 4px 20px rgba(249,115,22,0.3)',
-            }}
-          >
-            Book a Discovery Call →
-          </Link>
+          {onEstimate ? (
+            <button
+              onClick={onEstimate}
+              style={{
+                fontFamily: mono,
+                fontWeight: 700,
+                fontSize: '14px',
+                color: '#000000',
+                background: '#F97316',
+                padding: '14px 28px',
+                border: 'none',
+                cursor: 'pointer',
+                letterSpacing: '0.05em',
+                boxShadow: '0 4px 20px rgba(249,115,22,0.3)',
+              }}
+            >
+              Get Cost Estimate →
+            </button>
+          ) : (
+            <Link
+              href="/contact"
+              style={{
+                fontFamily: mono,
+                fontWeight: 700,
+                fontSize: '14px',
+                color: '#000000',
+                background: '#F97316',
+                padding: '14px 28px',
+                textDecoration: 'none',
+                letterSpacing: '0.05em',
+                boxShadow: '0 4px 20px rgba(249,115,22,0.3)',
+              }}
+            >
+              Book a Discovery Call →
+            </Link>
+          )}
           <button
             onClick={handlePrint}
             style={{
@@ -249,6 +270,24 @@ export default function AuditResults({ results, orgType, company }: AuditResults
           >
             Download Report (PDF)
           </button>
+          {onEstimate && (
+            <Link
+              href="/contact"
+              style={{
+                fontFamily: sans,
+                fontWeight: 500,
+                fontSize: '14px',
+                color: '#CCCCCC',
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.15)',
+                padding: '14px 28px',
+                textDecoration: 'none',
+                letterSpacing: '0.02em',
+              }}
+            >
+              Book Discovery Call
+            </Link>
+          )}
         </div>
       </div>
     </div>
