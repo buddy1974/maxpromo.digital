@@ -19,7 +19,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT * FROM social_posts WHERE status = 'approved' AND (scheduled_for IS NULL OR scheduled_for <= NOW()) ORDER BY created_at ASC LIMIT 10"
+        "query": "SELECT * FROM social_posts WHERE status = 'approved' AND (scheduled_for IS NULL OR scheduled_for <= NOW()) ORDER BY created_at ASC LIMIT 1"
       },
       "id": "neon-read-queue",
       "name": "Read Content Queue (Neon)",

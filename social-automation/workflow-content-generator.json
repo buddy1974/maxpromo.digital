@@ -1,0 +1,187 @@
+{
+  "name": "MaxPromo Digital — Content Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 1,
+              "triggerAtDay": [0],
+              "triggerAtHour": 7,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-generator",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) as pending_count, COALESCE(json_agg(topic ORDER BY created_at DESC), '[]'::json) as recent_topics FROM social_posts WHERE status = 'approved' AND created_at > NOW() - INTERVAL '30 days'"
+      },
+      "id": "check-queue",
+      "name": "Check Queue Level (Neon)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [460, 300],
+      "credentials": {
+        "postgres": {
+          "id": "NEON_CREDENTIAL_ID",
+          "name": "MaxPromo Neon DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\nconst pending = parseInt(data.pending_count || 0);\nconst recentTopics = data.recent_topics || [];\nconst target = 21;\nconst needed = Math.max(0, target - pending);\n\nif (needed === 0) {\n  return [{ json: {\n    skip: true,\n    message: `Queue has ${pending} posts. No generation needed.`,\n    needed: 0,\n    recentTopics: recentTopics.slice(0, 20)\n  }}];\n}\n\nreturn [{ json: {\n  skip: false,\n  needed,\n  pending,\n  recentTopics: recentTopics.slice(0, 20),\n  message: `Queue has ${pending} posts. Generating ${needed} new posts.`\n}}];"
+      },
+      "id": "calculate-needed",
+      "name": "Calculate Needed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "skip-check",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "should-skip",
+      "name": "Should Skip?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "ANTHROPIC_API_KEY_ENTER_IN_N8N" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-5\",\n  \"max_tokens\": 2000,\n  \"system\": \"You are the content strategist for MaxPromo Digital, an AI automation agency based in Germany.\\n\\nMaxPromo Digital builds:\\n- AI automation systems and agents\\n- Custom business platforms and OS\\n- Web development and SaaS products\\n- Workflow automation with n8n\\n- API integrations\\n- AI chatbots and assistants\\n\\nTarget audience:\\n- Small and medium business owners\\n- Entrepreneurs and founders\\n- Trade businesses (Handwerk)\\n- Service companies (cleaning, care, restaurants, medical, legal)\\n- Developers and agency owners\\n\\nContent pillars (rotate between):\\n- Educational: explain how AI/automation works\\n- Case study: real results from real builds\\n- Tip: one actionable insight\\n- ROI/cost: what manual work actually costs\\n- CTA: drive to audit or estimate page\\n\\nSectors to rotate through:\\nprofessional_services, cleaning, healthcare, trade, restaurant, education, logistics, retail, legal, real_estate, ngo, technology\\n\\nAlways end posts with a CTA to:\\nmaxpromo.digital/automation-audit\\nOR maxpromo.digital/estimate\\n\\nReturn ONLY valid JSON array. No markdown. No explanation. No backticks. Just the raw JSON array.\",\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": \"Generate exactly {{ $json.needed }} social media post topics for Facebook.\\n\\nRecent topics already used (do NOT repeat these):\\n{{ $json.recentTopics.join(', ') }}\\n\\nReturn a JSON array of exactly {{ $json.needed }} objects:\\n[\\n  {\\n    \\\"topic\\\": \\\"specific post topic\\\",\\n    \\\"sector\\\": \\\"one of the sectors above\\\",\\n    \\\"content_type\\\": \\\"educational|case_study|tip|stat|cta\\\",\\n    \\\"scheduled_window\\\": \\\"MORNING|AFTERNOON|EVENING|ANY\\\"\\n  }\\n]\\n\\nVary sectors and content types. Make topics specific and valuable. No generic topics. Return ONLY the JSON array.\"\n  }]\n}",
+        "options": {}
+      },
+      "id": "claude-generate-topics",
+      "name": "Generate Post Topics (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst content = response.content;\nlet text = '';\n\nif (Array.isArray(content)) {\n  text = content\n    .filter(b => b.type === 'text')\n    .map(b => b.text)\n    .join('');\n} else if (typeof content === 'string') {\n  text = content;\n}\n\ntext = text.replace(/```json/g, '').replace(/```/g, '').trim();\n\nlet topics = [];\ntry {\n  topics = JSON.parse(text);\n} catch(e) {\n  const match = text.match(/\\[[\\s\\S]*\\]/);\n  if (match) {\n    topics = JSON.parse(match[0]);\n  }\n}\n\nif (!Array.isArray(topics) || topics.length === 0) {\n  throw new Error('Claude returned no valid topics: ' + text);\n}\n\nreturn topics.map(t => ({ json: t }));"
+      },
+      "id": "parse-topics",
+      "name": "Parse Topics",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 420]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO social_posts (topic, sector, content_type, platform, status, scheduled_window) VALUES ('{{ $json.topic.replace(/'/g, \"''\") }}', '{{ $json.sector }}', '{{ $json.content_type }}', 'facebook', 'approved', '{{ $json.scheduled_window }}')"
+      },
+      "id": "insert-posts",
+      "name": "Insert Posts to Neon",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [1560, 420],
+      "credentials": {
+        "postgres": {
+          "id": "NEON_CREDENTIAL_ID",
+          "name": "MaxPromo Neon DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nreturn [{\n  json: {\n    generated: items.length,\n    timestamp: new Date().toISOString(),\n    message: `Content generator: inserted ${items.length} new posts into queue`\n  }\n}];"
+      },
+      "id": "log-generation",
+      "name": "Log Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    generated: 0,\n    timestamp: new Date().toISOString(),\n    message: $input.first().json.message\n  }\n}];"
+      },
+      "id": "log-skip",
+      "name": "Log Skip",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 180]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [[{ "node": "Check Queue Level (Neon)", "type": "main", "index": 0 }]]
+    },
+    "Check Queue Level (Neon)": {
+      "main": [[{ "node": "Calculate Needed", "type": "main", "index": 0 }]]
+    },
+    "Calculate Needed": {
+      "main": [[{ "node": "Should Skip?", "type": "main", "index": 0 }]]
+    },
+    "Should Skip?": {
+      "main": [
+        [{ "node": "Log Skip", "type": "main", "index": 0 }],
+        [{ "node": "Generate Post Topics (Claude)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Generate Post Topics (Claude)": {
+      "main": [[{ "node": "Parse Topics", "type": "main", "index": 0 }]]
+    },
+    "Parse Topics": {
+      "main": [[{ "node": "Insert Posts to Neon", "type": "main", "index": 0 }]]
+    },
+    "Insert Posts to Neon": {
+      "main": [[{ "node": "Log Result", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": ["maxpromo", "social-media", "content-generator"],
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "maxpromo-digital"
+  }
+}
