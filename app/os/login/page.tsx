@@ -4,8 +4,8 @@ import type { FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 
 const OS_PASSWORD = 'maxpromo-os-2026'
-const mono = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
+const mono = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
 
 export default function OsLoginPage() {
   const router = useRouter()

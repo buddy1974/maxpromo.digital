@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const mono    = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
-const sans    = 'var(--font-dm-sans)'
+const mono    = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
+const sans    = 'var(--font-inter)'
 
 interface LineItem { description: string; qty: number; unit_price: number; total: number }
 interface Client   { id: string; name: string; company: string; email: string; address: string; city: string; country: string }

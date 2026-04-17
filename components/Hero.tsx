@@ -71,10 +71,10 @@ function StatCounter({ stat }: { stat: StatConfig }) {
 
   return (
     <div ref={ref}>
-      <p style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '44px', color: '#FAFAFF', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '6px' }}>
+      <p style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: '44px', color: '#FAFAFF', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '6px' }}>
         {stat.display(count)}
       </p>
-      <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#6B6B7A' }}>
+      <p style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', color: '#6B6B7A' }}>
         {stat.label}
       </p>
     </div>
@@ -146,7 +146,7 @@ export default function Hero() {
                 <span
                   key={pill.label}
                   style={{
-                    fontFamily: 'var(--font-space-mono)',
+                    fontFamily: 'var(--font-roboto-mono)',
                     fontSize: '12px',
                     color: '#AAAAAA',
                     background: 'rgba(255,255,255,0.04)',
@@ -172,7 +172,7 @@ export default function Hero() {
             {/* Headline */}
             <h1
               style={{
-                fontFamily: 'var(--font-space-grotesk)',
+                fontFamily: 'var(--font-inter)',
                 fontWeight: 700,
                 fontSize: 'clamp(3.5rem, 6vw, 5.5rem)',
                 letterSpacing: '-0.04em',
@@ -188,7 +188,7 @@ export default function Hero() {
             {/* Sub */}
             <p
               style={{
-                fontFamily: 'var(--font-dm-sans)',
+                fontFamily: 'var(--font-inter)',
                 fontWeight: 500,
                 fontSize: '18px',
                 color: '#AAAAAA',
@@ -206,7 +206,7 @@ export default function Hero() {
               <Link
                 href="/automation-audit"
                 style={{
-                  fontFamily: 'var(--font-space-mono)',
+                  fontFamily: 'var(--font-roboto-mono)',
                   fontWeight: 700,
                   fontSize: '15px',
                   color: '#000000',
@@ -224,7 +224,7 @@ export default function Hero() {
               <Link
                 href="/contact"
                 style={{
-                  fontFamily: 'var(--font-dm-sans)',
+                  fontFamily: 'var(--font-inter)',
                   fontWeight: 500,
                   fontSize: '15px',
                   color: '#FAFAFF',
@@ -245,7 +245,7 @@ export default function Hero() {
             {/* Urgency line */}
             <p
               style={{
-                fontFamily: 'var(--font-space-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontSize: '11px',
                 color: '#666666',
                 marginBottom: '2.5rem',
@@ -302,12 +302,12 @@ export default function Hero() {
               borderBottom: '1px solid rgba(255,255,255,0.08)',
             }}
           >
-            <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '12px', letterSpacing: '0.15em', color: '#6B6B7A', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '12px', letterSpacing: '0.15em', color: '#6B6B7A', textTransform: 'uppercase' }}>
               SYS.AGENTS
             </span>
             <span
               className="status-pulse"
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-space-mono)', fontSize: '12px', color: '#F97316' }}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'var(--font-roboto-mono)', fontSize: '12px', color: '#F97316' }}
             >
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#F97316', display: 'inline-block' }} />
               LIVE
@@ -341,11 +341,11 @@ export default function Hero() {
                       display: 'inline-block',
                     }}
                   />
-                  <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '12px', color: i === tick ? '#FFFFFF' : '#6B6B7A' }}>
+                  <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '12px', color: i === tick ? '#FFFFFF' : '#6B6B7A' }}>
                     {agent.agent}
                   </span>
                 </div>
-                <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '12px', fontWeight: 700, color: agent.status === 'ACTIVE' ? '#F97316' : 'rgba(255,255,255,0.2)' }}>
+                <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '12px', fontWeight: 700, color: agent.status === 'ACTIVE' ? '#F97316' : 'rgba(255,255,255,0.2)' }}>
                   {agent.status}
                 </span>
               </div>
@@ -362,15 +362,15 @@ export default function Hero() {
               borderRadius: '2px',
             }}
           >
-            <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A', marginBottom: '6px' }}>
+            <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: '#6B6B7A', marginBottom: '6px' }}>
               // current task
             </p>
-            <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '13px', color: '#FFFFFF', lineHeight: 1.5 }}>
+            <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '13px', color: '#FFFFFF', lineHeight: 1.5 }}>
               {active.task}
             </p>
             <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
-              <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>uptime</span>
-              <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', fontWeight: 700, color: '#F97316' }}>{active.uptime}</span>
+              <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: '#6B6B7A' }}>uptime</span>
+              <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', fontWeight: 700, color: '#F97316' }}>{active.uptime}</span>
             </div>
           </div>
 
@@ -384,7 +384,7 @@ export default function Hero() {
               borderRadius: '2px',
             }}
           >
-            <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '13px', color: '#6B6B7A' }}>
+            <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '13px', color: '#6B6B7A' }}>
               <span style={{ color: '#F97316' }}>$ </span>
               {LOG_LINES[logIndex]}
               <span className="cursor-blink" style={{ color: '#F97316' }}>▊</span>

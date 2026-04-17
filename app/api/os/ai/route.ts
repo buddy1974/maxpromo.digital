@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { callAI } from '@/lib/ai'
 import type { AIMessage } from '@/lib/ai'
 
-const SYSTEM_PROMPT = `You are Marcel's AI business assistant inside MaxPromo Digital OS. You help with:
+const SYSTEM_PROMPT = `You are Marcel's AI business assistant inside Maxpromo Digital OS. You help with:
 - Drafting invoice descriptions and line items
 - Writing Angebot (quote) text
 - Summarising lead information

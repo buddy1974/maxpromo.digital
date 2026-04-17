@@ -53,7 +53,7 @@ export default function Footer() {
             <div key={col.title}>
               <p
                 style={{
-                  fontFamily: 'var(--font-space-mono)',
+                  fontFamily: 'var(--font-roboto-mono)',
                   fontSize: '10px',
                   color: '#F97316',
                   letterSpacing: '0.2em',
@@ -88,13 +88,13 @@ export default function Footer() {
             gap: '1rem',
           }}
         >
-          <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>
-            © 2026 MaxPromo Digital
+          <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: '#6B6B7A' }}>
+            © 2026 MAXPROMO DIGITAL
           </span>
-          <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>
+          <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: '#6B6B7A' }}>
             Built with Next.js · Deployed on Vercel
           </span>
-          <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#555555' }}>
+          <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '10px', color: '#555555' }}>
             Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst · Gemäß §19 UStG keine MwSt.
           </span>
           <a
@@ -103,7 +103,7 @@ export default function Footer() {
               color: '#1A1A1A',
               fontSize: '10px',
               textDecoration: 'none',
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
             }}
             onMouseEnter={(e) => (e.currentTarget.style.color = '#333333')}
             onMouseLeave={(e) => (e.currentTarget.style.color = '#1A1A1A')}

@@ -1,33 +1,27 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Space_Mono, DM_Sans } from 'next/font/google'
+import { Inter, Roboto_Mono } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ChatAgent from '@/components/ChatAgent'
 import CookieBanner from '@/components/CookieBanner'
 
-const spaceGrotesk = Space_Grotesk({
-  variable: '--font-space-grotesk',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
 })
 
-const spaceMono = Space_Mono({
-  variable: '--font-space-mono',
+const robotoMono = Roboto_Mono({
+  variable: '--font-roboto-mono',
   subsets: ['latin'],
   weight: ['400', '700'],
 })
 
-const dmSans = DM_Sans({
-  variable: '--font-dm-sans',
-  subsets: ['latin'],
-  weight: ['400', '500'],
-})
-
 export const metadata: Metadata = {
   title: {
-    default: 'MaxPromo Digital — AI Automation Platform',
-    template: '%s | MaxPromo Digital',
+    default: 'MAXPROMO DIGITAL — AI Automation Platform',
+    template: '%s | MAXPROMO DIGITAL',
   },
   description:
     'AI agents, workflow automation, and intelligent systems for businesses that are serious about growth.',
@@ -41,7 +35,7 @@ export const metadata: Metadata = {
     'automation systems',
   ],
   openGraph: {
-    title: 'MaxPromo Digital — AI Automation Platform',
+    title: 'MAXPROMO DIGITAL — AI Automation Platform',
     description:
       'AI agents, workflow automation, and intelligent systems for businesses serious about growth.',
     type: 'website',
@@ -57,7 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${spaceMono.variable} ${dmSans.variable} antialiased`}
+        className={`${inter.variable} ${robotoMono.variable} antialiased`}
         style={{ background: '#030305', color: '#FAFAFF' }}
       >
         <Navbar />

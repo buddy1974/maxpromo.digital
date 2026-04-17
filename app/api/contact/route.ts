@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       to: CONTACT_EMAIL,
       from: FROM_EMAIL,
       replyTo: sanitised.email,
-      subject: `New enquiry from ${sanitised.name} — MaxPromo Digital`,
+      subject: `New enquiry from ${sanitised.name} — Maxpromo Digital`,
       html: buildContactEmailHtml(sanitised),
     })
 

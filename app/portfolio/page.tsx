@@ -366,7 +366,7 @@ export default function PortfolioPage() {
         >
           <p
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '14px',
               marginBottom: '32px',
             }}
@@ -377,7 +377,7 @@ export default function PortfolioPage() {
 
           <h1
             style={{
-              fontFamily: 'var(--font-syne)',
+              fontFamily: 'var(--font-inter)',
               fontSize: '28px',
               fontWeight: 700,
               color: '#FFFFFF',
@@ -389,7 +389,7 @@ export default function PortfolioPage() {
 
           <p
             style={{
-              fontFamily: 'var(--font-dm-sans)',
+              fontFamily: 'var(--font-inter)',
               fontSize: '14px',
               color: '#888888',
               marginBottom: '32px',
@@ -414,7 +414,7 @@ export default function PortfolioPage() {
               border: `1px solid ${error ? '#FF4444' : 'rgba(255,255,255,0.1)'}`,
               color: '#FFFFFF',
               padding: '14px 16px',
-              fontFamily: 'var(--font-dm-sans)',
+              fontFamily: 'var(--font-inter)',
               fontSize: '15px',
               borderRadius: '2px',
               marginBottom: '12px',
@@ -436,7 +436,7 @@ export default function PortfolioPage() {
               style={{
                 color: '#FF6B6B',
                 fontSize: '13px',
-                fontFamily: 'var(--font-dm-sans)',
+                fontFamily: 'var(--font-inter)',
                 marginBottom: '12px',
               }}
             >
@@ -451,7 +451,7 @@ export default function PortfolioPage() {
               width: '100%',
               background: '#F97316',
               color: '#000000',
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '13px',
               fontWeight: 600,
               letterSpacing: '0.08em',
@@ -475,7 +475,7 @@ export default function PortfolioPage() {
 
           <p
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '11px',
               color: '#444444',
               textAlign: 'center',
@@ -500,7 +500,7 @@ export default function PortfolioPage() {
       >
         <p
           style={{
-            fontFamily: 'var(--font-ibm-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '11px',
             color: '#F97316',
             letterSpacing: '0.2em',
@@ -512,7 +512,7 @@ export default function PortfolioPage() {
         </p>
         <h1
           style={{
-            fontFamily: 'var(--font-syne)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '52px',
             fontWeight: 800,
             color: '#FFFFFF',
@@ -524,13 +524,13 @@ export default function PortfolioPage() {
         </h1>
         <p
           style={{
-            fontFamily: 'var(--font-dm-sans)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '16px',
             color: '#888888',
             marginBottom: '32px',
           }}
         >
-          6 live production systems built by MaxPromo Digital.
+          6 live production systems built by Maxpromo Digital.
         </p>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           {['6 Projects', 'All Live', 'Confidential'].map((stat, i) => (
@@ -538,7 +538,7 @@ export default function PortfolioPage() {
               key={stat}
               style={{
                 border: '1px solid rgba(255,255,255,0.08)',
-                fontFamily: 'var(--font-ibm-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontSize: '11px',
                 color: '#666666',
                 padding: '6px 14px',
@@ -572,7 +572,7 @@ export default function PortfolioPage() {
               key={f}
               onClick={() => setActiveFilter(f)}
               style={{
-                fontFamily: 'var(--font-ibm-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontSize: '11px',
                 padding: '6px 16px',
                 borderRadius: '2px',
@@ -710,7 +710,7 @@ function ProjectCard({
             />
             <span
               style={{
-                fontFamily: 'var(--font-syne)',
+                fontFamily: 'var(--font-inter)',
                 fontSize: '72px',
                 fontWeight: 800,
                 color: project.color,
@@ -727,7 +727,7 @@ function ProjectCard({
                 position: 'absolute',
                 bottom: '20px',
                 left: '20px',
-                fontFamily: 'var(--font-ibm-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontSize: '13px',
                 color: project.color,
                 letterSpacing: '0.1em',
@@ -749,7 +749,7 @@ function ProjectCard({
             background: 'rgba(34,197,94,0.15)',
             border: '1px solid rgba(34,197,94,0.3)',
             color: '#22C55E',
-            fontFamily: 'var(--font-ibm-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '10px',
             padding: '4px 10px',
             letterSpacing: '0.1em',
@@ -778,7 +778,7 @@ function ProjectCard({
                 background: 'rgba(249,115,22,0.08)',
                 border: '1px solid rgba(249,115,22,0.2)',
                 color: '#F97316',
-                fontFamily: 'var(--font-ibm-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontSize: '9px',
                 padding: '3px 10px',
                 letterSpacing: '0.1em',
@@ -792,7 +792,7 @@ function ProjectCard({
 
         <h2
           style={{
-            fontFamily: 'var(--font-syne)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '22px',
             fontWeight: 700,
             color: '#FFFFFF',
@@ -805,7 +805,7 @@ function ProjectCard({
 
         <p
           style={{
-            fontFamily: 'var(--font-ibm-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '13px',
             color: '#888888',
             marginBottom: '12px',
@@ -816,7 +816,7 @@ function ProjectCard({
 
         <p
           style={{
-            fontFamily: 'var(--font-dm-sans)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '14px',
             color: '#AAAAAA',
             lineHeight: 1.65,
@@ -846,7 +846,7 @@ function ProjectCard({
                 background: 'rgba(255,255,255,0.04)',
                 border: '1px solid rgba(255,255,255,0.08)',
                 color: '#666666',
-                fontFamily: 'var(--font-ibm-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontSize: '10px',
                 padding: '3px 10px',
               }}
@@ -868,7 +868,7 @@ function ProjectCard({
         >
           <span
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '11px',
               color: '#22C55E',
             }}
@@ -877,7 +877,7 @@ function ProjectCard({
           </span>
           <span
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '12px',
               color: '#F97316',
             }}
@@ -980,7 +980,7 @@ function ProjectModal({
             position: 'absolute',
             right: '40px',
             top: '20px',
-            fontFamily: 'var(--font-syne)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '160px',
             fontWeight: 900,
             color: project.color,
@@ -999,7 +999,7 @@ function ProjectModal({
               background: 'rgba(34,197,94,0.15)',
               border: '1px solid rgba(34,197,94,0.3)',
               color: '#22C55E',
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '10px',
               padding: '4px 10px',
               letterSpacing: '0.1em',
@@ -1010,7 +1010,7 @@ function ProjectModal({
           </span>
           <h2
             style={{
-              fontFamily: 'var(--font-syne)',
+              fontFamily: 'var(--font-inter)',
               fontSize: '36px',
               fontWeight: 700,
               color: '#FFFFFF',
@@ -1021,7 +1021,7 @@ function ProjectModal({
           </h2>
           <p
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '13px',
               color: '#888888',
             }}
@@ -1045,7 +1045,7 @@ function ProjectModal({
         <div>
           <p
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '10px',
               color: '#F97316',
               letterSpacing: '0.15em',
@@ -1057,7 +1057,7 @@ function ProjectModal({
           </p>
           <p
             style={{
-              fontFamily: 'var(--font-dm-sans)',
+              fontFamily: 'var(--font-inter)',
               fontSize: '15px',
               color: '#CCCCCC',
               lineHeight: 1.75,
@@ -1069,7 +1069,7 @@ function ProjectModal({
 
           <p
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '10px',
               color: '#F97316',
               letterSpacing: '0.15em',
@@ -1102,7 +1102,7 @@ function ProjectModal({
                 />
                 <span
                   style={{
-                    fontFamily: 'var(--font-dm-sans)',
+                    fontFamily: 'var(--font-inter)',
                     fontSize: '14px',
                     color: '#CCCCCC',
                     lineHeight: 1.6,
@@ -1119,7 +1119,7 @@ function ProjectModal({
         <div>
           <p
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '10px',
               color: '#F97316',
               letterSpacing: '0.15em',
@@ -1144,7 +1144,7 @@ function ProjectModal({
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   color: '#CCCCCC',
-                  fontFamily: 'var(--font-ibm-mono)',
+                  fontFamily: 'var(--font-roboto-mono)',
                   fontSize: '11px',
                   padding: '5px 12px',
                 }}
@@ -1156,7 +1156,7 @@ function ProjectModal({
 
           <p
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '10px',
               color: '#F97316',
               letterSpacing: '0.15em',
@@ -1197,7 +1197,7 @@ function ProjectModal({
                 <span style={{ fontSize: '16px' }}>{link.icon}</span>
                 <span
                   style={{
-                    fontFamily: 'var(--font-dm-sans)',
+                    fontFamily: 'var(--font-inter)',
                     fontSize: '13px',
                     color: '#CCCCCC',
                     flex: 1,
@@ -1214,7 +1214,7 @@ function ProjectModal({
             <>
               <p
                 style={{
-                  fontFamily: 'var(--font-ibm-mono)',
+                  fontFamily: 'var(--font-roboto-mono)',
                   fontSize: '10px',
                   color: '#F97316',
                   letterSpacing: '0.15em',
@@ -1245,7 +1245,7 @@ function ProjectModal({
                   >
                     <span
                       style={{
-                        fontFamily: 'var(--font-ibm-mono)',
+                        fontFamily: 'var(--font-roboto-mono)',
                         fontSize: '11px',
                         color: '#666666',
                         flexShrink: 0,
@@ -1255,7 +1255,7 @@ function ProjectModal({
                     </span>
                     <span
                       style={{
-                        fontFamily: 'var(--font-ibm-mono)',
+                        fontFamily: 'var(--font-roboto-mono)',
                         fontSize: '12px',
                         fontWeight: 500,
                         color: '#CCCCCC',
@@ -1289,7 +1289,7 @@ function ProjectModal({
           style={{
             background: '#F97316',
             color: '#000000',
-            fontFamily: 'var(--font-ibm-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '13px',
             fontWeight: 600,
             padding: '12px 28px',
@@ -1308,7 +1308,7 @@ function ProjectModal({
             border: '1px solid rgba(255,255,255,0.15)',
             color: '#888888',
             background: 'transparent',
-            fontFamily: 'var(--font-dm-sans)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '13px',
             padding: '12px 24px',
             borderRadius: '2px',

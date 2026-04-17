@@ -1,9 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-const mono    = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
-const sans    = 'var(--font-dm-sans)'
+const mono    = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
+const sans    = 'var(--font-inter)'
 
 // Inbox shows a communication log built from the os_leads table (recent activity)
 // and a manual log of key sent communications.

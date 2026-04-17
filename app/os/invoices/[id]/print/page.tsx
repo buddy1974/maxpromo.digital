@@ -134,7 +134,7 @@ export default function PrintPage() {
           <p style={{ fontFamily: 'monospace', fontSize: '13px', color: '#111', margin: '0 0 3px' }}>IBAN: DE03 1001 0178 3648 4449 24</p>
           <p style={{ fontFamily: 'monospace', fontSize: '13px', color: '#111', margin: '0 0 12px' }}>BIC: REVODEB2</p>
           <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: '0 0 3px' }}>Steuernummer: 111/5339/7597 &nbsp;·&nbsp; Finanzamt: Essen-NordOst</p>
-          <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: 0 }}>MaxPromo Digital &nbsp;·&nbsp; Körnerstr. 8 &nbsp;·&nbsp; 45143 Essen &nbsp;·&nbsp; info@maxpromo.digital</p>
+          <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: 0 }}>Maxpromo Digital &nbsp;·&nbsp; Körnerstr. 8 &nbsp;·&nbsp; 45143 Essen &nbsp;·&nbsp; info@maxpromo.digital</p>
         </div>
       </div>
     </>

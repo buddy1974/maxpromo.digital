@@ -102,7 +102,7 @@ function buildEstimateEmailHtml(data: SendEstimateBody, isInternal: boolean): st
       <!-- Header -->
       <div style="background: #0A0A0A; padding: 32px; border-bottom: 3px solid #F97316;">
         <p style="font-family: monospace; font-size: 10px; color: #F97316; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 6px;">
-          MaxPromo Digital
+          Maxpromo Digital
         </p>
         <h1 style="color: #ffffff; margin: 0 0 6px; font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">
           Kostenvoranschlag
@@ -193,7 +193,7 @@ function buildEstimateEmailHtml(data: SendEstimateBody, isInternal: boolean): st
       <!-- Footer -->
       <div style="background: #0A0A0A; padding: 24px 32px; border-top: 1px solid #1a1a1a;">
         <p style="color: #666666; font-size: 12px; margin: 0 0 4px; font-family: monospace;">
-          Erstellt von MaxPromo Digital
+          Erstellt von Maxpromo Digital
         </p>
         <p style="color: #444444; font-size: 11px; margin: 0; font-family: monospace;">
           maxpromo.digital · info@maxpromo.digital · +49 173 3645698
@@ -224,7 +224,7 @@ export async function POST(request: NextRequest) {
       to: clientEmail.trim(),
       from: FROM_EMAIL,
       replyTo: CONTACT_EMAIL,
-      subject: `Ihr Kostenvoranschlag — MaxPromo Digital`,
+      subject: `Ihr Kostenvoranschlag — Maxpromo Digital`,
       html: buildEstimateEmailHtml(body, false),
     })
 
@@ -233,7 +233,7 @@ export async function POST(request: NextRequest) {
       to: CONTACT_EMAIL,
       from: FROM_EMAIL,
       replyTo: clientEmail.trim(),
-      subject: `Neues Angebot: ${businessName.trim()} — MaxPromo Digital`,
+      subject: `Neues Angebot: ${businessName.trim()} — Maxpromo Digital`,
       html: buildEstimateEmailHtml(body, true),
     })
 

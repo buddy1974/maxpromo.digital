@@ -2,15 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Data Deletion Request | MaxPromo Digital',
+  title: 'Data Deletion Request | Maxpromo Digital',
   description:
-    'Request deletion of your personal data from MaxPromo Digital systems under DSGVO Article 17.',
+    'Request deletion of your personal data from Maxpromo Digital systems under DSGVO Article 17.',
   robots: { index: false, follow: false },
 }
 
-const mono = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
-const sans = 'var(--font-dm-sans)'
+const mono = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
+const sans = 'var(--font-inter)'
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -91,7 +91,7 @@ export default function DataDeletionPage() {
             margin: '0 0 12px',
           }}
         >
-          MaxPromo Digital
+          Maxpromo Digital
         </p>
         <div
           style={{
@@ -152,7 +152,7 @@ export default function DataDeletionPage() {
             margin: '-20px 0 36px',
           }}
         >
-          Data Controller: MaxPromo Digital · Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst
+          Data Controller: Maxpromo Digital · Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst
         </p>
 
         {/* Card 1 — How to request */}

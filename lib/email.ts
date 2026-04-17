@@ -69,7 +69,7 @@ export function buildContactEmailHtml(fields: {
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
       <div style="background: #0A0A0A; padding: 24px; border-bottom: 3px solid #F97316;">
         <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700;">
-          New Enquiry — MaxPromo Digital
+          New Enquiry — Maxpromo Digital
         </h2>
         <p style="color: #888888; margin: 4px 0 0; font-size: 13px;">
           Submitted: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}
@@ -100,7 +100,7 @@ export function buildContactEmailHtml(fields: {
           </div>
         </div>
         <p style="margin-top: 24px; font-size: 12px; color: #aaaaaa; border-top: 1px solid #eeeeee; padding-top: 16px;">
-          Sent via MaxPromo Digital contact form · maxpromo.digital
+          Sent via Maxpromo Digital contact form · maxpromo.digital
         </p>
       </div>
     </div>
@@ -159,7 +159,7 @@ export function buildAuditLeadEmailHtml(fields: {
           ${questionnaireRows}
         </table>
         <p style="margin-top: 24px; font-size: 12px; color: #aaaaaa; border-top: 1px solid #eeeeee; padding-top: 16px;">
-          Sent via MaxPromo Digital Automation Audit · maxpromo.digital
+          Sent via Maxpromo Digital Automation Audit · maxpromo.digital
         </p>
       </div>
     </div>
@@ -272,7 +272,7 @@ export function buildFullReportEmailHtml(fields: {
       <!-- Header -->
       <div style="background: #0A0A0A; padding: 32px; border-bottom: 3px solid #F97316;">
         <p style="font-family: monospace; font-size: 10px; color: #F97316; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 8px;">
-          MaxPromo Digital — Full Report
+          Maxpromo Digital — Full Report
         </p>
         <h1 style="color: #ffffff; margin: 0 0 8px; font-size: 22px; font-weight: 700;">
           ${escapeHtml(fields.estimate.estimateTitle)}
@@ -347,7 +347,7 @@ export function buildFullReportEmailHtml(fields: {
           maxpromo.digital/contact
         </a>
         <p style="color: #333333; font-size: 11px; margin: 16px 0 0; font-family: monospace;">
-          MaxPromo Digital · Körnerstr. 8 · 45143 Essen · info@maxpromo.digital
+          Maxpromo Digital · Körnerstr. 8 · 45143 Essen · info@maxpromo.digital
         </p>
       </div>
     </div>

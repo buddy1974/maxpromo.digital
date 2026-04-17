@@ -51,7 +51,7 @@ export default function CookieBanner() {
       <div style={{ flex: 1 }}>
         <p
           style={{
-            fontFamily: 'var(--font-dm-sans)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '13px',
             color: '#CCCCCC',
             margin: 0,
@@ -69,7 +69,7 @@ export default function CookieBanner() {
         </p>
         <p
           style={{
-            fontFamily: 'var(--font-dm-sans)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '12px',
             color: '#666666',
             margin: '4px 0 0',
@@ -87,7 +87,7 @@ export default function CookieBanner() {
           color: '#000000',
           border: 'none',
           padding: '0.4rem 0.9rem',
-          fontFamily: 'var(--font-space-mono)',
+          fontFamily: 'var(--font-roboto-mono)',
           fontSize: '11px',
           fontWeight: 700,
           letterSpacing: '0.05em',

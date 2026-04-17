@@ -42,7 +42,7 @@ export default function Navbar() {
           <Link href="/" style={{ textDecoration: 'none', flexShrink: 0, display: 'flex', alignItems: 'center' }}>
             <Image
               src="/logo.png"
-              alt="MaxPromo Digital"
+              alt="Maxpromo Digital"
               width={180}
               height={45}
               style={{ height: '36px', width: 'auto' }}
@@ -58,7 +58,7 @@ export default function Navbar() {
                 href={link.href}
                 className="nav-link"
                 style={{
-                  fontFamily: 'var(--font-dm-sans)',
+                  fontFamily: 'var(--font-inter)',
                   fontWeight: 500,
                   fontSize: '14px',
                   textDecoration: 'none',
@@ -74,7 +74,7 @@ export default function Navbar() {
             <Link
               href="/automation-audit"
               style={{
-                fontFamily: 'var(--font-space-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontWeight: 700,
                 fontSize: '13px',
                 color: '#030305',
@@ -123,7 +123,7 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 style={{
                   display: 'block',
-                  fontFamily: 'var(--font-dm-sans)',
+                  fontFamily: 'var(--font-inter)',
                   fontWeight: 500,
                   fontSize: '15px',
                   color: '#6B6B7A',
@@ -140,7 +140,7 @@ export default function Navbar() {
               style={{
                 display: 'inline-block',
                 marginTop: '12px',
-                fontFamily: 'var(--font-space-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontWeight: 700,
                 fontSize: '12px',
                 color: '#030305',

@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       to: email,
       from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
       replyTo: 'info@maxpromo.digital',
-      subject: `Your MaxPromo Digital Report & Estimate — ${company || name}`,
+      subject: `Your Maxpromo Digital Report & Estimate — ${company || name}`,
       html,
     })
 

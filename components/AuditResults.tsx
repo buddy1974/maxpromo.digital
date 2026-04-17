@@ -19,9 +19,9 @@ interface AuditResultsProps {
   onEstimate?: () => void
 }
 
-const mono = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
-const sans = 'var(--font-dm-sans)'
+const mono = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
+const sans = 'var(--font-inter)'
 
 export default function AuditResults({ results, orgType, company, onEstimate }: AuditResultsProps) {
   const handlePrint = () => window.print()

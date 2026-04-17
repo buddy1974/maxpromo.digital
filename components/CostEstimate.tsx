@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from 'react'
 
-const mono = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
-const sans = 'var(--font-dm-sans)'
+const mono = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
+const sans = 'var(--font-inter)'
 
 /* ── Types ───────────────────────────────────────────────────── */
 
@@ -488,7 +488,7 @@ export default function CostEstimate({
               Ihr Kostenvoranschlag
             </h1>
             <p style={{ fontFamily: sans, fontSize: '15px', color: '#666666' }}>
-              {company || name} · Estimate for MaxPromo Digital services
+              {company || name} · Estimate for Maxpromo Digital services
             </p>
           </div>
           <div style={{ textAlign: 'right' }}>
@@ -708,7 +708,7 @@ export default function CostEstimate({
           Angebot gültig bis: {formatDate(estimate.validUntil)}
         </p>
         <p style={{ fontFamily: mono, fontSize: '11px', color: '#333333', letterSpacing: '0.08em' }}>
-          MaxPromo Digital · info@maxpromo.digital
+          Maxpromo Digital · info@maxpromo.digital
         </p>
       </div>
 

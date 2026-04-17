@@ -2,14 +2,14 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'About MaxPromo Digital',
+  title: 'About Maxpromo Digital',
   description:
-    'MaxPromo Digital is an AI automation agency — building agents, workflows, and intelligent platforms that eliminate manual work and drive measurable ROI.',
+    'Maxpromo Digital is an AI automation agency — building agents, workflows, and intelligent platforms that eliminate manual work and drive measurable ROI.',
 }
 
-const mono = { fontFamily: 'var(--font-space-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-space-grotesk)' } as const
-const sans = { fontFamily: 'var(--font-dm-sans)' } as const
+const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-inter)' } as const
+const sans = { fontFamily: 'var(--font-inter)' } as const
 
 const STACK_ROWS = [
   {
@@ -73,7 +73,7 @@ export default function AboutPage() {
             We build the systems that eliminate manual work
           </h1>
           <p style={{ ...sans, fontSize: '17px', color: '#555555', maxWidth: '44rem', lineHeight: 1.8 }}>
-            MaxPromo Digital is the AI arm of MaxPromo — an automation agency
+            Maxpromo Digital is the AI arm of MaxPromo — an automation agency
             specialising in AI agents, workflow automation, and intelligent platforms.
             We work with organisations that are serious about operational efficiency.
           </p>

@@ -7,9 +7,9 @@ export const metadata: Metadata = {
     'Answer 5 quick questions and receive a personalised AI automation report — 3 specific opportunities for your business, free of charge.',
 }
 
-const mono = { fontFamily: 'var(--font-space-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-space-grotesk)' } as const
-const sans = { fontFamily: 'var(--font-dm-sans)' } as const
+const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-inter)' } as const
+const sans = { fontFamily: 'var(--font-inter)' } as const
 
 export default function AutomationAuditPage() {
   return (

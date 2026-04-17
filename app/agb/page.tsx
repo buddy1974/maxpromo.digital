@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'AGB / Terms & Conditions',
-  description: 'Allgemeine Geschäftsbedingungen der MaxPromo Digital — General Terms and Conditions',
+  description: 'Allgemeine Geschäftsbedingungen der Maxpromo Digital — General Terms and Conditions',
   robots: { index: true, follow: false },
 }
 
@@ -32,7 +32,7 @@ function Section({ para, label, children }: { para: string; label: string; child
     >
       <p
         style={{
-          fontFamily: 'var(--font-space-mono)',
+          fontFamily: 'var(--font-roboto-mono)',
           fontSize: '10px',
           color: '#F97316',
           letterSpacing: '0.2em',
@@ -44,7 +44,7 @@ function Section({ para, label, children }: { para: string; label: string; child
       </p>
       <p
         style={{
-          fontFamily: 'var(--font-space-grotesk)',
+          fontFamily: 'var(--font-inter)',
           fontSize: '16px',
           fontWeight: 600,
           color: '#FFFFFF',
@@ -57,7 +57,7 @@ function Section({ para, label, children }: { para: string; label: string; child
         style={{
           color: '#CCCCCC',
           lineHeight: '1.8',
-          fontFamily: 'var(--font-dm-sans)',
+          fontFamily: 'var(--font-inter)',
           fontSize: '15px',
         }}
       >
@@ -74,7 +74,7 @@ export default function AgbPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-space-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '11px',
             color: '#F97316',
             letterSpacing: '0.2em',
@@ -86,7 +86,7 @@ export default function AgbPage() {
         </p>
         <h1
           style={{
-            fontFamily: 'var(--font-space-grotesk)',
+            fontFamily: 'var(--font-inter)',
             fontSize: 'clamp(2rem, 5vw, 3rem)',
             fontWeight: 700,
             color: '#FFFFFF',
@@ -101,19 +101,19 @@ export default function AgbPage() {
         </h1>
         <p
           style={{
-            fontFamily: 'var(--font-dm-sans)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '15px',
             color: '#888888',
             marginBottom: '3rem',
           }}
         >
-          MaxPromo Digital · Marcel Tabit Akwe · Stand: April 2026
+          Maxpromo Digital · Marcel Tabit Akwe · Stand: April 2026
         </p>
 
         <Section para="§1" label="Geltungsbereich / Scope">
           <Paragraph
-            de="Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge zwischen Marcel Tabit Akwe (MaxPromo Digital) und Auftraggebern über IT-Dienstleistungen, Softwareentwicklung, KI-Automation und digitale Beratung."
-            en="These General Terms and Conditions apply to all contracts between Marcel Tabit Akwe (MaxPromo Digital) and clients for IT services, software development, AI automation, and digital consulting."
+            de="Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge zwischen Marcel Tabit Akwe (Maxpromo Digital) und Auftraggebern über IT-Dienstleistungen, Softwareentwicklung, KI-Automation und digitale Beratung."
+            en="These General Terms and Conditions apply to all contracts between Marcel Tabit Akwe (Maxpromo Digital) and clients for IT services, software development, AI automation, and digital consulting."
           />
           <Paragraph
             de="Abweichende AGB des Auftraggebers werden nicht anerkannt, es sei denn, dies wurde ausdrücklich schriftlich vereinbart."
@@ -243,14 +243,14 @@ export default function AgbPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-space-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '11px',
             color: '#444444',
             marginTop: '3rem',
             textAlign: 'center',
           }}
         >
-          Stand / Last updated: April 2026 · MaxPromo Digital · Marcel Tabit Akwe · Essen
+          Stand / Last updated: April 2026 · Maxpromo Digital · Marcel Tabit Akwe · Essen
         </p>
       </div>
     </main>

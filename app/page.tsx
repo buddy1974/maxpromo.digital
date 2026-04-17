@@ -91,7 +91,7 @@ function SectionLabel({ children }: { children: string }) {
   return (
     <p
       style={{
-        fontFamily: 'var(--font-space-mono)',
+        fontFamily: 'var(--font-roboto-mono)',
         fontSize: '12px',
         color: '#F97316',
         letterSpacing: '0.2em',
@@ -108,7 +108,7 @@ function SectionTitle({ children, dark }: { children: React.ReactNode; dark?: bo
   return (
     <h2
       style={{
-        fontFamily: 'var(--font-space-grotesk)',
+        fontFamily: 'var(--font-inter)',
         fontWeight: 700,
         fontSize: 'clamp(2.5rem, 5vw, 4rem)',
         letterSpacing: '-0.04em',
@@ -127,7 +127,7 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
       <Link
         href={href}
         style={{
-          fontFamily: 'var(--font-space-mono)',
+          fontFamily: 'var(--font-roboto-mono)',
           fontWeight: 700,
           fontSize: '15px',
           color: '#000000',
@@ -145,7 +145,7 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
     <Link
       href={href}
       style={{
-        fontFamily: 'var(--font-dm-sans)',
+        fontFamily: 'var(--font-inter)',
         fontWeight: 500,
         fontSize: '15px',
         color: '#FAFAFF',
@@ -162,7 +162,7 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
 }
 
 function renderTerminalLine(line: typeof TERMINAL_LINES[number]) {
-  const mono = { fontFamily: 'var(--font-space-mono)', fontSize: '13px', lineHeight: '1.8' }
+  const mono = { fontFamily: 'var(--font-roboto-mono)', fontSize: '13px', lineHeight: '1.8' }
 
   if (line.type === 'blank') return <p style={{ ...mono, minHeight: '1.8em' }}>&nbsp;</p>
 
@@ -218,7 +218,7 @@ export default function HomePage() {
             <span
               key={i}
               style={{
-                fontFamily: 'var(--font-space-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontSize: '11px',
                 color: 'rgba(255,255,255,0.5)',
                 textTransform: 'uppercase',
@@ -271,7 +271,7 @@ export default function HomePage() {
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.6) 50%, transparent 100%)', pointerEvents: 'none' }} />
                 <span
                   style={{
-                    fontFamily: 'var(--font-space-mono)',
+                    fontFamily: 'var(--font-roboto-mono)',
                     fontSize: '24px',
                     color: '#F97316',
                     display: 'block',
@@ -282,7 +282,7 @@ export default function HomePage() {
                 </span>
                 <h3
                   style={{
-                    fontFamily: 'var(--font-space-grotesk)',
+                    fontFamily: 'var(--font-inter)',
                     fontWeight: 700,
                     fontSize: '18px',
                     color: '#FFFFFF',
@@ -294,7 +294,7 @@ export default function HomePage() {
                 </h3>
                 <p
                   style={{
-                    fontFamily: 'var(--font-dm-sans)',
+                    fontFamily: 'var(--font-inter)',
                     fontSize: '14px',
                     color: '#999999',
                     lineHeight: 1.75,
@@ -307,7 +307,7 @@ export default function HomePage() {
                 <Link
                   href={s.href}
                   style={{
-                    fontFamily: 'var(--font-space-mono)',
+                    fontFamily: 'var(--font-roboto-mono)',
                     fontSize: '13px',
                     color: '#F97316',
                     textDecoration: 'none',
@@ -325,7 +325,7 @@ export default function HomePage() {
             <Link
               href="/services"
               style={{
-                fontFamily: 'var(--font-space-mono)',
+                fontFamily: 'var(--font-roboto-mono)',
                 fontSize: '13px',
                 color: '#F97316',
                 textDecoration: 'none',
@@ -383,7 +383,7 @@ export default function HomePage() {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d={ind.icon} />
                 </svg>
-                <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '12px', color: '#CCCCCC', lineHeight: 1.4, textAlign: 'center' }}>
+                <span style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#CCCCCC', lineHeight: 1.4, textAlign: 'center' }}>
                   {ind.label}
                 </span>
               </div>
@@ -436,7 +436,7 @@ export default function HomePage() {
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.12)', display: 'inline-block' }} />
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.07)', display: 'inline-block' }} />
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', display: 'inline-block' }} />
-              <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A', marginLeft: '8px' }}>
+              <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: '#6B6B7A', marginLeft: '8px' }}>
                 audit — zsh
               </span>
             </div>
@@ -449,7 +449,7 @@ export default function HomePage() {
               ))}
               <p
                 className="terminal-line"
-                style={{ fontFamily: 'var(--font-space-mono)', fontSize: '12px', color: '#F97316', animationDelay: `${TERMINAL_LINES.length * 300}ms` }}
+                style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '12px', color: '#F97316', animationDelay: `${TERMINAL_LINES.length * 300}ms` }}
               >
                 $ <span className="cursor-blink">▊</span>
               </p>
@@ -462,7 +462,7 @@ export default function HomePage() {
             <SectionTitle dark>Find out exactly what can be automated</SectionTitle>
             <p
               style={{
-                fontFamily: 'var(--font-dm-sans)',
+                fontFamily: 'var(--font-inter)',
                 fontSize: '17px',
                 color: '#888888',
                 lineHeight: 1.8,
@@ -486,7 +486,7 @@ export default function HomePage() {
                     display: 'flex',
                     alignItems: 'flex-start',
                     gap: '10px',
-                    fontFamily: 'var(--font-dm-sans)',
+                    fontFamily: 'var(--font-inter)',
                     fontSize: '17px',
                     color: 'rgba(250,250,255,0.7)',
                   }}
@@ -534,7 +534,7 @@ export default function HomePage() {
               >
                 <p
                   style={{
-                    fontFamily: 'var(--font-space-grotesk)',
+                    fontFamily: 'var(--font-inter)',
                     fontWeight: 700,
                     fontSize: '56px',
                     color: '#F97316',
@@ -547,7 +547,7 @@ export default function HomePage() {
                 </p>
                 <h3
                   style={{
-                    fontFamily: 'var(--font-space-grotesk)',
+                    fontFamily: 'var(--font-inter)',
                     fontWeight: 700,
                     fontSize: '17px',
                     color: '#FFFFFF',
@@ -559,7 +559,7 @@ export default function HomePage() {
                 </h3>
                 <p
                   style={{
-                    fontFamily: 'var(--font-dm-sans)',
+                    fontFamily: 'var(--font-inter)',
                     fontSize: '14px',
                     color: '#777777',
                     lineHeight: 1.75,
@@ -592,7 +592,7 @@ export default function HomePage() {
           <SectionLabel>Ready to Automate?</SectionLabel>
           <h2
             style={{
-              fontFamily: 'var(--font-space-grotesk)',
+              fontFamily: 'var(--font-inter)',
               fontWeight: 700,
               fontSize: 'clamp(2.75rem, 5vw, 4rem)',
               letterSpacing: '-0.04em',
@@ -606,7 +606,7 @@ export default function HomePage() {
           </h2>
           <p
             style={{
-              fontFamily: 'var(--font-dm-sans)',
+              fontFamily: 'var(--font-inter)',
               fontSize: '17px',
               color: '#888888',
               marginBottom: '2.5rem',
@@ -622,7 +622,7 @@ export default function HomePage() {
           </div>
           <p
             style={{
-              fontFamily: 'var(--font-space-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '11px',
               color: '#666666',
               marginTop: '20px',
@@ -646,7 +646,7 @@ export default function HomePage() {
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <p
             style={{
-              fontFamily: 'var(--font-space-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '10px',
               color: '#333333',
               letterSpacing: '0.2em',
@@ -674,7 +674,7 @@ export default function HomePage() {
               <span
                 key={tool}
                 style={{
-                  fontFamily: 'var(--font-space-mono)',
+                  fontFamily: 'var(--font-roboto-mono)',
                   fontSize: '11px',
                   color: '#444444',
                   border: '1px solid rgba(255,255,255,0.05)',

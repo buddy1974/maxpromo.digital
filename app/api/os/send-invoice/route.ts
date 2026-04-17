@@ -39,7 +39,7 @@ function buildInvoiceEmail(data: {
   return `
     <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:#ffffff;">
       <div style="background:#0A0A0A;padding:28px 32px;border-bottom:3px solid #F97316;">
-        <p style="font-family:monospace;font-size:10px;color:#F97316;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 8px;">MaxPromo Digital</p>
+        <p style="font-family:monospace;font-size:10px;color:#F97316;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 8px;">Maxpromo Digital</p>
         <h1 style="color:#ffffff;margin:0 0 6px;font-size:22px;font-weight:700;letter-spacing:-0.02em;">Rechnung</h1>
         <p style="color:#888;margin:0;font-size:12px;font-family:monospace;">Nr. ${esc(data.invoice_number)} &nbsp;·&nbsp; ${esc(data.date)}</p>
       </div>
@@ -82,7 +82,7 @@ function buildInvoiceEmail(data: {
           Für Rückfragen stehe ich Ihnen jederzeit zur Verfügung.<br><br>
           Mit freundlichen Grüßen<br>
           <strong>Marcel Tabit Akwe</strong><br>
-          MaxPromo Digital
+          Maxpromo Digital
         </p>
       </div>
 
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
       to: body.client_email,
       from: FROM_EMAIL,
       replyTo: 'info@maxpromo.digital',
-      subject: `Rechnung Nr. ${body.invoice_number} — MaxPromo Digital`,
+      subject: `Rechnung Nr. ${body.invoice_number} — Maxpromo Digital`,
       html,
     })
 

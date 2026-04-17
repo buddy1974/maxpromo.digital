@@ -46,7 +46,7 @@ export default function SocialProof() {
                   top: '50%',
                   right: '-20px',
                   transform: 'translateY(-50%)',
-                  fontFamily: 'var(--font-space-grotesk)',
+                  fontFamily: 'var(--font-inter)',
                   fontWeight: 700,
                   fontSize: '100px',
                   color: 'rgba(255,255,255,0.02)',
@@ -62,7 +62,7 @@ export default function SocialProof() {
               {/* Content */}
               <p
                 style={{
-                  fontFamily: 'var(--font-space-grotesk)',
+                  fontFamily: 'var(--font-inter)',
                   fontWeight: 700,
                   fontSize: '52px',
                   color: '#F97316',
@@ -77,7 +77,7 @@ export default function SocialProof() {
               </p>
               <p
                 style={{
-                  fontFamily: 'var(--font-dm-sans)',
+                  fontFamily: 'var(--font-inter)',
                   fontSize: '15px',
                   color: '#CCCCCC',
                   lineHeight: 1.5,
@@ -93,7 +93,7 @@ export default function SocialProof() {
 
         <p
           style={{
-            fontFamily: 'var(--font-space-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '11px',
             color: '#666666',
             textAlign: 'center',

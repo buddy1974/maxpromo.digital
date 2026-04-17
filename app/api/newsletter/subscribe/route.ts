@@ -9,13 +9,13 @@ function buildWelcomeEmail(name: string): string {
   return `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
       <div style="background:#0A0A0A;padding:28px 32px;border-bottom:3px solid #F97316;">
-        <p style="font-family:monospace;font-size:10px;color:#F97316;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;">MaxPromo Digital</p>
+        <p style="font-family:monospace;font-size:10px;color:#F97316;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;">Maxpromo Digital</p>
         <h1 style="color:#ffffff;margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em;">You're subscribed.</h1>
       </div>
       <div style="padding:28px 32px;">
         <p style="color:#333;font-size:15px;line-height:1.7;margin:0 0 16px;">
           Hey${display},<br><br>
-          You're now subscribed to <strong>MaxPromo Digital Weekly Automation Insights</strong>.<br>
+          You're now subscribed to <strong>Maxpromo Digital Weekly Automation Insights</strong>.<br>
           Real builds. Real results. Every week.
         </p>
         <p style="color:#888;font-size:13px;line-height:1.7;margin:0 0 24px;">
@@ -28,7 +28,7 @@ function buildWelcomeEmail(name: string): string {
       </div>
       <div style="background:#0A0A0A;padding:16px 32px;">
         <p style="font-family:monospace;font-size:10px;color:#444;margin:0;">
-          MaxPromo Digital · Körnerstr. 8 · 45143 Essen · info@maxpromo.digital
+          Maxpromo Digital · Körnerstr. 8 · 45143 Essen · info@maxpromo.digital
         </p>
       </div>
     </div>`
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       to: email,
       from: FROM_EMAIL,
       replyTo: 'info@maxpromo.digital',
-      subject: 'Welcome to MaxPromo Digital Weekly',
+      subject: 'Welcome to Maxpromo Digital Weekly',
       html: buildWelcomeEmail(name ?? ''),
     }).catch(console.error)
 

@@ -1,9 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-const mono    = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
-const sans    = 'var(--font-dm-sans)'
+const mono    = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
+const sans    = 'var(--font-inter)'
 
 interface Lead {
   id: string; name: string; email: string; phone: string; company: string

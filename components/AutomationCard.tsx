@@ -46,7 +46,7 @@ export default function AutomationCard({ title, description, tools }: Automation
 
       <h3
         style={{
-          fontFamily: 'var(--font-space-grotesk)',
+          fontFamily: 'var(--font-inter)',
           fontWeight: 700,
           fontSize: '16px',
           color: '#FFFFFF',
@@ -58,7 +58,7 @@ export default function AutomationCard({ title, description, tools }: Automation
       </h3>
       <p
         style={{
-          fontFamily: 'var(--font-dm-sans)',
+          fontFamily: 'var(--font-inter)',
           fontSize: '13px',
           color: '#888888',
           lineHeight: 1.7,
@@ -76,7 +76,7 @@ export default function AutomationCard({ title, description, tools }: Automation
               background: 'rgba(249,115,22,0.08)',
               color: '#F97316',
               border: '1px solid rgba(249,115,22,0.2)',
-              fontFamily: 'var(--font-space-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '10px',
               padding: '3px 10px',
               borderRadius: '2px',
@@ -89,7 +89,7 @@ export default function AutomationCard({ title, description, tools }: Automation
       <Link
         href={`/contact?automation=${encodeURIComponent(title)}`}
         style={{
-          fontFamily: 'var(--font-space-mono)',
+          fontFamily: 'var(--font-roboto-mono)',
           fontSize: '11px',
           color: '#F97316',
           textDecoration: 'none',

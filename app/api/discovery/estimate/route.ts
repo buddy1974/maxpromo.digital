@@ -13,7 +13,7 @@ interface EstimateRequestBody {
   auditResults: AuditResult[]
 }
 
-const ESTIMATE_SYSTEM_PROMPT = `You are a senior project estimator at MaxPromo Digital, an AI automation and web development agency based in Germany. You create professional itemised cost estimates (Kostenvoranschlag) following German market standards.
+const ESTIMATE_SYSTEM_PROMPT = `You are a senior project estimator at Maxpromo Digital, an AI automation and web development agency based in Germany. You create professional itemised cost estimates (Kostenvoranschlag) following German market standards.
 
 Currency: EUR only.
 VAT notice: "Gemäß §19 UStG wird keine Umsatzsteuer berechnet."
@@ -167,7 +167,7 @@ ${opportunitySummary}
 Today: ${today.toISOString().split('T')[0]}
 Valid until: ${validUntil.toISOString().split('T')[0]}
 
-Create a professional itemised cost estimate (Kostenvoranschlag) for MaxPromo Digital services that addresses their needs. Include the development/automation work, infrastructure, and ongoing costs. Return ONLY valid JSON.`
+Create a professional itemised cost estimate (Kostenvoranschlag) for Maxpromo Digital services that addresses their needs. Include the development/automation work, infrastructure, and ongoing costs. Return ONLY valid JSON.`
 
     const aiResponse = await callAI(
       [{ role: 'user', content: userMessage }],

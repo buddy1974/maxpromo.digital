@@ -35,13 +35,13 @@ export default function ServiceCards() {
         <div className="mb-16">
           <span
             className="text-xs font-medium tracking-widest uppercase mb-4 block"
-            style={{ fontFamily: 'var(--font-ibm-mono)', color: '#F97316' }}
+            style={{ fontFamily: 'var(--font-roboto-mono)', color: '#F97316' }}
           >
             ◈ What We Build
           </span>
           <h2
             className="text-4xl md:text-5xl font-extrabold"
-            style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
+            style={{ fontFamily: 'var(--font-inter)', color: '#FFFFFF' }}
           >
             Services
           </h2>
@@ -63,14 +63,14 @@ export default function ServiceCards() {
 
               <h3
                 className="text-xl font-bold mb-4"
-                style={{ fontFamily: 'var(--font-syne)', color: '#FFFFFF' }}
+                style={{ fontFamily: 'var(--font-inter)', color: '#FFFFFF' }}
               >
                 {s.title}
               </h3>
 
               <p
                 className="text-sm leading-relaxed flex-1 mb-8"
-                style={{ color: '#888888', fontFamily: 'var(--font-dm-sans)' }}
+                style={{ color: '#888888', fontFamily: 'var(--font-inter)' }}
               >
                 {s.description}
               </p>
@@ -82,7 +82,7 @@ export default function ServiceCards() {
                     key={tag}
                     className="text-xs px-2.5 py-1"
                     style={{
-                      fontFamily: 'var(--font-ibm-mono)',
+                      fontFamily: 'var(--font-roboto-mono)',
                       background: 'rgba(249,115,22,0.08)',
                       color: 'rgba(249,115,22,0.7)',
                       border: '1px solid rgba(249,115,22,0.15)',
@@ -97,7 +97,7 @@ export default function ServiceCards() {
               <span
                 className="text-xs font-semibold"
                 style={{
-                  fontFamily: 'var(--font-ibm-mono)',
+                  fontFamily: 'var(--font-roboto-mono)',
                   color: 'rgba(255,255,255,0.3)',
                   transition: 'color 0.15s',
                 }}
@@ -113,7 +113,7 @@ export default function ServiceCards() {
             href="/services"
             className="text-sm font-semibold px-7 py-3.5"
             style={{
-              fontFamily: 'var(--font-ibm-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               border: '1px solid rgba(249,115,22,0.3)',
               color: '#F97316',
               background: 'rgba(249,115,22,0.05)',

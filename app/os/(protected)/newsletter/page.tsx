@@ -1,9 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
 
-const mono    = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
-const sans    = 'var(--font-dm-sans)'
+const mono    = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
+const sans    = 'var(--font-inter)'
 
 interface Subscriber {
   id: string; email: string; name: string; source: string; status: string; created_at: string; tags: string[]
@@ -36,14 +36,14 @@ export default function NewsletterPage() {
       const html = `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
           <div style="background:#0A0A0A;padding:24px 32px;border-bottom:3px solid #F97316;">
-            <p style="font-family:monospace;font-size:10px;color:#F97316;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;">MaxPromo Digital</p>
+            <p style="font-family:monospace;font-size:10px;color:#F97316;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;">Maxpromo Digital</p>
             <h1 style="color:#FFF;margin:0;font-size:20px;font-weight:700;">${subject.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</h1>
           </div>
           <div style="padding:28px 32px;background:#fff;">
             <div style="color:#333;font-size:15px;line-height:1.7;white-space:pre-wrap;">${body.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
           </div>
           <div style="background:#0A0A0A;padding:16px 32px;border-top:1px solid #1a1a1a;">
-            <p style="font-family:monospace;font-size:10px;color:#444;margin:0;">MaxPromo Digital · info@maxpromo.digital · maxpromo.digital</p>
+            <p style="font-family:monospace;font-size:10px;color:#444;margin:0;">Maxpromo Digital · info@maxpromo.digital · maxpromo.digital</p>
           </div>
         </div>`
       const res  = await fetch('/api/os/newsletter', {
@@ -130,7 +130,7 @@ export default function NewsletterPage() {
             <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '8px 16px', borderBottom: '1px solid rgba(255,255,255,0.04)', margin: 0 }}>Email Preview</p>
             <div style={{ padding: '20px', background: '#f9f9f9' }}>
               <div style={{ background: '#0A0A0A', padding: '20px 24px', borderBottom: '3px solid #F97316', marginBottom: '0' }}>
-                <p style={{ fontFamily: 'monospace', fontSize: '9px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 4px' }}>MaxPromo Digital</p>
+                <p style={{ fontFamily: 'monospace', fontSize: '9px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 4px' }}>Maxpromo Digital</p>
                 <p style={{ color: '#FFF', margin: 0, fontSize: '17px', fontWeight: 700 }}>{subject}</p>
               </div>
               <div style={{ background: '#fff', padding: '20px 24px' }}>

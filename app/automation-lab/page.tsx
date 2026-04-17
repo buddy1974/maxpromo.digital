@@ -134,9 +134,9 @@ const CATEGORIES = [
   },
 ]
 
-const mono = { fontFamily: 'var(--font-space-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-space-grotesk)' } as const
-const sans = { fontFamily: 'var(--font-dm-sans)' } as const
+const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-inter)' } as const
+const sans = { fontFamily: 'var(--font-inter)' } as const
 
 export default function AutomationLabPage() {
   return (

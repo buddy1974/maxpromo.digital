@@ -13,9 +13,9 @@ interface FormData {
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
-const mono = { fontFamily: 'var(--font-space-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-space-grotesk)' } as const
-const sans = { fontFamily: 'var(--font-dm-sans)' } as const
+const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-inter)' } as const
+const sans = { fontFamily: 'var(--font-inter)' } as const
 
 const inputBase: React.CSSProperties = {
   ...sans,
@@ -124,7 +124,7 @@ export default function ContactPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div>
               <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '8px' }}>
-                MaxPromo Digital
+                Maxpromo Digital
               </h2>
               <p style={{ ...sans, fontSize: '15px', color: '#666666', lineHeight: 1.7 }}>
                 AI agents and automation systems for businesses serious about growth.

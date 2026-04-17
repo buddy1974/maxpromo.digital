@@ -18,7 +18,7 @@ function Section({ label, children }: { label: string; children: React.ReactNode
     >
       <p
         style={{
-          fontFamily: 'var(--font-space-mono)',
+          fontFamily: 'var(--font-roboto-mono)',
           fontSize: '10px',
           color: '#F97316',
           letterSpacing: '0.2em',
@@ -32,7 +32,7 @@ function Section({ label, children }: { label: string; children: React.ReactNode
         style={{
           color: '#CCCCCC',
           lineHeight: '1.8',
-          fontFamily: 'var(--font-dm-sans)',
+          fontFamily: 'var(--font-inter)',
           fontSize: '15px',
         }}
       >
@@ -49,7 +49,7 @@ export default function ImpressumPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-space-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '11px',
             color: '#F97316',
             letterSpacing: '0.2em',
@@ -61,7 +61,7 @@ export default function ImpressumPage() {
         </p>
         <h1
           style={{
-            fontFamily: 'var(--font-space-grotesk)',
+            fontFamily: 'var(--font-inter)',
             fontSize: 'clamp(2rem, 5vw, 3rem)',
             fontWeight: 700,
             color: '#FFFFFF',
@@ -73,7 +73,7 @@ export default function ImpressumPage() {
         </h1>
         <p
           style={{
-            fontFamily: 'var(--font-dm-sans)',
+            fontFamily: 'var(--font-inter)',
             fontSize: '15px',
             color: '#888888',
             marginBottom: '3rem',
@@ -188,7 +188,7 @@ export default function ImpressumPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-space-mono)',
+            fontFamily: 'var(--font-roboto-mono)',
             fontSize: '11px',
             color: '#444444',
             marginTop: '3rem',

@@ -21,10 +21,10 @@ function SliderInput({ label, value, min, max, prefix, suffix, onChange }: Slide
   return (
     <div style={{ marginBottom: '32px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px' }}>
-        <label style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#FFFFFF' }}>
+        <label style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', color: '#FFFFFF' }}>
           {label}
         </label>
-        <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: '22px', color: '#F97316', letterSpacing: '-0.03em' }}>
+        <span style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: '22px', color: '#F97316', letterSpacing: '-0.03em' }}>
           {prefix}{value}{suffix}
         </span>
       </div>
@@ -37,10 +37,10 @@ function SliderInput({ label, value, min, max, prefix, suffix, onChange }: Slide
         style={{ width: '100%', accentColor: '#F97316', height: '3px' }}
       />
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
-        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#555555' }}>
+        <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '10px', color: '#555555' }}>
           {prefix}{min}{suffix}
         </span>
-        <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#555555' }}>
+        <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '10px', color: '#555555' }}>
           {prefix}{max}{suffix}
         </span>
       </div>
@@ -85,7 +85,7 @@ export default function ROICalculator() {
         <div style={{ marginBottom: '3rem' }}>
           <p
             style={{
-              fontFamily: 'var(--font-space-mono)',
+              fontFamily: 'var(--font-roboto-mono)',
               fontSize: '12px',
               color: '#F97316',
               letterSpacing: '0.2em',
@@ -97,7 +97,7 @@ export default function ROICalculator() {
           </p>
           <h2
             style={{
-              fontFamily: 'var(--font-space-grotesk)',
+              fontFamily: 'var(--font-inter)',
               fontWeight: 700,
               fontSize: 'clamp(2.5rem, 5vw, 4rem)',
               letterSpacing: '-0.04em',
@@ -107,7 +107,7 @@ export default function ROICalculator() {
           >
             See what automation saves you
           </h2>
-          <p style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '17px', color: '#888888', lineHeight: 1.8 }}>
+          <p style={{ fontFamily: 'var(--font-inter)', fontSize: '17px', color: '#888888', lineHeight: 1.8 }}>
             Real numbers. No fluff. Based on your actual team.
           </p>
         </div>
@@ -130,7 +130,7 @@ export default function ROICalculator() {
               padding: '40px',
             }}
           >
-            <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>
+            <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>
               // your team
             </p>
             <SliderInput label="Staff handling manual tasks"     value={staff} min={1}  max={50}  suffix=" people" onChange={setStaff} />
@@ -141,7 +141,7 @@ export default function ROICalculator() {
           {/* Outputs */}
           <div style={{ background: 'rgba(0,0,0,0.15)', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>
+              <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>
                 // your savings
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '32px' }}>
@@ -155,10 +155,10 @@ export default function ROICalculator() {
                     key={row.label}
                     style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', padding: '16px 0', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
                   >
-                    <span style={{ fontFamily: 'var(--font-dm-sans)', fontSize: '14px', color: '#888888' }}>
+                    <span style={{ fontFamily: 'var(--font-inter)', fontSize: '14px', color: '#888888' }}>
                       {row.label}
                     </span>
-                    <span style={{ fontFamily: 'var(--font-space-grotesk)', fontWeight: 700, fontSize: row.size, color: '#F97316', letterSpacing: '-0.03em' }}>
+                    <span style={{ fontFamily: 'var(--font-inter)', fontWeight: 700, fontSize: row.size, color: '#F97316', letterSpacing: '-0.03em' }}>
                       {row.value}
                     </span>
                   </div>
@@ -171,7 +171,7 @@ export default function ROICalculator() {
                 href="/automation-audit"
                 style={{
                   display: 'block',
-                  fontFamily: 'var(--font-space-mono)',
+                  fontFamily: 'var(--font-roboto-mono)',
                   fontWeight: 700,
                   fontSize: '13px',
                   letterSpacing: '0.08em',
@@ -196,7 +196,7 @@ export default function ROICalculator() {
               >
                 Get My Custom Automation Plan →
               </Link>
-              <p style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#555555', textAlign: 'center', letterSpacing: '0.05em' }}>
+              <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: '#555555', textAlign: 'center', letterSpacing: '0.05em' }}>
                 // 3 discovery call slots remaining this month
               </p>
             </div>

@@ -101,7 +101,7 @@ function getMockResponse(messages: AIMessage[]): string {
   const last = messages[messages.length - 1]?.content?.toLowerCase() ?? ''
 
   if (last.includes('automat') || last.includes('workflow') || last.includes('agent')) {
-    return "MaxPromo Digital specialises in AI agents and automation systems that save organisations 10–30 hours per week. Common automations include lead qualification agents, document processing AI, and customer support bots. Would you like a free audit to see what we can automate for you?"
+    return "Maxpromo Digital specialises in AI agents and automation systems that save organisations 10–30 hours per week. Common automations include lead qualification agents, document processing AI, and customer support bots. Would you like a free audit to see what we can automate for you?"
   }
   if (last.includes('price') || last.includes('cost') || last.includes('how much') || last.includes('pricing')) {
     return "Our pricing starts from £2,500 for a Starter automation project, £6,500 for the Growth package (up to 4 workflows + AI agents), and custom rates for Enterprise. The best starting point is our free Automation Audit — shall I point you there?"
@@ -109,5 +109,5 @@ function getMockResponse(messages: AIMessage[]): string {
   if (last.includes('website') || last.includes('ai website')) {
     return "We build AI-enhanced websites with built-in chat assistants, automated lead capture, knowledge bots, and smart search — built with Next.js and deployed on Vercel. These go far beyond static brochure sites."
   }
-  return "MaxPromo Digital builds AI agents and automation systems for businesses, NGOs, and government organisations. I can tell you about our services and pricing, or you can run our free Automation Audit for personalised recommendations. What would you like to know?"
+  return "Maxpromo Digital builds AI agents and automation systems for businesses, NGOs, and government organisations. I can tell you about our services and pricing, or you can run our free Automation Audit for personalised recommendations. What would you like to know?"
 }

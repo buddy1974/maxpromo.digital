@@ -3,9 +3,9 @@ import { useEffect, useState, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 
-const mono = 'var(--font-space-mono)'
-const grotesk = 'var(--font-space-grotesk)'
-const sans = 'var(--font-dm-sans)'
+const mono = 'var(--font-roboto-mono)'
+const grotesk = 'var(--font-inter)'
+const sans = 'var(--font-inter)'
 
 const NAV_ITEMS = [
   { icon: '⊞', label: 'Dashboard',    href: '/os' },

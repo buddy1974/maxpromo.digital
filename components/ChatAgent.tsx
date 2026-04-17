@@ -20,8 +20,8 @@ const QUICK_REPLIES = [
   'Run free audit',
 ]
 
-const sans = 'var(--font-dm-sans)'
-const mono = 'var(--font-space-mono)'
+const sans = 'var(--font-inter)'
+const mono = 'var(--font-roboto-mono)'
 
 /* ── Typing indicator ─────────────────── */
 function TypingIndicator() {
