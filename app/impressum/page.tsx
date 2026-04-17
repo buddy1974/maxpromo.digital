@@ -108,8 +108,8 @@ export default function ImpressumPage() {
 
         <Section label="Steuerliche Angaben / Tax Information">
           <p style={{ margin: 0 }}>
-            Steuernummer: wird nachgereicht (in Bearbeitung beim Finanzamt)<br />
-            <span style={{ color: '#888888' }}>Tax number: pending issuance</span>
+            Steuernummer: 111/5339/7597<br />
+            Finanzamt: Essen-NordOst
           </p>
           <p style={{ marginTop: '0.75rem', marginBottom: 0 }}>
             Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.<br />

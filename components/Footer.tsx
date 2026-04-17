@@ -94,6 +94,9 @@ export default function Footer() {
           <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '11px', color: '#6B6B7A' }}>
             Built with Next.js · Deployed on Vercel
           </span>
+          <span style={{ fontFamily: 'var(--font-space-mono)', fontSize: '10px', color: '#555555' }}>
+            Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst · Gemäß §19 UStG keine MwSt.
+          </span>
           <a
             href="/portfolio"
             style={{

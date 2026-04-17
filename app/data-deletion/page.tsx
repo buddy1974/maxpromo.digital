@@ -142,6 +142,19 @@ export default function DataDeletionPage() {
           submit a deletion request, contact us using the details below.
         </p>
 
+        {/* Data Controller */}
+        <p
+          style={{
+            fontFamily: mono,
+            fontSize: '11px',
+            color: '#555555',
+            lineHeight: 1.7,
+            margin: '-20px 0 36px',
+          }}
+        >
+          Data Controller: MaxPromo Digital · Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst
+        </p>
+
         {/* Card 1 — How to request */}
         <Card title="Submit a Request">
           <div
