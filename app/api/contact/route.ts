@@ -9,7 +9,7 @@ interface ContactBody {
   automation?: string
 }
 
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'djstranger2000@gmail.com'
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'info@maxpromo.digital'
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
 
 export async function POST(request: NextRequest) {

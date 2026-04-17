@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npm run:*)",
+      "Bash(vercel:*)",
+      "Bash(npx vercel:*)",
+      "Bash(find C:/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/ -maxdepth 2 -name CLAUDE.md -o -name BRIEF* -o -name brief* -o -name *.prompt*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(python -c \"import json; f=open\\('social-automation/workflow-content-publishing.json'\\); d=json.load\\(f\\); sys=[p['parameters']['headerParameters'] for p in d['nodes'] if p['id']=='claude-caption-gen'][0]; body=json.loads\\([p['parameters']['jsonBody'] for p in d['nodes'] if p['id']=='claude-caption-gen'][0][1:]\\); print\\(body['system']\\)\")",
+      "Bash(python -c \"import json,sys as s; s.stdout.reconfigure\\(encoding='utf-8'\\); f=open\\('social-automation/workflow-content-publishing.json',encoding='utf-8'\\); d=json.load\\(f\\); body=json.loads\\([p['parameters']['jsonBody'] for p in d['nodes'] if p['id']=='claude-caption-gen'][0][1:]\\); print\\(body['system']\\)\")",
+      "Bash(xargs file:*)",
+      "Bash(xargs grep:*)",
+      "Bash(python3:*)",
+      "Bash(node:*)"
+    ]
+  }
+}

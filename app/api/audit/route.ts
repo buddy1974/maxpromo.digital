@@ -55,7 +55,7 @@ Identify their top 3 automation opportunities. Return only a valid JSON array.`
     // Send lead notification email immediately
     if (name && email) {
       await sendEmail({
-        to: process.env.CONTACT_EMAIL ?? 'djstranger2000@gmail.com',
+        to: process.env.CONTACT_EMAIL ?? 'info@maxpromo.digital',
         from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
         subject: `New Audit Lead: ${name} — ${company}`,
         html: buildAuditLeadEmailHtml({

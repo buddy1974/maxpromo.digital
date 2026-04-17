@@ -54,6 +54,8 @@ interface CostEstimateProps {
   email: string
   auditResults: { title?: string; solution: string; tools: string[] }[]
   onBack: () => void
+  backLabel?: string
+  showProgress?: boolean
 }
 
 /* ── Helpers ─────────────────────────────────────────────────── */
@@ -342,6 +344,8 @@ export default function CostEstimate({
   email,
   auditResults,
   onBack,
+  backLabel = '← AI Summary',
+  showProgress = true,
 }: CostEstimateProps) {
   // Track which optional items are selected
   const [selected, setSelected] = useState<Set<string>>(() => {
@@ -443,7 +447,7 @@ export default function CostEstimate({
         }
       `}</style>
 
-      <StageProgress current="estimate" />
+      {showProgress && <StageProgress current="estimate" />}
 
       {/* ── Header ── */}
       <div
@@ -728,7 +732,7 @@ export default function CostEstimate({
             flexShrink: 0,
           }}
         >
-          ← AI Summary
+          {backLabel}
         </button>
 
         <button
