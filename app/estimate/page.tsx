@@ -462,10 +462,6 @@ function PricePanel({
         )}
       </div>
 
-      <p style={{ fontFamily: mono, fontSize: '10px', color: '#444', margin: '0 0 10px' }}>
-        Gemäß §19 UStG keine MwSt.
-      </p>
-
       {pkg && (
         <div
           style={{
@@ -1412,7 +1408,7 @@ ${contactName} — ${phone || email}`
                     letterSpacing: '0.06em',
                   }}
                 >
-                  // Angebot gilt 30 Tage · Zahlung 50/50 · §19 UStG keine MwSt.
+                  // Angebot gilt 30 Tage · Zahlung 50/50
                 </p>
               </SectionCard>
             </div>

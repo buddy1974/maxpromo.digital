@@ -95,7 +95,7 @@ export default function Footer() {
             Built with Next.js · Deployed on Vercel
           </span>
           <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '10px', color: '#555555' }}>
-            Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst · Gemäß §19 UStG keine MwSt.
+            Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst
           </span>
           <a
             href="/portfolio"

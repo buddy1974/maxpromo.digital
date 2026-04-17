@@ -111,10 +111,6 @@ export default function ImpressumPage() {
             Steuernummer: 111/5339/7597<br />
             Finanzamt: Essen-NordOst
           </p>
-          <p style={{ marginTop: '0.75rem', marginBottom: 0 }}>
-            Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.<br />
-            <span style={{ color: '#888888' }}>VAT exempt per §19 UStG (Kleinunternehmerregelung).</span>
-          </p>
         </Section>
 
         <Section label="Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV">

@@ -62,7 +62,7 @@ export default function OsLoginPage() {
             margin: '8px 0 0',
           }}
         >
-          MaxPromo OS
+          MAXPROMO OS
         </p>
       </div>
 
