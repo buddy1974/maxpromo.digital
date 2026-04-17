@@ -2,6 +2,7 @@ import Hero from '@/components/Hero'
 import SocialProof from '@/components/SocialProof'
 import ROICalculator from '@/components/ROICalculator'
 import BeforeAfter from '@/components/BeforeAfter'
+import NewsletterSignup from '@/components/NewsletterSignup'
 import Link from 'next/link'
 
 /* ─── DATA ─────────────────────────────────────────────────── */
@@ -688,6 +689,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <NewsletterSignup />
 
     </main>
   )

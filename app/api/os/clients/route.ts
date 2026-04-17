@@ -1,0 +1,67 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { getDb } from '@/lib/db'
+
+export async function GET() {
+  try {
+    const sql = getDb()
+    const rows = await sql`SELECT * FROM os_clients ORDER BY created_at DESC`
+    return NextResponse.json(rows)
+  } catch (error) {
+    console.error('[/api/os/clients GET]', error)
+    return NextResponse.json({ error: 'Failed to fetch clients' }, { status: 500 })
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const sql = getDb()
+    const body = await request.json() as {
+      name: string; company?: string; email?: string; phone?: string
+      address?: string; city?: string; country?: string; notes?: string; status?: string
+    }
+
+    if (!body.name?.trim()) {
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+    }
+
+    const rows = await sql`
+      INSERT INTO os_clients (name, company, email, phone, address, city, country, notes, status)
+      VALUES (${body.name.trim()}, ${body.company || null}, ${body.email || null},
+              ${body.phone || null}, ${body.address || null}, ${body.city || null},
+              ${body.country || 'Germany'}, ${body.notes || null}, ${body.status || 'active'})
+      RETURNING *`
+
+    return NextResponse.json(rows[0], { status: 201 })
+  } catch (error) {
+    console.error('[/api/os/clients POST]', error)
+    return NextResponse.json({ error: 'Failed to create client' }, { status: 500 })
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const sql = getDb()
+    const body = await request.json() as { id: string; [key: string]: unknown }
+    const { id, ...fields } = body
+
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+
+    const rows = await sql`
+      UPDATE os_clients SET
+        name    = COALESCE(${fields.name as string | null}, name),
+        company = COALESCE(${fields.company as string | null}, company),
+        email   = COALESCE(${fields.email as string | null}, email),
+        phone   = COALESCE(${fields.phone as string | null}, phone),
+        address = COALESCE(${fields.address as string | null}, address),
+        city    = COALESCE(${fields.city as string | null}, city),
+        notes   = COALESCE(${fields.notes as string | null}, notes),
+        status  = COALESCE(${fields.status as string | null}, status)
+      WHERE id = ${id}
+      RETURNING *`
+
+    return NextResponse.json(rows[0])
+  } catch (error) {
+    console.error('[/api/os/clients PATCH]', error)
+    return NextResponse.json({ error: 'Failed to update client' }, { status: 500 })
+  }
+}

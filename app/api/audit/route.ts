@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { callAI } from '@/lib/ai'
 import { AUDIT_SYSTEM_PROMPT } from '@/lib/prompts'
 import { sendEmail, buildAuditLeadEmailHtml } from '@/lib/email'
+import { getDb } from '@/lib/db'
 import type { AuditResult } from '@/components/AuditResults'
 
 interface AuditRequestBody {
@@ -72,6 +73,18 @@ Identify their top 3 automation opportunities. Return only a valid JSON array.`
           },
         }),
       }).catch(console.error)
+    }
+
+    // Pipe to OS leads (non-blocking)
+    if (name && email) {
+      const summary = results.map((r: AuditResult) => `${r.title ?? 'Opportunity'}: ${r.solution}`).join(' | ').slice(0, 600)
+      try {
+        const db = getDb()
+        await db`
+          INSERT INTO os_leads (name, email, company, source, category, summary, status)
+          VALUES (${name}, ${email}, ${company}, 'automation_audit', ${orgType}, ${summary}, 'new')
+          ON CONFLICT DO NOTHING`
+      } catch { /* DB may not be configured — ignore */ }
     }
 
     return NextResponse.json({ results, model: aiResponse.model })

@@ -14,7 +14,9 @@
       "Bash(xargs file:*)",
       "Bash(xargs grep:*)",
       "Bash(python3:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(grep -n \"ANTHROPIC_API_KEY\\\\|RESEND_API_KEY\\\\|DATABASE_URL\" /c/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/app/api/**/*.ts /c/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/lib/*.ts)",
+      "Bash(npm install *)"
     ]
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { buildFullReportEmailHtml } from '@/lib/email'
+import { getDb } from '@/lib/db'
 import type { AuditResult } from '@/components/AuditResults'
 import type { EstimateData } from '@/components/CostEstimate'
 
@@ -35,6 +36,16 @@ export async function POST(request: NextRequest) {
       subject: `Your MaxPromo Digital Report & Estimate — ${company || name}`,
       html,
     })
+
+    // Pipe to OS leads
+    try {
+      const db = getDb()
+      const summary = `Discovery wizard — ${estimate.estimateTitle}. Year 1: €${estimate.totals.yearOneMin}–€${estimate.totals.yearOneMax}`
+      await db`
+        INSERT INTO os_leads (name, email, company, source, summary, status)
+        VALUES (${name}, ${email}, ${company}, 'discovery_wizard', ${summary}, 'new')
+        ON CONFLICT DO NOTHING`
+    } catch { /* DB may not be configured — ignore */ }
 
     return NextResponse.json({ success: true })
   } catch (error) {

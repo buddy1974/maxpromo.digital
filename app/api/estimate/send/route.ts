@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
+import { getDb } from '@/lib/db'
 
 interface AddonItem {
   label: string
@@ -239,6 +240,16 @@ export async function POST(request: NextRequest) {
     if (!clientResult.success) {
       throw new Error(clientResult.error ?? 'Email delivery failed')
     }
+
+    // Pipe to OS leads
+    try {
+      const db = getDb()
+      const summary = `Website estimate — ${body.pkg} (€${body.pkgPrice}). Total: €${body.totals.oneTime} one-time.`
+      await db`
+        INSERT INTO os_leads (name, email, company, source, summary, status)
+        VALUES (${body.clientName}, ${body.clientEmail}, ${body.businessName}, 'estimate_tool', ${summary}, 'new')
+        ON CONFLICT DO NOTHING`
+    } catch { /* DB may not be configured — ignore */ }
 
     return NextResponse.json({ success: true })
   } catch (error) {

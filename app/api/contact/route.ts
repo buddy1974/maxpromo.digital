@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail, buildContactEmailHtml } from '@/lib/email'
+import { getDb } from '@/lib/db'
 
 interface ContactBody {
   name: string
@@ -48,6 +49,15 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       throw new Error(result.error ?? 'Email delivery failed')
     }
+
+    // Pipe to OS leads (non-blocking)
+    try {
+      const db = getDb()
+      await db`
+        INSERT INTO os_leads (name, email, company, source, summary, status)
+        VALUES (${sanitised.name}, ${sanitised.email}, ${sanitised.organisation},
+                'contact_form', ${sanitised.message.slice(0, 500)}, 'new')`
+    } catch { /* DB may not be configured — ignore */ }
 
     return NextResponse.json({ success: true })
   } catch (error) {
