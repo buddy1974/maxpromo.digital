@@ -105,8 +105,9 @@ export default function Navbar() {
                 <div
                   style={{
                     position: 'absolute',
-                    top: 'calc(100% + 10px)',
+                    top: '100%',
                     left: 0,
+                    paddingTop: '8px',
                     background: '#080808',
                     border: '1px solid #1A1A1A',
                     minWidth: '220px',
