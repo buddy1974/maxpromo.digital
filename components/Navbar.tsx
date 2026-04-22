@@ -20,10 +20,8 @@ export default function Navbar() {
   return (
     <nav
       style={{
-        background: 'rgba(3,3,5,0.85)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        background: '#080808',
+        borderBottom: '1px solid #1A1A1A',
         position: 'sticky',
         top: 0,
         zIndex: 50,
@@ -58,9 +56,11 @@ export default function Navbar() {
                 href={link.href}
                 className="nav-link"
                 style={{
-                  fontFamily: 'var(--font-inter)',
-                  fontWeight: 500,
-                  fontSize: '14px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
                   textDecoration: 'none',
                 }}
               >
@@ -74,18 +74,20 @@ export default function Navbar() {
             <Link
               href="/automation-audit"
               style={{
-                fontFamily: 'var(--font-roboto-mono)',
+                fontFamily: 'var(--font-mono)',
                 fontWeight: 700,
-                fontSize: '13px',
-                color: '#030305',
-                background: '#F97316',
+                fontSize: '11px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: '#080808',
+                background: '#E8FF00',
                 padding: '10px 20px',
                 textDecoration: 'none',
                 display: 'inline-block',
-                transition: 'opacity 150ms ease',
+                transition: 'background 150ms ease',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
-              onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+              onMouseEnter={(e) => (e.currentTarget.style.background = '#D4EB00')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = '#E8FF00')}
             >
               Free Audit →
             </Link>
@@ -96,7 +98,7 @@ export default function Navbar() {
             className="md:hidden"
             onClick={() => setMenuOpen((v) => !v)}
             aria-label="Toggle navigation"
-            style={{ background: 'none', border: 'none', color: '#FAFAFF', cursor: 'pointer', padding: '4px' }}
+            style={{ background: 'none', border: 'none', color: '#F0F0F0', cursor: 'pointer', padding: '4px' }}
           >
             <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {menuOpen ? (
@@ -112,7 +114,7 @@ export default function Navbar() {
         {menuOpen && (
           <div
             style={{
-              borderTop: '1px solid rgba(255,255,255,0.06)',
+              borderTop: '1px solid #1A1A1A',
               padding: '16px 0 20px',
             }}
           >
@@ -123,12 +125,15 @@ export default function Navbar() {
                 onClick={() => setMenuOpen(false)}
                 style={{
                   display: 'block',
-                  fontFamily: 'var(--font-inter)',
-                  fontWeight: 500,
-                  fontSize: '15px',
-                  color: '#6B6B7A',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  color: '#666666',
                   textDecoration: 'none',
                   padding: '10px 0',
+                  transition: 'color 150ms ease',
                 }}
               >
                 {link.label}
@@ -140,11 +145,13 @@ export default function Navbar() {
               style={{
                 display: 'inline-block',
                 marginTop: '12px',
-                fontFamily: 'var(--font-roboto-mono)',
+                fontFamily: 'var(--font-mono)',
                 fontWeight: 700,
-                fontSize: '12px',
-                color: '#030305',
-                background: '#F97316',
+                fontSize: '11px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.1em',
+                color: '#080808',
+                background: '#E8FF00',
                 padding: '10px 20px',
                 textDecoration: 'none',
               }}

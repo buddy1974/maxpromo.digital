@@ -1,21 +1,25 @@
 import type { Metadata } from 'next'
-import { Inter, Roboto_Mono } from 'next/font/google'
+import { Space_Grotesk, Space_Mono, DM_Sans } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ChatAgent from '@/components/ChatAgent'
 import CookieBanner from '@/components/CookieBanner'
 
-const inter = Inter({
-  variable: '--font-inter',
+const spaceGrotesk = Space_Grotesk({
+  variable: '--font-space-grotesk',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
 })
 
-const robotoMono = Roboto_Mono({
-  variable: '--font-roboto-mono',
+const spaceMono = Space_Mono({
+  variable: '--font-space-mono',
   subsets: ['latin'],
   weight: ['400', '700'],
+})
+
+const dmSans = DM_Sans({
+  variable: '--font-dm-sans',
+  subsets: ['latin'],
 })
 
 export const metadata: Metadata = {
@@ -51,8 +55,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${robotoMono.variable} antialiased`}
-        style={{ background: '#030305', color: '#FAFAFF' }}
+        className={`${spaceGrotesk.variable} ${spaceMono.variable} ${dmSans.variable} antialiased`}
+        style={{ background: '#080808', color: '#F0F0F0' }}
       >
         <Navbar />
         {children}

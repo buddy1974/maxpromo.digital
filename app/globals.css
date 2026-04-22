@@ -1,27 +1,47 @@
 @import "tailwindcss";
 
 :root {
-  --void:    #030305;
-  --surface: #0E0E12;
-  --card:    #16161C;
-  --accent:  #F97316;
-  --hot:     #FF3D6B;
-  --ice:     #FAFAFF;
-  --muted:   #6B6B7A;
-  --border:  rgba(255, 255, 255, 0.07);
+  /* Core palette */
+  --void:    #080808;
+  --surface: #0F0F0F;
+  --card:    #141414;
+  --border:  #1A1A1A;
+
+  /* Typography colors */
+  --text-primary: #F0F0F0;
+  --text-muted:   #666666;
+  --text-dim:     #333333;
+
+  /* Brand accents */
+  --accent:       #E8FF00;
+  --accent-hover: #D4EB00;
+  --hot:          #FF4D4D;
+  --hot-hover:    #E63E3E;
+
+  /* Font families (resolved from layout.tsx font variables) */
+  --font-heading: var(--font-space-grotesk), sans-serif;
+  --font-body:    var(--font-dm-sans), sans-serif;
+  --font-mono:    var(--font-space-mono), monospace;
 }
 
 @theme inline {
-  --color-background: var(--void);
-  --color-foreground: var(--ice);
-  --color-accent: var(--accent);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-roboto-mono);
-  --font-display: var(--font-inter);
+  --color-background:   var(--void);
+  --color-foreground:   var(--text-primary);
+  --color-void:         var(--void);
+  --color-surface:      var(--surface);
+  --color-card:         var(--card);
+  --color-accent:       var(--accent);
+  --color-hot:          var(--hot);
+  --color-text-primary: var(--text-primary);
+  --color-text-muted:   var(--text-muted);
+  --font-sans:          var(--font-dm-sans);
+  --font-mono:          var(--font-space-mono);
+  --font-display:       var(--font-space-grotesk);
 }
 
 * {
   box-sizing: border-box;
+  border-radius: 0 !important;
 }
 
 html {
@@ -30,20 +50,24 @@ html {
 
 body {
   background: var(--void);
-  color: var(--ice);
-  font-family: var(--font-inter), sans-serif;
+  color: var(--text-primary);
+  font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-heading);
   letter-spacing: -0.04em;
 }
 
+code, pre, .mono {
+  font-family: var(--font-mono);
+}
+
 :focus-visible {
-  outline: 2px solid #F97316;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -75,9 +99,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Glitch ── */
 @keyframes glitch {
-  0%   { text-shadow: 3px 0 #FF3D6B, -3px 0 #F97316; clip-path: inset(0 0 95% 0); }
-  25%  { text-shadow: -3px 0 #FF3D6B, 3px 0 #F97316; clip-path: inset(30% 0 40% 0); }
-  50%  { text-shadow: 3px 0 #FF3D6B, -3px 0 #F97316; clip-path: inset(70% 0 10% 0); }
+  0%   { text-shadow: 3px 0 var(--hot), -3px 0 var(--accent); clip-path: inset(0 0 95% 0); }
+  25%  { text-shadow: -3px 0 var(--hot), 3px 0 var(--accent); clip-path: inset(30% 0 40% 0); }
+  50%  { text-shadow: 3px 0 var(--hot), -3px 0 var(--accent); clip-path: inset(70% 0 10% 0); }
   100% { text-shadow: none; clip-path: none; }
 }
 .glitch-word {
@@ -97,31 +121,30 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Service cards ── */
 .service-card {
-  transition: transform 200ms ease, border-left-color 200ms ease, box-shadow 200ms ease;
+  transition: transform 200ms ease, border-left-color 200ms ease;
   border-left: 3px solid transparent;
 }
 .service-card:hover {
   transform: translateY(-2px);
-  border-left-color: #F97316;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border-left-color: var(--accent);
 }
 
 /* ── Audit chips ── */
 .audit-chip {
   cursor: pointer;
   transition: all 150ms ease;
-  background: #16161C;
+  background: var(--card);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #6B6B7A;
+  color: var(--text-muted);
 }
 .audit-chip:hover {
-  border-color: rgba(249, 115, 22, 0.4);
-  color: #FAFAFF;
+  border-color: rgba(232, 255, 0, 0.4);
+  color: var(--text-primary);
 }
 .audit-chip.selected {
-  border-color: #F97316;
-  color: #F97316;
-  background: rgba(249, 115, 22, 0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(232, 255, 0, 0.08);
 }
 
 /* ── Result cards ── */
@@ -130,27 +153,27 @@ h1, h2, h3, h4, h5, h6 {
   to   { opacity: 1; transform: translateY(0); }
 }
 .result-card {
-  border-left: 3px solid #F97316;
+  border-left: 3px solid var(--accent);
   animation: slideUp 0.4s ease both;
 }
 
 /* ── Nav / footer links ── */
 .nav-link {
-  color: #6B6B7A;
+  color: var(--text-muted);
   transition: color 150ms ease;
 }
 .nav-link:hover {
-  color: #FAFAFF;
+  color: var(--accent);
 }
 .footer-link {
-  color: #6B6B7A;
+  color: var(--text-muted);
   transition: color 150ms ease;
   text-decoration: none;
-  font-family: var(--font-inter);
+  font-family: var(--font-body);
   font-size: 15px;
 }
 .footer-link:hover {
-  color: #FAFAFF;
+  color: var(--text-primary);
 }
 
 /* ── Step counter ghost numbers ── */
@@ -158,10 +181,10 @@ h1, h2, h3, h4, h5, h6 {
   position: absolute;
   top: -20px;
   left: -4px;
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 80px;
-  color: rgba(249, 115, 22, 0.07);
+  color: rgba(232, 255, 0, 0.06);
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -174,9 +197,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .dark-card:hover {
   background: #161616 !important;
-  border-color: rgba(249,115,22,0.25) !important;
+  border-color: rgba(232, 255, 0, 0.2) !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(249,115,22,0.1);
 }
 
 /* ── Process step cards ── */
@@ -184,8 +206,8 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.2s ease;
 }
 .process-step:hover {
-  background: rgba(255,255,255,0.04) !important;
-  border-color: rgba(249,115,22,0.2) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(232, 255, 0, 0.15) !important;
 }
 
 /* ── Industry cards ── */
@@ -194,8 +216,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .industry-card:hover {
   background: #161616 !important;
-  border-color: rgba(249,115,22,0.2) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  border-color: rgba(232, 255, 0, 0.15) !important;
   transform: translateY(-2px);
 }
 
@@ -208,31 +229,29 @@ input[type='range'] {
 }
 input[type='range']::-webkit-slider-runnable-track {
   height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
 }
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 18px;
   height: 18px;
-  border-radius: 50%;
-  background: #F97316;
-  border: 2px solid #0A0A0A;
-  box-shadow: 0 0 0 3px rgba(249,115,22,0.3);
+  border-radius: 0 !important;
+  background: var(--accent);
+  border: 2px solid var(--void);
+  box-shadow: 0 0 0 3px rgba(232, 255, 0, 0.25);
   margin-top: -8px;
 }
 input[type='range']::-moz-range-track {
   height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
 }
 input[type='range']::-moz-range-thumb {
   width: 18px;
   height: 18px;
-  border-radius: 50%;
-  background: #F97316;
-  border: 2px solid #0A0A0A;
-  box-shadow: 0 0 0 3px rgba(249,115,22,0.3);
+  border-radius: 0 !important;
+  background: var(--accent);
+  border: 2px solid var(--void);
+  box-shadow: 0 0 0 3px rgba(232, 255, 0, 0.25);
 }
 
 /* ── Audit loading pulse ── */
@@ -246,9 +265,9 @@ input[type='range']::-moz-range-thumb {
 
 /* ── Chat widget ── */
 @keyframes chatPulseRing {
-  0%   { box-shadow: 0 0 0 0 rgba(249,115,22,0.5), 0 8px 32px rgba(249,115,22,0.4); }
-  70%  { box-shadow: 0 0 0 18px rgba(249,115,22,0), 0 8px 32px rgba(249,115,22,0.4); }
-  100% { box-shadow: 0 0 0 0 rgba(249,115,22,0), 0 8px 32px rgba(249,115,22,0.4); }
+  0%   { box-shadow: 0 0 0 0 rgba(232, 255, 0, 0.4), 0 8px 32px rgba(232, 255, 0, 0.25); }
+  70%  { box-shadow: 0 0 0 18px rgba(232, 255, 0, 0), 0 8px 32px rgba(232, 255, 0, 0.25); }
+  100% { box-shadow: 0 0 0 0 rgba(232, 255, 0, 0), 0 8px 32px rgba(232, 255, 0, 0.25); }
 }
 .chat-pulse-ring {
   animation: chatPulseRing 2s ease-out infinite;
@@ -269,7 +288,7 @@ input[type='range']::-moz-range-thumb {
 .typing-dot {
   width: 6px;
   height: 6px;
-  background: #F97316;
+  background: var(--accent);
   border-radius: 50%;
   animation: typingDot 1s ease-in-out infinite;
   display: inline-block;
@@ -280,7 +299,7 @@ input[type='range']::-moz-range-thumb {
 /* Chat scrollbar */
 .chat-scroll::-webkit-scrollbar       { width: 4px; }
 .chat-scroll::-webkit-scrollbar-track { background: transparent; }
-.chat-scroll::-webkit-scrollbar-thumb { background: rgba(249,115,22,0.3); border-radius: 2px; }
+.chat-scroll::-webkit-scrollbar-thumb { background: rgba(232, 255, 0, 0.25); }
 
 /* Mobile chat */
 @media (max-width: 480px) {

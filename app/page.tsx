@@ -91,9 +91,9 @@ function SectionLabel({ children }: { children: string }) {
   return (
     <p
       style={{
-        fontFamily: 'var(--font-roboto-mono)',
+        fontFamily: 'var(--font-mono)',
         fontSize: '12px',
-        color: '#F97316',
+        color: '#E8FF00',
         letterSpacing: '0.2em',
         textTransform: 'uppercase',
         marginBottom: '12px',
@@ -104,15 +104,15 @@ function SectionLabel({ children }: { children: string }) {
   )
 }
 
-function SectionTitle({ children, dark }: { children: React.ReactNode; dark?: boolean }) {
+function SectionTitle({ children, dark: _dark }: { children: React.ReactNode; dark?: boolean }) {
   return (
     <h2
       style={{
-        fontFamily: 'var(--font-inter)',
+        fontFamily: 'var(--font-heading)',
         fontWeight: 700,
         fontSize: 'clamp(2.5rem, 5vw, 4rem)',
         letterSpacing: '-0.04em',
-        color: dark ? '#FAFAFF' : '#0A0A0A',
+        color: '#F0F0F0',
         marginBottom: '0',
       }}
     >
@@ -127,11 +127,11 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
       <Link
         href={href}
         style={{
-          fontFamily: 'var(--font-roboto-mono)',
+          fontFamily: 'var(--font-mono)',
           fontWeight: 700,
           fontSize: '15px',
-          color: '#000000',
-          background: '#F97316',
+          color: '#080808',
+          background: '#E8FF00',
           padding: '14px 28px',
           textDecoration: 'none',
           display: 'inline-block',
@@ -145,12 +145,12 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
     <Link
       href={href}
       style={{
-        fontFamily: 'var(--font-inter)',
+        fontFamily: 'var(--font-body)',
         fontWeight: 500,
         fontSize: '15px',
-        color: '#FAFAFF',
+        color: '#F0F0F0',
         background: 'transparent',
-        border: '1px solid rgba(255,255,255,0.25)',
+        border: '1px solid #1A1A1A',
         padding: '14px 28px',
         textDecoration: 'none',
         display: 'inline-block',
@@ -162,33 +162,33 @@ function CtaButton({ href, primary, children }: { href: string; primary?: boolea
 }
 
 function renderTerminalLine(line: typeof TERMINAL_LINES[number]) {
-  const mono = { fontFamily: 'var(--font-roboto-mono)', fontSize: '13px', lineHeight: '1.8' }
+  const mono = { fontFamily: 'var(--font-mono)', fontSize: '13px', lineHeight: '1.8' }
 
   if (line.type === 'blank') return <p style={{ ...mono, minHeight: '1.8em' }}>&nbsp;</p>
 
   if (line.type === 'cmd') {
     return (
-      <p style={{ ...mono, color: '#FAFAFF' }}>
-        <span style={{ color: '#F97316' }}>$</span>
+      <p style={{ ...mono, color: '#F0F0F0' }}>
+        <span style={{ color: '#E8FF00' }}>$</span>
         {line.text.slice(1)}
       </p>
     )
   }
   if (line.type === 'check') {
     return (
-      <p style={{ ...mono, color: '#FAFAFF' }}>
-        <span style={{ color: '#F97316' }}>  ✓</span>
+      <p style={{ ...mono, color: '#F0F0F0' }}>
+        <span style={{ color: '#E8FF00' }}>  ✓</span>
         {line.text.slice(3)}
       </p>
     )
   }
   if (line.type === 'cross') {
-    return <p style={{ ...mono, color: '#6B6B7A' }}>{line.text}</p>
+    return <p style={{ ...mono, color: '#666666' }}>{line.text}</p>
   }
   if (line.type === 'stat') {
-    return <p style={{ ...mono, color: '#FAFAFF' }}>{line.text}</p>
+    return <p style={{ ...mono, color: '#F0F0F0' }}>{line.text}</p>
   }
-  return <p style={{ ...mono, color: '#6B6B7A' }}>{line.text}</p>
+  return <p style={{ ...mono, color: '#666666' }}>{line.text}</p>
 }
 
 /* ─── PAGE ──────────────────────────────────────────────────── */
@@ -206,9 +206,9 @@ export default function HomePage() {
       {/* 3 — Marquee ticker */}
       <div
         style={{
-          background: '#0A0A0A',
-          borderTop: '1px solid rgba(255,255,255,0.08)',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
+          background: '#080808',
+          borderTop: '1px solid #1A1A1A',
+          borderBottom: '1px solid #1A1A1A',
           padding: '14px 0',
           overflow: 'hidden',
         }}
@@ -218,9 +218,9 @@ export default function HomePage() {
             <span
               key={i}
               style={{
-                fontFamily: 'var(--font-roboto-mono)',
+                fontFamily: 'var(--font-mono)',
                 fontSize: '11px',
-                color: 'rgba(255,255,255,0.5)',
+                color: 'rgba(240,240,240,0.35)',
                 textTransform: 'uppercase',
                 letterSpacing: '0.15em',
                 marginRight: '2rem',
@@ -230,14 +230,14 @@ export default function HomePage() {
               }}
             >
               {item}
-              <span style={{ color: '#F97316', opacity: 0.5 }}>◆</span>
+              <span style={{ color: '#E8FF00', opacity: 0.4 }}>◆</span>
             </span>
           ))}
         </div>
       </div>
 
       {/* 4 — Services */}
-      <section style={{ background: '#FAFAFA', padding: '6rem 2rem', borderBottom: '1px solid #E5E5E5' }}>
+      <section style={{ background: '#0F0F0F', padding: '6rem 2rem', borderBottom: '1px solid #1A1A1A' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
             <SectionLabel>What We Build</SectionLabel>
@@ -257,9 +257,8 @@ export default function HomePage() {
                 key={s.title}
                 className="dark-card"
                 style={{
-                  background: '#0F0F0F',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '2px',
+                  background: '#141414',
+                  border: '1px solid #1A1A1A',
                   padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -268,12 +267,12 @@ export default function HomePage() {
                 }}
               >
                 {/* Top accent line */}
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.6) 50%, transparent 100%)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(232,255,0,0.5) 50%, transparent 100%)', pointerEvents: 'none' }} />
                 <span
                   style={{
-                    fontFamily: 'var(--font-roboto-mono)',
+                    fontFamily: 'var(--font-mono)',
                     fontSize: '24px',
-                    color: '#F97316',
+                    color: '#E8FF00',
                     display: 'block',
                     marginBottom: '20px',
                   }}
@@ -282,10 +281,10 @@ export default function HomePage() {
                 </span>
                 <h3
                   style={{
-                    fontFamily: 'var(--font-inter)',
+                    fontFamily: 'var(--font-heading)',
                     fontWeight: 700,
                     fontSize: '18px',
-                    color: '#FFFFFF',
+                    color: '#F0F0F0',
                     letterSpacing: '-0.03em',
                     marginBottom: '10px',
                   }}
@@ -294,9 +293,9 @@ export default function HomePage() {
                 </h3>
                 <p
                   style={{
-                    fontFamily: 'var(--font-inter)',
+                    fontFamily: 'var(--font-body)',
                     fontSize: '14px',
-                    color: '#999999',
+                    color: '#666666',
                     lineHeight: 1.75,
                     flex: 1,
                     marginBottom: '20px',
@@ -307,9 +306,9 @@ export default function HomePage() {
                 <Link
                   href={s.href}
                   style={{
-                    fontFamily: 'var(--font-roboto-mono)',
+                    fontFamily: 'var(--font-mono)',
                     fontSize: '13px',
-                    color: '#F97316',
+                    color: '#E8FF00',
                     textDecoration: 'none',
                     letterSpacing: '0.05em',
                     alignSelf: 'flex-start',
@@ -325,9 +324,9 @@ export default function HomePage() {
             <Link
               href="/services"
               style={{
-                fontFamily: 'var(--font-roboto-mono)',
+                fontFamily: 'var(--font-mono)',
                 fontSize: '13px',
-                color: '#F97316',
+                color: '#E8FF00',
                 textDecoration: 'none',
                 letterSpacing: '0.05em',
               }}
@@ -345,7 +344,7 @@ export default function HomePage() {
       <ROICalculator />
 
       {/* 6 — Industries */}
-      <section style={{ background: '#F5F5F5', padding: '5rem 2rem', borderBottom: '1px solid #E5E5E5' }}>
+      <section style={{ background: '#0F0F0F', padding: '5rem 2rem', borderBottom: '1px solid #1A1A1A' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
             <SectionLabel>Industries We Serve</SectionLabel>
@@ -369,9 +368,8 @@ export default function HomePage() {
                 key={ind.label}
                 className="industry-card"
                 style={{
-                  background: '#0F0F0F',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: '2px',
+                  background: '#141414',
+                  border: '1px solid #1A1A1A',
                   padding: '28px 20px',
                   textAlign: 'center',
                   display: 'flex',
@@ -380,10 +378,10 @@ export default function HomePage() {
                   gap: '12px',
                 }}
               >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d={ind.icon} />
                 </svg>
-                <span style={{ fontFamily: 'var(--font-inter)', fontSize: '12px', color: '#CCCCCC', lineHeight: 1.4, textAlign: 'center' }}>
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: '#666666', lineHeight: 1.4, textAlign: 'center' }}>
                   {ind.label}
                 </span>
               </div>
@@ -395,7 +393,7 @@ export default function HomePage() {
       {/* 7 — Audit terminal */}
       <section
         style={{
-          background: '#0A0A0A',
+          background: '#080808',
           padding: '6rem 2rem',
           position: 'relative',
         }}
@@ -405,7 +403,7 @@ export default function HomePage() {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: 'linear-gradient(rgba(249,115,22,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,115,22,0.03) 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(rgba(232,255,0,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(232,255,0,0.02) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
             pointerEvents: 'none',
           }}
@@ -417,31 +415,31 @@ export default function HomePage() {
           {/* Terminal window */}
           <div
             style={{
-              background: '#0E0E12',
-              border: '1px solid rgba(249,115,22,0.15)',
+              background: '#0F0F0F',
+              border: '1px solid rgba(232,255,0,0.12)',
               overflow: 'hidden',
             }}
           >
             {/* Title bar */}
             <div
               style={{
-                background: '#16161C',
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
+                background: '#141414',
+                borderBottom: '1px solid #1A1A1A',
                 padding: '10px 16px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
               }}
             >
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.12)', display: 'inline-block' }} />
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.07)', display: 'inline-block' }} />
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', display: 'inline-block' }} />
-              <span style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: '#6B6B7A', marginLeft: '8px' }}>
+              <span style={{ width: '8px', height: '8px', background: 'rgba(255,255,255,0.12)', display: 'inline-block' }} />
+              <span style={{ width: '8px', height: '8px', background: 'rgba(255,255,255,0.07)', display: 'inline-block' }} />
+              <span style={{ width: '8px', height: '8px', background: 'rgba(255,255,255,0.04)', display: 'inline-block' }} />
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#666666', marginLeft: '8px' }}>
                 audit — zsh
               </span>
             </div>
             {/* Body */}
-            <div style={{ background: '#030305', padding: '20px' }}>
+            <div style={{ background: '#080808', padding: '20px' }}>
               {TERMINAL_LINES.map((line, i) => (
                 <div key={i} className="terminal-line" style={{ animationDelay: `${i * 300}ms` }}>
                   {renderTerminalLine(line)}
@@ -449,7 +447,7 @@ export default function HomePage() {
               ))}
               <p
                 className="terminal-line"
-                style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '12px', color: '#F97316', animationDelay: `${TERMINAL_LINES.length * 300}ms` }}
+                style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#E8FF00', animationDelay: `${TERMINAL_LINES.length * 300}ms` }}
               >
                 $ <span className="cursor-blink">▊</span>
               </p>
@@ -462,9 +460,9 @@ export default function HomePage() {
             <SectionTitle dark>Find out exactly what can be automated</SectionTitle>
             <p
               style={{
-                fontFamily: 'var(--font-inter)',
+                fontFamily: 'var(--font-body)',
                 fontSize: '17px',
-                color: '#888888',
+                color: '#666666',
                 lineHeight: 1.8,
                 marginTop: '1.25rem',
                 marginBottom: '1.75rem',
@@ -486,12 +484,12 @@ export default function HomePage() {
                     display: 'flex',
                     alignItems: 'flex-start',
                     gap: '10px',
-                    fontFamily: 'var(--font-inter)',
+                    fontFamily: 'var(--font-body)',
                     fontSize: '17px',
-                    color: 'rgba(250,250,255,0.7)',
+                    color: 'rgba(240,240,240,0.7)',
                   }}
                 >
-                  <span style={{ color: '#F97316', flexShrink: 0 }}>✓</span>
+                  <span style={{ color: '#E8FF00', flexShrink: 0 }}>✓</span>
                   {item}
                 </li>
               ))}
@@ -504,7 +502,7 @@ export default function HomePage() {
       {/* 8 — Process */}
       <section
         style={{
-          background: '#0A0A0A',
+          background: '#080808',
           padding: '6rem 2rem',
         }}
       >
@@ -527,17 +525,16 @@ export default function HomePage() {
                 className="process-step"
                 style={{
                   background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                  borderRadius: '2px',
+                  border: '1px solid #1A1A1A',
                   padding: '40px 32px',
                 }}
               >
                 <p
                   style={{
-                    fontFamily: 'var(--font-inter)',
+                    fontFamily: 'var(--font-heading)',
                     fontWeight: 700,
                     fontSize: '56px',
-                    color: '#F97316',
+                    color: '#E8FF00',
                     letterSpacing: '-0.04em',
                     lineHeight: 1,
                     marginBottom: '20px',
@@ -547,10 +544,10 @@ export default function HomePage() {
                 </p>
                 <h3
                   style={{
-                    fontFamily: 'var(--font-inter)',
+                    fontFamily: 'var(--font-heading)',
                     fontWeight: 700,
                     fontSize: '17px',
-                    color: '#FFFFFF',
+                    color: '#F0F0F0',
                     letterSpacing: '-0.03em',
                     marginBottom: '10px',
                   }}
@@ -559,9 +556,9 @@ export default function HomePage() {
                 </h3>
                 <p
                   style={{
-                    fontFamily: 'var(--font-inter)',
+                    fontFamily: 'var(--font-body)',
                     fontSize: '14px',
-                    color: '#777777',
+                    color: '#666666',
                     lineHeight: 1.75,
                   }}
                 >
@@ -574,8 +571,8 @@ export default function HomePage() {
       </section>
 
       {/* 8 — CTA */}
-      <section style={{ background: '#0A0A0A', padding: '7rem 2rem', position: 'relative', overflow: 'hidden' }}>
-        {/* Orange glow behind heading */}
+      <section style={{ background: '#080808', padding: '7rem 2rem', position: 'relative', overflow: 'hidden' }}>
+        {/* Accent glow behind heading */}
         <div
           style={{
             position: 'absolute',
@@ -584,7 +581,7 @@ export default function HomePage() {
             transform: 'translate(-50%, -50%)',
             width: '700px',
             height: '300px',
-            background: 'radial-gradient(ellipse at center, rgba(249,115,22,0.10) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(232,255,0,0.06) 0%, transparent 70%)',
             pointerEvents: 'none',
           }}
         />
@@ -592,23 +589,23 @@ export default function HomePage() {
           <SectionLabel>Ready to Automate?</SectionLabel>
           <h2
             style={{
-              fontFamily: 'var(--font-inter)',
+              fontFamily: 'var(--font-heading)',
               fontWeight: 700,
               fontSize: 'clamp(2.75rem, 5vw, 4rem)',
               letterSpacing: '-0.04em',
-              color: '#FAFAFF',
+              color: '#F0F0F0',
               marginBottom: '1.25rem',
               marginTop: '0.5rem',
             }}
           >
             Stop doing work{' '}
-            <span style={{ color: '#F97316' }}>machines</span> can do
+            <span style={{ color: '#E8FF00' }}>machines</span> can do
           </h2>
           <p
             style={{
-              fontFamily: 'var(--font-inter)',
+              fontFamily: 'var(--font-body)',
               fontSize: '17px',
-              color: '#888888',
+              color: '#666666',
               marginBottom: '2.5rem',
               lineHeight: 1.8,
             }}
@@ -622,9 +619,9 @@ export default function HomePage() {
           </div>
           <p
             style={{
-              fontFamily: 'var(--font-roboto-mono)',
+              fontFamily: 'var(--font-mono)',
               fontSize: '11px',
-              color: '#666666',
+              color: '#333333',
               marginTop: '20px',
               letterSpacing: '0.05em',
             }}
@@ -638,15 +635,15 @@ export default function HomePage() {
       {/* 9 — Stack */}
       <section
         style={{
-          background: '#050505',
-          borderTop: '1px solid rgba(255,255,255,0.05)',
+          background: '#080808',
+          borderTop: '1px solid #1A1A1A',
           padding: '3rem 2rem',
         }}
       >
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <p
             style={{
-              fontFamily: 'var(--font-roboto-mono)',
+              fontFamily: 'var(--font-mono)',
               fontSize: '10px',
               color: '#333333',
               letterSpacing: '0.2em',
@@ -674,10 +671,10 @@ export default function HomePage() {
               <span
                 key={tool}
                 style={{
-                  fontFamily: 'var(--font-roboto-mono)',
+                  fontFamily: 'var(--font-mono)',
                   fontSize: '11px',
-                  color: '#444444',
-                  border: '1px solid rgba(255,255,255,0.05)',
+                  color: '#333333',
+                  border: '1px solid #1A1A1A',
                   padding: '5px 12px',
                   letterSpacing: '0.05em',
                   transition: 'color 150ms ease, border-color 150ms ease',
