@@ -77,13 +77,23 @@ function PraxisContactForm() {
       <button type="submit" disabled={status === 'loading' || status === 'success'}
         style={{ background: '#E8FF00', color: '#080808', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, padding: '16px', width: '100%', border: 'none', cursor: status === 'loading' || status === 'success' ? 'default' : 'pointer', opacity: status === 'loading' ? 0.7 : 1 }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'REQUEST A DEMO →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
       </button>
       {status === 'success' && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#E8FF00', margin: 0 }}>✓ Request received. We&apos;ll contact you within 24 hours.</p>}
       {status === 'error'   && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#FF4D4D', margin: 0 }}>Something went wrong. Email us at hello@maxpromo.digital</p>}
     </form>
   )
 }
+
+/* ─── PAGE DATA ───────────────────────────────────────────── */
+
+const WHO_FOR = [
+  'Specialist medical practices in Germany — urology, dermatology, cardiology, and more',
+  'Patients currently booking by phone, receiving results by post or fax',
+  'Staff working across disconnected systems with no single view and incomplete audit trails',
+  'Approaching or currently under GDPR compliance obligations for patient data',
+  'Practices handling 50–500+ patients per week with growing admin burden',
+]
 
 const PROBLEMS = [
   { icon: '📞', text: 'Appointment requests by phone. Reminders sent manually. No-shows not tracked. Recall letters done by hand.' },
@@ -92,12 +102,12 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ PORTAL ]', name: 'Patient Portal',              desc: 'Patients book appointments, view lab results, complete intake forms, and receive reminders — all online. No phone calls needed for routine interactions.' },
-  { icon: '[ APPT ]',   name: 'Appointment Management',      desc: 'Full booking system with reminder automation. No-show logging. PSA recall workflows. Specialist procedure scheduling built in.' },
-  { icon: '[ LAB ]',    name: 'Lab Results — Digital Delivery', desc: 'Results delivered securely to the patient portal. Automated notifications when results are ready. Full audit trail.' },
-  { icon: '[ DASH ]',   name: 'Staff Dashboard',             desc: 'Role-based access for doctors, MFA staff, and admin. Each role sees exactly what they need — nothing more.' },
-  { icon: '[ AUTO ]',   name: 'n8n Automation Workflows',    desc: 'Appointment reminders, lab notifications, no-show logging, PSA recall, and procedure-specific follow-ups — all automated.' },
-  { icon: '[ GDPR ]',   name: 'GDPR & German Standards',     desc: 'Built to German healthcare data standards. Multilingual — German and English. Audit log on every patient record action.' },
+  { icon: '[ PORTAL ]', name: 'Patient Portal',              desc: 'Patients book online, view lab results, and complete intake forms without calling the practice. Reduce inbound calls by up to 40%.' },
+  { icon: '[ APPT ]',   name: 'Appointment Management',      desc: 'Reminders fire automatically. No-shows logged. Recall workflows triggered by protocol. Nothing falls through the cracks.' },
+  { icon: '[ LAB ]',    name: 'Lab Results — Digital Delivery', desc: 'Results delivered securely to the patient portal instantly — no post, no fax, no phone call. Full audit trail on every result.' },
+  { icon: '[ DASH ]',   name: 'Staff Dashboard',             desc: 'Every role sees exactly what they need — nothing more. Doctors, MFA staff, and admin each have their own view.' },
+  { icon: '[ AUTO ]',   name: 'n8n Automation Workflows',    desc: 'Appointment reminders, lab notifications, no-show logging, PSA recall, and follow-ups — all automated. Reduce admin work by up to 50%.' },
+  { icon: '[ GDPR ]',   name: 'GDPR & German Standards',     desc: 'Audit log on every patient record action. Built to German healthcare data law. Multilingual — German and English. Inspection-ready.' },
 ]
 
 const STEPS = [
@@ -105,6 +115,8 @@ const STEPS = [
   { num: '02', title: 'Staff work from one dashboard',    desc: 'All patient data, appointments, and lab results in one place. Role-based — each staff member sees their relevant view.' },
   { num: '03', title: 'Automation handles follow-ups',    desc: 'Reminders fire automatically. Recalls triggered by protocol. No-shows logged. Nothing falls through the cracks.' },
 ]
+
+/* ─── PAGE ────────────────────────────────────────────────── */
 
 export default function PraxisOSPage() {
   return (
@@ -119,10 +131,10 @@ export default function PraxisOSPage() {
               ENTERPRISE SYSTEM · GDPR COMPLIANT
             </p>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', whiteSpace: 'pre-line' }}>
-              {'A digital operating system\nfor medical practices.'}
+              {'Still booking appointments by phone?\nHere is how your practice runs digitally.'}
             </h1>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8 }}>
-              PraxisOS is a complete platform for specialist medical practices — patient portal, appointment management, lab results, digital intake forms, staff dashboard, and AI-assisted documentation. Built to German healthcare standards. GDPR compliant.
+              PraxisOS replaces phone bookings, paper intake forms, and faxed lab results with a complete digital platform. Patient portal, appointment management, digital lab results, staff dashboard, and automation workflows. Built to German healthcare standards. GDPR compliant. This system is now available for selected clients.
             </p>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
               <Link href="/contact?system=praxis-os"
@@ -130,7 +142,7 @@ export default function PraxisOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = '#D4EB00')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = '#E8FF00')}
               >
-                Request a Demo
+                See How This Runs Your Practice →
               </Link>
               <Link href="/contact?system=praxis-os"
                 style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', border: '1px solid #1A1A1A', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', background: 'transparent', transition: 'border-color 150ms ease' }}
@@ -140,6 +152,26 @@ export default function PraxisOSPage() {
                 See What&apos;s Built
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* ── WHO THIS IS FOR ── */}
+        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              WHO THIS IS FOR
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              Built for specialist practices in Germany.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {WHO_FOR.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -216,12 +248,42 @@ export default function PraxisOSPage() {
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>GET THIS SYSTEM</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Your practice. Running digitally.
+              Get Your System Setup
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
               Configured for your specialty, your workflows, and your team. GDPR compliant. Built to German healthcare standards.
             </p>
+            <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              {['Setup in 5–10 days.', 'Configured for your specialty and workflows.', 'No upfront commitment.'].map((line) => (
+                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
+                  — {line}
+                </p>
+              ))}
+            </div>
             <PraxisContactForm />
+          </div>
+        </section>
+
+        {/* ── WHY MAXPROMO ── */}
+        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>WHY MAXPROMO</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2rem' }}>
+              Not theory. Real systems, running now.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1px', background: '#1A1A1A' }}>
+              {[
+                { num: '01', text: 'Built from real client briefs — not feature lists' },
+                { num: '02', text: 'Already deployed in production, not in staging' },
+                { num: '03', text: 'Configured to your workflow — not a generic template' },
+                { num: '04', text: 'We hand you a running system, not a prototype' },
+              ].map((item) => (
+                <div key={item.num} style={{ background: '#141414', padding: '28px 32px' }}>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: 'rgba(232,255,0,0.12)', letterSpacing: '-0.04em', margin: '0 0 12px' }}>{item.num}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{item.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

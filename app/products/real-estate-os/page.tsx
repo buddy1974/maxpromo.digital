@@ -75,13 +75,23 @@ function RealEstateContactForm() {
       <button type="submit" disabled={status === 'loading' || status === 'success'}
         style={{ background: '#E8FF00', color: '#080808', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, padding: '16px', width: '100%', border: 'none', cursor: status === 'loading' || status === 'success' ? 'default' : 'pointer', opacity: status === 'loading' ? 0.7 : 1 }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'REQUEST A DEMO →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
       </button>
       {status === 'success' && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#E8FF00', margin: 0 }}>✓ Request received. We&apos;ll contact you within 24 hours.</p>}
       {status === 'error'   && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#FF4D4D', margin: 0 }}>Something went wrong. Email us at hello@maxpromo.digital</p>}
     </form>
   )
 }
+
+/* ─── PAGE DATA ───────────────────────────────────────────── */
+
+const WHO_FOR = [
+  'Property auction companies in the UK managing 20–200+ lots at any given time',
+  'Currently tracking pipeline in spreadsheets, investor database in email folders',
+  'Doing deal analysis manually — different spreadsheet for every lot, every time',
+  'Running email campaigns without segmentation, tracking, or AI subject lines',
+  'Looking to scale deal flow and investor communications without adding headcount',
+]
 
 const PROBLEMS = [
   { icon: '📊', text: 'Lots tracked in spreadsheets. Pipeline invisible. Deals fall through the gaps between sales calls.' },
@@ -90,12 +100,12 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ PIPE ]',  name: 'Lot Pipeline — Kanban Board',   desc: 'Sourcing → Legal Pack → Live → Completed. Every lot tracked visually. Add, update, and move deals with one click.' },
-  { icon: '[ AI ]',    name: 'AI Deal Analyser',              desc: 'Enter any address and guide price. AI returns deal score, ROI estimate, gross yield, after-refurb value, risk level, and full investment verdict.' },
-  { icon: '[ CRM ]',   name: 'Investor CRM',                  desc: 'Full contact management with lead scoring, Hot/Warm/Cold/VIP status, budget range tracking, and segmented campaign targeting.' },
-  { icon: '[ CALC ]',  name: 'Financial Engine',              desc: '5 live calculators: ROI, Stamp Duty SDLT 2026, Bridging Loan, Monthly Cashflow, and Creative Finance structures.' },
-  { icon: '[ EMAIL ]', name: 'Campaign Studio',               desc: '6 email templates with AI subject line generation. Segment by investor type. Live preview. Send via Resend. Track opens and clicks.' },
-  { icon: '[ INTEL ]', name: 'Market Intelligence',           desc: 'Live market data, competitor analysis, regional price growth, and your business KPIs — all in one command centre dashboard.' },
+  { icon: '[ PIPE ]',  name: 'Lot Pipeline — Kanban Board',   desc: 'Every lot visible from Sourcing to Completion. Nothing falls between calls. Move deals with one click — no spreadsheet, no email chains.' },
+  { icon: '[ AI ]',    name: 'AI Deal Analyser',              desc: 'Full deal verdict in seconds — ROI, risk, yield, after-refurb value, and recommendation. Up to 10x faster than manual analysis per lot.' },
+  { icon: '[ CRM ]',   name: 'Investor CRM',                  desc: 'Hot leads stay hot. Cold leads get warm. Every investor automatically scored by activity, budget, and engagement. Pipeline grows without manual work.' },
+  { icon: '[ CALC ]',  name: 'Financial Engine',              desc: 'ROI, SDLT 2026, bridging loan, monthly cashflow, creative finance — all calculated instantly. Not on a spreadsheet. Not estimated.' },
+  { icon: '[ EMAIL ]', name: 'Campaign Studio',               desc: 'Send the right deal to the right investor. AI writes the subject line. Segment by type. Track opens and clicks. Built on Resend.' },
+  { icon: '[ INTEL ]', name: 'Market Intelligence',           desc: 'Your business KPIs in one dashboard — revenue, pipeline, investor activity, and market data. No pulling reports from three places.' },
 ]
 
 const STEPS = [
@@ -103,6 +113,8 @@ const STEPS = [
   { num: '02', title: 'AI analyses every deal',              desc: 'Enter address and guide price. AI verdict in seconds — score, ROI, risks, and recommendation.' },
   { num: '03', title: 'Investors managed automatically',     desc: 'Campaigns fire to the right segments. Leads scored. Follow-ups triggered. Pipeline grows without manual work.' },
 ]
+
+/* ─── PAGE ────────────────────────────────────────────────── */
 
 export default function RealEstateOSPage() {
   return (
@@ -117,10 +129,10 @@ export default function RealEstateOSPage() {
               ENTERPRISE SYSTEM · AI POWERED
             </p>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', whiteSpace: 'pre-line' }}>
-              {'A private intelligence platform\nfor property auction businesses.'}
+              {'Still tracking lots in a spreadsheet?\nHere is your entire auction business in one platform.'}
             </h1>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8 }}>
-              RealEstateOS is a complete operating system for property auction companies — lot pipeline management, AI deal analysis, investor CRM, financial calculators, campaign studio, and market intelligence. Built for serious operators.
+              RealEstateOS is a complete operating system for property auction companies — lot pipeline, AI deal analysis, investor CRM, financial calculators, campaign studio, and market intelligence. Built for serious operators. This system is now available for selected clients.
             </p>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
               <Link href="/contact?system=real-estate-os"
@@ -128,7 +140,7 @@ export default function RealEstateOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = '#D4EB00')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = '#E8FF00')}
               >
-                Request a Demo
+                See How This Runs Your Business →
               </Link>
               <Link href="/contact?system=real-estate-os"
                 style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', border: '1px solid #1A1A1A', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', background: 'transparent', transition: 'border-color 150ms ease' }}
@@ -138,6 +150,26 @@ export default function RealEstateOSPage() {
                 See Case Study
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* ── WHO THIS IS FOR ── */}
+        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              WHO THIS IS FOR
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              Built for property auction operators.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {WHO_FOR.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -214,12 +246,42 @@ export default function RealEstateOSPage() {
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>GET THIS SYSTEM</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Built for your auction business.
+              Get Your System Setup
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
               Custom-configured for your brand, your investor database, and your market. Fully private — your platform, not a shared SaaS.
             </p>
+            <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              {['Setup in 5–10 days.', 'Configured for your business.', 'No upfront commitment.'].map((line) => (
+                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
+                  — {line}
+                </p>
+              ))}
+            </div>
             <RealEstateContactForm />
+          </div>
+        </section>
+
+        {/* ── WHY MAXPROMO ── */}
+        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>WHY MAXPROMO</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2rem' }}>
+              Not theory. Real systems, running now.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1px', background: '#1A1A1A' }}>
+              {[
+                { num: '01', text: 'Built from real client briefs — not feature lists' },
+                { num: '02', text: 'Already deployed in production, not in staging' },
+                { num: '03', text: 'Configured to your workflow — not a generic template' },
+                { num: '04', text: 'We hand you a running system, not a prototype' },
+              ].map((item) => (
+                <div key={item.num} style={{ background: '#141414', padding: '28px 32px' }}>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: 'rgba(232,255,0,0.12)', letterSpacing: '-0.04em', margin: '0 0 12px' }}>{item.num}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{item.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

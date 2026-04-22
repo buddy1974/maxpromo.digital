@@ -77,11 +77,11 @@ function RestaurantContactForm() {
     >
       {(
         [
-          { field: 'name',       type: 'text',  label: 'Your name',            required: true  },
-          { field: 'restaurant', type: 'text',  label: 'Restaurant name',      required: true  },
-          { field: 'tables',     type: 'text',  label: 'Number of tables',     required: true  },
-          { field: 'email',      type: 'email', label: 'Email address',         required: true  },
-          { field: 'phone',      type: 'tel',   label: 'Phone (optional)',      required: false },
+          { field: 'name',       type: 'text',  label: 'Your name',        required: true  },
+          { field: 'restaurant', type: 'text',  label: 'Restaurant name',  required: true  },
+          { field: 'tables',     type: 'text',  label: 'Number of tables', required: true  },
+          { field: 'email',      type: 'email', label: 'Email address',    required: true  },
+          { field: 'phone',      type: 'tel',   label: 'Phone (optional)', required: false },
         ] as const
       ).map(({ field, type, label, required }) => (
         <input
@@ -116,7 +116,7 @@ function RestaurantContactForm() {
           opacity: status === 'loading' ? 0.7 : 1,
         }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET RESTAURANT OS →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
       </button>
 
       {status === 'success' && (
@@ -133,7 +133,15 @@ function RestaurantContactForm() {
   )
 }
 
-/* ─── DATA ────────────────────────────────────────────────── */
+/* ─── PAGE DATA ───────────────────────────────────────────── */
+
+const WHO_FOR = [
+  'Restaurants, cafes, and bars with 4–50 tables',
+  'Currently taking orders on paper pads or relaying orders via WhatsApp to the kitchen',
+  'Splitting bills manually at the end of service — losing 10–20 minutes per group',
+  'Looking to reduce order errors and speed up service without replacing staff',
+  'Want to avoid expensive POS hardware or per-feature monthly subscription costs',
+]
 
 const PROBLEMS = [
   { icon: '🗒', text: 'Waiter takes orders on paper. Kitchen gets it wrong. Table 4 complains. Every service.' },
@@ -151,12 +159,12 @@ const STEPS = [
 ]
 
 const FEATURES = [
-  { icon: '[ SEAT ]',    name: 'Fruit Seat Identity',        desc: '20 unique fruit codes per session. Each person tracked individually across the entire visit. Waiter-friendly — call by fruit, not seat number.' },
-  { icon: '[ PAY ]',     name: '4 Payment Modes',            desc: 'Pay solo. Cover the table. Split equally. Or select exactly which seats to combine. No calculator. No arguments.' },
-  { icon: '[ ALERT ]',   name: 'Telegram Alerts — Free',     desc: 'Instant order notifications to your staff group. Works on any phone. No dedicated tablet, no monthly alert software subscription.' },
-  { icon: '[ ADMIN ]',   name: 'Live Menu Editor',           desc: 'Add, edit, delete items. Toggle availability instantly. No code. Works on any device. Menu changes go live in seconds.' },
-  { icon: '[ SESSION ]', name: 'Session Types',              desc: 'Set solo or group at first scan. Staff dashboard shows session type per table. Waiter knows the payment expectation before the bill is asked for.' },
-  { icon: '[ SAAS ]',    name: 'Multi-Tenant Architecture',  desc: 'One codebase. Each restaurant gets their own slug, menu, tables, and branding. Built to scale to unlimited venues from day one.' },
+  { icon: '[ SEAT ]',    name: 'Fruit Seat Identity',        desc: 'No more "who ordered what" confusion. Every seat tracked individually by fruit code for the entire visit. Staff call by fruit — not seat number.' },
+  { icon: '[ PAY ]',     name: '4 Payment Modes',            desc: 'Bill splitting done in seconds, not 15 minutes with a calculator. Solo, full table, equal split, or select seats — all four modes built in.' },
+  { icon: '[ ALERT ]',   name: 'Telegram Alerts — Free',     desc: 'Every order goes instantly to your kitchen Telegram group. No tablet needed. No monthly alert software subscription. Works on any phone.' },
+  { icon: '[ ADMIN ]',   name: 'Live Menu Editor',           desc: 'Change prices or mark items sold out in under 10 seconds — from any device. Menu goes live immediately. No code, no delays.' },
+  { icon: '[ SESSION ]', name: 'Session Types',              desc: 'Staff see the payment expectation per table before the bill is requested. Solo or group — set at first scan. No awkward surprises.' },
+  { icon: '[ SAAS ]',    name: 'Multi-Tenant Architecture',  desc: 'One codebase runs unlimited venues. Each restaurant gets their own slug, menu, tables, and branding from day one.' },
 ]
 
 const TECH_STACK = ['NEXT.JS 16', 'NEON POSTGRESQL', 'VERCEL', 'TELEGRAM BOT', 'TYPESCRIPT', 'STRIPE']
@@ -193,7 +201,7 @@ export default function RestaurantOSPage() {
               marginBottom: '1.5rem',
               whiteSpace: 'pre-line',
             }}>
-              {'Your entire restaurant.\nRuns on a QR code.'}
+              {'Still taking orders on paper?\nHere is how your restaurant runs on a QR code.'}
             </h1>
 
             <p style={{
@@ -203,7 +211,7 @@ export default function RestaurantOSPage() {
               maxWidth: '600px',
               lineHeight: 1.8,
             }}>
-              Restaurant OS replaces your POS system, your WhatsApp order groups, and your split-bill calculator. Customers scan, order, and pay from their phone. Staff get instant Telegram alerts. No app. No tablet. No per-feature monthly fees.
+              Customers scan, order, and pay from their phone. Orders go directly to the kitchen. Staff focus on service, not taking orders. No app. No tablet. No per-feature monthly fees.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
@@ -227,7 +235,7 @@ export default function RestaurantOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = '#D4EB00')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = '#E8FF00')}
               >
-                Try Staff Dashboard →
+                Watch It Run Live →
               </a>
               <a
                 href="https://restaurant-os-one.vercel.app/demo/admin"
@@ -247,7 +255,7 @@ export default function RestaurantOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#333333')}
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#1A1A1A')}
               >
-                Try Admin Panel →
+                See Admin Panel →
               </a>
               <a
                 href="https://restaurant-os-one.vercel.app/demo"
@@ -268,6 +276,26 @@ export default function RestaurantOSPage() {
                 See customer view →
               </a>
             </div>
+          </div>
+        </section>
+
+        {/* ── WHO THIS IS FOR ── */}
+        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              WHO THIS IS FOR
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              Built for your type of venue.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {WHO_FOR.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -420,12 +448,42 @@ export default function RestaurantOSPage() {
               GET THIS SYSTEM
             </p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Your restaurant. Online in 48 hours.
+              Get Your System Setup
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
-              We configure your menu, set up your tables, connect your Telegram group, and hand you the QR codes. You are live in 48 hours.
+              We configure your menu, set up your tables, connect your Telegram group, and hand you the QR codes.
             </p>
+            <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              {['Setup in 5–10 days.', 'Configured for your venue and menu.', 'No upfront commitment.'].map((line) => (
+                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
+                  — {line}
+                </p>
+              ))}
+            </div>
             <RestaurantContactForm />
+          </div>
+        </section>
+
+        {/* ── WHY MAXPROMO ── */}
+        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>WHY MAXPROMO</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2rem' }}>
+              Not theory. Real systems, running now.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1px', background: '#1A1A1A' }}>
+              {[
+                { num: '01', text: 'Built from real client briefs — not feature lists' },
+                { num: '02', text: 'Already deployed in production, not in staging' },
+                { num: '03', text: 'Configured to your workflow — not a generic template' },
+                { num: '04', text: 'We hand you a running system, not a prototype' },
+              ].map((item) => (
+                <div key={item.num} style={{ background: '#141414', padding: '28px 32px' }}>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: 'rgba(232,255,0,0.12)', letterSpacing: '-0.04em', margin: '0 0 12px' }}>{item.num}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{item.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

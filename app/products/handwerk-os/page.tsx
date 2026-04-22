@@ -79,11 +79,11 @@ function HandwerkContactForm() {
     >
       {(
         [
-          { field: 'name',     type: 'text',  label: 'Your name',                           required: true  },
-          { field: 'business', type: 'text',  label: 'Business name',                       required: true  },
+          { field: 'name',     type: 'text',  label: 'Your name',                              required: true  },
+          { field: 'business', type: 'text',  label: 'Business name',                          required: true  },
           { field: 'trade',    type: 'text',  label: 'Your trade (e.g. Elektriker, Maler...)', required: true  },
-          { field: 'email',    type: 'email', label: 'Email address',                        required: true  },
-          { field: 'phone',    type: 'tel',   label: 'Phone (optional)',                     required: false },
+          { field: 'email',    type: 'email', label: 'Email address',                           required: true  },
+          { field: 'phone',    type: 'tel',   label: 'Phone (optional)',                        required: false },
         ] as const
       ).map(({ field, type, label, required }) => (
         <input
@@ -118,7 +118,7 @@ function HandwerkContactForm() {
           opacity: status === 'loading' ? 0.7 : 1,
         }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET HANDWERK OS →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
       </button>
 
       {status === 'success' && (
@@ -135,38 +135,46 @@ function HandwerkContactForm() {
   )
 }
 
-/* ─── PAGE ────────────────────────────────────────────────── */
+/* ─── PAGE DATA ───────────────────────────────────────────── */
+
+const WHO_FOR = [
+  'German trades businesses — Maler, Elektriker, Sanitär, Schreiner, and 8 other Gewerke',
+  '1–20 staff, currently running jobs through WhatsApp and paper job sheets',
+  'Sending quotes in Word, tracking time on paper, invoicing late or underbilling',
+  'Losing billable hours because they cannot prove time on site in a dispute',
+  'Need XRechnung compliance for public sector and large B2B contracts',
+]
 
 const FEATURES = [
   {
     icon: '[ OCR ]',
     name: 'Photo → Job Order in 10 Seconds',
-    desc: 'Photograph any job sheet. AI reads the handwriting — extracts client name, address, dates, materials, description. One tap fills the entire form. Client auto-created if new.',
+    desc: 'Photograph a job sheet. Full record created instantly — no retyping, no manual entry. Reduce admin time per job by up to 60%.',
   },
   {
     icon: '[ AI ]',
     name: 'AI Price Suggestions',
-    desc: 'Type a job position. AI suggests the market rate for your specific trade and location — with min/max range. One click applies it to the quote. No more guessing or under-pricing.',
+    desc: 'Never under-price again. AI suggests market rates for your trade and location. Quotes sent up to 5x faster than building them manually in Word.',
   },
   {
     icon: '[ XML ]',
     name: 'XRechnung / ZUGFeRD Compliance',
-    desc: 'Mandatory for B2B invoices to public sector in Germany from 2025. One click generates a fully compliant EN 16931 XML file. Bundesbehörden, Kommunen, large B2B — all covered.',
+    desc: 'One click generates a fully compliant EN 16931 XML file. Win public sector contracts and large B2B work. No accountant required for the paperwork.',
   },
   {
     icon: '[ GPS ]',
     name: 'GPS Time Tracking',
-    desc: 'GPS coordinates locked at clock-in. Irrefutable proof your team was on site. Not available on Plancraft or Artesa. Every minute tracked and auditable.',
+    desc: 'GPS coordinates locked at clock-in. Irrefutable proof your team was on site. Win every time dispute. Every billable minute tracked and auditable.',
   },
   {
     icon: '[ SIG ]',
     name: 'Digital Reports + Customer Signature',
-    desc: 'AI writes the professional service report from bullet points. Trade-specific checklist auto-loads. Customer signs directly on the phone screen. Office gets instant push notification.',
+    desc: 'AI writes the service report from bullet points. Customer signs on the phone screen. Get paid days earlier — no paper to chase, no disputes.',
   },
   {
     icon: '[ AUTO ]',
     name: 'Maintenance Contracts → Auto Invoicing',
-    desc: 'Set monthly, quarterly, or annual contracts. System auto-creates invoice drafts on the due date every morning. Review and send — zero manual work.',
+    desc: 'Set monthly, quarterly, or annual contracts once. Invoices generate automatically on the due date. Get paid without sending a single reminder.',
   },
 ]
 
@@ -203,6 +211,8 @@ const STEPS = [
   },
 ]
 
+/* ─── PAGE ────────────────────────────────────────────────── */
+
 export default function HandwerkOSPage() {
   return (
     <>
@@ -233,7 +243,7 @@ export default function HandwerkOSPage() {
               marginBottom: '1.5rem',
               whiteSpace: 'pre-line',
             }}>
-              {'Photo a job sheet.\nGet a quote in 10 seconds.'}
+              {'Still managing jobs\non WhatsApp and paper?'}
             </h1>
 
             <p style={{
@@ -243,7 +253,7 @@ export default function HandwerkOSPage() {
               maxWidth: '600px',
               lineHeight: 1.8,
             }}>
-              HandwerkOS is a complete operating system for German trades businesses. Built for Maler, Elektriker, Sanitär, Schreiner, and 8 other Gewerke. 100% Deutsch — no English word anywhere in the interface.
+              HandwerkOS replaces the WhatsApp chaos, paper job sheets, and slow quotes. One system handles the entire job — from photo to paid invoice. If your jobs start in WhatsApp, this system replaces everything after it.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
@@ -267,7 +277,7 @@ export default function HandwerkOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = '#D4EB00')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = '#E8FF00')}
               >
-                Try Live Demo →
+                Watch It Run Live →
               </a>
               <Link
                 href="/contact?system=handwerk-os"
@@ -285,7 +295,7 @@ export default function HandwerkOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#333333')}
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#1A1A1A')}
               >
-                Book a Call
+                Get This System Installed →
               </Link>
             </div>
 
@@ -322,6 +332,26 @@ export default function HandwerkOSPage() {
                 </p>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ── WHO THIS IS FOR ── */}
+        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              WHO THIS IS FOR
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              Built for your type of business.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {WHO_FOR.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -451,12 +481,42 @@ export default function HandwerkOSPage() {
               GET THIS SYSTEM
             </p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Your business. Running on HandwerkOS.
+              Get Your System Setup
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
-              Setup included. Your branding, your Gewerk, your IBAN. Configured and live in 48 hours.
+              Your branding, your Gewerk, your IBAN. Configured and live in under 10 days.
             </p>
+            <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              {['Setup in 5–10 days.', 'Configured for your trade and region.', 'No upfront commitment.'].map((line) => (
+                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
+                  — {line}
+                </p>
+              ))}
+            </div>
             <HandwerkContactForm />
+          </div>
+        </section>
+
+        {/* ── WHY MAXPROMO ── */}
+        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>WHY MAXPROMO</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2rem' }}>
+              Not theory. Real systems, running now.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1px', background: '#1A1A1A' }}>
+              {[
+                { num: '01', text: 'Built from real client briefs — not feature lists' },
+                { num: '02', text: 'Already deployed in production, not in staging' },
+                { num: '03', text: 'Configured to your workflow — not a generic template' },
+                { num: '04', text: 'We hand you a running system, not a prototype' },
+              ].map((item) => (
+                <div key={item.num} style={{ background: '#141414', padding: '28px 32px' }}>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: 'rgba(232,255,0,0.12)', letterSpacing: '-0.04em', margin: '0 0 12px' }}>{item.num}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{item.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 

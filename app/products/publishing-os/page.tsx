@@ -75,13 +75,23 @@ function PublishingContactForm() {
       <button type="submit" disabled={status === 'loading' || status === 'success'}
         style={{ background: '#E8FF00', color: '#080808', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, padding: '16px', width: '100%', border: 'none', cursor: status === 'loading' || status === 'success' ? 'default' : 'pointer', opacity: status === 'loading' ? 0.7 : 1 }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'REQUEST A DEMO →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
       </button>
       {status === 'success' && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#E8FF00', margin: 0 }}>✓ Request received. We&apos;ll contact you within 24 hours.</p>}
       {status === 'error'   && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#FF4D4D', margin: 0 }}>Something went wrong. Email us at hello@maxpromo.digital</p>}
     </form>
   )
 }
+
+/* ─── PAGE DATA ───────────────────────────────────────────── */
+
+const WHO_FOR = [
+  'Publishing companies managing orders, stock, and authors across disconnected tools',
+  'Finance tracked in spreadsheets, royalties calculated manually in Excel',
+  'Manuscripts tracked by email — no single view of the editorial pipeline',
+  'Invoices created in Word, chased by phone, paid late without visibility',
+  'Leadership with no real-time view of revenue, stock, or outstanding payments',
+]
 
 const PROBLEMS = [
   { icon: '📦', text: 'Stock levels in a spreadsheet. Orders arrive by WhatsApp. Someone manually updates the sheet. Errors everywhere.' },
@@ -90,12 +100,12 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ ORDER ]', name: 'Orders & Invoices',          desc: 'All orders in one place. Create orders, generate invoices automatically, track payment status, download PDF invoices. Stock updates on order placement.' },
-  { icon: '[ STOCK ]', name: 'Live Stock Management',      desc: 'Real-time stock levels across all titles. Automatic alerts when stock falls below minimum. Print job requests created automatically.' },
-  { icon: '[ PUB ]',   name: 'Editorial Pipeline',         desc: 'Manuscripts from submission to publication. Author royalties calculated automatically. Print jobs created from the same system.' },
-  { icon: '[ AI ]',    name: 'AI Business Assistant',      desc: 'Ask anything in plain English. How many books in stock? Who owes us money? Which manuscripts are ready to print? AI reads live data and answers in seconds.' },
-  { icon: '[ AUTO ]',  name: '8 AI Agents Running 24/7',   desc: 'Invoice chasing, dormant customer alerts, stock monitoring, revenue forecasting — all automated. Running overnight without anyone asking.' },
-  { icon: '[ HR ]',    name: 'HR & Payroll',               desc: 'Staff records, leave management, performance evaluation. Salary adjustments suggested by AI based on evaluation scores.' },
+  { icon: '[ ORDER ]', name: 'Orders & Invoices',          desc: 'Orders in, invoices out — automatic. Stock updated, finance recorded, customer notified. No manual entry, no missed steps.' },
+  { icon: '[ STOCK ]', name: 'Live Stock Management',      desc: 'Know your stock level before a customer asks. Automatic alerts when stock falls below minimum. Print job requests triggered automatically.' },
+  { icon: '[ PUB ]',   name: 'Editorial Pipeline',         desc: 'Manuscripts tracked from submission to publication. Royalties calculated automatically. Authors paid without a spreadsheet.' },
+  { icon: '[ AI ]',    name: 'AI Business Assistant',      desc: 'Ask your business a question, get an answer in seconds. How many books in stock? Who owes us money? Reduce reporting time by hours.' },
+  { icon: '[ AUTO ]',  name: '8 AI Agents Running 24/7',   desc: 'Invoices chased overnight. Stock monitored. Dormant customers flagged. Revenue forecasted. No one has to ask — it just runs.' },
+  { icon: '[ HR ]',    name: 'HR & Payroll',               desc: 'Staff records, leave, performance, and salary reviews — one place. AI suggests adjustments based on evaluation scores.' },
 ]
 
 const STEPS = [
@@ -103,6 +113,8 @@ const STEPS = [
   { num: '02', title: 'Agents run overnight',       desc: 'Unpaid invoices chased automatically. Low stock triggers print job alerts. Dormant customers flagged for follow-up.' },
   { num: '03', title: 'Leadership stays informed',  desc: 'AI executive briefing every morning — revenue, unpaid invoices, overdue tasks, low stock, staff alerts. Before the first meeting.' },
 ]
+
+/* ─── PAGE ────────────────────────────────────────────────── */
 
 export default function PublishingOSPage() {
   return (
@@ -117,10 +129,10 @@ export default function PublishingOSPage() {
               ENTERPRISE SYSTEM · AI POWERED
             </p>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', whiteSpace: 'pre-line' }}>
-              {'An operating system\nfor publishing companies.'}
+              {'Still running your publishing operation\nin Excel and WhatsApp?'}
             </h1>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8 }}>
-              PublishingOS manages your entire operation — orders, invoices, stock, manuscripts, authors, royalties, printing, HR, finance, and AI agents — all from a single login. Built to replace spreadsheets, WhatsApp groups, and disconnected tools.
+              PublishingOS manages your entire operation — orders, invoices, stock, manuscripts, authors, royalties, HR, finance, and AI agents — all from a single login. Built to replace spreadsheets and disconnected tools permanently. This system is now available for selected clients.
             </p>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
               <Link href="/contact?system=publishing-os"
@@ -128,7 +140,7 @@ export default function PublishingOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = '#D4EB00')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = '#E8FF00')}
               >
-                Request a Demo
+                See How This Runs Your Business →
               </Link>
               <Link href="/contact?system=publishing-os"
                 style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', border: '1px solid #1A1A1A', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', background: 'transparent', transition: 'border-color 150ms ease' }}
@@ -138,6 +150,26 @@ export default function PublishingOSPage() {
                 See What&apos;s Built
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* ── WHO THIS IS FOR ── */}
+        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              WHO THIS IS FOR
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              Built for publishing businesses like yours.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {WHO_FOR.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -214,12 +246,42 @@ export default function PublishingOSPage() {
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>GET THIS SYSTEM</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Your publishing business. Automated.
+              Get Your System Setup
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
               Custom-built for your catalogue, your team, and your workflows. Replaces spreadsheets, paper records, and disconnected tools permanently.
             </p>
+            <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              {['Setup in 5–10 days.', 'Configured for your business.', 'No upfront commitment.'].map((line) => (
+                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
+                  — {line}
+                </p>
+              ))}
+            </div>
             <PublishingContactForm />
+          </div>
+        </section>
+
+        {/* ── WHY MAXPROMO ── */}
+        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>WHY MAXPROMO</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2rem' }}>
+              Not theory. Real systems, running now.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1px', background: '#1A1A1A' }}>
+              {[
+                { num: '01', text: 'Built from real client briefs — not feature lists' },
+                { num: '02', text: 'Already deployed in production, not in staging' },
+                { num: '03', text: 'Configured to your workflow — not a generic template' },
+                { num: '04', text: 'We hand you a running system, not a prototype' },
+              ].map((item) => (
+                <div key={item.num} style={{ background: '#141414', padding: '28px 32px' }}>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: 'rgba(232,255,0,0.12)', letterSpacing: '-0.04em', margin: '0 0 12px' }}>{item.num}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{item.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
