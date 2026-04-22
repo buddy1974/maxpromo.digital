@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -31,6 +31,17 @@ const ALL_SYSTEMS_LINKS = [...SYSTEMS_LINKS_TOP, ...SYSTEMS_LINKS_BOTTOM]
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [systemsOpen, setSystemsOpen] = useState(false)
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
 
   return (
     <nav
@@ -173,7 +184,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* CTA */}
+          {/* Desktop CTA */}
           <div className="hidden md:flex" style={{ flexShrink: 0 }}>
             <Link
               href="/automation-audit"
@@ -197,54 +208,116 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile toggle */}
+          {/* Mobile hamburger */}
           <button
             className="md:hidden"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle navigation"
-            style={{ background: 'none', border: 'none', color: '#F0F0F0', cursor: 'pointer', padding: '4px' }}
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open navigation"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#F0F0F0',
+              cursor: 'pointer',
+              padding: 0,
+              width: '44px',
+              height: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              {menuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
-              )}
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        {menuOpen && (
+      {/* ── FULLSCREEN MOBILE MENU ── */}
+      {menuOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100,
+            background: '#080808',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Top bar */}
           <div
             style={{
-              borderTop: '1px solid #1A1A1A',
-              padding: '16px 0 20px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0 2rem',
+              height: '64px',
+              borderBottom: '1px solid #1A1A1A',
+              flexShrink: 0,
             }}
           >
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '13px',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                color: '#F0F0F0',
+              }}
+            >
+              MAXPROMO
+            </span>
+            <button
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close navigation"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#F0F0F0',
+                fontSize: '24px',
+                lineHeight: 1,
+                cursor: 'pointer',
+                width: '44px',
+                height: '44px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 0,
+              }}
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Scrollable links */}
+          <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 style={{
-                  display: 'block',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 400,
-                  fontSize: '11px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
+                  fontFamily: 'var(--font-heading)',
+                  fontWeight: 700,
+                  fontSize: '28px',
+                  letterSpacing: '-0.03em',
                   color: '#666666',
                   textDecoration: 'none',
-                  padding: '10px 0',
+                  padding: '20px 2rem',
+                  display: 'block',
+                  textAlign: 'center',
+                  borderBottom: '1px solid #1A1A1A',
                   transition: 'color 150ms ease',
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#E8FF00')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#666666')}
               >
                 {link.label}
               </Link>
             ))}
 
-            {/* Mobile SYSTEMS links */}
+            {/* Systems label */}
             <p
               style={{
                 fontFamily: 'var(--font-mono)',
@@ -252,56 +325,68 @@ export default function Navbar() {
                 textTransform: 'uppercase',
                 letterSpacing: '0.15em',
                 color: '#333333',
-                padding: '12px 0 4px',
+                textAlign: 'center',
+                padding: '20px 2rem 8px',
                 margin: 0,
               }}
             >
               Systems
             </p>
+
             {ALL_SYSTEMS_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 style={{
-                  display: 'block',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 400,
-                  fontSize: '11px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '16px',
                   color: '#666666',
                   textDecoration: 'none',
-                  padding: '8px 0 8px 12px',
+                  padding: '12px 2rem',
+                  display: 'block',
+                  textAlign: 'center',
                   transition: 'color 150ms ease',
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#F0F0F0')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#666666')}
               >
                 {link.label}
               </Link>
             ))}
+          </div>
 
+          {/* CTA at bottom */}
+          <div
+            style={{
+              padding: '1.5rem 2rem',
+              borderTop: '1px solid #1A1A1A',
+              display: 'flex',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
             <Link
               href="/automation-audit"
               onClick={() => setMenuOpen(false)}
               style={{
-                display: 'inline-block',
-                marginTop: '12px',
                 fontFamily: 'var(--font-mono)',
-                fontWeight: 700,
                 fontSize: '11px',
+                fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em',
                 color: '#080808',
                 background: '#E8FF00',
-                padding: '10px 20px',
+                padding: '16px 32px',
                 textDecoration: 'none',
+                display: 'inline-block',
               }}
             >
-              Free Audit →
+              FREE AUDIT →
             </Link>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </nav>
   )
 }

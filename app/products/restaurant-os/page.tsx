@@ -185,7 +185,7 @@ export default function RestaurantOSPage() {
               fontSize: '11px',
               textTransform: 'uppercase',
               letterSpacing: '0.15em',
-              color: '#FF4D4D',
+              color: '#E8FF00',
               marginBottom: '1.5rem',
             }}>
               LIVE IN PRODUCTION · MULTI-TENANT READY

@@ -9,6 +9,8 @@ const STYLES = `
   @media (max-width: 768px) {
     .ps-grid-3 { grid-template-columns: 1fr; }
     .ps-grid-2 { grid-template-columns: 1fr; }
+    .ps-steps { flex-direction: column; }
+    .ps-steps > div { border-right: none !important; }
   }
 `
 

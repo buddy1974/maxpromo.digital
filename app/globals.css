@@ -320,3 +320,10 @@ input[type='range']::-moz-range-thumb {
     height: min(70vh, 500px) !important;
   }
 }
+
+/* ── Global mobile fixes ── */
+@media (max-width: 768px) {
+  h1 { font-size: clamp(2rem, 8vw, 3rem) !important; }
+  section { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
+  .systems-grid { grid-template-columns: 1fr !important; }
+}

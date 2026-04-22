@@ -9,6 +9,8 @@ const STYLES = `
   @media (max-width: 768px) {
     .re-grid-3 { grid-template-columns: 1fr; }
     .re-grid-2 { grid-template-columns: 1fr; }
+    .re-steps { flex-direction: column; }
+    .re-steps > div { border-right: none !important; }
   }
 `
 
@@ -217,7 +219,7 @@ export default function RealEstateOSPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               Your business. Visible in one place.
             </h2>
-            <div style={{ borderTop: '1px solid #1A1A1A', display: 'flex', flexDirection: 'row' }}>
+            <div style={{ borderTop: '1px solid #1A1A1A', display: 'flex', flexDirection: 'row' }} className="re-steps">
               {STEPS.map((step, idx) => (
                 <div key={step.num} style={{ flex: 1, padding: '40px 32px', borderRight: idx < STEPS.length - 1 ? '1px solid #1A1A1A' : 'none', borderBottom: '1px solid #1A1A1A', position: 'relative', overflow: 'hidden' }}>
                   <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '80px', color: 'rgba(232,255,0,0.06)', lineHeight: 1, position: 'absolute', top: '16px', right: '24px', margin: 0, letterSpacing: '-0.04em', pointerEvents: 'none' }}>{step.num}</p>
