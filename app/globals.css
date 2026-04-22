@@ -301,6 +301,17 @@ input[type='range']::-moz-range-thumb {
 .chat-scroll::-webkit-scrollbar-track { background: transparent; }
 .chat-scroll::-webkit-scrollbar-thumb { background: rgba(232, 255, 0, 0.25); }
 
+/* ── Systems grid ── */
+.systems-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: #1A1A1A;
+}
+@media (max-width: 768px) {
+  .systems-grid { grid-template-columns: 1fr; }
+}
+
 /* Mobile chat */
 @media (max-width: 480px) {
   .chat-window-enter {

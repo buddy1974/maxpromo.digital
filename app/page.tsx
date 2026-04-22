@@ -66,6 +66,58 @@ const SERVICES = [
   },
 ]
 
+const SYSTEMS = [
+  {
+    label: 'TRADE · GERMANY',
+    status: 'LIVE',
+    name: 'HandwerkOS',
+    desc: 'Complete field service management for German trades businesses. AI photo-to-quote in 10 seconds, GPS time tracking, XRechnung compliance, digital signatures.',
+    href: '/products/handwerk-os',
+  },
+  {
+    label: 'HOSPITALITY',
+    status: 'LIVE',
+    name: 'Restaurant OS',
+    desc: 'QR-based ordering system with fruit seat identity, 4 payment split modes, instant Telegram staff alerts. No app needed. Multi-tenant ready.',
+    href: '/products/restaurant-os',
+  },
+  {
+    label: 'PRINT · E-COMMERCE',
+    status: 'LIVE',
+    name: 'PrintShop OS',
+    desc: 'Full e-commerce platform for print businesses. AI prepress checks, Fabric.js design editor, production queue, Stripe payments. EN / DE / FR.',
+    href: '/products/printshop',
+  },
+  {
+    label: 'REAL ESTATE · UK',
+    status: 'DEPLOYED',
+    name: 'RealEstateOS',
+    desc: 'Private intelligence platform for property auction companies. AI deal analysis, investor CRM, Kanban pipeline, campaign studio, financial calculators.',
+    href: '/products/real-estate-os',
+  },
+  {
+    label: 'CARE · UK',
+    status: 'DEPLOYED',
+    name: 'CareOS',
+    desc: 'Complete care management platform for supported living providers. Digital care plans, EMAR, CQC compliance tracker, AI assistant, family portal.',
+    href: '/products/care-os',
+  },
+  {
+    label: 'PUBLISHING · AFRICA',
+    status: 'DEPLOYED',
+    name: 'PublishingOS',
+    desc: 'Operating system for publishing companies. Orders, stock, manuscripts, royalties, HR, finance, and 8 AI agents running 24/7.',
+    href: '/products/publishing-os',
+  },
+  {
+    label: 'MEDICAL · GERMANY',
+    status: 'DEPLOYED',
+    name: 'PraxisOS',
+    desc: 'Digital platform for specialist medical practices. Patient portal, appointment management, lab results, GDPR compliant, German healthcare standards.',
+    href: '/products/praxis-os',
+  },
+]
+
 const TERMINAL_LINES: { text: string; type: 'cmd' | 'muted' | 'check' | 'cross' | 'stat' | 'blank' }[] = [
   { text: '$ maxpromo audit --org "Acme Ltd"',           type: 'cmd'   },
   { text: '  scanning 12 operational workflows...',      type: 'muted' },
@@ -337,7 +389,61 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4 — Before/After */}
+      {/* 5 — Our Systems */}
+      <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '6rem 2rem' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+            OUR SYSTEMS
+          </p>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0' }}>
+            Production systems. Live businesses. Real results.
+          </h2>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', maxWidth: '600px', marginTop: '1rem', marginBottom: '3rem', lineHeight: 1.8 }}>
+            Every system below is built, deployed, and running for real clients. Not prototypes. Not demos. Operating systems that run businesses.
+          </p>
+
+          <div className="systems-grid">
+            {SYSTEMS.map((sys) => (
+              <div
+                key={sys.name}
+                style={{ background: '#141414', padding: '32px', display: 'flex', flexDirection: 'column', gap: '12px' }}
+              >
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', padding: '3px 8px', border: '1px solid #1A1A1A', color: '#666666', display: 'inline-block' }}>
+                    {sys.label}
+                  </span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', background: '#E8FF00', color: '#080808', padding: '3px 8px', display: 'inline-block', fontWeight: 700 }}>
+                    {sys.status}
+                  </span>
+                </div>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.03em', margin: 0 }}>
+                  {sys.name}
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', lineHeight: 1.75, margin: 0, flex: 1 }}>
+                  {sys.desc}
+                </p>
+                <Link
+                  href={sys.href}
+                  style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#E8FF00', textDecoration: 'none', letterSpacing: '0.05em', alignSelf: 'flex-start' }}
+                >
+                  EXPLORE SYSTEM →
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+            <Link
+              href="/products"
+              style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', border: '1px solid #1A1A1A', padding: '14px 32px', textDecoration: 'none', display: 'inline-block', background: 'transparent', transition: 'border-color 150ms ease' }}
+            >
+              View All Systems
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 6 — Before/After */}
       <BeforeAfter />
 
       {/* 5 — ROI Calculator */}
