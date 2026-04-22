@@ -87,6 +87,14 @@ function RealEstateContactForm() {
 
 /* ─── PAGE DATA ───────────────────────────────────────────── */
 
+const AFTER_STATE = [
+  'Every lot visible from Sourcing to Completion — no spreadsheets',
+  'Deal verdict in seconds — ROI, risk, yield, and recommendation',
+  'Investors receive the right deals automatically — no manual sending',
+  'Pipeline grows without adding headcount',
+  'Leadership sees revenue, pipeline, and market data in one place',
+]
+
 const WHO_FOR = [
   'Property auction companies in the UK managing 20–200+ lots at any given time',
   'Currently tracking pipeline in spreadsheets, investor database in email folders',
@@ -102,12 +110,12 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ PIPE ]',  name: 'Lot Pipeline — Kanban Board',   desc: 'Every lot visible from Sourcing to Completion. Nothing falls between calls. Move deals with one click — no spreadsheet, no email chains.' },
-  { icon: '[ AI ]',    name: 'AI Deal Analyser',              desc: 'Full deal verdict in seconds — ROI, risk, yield, after-refurb value, and recommendation. Up to 10x faster than manual analysis per lot.' },
-  { icon: '[ CRM ]',   name: 'Investor CRM',                  desc: 'Hot leads stay hot. Cold leads get warm. Every investor automatically scored by activity, budget, and engagement. Pipeline grows without manual work.' },
-  { icon: '[ CALC ]',  name: 'Financial Engine',              desc: 'ROI, SDLT 2026, bridging loan, monthly cashflow, creative finance — all calculated instantly. Not on a spreadsheet. Not estimated.' },
-  { icon: '[ EMAIL ]', name: 'Campaign Studio',               desc: 'Send the right deal to the right investor. AI writes the subject line. Segment by type. Track opens and clicks. Built on Resend.' },
-  { icon: '[ INTEL ]', name: 'Market Intelligence',           desc: 'Your business KPIs in one dashboard — revenue, pipeline, investor activity, and market data. No pulling reports from three places.' },
+  { icon: '[ PIPE ]',  name: 'Every Deal Visible — Nothing Falls Through The Cracks', desc: 'Every lot tracked from Sourcing to Completion on a Kanban board. One click to move stages. No spreadsheet, no email chains.' },
+  { icon: '[ AI ]',    name: 'Know If a Deal Is Worth It In Seconds',                  desc: 'Full deal verdict instantly — ROI, risk, yield, after-refurb value, and recommendation. Up to 10x faster than manual analysis.' },
+  { icon: '[ CRM ]',   name: 'Hot Leads Stay Hot — Automatically',                     desc: 'Every investor scored by activity, budget, and engagement. Cold leads warmed automatically. Pipeline grows without manual work.' },
+  { icon: '[ CALC ]',  name: 'Every Number Calculated Instantly — Not On a Spreadsheet', desc: 'ROI, SDLT 2026, bridging loan, monthly cashflow, creative finance — calculated in real time. Not estimated, not approximated.' },
+  { icon: '[ EMAIL ]', name: 'Send Deals To The Right Investors Automatically',         desc: 'AI writes the subject line. Segment by investor type. Track opens and clicks. Right deal, right investor, right time.' },
+  { icon: '[ INTEL ]', name: 'Your Business KPIs In One Place — No Pulling Reports',   desc: 'Revenue, pipeline, investor activity, and market data in one dashboard. Nothing split across three systems.' },
 ]
 
 const STEPS = [
@@ -133,8 +141,10 @@ export default function RealEstateOSPage() {
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', whiteSpace: 'pre-line' }}>
               {'Still tracking lots in a spreadsheet?\nHere is your entire auction business in one platform.'}
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8 }}>
-              RealEstateOS is a complete operating system for property auction companies — lot pipeline, AI deal analysis, investor CRM, financial calculators, campaign studio, and market intelligence. Built for serious operators. This system is now available for selected clients.
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+              RealEstateOS is a complete operating system for property auction companies.
+              Lot pipeline, AI deal analysis, investor CRM, financial calculators, and campaign studio — all connected.
+              Built for serious operators. This system is now available for selected clients.
             </p>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
               <Link href="/contact?system=real-estate-os"
@@ -168,6 +178,26 @@ export default function RealEstateOSPage() {
               {WHO_FOR.map((item) => (
                 <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* ── AFTER STATE ── */}
+        <section style={{ background: '#080808', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              AFTER THIS SYSTEM IS INSTALLED
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              What your auction business looks like on week two.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {AFTER_STATE.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', lineHeight: 1.6, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>✓</span>
                   {item}
                 </li>
               ))}
@@ -231,6 +261,20 @@ export default function RealEstateOSPage() {
           </div>
         </section>
 
+        {/* ── SYSTEM IN ACTION ── */}
+        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
+              See how it runs.
+            </h2>
+            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            </div>
+          </div>
+        </section>
+
         {/* ── SOCIAL PROOF BAR ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -259,6 +303,12 @@ export default function RealEstateOSPage() {
                   — {line}
                 </p>
               ))}
+            </div>
+            <div style={{ marginTop: '1.5rem', background: '#141414', border: '1px solid rgba(232,255,0,0.2)', padding: '16px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', margin: '0 0 6px' }}>AVAILABILITY</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>
+                We onboard a limited number of clients per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
+              </p>
             </div>
             <RealEstateContactForm />
           </div>

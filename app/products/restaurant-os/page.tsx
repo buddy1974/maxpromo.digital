@@ -135,6 +135,14 @@ function RestaurantContactForm() {
 
 /* ─── PAGE DATA ───────────────────────────────────────────── */
 
+const AFTER_STATE = [
+  'Orders go directly to the kitchen — zero relay errors',
+  'Bills split in seconds, not 15 minutes at the end of service',
+  'No tablet. No app. No per-feature monthly fee.',
+  'Staff free to focus on service, not taking orders',
+  'Menu updates live in under 10 seconds from any device',
+]
+
 const WHO_FOR = [
   'Restaurants, cafes, and bars with 4–50 tables',
   'Currently taking orders on paper pads or relaying orders via WhatsApp to the kitchen',
@@ -159,12 +167,12 @@ const STEPS = [
 ]
 
 const FEATURES = [
-  { icon: '[ SEAT ]',    name: 'Fruit Seat Identity',        desc: 'No more "who ordered what" confusion. Every seat tracked individually by fruit code for the entire visit. Staff call by fruit — not seat number.' },
-  { icon: '[ PAY ]',     name: '4 Payment Modes',            desc: 'Bill splitting done in seconds, not 15 minutes with a calculator. Solo, full table, equal split, or select seats — all four modes built in.' },
-  { icon: '[ ALERT ]',   name: 'Telegram Alerts — Free',     desc: 'Every order goes instantly to your kitchen Telegram group. No tablet needed. No monthly alert software subscription. Works on any phone.' },
-  { icon: '[ ADMIN ]',   name: 'Live Menu Editor',           desc: 'Change prices or mark items sold out in under 10 seconds — from any device. Menu goes live immediately. No code, no delays.' },
-  { icon: '[ SESSION ]', name: 'Session Types',              desc: 'Staff see the payment expectation per table before the bill is requested. Solo or group — set at first scan. No awkward surprises.' },
-  { icon: '[ SAAS ]',    name: 'Multi-Tenant Architecture',  desc: 'One codebase runs unlimited venues. Each restaurant gets their own slug, menu, tables, and branding from day one.' },
+  { icon: '[ SEAT ]',    name: 'Zero Confusion — Every Seat Tracked By Name',           desc: 'No more "who ordered what." Every seat tracked individually by fruit code for the entire visit. Staff call by fruit — not seat number.' },
+  { icon: '[ PAY ]',     name: 'Bill Splitting Done In Seconds, Not 15 Minutes',         desc: 'Solo, full table, equal split, or select seats — all four modes built in. No calculator. No awkward wait at the end of service.' },
+  { icon: '[ ALERT ]',   name: 'Kitchen Notified Instantly — No Subscription Required',  desc: 'Every order fires instantly to your kitchen Telegram group. No tablet. No monthly alert software fee. Works on any phone.' },
+  { icon: '[ ADMIN ]',   name: 'Change Your Menu From Any Device In 10 Seconds',         desc: 'Update prices or mark items sold out instantly — from any device. Goes live immediately. No code, no delays.' },
+  { icon: '[ SESSION ]', name: 'Staff Know The Bill Expectation Before You Ask',          desc: 'Solo or group — set at first scan. Staff see the payment mode per table before the bill arrives. No surprises.' },
+  { icon: '[ SAAS ]',    name: 'Run Multiple Venues From One System',                     desc: 'One codebase runs unlimited venues. Each restaurant gets their own slug, menu, tables, and branding from day one.' },
 ]
 
 const TECH_STACK = ['NEXT.JS 16', 'NEON POSTGRESQL', 'VERCEL', 'TELEGRAM BOT', 'TYPESCRIPT', 'STRIPE']
@@ -299,6 +307,26 @@ export default function RestaurantOSPage() {
           </div>
         </section>
 
+        {/* ── AFTER STATE ── */}
+        <section style={{ background: '#080808', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              AFTER THIS SYSTEM IS INSTALLED
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              What your service looks like on week two.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {AFTER_STATE.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', lineHeight: 1.6, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
         {/* ── PROBLEM STRIP ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '4rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
@@ -394,6 +422,20 @@ export default function RestaurantOSPage() {
           </div>
         </section>
 
+        {/* ── SYSTEM IN ACTION ── */}
+        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
+              See how it runs.
+            </h2>
+            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            </div>
+          </div>
+        </section>
+
         {/* ── TECH STRIP ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
@@ -459,6 +501,12 @@ export default function RestaurantOSPage() {
                   — {line}
                 </p>
               ))}
+            </div>
+            <div style={{ marginTop: '1.5rem', background: '#141414', border: '1px solid rgba(232,255,0,0.2)', padding: '16px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', margin: '0 0 6px' }}>AVAILABILITY</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>
+                We onboard a limited number of venues per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
+              </p>
             </div>
             <RestaurantContactForm />
           </div>

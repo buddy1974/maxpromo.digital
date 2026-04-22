@@ -120,6 +120,14 @@ function PrintshopContactForm() {
 
 /* ─── PAGE DATA ───────────────────────────────────────────── */
 
+const AFTER_STATE = [
+  'Customers configure, upload, and pay without contacting you',
+  'Bad files caught before printing — no costly reprints',
+  'Production queue updates automatically with every order',
+  'PDF invoices generated and delivered without manual work',
+  'EN, DE, and FR customers served 24/7 — no extra staff needed',
+]
+
 const WHO_FOR = [
   'Print businesses currently taking orders by email, WhatsApp, or phone',
   'Quoting every job manually — no self-service, no live pricing for customers',
@@ -135,12 +143,12 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ SHOP ]',   name: 'Live Product Catalogue',   desc: 'Customers configure quantity and size — price calculates live. No quote request needed. No back-and-forth emails.' },
-  { icon: '[ AI ]',     name: 'AI Prepress Check',        desc: 'Files checked before printing — wrong DPI, bleed, dimensions, and colour profile caught instantly. No costly reprints.' },
-  { icon: '[ EDIT ]',   name: 'Online Design Editor',     desc: 'Customers design in the browser — text, shapes, logos. Fewer revision requests. Fewer emails. Design saved to their order.' },
-  { icon: '[ PROD ]',   name: 'Production Queue',         desc: 'Every paid order tracked from Queued → In Progress → Done. Print sheet generated per job. Nothing falls through the cracks.' },
-  { icon: '[ STRIPE ]', name: 'Stripe Payments Built In', desc: 'Get paid upfront, automatically. Full checkout with tax, multi-item cart, and PDF invoice download. No invoice chasing.' },
-  { icon: '[ i18n ]',   name: 'Three Languages',          desc: 'Sell to EN, DE, and FR markets from one platform — shop, checkout, admin, and all email templates fully translated.' },
+  { icon: '[ SHOP ]',   name: 'Customers Order and Pay Without Emailing You',      desc: 'Configure quantity and size — price calculates live. Customers pay via Stripe. No quote request, no back-and-forth.' },
+  { icon: '[ AI ]',     name: 'Catch Bad Files Before They Hit the Press',          desc: 'Wrong DPI, bleed, dimensions, or colour profile caught instantly before printing. No costly reprints. No margin lost.' },
+  { icon: '[ EDIT ]',   name: 'Customers Design In the Browser — Fewer Revisions', desc: 'Text, shapes, logos designed online and saved to the order. Fewer revision requests. Fewer emails. Faster to press.' },
+  { icon: '[ PROD ]',   name: 'Every Order Tracked From Payment to Delivery',       desc: 'Queued → In Progress → Done. Print sheet generated per job. Nothing falls through the cracks. No spreadsheet.' },
+  { icon: '[ STRIPE ]', name: 'Get Paid Upfront — No Invoice Chasing',              desc: 'Full checkout with tax, multi-item cart, and automatic PDF invoice. Get paid before printing starts. Every time.' },
+  { icon: '[ i18n ]',   name: 'Sell to EN, DE, and FR Markets From One Platform',  desc: 'Shop, checkout, admin, and all email templates fully translated. Three markets. One platform. Zero extra configuration.' },
 ]
 
 const STEPS = [
@@ -220,6 +228,26 @@ export default function PrintshopPage() {
           </div>
         </section>
 
+        {/* ── AFTER STATE ── */}
+        <section style={{ background: '#080808', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              AFTER THIS SYSTEM IS INSTALLED
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              What your print business looks like on week two.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {AFTER_STATE.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', lineHeight: 1.6, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
         {/* ── PROBLEM STRIP ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '4rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
@@ -276,6 +304,20 @@ export default function PrintshopPage() {
           </div>
         </section>
 
+        {/* ── SYSTEM IN ACTION ── */}
+        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
+              See how it runs.
+            </h2>
+            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            </div>
+          </div>
+        </section>
+
         {/* ── SOCIAL PROOF BAR ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -304,6 +346,12 @@ export default function PrintshopPage() {
                   — {line}
                 </p>
               ))}
+            </div>
+            <div style={{ marginTop: '1.5rem', background: '#141414', border: '1px solid rgba(232,255,0,0.2)', padding: '16px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', margin: '0 0 6px' }}>AVAILABILITY</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>
+                We onboard a limited number of print shops per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
+              </p>
             </div>
             <PrintshopContactForm />
           </div>

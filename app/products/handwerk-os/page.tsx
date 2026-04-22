@@ -137,6 +137,14 @@ function HandwerkContactForm() {
 
 /* ─── PAGE DATA ───────────────────────────────────────────── */
 
+const AFTER_STATE = [
+  'Quotes sent in under 2 minutes — not 20',
+  'Every job tracked automatically — no paper, no WhatsApp',
+  'XRechnung invoices generated in one click — no accountant needed',
+  'Time disputes won before they start — GPS proof on every visit',
+  'Maintenance contracts invoiced automatically — no chasing required',
+]
+
 const WHO_FOR = [
   'German trades businesses — Maler, Elektriker, Sanitär, Schreiner, and 8 other Gewerke',
   '1–20 staff, currently running jobs through WhatsApp and paper job sheets',
@@ -148,33 +156,33 @@ const WHO_FOR = [
 const FEATURES = [
   {
     icon: '[ OCR ]',
-    name: 'Photo → Job Order in 10 Seconds',
-    desc: 'Photograph a job sheet. Full record created instantly — no retyping, no manual entry. Reduce admin time per job by up to 60%.',
+    name: 'Create a Job Record in 10 Seconds',
+    desc: 'Photograph the job sheet. Full record created instantly — client, address, scope, materials. Up to 60% less admin time per job.',
   },
   {
     icon: '[ AI ]',
-    name: 'AI Price Suggestions',
-    desc: 'Never under-price again. AI suggests market rates for your trade and location. Quotes sent up to 5x faster than building them manually in Word.',
+    name: 'Never Under-Price a Job Again',
+    desc: 'AI suggests market rates for your trade and location. Quotes built and sent up to 5x faster than doing it manually in Word.',
   },
   {
     icon: '[ XML ]',
-    name: 'XRechnung / ZUGFeRD Compliance',
-    desc: 'One click generates a fully compliant EN 16931 XML file. Win public sector contracts and large B2B work. No accountant required for the paperwork.',
+    name: 'Win Public Sector Contracts — One Click',
+    desc: 'One click generates a fully compliant EN 16931 XML file. Win public sector and large B2B work without extra paperwork.',
   },
   {
     icon: '[ GPS ]',
-    name: 'GPS Time Tracking',
-    desc: 'GPS coordinates locked at clock-in. Irrefutable proof your team was on site. Win every time dispute. Every billable minute tracked and auditable.',
+    name: 'Win Every Time Dispute With GPS Proof',
+    desc: 'GPS coordinates locked at clock-in. Irrefutable proof your team was on site. Every billable minute tracked and auditable.',
   },
   {
     icon: '[ SIG ]',
-    name: 'Digital Reports + Customer Signature',
-    desc: 'AI writes the service report from bullet points. Customer signs on the phone screen. Get paid days earlier — no paper to chase, no disputes.',
+    name: 'Get Paid Days Earlier — Signature On The Spot',
+    desc: 'AI writes the service report from bullet points. Customer signs on the phone. No paper to chase, no disputes, no delays.',
   },
   {
     icon: '[ AUTO ]',
-    name: 'Maintenance Contracts → Auto Invoicing',
-    desc: 'Set monthly, quarterly, or annual contracts once. Invoices generate automatically on the due date. Get paid without sending a single reminder.',
+    name: 'Set Contracts Once. Get Paid Every Month.',
+    desc: 'Set monthly, quarterly, or annual contracts once. Invoices generate automatically on the due date. No reminders. No chasing.',
   },
 ]
 
@@ -355,6 +363,26 @@ export default function HandwerkOSPage() {
           </div>
         </section>
 
+        {/* ── AFTER STATE ── */}
+        <section style={{ background: '#080808', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              AFTER THIS SYSTEM IS INSTALLED
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              What your business looks like on week two.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {AFTER_STATE.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', lineHeight: 1.6, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
         {/* ── PROBLEM STRIP ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '4rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
@@ -453,6 +481,20 @@ export default function HandwerkOSPage() {
           </div>
         </section>
 
+        {/* ── SYSTEM IN ACTION ── */}
+        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
+              See how it runs.
+            </h2>
+            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            </div>
+          </div>
+        </section>
+
         {/* ── SOCIAL PROOF BAR ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -492,6 +534,12 @@ export default function HandwerkOSPage() {
                   — {line}
                 </p>
               ))}
+            </div>
+            <div style={{ marginTop: '1.5rem', background: '#141414', border: '1px solid rgba(232,255,0,0.2)', padding: '16px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', margin: '0 0 6px' }}>AVAILABILITY</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>
+                We onboard a limited number of clients per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
+              </p>
             </div>
             <HandwerkContactForm />
           </div>

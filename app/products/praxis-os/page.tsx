@@ -89,6 +89,14 @@ function PraxisContactForm() {
 
 /* ─── PAGE DATA ───────────────────────────────────────────── */
 
+const AFTER_STATE = [
+  'Patients book online — up to 40% fewer inbound calls',
+  'Lab results delivered to the patient portal instantly — no post, no fax',
+  'Appointment reminders fire automatically — no manual follow-up',
+  'Every patient record auditable and GDPR compliant',
+  'Staff work from one dashboard — no switching between systems',
+]
+
 const WHO_FOR = [
   'Specialist medical practices in Germany — urology, dermatology, cardiology, and more',
   'Patients currently booking by phone, receiving results by post or fax',
@@ -104,12 +112,12 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ PORTAL ]', name: 'Patient Portal',              desc: 'Patients book online, view lab results, and complete intake forms without calling the practice. Reduce inbound calls by up to 40%.' },
-  { icon: '[ APPT ]',   name: 'Appointment Management',      desc: 'Reminders fire automatically. No-shows logged. Recall workflows triggered by protocol. Nothing falls through the cracks.' },
-  { icon: '[ LAB ]',    name: 'Lab Results — Digital Delivery', desc: 'Results delivered securely to the patient portal instantly — no post, no fax, no phone call. Full audit trail on every result.' },
-  { icon: '[ DASH ]',   name: 'Staff Dashboard',             desc: 'Every role sees exactly what they need — nothing more. Doctors, MFA staff, and admin each have their own view.' },
-  { icon: '[ AUTO ]',   name: 'n8n Automation Workflows',    desc: 'Appointment reminders, lab notifications, no-show logging, PSA recall, and follow-ups — all automated. Reduce admin work by up to 50%.' },
-  { icon: '[ GDPR ]',   name: 'GDPR & German Standards',     desc: 'Audit log on every patient record action. Built to German healthcare data law. Multilingual — German and English. Inspection-ready.' },
+  { icon: '[ PORTAL ]', name: 'Patients Book Online — Up To 40% Fewer Inbound Calls',  desc: 'Patients book, view lab results, and complete intake forms without calling the practice. Measurable reduction in phone load.' },
+  { icon: '[ APPT ]',   name: 'Reminders Fire Automatically — Nothing Falls Through',   desc: 'Reminders sent automatically. No-shows logged. Recall workflows triggered by protocol. Zero manual follow-up needed.' },
+  { icon: '[ LAB ]',    name: 'Results To Patients Instantly — No Post, No Fax',        desc: 'Lab results delivered securely to the patient portal. No postal delay, no fax. Full audit trail on every result delivery.' },
+  { icon: '[ DASH ]',   name: 'Every Role Sees Exactly What They Need',                 desc: 'Doctors, MFA staff, and admin each have their own view. Role-based access — no clutter, no confusion, no data leaks.' },
+  { icon: '[ AUTO ]',   name: 'Cut Admin Work By Up To 50% — Automatically',            desc: 'Appointment reminders, lab notifications, no-show logging, PSA recall, and follow-ups — all automated via n8n workflows.' },
+  { icon: '[ GDPR ]',   name: 'Every Record Auditable — Built To German Healthcare Law', desc: 'Audit log on every patient record action. GDPR compliant. Multilingual — German and English. Inspection-ready from day one.' },
 ]
 
 const STEPS = [
@@ -177,6 +185,26 @@ export default function PraxisOSPage() {
           </div>
         </section>
 
+        {/* ── AFTER STATE ── */}
+        <section style={{ background: '#080808', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              AFTER THIS SYSTEM IS INSTALLED
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              What your practice looks like on week two.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {AFTER_STATE.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', lineHeight: 1.6, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
         {/* ── PROBLEM STRIP ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '4rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
@@ -233,6 +261,20 @@ export default function PraxisOSPage() {
           </div>
         </section>
 
+        {/* ── SYSTEM IN ACTION ── */}
+        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
+              See how it runs.
+            </h2>
+            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            </div>
+          </div>
+        </section>
+
         {/* ── SOCIAL PROOF BAR ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -261,6 +303,12 @@ export default function PraxisOSPage() {
                   — {line}
                 </p>
               ))}
+            </div>
+            <div style={{ marginTop: '1.5rem', background: '#141414', border: '1px solid rgba(232,255,0,0.2)', padding: '16px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', margin: '0 0 6px' }}>AVAILABILITY</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>
+                We onboard a limited number of practices per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
+              </p>
             </div>
             <PraxisContactForm />
           </div>

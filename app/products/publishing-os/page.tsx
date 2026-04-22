@@ -87,6 +87,14 @@ function PublishingContactForm() {
 
 /* ─── PAGE DATA ───────────────────────────────────────────── */
 
+const AFTER_STATE = [
+  'Orders in, invoices out — no manual entry, no missed steps',
+  'Stock levels monitored 24/7 — automatic low-stock alerts',
+  'Royalties calculated and paid without a spreadsheet',
+  '8 AI agents running overnight — chasing invoices, flagging risks',
+  'Leadership briefed every morning before the first meeting',
+]
+
 const WHO_FOR = [
   'Publishing companies managing orders, stock, and authors across disconnected tools',
   'Finance tracked in spreadsheets, royalties calculated manually in Excel',
@@ -102,12 +110,12 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ ORDER ]', name: 'Orders & Invoices',          desc: 'Orders in, invoices out — automatic. Stock updated, finance recorded, customer notified. No manual entry, no missed steps.' },
-  { icon: '[ STOCK ]', name: 'Live Stock Management',      desc: 'Know your stock level before a customer asks. Automatic alerts when stock falls below minimum. Print job requests triggered automatically.' },
-  { icon: '[ PUB ]',   name: 'Editorial Pipeline',         desc: 'Manuscripts tracked from submission to publication. Royalties calculated automatically. Authors paid without a spreadsheet.' },
-  { icon: '[ AI ]',    name: 'AI Business Assistant',      desc: 'Ask your business a question, get an answer in seconds. How many books in stock? Who owes us money? Reduce reporting time by hours.' },
-  { icon: '[ AUTO ]',  name: '8 AI Agents Running 24/7',   desc: 'Invoices chased overnight. Stock monitored. Dormant customers flagged. Revenue forecasted. No one has to ask — it just runs.' },
-  { icon: '[ HR ]',    name: 'HR & Payroll',               desc: 'Staff records, leave, performance, and salary reviews — one place. AI suggests adjustments based on evaluation scores.' },
+  { icon: '[ ORDER ]', name: 'Orders In, Invoices Out — No Manual Entry',                           desc: 'Order in → invoice auto-generated → stock updated → customer notified. No manual steps, no missed follow-ups.' },
+  { icon: '[ STOCK ]', name: 'Know Your Stock Level Before a Customer Asks',                         desc: 'Automatic alerts when stock falls below minimum. Print job requests triggered automatically. No surprises, no stockouts.' },
+  { icon: '[ PUB ]',   name: 'Royalties Calculated and Paid Without a Spreadsheet',                 desc: 'Manuscripts tracked from submission to publication. Royalties calculated automatically. Authors paid on time, every time.' },
+  { icon: '[ AI ]',    name: 'Ask Your Business a Question — Get an Answer in Seconds',             desc: 'How many books in stock? Who owes us money? What shipped today? AI answers instantly. No pulling reports.' },
+  { icon: '[ AUTO ]',  name: 'Invoices Chased. Stock Monitored. Reports Written. While You Sleep.', desc: '8 AI agents running overnight — chasing unpaid invoices, flagging low stock, forecasting revenue. No one has to ask.' },
+  { icon: '[ HR ]',    name: 'Staff Records, Leave, and Salaries — One Place',                      desc: 'Staff records, leave, performance, and salary reviews all managed in one platform. AI suggests adjustments based on scores.' },
 ]
 
 const STEPS = [
@@ -133,8 +141,10 @@ export default function PublishingOSPage() {
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', whiteSpace: 'pre-line' }}>
               {'Still running your publishing operation\nin Excel and WhatsApp?'}
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8 }}>
-              PublishingOS manages your entire operation — orders, invoices, stock, manuscripts, authors, royalties, HR, finance, and AI agents — all from a single login. Built to replace spreadsheets and disconnected tools permanently. This system is now available for selected clients.
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+              PublishingOS manages your entire operation from a single login.
+              Orders, invoices, stock, manuscripts, royalties, HR, finance, and 8 AI agents running 24/7.
+              Built to replace spreadsheets permanently. This system is now available for selected clients.
             </p>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
               <Link href="/contact?system=publishing-os"
@@ -168,6 +178,26 @@ export default function PublishingOSPage() {
               {WHO_FOR.map((item) => (
                 <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* ── AFTER STATE ── */}
+        <section style={{ background: '#080808', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+              AFTER THIS SYSTEM IS INSTALLED
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
+              What your business looks like on week two.
+            </h2>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {AFTER_STATE.map((item) => (
+                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', lineHeight: 1.6, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#E8FF00', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>✓</span>
                   {item}
                 </li>
               ))}
@@ -231,6 +261,20 @@ export default function PublishingOSPage() {
           </div>
         </section>
 
+        {/* ── SYSTEM IN ACTION ── */}
+        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
+              See how it runs.
+            </h2>
+            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            </div>
+          </div>
+        </section>
+
         {/* ── SOCIAL PROOF BAR ── */}
         <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
@@ -259,6 +303,12 @@ export default function PublishingOSPage() {
                   — {line}
                 </p>
               ))}
+            </div>
+            <div style={{ marginTop: '1.5rem', background: '#141414', border: '1px solid rgba(232,255,0,0.2)', padding: '16px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', margin: '0 0 6px' }}>AVAILABILITY</p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>
+                We onboard a limited number of clients per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
+              </p>
             </div>
             <PublishingContactForm />
           </div>
