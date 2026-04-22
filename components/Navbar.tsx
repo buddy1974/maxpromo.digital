@@ -14,8 +14,14 @@ const NAV_LINKS = [
   { href: '/portfolio', label: 'Portfolio' },
 ]
 
+const SYSTEMS_LINKS = [
+  { href: '/products/handwerk-os', label: 'HANDWERK OS' },
+  { href: '/products/restaurant-os', label: 'RESTAURANT OS' },
+]
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [systemsOpen, setSystemsOpen] = useState(false)
 
   return (
     <nav
@@ -67,6 +73,71 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {/* SYSTEMS dropdown */}
+            <div
+              style={{ position: 'relative' }}
+              onMouseEnter={() => setSystemsOpen(true)}
+              onMouseLeave={() => setSystemsOpen(false)}
+            >
+              <button
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  color: systemsOpen ? '#E8FF00' : '#666666',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  transition: 'color 150ms ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                Systems <span style={{ fontSize: '9px', opacity: 0.6 }}>▾</span>
+              </button>
+
+              {systemsOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 10px)',
+                    left: 0,
+                    background: '#080808',
+                    border: '1px solid #1A1A1A',
+                    minWidth: '220px',
+                    zIndex: 100,
+                  }}
+                >
+                  {SYSTEMS_LINKS.map((item, idx) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      style={{
+                        display: 'block',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '11px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        padding: '12px 20px',
+                        color: '#666666',
+                        textDecoration: 'none',
+                        borderBottom: idx < SYSTEMS_LINKS.length - 1 ? '1px solid #1A1A1A' : 'none',
+                        transition: 'color 150ms ease',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#E8FF00')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#666666')}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* CTA */}
@@ -139,6 +210,43 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+
+            {/* Mobile SYSTEMS links */}
+            <p
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '10px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.15em',
+                color: '#333333',
+                padding: '12px 0 4px',
+                margin: 0,
+              }}
+            >
+              Systems
+            </p>
+            {SYSTEMS_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 400,
+                  fontSize: '11px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  color: '#666666',
+                  textDecoration: 'none',
+                  padding: '8px 0 8px 12px',
+                  transition: 'color 150ms ease',
+                }}
+              >
+                {link.label}
+              </Link>
+            ))}
+
             <Link
               href="/automation-audit"
               onClick={() => setMenuOpen(false)}
