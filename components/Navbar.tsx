@@ -14,10 +14,20 @@ const NAV_LINKS = [
   { href: '/portfolio', label: 'Portfolio' },
 ]
 
-const SYSTEMS_LINKS = [
+const SYSTEMS_LINKS_TOP = [
   { href: '/products/handwerk-os', label: 'HANDWERK OS' },
   { href: '/products/restaurant-os', label: 'RESTAURANT OS' },
 ]
+
+const SYSTEMS_LINKS_BOTTOM = [
+  { href: '/products/printshop', label: 'PRINTSHOP OS' },
+  { href: '/products/real-estate-os', label: 'REAL ESTATE OS' },
+  { href: '/products/care-os', label: 'CARE OS' },
+  { href: '/products/publishing-os', label: 'PUBLISHING OS' },
+  { href: '/products/praxis-os', label: 'PRAXIS OS' },
+]
+
+const ALL_SYSTEMS_LINKS = [...SYSTEMS_LINKS_TOP, ...SYSTEMS_LINKS_BOTTOM]
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -114,7 +124,7 @@ export default function Navbar() {
                     zIndex: 100,
                   }}
                 >
-                  {SYSTEMS_LINKS.map((item, idx) => (
+                  {SYSTEMS_LINKS_TOP.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
@@ -127,7 +137,30 @@ export default function Navbar() {
                         padding: '12px 20px',
                         color: '#666666',
                         textDecoration: 'none',
-                        borderBottom: idx < SYSTEMS_LINKS.length - 1 ? '1px solid #1A1A1A' : 'none',
+                        borderBottom: '1px solid #1A1A1A',
+                        transition: 'color 150ms ease',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#E8FF00')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#666666')}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  <div style={{ height: '1px', background: '#1A1A1A', margin: '4px 0' }} />
+                  {SYSTEMS_LINKS_BOTTOM.map((item, idx) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      style={{
+                        display: 'block',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '11px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        padding: '12px 20px',
+                        color: '#666666',
+                        textDecoration: 'none',
+                        borderBottom: idx < SYSTEMS_LINKS_BOTTOM.length - 1 ? '1px solid #1A1A1A' : 'none',
                         transition: 'color 150ms ease',
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.color = '#E8FF00')}
@@ -226,7 +259,7 @@ export default function Navbar() {
             >
               Systems
             </p>
-            {SYSTEMS_LINKS.map((link) => (
+            {ALL_SYSTEMS_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

@@ -18,7 +18,8 @@
       "Bash(grep -n \"ANTHROPIC_API_KEY\\\\|RESEND_API_KEY\\\\|DATABASE_URL\" /c/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/app/api/**/*.ts /c/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/lib/*.ts)",
       "Bash(npm install *)",
       "Bash(find . -type f '\\(' -name '*.tsx' -o -name '*.ts' -o -name '*.css' '\\)' -not -path './node_modules/*' -not -path './.next/*' -exec sed -i -e 's/var\\(--font-space-grotesk\\)/var\\(--font-inter\\)/g' -e 's/var\\(--font-dm-sans\\)/var\\(--font-inter\\)/g' -e 's/var\\(--font-space-mono\\)/var\\(--font-roboto-mono\\)/g' -e 's/var\\(--font-ibm-mono\\)/var\\(--font-roboto-mono\\)/g' -e 's/var\\(--font-syne\\)/var\\(--font-inter\\)/g' '{}' +)",
-      "Bash(xargs sed *)"
+      "Bash(xargs sed *)",
+      "Bash(curl *)"
     ]
   }
 }
