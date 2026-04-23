@@ -6,11 +6,13 @@ import Link from 'next/link'
 const STYLES = `
   .re-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .re-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .re-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
   @media (max-width: 768px) {
     .re-grid-3 { grid-template-columns: 1fr; }
     .re-grid-2 { grid-template-columns: 1fr; }
     .re-steps { flex-direction: column; }
     .re-steps > div { border-right: none !important; }
+    .re-proof  { grid-template-columns: 1fr; }
   }
 `
 
@@ -110,18 +112,26 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ PIPE ]',  name: 'Every Deal Visible — Nothing Falls Through The Cracks', desc: 'Every lot tracked from Sourcing to Completion on a Kanban board. One click to move stages. No spreadsheet, no email chains.' },
+  { icon: '[ PIPE ]',  name: 'Full Pipeline Visibility', desc: 'Every lot tracked from Sourcing to Completion on a Kanban board. One click to move stages. No spreadsheet, no email chains.' },
   { icon: '[ AI ]',    name: 'Know If a Deal Is Worth It In Seconds',                  desc: 'Full deal verdict instantly — ROI, risk, yield, after-refurb value, and recommendation. Up to 10x faster than manual analysis.' },
   { icon: '[ CRM ]',   name: 'Hot Leads Stay Hot — Automatically',                     desc: 'Every investor scored by activity, budget, and engagement. Cold leads warmed automatically. Pipeline grows without manual work.' },
-  { icon: '[ CALC ]',  name: 'Every Number Calculated Instantly — Not On a Spreadsheet', desc: 'ROI, SDLT 2026, bridging loan, monthly cashflow, creative finance — calculated in real time. Not estimated, not approximated.' },
+  { icon: '[ CALC ]',  name: 'Instant Deal Calculations', desc: 'ROI, SDLT 2026, bridging loan, monthly cashflow, creative finance — calculated in real time. Not estimated, not approximated.' },
   { icon: '[ EMAIL ]', name: 'Send Deals To The Right Investors Automatically',         desc: 'AI writes the subject line. Segment by investor type. Track opens and clicks. Right deal, right investor, right time.' },
-  { icon: '[ INTEL ]', name: 'Your Business KPIs In One Place — No Pulling Reports',   desc: 'Revenue, pipeline, investor activity, and market data in one dashboard. Nothing split across three systems.' },
+  { icon: '[ INTEL ]', name: 'All KPIs In One View',   desc: 'Revenue, pipeline, investor activity, and market data in one dashboard. Nothing split across three systems.' },
 ]
 
 const STEPS = [
   { num: '01', title: 'Pipeline in view',                    desc: 'Every lot from sourcing to completion tracked on a Kanban board. No spreadsheet. No email chains.' },
   { num: '02', title: 'AI analyses every deal',              desc: 'Enter address and guide price. AI verdict in seconds — score, ROI, risks, and recommendation.' },
   { num: '03', title: 'Investors managed automatically',     desc: 'Campaigns fire to the right segments. Leads scored. Follow-ups triggered. Pipeline grows without manual work.' },
+]
+
+const FLOW = [
+  { step: '01', label: 'Lot sourced and added' },
+  { step: '02', label: 'AI analyses the deal' },
+  { step: '03', label: 'Score, ROI, risk visible' },
+  { step: '04', label: 'Matching investors selected' },
+  { step: '05', label: 'Campaign sent automatically' },
 ]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -268,9 +278,45 @@ export default function RealEstateOSPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               See how it runs.
             </h2>
-            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            <div className="re-proof">
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ DASHBOARD SCREENSHOT ]</p>
+                </div>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
+                  Lot pipeline — every deal from sourcing to completion with AI verdict and financial calculations attached.
+                </p>
+              </div>
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
+                {[
+                  { label: 'AI score', text: 'Deal score, ROI, risk level, and recommendation visible per lot in one click.' },
+                  { label: 'Investor match', text: 'Matching investors shown per deal. Campaign sent directly from the lot record.' },
+                  { label: 'Financial calc', text: 'SDLT, yield, cashflow, and bridging finance calculated inline — not on a spreadsheet.' },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#E8FF00', margin: '0 0 6px' }}>{item.label}</p>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── IN PRACTICE ── */}
+        <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>IN PRACTICE</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
+              From lot sourcing to investor outreach.
+            </h2>
+            <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
+              {FLOW.map((item) => (
+                <div key={item.step} style={{ background: '#141414', padding: '24px 20px', flex: 1, minWidth: '140px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#E8FF00', margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#F0F0F0', margin: 0, lineHeight: 1.5 }}>{item.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

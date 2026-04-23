@@ -6,11 +6,13 @@ import Link from 'next/link'
 const STYLES = `
   .pb-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .pb-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .pb-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
   @media (max-width: 768px) {
     .pb-grid-3 { grid-template-columns: 1fr; }
     .pb-grid-2 { grid-template-columns: 1fr; }
     .pb-steps { flex-direction: column; }
     .pb-steps > div { border-right: none !important; }
+    .pb-proof  { grid-template-columns: 1fr; }
   }
 `
 
@@ -112,9 +114,9 @@ const PROBLEMS = [
 const FEATURES = [
   { icon: '[ ORDER ]', name: 'Orders In, Invoices Out — No Manual Entry',                           desc: 'Order in → invoice auto-generated → stock updated → customer notified. No manual steps, no missed follow-ups.' },
   { icon: '[ STOCK ]', name: 'Know Your Stock Level Before a Customer Asks',                         desc: 'Automatic alerts when stock falls below minimum. Print job requests triggered automatically. No surprises, no stockouts.' },
-  { icon: '[ PUB ]',   name: 'Royalties Calculated and Paid Without a Spreadsheet',                 desc: 'Manuscripts tracked from submission to publication. Royalties calculated automatically. Authors paid on time, every time.' },
-  { icon: '[ AI ]',    name: 'Ask Your Business a Question — Get an Answer in Seconds',             desc: 'How many books in stock? Who owes us money? What shipped today? AI answers instantly. No pulling reports.' },
-  { icon: '[ AUTO ]',  name: 'Invoices Chased. Stock Monitored. Reports Written. While You Sleep.', desc: '8 AI agents running overnight — chasing unpaid invoices, flagging low stock, forecasting revenue. No one has to ask.' },
+  { icon: '[ PUB ]',   name: 'Royalties Paid Automatically',                 desc: 'Manuscripts tracked from submission to publication. Royalties calculated automatically. Authors paid on time, every time.' },
+  { icon: '[ AI ]',    name: 'Instant Business Intelligence',             desc: 'How many books in stock? Who owes us money? What shipped today? AI answers instantly. No pulling reports.' },
+  { icon: '[ AUTO ]',  name: '8 AI Agents Working Overnight', desc: '8 AI agents running overnight — chasing unpaid invoices, flagging low stock, forecasting revenue. No one has to ask.' },
   { icon: '[ HR ]',    name: 'Staff Records, Leave, and Salaries — One Place',                      desc: 'Staff records, leave, performance, and salary reviews all managed in one platform. AI suggests adjustments based on scores.' },
 ]
 
@@ -122,6 +124,14 @@ const STEPS = [
   { num: '01', title: 'Order arrives',              desc: 'Staff creates the order in two minutes. Invoice generated automatically. Stock deducted. Finance updated. CEO briefed at 8am.' },
   { num: '02', title: 'Agents run overnight',       desc: 'Unpaid invoices chased automatically. Low stock triggers print job alerts. Dormant customers flagged for follow-up.' },
   { num: '03', title: 'Leadership stays informed',  desc: 'AI executive briefing every morning — revenue, unpaid invoices, overdue tasks, low stock, staff alerts. Before the first meeting.' },
+]
+
+const FLOW = [
+  { step: '01', label: 'Order created in 2 minutes' },
+  { step: '02', label: 'Stock deducted automatically' },
+  { step: '03', label: 'Invoice auto-generated' },
+  { step: '04', label: 'Customer notified' },
+  { step: '05', label: 'AI monitors for late payment' },
 ]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -268,9 +278,45 @@ export default function PublishingOSPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               See how it runs.
             </h2>
-            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            <div className="pb-proof">
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ DASHBOARD SCREENSHOT ]</p>
+                </div>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
+                  Operations dashboard — orders, stock levels, unpaid invoices, and AI agent activity in one view.
+                </p>
+              </div>
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
+                {[
+                  { label: 'Stock alert', text: 'Low stock flagged automatically. Print job request triggered before stockout.' },
+                  { label: 'Invoice status', text: 'Unpaid invoices surfaced with days overdue. AI chasing agent status shown.' },
+                  { label: 'Morning brief', text: 'AI executive briefing visible from the main dashboard. Updated every day.' },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#E8FF00', margin: '0 0 6px' }}>{item.label}</p>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── IN PRACTICE ── */}
+        <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>IN PRACTICE</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
+              From order to invoice — automatically.
+            </h2>
+            <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
+              {FLOW.map((item) => (
+                <div key={item.step} style={{ background: '#141414', padding: '24px 20px', flex: 1, minWidth: '140px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#E8FF00', margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#F0F0F0', margin: 0, lineHeight: 1.5 }}>{item.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

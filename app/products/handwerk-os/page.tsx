@@ -9,10 +9,12 @@ const STYLES = `
   .hw-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .hw-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .hw-steps  { display: flex; flex-direction: row; gap: 0; }
+  .hw-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
   @media (max-width: 768px) {
     .hw-grid-3 { grid-template-columns: 1fr; }
     .hw-grid-2 { grid-template-columns: 1fr; }
     .hw-steps  { flex-direction: column; }
+    .hw-proof  { grid-template-columns: 1fr; }
   }
 `
 
@@ -166,17 +168,17 @@ const FEATURES = [
   },
   {
     icon: '[ XML ]',
-    name: 'Win Public Sector Contracts — One Click',
+    name: 'Win Public Sector Contracts',
     desc: 'One click generates a fully compliant EN 16931 XML file. Win public sector and large B2B work without extra paperwork.',
   },
   {
     icon: '[ GPS ]',
-    name: 'Win Every Time Dispute With GPS Proof',
+    name: 'Win Every Time Dispute',
     desc: 'GPS coordinates locked at clock-in. Irrefutable proof your team was on site. Every billable minute tracked and auditable.',
   },
   {
     icon: '[ SIG ]',
-    name: 'Get Paid Days Earlier — Signature On The Spot',
+    name: 'Get Paid Days Earlier',
     desc: 'AI writes the service report from bullet points. Customer signs on the phone. No paper to chase, no disputes, no delays.',
   },
   {
@@ -217,6 +219,14 @@ const STEPS = [
     title: 'One click to invoice',
     desc: 'Convert the accepted quote to a Rechnung. XRechnung XML export included. Mark paid when done.',
   },
+]
+
+const FLOW = [
+  { step: '01', label: 'Job comes in via WhatsApp' },
+  { step: '02', label: 'Photograph job sheet' },
+  { step: '03', label: 'AI creates full record' },
+  { step: '04', label: 'Quote emailed to client' },
+  { step: '05', label: 'Accepted — one-click invoice' },
 ]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -488,9 +498,45 @@ export default function HandwerkOSPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               See how it runs.
             </h2>
-            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            <div className="hw-proof">
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ DASHBOARD SCREENSHOT ]</p>
+                </div>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
+                  Job pipeline, live quotes, GPS time logs, and XRechnung invoices — one dashboard.
+                </p>
+              </div>
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
+                {[
+                  { label: 'Job status', text: 'Every open job, quote, and invoice tracked in one view — from photo to paid.' },
+                  { label: 'GPS log', text: 'Clock-in coordinates visible per technician. Audit trail on every visit.' },
+                  { label: 'One-click export', text: 'XRechnung XML generated from any invoice. No accountant required.' },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#E8FF00', margin: '0 0 6px' }}>{item.label}</p>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── IN PRACTICE ── */}
+        <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>IN PRACTICE</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
+              From WhatsApp message to paid invoice.
+            </h2>
+            <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
+              {FLOW.map((item) => (
+                <div key={item.step} style={{ background: '#141414', padding: '24px 20px', flex: 1, minWidth: '140px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#E8FF00', margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#F0F0F0', margin: 0, lineHeight: 1.5 }}>{item.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

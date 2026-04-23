@@ -6,11 +6,13 @@ import Link from 'next/link'
 const STYLES = `
   .ps-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .ps-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ps-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
   @media (max-width: 768px) {
     .ps-grid-3 { grid-template-columns: 1fr; }
     .ps-grid-2 { grid-template-columns: 1fr; }
     .ps-steps { flex-direction: column; }
     .ps-steps > div { border-right: none !important; }
+    .ps-proof  { grid-template-columns: 1fr; }
   }
 `
 
@@ -145,16 +147,24 @@ const PROBLEMS = [
 const FEATURES = [
   { icon: '[ SHOP ]',   name: 'Customers Order and Pay Without Emailing You',      desc: 'Configure quantity and size — price calculates live. Customers pay via Stripe. No quote request, no back-and-forth.' },
   { icon: '[ AI ]',     name: 'Catch Bad Files Before They Hit the Press',          desc: 'Wrong DPI, bleed, dimensions, or colour profile caught instantly before printing. No costly reprints. No margin lost.' },
-  { icon: '[ EDIT ]',   name: 'Customers Design In the Browser — Fewer Revisions', desc: 'Text, shapes, logos designed online and saved to the order. Fewer revision requests. Fewer emails. Faster to press.' },
+  { icon: '[ EDIT ]',   name: 'In-Browser Design — No Back-and-Forth', desc: 'Text, shapes, logos designed online and saved to the order. Fewer revision requests. Fewer emails. Faster to press.' },
   { icon: '[ PROD ]',   name: 'Every Order Tracked From Payment to Delivery',       desc: 'Queued → In Progress → Done. Print sheet generated per job. Nothing falls through the cracks. No spreadsheet.' },
   { icon: '[ STRIPE ]', name: 'Get Paid Upfront — No Invoice Chasing',              desc: 'Full checkout with tax, multi-item cart, and automatic PDF invoice. Get paid before printing starts. Every time.' },
-  { icon: '[ i18n ]',   name: 'Sell to EN, DE, and FR Markets From One Platform',  desc: 'Shop, checkout, admin, and all email templates fully translated. Three markets. One platform. Zero extra configuration.' },
+  { icon: '[ i18n ]',   name: 'Three Markets, One Platform',  desc: 'Shop, checkout, admin, and all email templates fully translated. Three markets. One platform. Zero extra configuration.' },
 ]
 
 const STEPS = [
   { num: '01', title: 'Customer configures and pays',  desc: 'Selects product, size, quantity. Uploads artwork. AI validates the file. Pays via Stripe. All in one flow.' },
   { num: '02', title: 'Order enters production',       desc: 'Admin panel shows new order instantly. Print sheet generated. Job moves through production stages with one click.' },
   { num: '03', title: 'Invoice and delivery',          desc: 'PDF invoice auto-generated. Customer receives confirmation email. Order history available in their account.' },
+]
+
+const FLOW = [
+  { step: '01', label: 'Customer configures product' },
+  { step: '02', label: 'Uploads artwork file' },
+  { step: '03', label: 'AI validates file instantly' },
+  { step: '04', label: 'Pays via Stripe' },
+  { step: '05', label: 'Enters production queue' },
 ]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -311,9 +321,45 @@ export default function PrintshopPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               See how it runs.
             </h2>
-            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            <div className="ps-proof">
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ DASHBOARD SCREENSHOT ]</p>
+                </div>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
+                  Order queue — prepress status, production stage, and Stripe payment confirmation per job.
+                </p>
+              </div>
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
+                {[
+                  { label: 'Prepress check', text: 'AI file validation result shown per order before it enters production.' },
+                  { label: 'Stage tracking', text: 'Queued → In Progress → Done. Print sheet attached to every job.' },
+                  { label: 'Payment confirmed', text: 'Stripe status visible per order. PDF invoice auto-generated and sent.' },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#E8FF00', margin: '0 0 6px' }}>{item.label}</p>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── IN PRACTICE ── */}
+        <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>IN PRACTICE</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
+              From customer upload to production — no manual steps.
+            </h2>
+            <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
+              {FLOW.map((item) => (
+                <div key={item.step} style={{ background: '#141414', padding: '24px 20px', flex: 1, minWidth: '140px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#E8FF00', margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#F0F0F0', margin: 0, lineHeight: 1.5 }}>{item.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

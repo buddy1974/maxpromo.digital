@@ -8,9 +8,11 @@ import Link from 'next/link'
 const STYLES = `
   .ro-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .ro-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ro-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
   @media (max-width: 768px) {
     .ro-grid-3 { grid-template-columns: 1fr; }
     .ro-grid-2 { grid-template-columns: 1fr; }
+    .ro-proof  { grid-template-columns: 1fr; }
   }
 `
 
@@ -167,15 +169,23 @@ const STEPS = [
 ]
 
 const FEATURES = [
-  { icon: '[ SEAT ]',    name: 'Zero Confusion — Every Seat Tracked By Name',           desc: 'No more "who ordered what." Every seat tracked individually by fruit code for the entire visit. Staff call by fruit — not seat number.' },
-  { icon: '[ PAY ]',     name: 'Bill Splitting Done In Seconds, Not 15 Minutes',         desc: 'Solo, full table, equal split, or select seats — all four modes built in. No calculator. No awkward wait at the end of service.' },
-  { icon: '[ ALERT ]',   name: 'Kitchen Notified Instantly — No Subscription Required',  desc: 'Every order fires instantly to your kitchen Telegram group. No tablet. No monthly alert software fee. Works on any phone.' },
-  { icon: '[ ADMIN ]',   name: 'Change Your Menu From Any Device In 10 Seconds',         desc: 'Update prices or mark items sold out instantly — from any device. Goes live immediately. No code, no delays.' },
-  { icon: '[ SESSION ]', name: 'Staff Know The Bill Expectation Before You Ask',          desc: 'Solo or group — set at first scan. Staff see the payment mode per table before the bill arrives. No surprises.' },
+  { icon: '[ SEAT ]',    name: 'Zero Table Confusion',           desc: 'No more "who ordered what." Every seat tracked individually by fruit code for the entire visit. Staff call by fruit — not seat number.' },
+  { icon: '[ PAY ]',     name: 'Bill Splitting In Seconds',         desc: 'Solo, full table, equal split, or select seats — all four modes built in. No calculator. No awkward wait at the end of service.' },
+  { icon: '[ ALERT ]',   name: 'Kitchen Notified Instantly',  desc: 'Every order fires instantly to your kitchen Telegram group. No tablet. No monthly alert software fee. Works on any phone.' },
+  { icon: '[ ADMIN ]',   name: 'Live Menu Updates',         desc: 'Update prices or mark items sold out instantly — from any device. Goes live immediately. No code, no delays.' },
+  { icon: '[ SESSION ]', name: 'No Bill Surprises',          desc: 'Solo or group — set at first scan. Staff see the payment mode per table before the bill arrives. No surprises.' },
   { icon: '[ SAAS ]',    name: 'Run Multiple Venues From One System',                     desc: 'One codebase runs unlimited venues. Each restaurant gets their own slug, menu, tables, and branding from day one.' },
 ]
 
 const TECH_STACK = ['NEXT.JS 16', 'NEON POSTGRESQL', 'VERCEL', 'TELEGRAM BOT', 'TYPESCRIPT', 'STRIPE']
+
+const FLOW = [
+  { step: '01', label: 'Customer scans QR code' },
+  { step: '02', label: 'Gets a fruit seat code' },
+  { step: '03', label: 'Browses menu and orders' },
+  { step: '04', label: 'Kitchen gets Telegram alert' },
+  { step: '05', label: 'Bill paid by seat' },
+]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
 
@@ -429,9 +439,45 @@ export default function RestaurantOSPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               See how it runs.
             </h2>
-            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            <div className="ro-proof">
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ DASHBOARD SCREENSHOT ]</p>
+                </div>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
+                  Live order view — table, seat code, items ordered, and payment status per session.
+                </p>
+              </div>
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
+                {[
+                  { label: 'Active orders', text: 'Every table session visible with fruit seat assignments and full order history.' },
+                  { label: 'Instant alerts', text: 'Telegram notification fired per order — table, seat, items, total.' },
+                  { label: 'Bill status', text: 'Payment mode per table set at first scan. Staff briefed before the ask.' },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#E8FF00', margin: '0 0 6px' }}>{item.label}</p>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── IN PRACTICE ── */}
+        <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>IN PRACTICE</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
+              From table scan to kitchen to settled bill.
+            </h2>
+            <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
+              {FLOW.map((item) => (
+                <div key={item.step} style={{ background: '#141414', padding: '24px 20px', flex: 1, minWidth: '140px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#E8FF00', margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#F0F0F0', margin: 0, lineHeight: 1.5 }}>{item.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>

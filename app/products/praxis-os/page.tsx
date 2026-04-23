@@ -6,11 +6,13 @@ import Link from 'next/link'
 const STYLES = `
   .px-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .px-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .px-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
   @media (max-width: 768px) {
     .px-grid-3 { grid-template-columns: 1fr; }
     .px-grid-2 { grid-template-columns: 1fr; }
     .px-steps { flex-direction: column; }
     .px-steps > div { border-right: none !important; }
+    .px-proof  { grid-template-columns: 1fr; }
   }
 `
 
@@ -112,18 +114,26 @@ const PROBLEMS = [
 ]
 
 const FEATURES = [
-  { icon: '[ PORTAL ]', name: 'Patients Book Online — Up To 40% Fewer Inbound Calls',  desc: 'Patients book, view lab results, and complete intake forms without calling the practice. Measurable reduction in phone load.' },
+  { icon: '[ PORTAL ]', name: 'Online Booking — 40% Fewer Calls',  desc: 'Patients book, view lab results, and complete intake forms without calling the practice. Measurable reduction in phone load.' },
   { icon: '[ APPT ]',   name: 'Reminders Fire Automatically — Nothing Falls Through',   desc: 'Reminders sent automatically. No-shows logged. Recall workflows triggered by protocol. Zero manual follow-up needed.' },
   { icon: '[ LAB ]',    name: 'Results To Patients Instantly — No Post, No Fax',        desc: 'Lab results delivered securely to the patient portal. No postal delay, no fax. Full audit trail on every result delivery.' },
   { icon: '[ DASH ]',   name: 'Every Role Sees Exactly What They Need',                 desc: 'Doctors, MFA staff, and admin each have their own view. Role-based access — no clutter, no confusion, no data leaks.' },
   { icon: '[ AUTO ]',   name: 'Cut Admin Work By Up To 50% — Automatically',            desc: 'Appointment reminders, lab notifications, no-show logging, PSA recall, and follow-ups — all automated via n8n workflows.' },
-  { icon: '[ GDPR ]',   name: 'Every Record Auditable — Built To German Healthcare Law', desc: 'Audit log on every patient record action. GDPR compliant. Multilingual — German and English. Inspection-ready from day one.' },
+  { icon: '[ GDPR ]',   name: 'GDPR-Compliant By Design', desc: 'Audit log on every patient record action. GDPR compliant. Multilingual — German and English. Inspection-ready from day one.' },
 ]
 
 const STEPS = [
   { num: '01', title: 'Patients self-serve online',       desc: 'Book appointments, complete intake forms, receive reminders, and view results — without calling the practice.' },
   { num: '02', title: 'Staff work from one dashboard',    desc: 'All patient data, appointments, and lab results in one place. Role-based — each staff member sees their relevant view.' },
   { num: '03', title: 'Automation handles follow-ups',    desc: 'Reminders fire automatically. Recalls triggered by protocol. No-shows logged. Nothing falls through the cracks.' },
+]
+
+const FLOW = [
+  { step: '01', label: 'Patient books online' },
+  { step: '02', label: 'Confirmation sent automatically' },
+  { step: '03', label: 'Reminder fires 24h before' },
+  { step: '04', label: 'Appointment completed' },
+  { step: '05', label: 'Lab result delivered to portal' },
 ]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -268,9 +278,45 @@ export default function PraxisOSPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               See how it runs.
             </h2>
-            <div style={{ background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '80px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', minHeight: '220px' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', margin: 0 }}>[ WORKFLOW / DASHBOARD PREVIEW ]</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#333333', margin: 0 }}>Screenshots and workflow diagrams — coming soon</p>
+            <div className="px-proof">
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ DASHBOARD SCREENSHOT ]</p>
+                </div>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
+                  Staff dashboard — appointment calendar, lab result delivery log, and automation status.
+                </p>
+              </div>
+              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
+                {[
+                  { label: 'Appointment log', text: 'Every booking with reminder status — sent, delivered, confirmed per patient.' },
+                  { label: 'Lab delivery', text: 'Result delivery confirmed per patient. Audit trail on every access.' },
+                  { label: 'Automation log', text: 'Every n8n trigger visible — reminders fired, recalls sent, no-shows logged.' },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#E8FF00', margin: '0 0 6px' }}>{item.label}</p>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── IN PRACTICE ── */}
+        <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>IN PRACTICE</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
+              From online booking to lab result — zero manual steps.
+            </h2>
+            <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
+              {FLOW.map((item) => (
+                <div key={item.step} style={{ background: '#141414', padding: '24px 20px', flex: 1, minWidth: '140px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#E8FF00', margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#F0F0F0', margin: 0, lineHeight: 1.5 }}>{item.label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
