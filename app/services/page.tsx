@@ -210,6 +210,28 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* See all systems link */}
+      <div style={{ background: 'hsl(240 14% 4%)', padding: '2rem 2rem', textAlign: 'center', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <Link
+          href="/systems"
+          style={{
+            fontFamily: 'var(--font-roboto-mono)',
+            fontSize: '13px',
+            color: 'hsl(28 100% 58%)',
+            textDecoration: 'none',
+            letterSpacing: '0.08em',
+            border: '1px solid rgba(249,115,22,0.25)',
+            background: 'rgba(249,115,22,0.06)',
+            padding: '10px 24px',
+            borderRadius: '6px',
+            display: 'inline-block',
+            transition: 'background 0.2s ease',
+          }}
+        >
+          See all 16 systems &amp; services →
+        </Link>
+      </div>
+
       {/* CTA */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>

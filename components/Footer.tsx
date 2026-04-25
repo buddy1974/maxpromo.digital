@@ -7,6 +7,7 @@ const columns = [
     title: 'Company',
     links: [
       { label: 'Services', href: '/services' },
+      { label: 'Systems', href: '/systems' },
       { label: 'Case Studies', href: '/case-studies' },
       { label: 'Automation Lab', href: '/automation-lab' },
       { label: 'Pricing', href: '/pricing' },

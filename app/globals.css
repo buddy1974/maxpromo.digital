@@ -178,6 +178,27 @@ code, pre, .mono {
   box-shadow: var(--glow-primary);
 }
 
+/* ─── System card CTA ─── */
+.sys-cta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: hsl(28 100% 58%);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(249,115,22,0.25);
+  background: rgba(249,115,22,0.06);
+  padding: 7px 14px;
+  border-radius: 6px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  display: inline-block;
+  align-self: flex-start;
+}
+.sys-cta:hover {
+  background: rgba(249,115,22,0.15);
+  border-color: rgba(249,115,22,0.5);
+}
+
 /* ─── Cursor blink ─── */
 @keyframes blink {
   0%, 100% { opacity: 1; }

@@ -4,27 +4,34 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 const NAV_LINKS = [
-  { href: '/services', label: 'Services' },
-  { href: '/automation-lab', label: 'Lab' },
-  { href: '/case-studies', label: 'Case Studies' },
-  { href: '/pricing', label: 'Pricing' },
-  { href: '/automation-audit', label: 'Audit' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/services',        label: 'Services'  },
+  { href: '/systems',         label: 'Systems'   },
+  { href: '/automation-lab',  label: 'Lab'       },
+  { href: '/pricing',         label: 'Pricing'   },
+  { href: '/blog',            label: 'Blog'      },
+  { href: '/about',           label: 'About'     },
+  { href: '/contact',         label: 'Contact'   },
 ]
 
-const SYSTEMS_LINKS = [
-  { href: '/products/handwerk-os', label: 'HANDWERK OS' },
-  { href: '/products/restaurant-os', label: 'RESTAURANT OS' },
-  { href: '/products/printshop', label: 'PRINTSHOP OS' },
-  { href: '/products/real-estate-os', label: 'REAL ESTATE OS' },
-  { href: '/products/care-os', label: 'CARE OS' },
-  { href: '/products/publishing-os', label: 'PUBLISHING OS' },
-  { href: '/products/praxis-os', label: 'PRAXIS OS' },
-]
+const navLinkBase: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: '12px',
+  fontWeight: 500,
+  textTransform: 'uppercase',
+  letterSpacing: '0.08em',
+  textDecoration: 'none',
+  color: 'hsl(40 12% 65%)',
+  border: '1px solid rgba(255,255,255,0.10)',
+  background: 'rgba(255,255,255,0.03)',
+  padding: '5px 12px',
+  borderRadius: '4px',
+  transition: 'all 0.2s ease',
+  display: 'inline-block',
+  whiteSpace: 'nowrap' as const,
+}
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [systemsOpen, setSystemsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -49,8 +56,8 @@ export default function Navbar() {
           width: 'min(1180px, calc(100% - 2rem))',
           zIndex: 50,
           background: scrolled
-            ? 'hsl(240 12% 8% / 0.85)'
-            : 'hsl(240 12% 8% / 0.6)',
+            ? 'hsl(240 12% 8% / 0.92)'
+            : 'hsl(240 12% 8% / 0.65)',
           backdropFilter: 'blur(20px) saturate(160%)',
           WebkitBackdropFilter: 'blur(20px) saturate(160%)',
           border: '1px solid hsl(40 30% 96% / 0.06)',
@@ -65,9 +72,10 @@ export default function Navbar() {
             justifyContent: 'space-between',
             height: '56px',
             padding: '0 1.25rem',
+            gap: '1rem',
           }}
         >
-          {/* Logo + status */}
+          {/* Logo */}
           <Link
             href="/"
             style={{
@@ -115,119 +123,27 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop links */}
-          <div className="hidden md:flex" style={{ gap: '6px', alignItems: 'center' }}>
+          {/* Desktop links — flat, no dropdowns */}
+          <div className="hidden md:flex" style={{ gap: '4px', alignItems: 'center', flexWrap: 'nowrap', overflow: 'hidden' }}>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  textDecoration: 'none',
-                  color: 'hsl(40 12% 65%)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  background: 'rgba(255,255,255,0.04)',
-                  padding: '6px 14px',
-                  borderRadius: '4px',
-                  transition: 'all 0.2s ease',
-                  display: 'inline-block',
-                }}
+                style={navLinkBase}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)'
                   e.currentTarget.style.background = 'rgba(249,115,22,0.08)'
                   e.currentTarget.style.color = 'hsl(40 30% 96%)'
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
                   e.currentTarget.style.color = 'hsl(40 12% 65%)'
                 }}
               >
                 {link.label}
               </Link>
             ))}
-
-            {/* Systems dropdown */}
-            <div
-              style={{ position: 'relative' }}
-              onMouseEnter={() => setSystemsOpen(true)}
-              onMouseLeave={() => setSystemsOpen(false)}
-            >
-              <button
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  color: systemsOpen ? 'hsl(40 30% 96%)' : 'hsl(40 12% 65%)',
-                  background: systemsOpen ? 'rgba(249,115,22,0.08)' : 'rgba(255,255,255,0.04)',
-                  border: systemsOpen ? '1px solid rgba(249,115,22,0.5)' : '1px solid rgba(255,255,255,0.12)',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  padding: '6px 14px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                Systems <span style={{ fontSize: '9px', opacity: 0.6 }}>▾</span>
-              </button>
-
-              {systemsOpen && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 'calc(100% + 12px)',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    paddingTop: '0',
-                    background: 'hsl(240 12% 8% / 0.95)',
-                    backdropFilter: 'blur(24px)',
-                    WebkitBackdropFilter: 'blur(24px)',
-                    border: '1px solid hsl(40 30% 96% / 0.08)',
-                    borderRadius: '12px',
-                    minWidth: '220px',
-                    zIndex: 100,
-                    overflow: 'hidden',
-                  }}
-                >
-                  {SYSTEMS_LINKS.map((item, idx) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      style={{
-                        display: 'block',
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '11px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em',
-                        padding: '11px 18px',
-                        color: 'hsl(40 12% 65%)',
-                        textDecoration: 'none',
-                        borderBottom: idx < SYSTEMS_LINKS.length - 1 ? '1px solid hsl(40 30% 96% / 0.05)' : 'none',
-                        transition: 'color 150ms ease, background 150ms ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.color = 'hsl(40 30% 96%)'
-                        e.currentTarget.style.background = 'hsl(28 100% 58% / 0.06)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.color = 'hsl(40 12% 65%)'
-                        e.currentTarget.style.background = 'transparent'
-                      }}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Desktop CTA */}
@@ -248,6 +164,7 @@ export default function Navbar() {
                 display: 'inline-block',
                 borderRadius: '8px',
                 transition: 'opacity 150ms ease',
+                whiteSpace: 'nowrap',
               }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
@@ -272,6 +189,7 @@ export default function Navbar() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              flexShrink: 0,
             }}
           >
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -281,7 +199,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Spacer so content doesn't hide under fixed nav */}
+      {/* Spacer */}
       <div style={{ height: '80px' }} />
 
       {/* Mobile fullscreen menu */}
@@ -296,6 +214,7 @@ export default function Navbar() {
             flexDirection: 'column',
           }}
         >
+          {/* Top bar */}
           <div
             style={{
               display: 'flex',
@@ -338,72 +257,45 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+          {/* Scrollable nav items */}
+          <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', padding: '1rem 1.5rem', gap: '8px' }}>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
                 style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  fontSize: '28px',
-                  letterSpacing: '-0.03em',
-                  color: 'hsl(40 12% 65%)',
-                  textDecoration: 'none',
-                  padding: '20px 1.5rem',
-                  display: 'block',
-                  textAlign: 'center',
-                  borderBottom: '1px solid hsl(40 30% 96% / 0.06)',
-                  transition: 'color 150ms ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'hsl(28 100% 58%)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'hsl(40 12% 65%)')}
-              >
-                {link.label}
-              </Link>
-            ))}
-
-            <p
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '10px',
-                textTransform: 'uppercase',
-                letterSpacing: '0.15em',
-                color: 'hsl(240 8% 35%)',
-                textAlign: 'center',
-                padding: '20px 1.5rem 8px',
-                margin: 0,
-              }}
-            >
-              Systems
-            </p>
-
-            {SYSTEMS_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '13px',
-                  letterSpacing: '0.1em',
+                  fontWeight: 600,
+                  fontSize: '15px',
+                  letterSpacing: '0.08em',
                   textTransform: 'uppercase',
                   color: 'hsl(40 12% 65%)',
                   textDecoration: 'none',
-                  padding: '12px 1.5rem',
+                  padding: '16px 20px',
                   display: 'block',
-                  textAlign: 'center',
-                  transition: 'color 150ms ease',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  background: 'rgba(255,255,255,0.03)',
+                  borderRadius: '8px',
+                  transition: 'all 0.2s ease',
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'hsl(40 30% 96%)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'hsl(40 12% 65%)')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)'
+                  e.currentTarget.style.background = 'rgba(249,115,22,0.08)'
+                  e.currentTarget.style.color = 'hsl(40 30% 96%)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.10)'
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+                  e.currentTarget.style.color = 'hsl(40 12% 65%)'
+                }}
               >
                 {link.label}
               </Link>
             ))}
           </div>
 
+          {/* CTA */}
           <div
             style={{
               padding: '1.5rem',
@@ -418,16 +310,18 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '13px',
+                fontSize: '14px',
                 fontWeight: 700,
                 textTransform: 'uppercase',
                 letterSpacing: '0.1em',
                 color: 'hsl(240 14% 4%)',
                 background: 'hsl(28 100% 58%)',
-                padding: '16px 40px',
+                padding: '18px 48px',
                 textDecoration: 'none',
-                display: 'inline-block',
+                display: 'block',
+                textAlign: 'center',
                 borderRadius: '10px',
+                width: '100%',
               }}
             >
               FREE AUDIT →
@@ -438,10 +332,7 @@ export default function Navbar() {
 
       <style>{`
         @keyframes ping {
-          75%, 100% {
-            transform: scale(2);
-            opacity: 0;
-          }
+          75%, 100% { transform: scale(2); opacity: 0; }
         }
       `}</style>
     </>
