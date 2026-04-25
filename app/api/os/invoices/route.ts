@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
       invoice_number?: string; client_id?: string; client_name: string
       client_email?: string; client_address?: string; line_items: unknown[]
       subtotal: number; total: number; status?: string; due_date?: string; notes?: string
+      anzahlung?: number; anzahlung_date?: string; anzahlung_method?: string; restbetrag?: number
     }
 
     const invoice_number = body.invoice_number || await nextInvoiceNumber()
@@ -55,12 +56,15 @@ export async function POST(request: NextRequest) {
     const rows = await sql`
       INSERT INTO os_invoices
         (invoice_number, client_id, client_name, client_email, client_address,
-         line_items, subtotal, total, status, due_date, notes)
+         line_items, subtotal, total, status, due_date, notes,
+         anzahlung, anzahlung_date, anzahlung_method, restbetrag)
       VALUES
         (${invoice_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
          ${JSON.stringify(body.line_items)}::jsonb, ${body.subtotal}, ${body.total},
-         ${body.status || 'draft'}, ${body.due_date || null}, ${body.notes || null})
+         ${body.status || 'draft'}, ${body.due_date || null}, ${body.notes || null},
+         ${body.anzahlung ?? 0}, ${body.anzahlung_date || null},
+         ${body.anzahlung_method || null}, ${body.restbetrag ?? body.total})
       RETURNING *`
 
     return NextResponse.json(rows[0], { status: 201 })
