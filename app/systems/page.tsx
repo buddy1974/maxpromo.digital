@@ -2,154 +2,125 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Systems & Services',
+  title: 'Systems We Have Built',
   description:
-    'Every AI system, automation service, and digital product we build — production-grade, AI-powered, delivered in 14 days.',
+    'Real platforms. Real clients. All live, all in production — AI-powered systems built by MAXPROMO DIGITAL.',
 }
 
-const SYSTEMS = [
+const APPS = [
   {
-    icon: '🤖',
-    title: 'AI Automation',
-    desc: 'We build AI agents and autonomous systems that run business operations 24/7. Lead qualification, invoice chasing, customer support, reporting — all handled by AI.',
-    tags: ['Claude AI', 'n8n', 'API'],
-    cta: 'See Automation Lab →',
-    href: '/automation-lab',
-  },
-  {
-    icon: '⚙️',
-    title: 'Workflow Automation',
-    desc: 'Custom workflows that connect your tools and eliminate manual data entry, email sending, and repetitive task execution permanently.',
-    tags: ['n8n', 'Zapier', 'API'],
-    cta: 'Get Free Audit →',
-    href: '/automation-audit',
-  },
-  {
-    icon: '🏢',
-    title: 'Business Automation',
-    desc: 'Rebuild entire departments — invoicing, onboarding, compliance, reporting — so humans are only involved when genuinely needed.',
-    tags: ['Claude AI', 'n8n', 'Custom'],
-    cta: 'Start Discovery →',
-    href: '/discovery',
-  },
-  {
-    icon: '🔄',
-    title: 'Digital Transformation',
-    desc: 'Move from spreadsheets, paper forms, and WhatsApp groups to intelligent digital systems. We map your operations and rebuild the foundation properly.',
-    tags: ['Next.js', 'AI', 'Cloud'],
-    cta: 'Book Consultation →',
-    href: '/contact',
-  },
-  {
-    icon: '💻',
-    title: 'Custom Software Development',
-    desc: 'Admin panels, business dashboards, internal tools, client portals, booking systems and management platforms built for how your business actually works.',
-    tags: ['Next.js', 'TypeScript', 'Neon'],
-    cta: 'View Portfolio →',
-    href: '/portfolio',
-  },
-  {
-    icon: '🎨',
-    title: 'Website Design',
-    desc: 'Professional websites for businesses, organisations and startups. Mobile optimised, fast, secure, and built to convert visitors into clients.',
-    tags: ['Next.js', 'Tailwind', 'Vercel'],
-    cta: 'Get Instant Estimate →',
-    href: '/estimate',
-  },
-  {
-    icon: '🌐',
-    title: 'Web Development',
-    desc: 'Modern websites and web applications built with fast, secure and scalable technology. Custom built — no templates, no page builders.',
-    tags: ['Next.js', 'TypeScript', 'Vercel'],
-    cta: 'Get Instant Estimate →',
-    href: '/estimate',
-  },
-  {
-    icon: '💬',
-    title: 'AI Chatbots & Assistants',
-    desc: 'AI assistants trained on your business knowledge that answer customer questions, qualify leads, and handle support — 24 hours a day.',
-    tags: ['Claude AI', 'Next.js', 'API'],
-    cta: 'See Example →',
-    href: '/#chat',
-  },
-  {
-    icon: '🧑‍💻',
-    title: 'AI Digital Twin',
-    desc: 'Your AI-powered digital presence — video content created using your voice clone and avatar. Scripts by Claude, voice by ElevenLabs, face by HeyGen.',
-    tags: ['ElevenLabs', 'HeyGen', 'Claude AI'],
-    cta: 'Learn More →',
-    href: '/ai-digital-twin',
-  },
-  {
-    icon: '📄',
-    title: 'Document Intelligence',
-    desc: 'AI that reads invoices, contracts, forms and reports — extracts data, validates it, and posts it to your systems automatically.',
-    tags: ['Claude AI', 'OCR', 'API'],
-    cta: 'Get Free Audit →',
-    href: '/automation-audit',
-  },
-  {
-    icon: '📱',
-    title: 'Social Media Automation',
-    desc: 'AI-generated content published on schedule. Comment replies automated. Queue self-fills weekly. Your social presence runs without you.',
-    tags: ['n8n', 'Claude AI', 'Meta API'],
-    cta: 'See How It Works →',
-    href: '/automation-lab',
-  },
-  {
-    icon: '🔗',
-    title: 'API Integration',
-    desc: 'Connect your apps, CRM, accounting, booking system and payment gateway so data flows automatically between all your tools.',
-    tags: ['REST API', 'Webhooks', 'n8n'],
-    cta: 'Start Discovery →',
-    href: '/discovery',
-  },
-  {
-    icon: '☁️',
-    title: 'Cloud Solutions',
-    desc: 'Deploy on modern cloud infrastructure — Vercel, Neon, Cloudflare. Scalable, secure, reliable. No shared hosting that falls over under real traffic.',
-    tags: ['Vercel', 'Cloudflare', 'Neon'],
-    cta: 'Get Instant Estimate →',
-    href: '/estimate',
-  },
-  {
-    icon: '🎯',
-    title: 'IT Consulting',
-    desc: 'Technical consulting on automation strategy, software architecture, AI systems and digital infrastructure. Honest assessment — no upsell, no jargon.',
-    tags: ['Strategy', 'Architecture', 'AI'],
-    cta: 'Book Consultation →',
-    href: '/contact',
-  },
-  {
-    icon: '🍽️',
-    title: 'Restaurant OS',
-    desc: 'QR ordering, group payments, kitchen display, analytics. Customers order from their phone, split bills, pay — no app download needed.',
+    name: 'Restaurant OS',
+    category: 'Restaurant & Hospitality',
+    desc: 'QR-based table ordering system with group bill splitting and integrated payments. Customers scan, order, pay — no app download. Kitchen gets live order display.',
+    features: [
+      'QR code table ordering',
+      'Group bill splitting & individual payments',
+      'Live kitchen display system',
+      'Analytics dashboard',
+    ],
     tags: ['Next.js', 'Stripe', 'Real-time'],
-    cta: 'View Live Demo →',
-    href: '/portfolio',
+    demo: 'https://restaurant-os-one.vercel.app',
+    demoNote: 'Test card: 4242 4242 4242 4242',
   },
   {
-    icon: '🏛️',
-    title: 'Business Operating System',
-    desc: 'Full business OS with multiple modules — CRM, invoicing, staff management, AI agents, dashboards and automated reporting all in one platform.',
+    name: 'PraxisOS',
+    category: 'Medical Practice',
+    desc: 'Complete digital operating system for a urology practice in Germany. 16 modules covering the entire practice workflow from appointment to billing.',
+    features: [
+      '16 operational modules',
+      'Patient records & lab results',
+      'Appointment & billing management',
+      'DSGVO-compliant data handling',
+    ],
+    tags: ['Next.js', 'Neon', 'Claude AI'],
+    demo: 'https://urologie-six.vercel.app',
+    demoNote: 'Demo login available',
+  },
+  {
+    name: 'HandwerkOS',
+    category: 'Trade & Construction',
+    desc: 'SaaS platform for trade businesses — electricians, builders, plumbers. Workers photograph handwritten job notes and AI reads them, filling all fields automatically.',
+    features: [
+      'AI reads handwritten job notes',
+      'Job management & scheduling',
+      'Customer & invoice management',
+      'Works in German and English',
+    ],
+    tags: ['Next.js', 'Claude AI', 'TypeScript'],
+    demo: 'https://handwerkos.vercel.app',
+    demoNote: 'Demo login available',
+  },
+  {
+    name: 'Envico CareOS',
+    category: 'Care & Healthcare',
+    desc: 'Full operating system for a registered care provider. Includes AI assistant Donna running 24/7, family portal, automated workflows, and a complete care management suite.',
+    features: [
+      'AI assistant Donna (24/7)',
+      'Family portal for relatives',
+      '16 operational modules',
+      'Automated compliance workflows',
+    ],
     tags: ['Next.js', 'Claude AI', 'Neon'],
-    cta: 'View Portfolio →',
-    href: '/portfolio',
+    demo: 'https://envico.maxpromo.digital',
+    demoNote: 'Demo login available',
+  },
+  {
+    name: 'PrintShop',
+    category: 'Print & Production',
+    desc: 'AI-powered print shop management platform. Customers configure products, upload files, and the AI validates them in real time. Full order and admin system.',
+    features: [
+      'AI file validation on upload',
+      'Product configurator & checkout',
+      'Order & production management',
+      'White-label ready',
+    ],
+    tags: ['Next.js', 'Claude AI', 'Stripe'],
+    demo: 'https://printshop.maxpromo.digital',
+    demoNote: 'Demo login available',
+  },
+  {
+    name: 'NMI Automation OS',
+    category: 'Education & Training',
+    desc: 'Business operating system for an education company with 8 autonomous AI agents running 24/7. Invoice chasing, stock monitoring, staff performance, revenue forecasting, WhatsApp — all automated.',
+    features: [
+      '8 autonomous AI agents',
+      'CEO morning briefing (daily, automated)',
+      'WhatsApp agent (FR + EN)',
+      'Revenue forecasting & competitor monitoring',
+    ],
+    tags: ['Next.js', 'Claude AI', 'n8n', 'Neon'],
+    demo: 'https://nmi.maxpromo.digital',
+    demoNote: 'Demo login available',
+  },
+  {
+    name: 'Midas OS',
+    category: 'Property & Investment',
+    desc: 'Private AI-powered property intelligence platform for a UK property auction company. Manages 2,847 investor contacts, analyses any deal in 8 seconds, runs email campaigns.',
+    features: [
+      'AI property deal analysis (8 seconds)',
+      '2,847 investor CRM',
+      'Campaign studio with AI subject lines',
+      '5 financial calculators',
+    ],
+    tags: ['Next.js', 'Claude AI', 'Drizzle ORM'],
+    demo: 'https://midas-property-sam.vercel.app',
+    demoNote: 'Demo access on request',
   },
 ]
 
-const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
+const mono    = { fontFamily: 'var(--font-roboto-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans = { fontFamily: 'var(--font-inter)' } as const
+const sans    = { fontFamily: 'var(--font-inter)' } as const
 
 export default function SystemsPage() {
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
+
       {/* Header */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            // WHAT WE BUILD
+            // LIVE IN PRODUCTION
           </p>
           <h1
             style={{
@@ -161,98 +132,145 @@ export default function SystemsPage() {
               marginBottom: '20px',
             }}
           >
-            Systems &amp; Services
+            Systems We Have Built
           </h1>
           <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '40rem', margin: '0 auto', lineHeight: 1.8 }}>
-            Every system we build is production-grade, AI-powered, and delivered in 14 days.
+            Real platforms. Real clients. All live, all in production. Click to explore.
           </p>
         </div>
       </section>
 
-      {/* Card grid */}
+      {/* App cards — 2-column grid */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem' }}>
-        <div style={{ maxWidth: '90rem', margin: '0 auto' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div
-            style={{ display: 'grid', gap: '12px' }}
-            className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            style={{ display: 'grid', gap: '16px' }}
+            className="grid-cols-1 lg:grid-cols-2"
           >
-            {SYSTEMS.map((sys) => (
+            {APPS.map((app) => (
               <div
-                key={sys.title}
+                key={app.name}
                 className="dark-card"
                 style={{
                   background: 'hsl(240 12% 7%)',
                   border: '1px solid hsl(40 30% 96% / 0.08)',
                   borderRadius: '12px',
-                  padding: '28px',
+                  padding: '32px',
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
                   overflow: 'hidden',
                 }}
               >
-                {/* Top accent line — always subtle, brightens via dark-card hover */}
+                {/* Top accent line */}
                 <div
                   style={{
                     position: 'absolute',
                     top: 0, left: 0, right: 0,
                     height: '2px',
-                    background: 'linear-gradient(90deg, transparent 0%, hsl(28 100% 58% / 0.4) 50%, transparent 100%)',
+                    background: 'linear-gradient(90deg, transparent 0%, hsl(28 100% 58% / 0.5) 50%, transparent 100%)',
                     pointerEvents: 'none',
                   }}
                 />
 
-                {/* Icon */}
+                {/* Category badge */}
                 <span
                   style={{
-                    fontSize: '32px',
-                    display: 'block',
+                    ...mono,
+                    fontSize: '10px',
+                    color: 'hsl(28 100% 58%)',
+                    background: 'rgba(249,115,22,0.1)',
+                    border: '1px solid rgba(249,115,22,0.2)',
+                    padding: '3px 10px',
+                    borderRadius: '4px',
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
+                    display: 'inline-block',
                     marginBottom: '16px',
-                    lineHeight: 1,
+                    alignSelf: 'flex-start',
                   }}
                 >
-                  {sys.icon}
+                  {app.category}
                 </span>
 
-                {/* Title */}
+                {/* Name */}
                 <h2
                   style={{
                     ...grotesk,
-                    fontWeight: 600,
-                    fontSize: '18px',
+                    fontWeight: 700,
+                    fontSize: 'clamp(1.4rem, 2.5vw, 1.75rem)',
+                    letterSpacing: '-0.03em',
                     color: 'hsl(40 30% 96%)',
-                    letterSpacing: '-0.02em',
-                    marginBottom: '10px',
+                    marginBottom: '12px',
                   }}
                 >
-                  {sys.title}
+                  {app.name}
                 </h2>
 
                 {/* Description */}
                 <p
                   style={{
                     ...sans,
-                    fontSize: '14px',
-                    color: 'hsl(40 30% 96% / 0.65)',
+                    fontSize: '15px',
+                    color: 'hsl(40 12% 65%)',
                     lineHeight: 1.75,
-                    flex: 1,
                     marginBottom: '20px',
                   }}
                 >
-                  {sys.desc}
+                  {app.desc}
                 </p>
+
+                {/* Features */}
+                <ul
+                  style={{
+                    listStyle: 'none',
+                    padding: 0,
+                    margin: '0 0 20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                    flex: 1,
+                  }}
+                >
+                  {app.features.map((f) => (
+                    <li
+                      key={f}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '10px',
+                        ...sans,
+                        fontSize: '14px',
+                        color: 'hsl(40 30% 96% / 0.75)',
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: 'hsl(28 100% 58%)',
+                          flexShrink: 0,
+                          fontWeight: 700,
+                          fontSize: '12px',
+                          marginTop: '1px',
+                        }}
+                      >
+                        ✓
+                      </span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
 
                 {/* Tags */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
-                  {sys.tags.map((tag) => (
+                  {app.tags.map((tag) => (
                     <span
                       key={tag}
                       style={{
                         ...mono,
                         fontSize: '10px',
-                        color: 'hsl(28 100% 58%)',
-                        background: 'rgba(249,115,22,0.1)',
-                        border: '1px solid rgba(249,115,22,0.2)',
+                        color: 'hsl(40 12% 65%)',
+                        background: 'rgba(255,255,255,0.04)',
+                        border: '1px solid rgba(255,255,255,0.08)',
                         padding: '3px 9px',
                         borderRadius: '4px',
                         letterSpacing: '0.04em',
@@ -263,50 +281,121 @@ export default function SystemsPage() {
                   ))}
                 </div>
 
-                {/* CTA */}
-                <Link href={sys.href} className="sys-cta">
-                  {sys.cta}
-                </Link>
+                {/* CTAs */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                  <a
+                    href={app.demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sys-cta"
+                  >
+                    View Live →
+                  </a>
+                  <Link href="/portfolio" className="sys-cta-ghost">
+                    View in Portfolio →
+                  </Link>
+                </div>
+
+                {/* Demo note */}
+                {app.demoNote && (
+                  <p
+                    style={{
+                      ...mono,
+                      fontSize: '10px',
+                      color: 'hsl(240 8% 35%)',
+                      margin: '10px 0 0',
+                      letterSpacing: '0.04em',
+                    }}
+                  >
+                    // {app.demoNote}
+                  </p>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem' }}>
-        <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
+      {/* Bottom CTA */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '52rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
-            // Not sure where to start?
+            // BUILD YOURS
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            Run the free audit first
+          <h2
+            style={{
+              ...grotesk,
+              fontWeight: 700,
+              fontSize: 'clamp(2rem, 4vw, 3rem)',
+              letterSpacing: '-0.04em',
+              color: 'hsl(40 30% 96%)',
+              marginBottom: '16px',
+            }}
+          >
+            Want a system like this
+            <br />built for your business?
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
-            5 minutes. No calls. No commitment. We identify your highest-impact
-            automation opportunities and recommend exactly where to start.
+          <p
+            style={{
+              ...sans,
+              fontSize: '17px',
+              color: 'hsl(40 12% 65%)',
+              marginBottom: '2.5rem',
+              lineHeight: 1.8,
+            }}
+          >
+            Every system above was built from scratch. Yours is next.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link
-              href="/automation-audit"
+              href="/discovery"
               className="shine"
-              style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: 'hsl(28 100% 58%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px', boxShadow: '0 0 30px hsl(28 100% 58% / 0.25)' }}
+              style={{
+                ...mono,
+                fontWeight: 700,
+                fontSize: '15px',
+                color: 'hsl(240 14% 4%)',
+                background: 'hsl(28 100% 58%)',
+                padding: '14px 28px',
+                textDecoration: 'none',
+                display: 'inline-block',
+                borderRadius: '10px',
+                boxShadow: '0 0 30px hsl(28 100% 58% / 0.25)',
+              }}
             >
-              Get my free audit
+              Start Discovery →
             </Link>
             <Link
-              href="/contact"
+              href="/estimate"
               className="glass"
-              style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}
+              style={{
+                ...sans,
+                fontWeight: 500,
+                fontSize: '15px',
+                color: 'hsl(40 30% 96%)',
+                padding: '14px 28px',
+                textDecoration: 'none',
+                display: 'inline-block',
+                borderRadius: '10px',
+              }}
             >
-              Talk to our team →
+              Get Instant Estimate →
             </Link>
           </div>
-          <p style={{ ...mono, fontSize: '11px', color: 'hsl(240 8% 35%)', marginTop: '20px', letterSpacing: '0.05em' }}>
-            // 3 onboarding slots open this month · Average delivery: 14 days
+          <p
+            style={{
+              ...mono,
+              fontSize: '11px',
+              color: 'hsl(240 8% 35%)',
+              marginTop: '20px',
+              letterSpacing: '0.05em',
+            }}
+          >
+            // Average delivery: 14 days · 3 onboarding slots open this month
           </p>
         </div>
       </section>
+
     </main>
   )
 }

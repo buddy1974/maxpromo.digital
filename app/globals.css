@@ -199,6 +199,26 @@ code, pre, .mono {
   border-color: rgba(249,115,22,0.5);
 }
 
+/* ─── System card ghost CTA ─── */
+.sys-cta-ghost {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: hsl(40 12% 65%);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: transparent;
+  padding: 7px 14px;
+  border-radius: 6px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+  display: inline-block;
+}
+.sys-cta-ghost:hover {
+  color: hsl(40 30% 96%);
+  border-color: rgba(255,255,255,0.25);
+}
+
 /* ─── Cursor blink ─── */
 @keyframes blink {
   0%, 100% { opacity: 1; }
