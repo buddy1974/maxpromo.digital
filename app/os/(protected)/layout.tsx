@@ -1,7 +1,13 @@
 'use client'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+
+interface ScannedContact {
+  name: string; company: string; email: string; phone: string
+  address: string; city: string; postcode: string; country: string
+  website: string; notes: string; confidence: 'high' | 'medium' | 'low'
+}
 
 const mono = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -36,12 +42,26 @@ interface AIMsg { role: 'user' | 'assistant'; content: string }
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const router   = useRouter()
   const pathname = usePathname()
-  const [auth, setAuth]         = useState<boolean | null>(null)
-  const [aiOpen, setAiOpen]     = useState(false)
-  const [msgs, setMsgs]         = useState<AIMsg[]>([])
-  const [input, setInput]       = useState('')
+  const [auth, setAuth]           = useState<boolean | null>(null)
+  const [aiOpen, setAiOpen]       = useState(false)
+  const [msgs, setMsgs]           = useState<AIMsg[]>([])
+  const [input, setInput]         = useState('')
   const [aiLoading, setAiLoading] = useState(false)
   const endRef = useRef<HTMLDivElement>(null)
+
+  // Quick Scan state
+  const [qsOpen,      setQsOpen]      = useState(false)
+  const [qsTab,       setQsTab]       = useState<'scan' | 'paste'>('scan')
+  const [qsPaste,     setQsPaste]     = useState('')
+  const [qsPreview,   setQsPreview]   = useState('')
+  const [qsBase64,    setQsBase64]    = useState('')
+  const [qsMime,      setQsMime]      = useState('image/jpeg')
+  const [qsLoading,   setQsLoading]   = useState(false)
+  const [qsExtracted, setQsExtracted] = useState<ScannedContact | null>(null)
+  const [qsError,     setQsError]     = useState('')
+  const [qsSaving,    setQsSaving]    = useState(false)
+  const [qsSaved,     setQsSaved]     = useState(false)
+  const qsFileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const ok = sessionStorage.getItem('os-auth') === 'true'
@@ -77,6 +97,63 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     } finally {
       setAiLoading(false)
     }
+  }
+
+  // Quick Scan helpers
+  function qsHandleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = ev => {
+      const dataUrl = ev.target?.result as string
+      const [header, b64] = dataUrl.split(',')
+      setQsPreview(dataUrl)
+      setQsBase64(b64)
+      setQsMime(header.match(/:(.*?);/)?.[1] ?? 'image/jpeg')
+    }
+    reader.readAsDataURL(file)
+    e.target.value = ''
+  }
+
+  async function qsExtract() {
+    setQsLoading(true); setQsError(''); setQsExtracted(null)
+    try {
+      const body = qsTab === 'scan' && qsBase64
+        ? { image: qsBase64, mediaType: qsMime }
+        : { text: qsPaste }
+      const res = await fetch('/api/os/ai/scan-client', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+      })
+      if (!res.ok) throw new Error()
+      setQsExtracted(await res.json() as ScannedContact)
+    } catch { setQsError('Extraction failed. Please try again.') }
+    finally { setQsLoading(false) }
+  }
+
+  async function qsSaveClient() {
+    if (!qsExtracted?.name) return
+    setQsSaving(true)
+    try {
+      await fetch('/api/os/clients', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:    qsExtracted.name,
+          company: qsExtracted.company || undefined,
+          email:   qsExtracted.email   || undefined,
+          phone:   qsExtracted.phone   || undefined,
+          address: qsExtracted.address || undefined,
+          city:    [qsExtracted.city, qsExtracted.postcode].filter(Boolean).join(' ') || undefined,
+          country: qsExtracted.country || 'Germany',
+          notes:   qsExtracted.notes   || undefined,
+        }),
+      })
+      setQsSaved(true)
+      setTimeout(() => { setQsOpen(false); setQsExtracted(null); setQsSaved(false); setQsPreview(''); setQsBase64(''); setQsPaste('') }, 1500)
+    } finally { setQsSaving(false) }
+  }
+
+  function qsReset() {
+    setQsExtracted(null); setQsError(''); setQsPreview(''); setQsBase64(''); setQsPaste('')
   }
 
   if (!auth) {
@@ -180,22 +257,39 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
         {children}
       </main>
 
-      {/* ── AI FLOATING BUTTON ── */}
-      {!aiOpen && (
-        <button
-          onClick={() => setAiOpen(true)}
-          style={{
-            position:'fixed', bottom:'24px', right:'24px',
-            background:'#F97316', color:'#000',
-            fontFamily:mono, fontWeight:700, fontSize:'11px', letterSpacing:'0.12em',
-            border:'none', padding:'12px 18px', cursor:'pointer', zIndex:100,
-            display:'flex', alignItems:'center', gap:'8px',
-            textTransform:'uppercase',
-          }}
-        >
-          ◈ Ask AI
-        </button>
-      )}
+      {/* ── FLOATING BUTTONS ── */}
+      <div style={{ position:'fixed', bottom:'24px', right:'24px', display:'flex', flexDirection:'column', gap:'8px', zIndex:100, alignItems:'flex-end' }}>
+        {/* Quick Scan */}
+        {!aiOpen && (
+          <button
+            onClick={() => { setQsOpen(true); qsReset() }}
+            style={{
+              background:'#111', border:'1px solid rgba(249,115,22,0.3)', color:'#F97316',
+              fontFamily:mono, fontWeight:700, fontSize:'11px', letterSpacing:'0.12em',
+              padding:'10px 16px', cursor:'pointer',
+              display:'flex', alignItems:'center', gap:'6px',
+              textTransform:'uppercase', borderRadius:'2px',
+            }}
+          >
+            📷 Quick Scan
+          </button>
+        )}
+        {/* Ask AI */}
+        {!aiOpen && (
+          <button
+            onClick={() => setAiOpen(true)}
+            style={{
+              background:'#F97316', color:'#000',
+              fontFamily:mono, fontWeight:700, fontSize:'11px', letterSpacing:'0.12em',
+              border:'none', padding:'12px 18px', cursor:'pointer',
+              display:'flex', alignItems:'center', gap:'8px',
+              textTransform:'uppercase', borderRadius:'2px',
+            }}
+          >
+            ◈ Ask AI
+          </button>
+        )}
+      </div>
 
       {/* ── AI SLIDE-OVER PANEL ── */}
       {aiOpen && (
@@ -268,6 +362,135 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
           </div>
         </div>
       )}
+      {/* ── QUICK SCAN MODAL ── */}
+      {qsOpen && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:300, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px' }}>
+          <div style={{ background:'#111', border:'1px solid rgba(249,115,22,0.3)', width:'100%', maxWidth:'480px', borderRadius:'4px', overflow:'hidden' }}>
+            {/* Header */}
+            <div style={{ padding:'16px 20px', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <p style={{ fontFamily:grotesk, fontWeight:700, fontSize:'15px', color:'#FFF', margin:0 }}>Quick Scan</p>
+              <button onClick={() => setQsOpen(false)} style={{ background:'none', border:'none', color:'#555', fontSize:'20px', cursor:'pointer', lineHeight:1 }}>×</button>
+            </div>
+
+            {/* Tabs */}
+            <div style={{ display:'flex', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+              {(['scan', 'paste'] as const).map(t => (
+                <button key={t} onClick={() => { setQsTab(t); qsReset() }} style={{ flex:1, padding:'10px', background: qsTab===t ? 'rgba(249,115,22,0.08)' : 'none', border:'none', borderBottom: qsTab===t ? '2px solid #F97316' : '2px solid transparent', color: qsTab===t ? '#F97316' : '#555', fontFamily:mono, fontSize:'10px', letterSpacing:'0.12em', textTransform:'uppercase', cursor:'pointer' }}>
+                  {t === 'scan' ? '📷 Scan' : '📝 Paste'}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ padding:'20px' }}>
+              {!qsExtracted && (
+                <>
+                  {qsTab === 'scan' && (
+                    <div>
+                      {!qsPreview ? (
+                        <button
+                          onClick={() => qsFileRef.current?.click()}
+                          style={{ width:'100%', background:'#0A0A0A', border:'2px dashed rgba(249,115,22,0.3)', color:'#F97316', fontFamily:mono, fontSize:'11px', letterSpacing:'0.1em', padding:'32px', cursor:'pointer', textTransform:'uppercase', borderRadius:'2px', textAlign:'center' }}
+                        >
+                          📷 Take Photo or Select Image
+                          <br /><span style={{ fontSize:'9px', color:'#555', fontWeight:400 }}>JPG · PNG · HEIC · WEBP · PDF</span>
+                        </button>
+                      ) : (
+                        <div style={{ textAlign:'center', marginBottom:'12px' }}>
+                          <img src={qsPreview} alt="preview" style={{ maxWidth:'100%', maxHeight:'180px', objectFit:'contain', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'2px' }} />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {qsTab === 'paste' && (
+                    <textarea
+                      value={qsPaste}
+                      onChange={e => setQsPaste(e.target.value)}
+                      rows={5}
+                      placeholder={'Paste email signature, WhatsApp contact, or typed details:\n\nJohn Smith\nAcme GmbH\njohn@acme.de\n+49 211 123456'}
+                      style={{ width:'100%', background:'#0A0A0A', border:'1px solid rgba(255,255,255,0.08)', color:'#FFF', fontFamily:sans, fontSize:'13px', padding:'10px 12px', outline:'none', resize:'vertical', lineHeight:1.6, boxSizing:'border-box', marginBottom:'12px' }}
+                    />
+                  )}
+
+                  {qsError && <p style={{ fontFamily:mono, fontSize:'10px', color:'#ef4444', margin:'0 0 10px', letterSpacing:'0.06em' }}>⚠ {qsError}</p>}
+
+                  <div style={{ display:'flex', gap:'8px', marginTop:'12px' }}>
+                    <button
+                      onClick={qsExtract}
+                      disabled={qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim())}
+                      style={{ background:'#F97316', border:'none', color:'#000', fontFamily:mono, fontWeight:700, fontSize:'11px', letterSpacing:'0.1em', padding:'10px 18px', cursor:'pointer', textTransform:'uppercase', borderRadius:'2px', opacity: qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim()) ? 0.5 : 1 }}
+                    >
+                      {qsLoading ? '⟳ Reading...' : '◈ Extract Contact'}
+                    </button>
+                    {qsTab === 'scan' && qsPreview && (
+                      <button onClick={() => { setQsPreview(''); setQsBase64('') }} style={{ background:'none', border:'1px solid rgba(255,255,255,0.1)', color:'#555', fontFamily:mono, fontSize:'10px', padding:'10px 12px', cursor:'pointer', borderRadius:'2px' }}>
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Extracted preview */}
+              {qsExtracted && !qsSaved && (
+                <div>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'10px' }}>
+                    <p style={{ fontFamily:mono, fontSize:'9px', color:'#888', letterSpacing:'0.2em', textTransform:'uppercase', margin:0 }}>Extracted contact</p>
+                    <span style={{ fontFamily:mono, fontSize:'9px', color: qsExtracted.confidence === 'high' ? '#22c55e' : qsExtracted.confidence === 'medium' ? '#F97316' : '#ef4444', background: qsExtracted.confidence === 'high' ? '#22c55e22' : qsExtracted.confidence === 'medium' ? '#F9731622' : '#ef444422', padding:'2px 8px', letterSpacing:'0.1em', textTransform:'uppercase', borderRadius:'2px' }}>
+                      {qsExtracted.confidence} confidence
+                    </span>
+                  </div>
+                  <div style={{ background:'#0D0D0D', border:'1px solid rgba(255,255,255,0.06)', borderRadius:'2px', padding:'14px', marginBottom:'12px', display:'flex', flexDirection:'column', gap:'6px' }}>
+                    {[
+                      ['Name',    qsExtracted.name],
+                      ['Company', qsExtracted.company],
+                      ['Email',   qsExtracted.email],
+                      ['Phone',   qsExtracted.phone],
+                      ['Address', qsExtracted.address],
+                      ['City',    [qsExtracted.city, qsExtracted.postcode].filter(Boolean).join(' ')],
+                      ['Country', qsExtracted.country],
+                    ].filter(([,v]) => v).map(([k,v]) => (
+                      <p key={k} style={{ fontFamily:sans, fontSize:'12px', color:'#CCC', margin:0 }}>
+                        <span style={{ fontFamily:mono, fontSize:'9px', color:'#555', letterSpacing:'0.1em', display:'inline-block', width:'60px' }}>{k}</span>
+                        {v}
+                      </p>
+                    ))}
+                  </div>
+                  {qsExtracted.confidence === 'low' && (
+                    <p style={{ fontFamily:mono, fontSize:'9px', color:'#ef4444', margin:'0 0 12px', letterSpacing:'0.06em' }}>⚠ Low confidence — verify before saving</p>
+                  )}
+                  <div style={{ display:'flex', gap:'8px' }}>
+                    <button onClick={qsSaveClient} disabled={qsSaving} style={{ background:'#F97316', border:'none', color:'#000', fontFamily:mono, fontWeight:700, fontSize:'11px', letterSpacing:'0.1em', padding:'10px 18px', cursor:'pointer', textTransform:'uppercase', borderRadius:'2px', opacity: qsSaving ? 0.6 : 1 }}>
+                      {qsSaving ? 'Saving...' : '+ Save as New Client'}
+                    </button>
+                    <button onClick={qsReset} style={{ background:'none', border:'1px solid rgba(255,255,255,0.1)', color:'#555', fontFamily:mono, fontSize:'10px', padding:'10px 12px', cursor:'pointer', borderRadius:'2px' }}>
+                      ↺ Re-scan
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Success */}
+              {qsSaved && (
+                <div style={{ textAlign:'center', padding:'20px 0' }}>
+                  <p style={{ fontFamily:mono, fontSize:'14px', color:'#22c55e', margin:'0 0 6px' }}>✓ Client saved</p>
+                  <p style={{ fontFamily:mono, fontSize:'10px', color:'#555', margin:0 }}>{qsExtracted?.name}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quick scan file input */}
+      <input
+        ref={qsFileRef}
+        type="file"
+        accept="image/*,.pdf"
+        capture="environment"
+        style={{ display:'none' }}
+        onChange={qsHandleFile}
+      />
     </div>
   )
 }
