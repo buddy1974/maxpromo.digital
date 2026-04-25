@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Space_Mono, DM_Sans } from 'next/font/google'
+import { Space_Grotesk, Inter, Roboto_Mono } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -11,15 +11,15 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
 })
 
-const spaceMono = Space_Mono({
-  variable: '--font-space-mono',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
-  weight: ['400', '700'],
 })
 
-const dmSans = DM_Sans({
-  variable: '--font-dm-sans',
+const robotoMono = Roboto_Mono({
+  variable: '--font-roboto-mono',
   subsets: ['latin'],
+  weight: ['400', '500', '700'],
 })
 
 export const metadata: Metadata = {
@@ -55,8 +55,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} ${spaceMono.variable} ${dmSans.variable} antialiased`}
-        style={{ background: '#080808', color: '#F0F0F0' }}
+        className={`${spaceGrotesk.variable} ${inter.variable} ${robotoMono.variable} antialiased`}
       >
         <Navbar />
         {children}
