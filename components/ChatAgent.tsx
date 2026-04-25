@@ -41,18 +41,23 @@ export default function ChatAgent() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [showChips, setShowChips] = useState(true)
+  const [showTooltip, setShowTooltip] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  /* Auto-open once per session */
+  /* Show non-blocking tooltip after 8s, once per session, fades after 4s */
   useEffect(() => {
-    const already = sessionStorage.getItem('chatOpened')
-    if (!already) {
-      const t = setTimeout(() => {
-        setIsOpen(true)
-        sessionStorage.setItem('chatOpened', '1')
-      }, 3000)
-      return () => clearTimeout(t)
+    const alreadyShown = sessionStorage.getItem('maxTooltipShown')
+    if (alreadyShown) return
+    let hideTimer: ReturnType<typeof setTimeout>
+    const showTimer = setTimeout(() => {
+      setShowTooltip(true)
+      sessionStorage.setItem('maxTooltipShown', '1')
+      hideTimer = setTimeout(() => setShowTooltip(false), 4000)
+    }, 8000)
+    return () => {
+      clearTimeout(showTimer)
+      clearTimeout(hideTimer)
     }
   }, [])
 
@@ -393,6 +398,44 @@ export default function ChatAgent() {
 
       {/* ── Toggle button ── */}
       <div style={{ position: 'relative' }}>
+        {/* Non-blocking tooltip */}
+        {showTooltip && !isOpen && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 'calc(100% + 12px)',
+              right: 0,
+              background: 'hsl(240 12% 8% / 0.95)',
+              border: '1px solid rgba(249,115,22,0.3)',
+              backdropFilter: 'blur(16px)',
+              borderRadius: '8px',
+              padding: '10px 16px',
+              whiteSpace: 'nowrap',
+              fontFamily: mono,
+              fontSize: '12px',
+              color: 'hsl(40 30% 96%)',
+              pointerEvents: 'none',
+              animation: 'chatSlideUp 0.3s ease forwards',
+              boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+            }}
+          >
+            Need help? Ask Max →
+            <span
+              style={{
+                position: 'absolute',
+                bottom: '-5px',
+                right: '20px',
+                width: '10px',
+                height: '10px',
+                background: 'hsl(240 12% 8%)',
+                border: '1px solid rgba(249,115,22,0.3)',
+                borderTop: 'none',
+                borderLeft: 'none',
+                transform: 'rotate(45deg)',
+              }}
+            />
+          </div>
+        )}
         {/* AI badge */}
         <span
           style={{
@@ -417,8 +460,8 @@ export default function ChatAgent() {
           onClick={toggleOpen}
           className={isOpen ? '' : 'chat-pulse-ring'}
           style={{
-            width: '64px',
-            height: '64px',
+            width: '48px',
+            height: '48px',
             background: '#F97316',
             border: 'none',
             borderRadius: '50%',

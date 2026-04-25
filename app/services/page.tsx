@@ -15,13 +15,7 @@ const SERVICES = [
     who: 'Teams with repetitive decision-making that follows defined rules but consumes significant staff time.',
     result: '60–80% reduction in processing time',
     timeline: '2–4 weeks',
-    useCases: [
-      'Lead scoring and qualification',
-      'Contract review and extraction',
-      'Customer support triage',
-      'Expense and invoice approval',
-      'Compliance checking',
-    ],
+    useCases: ['Lead scoring and qualification', 'Contract review and extraction', 'Customer support triage', 'Expense and invoice approval', 'Compliance checking'],
   },
   {
     num: '02',
@@ -30,13 +24,7 @@ const SERVICES = [
     who: 'Teams using multiple tools that don\'t talk to each other — causing manual data transfer, duplication, and errors.',
     result: '15–40 hours saved per week',
     timeline: '1–3 weeks per workflow',
-    useCases: [
-      'CRM to accounting sync',
-      'Email to task routing',
-      'Sales pipeline automation',
-      'HR onboarding flows',
-      'Inventory management',
-    ],
+    useCases: ['CRM to accounting sync', 'Email to task routing', 'Sales pipeline automation', 'HR onboarding flows', 'Inventory management'],
   },
   {
     num: '03',
@@ -45,13 +33,7 @@ const SERVICES = [
     who: 'Businesses that need their website to qualify and capture leads automatically.',
     result: '3–5x more qualified leads captured',
     timeline: '2–6 weeks',
-    useCases: [
-      'AI chat qualification agents',
-      'Smart contact forms',
-      'Personalised content delivery',
-      'Instant quote generation',
-      'Knowledge base automation',
-    ],
+    useCases: ['AI chat qualification agents', 'Smart contact forms', 'Personalised content delivery', 'Instant quote generation', 'Knowledge base automation'],
   },
   {
     num: '04',
@@ -60,13 +42,7 @@ const SERVICES = [
     who: 'Organisations that need custom internal tools their off-the-shelf software cannot provide.',
     result: 'Replaces 2–3 separate tools',
     timeline: '3–8 weeks',
-    useCases: [
-      'Client portals',
-      'Internal dashboards',
-      'Workflow management systems',
-      'Approval and review tools',
-      'AI-powered reporting apps',
-    ],
+    useCases: ['Client portals', 'Internal dashboards', 'Workflow management systems', 'Approval and review tools', 'AI-powered reporting apps'],
   },
   {
     num: '05',
@@ -75,13 +51,7 @@ const SERVICES = [
     who: 'Operations teams processing high volumes of documents manually.',
     result: '90%+ of documents processed without human touch',
     timeline: '2–3 weeks',
-    useCases: [
-      'Invoice and PO processing',
-      'Contract data extraction',
-      'Application form processing',
-      'Compliance document review',
-      'Report generation',
-    ],
+    useCases: ['Invoice and PO processing', 'Contract data extraction', 'Application form processing', 'Compliance document review', 'Report generation'],
   },
   {
     num: '06',
@@ -90,13 +60,7 @@ const SERVICES = [
     who: 'Marketing teams spending hours weekly on content creation and scheduling.',
     result: '80% reduction in content creation time',
     timeline: '1–2 weeks',
-    useCases: [
-      'Multi-platform scheduling',
-      'AI content generation',
-      'Engagement monitoring',
-      'Competitor tracking',
-      'Performance reporting',
-    ],
+    useCases: ['Multi-platform scheduling', 'AI content generation', 'Engagement monitoring', 'Competitor tracking', 'Performance reporting'],
   },
   {
     num: '07',
@@ -105,13 +69,7 @@ const SERVICES = [
     who: 'Businesses handling repetitive queries across support, sales, or internal ops.',
     result: '70% of queries resolved without human intervention',
     timeline: '1–3 weeks',
-    useCases: [
-      'Customer support agents',
-      'Sales qualification bots',
-      'Internal HR assistants',
-      'IT helpdesk automation',
-      'Booking and scheduling agents',
-    ],
+    useCases: ['Customer support agents', 'Sales qualification bots', 'Internal HR assistants', 'IT helpdesk automation', 'Booking and scheduling agents'],
   },
   {
     num: '08',
@@ -120,13 +78,7 @@ const SERVICES = [
     who: 'Organisations running 5+ disconnected tools requiring manual data management.',
     result: 'Eliminates 10–20 hrs/week of manual data entry',
     timeline: '1–4 weeks per integration',
-    useCases: [
-      'CRM + accounting unification',
-      'ERP and e-commerce sync',
-      'Multi-platform reporting',
-      'API connector architecture',
-      'Webhook pipeline design',
-    ],
+    useCases: ['CRM + accounting unification', 'ERP and e-commerce sync', 'Multi-platform reporting', 'API connector architecture', 'Webhook pipeline design'],
   },
 ]
 
@@ -136,17 +88,17 @@ const sans = { fontFamily: 'var(--font-inter)' } as const
 
 export default function ServicesPage() {
   return (
-    <main style={{ background: '#FFFFFF' }}>
+    <main style={{ background: 'hsl(240 14% 4%)' }}>
       {/* Page header */}
-      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
             Services
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: '#0A0A0A', marginBottom: '20px' }}>
+          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
             What We Build
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: '#555555', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
             Eight service lines — each designed to reduce manual work, increase
             operational capacity, and deliver measurable ROI.
           </p>
@@ -154,7 +106,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services grid */}
-      <section style={{ background: '#FAFAFA', padding: '4rem 2rem', borderBottom: '1px solid #E5E5E5' }}>
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '90rem', margin: '0 auto' }}>
           <div
             style={{ display: 'grid', gap: '12px' }}
@@ -165,9 +117,9 @@ export default function ServicesPage() {
                 key={s.num}
                 className="dark-card"
                 style={{
-                  background: '#0F0F0F',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '2px',
+                  background: 'hsl(240 12% 7%)',
+                  border: '1px solid hsl(40 30% 96% / 0.08)',
+                  borderRadius: '12px',
                   padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -178,72 +130,43 @@ export default function ServicesPage() {
               >
                 {/* Top accent line */}
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.6) 50%, transparent 100%)', pointerEvents: 'none' }} />
-                {/* Number + title */}
                 <div style={{ marginBottom: '16px' }}>
-                  <span style={{ ...mono, fontSize: '11px', color: '#555555', letterSpacing: '0.1em', display: 'block', marginBottom: '8px' }}>
+                  <span style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65% / 0.6)', letterSpacing: '0.1em', display: 'block', marginBottom: '8px' }}>
                     {s.num}
                   </span>
-                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '22px', color: '#FFFFFF', letterSpacing: '-0.03em' }}>
+                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '22px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em' }}>
                     {s.title}
                   </h2>
                 </div>
-
-                {/* Description */}
-                <p style={{ ...sans, fontSize: '14px', color: '#999999', lineHeight: 1.75, marginBottom: '24px' }}>
+                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, marginBottom: '24px' }}>
                   {s.desc}
                 </p>
-
-                {/* Badges */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
-                  <span style={{
-                    ...mono, fontSize: '11px', color: '#F97316',
-                    background: '#FFF4ED', border: '1px solid rgba(249,115,22,0.2)',
-                    padding: '4px 10px', letterSpacing: '0.04em',
-                  }}>
+                  <span style={{ ...mono, fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', letterSpacing: '0.04em', borderRadius: '4px' }}>
                     ↑ {s.result}
                   </span>
-                  <span style={{
-                    ...mono, fontSize: '11px', color: '#666666',
-                    background: '#F5F5F5', border: '1px solid #E5E5E5',
-                    padding: '4px 10px', letterSpacing: '0.04em',
-                  }}>
+                  <span style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65%)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', letterSpacing: '0.04em', borderRadius: '4px' }}>
                     ⏱ {s.timeline}
                   </span>
                 </div>
-
-                {/* Who this is for */}
                 <p style={{ ...mono, fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
                   // who this is for
                 </p>
-                <p style={{ ...sans, fontSize: '14px', color: '#888888', lineHeight: 1.6, marginBottom: '20px' }}>
+                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.6, marginBottom: '20px' }}>
                   {s.who}
                 </p>
-
-                {/* Use cases */}
                 <p style={{ ...mono, fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>
                   // use cases
                 </p>
                 <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {s.useCases.map((uc) => (
-                    <li key={uc} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '14px', color: '#CCCCCC' }}>
-                      <span style={{ width: '4px', height: '4px', background: '#F97316', flexShrink: 0, display: 'inline-block' }} />
+                    <li key={uc} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)' }}>
+                      <span style={{ width: '4px', height: '4px', background: '#F97316', flexShrink: 0, display: 'inline-block', borderRadius: '50%' }} />
                       {uc}
                     </li>
                   ))}
                 </ul>
-
-                <Link
-                  href="/automation-audit"
-                  style={{
-                    ...mono,
-                    fontSize: '13px',
-                    color: '#F97316',
-                    textDecoration: 'none',
-                    letterSpacing: '0.05em',
-                    alignSelf: 'flex-start',
-                    marginTop: 'auto',
-                  }}
-                >
+                <Link href="/automation-audit" style={{ ...mono, fontSize: '13px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', alignSelf: 'flex-start', marginTop: 'auto' }}>
                   Get an audit →
                 </Link>
               </div>
@@ -253,19 +176,18 @@ export default function ServicesPage() {
       </section>
 
       {/* Process steps */}
-      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3.5rem' }}>
-            <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
               How It Works
             </p>
-            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.04em', color: '#0A0A0A' }}>
+            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)' }}>
               From idea to automated
             </h2>
           </div>
-
           <div
-            style={{ display: 'grid', gap: '1px', background: '#E5E5E5' }}
+            style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }}
             className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
           >
             {[
@@ -274,14 +196,14 @@ export default function ServicesPage() {
               { step: '03', title: 'Build & Integration', desc: 'We build and integrate the automation system with your existing tools and platforms.' },
               { step: '04', title: 'Deployment & Monitoring', desc: 'We deploy to production and set up dashboards to monitor performance and reliability.' },
             ].map((s) => (
-              <div key={s.step} style={{ background: '#FAFAFA', padding: '32px' }}>
-                <p style={{ ...grotesk, fontWeight: 700, fontSize: '48px', color: 'rgba(249,115,22,0.12)', letterSpacing: '-0.04em', marginBottom: '12px', lineHeight: 1 }}>
+              <div key={s.step} className="process-step" style={{ background: 'hsl(240 12% 7%)', padding: '32px' }}>
+                <p style={{ ...grotesk, fontWeight: 700, fontSize: '48px', background: 'linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%))', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.04em', marginBottom: '12px', lineHeight: 1 }}>
                   {s.step}
                 </p>
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '10px' }}>
+                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '10px' }}>
                   {s.title}
                 </h3>
-                <p style={{ ...sans, fontSize: '15px', color: '#666666', lineHeight: 1.7 }}>{s.desc}</p>
+                <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7 }}>{s.desc}</p>
               </div>
             ))}
           </div>
@@ -289,47 +211,23 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: '#0A0A0A', padding: '5rem 2rem' }}>
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
             Get Started
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#FAFAFF', marginBottom: '20px' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
             Not sure which service is right for you?
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: '#6B6B7A', marginBottom: '2.5rem', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
             Run our free Automation Audit and we&apos;ll identify exactly where automation
             can deliver the highest impact for your business.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <Link
-              href="/automation-audit"
-              style={{
-                ...mono,
-                fontWeight: 700,
-                fontSize: '15px',
-                color: '#0A0A0A',
-                background: '#F97316',
-                padding: '14px 28px',
-                textDecoration: 'none',
-                display: 'inline-block',
-              }}
-            >
+            <Link href="/automation-audit" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
               Free Automation Audit
             </Link>
-            <Link
-              href="/contact"
-              style={{
-                ...sans,
-                fontWeight: 500,
-                fontSize: '15px',
-                color: '#FAFAFF',
-                border: '1px solid rgba(255,255,255,0.15)',
-                padding: '14px 28px',
-                textDecoration: 'none',
-                display: 'inline-block',
-              }}
-            >
+            <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
               Contact Us
             </Link>
           </div>

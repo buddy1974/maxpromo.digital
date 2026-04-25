@@ -98,24 +98,24 @@ export default function ContactPage() {
   }
 
   return (
-    <main style={{ background: '#FFFFFF' }}>
+    <main style={{ background: 'hsl(240 14% 4%)' }}>
       {/* Header */}
-      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
             Get in Touch
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: '#0A0A0A', marginBottom: '20px' }}>
+          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
             Contact Us
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: '#555555', maxWidth: '36rem', margin: '0 auto', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '36rem', margin: '0 auto', lineHeight: 1.8 }}>
             Tell us about your project or automation challenge. We&apos;ll respond within one
             business day.
           </p>
         </div>
       </section>
 
-      <section style={{ background: '#FAFAFA', padding: '4rem 2rem' }}>
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem' }}>
         <div
           style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '3rem' }}
           className="grid-cols-1 lg:grid-cols-3"
@@ -123,10 +123,10 @@ export default function ContactPage() {
           {/* Sidebar */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div>
-              <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '8px' }}>
+              <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '8px' }}>
                 Maxpromo Digital
               </h2>
-              <p style={{ ...sans, fontSize: '15px', color: '#666666', lineHeight: 1.7 }}>
+              <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7 }}>
                 AI agents and automation systems for businesses serious about growth.
               </p>
             </div>
@@ -135,10 +135,10 @@ export default function ContactPage() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>⚡</span>
                 <div>
-                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: '#0A0A0A', marginBottom: '4px' }}>
+                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: 'hsl(40 30% 96%)', marginBottom: '4px' }}>
                     Free Automation Audit
                   </p>
-                  <p style={{ ...sans, fontSize: '13px', color: '#888888', lineHeight: 1.5, marginBottom: '6px' }}>
+                  <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.5, marginBottom: '6px' }}>
                     Start with our free audit to identify your top opportunities.
                   </p>
                   <Link
@@ -153,10 +153,10 @@ export default function ContactPage() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>◻</span>
                 <div>
-                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: '#0A0A0A', marginBottom: '4px' }}>
+                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: 'hsl(40 30% 96%)', marginBottom: '4px' }}>
                     Chat with Max
                   </p>
-                  <p style={{ ...sans, fontSize: '13px', color: '#888888', lineHeight: 1.5 }}>
+                  <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.5 }}>
                     Quick questions? Our AI assistant can answer immediately.
                   </p>
                 </div>
@@ -165,10 +165,10 @@ export default function ContactPage() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>▸</span>
                 <div>
-                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: '#0A0A0A', marginBottom: '4px' }}>
+                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: 'hsl(40 30% 96%)', marginBottom: '4px' }}>
                     Response time
                   </p>
-                  <p style={{ ...sans, fontSize: '13px', color: '#888888', lineHeight: 1.5 }}>
+                  <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.5 }}>
                     Within 1 business day.
                   </p>
                 </div>

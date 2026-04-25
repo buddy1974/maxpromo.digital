@@ -13,14 +13,7 @@ const TIERS = [
     period: 'one-time',
     tag: null,
     description: 'For businesses automating their first core workflow.',
-    includes: [
-      '1 automation workflow built end-to-end',
-      'Up to 3 tool integrations',
-      'Discovery call and process mapping',
-      'Testing and quality assurance',
-      '30-day post-launch support',
-      'Handover documentation',
-    ],
+    includes: ['1 automation workflow built end-to-end', 'Up to 3 tool integrations', 'Discovery call and process mapping', 'Testing and quality assurance', '30-day post-launch support', 'Handover documentation'],
     cta: 'Start with Starter',
     href: '/contact',
     featured: false,
@@ -31,16 +24,7 @@ const TIERS = [
     period: 'one-time',
     tag: 'MOST POPULAR',
     description: 'For businesses ready to automate multiple workflows and deploy AI agents.',
-    includes: [
-      'Up to 4 automation workflows',
-      'Unlimited tool integrations',
-      'AI agent design and deployment',
-      'Custom API development',
-      'Priority build queue',
-      '90-day post-launch support',
-      'Monthly performance review',
-      'Dedicated Slack channel',
-    ],
+    includes: ['Up to 4 automation workflows', 'Unlimited tool integrations', 'AI agent design and deployment', 'Custom API development', 'Priority build queue', '90-day post-launch support', 'Monthly performance review', 'Dedicated Slack channel'],
     cta: 'Start with Growth',
     href: '/contact',
     featured: true,
@@ -51,16 +35,7 @@ const TIERS = [
     period: 'quoted',
     tag: null,
     description: 'For organisations requiring full automation ecosystems and ongoing retainers.',
-    includes: [
-      'Unlimited workflows and agents',
-      'Full automation architecture design',
-      'Ongoing development retainer',
-      'Dedicated automation engineer',
-      'SLA-backed uptime guarantee',
-      'Quarterly strategy reviews',
-      'Staff training and onboarding',
-      'White-label options available',
-    ],
+    includes: ['Unlimited workflows and agents', 'Full automation architecture design', 'Ongoing development retainer', 'Dedicated automation engineer', 'SLA-backed uptime guarantee', 'Quarterly strategy reviews', 'Staff training and onboarding', 'White-label options available'],
     cta: 'Discuss Enterprise',
     href: '/contact',
     featured: false,
@@ -68,22 +43,10 @@ const TIERS = [
 ]
 
 const FAQS = [
-  {
-    q: 'Do you offer ongoing maintenance?',
-    a: 'Yes. All tiers include post-launch support. Beyond that, we offer monthly retainer packages for ongoing development, monitoring, and optimisation — priced based on scope.',
-  },
-  {
-    q: 'How long does a typical project take?',
-    a: 'Starter projects typically take 3–4 weeks. Growth engagements run 6–10 weeks. Enterprise timelines are scoped during the discovery phase. Most clients go live within 60–90 days of kick-off.',
-  },
-  {
-    q: 'What if my needs don\'t fit a tier?',
-    a: 'All projects start with a free discovery call. We scope every engagement individually — the tiers above are indicative guides, not rigid packages. Contact us and we\'ll provide a tailored quote.',
-  },
-  {
-    q: 'Is there a minimum commitment?',
-    a: 'No long-term contracts on project work. Our retainer arrangements have a 3-month minimum, after which you can adjust or cancel with 30 days notice.',
-  },
+  { q: 'Do you offer ongoing maintenance?', a: 'Yes. All tiers include post-launch support. Beyond that, we offer monthly retainer packages for ongoing development, monitoring, and optimisation — priced based on scope.' },
+  { q: 'How long does a typical project take?', a: 'Starter projects typically take 3–4 weeks. Growth engagements run 6–10 weeks. Enterprise timelines are scoped during the discovery phase. Most clients go live within 60–90 days of kick-off.' },
+  { q: "What if my needs don't fit a tier?", a: "All projects start with a free discovery call. We scope every engagement individually — the tiers above are indicative guides, not rigid packages. Contact us and we'll provide a tailored quote." },
+  { q: 'Is there a minimum commitment?', a: 'No long-term contracts on project work. Our retainer arrangements have a 3-month minimum, after which you can adjust or cancel with 30 days notice.' },
 ]
 
 const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
@@ -92,17 +55,17 @@ const sans = { fontFamily: 'var(--font-inter)' } as const
 
 export default function PricingPage() {
   return (
-    <main style={{ background: '#FFFFFF' }}>
+    <main style={{ background: 'hsl(240 14% 4%)' }}>
       {/* Header */}
-      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
             Pricing
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: '#0A0A0A', marginBottom: '20px' }}>
+          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
             Transparent, project-based pricing
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: '#555555', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
             No retainer lock-ins on project work. No hidden fees. Every engagement starts
             with a free audit to ensure we scope accurately before any commitment.
           </p>
@@ -110,130 +73,83 @@ export default function PricingPage() {
       </section>
 
       {/* Tiers */}
-      <section style={{ background: '#FAFAFA', padding: '4rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div
-            style={{ display: 'grid', gap: '16px', alignItems: 'start' }}
-            className="grid-cols-1 lg:grid-cols-3"
-          >
+          <div style={{ display: 'grid', gap: '16px', alignItems: 'start' }} className="grid-cols-1 lg:grid-cols-3">
             {TIERS.map((tier) => (
               <div
                 key={tier.name}
                 style={{
-                  background: '#0F0F0F',
+                  background: tier.featured
+                    ? 'linear-gradient(135deg, hsl(28 100% 58% / 0.1), hsl(240 12% 7%) 60%)'
+                    : 'hsl(240 12% 7%)',
                   border: tier.featured
-                    ? '2px solid #F97316'
-                    : '1px solid rgba(255,255,255,0.08)',
-                  boxShadow: tier.featured
-                    ? '0 0 60px rgba(249,115,22,0.15), 0 24px 60px rgba(0,0,0,0.5)'
-                    : 'none',
+                    ? '1px solid hsl(28 100% 58% / 0.4)'
+                    : '1px solid hsl(40 30% 96% / 0.08)',
+                  boxShadow: tier.featured ? 'var(--glow-primary)' : 'none',
+                  borderRadius: '16px',
                   padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
                 }}
               >
-                {/* MOST POPULAR badge */}
                 {tier.tag && (
-                  <span
-                    style={{
-                      ...mono,
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      color: '#000000',
-                      background: '#F97316',
-                      padding: '6px 14px',
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      position: 'absolute',
-                      top: '-1px',
-                      right: '24px',
-                      borderRadius: '0 0 4px 4px',
-                    }}
-                  >
-                    {tier.tag}
+                  <span style={{
+                    ...mono,
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    color: 'hsl(240 14% 4%)',
+                    background: '#F97316',
+                    padding: '4px 12px',
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    position: 'absolute',
+                    top: '-12px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    borderRadius: '20px',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    ✦ {tier.tag}
                   </span>
                 )}
-
-                <p
-                  style={{
-                    ...mono,
-                    fontSize: '11px',
-                    color: '#F97316',
-                    letterSpacing: '0.2em',
-                    textTransform: 'uppercase',
-                    marginBottom: '12px',
-                    marginTop: tier.tag ? '24px' : '0',
-                  }}
-                >
+                <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', marginTop: tier.tag ? '12px' : '0' }}>
                   {tier.name}
                 </p>
-
-                <p
-                  style={{
-                    ...grotesk,
-                    fontWeight: 700,
-                    fontSize: '42px',
-                    color: '#FFFFFF',
-                    letterSpacing: '-0.04em',
-                    lineHeight: 1,
-                    marginBottom: '4px',
-                  }}
-                >
+                <p style={{ ...grotesk, fontWeight: 700, fontSize: '42px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4px' }}>
                   {tier.price}
                 </p>
-                <p style={{ ...mono, fontSize: '12px', color: '#666666', marginBottom: '20px', letterSpacing: '0.05em' }}>
+                <p style={{ ...mono, fontSize: '12px', color: 'hsl(40 12% 65%)', marginBottom: '20px', letterSpacing: '0.05em' }}>
                   {tier.period}
                 </p>
-
-                <p style={{ ...sans, fontSize: '14px', color: '#888888', lineHeight: 1.7, marginBottom: '28px' }}>
+                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, marginBottom: '28px' }}>
                   {tier.description}
                 </p>
-
-                <div
-                  style={{
-                    borderTop: '1px solid rgba(255,255,255,0.08)',
-                    paddingTop: '24px',
-                    marginBottom: '32px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flex: 1,
-                  }}
-                >
+                <div style={{ borderTop: '1px solid hsl(40 30% 96% / 0.08)', paddingTop: '24px', marginBottom: '32px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                   {tier.includes.map((item) => (
-                    <div
-                      key={item}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: '10px',
-                        padding: '10px 0',
-                        borderBottom: '1px solid rgba(255,255,255,0.05)',
-                      }}
-                    >
+                    <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 0', borderBottom: '1px solid hsl(40 30% 96% / 0.05)' }}>
                       <span style={{ color: '#F97316', flexShrink: 0, ...mono, fontSize: '13px' }}>✓</span>
-                      <span style={{ ...sans, fontSize: '14px', color: '#CCCCCC', lineHeight: 1.5 }}>
-                        {item}
-                      </span>
+                      <span style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)', lineHeight: 1.5 }}>{item}</span>
                     </div>
                   ))}
                 </div>
-
                 <Link
                   href={tier.href}
+                  className={tier.featured ? 'shine' : ''}
                   style={{
                     ...mono,
                     fontWeight: 700,
                     fontSize: '14px',
-                    color: tier.featured ? '#000000' : '#FFFFFF',
+                    color: tier.featured ? 'hsl(240 14% 4%)' : 'hsl(40 30% 96%)',
                     background: tier.featured ? '#F97316' : 'transparent',
-                    border: tier.featured ? 'none' : '1px solid rgba(255,255,255,0.15)',
+                    border: tier.featured ? 'none' : '1px solid hsl(40 30% 96% / 0.12)',
                     boxShadow: tier.featured ? '0 4px 20px rgba(249,115,22,0.4)' : 'none',
                     padding: '14px 24px',
                     textDecoration: 'none',
                     display: 'block',
                     textAlign: 'center',
-                    borderRadius: '2px',
+                    borderRadius: '10px',
                   }}
                 >
                   {tier.cta} →
@@ -241,20 +157,19 @@ export default function PricingPage() {
               </div>
             ))}
           </div>
-
-          <p style={{ ...mono, fontSize: '11px', color: '#AAAAAA', textAlign: 'center', marginTop: '24px', letterSpacing: '0.05em' }}>
+          <p style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65%)', textAlign: 'center', marginTop: '24px', letterSpacing: '0.05em' }}>
             // All projects begin with a free discovery call. Prices are indicative — final quote provided after scoping.
           </p>
         </div>
       </section>
 
       {/* FAQ */}
-      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
             FAQ
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#0A0A0A', marginBottom: '3rem' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '3rem' }}>
             Common questions
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
@@ -262,15 +177,15 @@ export default function PricingPage() {
               <div
                 key={faq.q}
                 style={{
-                  borderTop: '1px solid #E5E5E5',
+                  borderTop: '1px solid hsl(40 30% 96% / 0.07)',
                   padding: '2rem 0',
-                  borderBottom: i === FAQS.length - 1 ? '1px solid #E5E5E5' : 'none',
+                  borderBottom: i === FAQS.length - 1 ? '1px solid hsl(40 30% 96% / 0.07)' : 'none',
                 }}
               >
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '12px' }}>
+                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '12px' }}>
                   {faq.q}
                 </h3>
-                <p style={{ ...sans, fontSize: '16px', color: '#555555', lineHeight: 1.8 }}>
+                <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.8 }}>
                   {faq.a}
                 </p>
               </div>
@@ -280,51 +195,27 @@ export default function PricingPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: '#0A0A0A', padding: '5rem 2rem' }}>
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
             Start Today
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#FAFAFF', marginBottom: '20px' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
             Not sure which tier fits?
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: '#6B6B7A', marginBottom: '2.5rem', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
             Run the free audit first. We&apos;ll tell you exactly what we&apos;d recommend — before
             any commitment or cost.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <Link
-              href="/automation-audit"
-              style={{
-                ...mono,
-                fontWeight: 700,
-                fontSize: '15px',
-                color: '#0A0A0A',
-                background: '#F97316',
-                padding: '14px 28px',
-                textDecoration: 'none',
-                display: 'inline-block',
-              }}
-            >
+            <Link href="/automation-audit" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
               Run Free Audit
             </Link>
-            <Link
-              href="/contact"
-              style={{
-                ...sans,
-                fontWeight: 500,
-                fontSize: '15px',
-                color: '#FAFAFF',
-                border: '1px solid rgba(255,255,255,0.15)',
-                padding: '14px 28px',
-                textDecoration: 'none',
-                display: 'inline-block',
-              }}
-            >
+            <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
               Contact Us
             </Link>
           </div>
-          <p style={{ ...mono, fontSize: '11px', color: '#6B6B7A', marginTop: '20px', letterSpacing: '0.05em' }}>
+          <p style={{ ...mono, fontSize: '11px', color: 'hsl(240 8% 35%)', marginTop: '20px', letterSpacing: '0.05em' }}>
             // Free audit · No commitment · 3 onboarding slots open this month
           </p>
         </div>

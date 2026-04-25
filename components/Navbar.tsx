@@ -116,18 +116,35 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex" style={{ gap: '1.5rem', alignItems: 'center' }}>
+          <div className="hidden md:flex" style={{ gap: '6px', alignItems: 'center' }}>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="nav-link"
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
+                  fontSize: '12px',
+                  fontWeight: 500,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.08em',
                   textDecoration: 'none',
+                  color: 'hsl(40 12% 65%)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  background: 'rgba(255,255,255,0.04)',
+                  padding: '6px 14px',
+                  borderRadius: '4px',
+                  transition: 'all 0.2s ease',
+                  display: 'inline-block',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)'
+                  e.currentTarget.style.background = 'rgba(249,115,22,0.08)'
+                  e.currentTarget.style.color = 'hsl(40 30% 96%)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+                  e.currentTarget.style.color = 'hsl(40 12% 65%)'
                 }}
               >
                 {link.label}
@@ -143,18 +160,20 @@ export default function Navbar() {
               <button
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
+                  fontSize: '12px',
+                  fontWeight: 500,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.08em',
                   color: systemsOpen ? 'hsl(40 30% 96%)' : 'hsl(40 12% 65%)',
-                  background: 'none',
-                  border: 'none',
+                  background: systemsOpen ? 'rgba(249,115,22,0.08)' : 'rgba(255,255,255,0.04)',
+                  border: systemsOpen ? '1px solid rgba(249,115,22,0.5)' : '1px solid rgba(255,255,255,0.12)',
+                  borderRadius: '4px',
                   cursor: 'pointer',
-                  padding: 0,
+                  padding: '6px 14px',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '4px',
-                  transition: 'color 150ms ease',
+                  transition: 'all 0.2s ease',
                 }}
               >
                 Systems <span style={{ fontSize: '9px', opacity: 0.6 }}>▾</span>
