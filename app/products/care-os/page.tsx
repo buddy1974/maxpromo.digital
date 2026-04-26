@@ -127,11 +127,11 @@ const STEPS = [
 ]
 
 const FLOW = [
-  { step: '01', label: 'Staff logs care note' },
-  { step: '02', label: 'Medication administered and recorded' },
-  { step: '03', label: 'Incident flagged if needed' },
-  { step: '04', label: 'Manager notified' },
-  { step: '05', label: 'CQC audit trail complete' },
+  { step: '01', label: 'Staff logs care note → Audit trail updated instantly' },
+  { step: '02', label: 'Medication recorded → MAR chart updated automatically' },
+  { step: '03', label: 'Incident flagged → Manager notified immediately' },
+  { step: '04', label: 'Manager notified → 0 missed alerts' },
+  { step: '05', label: 'CQC audit trail complete → Inspection-ready at all times' },
 ]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -175,6 +175,31 @@ export default function CareOSPage() {
           </div>
         </section>
 
+        {/* ── BEFORE / AFTER ── */}
+        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '2rem' }}>BEFORE / AFTER THIS SYSTEM</p>
+            <div style={{ display: 'grid', gap: '1px', background: '#1A1A1A' }} className="co-grid-2">
+              <div style={{ background: '#141414', padding: '28px 32px' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>BEFORE</p>
+                {['Care plans on paper and in folders', 'Rotas built in spreadsheets, shared on WhatsApp', 'Compliance tracked manually — gaps missed', 'DBS certificates expiring unnoticed', 'Senior staff spending 40%+ time on admin'].map(item => (
+                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
+                    <span style={{ color: '#FF4D4D', flexShrink: 0 }}>✕</span>{item}
+                  </p>
+                ))}
+              </div>
+              <div style={{ background: '#141414', padding: '28px 32px' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>AFTER</p>
+                {['Every care note digital, auditable, and CQC-ready', 'Rotas built and distributed automatically', 'Compliance tracked in real time — nothing expires unnoticed', 'Certificate expiry alerts automated', 'AI handles reports, emails, and briefings'].map(item => (
+                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
+                    <span style={{ color: '#F97316', flexShrink: 0, fontWeight: 700 }}>✓</span>{item}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── WHO THIS IS FOR ── */}
         <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
@@ -212,6 +237,9 @@ export default function CareOSPage() {
                 </li>
               ))}
             </ul>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '1.5rem 0 0' }}>
+              → 0 missed incidents · Audit trail automated · Staff workload reduced · Used in live care deployments
+            </p>
           </div>
         </section>
 
@@ -356,7 +384,10 @@ export default function CareOSPage() {
                 We onboard a limited number of care providers per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
               </p>
             </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '0' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F0F0F0', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '8px' }}>
+              We only install a limited number of systems per month.
+            </p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginBottom: '0' }}>
               We install this system for you.
             </p>
             <CareContactForm />

@@ -129,11 +129,11 @@ const STEPS = [
 ]
 
 const FLOW = [
-  { step: '01', label: 'Patient books online' },
-  { step: '02', label: 'Confirmation sent automatically' },
-  { step: '03', label: 'Reminder fires 24h before' },
-  { step: '04', label: 'Appointment completed' },
-  { step: '05', label: 'Lab result delivered to portal' },
+  { step: '01', label: 'Patient books online → 0 missed appointment requests' },
+  { step: '02', label: 'Confirmation sent automatically → No staff action needed' },
+  { step: '03', label: 'Reminder fires 24h before → No-shows reduced' },
+  { step: '04', label: 'Appointment completed → Record updated automatically' },
+  { step: '05', label: 'Lab result delivered to portal → No post, no fax, no delay' },
 ]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -177,6 +177,31 @@ export default function PraxisOSPage() {
           </div>
         </section>
 
+        {/* ── BEFORE / AFTER ── */}
+        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '2rem' }}>BEFORE / AFTER THIS SYSTEM</p>
+            <div style={{ display: 'grid', gap: '1px', background: '#1A1A1A' }} className="px-grid-2">
+              <div style={{ background: '#141414', padding: '28px 32px' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>BEFORE</p>
+                {['Appointments booked only by phone', 'Lab results sent by post or fax', 'Reminders done manually or not at all', 'Paper intake forms and manual data entry', 'Staff working across disconnected systems'].map(item => (
+                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
+                    <span style={{ color: '#FF4D4D', flexShrink: 0 }}>✕</span>{item}
+                  </p>
+                ))}
+              </div>
+              <div style={{ background: '#141414', padding: '28px 32px' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>AFTER</p>
+                {['Patients book online 24/7 — 0 missed requests', 'Results delivered to patient portal instantly', 'Reminders automated — no missed follow-ups', 'Digital intake — no paper, no manual entry', 'One role-based dashboard per staff member'].map(item => (
+                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
+                    <span style={{ color: '#F97316', flexShrink: 0, fontWeight: 700 }}>✓</span>{item}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── WHO THIS IS FOR ── */}
         <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
@@ -214,6 +239,9 @@ export default function PraxisOSPage() {
                 </li>
               ))}
             </ul>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '1.5rem 0 0' }}>
+              → 0 missed appointments · Response time: immediate · Running in live German practices
+            </p>
           </div>
         </section>
 
@@ -358,7 +386,10 @@ export default function PraxisOSPage() {
                 We onboard a limited number of practices per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
               </p>
             </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '0' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F0F0F0', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '8px' }}>
+              We only install a limited number of systems per month.
+            </p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginBottom: '0' }}>
               We install this system for you.
             </p>
             <PraxisContactForm />

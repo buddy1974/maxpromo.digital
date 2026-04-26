@@ -8,6 +8,7 @@ import Link from 'next/link'
 const STYLES = `
   .ro-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .ro-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ro-ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; }
   .ro-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
   @media (max-width: 768px) {
     .ro-grid-3 { grid-template-columns: 1fr; }
@@ -180,11 +181,11 @@ const FEATURES = [
 const TECH_STACK = ['NEXT.JS 16', 'NEON POSTGRESQL', 'VERCEL', 'TELEGRAM BOT', 'TYPESCRIPT', 'STRIPE']
 
 const FLOW = [
-  { step: '01', label: 'Customer scans QR code' },
-  { step: '02', label: 'Gets a fruit seat code' },
-  { step: '03', label: 'Browses menu and orders' },
-  { step: '04', label: 'Kitchen gets Telegram alert' },
-  { step: '05', label: 'Bill paid by seat' },
+  { step: '01', label: 'Customer scans QR code → No waiter needed to present menu' },
+  { step: '02', label: 'Gets a fruit seat code → Zero table confusion' },
+  { step: '03', label: 'Browses menu and orders → Order goes direct to kitchen' },
+  { step: '04', label: 'Kitchen gets Telegram alert → No relay errors' },
+  { step: '05', label: 'Bill paid by seat → No manual calculation required' },
 ]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -296,6 +297,31 @@ export default function RestaurantOSPage() {
           </div>
         </section>
 
+        {/* ── BEFORE / AFTER ── */}
+        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '2rem' }}>BEFORE / AFTER THIS SYSTEM</p>
+            <div style={{ display: 'grid', gap: '1px', background: '#1A1A1A' }} className="ro-grid-2">
+              <div style={{ background: '#141414', padding: '28px 32px' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>BEFORE</p>
+                {['Orders taken on paper pads', 'Bills split manually with a calculator', 'Kitchen notified by shouting or WhatsApp', 'Order errors at every service', 'Staff spend time taking orders, not serving'].map(item => (
+                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
+                    <span style={{ color: '#FF4D4D', flexShrink: 0 }}>✕</span>{item}
+                  </p>
+                ))}
+              </div>
+              <div style={{ background: '#141414', padding: '28px 32px' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>AFTER</p>
+                {['Orders go direct to kitchen — 0 relay errors', 'Bills split automatically in any mode', 'Kitchen gets instant Telegram alert per order', 'Zero order errors — no staff relay required', 'Staff focus on service, not coordination'].map(item => (
+                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
+                    <span style={{ color: '#F97316', flexShrink: 0, fontWeight: 700 }}>✓</span>{item}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ── WHO THIS IS FOR ── */}
         <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
@@ -333,6 +359,9 @@ export default function RestaurantOSPage() {
                 </li>
               ))}
             </ul>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '1.5rem 0 0' }}>
+              → 0 relay errors · Orders processed instantly · Staff workload reduced · Running in live venues
+            </p>
           </div>
         </section>
 
@@ -553,7 +582,10 @@ export default function RestaurantOSPage() {
                 We onboard a limited number of venues per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
               </p>
             </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '0' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F0F0F0', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '8px' }}>
+              We only install a limited number of systems per month.
+            </p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginBottom: '0' }}>
               We install this system for you.
             </p>
             <RestaurantContactForm />
