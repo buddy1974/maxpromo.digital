@@ -131,9 +131,9 @@ const chipBase: React.CSSProperties = {
 
 const chipActive: React.CSSProperties = {
   ...chipBase,
-  background: '#E8FF00',
+  background: '#F97316',
   color: '#080808',
-  borderColor: '#E8FF00',
+  borderColor: '#F97316',
 }
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -151,7 +151,7 @@ export default function ProductsPage() {
       {/* ── HERO ── */}
       <section style={{ padding: '5rem 2rem', borderBottom: '1px solid #1A1A1A' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1.5rem' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1.5rem' }}>
             ALL SYSTEMS
           </p>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '0', whiteSpace: 'pre-line' }}>
@@ -207,7 +207,7 @@ export default function ProductsPage() {
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', padding: '3px 8px', border: '1px solid #1A1A1A', color: '#666666', display: 'inline-block' }}>
                     {sys.label}
                   </span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', background: '#E8FF00', color: '#080808', padding: '3px 8px', display: 'inline-block', fontWeight: 700 }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', background: '#F97316', color: '#080808', padding: '3px 8px', display: 'inline-block', fontWeight: 700 }}>
                     {sys.status}
                   </span>
                 </div>
@@ -235,15 +235,15 @@ export default function ProductsPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '8px' }}>
                   <Link
                     href={sys.href}
-                    style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#E8FF00', textDecoration: 'none', letterSpacing: '0.05em', transition: 'opacity 150ms ease' }}
+                    style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', transition: 'opacity 150ms ease' }}
                     onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.7')}
                     onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
                   >
                     EXPLORE SYSTEM →
                   </Link>
                   {sys.demo && (
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#E8FF00', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <span className="status-pulse" style={{ display: 'inline-block', width: '6px', height: '6px', background: '#E8FF00', borderRadius: '50%' }} />
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.1em', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <span className="status-pulse" style={{ display: 'inline-block', width: '6px', height: '6px', background: '#F97316', borderRadius: '50%' }} />
                       LIVE DEMO
                     </span>
                   )}
@@ -263,7 +263,7 @@ export default function ProductsPage() {
       {/* ── BOTTOM CTA ── */}
       <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem', textAlign: 'center' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#E8FF00', marginBottom: '1rem' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
             CUSTOM SYSTEMS
           </p>
           <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', margin: 0 }}>
@@ -274,9 +274,9 @@ export default function ProductsPage() {
           </p>
           <Link
             href="/contact"
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, background: '#E8FF00', color: '#080808', padding: '16px 32px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = '#D4EB00')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = '#E8FF00')}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, background: '#F97316', color: '#080808', padding: '16px 32px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = '#EA6A00')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = '#F97316')}
           >
             DISCUSS YOUR SYSTEM →
           </Link>
