@@ -274,6 +274,14 @@ export default function HandwerkOSPage() {
               HandwerkOS replaces WhatsApp job coordination, paper job sheets, Word quotes, and manual invoicing with a fully automated trades workflow. Photograph the job sheet — AI creates the record in 10 seconds. Quote sent, job tracked, time logged, invoice generated. For German trades businesses with 1–20 staff.
             </p>
 
+            <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {['Built from real deployment logic', 'Handles real-world edge cases', 'Designed for production environments', 'No prototype logic'].map(line => (
+                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.08em', margin: 0, opacity: 0.85 }}>
+                  <span style={{ marginRight: '8px', opacity: 0.5 }}>•</span>{line}
+                </p>
+              ))}
+            </div>
+
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
               <a
                 href="https://handwerkos.vercel.app"
@@ -418,6 +426,9 @@ export default function HandwerkOSPage() {
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '1.5rem 0 0' }}>
               → No manual input required · Up to 60% less admin per job · Running in live trade businesses
             </p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: '6px 0 0' }}>
+              Server-side validated · API-protected · No client-side critical logic
+            </p>
           </div>
         </section>
 
@@ -555,6 +566,9 @@ export default function HandwerkOSPage() {
         <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>FROM JOB PHOTO TO PAID INVOICE — ZERO PAPERWORK</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444', letterSpacing: '0.1em', marginBottom: '1.5rem' }}>
+              Failed submissions retried automatically · GPS log errors managed at system level · Error states controlled
+            </p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
               Photo taken. Record created. Quote sent. Time tracked. Invoice paid.
             </h2>
@@ -587,6 +601,23 @@ export default function HandwerkOSPage() {
             }}>
               LIVE IN PRODUCTION
             </span>
+          </div>
+        </section>
+
+        {/* ── WHAT THIS IS NOT ── */}
+        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>NOT A TOOL</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1.25rem' }}>
+              {['Not a dashboard you configure yourself', 'Not another SaaS subscription', 'Not a template built for a different business'].map(line => (
+                <p key={line} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.6, margin: 0, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <span style={{ color: '#FF4D4D', flexShrink: 0 }}>✕</span>{line}
+                </p>
+              ))}
+            </div>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F0F0F0', letterSpacing: '0.04em', margin: 0 }}>
+              → This is a system installed into your business.
+            </p>
           </div>
         </section>
 
