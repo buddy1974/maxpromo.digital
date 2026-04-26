@@ -121,7 +121,7 @@ function HandwerkContactForm() {
           opacity: status === 'loading' ? 0.7 : 1,
         }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET MY FREE SETUP →'}
       </button>
 
       {status === 'success' && (
@@ -628,13 +628,13 @@ export default function HandwerkOSPage() {
               INSTALL THIS SYSTEM
             </p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              HandwerkOS. Installed into your trade business.
+              Get a free HandwerkOS setup for your trade business.
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
-              Your branding, your Gewerk, your IBAN. Configured and live in under 10 days.
+              Tell us your trade and region. We configure a free demo for your Gewerk, show you how it runs, and send a no-obligation proposal. No commitment. We reply within 24 hours.
             </p>
             <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
-              {['Setup in 5–10 days.', 'Configured for your trade and region.', 'No upfront commitment.'].map((line) => (
+              {['Free setup consultation — no charge.', 'Live in 5–10 days from sign-off.', 'No commitment until you are ready.'].map((line) => (
                 <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
                   — {line}
                 </p>
@@ -653,6 +653,9 @@ export default function HandwerkOSPage() {
               We install this system for you.
             </p>
             <HandwerkContactForm />
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#555', letterSpacing: '0.08em', margin: '12px 0 0' }}>
+              // No obligation · Free setup consultation · We reply within 24 hours
+            </p>
           </div>
         </section>
 

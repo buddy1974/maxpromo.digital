@@ -79,7 +79,7 @@ function CareContactForm() {
       <button type="submit" disabled={status === 'loading' || status === 'success'}
         style={{ background: '#F97316', color: '#080808', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, padding: '16px', width: '100%', border: 'none', cursor: status === 'loading' || status === 'success' ? 'default' : 'pointer', opacity: status === 'loading' ? 0.7 : 1 }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET MY FREE AUDIT →'}
       </button>
       {status === 'success' && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', margin: 0 }}>✓ Request received. We&apos;ll contact you within 24 hours.</p>}
       {status === 'error'   && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#FF4D4D', margin: 0 }}>Something went wrong. Email us at hello@maxpromo.digital</p>}
@@ -397,13 +397,13 @@ export default function CareOSPage() {
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>INSTALL THIS SYSTEM</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              CareOS. Installed into your care service.
+              Get a free CareOS audit for your care service.
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
-              Configured for your service, your residents, and your compliance requirements. Built to CQC standards. Fully private.
+              Tell us about your service users and compliance situation. We run a free audit, show how CareOS maps to your workflows and CQC requirements, and send a no-obligation proposal. No commitment. We reply within 24 hours.
             </p>
             <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
-              {['Setup in 5–10 days.', 'Configured for your service and residents.', 'No upfront commitment.'].map((line) => (
+              {['Free system audit — no charge.', 'Live in 5–10 days from sign-off.', 'No commitment until you are ready.'].map((line) => (
                 <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
                   — {line}
                 </p>
@@ -422,6 +422,9 @@ export default function CareOSPage() {
               We install this system for you.
             </p>
             <CareContactForm />
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#555', letterSpacing: '0.08em', margin: '12px 0 0' }}>
+              // No obligation · Free system audit · We reply within 24 hours
+            </p>
           </div>
         </section>
 

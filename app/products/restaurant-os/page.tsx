@@ -119,7 +119,7 @@ function RestaurantContactForm() {
           opacity: status === 'loading' ? 0.7 : 1,
         }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET MY FREE SETUP →'}
       </button>
 
       {status === 'success' && (
@@ -595,13 +595,13 @@ export default function RestaurantOSPage() {
               INSTALL THIS SYSTEM
             </p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Restaurant OS. Installed into your venue.
+              Get a free Restaurant OS setup for your venue.
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
-              We configure your menu, set up your tables, connect your Telegram group, and hand you the QR codes.
+              Tell us about your venue and table count. We map out the full setup, show you exactly how Restaurant OS runs in your space, and send a no-obligation proposal. No commitment. We reply within 24 hours.
             </p>
             <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
-              {['Setup in 5–10 days.', 'Configured for your venue and menu.', 'No upfront commitment.'].map((line) => (
+              {['Free setup consultation — no charge.', 'Live in 5–10 days from sign-off.', 'No commitment until you are ready.'].map((line) => (
                 <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
                   — {line}
                 </p>
@@ -620,6 +620,9 @@ export default function RestaurantOSPage() {
               We install this system for you.
             </p>
             <RestaurantContactForm />
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#555', letterSpacing: '0.08em', margin: '12px 0 0' }}>
+              // No obligation · Free setup consultation · We reply within 24 hours
+            </p>
           </div>
         </section>
 
