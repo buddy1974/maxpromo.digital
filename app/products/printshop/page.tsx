@@ -181,11 +181,11 @@ export default function PrintshopPage() {
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1.5rem' }}>
               LIVE PLATFORM · MULTI-LANGUAGE
             </p>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', whiteSpace: 'pre-line' }}>
-              {'Still quoting print jobs by email?\nCustomers configure, upload, and pay — without contacting you.'}
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem' }}>
+              PrintShop OS
             </h1>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8 }}>
-              PrintShop OS is a full e-commerce platform built specifically for print businesses. Your production queue, AI prepress checks, and admin panel run behind it. Three languages. Stripe payments included. Zero custom code needed.
+              PrintShop OS replaces email quote requests, manual file checking, and disconnected order tracking with a fully automated print production workflow. Customers configure, upload, and pay — AI validates their files before they reach production. Orders move through your queue without staff involvement. For print businesses ready to stop quoting by email.
             </p>
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
               <a
@@ -317,9 +317,9 @@ export default function PrintshopPage() {
         {/* ── SYSTEM IN ACTION ── */}
         <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHAT HAPPENS AFTER INSTALLATION</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              See how it runs.
+              File uploaded. AI validates. Order queued for production. Invoice sent automatically.
             </h2>
             <div className="ps-proof">
               <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -379,9 +379,9 @@ export default function PrintshopPage() {
         {/* ── CONVERSION ── */}
         <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>GET THIS SYSTEM</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>INSTALL THIS SYSTEM</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Get Your System Setup
+              PrintShop OS. Installed into your print business.
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
               We configure your product catalogue, connect Stripe, and hand you a running platform. Your brand, your pricing, your domain.
@@ -399,6 +399,9 @@ export default function PrintshopPage() {
                 We onboard a limited number of print shops per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
               </p>
             </div>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '0' }}>
+              We install this system for you.
+            </p>
             <PrintshopContactForm />
           </div>
         </section>

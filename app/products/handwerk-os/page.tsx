@@ -259,9 +259,8 @@ export default function HandwerkOSPage() {
               color: '#F0F0F0',
               lineHeight: 1.1,
               marginBottom: '1.5rem',
-              whiteSpace: 'pre-line',
             }}>
-              {'Still managing jobs\non WhatsApp and paper?'}
+              HandwerkOS
             </h1>
 
             <p style={{
@@ -271,7 +270,7 @@ export default function HandwerkOSPage() {
               maxWidth: '600px',
               lineHeight: 1.8,
             }}>
-              HandwerkOS replaces the WhatsApp chaos, paper job sheets, and slow quotes. One system handles the entire job — from photo to paid invoice. If your jobs start in WhatsApp, this system replaces everything after it.
+              HandwerkOS replaces WhatsApp job coordination, paper job sheets, Word quotes, and manual invoicing with a fully automated trades workflow. Photograph the job sheet — AI creates the record in 10 seconds. Quote sent, job tracked, time logged, invoice generated. For German trades businesses with 1–20 staff.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
@@ -494,9 +493,9 @@ export default function HandwerkOSPage() {
         {/* ── SYSTEM IN ACTION ── */}
         <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHAT HAPPENS AFTER INSTALLATION</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              See how it runs.
+              Photo taken. Job record created. Quote sent. Invoice automated.
             </h2>
             <div className="hw-proof">
               <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -526,9 +525,9 @@ export default function HandwerkOSPage() {
         {/* ── IN PRACTICE ── */}
         <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>IN PRACTICE</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>FROM JOB PHOTO TO PAID INVOICE — ZERO PAPERWORK</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
-              From WhatsApp message to paid invoice.
+              Photo taken. Record created. Quote sent. Time tracked. Invoice paid.
             </h2>
             <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
               {FLOW.map((item) => (
@@ -566,10 +565,10 @@ export default function HandwerkOSPage() {
         <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              GET THIS SYSTEM
+              INSTALL THIS SYSTEM
             </p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Get Your System Setup
+              HandwerkOS. Installed into your trade business.
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
               Your branding, your Gewerk, your IBAN. Configured and live in under 10 days.
@@ -587,6 +586,9 @@ export default function HandwerkOSPage() {
                 We onboard a limited number of clients per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
               </p>
             </div>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '0' }}>
+              We install this system for you.
+            </p>
             <HandwerkContactForm />
           </div>
         </section>

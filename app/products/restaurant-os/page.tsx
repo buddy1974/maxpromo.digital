@@ -217,9 +217,8 @@ export default function RestaurantOSPage() {
               color: '#F0F0F0',
               lineHeight: 1.1,
               marginBottom: '1.5rem',
-              whiteSpace: 'pre-line',
             }}>
-              {'Still taking orders on paper?\nHere is how your restaurant runs on a QR code.'}
+              Restaurant OS
             </h1>
 
             <p style={{
@@ -229,7 +228,7 @@ export default function RestaurantOSPage() {
               maxWidth: '600px',
               lineHeight: 1.8,
             }}>
-              Customers scan, order, and pay from their phone. Orders go directly to the kitchen. Staff focus on service, not taking orders. No app. No tablet. No per-feature monthly fees.
+              Restaurant OS replaces paper order pads, manual bill calculations, and WhatsApp kitchen alerts with a fully automated QR ordering workflow. Customers scan, order, and pay from their phone — orders land in the kitchen instantly, bills split automatically. No app. No tablet. No per-feature monthly fees. For restaurants and cafes with 4–50 tables.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
@@ -435,9 +434,9 @@ export default function RestaurantOSPage() {
         {/* ── SYSTEM IN ACTION ── */}
         <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>SYSTEM IN ACTION</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHAT HAPPENS AFTER INSTALLATION</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              See how it runs.
+              Customer scans. Orders land in kitchen. Bill splits automatically. No staff coordination.
             </h2>
             <div className="ro-proof">
               <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -467,9 +466,9 @@ export default function RestaurantOSPage() {
         {/* ── IN PRACTICE ── */}
         <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>IN PRACTICE</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>FROM QR SCAN TO SETTLED BILL — ZERO STAFF COORDINATION</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
-              From table scan to kitchen to settled bill.
+              Table scanned. Order placed. Kitchen notified. Bill paid. Automatically.
             </h2>
             <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
               {FLOW.map((item) => (
@@ -533,10 +532,10 @@ export default function RestaurantOSPage() {
         <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              GET THIS SYSTEM
+              INSTALL THIS SYSTEM
             </p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Get Your System Setup
+              Restaurant OS. Installed into your venue.
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
               We configure your menu, set up your tables, connect your Telegram group, and hand you the QR codes.
@@ -554,6 +553,9 @@ export default function RestaurantOSPage() {
                 We onboard a limited number of venues per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
               </p>
             </div>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '0' }}>
+              We install this system for you.
+            </p>
             <RestaurantContactForm />
           </div>
         </section>
