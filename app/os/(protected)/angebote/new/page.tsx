@@ -1,13 +1,23 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
 const sans    = 'var(--font-inter)'
 
-interface LineItem { description: string; qty: number; unit: string; unit_price: number; total: number; isFixedPrice: boolean }
+interface LineItem { description: string; qty: number; unit: string; unit_price: number; total: number; isFixedPrice: boolean; aiConfidence?: 'high' | 'medium' | 'low' }
 interface Client   { id: string; name: string; company: string; email: string; address: string; city: string; country: string }
+interface AIExtracted {
+  clientName: string; clientCompany: string; clientEmail: string; clientPhone?: string
+  clientAddress: string; clientCity: string; clientPostcode?: string
+  lineItems: { description: string; quantity: number; unit: string; unitPrice: number; finalPrice: number; isFixedPrice: boolean; confidence?: 'high' | 'medium' | 'low' }[]
+  anzahlung: number; anzahlungDate: string; anzahlungMethod: string
+  notes: string; dueDate: string; validUntil?: string
+  overallConfidence?: 'high' | 'medium' | 'low'
+  extractionNotes?: string
+  type?: string
+}
 
 const UNITS = ['pauschal', 'Stück', 'Stunden', 'Tage', 'Seiten', 'Monat', 'Lizenz']
 const blankItem = (): LineItem => ({ description: '', qty: 1, unit: 'pauschal', unit_price: 0, total: 0, isFixedPrice: true })
@@ -16,6 +26,7 @@ function fmtEur(n: number) { return new Intl.NumberFormat('de-DE', { style: 'cur
 function addDays(d: number) { const dt = new Date(); dt.setDate(dt.getDate() + d); return dt.toISOString().split('T')[0] }
 
 const inp: React.CSSProperties = { width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', boxSizing: 'border-box' }
+const inpMissing: React.CSSProperties = { ...inp, border: '1px dashed rgba(249,115,22,0.5)' }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -27,8 +38,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 interface AddrSuggestion { display_name: string }
-
-function AddressInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
+function AddressInput({ value, onChange, placeholder, aiEnhanced }: { value: string; onChange: (v: string) => void; placeholder?: string; aiEnhanced?: boolean }) {
   const [suggestions, setSuggestions] = useState<AddrSuggestion[]>([])
   const [open, setOpen] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -48,7 +58,7 @@ function AddressInput({ value, onChange, placeholder }: { value: string; onChang
 
   return (
     <div style={{ position: 'relative' }}>
-      <input value={value} onChange={e => handleChange(e.target.value)} placeholder={placeholder} style={inp} onBlur={() => setTimeout(() => setOpen(false), 200)} />
+      <input value={value} onChange={e => handleChange(e.target.value)} placeholder={placeholder} style={aiEnhanced && !value.trim() ? inpMissing : inp} onBlur={() => setTimeout(() => setOpen(false), 200)} />
       {open && suggestions.length > 0 && (
         <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#111', border: '1px solid rgba(255,255,255,0.1)', zIndex: 50, maxHeight: '180px', overflowY: 'auto' }}>
           {suggestions.map((s, i) => (
@@ -65,7 +75,11 @@ function AddressInput({ value, onChange, placeholder }: { value: string; onChang
   )
 }
 
-interface AIExtracted { clientName: string; clientCompany: string; clientEmail: string; clientAddress: string; clientCity: string; lineItems: { description: string; quantity: number; unit: string; unitPrice: number; finalPrice: number; isFixedPrice: boolean }[]; anzahlung: number; anzahlungDate: string; anzahlungMethod: string; notes: string; dueDate: string }
+const AI_PLACEHOLDER = `Examples you can paste:
+• WhatsApp: "Hi, brauche Website für Restaurant, 4 Seiten, Speisekarte, Budget 2500€"
+• Email: Paste the whole email — we extract only order details, ignore the rest
+• Notes: "Schmidt & Co, Logo + Website, 3500€ Angebot, gültig 30 Tage"
+• Or paste a screenshot image directly with Ctrl+V ↑`
 
 export default function NewAngebotPage() {
   const router = useRouter()
@@ -81,27 +95,140 @@ export default function NewAngebotPage() {
   const [notes,       setNotes]       = useState('')
   const [clients,     setClients]     = useState<Client[]>([])
   const [saving,      setSaving]      = useState(false)
-
   const [hasAnzahlung,    setHasAnzahlung]    = useState(false)
   const [anzahlung,       setAnzahlung]       = useState(0)
   const [anzahlungDate,   setAnzahlungDate]   = useState('')
   const [anzahlungMethod, setAnzahlungMethod] = useState('Überweisung')
 
-  const [aiModalOpen, setAiModalOpen] = useState(false)
-  const [rawText,     setRawText]     = useState('')
-  const [aiLoading,   setAiLoading]   = useState(false)
-  const [aiError,     setAiError]     = useState('')
-  const [scanModalOpen, setScanModalOpen] = useState(false)
-  const [scanPreview,   setScanPreview]   = useState('')
-  const [scanBase64,    setScanBase64]    = useState('')
-  const [scanMime,      setScanMime]      = useState('image/jpeg')
-  const [scanLoading,   setScanLoading]   = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  // AI state
+  const [aiModalOpen,  setAiModalOpen]  = useState(false)
+  const [rawText,      setRawText]      = useState('')
+  const [aiLoading,    setAiLoading]    = useState(false)
+  const [aiError,      setAiError]      = useState('')
+  const [pastePreview, setPastePreview] = useState('')
+  const [isDragOver,   setIsDragOver]   = useState(false)
+
+  // Confidence state
+  const [aiEnhanced,        setAiEnhanced]        = useState(false)
+  const [overallConfidence,  setOverallConfidence]  = useState<'high' | 'medium' | 'low' | null>(null)
+  const [extractionNotes,   setExtractionNotes]   = useState('')
+
+  const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     fetch('/api/os/angebote?next=true').then(r => r.json()).then(d => setNumber((d as { number: string }).number)).catch(() => {})
     fetch('/api/os/clients').then(r => r.json()).then(d => setClients(Array.isArray(d) ? d : [])).catch(() => {})
   }, [])
+
+  // Clipboard paste
+  useEffect(() => {
+    if (!aiModalOpen) return
+    function onPaste(e: ClipboardEvent) {
+      const items = e.clipboardData?.items
+      if (!items) return
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile()
+          if (!file) continue
+          e.preventDefault()
+          const reader = new FileReader()
+          reader.onload = ev => {
+            const dataUrl = ev.target?.result as string
+            const [header, b64] = dataUrl.split(',')
+            const mime = header.match(/:(.*?);/)?.[1] ?? 'image/jpeg'
+            setPastePreview(dataUrl)
+            void triggerImageExtract(b64, mime)
+          }
+          reader.readAsDataURL(file)
+          return
+        }
+      }
+    }
+    window.addEventListener('paste', onPaste)
+    return () => window.removeEventListener('paste', onPaste)
+  }, [aiModalOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const triggerImageExtract = useCallback(async (b64: string, mime: string) => {
+    setAiLoading(true); setAiError('')
+    try {
+      const res = await fetch('/api/os/ai/scan-invoice', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ base64: b64, mediaType: mime }),
+      })
+      if (!res.ok) throw new Error('Scan failed')
+      applyExtracted(await res.json() as AIExtracted)
+      setAiModalOpen(false); setPastePreview('')
+    } catch {
+      setAiError('Could not read image. Try uploading the file instead.')
+    } finally { setAiLoading(false) }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  function handleDragOver(e: React.DragEvent) { e.preventDefault(); setIsDragOver(true) }
+  function handleDragLeave() { setIsDragOver(false) }
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault(); setIsDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (!file || !file.type.startsWith('image/')) return
+    const reader = new FileReader()
+    reader.onload = ev => {
+      const dataUrl = ev.target?.result as string
+      const [header, b64] = dataUrl.split(',')
+      const mime = header.match(/:(.*?);/)?.[1] ?? 'image/jpeg'
+      setPastePreview(dataUrl)
+      void triggerImageExtract(b64, mime)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = ev => {
+      const dataUrl = ev.target?.result as string
+      const [header, b64] = dataUrl.split(',')
+      const mime = header.match(/:(.*?);/)?.[1] ?? 'image/jpeg'
+      setPastePreview(dataUrl); setAiModalOpen(true)
+      void triggerImageExtract(b64, mime)
+    }
+    reader.readAsDataURL(file); e.target.value = ''
+  }
+
+  async function handleGenerateAI() {
+    if (!rawText.trim()) return
+    setAiLoading(true); setAiError('')
+    try {
+      const res = await fetch('/api/os/ai/generate-invoice', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: rawText }),
+      })
+      if (!res.ok) throw new Error('Extraction failed')
+      applyExtracted(await res.json() as AIExtracted)
+      setAiModalOpen(false); setRawText('')
+    } catch (e) { setAiError(e instanceof Error ? e.message : 'Failed') }
+    finally { setAiLoading(false) }
+  }
+
+  function applyExtracted(d: AIExtracted) {
+    if (d.clientName)  setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
+    if (d.clientEmail) setClientEmail(d.clientEmail)
+    if (d.clientAddress || d.clientCity) {
+      setClientAddr([d.clientAddress, [d.clientCity, d.clientPostcode].filter(Boolean).join(' ')].filter(Boolean).join(', '))
+    }
+    if (d.notes) setNotes(d.notes)
+    if (d.validUntil || d.dueDate) setValidUntil(d.validUntil || d.dueDate)
+    if (d.lineItems?.length) {
+      setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice, aiConfidence: li.confidence })))
+    }
+    if (d.anzahlung > 0) {
+      setHasAnzahlung(true); setAnzahlung(d.anzahlung)
+      if (d.anzahlungDate) setAnzahlungDate(d.anzahlungDate)
+      if (d.anzahlungMethod) setAnzahlungMethod(d.anzahlungMethod)
+    }
+    setOverallConfidence(d.overallConfidence ?? 'medium')
+    setExtractionNotes(d.extractionNotes ?? '')
+    setAiEnhanced(true)
+  }
 
   function updateItem(i: number, field: keyof LineItem, value: string | number | boolean) {
     setLineItems(prev => {
@@ -115,125 +242,124 @@ export default function NewAngebotPage() {
   function selectClient(id: string) {
     const c = clients.find(x => x.id === id)
     if (!c) { setClientId(''); return }
-    setClientId(c.id)
-    setClientName(c.name + (c.company ? ` — ${c.company}` : ''))
-    setClientEmail(c.email || '')
-    setClientAddr([c.address, c.city, c.country].filter(Boolean).join(', '))
+    setClientId(c.id); setClientName(c.name + (c.company ? ` — ${c.company}` : ''))
+    setClientEmail(c.email || ''); setClientAddr([c.address, c.city, c.country].filter(Boolean).join(', '))
   }
 
   const subtotal   = lineItems.reduce((s, i) => s + Number(i.total), 0)
   const restbetrag = subtotal - (hasAnzahlung ? Number(anzahlung) : 0)
 
-  function applyExtracted(d: AIExtracted) {
-    if (d.clientName)  setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
-    if (d.clientEmail) setClientEmail(d.clientEmail)
-    if (d.clientAddress || d.clientCity) setClientAddr([d.clientAddress, d.clientCity].filter(Boolean).join(', '))
-    if (d.notes)      setNotes(d.notes)
-    if (d.dueDate)    setValidUntil(d.dueDate)
-    if (d.lineItems?.length) setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice })))
-    if (d.anzahlung > 0) { setHasAnzahlung(true); setAnzahlung(d.anzahlung); if (d.anzahlungDate) setAnzahlungDate(d.anzahlungDate); if (d.anzahlungMethod) setAnzahlungMethod(d.anzahlungMethod) }
-  }
-
-  async function handleGenerateAI() {
-    if (!rawText.trim()) return
-    setAiLoading(true); setAiError('')
-    try {
-      const res = await fetch('/api/os/ai/generate-invoice', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: rawText }) })
-      if (!res.ok) throw new Error('Extraction failed')
-      applyExtracted(await res.json() as AIExtracted)
-      setAiModalOpen(false); setRawText('')
-    } catch (e) { setAiError(e instanceof Error ? e.message : 'Failed') }
-    finally { setAiLoading(false) }
-  }
-
-  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = ev => {
-      const dataUrl = ev.target?.result as string
-      const [header, b64] = dataUrl.split(',')
-      setScanPreview(dataUrl); setScanBase64(b64); setScanMime(header.match(/:(.*?);/)?.[1] ?? 'image/jpeg'); setScanModalOpen(true)
-    }
-    reader.readAsDataURL(file)
-  }
-
-  async function handleScanExtract() {
-    if (!scanBase64) return
-    setScanLoading(true)
-    try {
-      const res = await fetch('/api/os/ai/scan-invoice', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ base64: scanBase64, mediaType: scanMime }) })
-      if (!res.ok) throw new Error('Scan failed')
-      applyExtracted(await res.json() as AIExtracted)
-      setScanModalOpen(false); setScanPreview(''); setScanBase64('')
-    } catch { /* ignore */ }
-    finally { setScanLoading(false) }
-  }
-
   async function handleSave() {
-    if (!clientName.trim()) return
-    setSaving(true)
+    if (!clientName.trim()) return; setSaving(true)
     try {
       await fetch('/api/os/angebote', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          angebot_number: number, client_id: clientId || undefined,
-          client_name: clientName, client_email: clientEmail, client_address: clientAddr,
-          line_items: lineItems.filter(i => i.description), subtotal, total: subtotal,
-          status: 'draft', valid_until: validUntil, notes,
-          anzahlung: hasAnzahlung ? Number(anzahlung) : 0,
-          anzahlung_date: hasAnzahlung ? anzahlungDate : null,
-        }),
+        body: JSON.stringify({ angebot_number: number, client_id: clientId || undefined, client_name: clientName, client_email: clientEmail, client_address: clientAddr, line_items: lineItems.filter(i => i.description), subtotal, total: subtotal, status: 'draft', valid_until: validUntil, notes, anzahlung: hasAnzahlung ? Number(anzahlung) : 0, anzahlung_date: hasAnzahlung ? anzahlungDate : null }),
       })
       router.push('/os/angebote')
     } finally { setSaving(false) }
   }
 
+  const confColor  = { high: '#22c55e', medium: '#F97316', low: '#ef4444' }
+  const confBg     = { high: 'rgba(34,197,94,0.08)', medium: 'rgba(249,115,22,0.08)', low: 'rgba(239,68,68,0.08)' }
+  const confBorder = { high: 'rgba(34,197,94,0.25)', medium: 'rgba(249,115,22,0.25)', low: 'rgba(239,68,68,0.25)' }
+  const confMsg    = { high: '✓ High confidence — review and confirm', medium: '⚠ Some fields need review — check highlighted items', low: '⚠ Low confidence — please verify all fields' }
+
+  function itemBorderLeft(item: LineItem): string | undefined {
+    if (item.aiConfidence === 'low')    return '3px solid #ef4444'
+    if (item.aiConfidence === 'medium') return '3px solid rgba(249,115,22,0.6)'
+    return undefined
+  }
+
+  function aiInp(value: string): React.CSSProperties { return aiEnhanced && !value.trim() ? inpMissing : inp }
+
   return (
     <>
+      {/* Unified AI Modal */}
       {aiModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: '#111', border: '1px solid rgba(249,115,22,0.3)', width: '100%', maxWidth: '560px', padding: '28px', borderRadius: '4px' }}>
-            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 6px' }}>AI Angebot Generator</h2>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.12em', margin: '0 0 16px' }}>PASTE RAW NOTES OR DESCRIBE THE JOB</p>
-            <textarea value={rawText} onChange={e => setRawText(e.target.value)} rows={8} placeholder={'Example: Angebot für Schmidt & Co, Hamburg. Website-Redesign, 3 Seiten. 2500 Euro pauschal.'} style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.6 }} />
-            {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', margin: '0 0 12px' }}>{aiError}</p>}
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div style={{ background: '#111', border: '1px solid rgba(249,115,22,0.3)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+              <div>
+                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.02em' }}>AI Angebot Generator</h2>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: 0 }}>PASTE TEXT, DROP AN IMAGE, OR Ctrl+V A SCREENSHOT</p>
+              </div>
+              <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}>×</button>
+            </div>
+
+            {/* Paste / drop zone */}
+            <div
+              onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
+              style={{ border: `2px dashed ${isDragOver ? '#F97316' : 'rgba(255,255,255,0.12)'}`, background: isDragOver ? 'rgba(249,115,22,0.06)' : '#0A0A0A', borderRadius: '4px', padding: '16px', marginBottom: '16px', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s ease, background 0.2s ease' }}
+            >
+              {aiLoading && pastePreview ? (
+                <div style={{ textAlign: 'center' }}>
+                  <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '0 0 8px' }}>⟳ Reading your image...</p>
+                  <img src={pastePreview} alt="" style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain', opacity: 0.5 }} />
+                </div>
+              ) : pastePreview ? (
+                <img src={pastePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '140px', objectFit: 'contain' }} />
+              ) : (
+                <p style={{ fontFamily: mono, fontSize: '11px', color: '#444', letterSpacing: '0.06em', textAlign: 'center', margin: 0, lineHeight: 1.8 }}>
+                  📋 Paste image here <strong style={{ color: '#666' }}>Ctrl+V</strong> — or drag &amp; drop a file<br />
+                  <span style={{ fontSize: '10px', opacity: 0.6 }}>Screenshots · Photos · WhatsApp · Email</span>
+                </p>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>OR PASTE TEXT BELOW</span>
+              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+            </div>
+
+            <textarea value={rawText} onChange={e => setRawText(e.target.value)} rows={6} placeholder={AI_PLACEHOLDER} style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }} />
+
+            {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>⚠ {aiError}</p>}
+
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1 }}>
-                {aiLoading ? 'Extracting...' : 'Generate Angebot with AI →'}
+              <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
+                {aiLoading && !pastePreview ? 'Extracting...' : 'Generate with AI →'}
               </button>
-              <button onClick={() => { setAiModalOpen(false); setAiError('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={() => fileRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}>
+                ▦ Browse File
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {scanModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: '#111', border: '1px solid rgba(249,115,22,0.3)', width: '100%', maxWidth: '480px', padding: '28px', borderRadius: '4px' }}>
-            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 16px' }}>Extract from Image</h2>
-            {scanPreview && <img src={scanPreview} alt="Preview" style={{ width: '100%', maxHeight: '240px', objectFit: 'contain', marginBottom: '16px', border: '1px solid rgba(255,255,255,0.08)' }} />}
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={handleScanExtract} disabled={scanLoading} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: scanLoading ? 0.5 : 1 }}>
-                {scanLoading ? 'Reading...' : 'Extract Data →'}
-              </button>
-              <button onClick={() => { setScanModalOpen(false); setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer' }}>Cancel</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <input ref={fileInputRef} type="file" accept="image/*,.pdf" style={{ display: 'none' }} onChange={handleFileSelect} />
+      <input ref={fileRef} type="file" accept="image/*,.pdf" capture="environment" style={{ display: 'none' }} onChange={handleFileSelect} />
 
       <div style={{ display: 'flex', minHeight: '100vh' }}>
         <div style={{ width: '50%', overflowY: 'auto', padding: '28px 32px', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-            <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF', margin: 0 }}>New Angebot</h1>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF', margin: 0 }}>New Angebot</h1>
+              {aiEnhanced && (
+                <span style={{ fontFamily: mono, fontSize: '9px', color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>◈ AI Enhanced</span>
+              )}
+            </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => setAiModalOpen(true)} style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>◈ AI Generate</button>
-              <button onClick={() => fileInputRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>▦ Scan Image</button>
+              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>◈ AI Generate</button>
+              <button onClick={() => fileRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>▦ Scan Image</button>
             </div>
           </div>
+
+          {/* Confidence banner */}
+          {aiEnhanced && overallConfidence && (
+            <div style={{ background: confBg[overallConfidence], border: `1px solid ${confBorder[overallConfidence]}`, padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '11px', color: confColor[overallConfidence], margin: 0, letterSpacing: '0.06em' }}>{confMsg[overallConfidence]}</p>
+            </div>
+          )}
+
+          {/* Extraction notes */}
+          {aiEnhanced && extractionNotes && (
+            <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.07)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '11px', color: '#888', margin: 0, letterSpacing: '0.04em' }}>ℹ️  {extractionNotes}</p>
+            </div>
+          )}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
@@ -250,18 +376,25 @@ export default function NewAngebotPage() {
                 {clients.map(c => <option key={c.id} value={c.id}>{c.name}{c.company ? ` (${c.company})` : ''}</option>)}
               </select>
             </Field>
-            <Field label="Client Name *"><input value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Or enter manually" style={inp} /></Field>
-            <Field label="Client Email"><input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} style={inp} /></Field>
-            <Field label="Client Address"><AddressInput value={clientAddr} onChange={setClientAddr} placeholder="Type to search German addresses" /></Field>
+            <Field label="Client Name *">
+              <input value={clientName} onChange={e => setClientName(e.target.value)} placeholder={aiEnhanced && !clientName.trim() ? 'Not found — please fill' : 'Or enter manually'} style={aiInp(clientName)} />
+            </Field>
+            <Field label="Client Email">
+              <input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder={aiEnhanced && !clientEmail.trim() ? 'Not found — please fill' : ''} style={aiInp(clientEmail)} />
+            </Field>
+            <Field label="Client Address">
+              <AddressInput value={clientAddr} onChange={setClientAddr} placeholder={aiEnhanced && !clientAddr.trim() ? 'Not found — please fill' : 'Type to search German addresses'} aiEnhanced={aiEnhanced && !clientAddr.trim()} />
+            </Field>
 
             <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
 
             <div>
               <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>Line Items</p>
               {lineItems.map((item, i) => (
-                <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px' }}>
+                <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', borderLeft: itemBorderLeft(item) || '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
+                  {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: '#ef4444', letterSpacing: '0.08em' }}>⚠ verify</span>}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                    <input value={item.description} onChange={e => updateItem(i, 'description', e.target.value)} placeholder="Description" style={{ ...inp, flex: 1 }} />
+                    <input value={item.description} onChange={e => updateItem(i, 'description', e.target.value)} placeholder={aiEnhanced && !item.description ? 'Not found — please fill' : 'Description'} style={{ ...inp, flex: 1, border: aiEnhanced && !item.description ? '1px dashed rgba(249,115,22,0.5)' : inp.border as string }} />
                     <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'rgba(249,115,22,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${item.isFixedPrice ? 'rgba(249,115,22,0.4)' : 'rgba(255,255,255,0.1)'}`, color: item.isFixedPrice ? '#F97316' : '#555', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
                       {item.isFixedPrice ? 'Pauschal' : 'Per Unit'}
                     </button>
