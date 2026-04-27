@@ -502,7 +502,8 @@ input[type='range']::-moz-range-thumb {
 /* Main content */
 .os-main {
   margin-left: 260px;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   background: #0A0A0A;
 }
 

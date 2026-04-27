@@ -546,10 +546,10 @@ export default function NewInvoicePage() {
 
       <input ref={fileInputRef} type="file" accept="image/*,.pdf" capture="environment" style={{ display: 'none' }} onChange={handleFileSelect} />
 
-      <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <div style={{ display: 'flex', height: '100vh' }}>
 
         {/* ── FORM ── */}
-        <div style={{ width: '50%', overflowY: 'auto', padding: '28px 32px', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ width: '50%', height: '100vh', overflowY: 'auto', padding: '28px 32px', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
 
           {/* Header row */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -770,7 +770,7 @@ export default function NewInvoicePage() {
         </div>
 
         {/* ── LIVE PREVIEW ── */}
-        <div style={{ flex: 1, overflowY: 'auto', background: '#f0f0f0', padding: '28px' }}>
+        <div style={{ flex: 1, height: '100vh', overflowY: 'auto', background: '#f0f0f0', padding: '28px' }}>
           <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>Live Preview</p>
           <div style={{ background: '#FFF', maxWidth: '520px', margin: '0 auto', fontFamily: 'Arial,sans-serif', fontSize: '13px', color: '#111', boxShadow: '0 4px 24px rgba(0,0,0,0.15)' }}>
             <div style={{ background: '#0A0A0A', padding: '22px 28px', borderBottom: '3px solid #F97316' }}>
