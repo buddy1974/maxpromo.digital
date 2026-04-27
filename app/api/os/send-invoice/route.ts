@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
-import { getDb } from '@/lib/db'
+import { neon } from '@neondatabase/serverless'
 
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
+const FROM_EMAIL = 'MAXPROMO DIGITAL <info@maxpromo.digital>'
 
 interface LineItem {
   description: string
@@ -96,18 +96,39 @@ function buildInvoiceEmail(data: {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('[send-invoice] POST called')
+
+  // ── env var guards ──────────────────────────────────────
+  if (!process.env.RESEND_API_KEY) {
+    console.error('[send-invoice] RESEND_API_KEY missing')
+    return NextResponse.json(
+      { error: 'Email not configured', detail: 'RESEND_API_KEY environment variable is missing' },
+      { status: 503 }
+    )
+  }
+
+  const dbUrl = process.env.NEON_DATABASE_URL ?? process.env.DATABASE_URL
+  if (!dbUrl) {
+    console.error('[send-invoice] DATABASE_URL missing')
+    return NextResponse.json(
+      { error: 'Database not configured', detail: 'Neither NEON_DATABASE_URL nor DATABASE_URL is set' },
+      { status: 503 }
+    )
+  }
+
   try {
+    // 1. Parse body
+    console.log('[send-invoice] 1. Parsing body...')
     const body = await request.json() as {
       invoice_id: string
-      clientEmails?: string[]   // new: array of TO recipients
-      client_email?: string     // legacy: single email (backward compat)
+      clientEmails?: string[]
+      client_email?: string
       client_name: string
       invoice_number: string; date: string; due_date: string
       line_items: LineItem[]; total: number
-      sendCopyToMarcel?: boolean  // default true
+      sendCopyToMarcel?: boolean
     }
 
-    // Resolve recipient list (support both old and new callers)
     const toEmails: string[] = body.clientEmails?.length
       ? body.clientEmails
       : body.client_email ? [body.client_email] : []
@@ -116,6 +137,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'invoice_id and at least one email required' }, { status: 400 })
     }
 
+    console.log('[send-invoice] to:', toEmails, '| invoice:', body.invoice_number)
+
+    // 2. Build email
+    console.log('[send-invoice] 2. Building HTML...')
     const html = buildInvoiceEmail({
       invoice_number: body.invoice_number,
       client_name: body.client_name,
@@ -125,9 +150,10 @@ export async function POST(request: NextRequest) {
       total: body.total,
     })
 
-    // BCC: always info@maxpromo.digital unless explicitly disabled
     const bcc = body.sendCopyToMarcel !== false ? ['info@maxpromo.digital'] : []
 
+    // 3. Send via Resend
+    console.log('[send-invoice] 3. Sending email via Resend...')
     const result = await sendEmail({
       to: toEmails,
       from: FROM_EMAIL,
@@ -137,17 +163,31 @@ export async function POST(request: NextRequest) {
       bcc,
     })
 
-    if (!result.success) throw new Error(result.error)
+    if (!result.success) {
+      console.error('[send-invoice] Resend failed:', result.error)
+      throw new Error(result.error ?? 'Resend returned failure')
+    }
 
-    // Mark invoice as sent
-    const sql = getDb()
+    console.log('[send-invoice] email sent, id:', result.id)
+
+    // 4. Mark invoice as sent
+    console.log('[send-invoice] 4. Updating invoice status...')
+    const sql = neon(dbUrl)
     await sql`
       UPDATE os_invoices SET status = 'sent', sent_at = NOW()
       WHERE id = ${body.invoice_id}`
 
+    console.log('[send-invoice] done')
     return NextResponse.json({ success: true })
+
   } catch (error) {
-    console.error('[/api/os/send-invoice]', error)
-    return NextResponse.json({ error: 'Failed to send invoice' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : String(error)
+    const stack = error instanceof Error ? error.stack : undefined
+    console.error('[send-invoice] ERROR:', msg)
+    console.error('[send-invoice] stack:', stack)
+    return NextResponse.json(
+      { error: 'Failed to send invoice', detail: msg },
+      { status: 500 }
+    )
   }
 }
