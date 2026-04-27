@@ -150,7 +150,7 @@ export default function PrintPage() {
         <div style={{ padding: '24px 40px', borderBottom: '1px solid #eee', background: '#fafafa' }}>
           <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', textTransform: 'uppercase', letterSpacing: '0.12em', margin: '0 0 8px' }}>An / To</p>
           <p style={{ fontSize: '15px', fontWeight: 600, color: '#111', margin: '0 0 3px' }}>{invoice.client_name}</p>
-          {invoice.client_address && <p style={{ color: '#555', fontSize: '13px', margin: 0 }}>{invoice.client_address}</p>}
+          {invoice.client_address && <p style={{ color: '#555', fontSize: '13px', margin: 0, whiteSpace: 'pre-line' }}>{invoice.client_address}</p>}
         </div>
 
         {/* Line items */}

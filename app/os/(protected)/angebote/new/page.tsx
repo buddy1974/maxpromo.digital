@@ -37,9 +37,19 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   )
 }
 
-interface AddrSuggestion { display_name: string }
-function AddressInput({ value, onChange, placeholder, aiEnhanced }: { value: string; onChange: (v: string) => void; placeholder?: string; aiEnhanced?: boolean }) {
-  const [suggestions, setSuggestions] = useState<AddrSuggestion[]>([])
+interface NominatimResult {
+  display_name: string
+  address: {
+    road?: string; house_number?: string
+    city?: string; town?: string; village?: string; postcode?: string
+  }
+}
+
+function StreetInput({ value, onChange, placeholder, aiEnhanced, onFill }: {
+  value: string; onChange: (v: string) => void; placeholder?: string
+  aiEnhanced?: boolean; onFill?: (street: string, postcode: string, city: string) => void
+}) {
+  const [suggestions, setSuggestions] = useState<NominatimResult[]>([])
   const [open, setOpen] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -49,9 +59,13 @@ function AddressInput({ value, onChange, placeholder, aiEnhanced }: { value: str
     if (v.length < 3) { setSuggestions([]); setOpen(false); return }
     timer.current = setTimeout(async () => {
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v)}&countrycodes=de&addressdetails=1&format=json&limit=6`, { headers: { 'User-Agent': 'MaxpromoDigitalOS/1.0 info@maxpromo.digital' } })
-        const data = await res.json() as AddrSuggestion[]
-        setSuggestions(data); setOpen(data.length > 0)
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v)}&countrycodes=de,at,ch&addressdetails=1&format=json&limit=6`,
+          { headers: { 'User-Agent': 'MaxpromoDigitalOS/1.0 info@maxpromo.digital' } }
+        )
+        const data = await res.json() as NominatimResult[]
+        const withStreet = data.filter(r => r.address?.road)
+        setSuggestions(withStreet); setOpen(withStreet.length > 0)
       } catch { /* ignore */ }
     }, 400)
   }
@@ -61,14 +75,24 @@ function AddressInput({ value, onChange, placeholder, aiEnhanced }: { value: str
       <input value={value} onChange={e => handleChange(e.target.value)} placeholder={placeholder} style={aiEnhanced && !value.trim() ? inpMissing : inp} onBlur={() => setTimeout(() => setOpen(false), 200)} />
       {open && suggestions.length > 0 && (
         <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#111', border: '1px solid rgba(255,255,255,0.1)', zIndex: 50, maxHeight: '180px', overflowY: 'auto' }}>
-          {suggestions.map((s, i) => (
-            <button key={i} onMouseDown={() => { onChange(s.display_name.split(',').slice(0,3).join(',').trim()); setOpen(false) }} style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#CCC', fontFamily: sans, fontSize: '12px', padding: '9px 12px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(249,115,22,0.08)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'none')}
-            >
-              {s.display_name.split(',').slice(0,4).join(', ')}
-            </button>
-          ))}
+          {suggestions.map((s, i) => {
+            const road      = s.address.road || ''
+            const num       = s.address.house_number || ''
+            const streetStr = [road, num].filter(Boolean).join(' ')
+            const city      = s.address.city || s.address.town || s.address.village || ''
+            const postcode  = s.address.postcode || ''
+            return (
+              <button key={i}
+                onMouseDown={() => { onChange(streetStr || s.display_name.split(',')[0].trim()); onFill?.(streetStr || s.display_name.split(',')[0].trim(), postcode, city); setOpen(false) }}
+                style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#CCC', fontFamily: sans, fontSize: '12px', padding: '9px 12px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(249,115,22,0.08)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+              >
+                {streetStr || s.display_name.split(',').slice(0, 2).join(',')}
+                {(postcode || city) && <span style={{ color: '#555', marginLeft: '10px', fontSize: '11px' }}>{[postcode, city].filter(Boolean).join(' ')}</span>}
+              </button>
+            )
+          })}
         </div>
       )}
     </div>
@@ -87,10 +111,12 @@ export default function NewAngebotPage() {
   const [number,      setNumber]      = useState('')
   const [date,        setDate]        = useState(new Date().toISOString().split('T')[0])
   const [validUntil,  setValidUntil]  = useState(addDays(30))
-  const [clientId,    setClientId]    = useState('')
-  const [clientName,  setClientName]  = useState('')
-  const [clientEmail, setClientEmail] = useState('')
-  const [clientAddr,  setClientAddr]  = useState('')
+  const [clientId,       setClientId]       = useState('')
+  const [clientName,     setClientName]     = useState('')
+  const [clientEmail,    setClientEmail]    = useState('')
+  const [clientStreet,   setClientStreet]   = useState('')
+  const [clientPostcode, setClientPostcode] = useState('')
+  const [clientCity,     setClientCity]     = useState('')
   const [lineItems,   setLineItems]   = useState<LineItem[]>([blankItem()])
   const [notes,       setNotes]       = useState('')
   const [clients,     setClients]     = useState<Client[]>([])
@@ -212,9 +238,9 @@ export default function NewAngebotPage() {
   function applyExtracted(d: AIExtracted) {
     if (d.clientName)  setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
     if (d.clientEmail) setClientEmail(d.clientEmail)
-    if (d.clientAddress || d.clientCity) {
-      setClientAddr([d.clientAddress, [d.clientCity, d.clientPostcode].filter(Boolean).join(' ')].filter(Boolean).join(', '))
-    }
+    if (d.clientAddress) setClientStreet(d.clientAddress)
+    if (d.clientCity)    setClientCity(d.clientCity)
+    if (d.clientPostcode) setClientPostcode(d.clientPostcode)
     if (d.notes) setNotes(d.notes)
     if (d.validUntil || d.dueDate) setValidUntil(d.validUntil || d.dueDate)
     if (d.lineItems?.length) {
@@ -243,7 +269,11 @@ export default function NewAngebotPage() {
     const c = clients.find(x => x.id === id)
     if (!c) { setClientId(''); return }
     setClientId(c.id); setClientName(c.name + (c.company ? ` — ${c.company}` : ''))
-    setClientEmail(c.email || ''); setClientAddr([c.address, c.city, c.country].filter(Boolean).join(', '))
+    setClientEmail(c.email || '')
+    setClientStreet(c.address || '')
+    const m = (c.city || '').trim().match(/^(\d{4,5})\s+(.+)$/)
+    if (m) { setClientPostcode(m[1]); setClientCity(m[2]) }
+    else   { setClientPostcode(''); setClientCity(c.city || '') }
   }
 
   const subtotal   = lineItems.reduce((s, i) => s + Number(i.total), 0)
@@ -254,7 +284,7 @@ export default function NewAngebotPage() {
     try {
       await fetch('/api/os/angebote', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ angebot_number: number, client_id: clientId || undefined, client_name: clientName, client_email: clientEmail, client_address: clientAddr, line_items: lineItems.filter(i => i.description), subtotal, total: subtotal, status: 'draft', valid_until: validUntil, notes, anzahlung: hasAnzahlung ? Number(anzahlung) : 0, anzahlung_date: hasAnzahlung ? anzahlungDate : null }),
+        body: JSON.stringify({ angebot_number: number, client_id: clientId || undefined, client_name: clientName, client_email: clientEmail, client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'), line_items: lineItems.filter(i => i.description), subtotal, total: subtotal, status: 'draft', valid_until: validUntil, notes, anzahlung: hasAnzahlung ? Number(anzahlung) : 0, anzahlung_date: hasAnzahlung ? anzahlungDate : null }),
       })
       router.push('/os/angebote')
     } finally { setSaving(false) }
@@ -382,9 +412,23 @@ export default function NewAngebotPage() {
             <Field label="Client Email">
               <input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder={aiEnhanced && !clientEmail.trim() ? 'Not found — please fill' : ''} style={aiInp(clientEmail)} />
             </Field>
-            <Field label="Client Address">
-              <AddressInput value={clientAddr} onChange={setClientAddr} placeholder={aiEnhanced && !clientAddr.trim() ? 'Not found — please fill' : 'Type to search German addresses'} aiEnhanced={aiEnhanced && !clientAddr.trim()} />
+            <Field label="Straße und Hausnummer">
+              <StreetInput
+                value={clientStreet}
+                onChange={setClientStreet}
+                placeholder={aiEnhanced && !clientStreet.trim() ? 'Not found — please fill' : 'Musterstraße 12'}
+                aiEnhanced={aiEnhanced && !clientStreet.trim()}
+                onFill={(street, postcode, city) => { setClientStreet(street); setClientPostcode(postcode); setClientCity(city) }}
+              />
             </Field>
+            <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px' }}>
+              <Field label="PLZ">
+                <input value={clientPostcode} onChange={e => setClientPostcode(e.target.value)} placeholder="40210" maxLength={10} style={aiInp(clientPostcode)} />
+              </Field>
+              <Field label="Stadt">
+                <input value={clientCity} onChange={e => setClientCity(e.target.value)} placeholder="Düsseldorf" style={aiInp(clientCity)} />
+              </Field>
+            </div>
 
             <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
 
@@ -490,7 +534,7 @@ export default function NewAngebotPage() {
             </div>
             <div style={{ padding: '14px 28px', borderBottom: '1px solid #eee', background: '#f9f9f9' }}>
               <p style={{ margin: '0 0 2px', fontWeight: 600 }}>{clientName || '—'}</p>
-              {clientAddr && <p style={{ margin: 0, color: '#666', fontSize: '12px' }}>{clientAddr}</p>}
+              {(clientStreet || clientCity) && <p style={{ margin: 0, color: '#666', fontSize: '12px', whiteSpace: 'pre-line' }}>{[clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n')}</p>}
             </div>
             <div style={{ padding: '18px 28px' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '12px' }}>
