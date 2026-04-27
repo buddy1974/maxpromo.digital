@@ -86,13 +86,16 @@ export default function PrintPage() {
 
   return (
     <>
+      {/* Suggested filename for browser "Save as PDF" dialog */}
+      <title>Rechnung-{invoice.invoice_number}-{invoice.client_name.replace(/[^a-zA-Z0-9À-ž]/g, '-').replace(/-+/g, '-')}</title>
       <style>{`
         @media print {
-          body { margin: 0; }
+          body { margin: 0; background: #fff !important; }
           .no-print { display: none !important; }
-          @page { margin: 15mm; }
+          @page { size: A4; margin: 20mm; }
         }
         body { background: #f0f0f0; }
+        * { box-sizing: border-box; }
       `}</style>
 
       {/* Toolbar */}

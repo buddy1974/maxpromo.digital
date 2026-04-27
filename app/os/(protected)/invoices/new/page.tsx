@@ -103,7 +103,9 @@ export default function NewInvoicePage() {
   const [dueDate, setDueDate] = useState(addDays(30))
   const [clientId,      setClientId]      = useState('')
   const [clientName,    setClientName]    = useState('')
-  const [clientEmail,   setClientEmail]   = useState('')
+  const [clientEmails,  setClientEmails]  = useState<string[]>([])
+  const [emailInput,    setEmailInput]    = useState('')
+  const [emailError,    setEmailError]    = useState('')
   const [clientAddress, setClientAddress] = useState('')
   const [clients,       setClients]       = useState<Client[]>([])
   const [lineItems, setLineItems] = useState<LineItem[]>([blankItem()])
@@ -114,6 +116,11 @@ export default function NewInvoicePage() {
   const [notes,   setNotes]   = useState('')
   const [saving,  setSaving]  = useState(false)
   const [sending, setSending] = useState(false)
+  const [sendCopy, setSendCopy] = useState(true)
+  const [sent,     setSent]    = useState(false)
+  const [sentData, setSentData] = useState<{ id: string; number: string; emails: string[]; name: string } | null>(null)
+  const [sendError, setSendError] = useState('')
+  const [toast,    setToast]   = useState('')
 
   // AI state
   const [aiModalOpen,   setAiModalOpen]   = useState(false)
@@ -242,7 +249,7 @@ export default function NewInvoicePage() {
   // ── Apply extracted data + confidence signals ─────────────────────────────
   function applyExtracted(d: AIExtracted) {
     if (d.clientName) setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
-    if (d.clientEmail) setClientEmail(d.clientEmail)
+    if (d.clientEmail) setClientEmails([d.clientEmail])
     if (d.clientAddress || d.clientCity) {
       setClientAddress([d.clientAddress, [d.clientCity, d.clientPostcode].filter(Boolean).join(' ')].filter(Boolean).join(', '))
     }
@@ -286,7 +293,8 @@ export default function NewInvoicePage() {
     if (!c) { setClientId(''); return }
     setClientId(c.id)
     setClientName(c.name + (c.company ? ` — ${c.company}` : ''))
-    setClientEmail(c.email || '')
+    setClientEmails(c.email ? [c.email] : [])
+    setEmailInput('')
     setClientAddress([c.address, c.city, c.country].filter(Boolean).join(', '))
   }
 
@@ -297,7 +305,7 @@ export default function NewInvoicePage() {
     if (!clientName.trim() || lineItems.every(i => !i.description)) return null
     const body = {
       invoice_number: invoiceNumber, client_id: clientId || undefined,
-      client_name: clientName, client_email: clientEmail, client_address: clientAddress,
+      client_name: clientName, client_email: clientEmails[0] || '', client_address: clientAddress,
       line_items: lineItems.filter(i => i.description),
       subtotal, total: subtotal, notes, due_date: dueDate,
       status: sendNow ? 'sent' : 'draft',
@@ -317,17 +325,75 @@ export default function NewInvoicePage() {
     finally { setSaving(false) }
   }
 
+  function showToast(msg: string) {
+    setToast(msg)
+    setTimeout(() => setToast(''), 5000)
+  }
+
+  async function autoSaveClient(invoiceId: string) {
+    if (!clientName.trim()) return
+    try {
+      const res = await fetch('/api/os/clients/auto-save', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: clientName, email: clientEmails[0] || '', address: clientAddress, invoice_id: invoiceId }),
+      })
+      if (res.ok) {
+        const data = await res.json() as { created: boolean }
+        if (data.created) showToast(`👤 ${clientName.split(' — ')[0]} saved to your address book`)
+      }
+    } catch { /* non-blocking */ }
+  }
+
+  function addEmail() {
+    const e = emailInput.trim().replace(/,+$/, '')
+    if (!e) return
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { setEmailError('Ungültige E-Mail-Adresse'); return }
+    if (clientEmails.includes(e)) { setEmailInput(''); return }
+    setClientEmails(prev => [...prev, e])
+    setEmailInput('')
+    setEmailError('')
+  }
+
+  function handleEmailKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' || e.key === ',' || e.key === 'Tab') {
+      e.preventDefault(); addEmail()
+    }
+    if (e.key === 'Backspace' && !emailInput && clientEmails.length > 0) {
+      setClientEmails(prev => prev.slice(0, -1))
+    }
+  }
+
   async function handleSend() {
-    if (!clientEmail.trim()) { alert('Client email required to send invoice.'); return }
-    setSending(true)
+    if (!clientEmails.length) {
+      // Try adding whatever is typed in the input first
+      if (emailInput.trim()) { addEmail(); return }
+      setSendError('Bitte mindestens eine E-Mail-Adresse eingeben.'); return
+    }
+    setSending(true); setSendError('')
     try {
       const id = await saveInvoice(false)
-      if (!id) return
-      await fetch('/api/os/send-invoice', {
+      if (!id) { setSendError('Fehler beim Speichern der Rechnung.'); return }
+
+      const res = await fetch('/api/os/send-invoice', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ invoice_id: id, client_email: clientEmail, client_name: clientName, invoice_number: invoiceNumber, date, due_date: dueDate, line_items: lineItems.filter(i => i.description), total: subtotal }),
+        body: JSON.stringify({
+          invoice_id: id, clientEmails, client_name: clientName,
+          invoice_number: invoiceNumber, date, due_date: dueDate,
+          line_items: lineItems.filter(i => i.description), total: subtotal,
+          sendCopyToMarcel: sendCopy,
+        }),
       })
-      router.push('/os/invoices')
+      if (!res.ok) { const d = await res.json() as { error?: string }; throw new Error(d.error ?? 'Send failed') }
+
+      // Auto-save client to addressbook
+      void autoSaveClient(id)
+
+      // Show success state
+      setSentData({ id, number: invoiceNumber, emails: clientEmails, name: clientName })
+      setSent(true)
+      showToast(`✓ Rechnung ${invoiceNumber} sent to ${clientEmails.join(', ')}`)
+    } catch (err) {
+      setSendError(err instanceof Error ? err.message : 'Send failed. Please try again.')
     } finally { setSending(false) }
   }
 
@@ -503,9 +569,38 @@ export default function NewInvoicePage() {
             <Field label="Client Name *">
               <input value={clientName} onChange={e => setClientName(e.target.value)} placeholder={aiEnhanced && !clientName.trim() ? 'Not found — please fill' : 'Or enter manually'} style={aiInp(clientName)} />
             </Field>
-            <Field label="Client Email">
-              <input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder={aiEnhanced && !clientEmail.trim() ? 'Not found — please fill' : ''} style={aiInp(clientEmail)} />
+            <Field label="Client Email(s)">
+              {/* ── Email chips input ── */}
+              <div
+                style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', background: '#0A0A0A', border: `1px solid ${emailError ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`, padding: '7px 10px', minHeight: '40px', alignItems: 'center', cursor: 'text' }}
+                onClick={e => { const inp = (e.currentTarget as HTMLDivElement).querySelector('input'); inp?.focus() }}
+              >
+                {clientEmails.map((e, i) => (
+                  <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.35)', color: '#F97316', fontFamily: mono, fontSize: '11px', padding: '2px 8px', borderRadius: '2px' }}>
+                    {e}
+                    <button onClick={() => setClientEmails(prev => prev.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: '#F97316', cursor: 'pointer', fontSize: '13px', padding: '0', lineHeight: 1 }}>×</button>
+                  </span>
+                ))}
+                <input
+                  type="text" value={emailInput}
+                  onChange={ev => { setEmailInput(ev.target.value); setEmailError('') }}
+                  onKeyDown={handleEmailKeyDown}
+                  onBlur={addEmail}
+                  placeholder={clientEmails.length === 0 ? (aiEnhanced ? 'Not found — add email, press Enter' : 'Add email — press Enter after each one') : ''}
+                  style={{ flex: '1', minWidth: '180px', background: 'none', border: 'none', outline: 'none', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '0' }}
+                />
+              </div>
+              {emailError && <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '4px 0 0', letterSpacing: '0.06em' }}>⚠ {emailError}</p>}
             </Field>
+
+            {/* Send copy checkbox */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <input type="checkbox" checked={sendCopy} onChange={e => setSendCopy(e.target.checked)}
+                style={{ width: '14px', height: '14px', accentColor: '#F97316', cursor: 'pointer' }} />
+              <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.08em' }}>
+                Send copy to info@maxpromo.digital
+              </span>
+            </label>
             <Field label="Client Address">
               <AddressInput value={clientAddress} onChange={setClientAddress} placeholder={aiEnhanced && !clientAddress.trim() ? 'Not found — please fill' : 'Street, City — type to search German addresses'} aiEnhanced={aiEnhanced && !clientAddress.trim()} />
             </Field>
@@ -603,11 +698,19 @@ export default function NewInvoicePage() {
               <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical' }} />
             </Field>
 
+            {sendError && (
+              <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)', padding: '10px 14px', borderRadius: '2px' }}>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: 0, letterSpacing: '0.06em' }}>⚠ {sendError}</p>
+                <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', background: 'none', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Retry</button>
+              </div>
+            )}
+
             <div style={{ display: 'flex', gap: '10px', paddingBottom: '24px' }}>
               <button onClick={handleSaveDraft} disabled={saving} style={{ background: '#111', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1 }}>
                 {saving ? 'Saving...' : 'Save Draft'}
               </button>
-              <button onClick={handleSend} disabled={sending} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: sending ? 0.6 : 1 }}>
+              <button onClick={handleSend} disabled={sending} style={{ background: sending ? '#7c3a0c' : '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: sending ? 'wait' : 'pointer', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                {sending && <span style={{ display: 'inline-block', width: '10px', height: '10px', border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#000', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
                 {sending ? 'Sending...' : 'Send Invoice'}
               </button>
             </div>
@@ -683,6 +786,43 @@ export default function NewInvoicePage() {
           </div>
         </div>
       </div>
+
+      {/* ── SEND SUCCESS OVERLAY ── */}
+      {sent && sentData && (
+        <div style={{ position: 'fixed', inset: 0, background: '#0A0A0A', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div style={{ textAlign: 'center', maxWidth: '440px', width: '100%' }}>
+            {/* Checkmark */}
+            <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(34,197,94,0.12)', border: '2px solid #22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <span style={{ color: '#22c55e', fontSize: '32px', lineHeight: 1 }}>✓</span>
+            </div>
+            <h2 style={{ color: '#FFF', fontSize: '22px', fontWeight: 700, margin: '0 0 8px', fontFamily: grotesk }}>Rechnung gesendet! ✓</h2>
+            <p style={{ color: '#888', fontFamily: mono, fontSize: '12px', margin: '0 0 4px', letterSpacing: '0.04em' }}>Invoice Nr. {sentData.number} sent to:</p>
+            <p style={{ color: '#F97316', fontFamily: mono, fontSize: '12px', margin: '0 0 28px', letterSpacing: '0.04em', wordBreak: 'break-all' }}>{sentData.emails.join(', ')}</p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button
+                onClick={() => window.open(`/os/invoices/${sentData.id}/print`, '_blank')}
+                style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}
+              >
+                📄 Als PDF speichern
+              </button>
+              <button
+                onClick={() => router.push('/os/invoices')}
+                style={{ background: '#111', border: '1px solid rgba(255,255,255,0.12)', color: '#888', fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}
+              >
+                ← Zurück zu Rechnungen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── TOAST ── */}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 400, background: '#111', border: '1px solid rgba(249,115,22,0.4)', color: '#FFF', fontFamily: mono, fontSize: '12px', padding: '12px 18px', letterSpacing: '0.06em', maxWidth: '380px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+          {toast}
+        </div>
+      )}
     </>
   )
 }

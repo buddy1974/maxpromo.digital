@@ -1,9 +1,10 @@
 export interface EmailPayload {
-  to: string
+  to: string | string[]
   from: string
   subject: string
   html: string
   replyTo?: string
+  bcc?: string[]
 }
 
 export interface EmailResult {
@@ -34,10 +35,11 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
     },
     body: JSON.stringify({
       from: payload.from,
-      to: payload.to,
+      to: Array.isArray(payload.to) ? payload.to : [payload.to],
       subject: payload.subject,
       html: payload.html,
       reply_to: payload.replyTo,
+      ...(payload.bcc?.length ? { bcc: payload.bcc } : {}),
     }),
   })
 

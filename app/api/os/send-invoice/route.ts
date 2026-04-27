@@ -98,33 +98,44 @@ function buildInvoiceEmail(data: {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json() as {
-      invoice_id: string; client_email: string; client_name: string
+      invoice_id: string
+      clientEmails?: string[]   // new: array of TO recipients
+      client_email?: string     // legacy: single email (backward compat)
+      client_name: string
       invoice_number: string; date: string; due_date: string
       line_items: LineItem[]; total: number
+      sendCopyToMarcel?: boolean  // default true
     }
 
-    if (!body.client_email || !body.invoice_id) {
-      return NextResponse.json({ error: 'invoice_id and client_email required' }, { status: 400 })
+    // Resolve recipient list (support both old and new callers)
+    const toEmails: string[] = body.clientEmails?.length
+      ? body.clientEmails
+      : body.client_email ? [body.client_email] : []
+
+    if (!toEmails.length || !body.invoice_id) {
+      return NextResponse.json({ error: 'invoice_id and at least one email required' }, { status: 400 })
     }
 
-    const html = buildInvoiceEmail(body)
+    const html = buildInvoiceEmail({
+      invoice_number: body.invoice_number,
+      client_name: body.client_name,
+      date: body.date,
+      due_date: body.due_date,
+      line_items: body.line_items,
+      total: body.total,
+    })
 
-    // Send to client
+    // BCC: always info@maxpromo.digital unless explicitly disabled
+    const bcc = body.sendCopyToMarcel !== false ? ['info@maxpromo.digital'] : []
+
     const result = await sendEmail({
-      to: body.client_email,
+      to: toEmails,
       from: FROM_EMAIL,
       replyTo: 'info@maxpromo.digital',
       subject: `Rechnung Nr. ${body.invoice_number} — Maxpromo Digital`,
       html,
+      bcc,
     })
-
-    // BCC to self
-    await sendEmail({
-      to: 'info@maxpromo.digital',
-      from: FROM_EMAIL,
-      subject: `[KOPIE] Rechnung ${body.invoice_number} → ${body.client_name}`,
-      html,
-    }).catch(console.error)
 
     if (!result.success) throw new Error(result.error)
 
