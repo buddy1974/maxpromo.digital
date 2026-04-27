@@ -321,7 +321,7 @@ export default function ClientsPage() {
           <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>{clients.length} TOTAL</p>
         </div>
         <button
-          onClick={() => { setShowForm(true); resetScan() }}
+          onClick={() => { setEditId(null); setForm({ ...BLANK }); setShowForm(true); resetScan() }}
           style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: 'pointer' }}
         >
           + New Client
@@ -336,193 +336,198 @@ export default function ClientsPage() {
         style={{ width: '300px', ...inp, marginBottom: '20px', display: 'block' }}
       />
 
-      {/* ── New client form ── */}
+      {/* ── New / Edit Client MODAL ── */}
       {showForm && (
-        <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderTop: '2px solid #F97316', borderRadius: '4px', padding: '24px', marginBottom: '24px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div style={{
+            background: '#111111',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderTop: '2px solid #F97316',
+            borderRadius: '4px',
+            width: '100%',
+            maxWidth: '560px',
+            maxHeight: 'calc(100vh - 48px)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}>
 
-          {/* Form header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
-              {editId ? 'Edit Client' : 'New Client'}
-            </p>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button
-                onClick={() => { setScanTab('scan'); fileRef.current?.click() }}
-                style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '7px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}
-              >
-                📷 Scan Card
-              </button>
-              <button
-                onClick={() => { setScanTab('paste'); setShowForm(true); setExtracted(null); setScanPreview('') }}
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '7px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}
-              >
-                📝 Paste Info
-              </button>
+            {/* ── MODAL HEADER — fixed top ── */}
+            <div style={{ padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
+                {editId ? 'Edit Client' : 'New Client'}
+              </p>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <button
+                  onClick={() => { setScanTab('scan'); fileRef.current?.click() }}
+                  style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
+                >
+                  📷 Scan
+                </button>
+                <button
+                  onClick={() => { setScanTab('paste'); setExtracted(null); setScanPreview('') }}
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
+                >
+                  📝 Paste
+                </button>
+                <button
+                  onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
+                  style={{ background: 'none', border: 'none', color: '#555', fontSize: '22px', cursor: 'pointer', lineHeight: 1, padding: '0 0 0 8px' }}
+                >
+                  ×
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Image preview */}
-          {scanTab === 'scan' && scanPreview && !extracted && (
-            <div style={{ marginBottom: '16px', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', borderRadius: '2px' }}>
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-                <img src={scanPreview} alt="Business card" style={{ width: '140px', height: '90px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.08)' }} />
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontFamily: mono, fontSize: '10px', color: '#888', margin: '0 0 10px', letterSpacing: '0.08em' }}>Image selected — Claude will extract contact details</p>
+            {/* ── MODAL BODY — scrollable ── */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
+
+              {/* Image preview */}
+              {scanTab === 'scan' && scanPreview && !extracted && (
+                <div style={{ marginBottom: '16px', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', borderRadius: '2px' }}>
+                  <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                    <img src={scanPreview} alt="Business card" style={{ width: '120px', height: '80px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '2px' }} />
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontFamily: mono, fontSize: '10px', color: '#888', margin: '0 0 10px', letterSpacing: '0.08em' }}>Image ready — extract contact details</p>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={runExtract} disabled={extracting} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: '2px' }}>
+                          {extracting ? '⟳ Reading...' : '◈ Extract'}
+                        </button>
+                        <button onClick={() => { setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555', fontFamily: mono, fontSize: '10px', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Paste text */}
+              {scanTab === 'paste' && !extracted && (
+                <div style={{ marginBottom: '16px' }}>
+                  <textarea
+                    value={pasteText}
+                    onChange={e => setPasteText(e.target.value)}
+                    rows={4}
+                    placeholder={'John Smith\nAcme GmbH\njohn@acme.de\n+49 211 123456\nHauptstr. 12, 40210 Düsseldorf'}
+                    style={{ ...inp, resize: 'vertical', lineHeight: 1.6, marginBottom: '8px' }}
+                  />
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={runExtract} disabled={extracting} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 16px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: '2px' }}>
-                      {extracting ? '⟳ Reading...' : '◈ Extract Contact'}
+                    <button onClick={runExtract} disabled={extracting || !pasteText.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
+                      {extracting ? '⟳ Extracting...' : '◈ Extract with AI'}
                     </button>
-                    <button onClick={() => { setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555', fontFamily: mono, fontSize: '10px', padding: '8px 12px', cursor: 'pointer', borderRadius: '2px' }}>
-                      Remove
+                    <button onClick={() => { setScanTab('scan'); setPasteText('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555', fontFamily: mono, fontSize: '10px', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
+                      Cancel
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* Paste text */}
-          {scanTab === 'paste' && !extracted && (
-            <div style={{ marginBottom: '16px' }}>
-              <textarea
-                value={pasteText}
-                onChange={e => setPasteText(e.target.value)}
-                rows={4}
-                placeholder={'John Smith\nAcme GmbH\njohn@acme.de\n+49 211 123456\nHauptstr. 12, 40210 Düsseldorf'}
-                style={{ ...inp, resize: 'vertical', lineHeight: 1.6, marginBottom: '8px' }}
-              />
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button onClick={runExtract} disabled={extracting || !pasteText.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 16px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
-                  {extracting ? '⟳ Extracting...' : '◈ Extract with AI'}
-                </button>
-                <button onClick={() => { setScanTab('scan'); setPasteText('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555', fontFamily: mono, fontSize: '10px', padding: '8px 12px', cursor: 'pointer', borderRadius: '2px' }}>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-
-          {extractError && (
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>⚠ {extractError}</p>
-          )}
-
-          {/* Extracted preview banner */}
-          {extracted && (
-            <div style={{ marginBottom: '16px', background: '#0D0D0D', border: `1px solid ${confidenceColor[extracted.confidence]}33`, borderLeft: `3px solid ${confidenceColor[extracted.confidence]}`, padding: '12px 16px', borderRadius: '2px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>Fields pre-filled — verify below</p>
-                <span style={{ fontFamily: mono, fontSize: '9px', color: confidenceColor[extracted.confidence], background: `${confidenceColor[extracted.confidence]}22`, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
-                  {extracted.confidence} confidence
-                </span>
-              </div>
-              {extracted.confidence === 'low' && (
-                <p style={{ fontFamily: mono, fontSize: '9px', color: '#ef4444', margin: '8px 0 0', letterSpacing: '0.08em' }}>⚠ Low confidence — please verify before saving</p>
               )}
-              <button onClick={resetScan} style={{ fontFamily: mono, fontSize: '9px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
-                ↺ Re-scan
-              </button>
+
+              {extractError && (
+                <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>⚠ {extractError}</p>
+              )}
+
+              {/* Extracted preview banner */}
+              {extracted && (
+                <div style={{ marginBottom: '16px', background: '#0D0D0D', border: `1px solid ${confidenceColor[extracted.confidence]}33`, borderLeft: `3px solid ${confidenceColor[extracted.confidence]}`, padding: '12px 16px', borderRadius: '2px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>Fields pre-filled — verify below</p>
+                    <span style={{ fontFamily: mono, fontSize: '9px', color: confidenceColor[extracted.confidence], background: `${confidenceColor[extracted.confidence]}22`, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                      {extracted.confidence} confidence
+                    </span>
+                  </div>
+                  {extracted.confidence === 'low' && (
+                    <p style={{ fontFamily: mono, fontSize: '9px', color: '#ef4444', margin: '8px 0 0', letterSpacing: '0.08em' }}>⚠ Low confidence — please verify before saving</p>
+                  )}
+                  <button onClick={resetScan} style={{ fontFamily: mono, fontSize: '9px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
+                    ↺ Re-scan
+                  </button>
+                </div>
+              )}
+
+              {/* Contact Info */}
+              <span style={sectionLbl}>Contact Info</span>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <Field label="Name *">
+                  <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={inp} />
+                </Field>
+                <Field label="Firma">
+                  <input value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} style={inp} />
+                </Field>
+                <Field label="E-Mail">
+                  <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} style={inp} />
+                </Field>
+                <Field label="Telefon">
+                  <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inp} />
+                </Field>
+              </div>
+
+              {/* Address */}
+              <span style={sectionLbl}>Adresse</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <Field label="Straße und Hausnummer">
+                  <StreetInput
+                    value={form.address}
+                    onChange={v => setForm(f => ({ ...f, address: v }))}
+                    onFill={(street, postcode, city) => setForm(f => ({ ...f, address: street, postcode, city }))}
+                  />
+                </Field>
+                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '14px' }}>
+                  <Field label="Postleitzahl">
+                    <input value={form.postcode} onChange={e => setForm(f => ({ ...f, postcode: e.target.value }))} placeholder="40210" maxLength={10} style={inp} />
+                  </Field>
+                  <Field label="Stadt">
+                    <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Düsseldorf" style={inp} />
+                  </Field>
+                </div>
+                <Field label="Land">
+                  <select value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} style={{ ...inp, appearance: 'none' }}>
+                    <option>Deutschland</option>
+                    <option>Österreich</option>
+                    <option>Schweiz</option>
+                    <option>United Kingdom</option>
+                    <option>France</option>
+                    <option>Other</option>
+                  </select>
+                </Field>
+              </div>
+
+              {/* Additional */}
+              <span style={sectionLbl}>Zusätzlich</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '4px' }}>
+                <Field label="Website">
+                  <input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder="https://" style={inp} />
+                </Field>
+                <Field label="Notizen">
+                  <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={3} placeholder="Internal notes about this client..." style={{ ...inp, resize: 'vertical', lineHeight: 1.6 }} />
+                </Field>
+              </div>
             </div>
-          )}
 
-          {/* ── CONTACT INFO ── */}
-          <span style={sectionLbl}>Contact Info</span>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-            <Field label="Name *">
-              <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={inp} />
-            </Field>
-            <Field label="Firma">
-              <input value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} style={inp} />
-            </Field>
-            <Field label="E-Mail">
-              <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} style={inp} />
-            </Field>
-            <Field label="Telefon">
-              <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inp} />
-            </Field>
-          </div>
-
-          {/* ── ADDRESS ── */}
-          <span style={sectionLbl}>Adresse</span>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <Field label="Straße und Hausnummer">
-              <StreetInput
-                value={form.address}
-                onChange={v => setForm(f => ({ ...f, address: v }))}
-                onFill={(street, postcode, city) => setForm(f => ({ ...f, address: street, postcode, city }))}
-              />
-            </Field>
-            <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '14px' }}>
-              <Field label="Postleitzahl">
-                <input
-                  value={form.postcode}
-                  onChange={e => setForm(f => ({ ...f, postcode: e.target.value }))}
-                  placeholder="40210"
-                  maxLength={10}
-                  style={inp}
-                />
-              </Field>
-              <Field label="Stadt">
-                <input
-                  value={form.city}
-                  onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                  placeholder="Düsseldorf"
-                  style={inp}
-                />
-              </Field>
+            {/* ── MODAL FOOTER — always visible ── */}
+            <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.08)', background: '#111111', flexShrink: 0 }}>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  type="button"
+                  onClick={editId ? updateClient : save}
+                  disabled={saving || !form.name.trim()}
+                  style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
+                >
+                  {saving ? 'Saving...' : editId ? 'Update Client' : 'Save Client'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
+                  style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#cccccc', fontFamily: sans, fontSize: '13px', padding: '10px 18px', cursor: 'pointer' }}
+                >
+                  Abbrechen
+                </button>
+              </div>
+              {saveError && (
+                <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>
+              )}
             </div>
-            <Field label="Land">
-              <select value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} style={{ ...inp, appearance: 'none' }}>
-                <option>Deutschland</option>
-                <option>Österreich</option>
-                <option>Schweiz</option>
-                <option>United Kingdom</option>
-                <option>France</option>
-                <option>Other</option>
-              </select>
-            </Field>
-          </div>
 
-          {/* ── ADDITIONAL ── */}
-          <span style={sectionLbl}>Zusätzlich</span>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <Field label="Website">
-              <input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder="https://" style={inp} />
-            </Field>
-            <Field label="Notizen">
-              <textarea
-                value={form.notes}
-                onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                rows={3}
-                placeholder="Internal notes about this client..."
-                style={{ ...inp, resize: 'vertical', lineHeight: 1.6 }}
-              />
-            </Field>
-          </div>
-
-          {/* Save / Cancel */}
-          <div style={{ marginTop: '20px' }}>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button
-                type="button"
-                onClick={editId ? updateClient : save}
-                disabled={saving || !form.name.trim()}
-                style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
-              >
-                {saving ? 'Saving...' : editId ? 'Update Client' : 'Save Client'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
-                style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#cccccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}
-              >
-                Cancel
-              </button>
-            </div>
-            {saveError && (
-              <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>
-                ⚠ {saveError}
-              </p>
-            )}
           </div>
         </div>
       )}

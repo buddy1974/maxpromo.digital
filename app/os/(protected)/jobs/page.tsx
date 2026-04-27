@@ -88,45 +88,59 @@ export default function JobsPage() {
 
       {/* New job modal */}
       {showNew && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.1)', borderTop: '2px solid #F97316', padding: '28px', width: '440px' }}>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>New Job</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {[
-                { label: 'Title *', key: 'title', type: 'text' },
-                { label: 'Client Name', key: 'client_name', type: 'text' },
-                { label: 'Value (€)', key: 'value', type: 'number' },
-              ].map(f => (
-                <div key={f.key}>
-                  <label style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
-                  <input type={f.type} value={form[f.key as keyof NewJobForm]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                    style={{ width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '8px 12px', outline: 'none', boxSizing: 'border-box' }} />
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.08)', borderTop: '2px solid #F97316', borderRadius: '4px', width: '100%', maxWidth: '440px', maxHeight: 'calc(100vh - 48px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
+            {/* Header */}
+            <div style={{ padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>New Job</p>
+              <button onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: 'none', color: '#555', fontSize: '22px', cursor: 'pointer', lineHeight: 1 }}>×</button>
+            </div>
+
+            {/* Body — scrollable */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {([
+                  { label: 'Title *', key: 'title', type: 'text' },
+                  { label: 'Client Name', key: 'client_name', type: 'text' },
+                  { label: 'Value (€)', key: 'value', type: 'number' },
+                ] as const).map(f => (
+                  <div key={f.key}>
+                    <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
+                    <input type={f.type} value={form[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                      style={{ width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.10)', borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', boxSizing: 'border-box' }} />
+                  </div>
+                ))}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div>
+                    <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Stage</label>
+                    <select value={form.stage} onChange={e => setForm(f => ({ ...f, stage: e.target.value as Stage }))} style={{ width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.10)', borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', appearance: 'none' }}>
+                      {STAGES.map(s => <option key={s} value={s}>{STAGE_LABEL[s]}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Priority</label>
+                    <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value }))} style={{ width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.10)', borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', appearance: 'none' }}>
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+                  </div>
                 </div>
-              ))}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
-                  <label style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Stage</label>
-                  <select value={form.stage} onChange={e => setForm(f => ({ ...f, stage: e.target.value as Stage }))} style={{ width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '8px 12px', outline: 'none', appearance: 'none' }}>
-                    {STAGES.map(s => <option key={s} value={s}>{STAGE_LABEL[s]}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Priority</label>
-                  <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value }))} style={{ width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '8px 12px', outline: 'none', appearance: 'none' }}>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                  </select>
+                  <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Notes</label>
+                  <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={3} style={{ width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.10)', borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
                 </div>
               </div>
-              <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} style={{ width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '8px 12px', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
             </div>
-            <div style={{ marginTop: '20px' }}>
+
+            {/* Footer — always visible */}
+            <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.08)', background: '#111111', flexShrink: 0 }}>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <button type="button" onClick={createJob} disabled={saving || !form.title.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', padding: '10px 20px', cursor: saving || !form.title.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !form.title.trim() ? 0.6 : 1 }}>
+                <button type="button" onClick={createJob} disabled={saving || !form.title.trim()} style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.title.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.title.trim() ? 0.6 : 1 }}>
                   {saving ? 'Saving...' : 'Create Job'}
                 </button>
-                <button type="button" onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '10px 16px', cursor: 'pointer' }}>Cancel</button>
+                <button type="button" onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#ccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}>Abbrechen</button>
               </div>
               {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>}
             </div>
