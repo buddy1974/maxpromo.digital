@@ -5,107 +5,101 @@ import { useRouter } from 'next/navigation'
 
 const OS_PASSWORD = 'maxpromo-os-2026'
 const mono = 'var(--font-roboto-mono)'
-const grotesk = 'var(--font-inter)'
+const sans = 'var(--font-inter)'
 
 export default function OsLoginPage() {
   const router = useRouter()
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [error,    setError]    = useState('')
+  const [loading,  setLoading]  = useState(false)
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-
     if (password === OS_PASSWORD) {
       sessionStorage.setItem('os-auth', 'true')
       router.replace('/os')
     } else {
-      setError('Invalid password.')
+      setError('Incorrect access code')
       setLoading(false)
     }
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        background: '#0A0A0A',
-        flexDirection: 'column',
-      }}
-    >
-      {/* Wordmark */}
-      <div style={{ marginBottom: '8px', textAlign: 'center' }}>
-        <p
-          style={{
-            fontFamily: grotesk,
-            fontSize: '28px',
-            fontWeight: 700,
-            color: '#FFFFFF',
-            letterSpacing: '-0.03em',
-            margin: 0,
-          }}
-        >
-          MaxPromo <span style={{ color: '#F97316' }}>Digital</span>
-        </p>
-        <p
-          style={{
-            fontFamily: mono,
-            fontSize: '11px',
-            color: '#555555',
-            letterSpacing: '0.3em',
-            textTransform: 'uppercase',
-            margin: '8px 0 0',
-          }}
-        >
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      background: '#0A0A0A',
+      flexDirection: 'column',
+    }}>
+      {/* Logo */}
+      <div style={{ marginBottom: '40px', textAlign: 'center' }}>
+        <p style={{
+          fontFamily: mono,
+          fontSize: '24px',
+          fontWeight: 700,
+          color: '#F97316',
+          letterSpacing: '0.1em',
+          margin: 0,
+        }}>
           MAXPROMO OS
+        </p>
+        <p style={{
+          fontFamily: sans,
+          fontSize: '13px',
+          color: '#555555',
+          margin: '8px 0 0',
+        }}>
+          Business Operating System
         </p>
       </div>
 
       <form
         onSubmit={handleSubmit}
-        style={{
-          marginTop: '48px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '12px',
-          width: '320px',
-        }}
+        style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}
       >
+        <label style={{
+          fontFamily: mono,
+          fontSize: '10px',
+          color: '#555555',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          marginBottom: '6px',
+          display: 'block',
+        }}>
+          Access Code
+        </label>
+
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+          onChange={e => setPassword(e.target.value)}
           autoFocus
           style={{
-            background: '#111111',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderTop: '2px solid rgba(249,115,22,0.4)',
+            background: '#0D0D0D',
+            border: `1px solid ${error ? '#ef4444' : 'rgba(255,255,255,0.10)'}`,
+            borderRadius: '4px',
             color: '#FFFFFF',
             fontFamily: mono,
             fontSize: '14px',
-            padding: '13px 16px',
+            padding: '10px 14px',
             outline: 'none',
             width: '100%',
             boxSizing: 'border-box',
+            transition: 'border-color 0.15s ease',
           }}
         />
 
         {error && (
-          <p
-            style={{
-              fontFamily: mono,
-              fontSize: '11px',
-              color: '#ef4444',
-              margin: 0,
-              letterSpacing: '0.05em',
-            }}
-          >
+          <p style={{
+            fontFamily: sans,
+            fontSize: '12px',
+            color: '#ef4444',
+            margin: '4px 0 0',
+          }}>
             {error}
           </p>
         )}
@@ -114,20 +108,22 @@ export default function OsLoginPage() {
           type="submit"
           disabled={loading || !password}
           style={{
+            marginTop: '12px',
             background: '#F97316',
             border: 'none',
+            borderRadius: '4px',
             color: '#000000',
-            fontFamily: mono,
+            fontFamily: sans,
             fontWeight: 700,
-            fontSize: '12px',
-            letterSpacing: '0.15em',
-            padding: '14px 24px',
+            fontSize: '13px',
+            padding: '10px 20px',
             cursor: loading || !password ? 'not-allowed' : 'pointer',
             opacity: loading || !password ? 0.6 : 1,
-            textTransform: 'uppercase',
+            width: '100%',
+            transition: 'opacity 0.15s ease',
           }}
         >
-          {loading ? 'ENTERING...' : 'ENTER OS'}
+          {loading ? 'Entering...' : 'Enter OS →'}
         </button>
       </form>
     </div>
