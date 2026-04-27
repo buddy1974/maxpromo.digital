@@ -13,7 +13,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  if (!process.env.DATABASE_URL) {
+  if (!(process.env.NEON_DATABASE_URL ?? process.env.DATABASE_URL)) {
     console.error('[/api/os/clients POST] DATABASE_URL is not set')
     return NextResponse.json(
       { error: 'Database not configured', detail: 'DATABASE_URL environment variable is missing. Add it to .env.local (dev) and Vercel environment variables (production).' },
