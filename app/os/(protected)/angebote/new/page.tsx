@@ -120,7 +120,8 @@ export default function NewAngebotPage() {
   const [lineItems,   setLineItems]   = useState<LineItem[]>([blankItem()])
   const [notes,       setNotes]       = useState('')
   const [clients,     setClients]     = useState<Client[]>([])
-  const [saving,      setSaving]      = useState(false)
+  const [saving,     setSaving]     = useState(false)
+  const [saveError,  setSaveError]  = useState('')
   const [hasAnzahlung,    setHasAnzahlung]    = useState(false)
   const [anzahlung,       setAnzahlung]       = useState(0)
   const [anzahlungDate,   setAnzahlungDate]   = useState('')
@@ -280,13 +281,21 @@ export default function NewAngebotPage() {
   const restbetrag = subtotal - (hasAnzahlung ? Number(anzahlung) : 0)
 
   async function handleSave() {
-    if (!clientName.trim()) return; setSaving(true)
+    if (!clientName.trim()) return
+    setSaving(true)
+    setSaveError('')
     try {
-      await fetch('/api/os/angebote', {
+      const res = await fetch('/api/os/angebote', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ angebot_number: number, client_id: clientId || undefined, client_name: clientName, client_email: clientEmail, client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'), line_items: lineItems.filter(i => i.description), subtotal, total: subtotal, status: 'draft', valid_until: validUntil, notes, anzahlung: hasAnzahlung ? Number(anzahlung) : 0, anzahlung_date: hasAnzahlung ? anzahlungDate : null }),
       })
+      if (!res.ok) {
+        const err = await res.json() as { error?: string }
+        throw new Error(err.error ?? `Server error ${res.status}`)
+      }
       router.push('/os/angebote')
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to save. Please try again.')
     } finally { setSaving(false) }
   }
 
@@ -508,9 +517,12 @@ export default function NewAngebotPage() {
 
             <Field label="Notes"><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical' }} /></Field>
 
-            <button onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1, marginBottom: '24px' }}>
-              {saving ? 'Saving...' : 'Save Angebot'}
-            </button>
+            <div style={{ marginBottom: '24px' }}>
+              <button type="button" onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() ? 0.6 : 1 }}>
+                {saving ? 'Saving...' : 'Save Angebot'}
+              </button>
+              {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>}
+            </div>
           </div>
         </div>
 

@@ -32,6 +32,7 @@ export default function JobsPage() {
   const [showNew,    setShowNew]    = useState(false)
   const [form,       setForm]       = useState<NewJobForm>({ ...BLANK_FORM })
   const [saving,     setSaving]     = useState(false)
+  const [saveError,  setSaveError]  = useState('')
 
   useEffect(() => {
     fetch('/api/os/jobs')
@@ -51,15 +52,22 @@ export default function JobsPage() {
   async function createJob() {
     if (!form.title.trim()) return
     setSaving(true)
+    setSaveError('')
     try {
       const res = await fetch('/api/os/jobs', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, value: form.value ? Number(form.value) : undefined }),
       })
+      if (!res.ok) {
+        const err = await res.json() as { error?: string }
+        throw new Error(err.error ?? `Server error ${res.status}`)
+      }
       const job = await res.json() as Job
       setJobs(prev => [job, ...prev])
       setForm({ ...BLANK_FORM })
       setShowNew(false)
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to save. Please try again.')
     } finally { setSaving(false) }
   }
 
@@ -113,11 +121,14 @@ export default function JobsPage() {
               </div>
               <textarea placeholder="Notes" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} style={{ width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '8px 12px', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
             </div>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-              <button onClick={createJob} disabled={saving || !form.title.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', padding: '10px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1 }}>
-                {saving ? 'Saving...' : 'Create Job'}
-              </button>
-              <button onClick={() => setShowNew(false)} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '10px 16px', cursor: 'pointer' }}>Cancel</button>
+            <div style={{ marginTop: '20px' }}>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="button" onClick={createJob} disabled={saving || !form.title.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', padding: '10px 20px', cursor: saving || !form.title.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !form.title.trim() ? 0.6 : 1 }}>
+                  {saving ? 'Saving...' : 'Create Job'}
+                </button>
+                <button type="button" onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '10px 16px', cursor: 'pointer' }}>Cancel</button>
+              </div>
+              {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>}
             </div>
           </div>
         </div>

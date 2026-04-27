@@ -124,8 +124,10 @@ export default function ClientsPage() {
   const [loading,  setLoading]  = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [form,     setForm]     = useState({ ...BLANK })
-  const [saving,   setSaving]   = useState(false)
-  const [search,   setSearch]   = useState('')
+  const [saving,    setSaving]    = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const [toast,     setToast]     = useState('')
+  const [search,    setSearch]    = useState('')
 
   const [scanTab,      setScanTab]      = useState<'scan' | 'paste'>('scan')
   const [pasteText,    setPasteText]    = useState('')
@@ -199,7 +201,9 @@ export default function ClientsPage() {
   async function save() {
     if (!form.name.trim()) return
     setSaving(true)
+    setSaveError('')
     try {
+      console.log('[clients] POSTing to /api/os/clients', { name: form.name.trim() })
       const res = await fetch('/api/os/clients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -214,11 +218,22 @@ export default function ClientsPage() {
           notes:   form.notes    || undefined,
         }),
       })
+      console.log('[clients] API response status:', res.status)
+      if (!res.ok) {
+        const err = await res.json() as { error?: string }
+        throw new Error(err.error ?? `Server error ${res.status}`)
+      }
       const newClient = await res.json() as Client
+      console.log('[clients] Saved client:', newClient.id, newClient.name)
       setClients(prev => [newClient, ...prev])
       setForm({ ...BLANK })
       setShowForm(false)
       resetScan()
+      setToast(`✓ ${newClient.name} saved`)
+      setTimeout(() => setToast(''), 4000)
+    } catch (err) {
+      console.error('[clients] Save failed:', err)
+      setSaveError(err instanceof Error ? err.message : 'Failed to save. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -417,20 +432,29 @@ export default function ClientsPage() {
           </div>
 
           {/* Save / Cancel */}
-          <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-            <button
-              onClick={save}
-              disabled={saving || !form.name.trim()}
-              style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
-            >
-              {saving ? 'Saving...' : 'Save Client'}
-            </button>
-            <button
-              onClick={() => { setShowForm(false); resetScan() }}
-              style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#cccccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}
-            >
-              Cancel
-            </button>
+          <div style={{ marginTop: '20px' }}>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={save}
+                disabled={saving || !form.name.trim()}
+                style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
+              >
+                {saving ? 'Saving...' : 'Save Client'}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setShowForm(false); resetScan(); setSaveError('') }}
+                style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#cccccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}
+              >
+                Cancel
+              </button>
+            </div>
+            {saveError && (
+              <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>
+                ⚠ {saveError}
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -476,6 +500,13 @@ export default function ClientsPage() {
           </tbody>
         </table>
       </div>
+
+      {/* ── Success toast ── */}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: '80px', right: '24px', background: '#111111', border: '1px solid rgba(34,197,94,0.3)', borderLeft: '3px solid #22c55e', padding: '12px 20px', borderRadius: '4px', zIndex: 500 }}>
+          <p style={{ fontFamily: mono, fontSize: '12px', color: '#22c55e', margin: 0, letterSpacing: '0.06em' }}>{toast}</p>
+        </div>
+      )}
     </div>
   )
 }

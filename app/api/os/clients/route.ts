@@ -14,11 +14,13 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('[/api/os/clients POST] called')
     const sql = getDb()
     const body = await request.json() as {
       name: string; company?: string; email?: string; phone?: string
       address?: string; city?: string; country?: string; notes?: string; status?: string
     }
+    console.log('[/api/os/clients POST] body:', { name: body.name, email: body.email })
 
     if (!body.name?.trim()) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
@@ -28,12 +30,13 @@ export async function POST(request: NextRequest) {
       INSERT INTO os_clients (name, company, email, phone, address, city, country, notes, status)
       VALUES (${body.name.trim()}, ${body.company || null}, ${body.email || null},
               ${body.phone || null}, ${body.address || null}, ${body.city || null},
-              ${body.country || 'Germany'}, ${body.notes || null}, ${body.status || 'active'})
+              ${body.country || 'Deutschland'}, ${body.notes || null}, ${body.status || 'active'})
       RETURNING *`
 
+    console.log('[/api/os/clients POST] inserted id:', rows[0]?.id)
     return NextResponse.json(rows[0], { status: 201 })
   } catch (error) {
-    console.error('[/api/os/clients POST]', error)
+    console.error('[/api/os/clients POST] ERROR:', error)
     return NextResponse.json({ error: 'Failed to create client' }, { status: 500 })
   }
 }

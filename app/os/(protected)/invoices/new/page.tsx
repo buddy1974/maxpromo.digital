@@ -345,14 +345,22 @@ export default function NewInvoicePage() {
       restbetrag: hasAnzahlung ? restbetrag : subtotal,
     }
     const res  = await fetch('/api/os/invoices', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    if (!res.ok) {
+      const err = await res.json() as { error?: string }
+      throw new Error(err.error ?? `Server error ${res.status}`)
+    }
     const data = await res.json() as { id: string }
     return data.id
   }
 
   async function handleSaveDraft() {
     setSaving(true)
-    try { const id = await saveInvoice(false); if (id) router.push('/os/invoices') }
-    finally { setSaving(false) }
+    try {
+      const id = await saveInvoice(false)
+      if (id) router.push('/os/invoices')
+    } catch (err) {
+      showToast(`⚠ Save failed: ${err instanceof Error ? err.message : 'Please try again'}`)
+    } finally { setSaving(false) }
   }
 
   function showToast(msg: string) {
