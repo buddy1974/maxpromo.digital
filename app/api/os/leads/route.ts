@@ -29,8 +29,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(rows[0], { status: 201 })
   } catch (error) {
-    console.error('[/api/os/leads POST]', error)
-    return NextResponse.json({ error: 'Failed to create lead' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : String(error)
+    console.error('[/api/os/leads POST]', msg)
+    return NextResponse.json({ error: 'Failed to create lead', detail: msg }, { status: 500 })
   }
 }
 

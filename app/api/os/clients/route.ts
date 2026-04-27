@@ -13,6 +13,13 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  if (!process.env.DATABASE_URL) {
+    console.error('[/api/os/clients POST] DATABASE_URL is not set')
+    return NextResponse.json(
+      { error: 'Database not configured', detail: 'DATABASE_URL environment variable is missing. Add it to .env.local (dev) and Vercel environment variables (production).' },
+      { status: 503 }
+    )
+  }
   try {
     console.log('[/api/os/clients POST] called')
     const sql = getDb()
@@ -36,8 +43,9 @@ export async function POST(request: NextRequest) {
     console.log('[/api/os/clients POST] inserted id:', rows[0]?.id)
     return NextResponse.json(rows[0], { status: 201 })
   } catch (error) {
-    console.error('[/api/os/clients POST] ERROR:', error)
-    return NextResponse.json({ error: 'Failed to create client' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : String(error)
+    console.error('[/api/os/clients POST] ERROR:', msg)
+    return NextResponse.json({ error: 'Failed to create client', detail: msg }, { status: 500 })
   }
 }
 

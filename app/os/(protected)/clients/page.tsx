@@ -221,8 +221,8 @@ export default function ClientsPage() {
       })
       console.log('[clients] API response status:', res.status)
       if (!res.ok) {
-        const err = await res.json() as { error?: string }
-        throw new Error(err.error ?? `Server error ${res.status}`)
+        const err = await res.json() as { error?: string; detail?: string }
+        throw new Error(err.detail ?? err.error ?? `Server error ${res.status}`)
       }
       const newClient = await res.json() as Client
       console.log('[clients] Saved client:', newClient.id, newClient.name)
@@ -260,7 +260,7 @@ export default function ClientsPage() {
           notes:   form.notes    || null,
         }),
       })
-      if (!res.ok) { const e = await res.json() as { error?: string }; throw new Error(e.error ?? `Error ${res.status}`) }
+      if (!res.ok) { const e = await res.json() as { error?: string; detail?: string }; throw new Error(e.detail ?? e.error ?? `Error ${res.status}`) }
       const updated = await res.json() as Client
       setClients(prev => prev.map(c => c.id === editId ? updated : c))
       setEditId(null)
