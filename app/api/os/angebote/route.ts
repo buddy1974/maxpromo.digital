@@ -46,24 +46,41 @@ export async function POST(request: NextRequest) {
       angebot_number?: string; client_id?: string; client_name: string
       client_email?: string; client_address?: string; line_items: unknown[]
       subtotal: number; total: number; status?: string; valid_until?: string; notes?: string
+      anzahlung?: number; anzahlung_date?: string; anzahlung_method?: string
     }
 
     const angebot_number = body.angebot_number || await nextAngebotNumber()
     const rows = await sql`
       INSERT INTO os_angebote
         (angebot_number, client_id, client_name, client_email, client_address,
-         line_items, subtotal, total, status, valid_until, notes)
+         line_items, subtotal, total, status, valid_until, notes,
+         anzahlung, anzahlung_date, anzahlung_method)
       VALUES
         (${angebot_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
          ${JSON.stringify(body.line_items)}::jsonb, ${body.subtotal}, ${body.total},
-         ${body.status || 'draft'}, ${body.valid_until || null}, ${body.notes || null})
+         ${body.status || 'draft'}, ${body.valid_until || null}, ${body.notes || null},
+         ${body.anzahlung ?? 0}, ${body.anzahlung_date || null}, ${body.anzahlung_method || null})
       RETURNING *`
 
     return NextResponse.json(rows[0], { status: 201 })
   } catch (error) {
     console.error('[/api/os/angebote POST]', error)
     return NextResponse.json({ error: 'Failed to create angebot' }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const sql = getDb()
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    await sql`DELETE FROM os_angebote WHERE id = ${id}`
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('[/api/os/angebote DELETE]', error)
+    return NextResponse.json({ error: 'Failed to delete angebot' }, { status: 500 })
   }
 }
 

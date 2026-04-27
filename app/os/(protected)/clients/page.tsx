@@ -120,10 +120,11 @@ function StreetInput({ value, onChange, onFill }: {
 }
 
 export default function ClientsPage() {
-  const [clients,  setClients]  = useState<Client[]>([])
-  const [loading,  setLoading]  = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [form,     setForm]     = useState({ ...BLANK })
+  const [clients,   setClients]   = useState<Client[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [showForm,  setShowForm]  = useState(false)
+  const [editId,    setEditId]    = useState<string | null>(null)
+  const [form,      setForm]      = useState({ ...BLANK })
   const [saving,    setSaving]    = useState(false)
   const [saveError, setSaveError] = useState('')
   const [toast,     setToast]     = useState('')
@@ -239,6 +240,71 @@ export default function ClientsPage() {
     }
   }
 
+  async function updateClient() {
+    if (!form.name.trim() || !editId) return
+    setSaving(true)
+    setSaveError('')
+    try {
+      const res = await fetch('/api/os/clients', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id:      editId,
+          name:    form.name.trim(),
+          company: form.company  || null,
+          email:   form.email    || null,
+          phone:   form.phone    || null,
+          address: form.address  || null,
+          city:    [form.postcode, form.city].filter(Boolean).join(' ') || null,
+          country: form.country  || 'Deutschland',
+          notes:   form.notes    || null,
+        }),
+      })
+      if (!res.ok) { const e = await res.json() as { error?: string }; throw new Error(e.error ?? `Error ${res.status}`) }
+      const updated = await res.json() as Client
+      setClients(prev => prev.map(c => c.id === editId ? updated : c))
+      setEditId(null)
+      setShowForm(false)
+      setForm({ ...BLANK })
+      setToast(`✓ ${updated.name} updated`)
+      setTimeout(() => setToast(''), 4000)
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Failed to update.')
+    } finally { setSaving(false) }
+  }
+
+  async function deleteClient(id: string, name: string) {
+    if (!confirm(`Delete client "${name}"? This cannot be undone.`)) return
+    const res = await fetch(`/api/os/clients?id=${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      setClients(prev => prev.filter(c => c.id !== id))
+      setToast(`Deleted ${name}`)
+      setTimeout(() => setToast(''), 3000)
+    }
+  }
+
+  function startEdit(c: Client) {
+    const [postcode, ...cityParts] = (c.city || '').trim().split(/\s+/)
+    const hasPostcode = /^\d{4,5}$/.test(postcode ?? '')
+    setEditId(c.id)
+    setForm({
+      name:     c.name     || '',
+      company:  c.company  || '',
+      email:    c.email    || '',
+      phone:    c.phone    || '',
+      address:  c.address  || '',
+      postcode: hasPostcode ? postcode : '',
+      city:     hasPostcode ? cityParts.join(' ') : (c.city || ''),
+      country:  c.country  || 'Deutschland',
+      website:  '',
+      notes:    '',
+      status:   c.status   || 'active',
+    })
+    setShowForm(true)
+    setSaveError('')
+    resetScan()
+  }
+
   const filtered = clients.filter(c =>
     `${c.name} ${c.company} ${c.email}`.toLowerCase().includes(search.toLowerCase())
   )
@@ -276,7 +342,9 @@ export default function ClientsPage() {
 
           {/* Form header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>New Client</p>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
+              {editId ? 'Edit Client' : 'New Client'}
+            </p>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
                 onClick={() => { setScanTab('scan'); fileRef.current?.click() }}
@@ -436,15 +504,15 @@ export default function ClientsPage() {
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
                 type="button"
-                onClick={save}
+                onClick={editId ? updateClient : save}
                 disabled={saving || !form.name.trim()}
                 style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
               >
-                {saving ? 'Saving...' : 'Save Client'}
+                {saving ? 'Saving...' : editId ? 'Update Client' : 'Save Client'}
               </button>
               <button
                 type="button"
-                onClick={() => { setShowForm(false); resetScan(); setSaveError('') }}
+                onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
                 style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#cccccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}
               >
                 Cancel
@@ -466,16 +534,16 @@ export default function ClientsPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: '#0D0D0D', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-              {['Name', 'Company', 'Email', 'Phone', 'City', 'Status'].map(h => (
+              {['Name', 'Company', 'Email', 'Phone', 'City', 'Status', 'Actions'].map(h => (
                 <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: '#333333' }}>Loading...</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: '#333333' }}>Loading...</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={6} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '14px', color: '#444444' }}>No clients found.</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '14px', color: '#444444' }}>No clients found.</td></tr>
             ) : (
               filtered.map(c => (
                 <tr
@@ -493,6 +561,22 @@ export default function ClientsPage() {
                     <span style={{ fontFamily: mono, fontSize: '10px', color: c.status === 'active' ? '#4ade80' : '#666666', background: c.status === 'active' ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.06)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '3px', border: `1px solid ${c.status === 'active' ? 'rgba(34,197,94,0.2)' : '#333333'}` }}>
                       {c.status}
                     </span>
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button
+                        onClick={() => startEdit(c)}
+                        style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteClient(c.id, c.name)}
+                        style={{ fontFamily: mono, fontSize: '10px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

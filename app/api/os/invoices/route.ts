@@ -74,6 +74,20 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function DELETE(request: NextRequest) {
+  try {
+    const sql = getDb()
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    await sql`DELETE FROM os_invoices WHERE id = ${id}`
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('[/api/os/invoices DELETE]', error)
+    return NextResponse.json({ error: 'Failed to delete invoice' }, { status: 500 })
+  }
+}
+
 export async function PATCH(request: NextRequest) {
   try {
     const sql  = getDb()
@@ -91,7 +105,7 @@ export async function PATCH(request: NextRequest) {
         sent_at    = COALESCE(${body.sent_at as string | null}, sent_at),
         due_date   = COALESCE(${body.due_date as string | null}, due_date),
         notes      = COALESCE(${body.notes as string | null}, notes),
-        line_items = COALESCE(${body.line_items ? JSON.stringify(body.line_items) + '::jsonb' : null}, line_items),
+        line_items = COALESCE(${body.line_items ? JSON.stringify(body.line_items) : null}::jsonb, line_items),
         subtotal   = COALESCE(${body.subtotal ?? null}, subtotal),
         total      = COALESCE(${body.total ?? null}, total)
       WHERE id = ${body.id}

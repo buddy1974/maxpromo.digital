@@ -26,12 +26,18 @@ function StatusBadge({ status }: { status: string }) {
   return <span style={{ fontFamily: mono, fontSize: '9px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>{status}</span>
 }
 
+const LEAD_BLANK = { name: '', company: '', email: '', phone: '', source: 'manual', notes: '' }
+
 export default function LeadsPage() {
-  const [leads,    setLeads]    = useState<Lead[]>([])
-  const [loading,  setLoading]  = useState(true)
-  const [selected, setSelected] = useState<Lead | null>(null)
-  const [tab,      setTab]      = useState('all')
-  const [search,   setSearch]   = useState('')
+  const [leads,     setLeads]     = useState<Lead[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [selected,  setSelected]  = useState<Lead | null>(null)
+  const [tab,       setTab]       = useState('all')
+  const [search,    setSearch]    = useState('')
+  const [showNew,   setShowNew]   = useState(false)
+  const [newForm,   setNewForm]   = useState({ ...LEAD_BLANK })
+  const [creating,  setCreating]  = useState(false)
+  const [createErr, setCreateErr] = useState('')
 
   useEffect(() => {
     fetch('/api/os/leads')
@@ -39,6 +45,35 @@ export default function LeadsPage() {
       .then(d => { setLeads(Array.isArray(d) ? d : []); setLoading(false) })
       .catch(() => setLoading(false))
   }, [])
+
+  async function createLead() {
+    if (!newForm.name.trim() && !newForm.email.trim()) {
+      setCreateErr('Name or email required.'); return
+    }
+    setCreating(true); setCreateErr('')
+    try {
+      const res = await fetch('/api/os/leads', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...newForm }),
+      })
+      if (!res.ok) { const e = await res.json() as { error?: string }; throw new Error(e.error ?? 'Failed') }
+      const lead = await res.json() as Lead
+      setLeads(prev => [lead, ...prev])
+      setNewForm({ ...LEAD_BLANK })
+      setShowNew(false)
+    } catch (err) {
+      setCreateErr(err instanceof Error ? err.message : 'Failed to create lead.')
+    } finally { setCreating(false) }
+  }
+
+  async function deleteLead(id: string) {
+    if (!confirm('Delete this lead?')) return
+    const res = await fetch(`/api/os/leads?id=${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      setLeads(prev => prev.filter(l => l.id !== id))
+      if (selected?.id === id) setSelected(null)
+    }
+  }
 
   async function updateStatus(id: string, status: string) {
     await fetch('/api/os/leads', {
@@ -59,8 +94,51 @@ export default function LeadsPage() {
     converted: leads.filter(l => l.converted).length,
   }
 
+  const inpStyle: React.CSSProperties = { width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', boxSizing: 'border-box' }
+
   return (
     <div style={{ padding: '32px 40px' }}>
+      {/* New Lead Modal */}
+      {showNew && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div style={{ background: '#111111', border: '1px solid rgba(249,115,22,0.3)', width: '100%', maxWidth: '440px', borderRadius: '4px', padding: '28px' }}>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>New Lead</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {([
+                { label: 'Name', key: 'name', type: 'text' },
+                { label: 'Company', key: 'company', type: 'text' },
+                { label: 'Email', key: 'email', type: 'email' },
+                { label: 'Phone', key: 'phone', type: 'text' },
+              ] as const).map(f => (
+                <div key={f.key}>
+                  <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
+                  <input type={f.type} value={newForm[f.key]} onChange={e => setNewForm(p => ({ ...p, [f.key]: e.target.value }))} style={inpStyle} />
+                </div>
+              ))}
+              <div>
+                <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Source</label>
+                <select value={newForm.source} onChange={e => setNewForm(p => ({ ...p, source: e.target.value }))} style={{ ...inpStyle, appearance: 'none' }}>
+                  {['manual', 'website', 'referral', 'instagram', 'facebook', 'linkedin', 'google', 'whatsapp', 'email', 'phone', 'other'].map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Notes</label>
+                <textarea value={newForm.notes} onChange={e => setNewForm(p => ({ ...p, notes: e.target.value }))} rows={3} style={{ ...inpStyle, resize: 'vertical' }} />
+              </div>
+            </div>
+            {createErr && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0' }}>⚠ {createErr}</p>}
+            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+              <button type="button" onClick={createLead} disabled={creating} style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: creating ? 'wait' : 'pointer', opacity: creating ? 0.6 : 1 }}>
+                {creating ? 'Saving...' : 'Save Lead'}
+              </button>
+              <button type="button" onClick={() => { setShowNew(false); setCreateErr('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#ccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
           <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>Leads</h1>
@@ -70,6 +148,9 @@ export default function LeadsPage() {
             <span style={{ color: '#22c55e' }}>{stats.converted} Converted</span>
           </p>
         </div>
+        <button onClick={() => { setShowNew(true); setCreateErr('') }} style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 18px', cursor: 'pointer' }}>
+          + New Lead
+        </button>
       </div>
 
       {/* Filters */}
@@ -113,7 +194,7 @@ export default function LeadsPage() {
                   </td>
                   <td style={{ padding: '12px 16px' }}><StatusBadge status={lead.status} /></td>
                   <td style={{ padding: '12px 16px' }}>
-                    <div style={{ display: 'flex', gap: '8px' }} onClick={e => e.stopPropagation()}>
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }} onClick={e => e.stopPropagation()}>
                       {lead.status !== 'contacted' && (
                         <button onClick={() => updateStatus(lead.id, 'contacted')} style={{ fontFamily: mono, fontSize: '10px', color: '#3b82f6', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.04em' }}>
                           Contacted
@@ -124,6 +205,9 @@ export default function LeadsPage() {
                           Convert
                         </button>
                       )}
+                      <button onClick={() => deleteLead(lead.id)} style={{ fontFamily: mono, fontSize: '10px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.04em' }}>
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>

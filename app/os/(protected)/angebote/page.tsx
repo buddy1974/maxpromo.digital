@@ -9,7 +9,9 @@ const sans    = 'var(--font-inter)'
 
 interface Angebot {
   id: string; angebot_number: string; client_name: string; client_email: string
-  total: number; status: string; created_at: string; valid_until: string; converted_to_invoice: boolean
+  client_address?: string; line_items: unknown[]
+  total: number; subtotal: number; status: string; created_at: string
+  valid_until: string; converted_to_invoice: boolean; notes?: string
 }
 
 const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
@@ -38,32 +40,61 @@ export default function AngebotePage() {
       .catch(() => setLoading(false))
   }, [])
 
+  const [converting, setConverting] = useState<string | null>(null)
+  const [convertError, setConvertError] = useState('')
+
   async function convertToInvoice(a: Angebot) {
-    if (!confirm(`Convert ${a.angebot_number} to invoice?`)) return
-    const res = await fetch('/api/os/invoices', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        client_name: a.client_name, client_email: a.client_email,
-        line_items: [], subtotal: Number(a.total), total: Number(a.total), status: 'draft',
-      }),
-    })
-    if (res.ok) {
+    if (!confirm(`Convert ${a.angebot_number} to invoice?\n\nThis will create a new draft invoice with all line items.`)) return
+    setConverting(a.id)
+    setConvertError('')
+    try {
+      // Fetch full angebot to ensure we have line_items
+      const full = await fetch(`/api/os/angebote?id=${a.id}`).then(r => r.json()) as Angebot
+      const res = await fetch('/api/os/invoices', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          client_name: full.client_name,
+          client_email: full.client_email,
+          client_address: full.client_address || undefined,
+          line_items: Array.isArray(full.line_items) ? full.line_items : [],
+          subtotal: Number(full.subtotal || full.total),
+          total: Number(full.total),
+          status: 'draft',
+          notes: full.notes || undefined,
+        }),
+      })
+      if (!res.ok) throw new Error('Failed to create invoice')
       await fetch('/api/os/angebote', {
         method: 'PATCH', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: a.id, converted_to_invoice: true, status: 'accepted' }),
       })
       setAngebote(prev => prev.map(x => x.id === a.id ? { ...x, converted_to_invoice: true, status: 'accepted' } : x))
       router.push('/os/invoices')
+    } catch (err) {
+      setConvertError(err instanceof Error ? err.message : 'Conversion failed')
+    } finally {
+      setConverting(null)
     }
   }
 
   const fmtEur = (n: number) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
+
+  async function deleteAngebot(id: string, num: string) {
+    if (!confirm(`Delete ${num}? This cannot be undone.`)) return
+    const res = await fetch(`/api/os/angebote?id=${id}`, { method: 'DELETE' })
+    if (res.ok) setAngebote(prev => prev.filter(a => a.id !== id))
+  }
 
   const tabs     = ['all', 'draft', 'sent', 'accepted', 'rejected', 'expired']
   const filtered = tab === 'all' ? angebote : angebote.filter(a => a.status === tab)
 
   return (
     <div style={{ padding: '32px 40px' }}>
+      {convertError && (
+        <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: 0 }}>⚠ {convertError}</p>
+        </div>
+      )}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
           <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>Angebote</h1>
@@ -114,17 +145,25 @@ export default function AngebotePage() {
                   </td>
                   <td style={{ padding: '12px 16px' }}><StatusBadge status={a.status} /></td>
                   <td style={{ padding: '12px 16px' }}>
-                    {!a.converted_to_invoice && (
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      {!a.converted_to_invoice ? (
+                        <button
+                          onClick={() => convertToInvoice(a)}
+                          disabled={converting === a.id}
+                          style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', background: 'none', border: 'none', cursor: converting === a.id ? 'wait' : 'pointer', padding: 0, letterSpacing: '0.06em', opacity: converting === a.id ? 0.5 : 1 }}
+                        >
+                          {converting === a.id ? '⟳' : '→ Invoice'}
+                        </button>
+                      ) : (
+                        <span style={{ fontFamily: mono, fontSize: '9px', color: '#333', letterSpacing: '0.06em' }}>Converted</span>
+                      )}
                       <button
-                        onClick={() => convertToInvoice(a)}
-                        style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        onClick={() => deleteAngebot(a.id, a.angebot_number)}
+                        style={{ fontFamily: mono, fontSize: '10px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                       >
-                        → Invoice
+                        Delete
                       </button>
-                    )}
-                    {a.converted_to_invoice && (
-                      <span style={{ fontFamily: mono, fontSize: '9px', color: '#333', letterSpacing: '0.06em' }}>Converted</span>
-                    )}
+                    </div>
                   </td>
                 </tr>
               ))

@@ -36,6 +36,7 @@ function MetricCard({ label, value, sub }: MetricCardProps) {
 interface Invoice { id: string; invoice_number: string; client_name: string; total: number; status: string; created_at: string }
 interface Lead    { id: string; name: string; company: string; source: string; status: string; created_at: string }
 interface Job     { id: string; title: string; client_name: string; stage: string; value: number; created_at: string }
+interface Client  { id: string }
 
 const STATUS_COLORS: Record<string, string> = {
   draft: '#555', sent: '#3b82f6', paid: '#22c55e', overdue: '#ef4444',
@@ -69,6 +70,7 @@ export default function DashboardPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [leads,    setLeads]    = useState<Lead[]>([])
   const [jobs,     setJobs]     = useState<Job[]>([])
+  const [clients,  setClients]  = useState<Client[]>([])
   const [loading,  setLoading]  = useState(true)
 
   useEffect(() => {
@@ -76,10 +78,12 @@ export default function DashboardPage() {
       fetch('/api/os/invoices').then(r => r.json()),
       fetch('/api/os/leads').then(r => r.json()),
       fetch('/api/os/jobs').then(r => r.json()),
-    ]).then(([inv, lds, jbs]) => {
+      fetch('/api/os/clients').then(r => r.json()),
+    ]).then(([inv, lds, jbs, cls]) => {
       setInvoices(Array.isArray(inv) ? inv : [])
       setLeads(Array.isArray(lds) ? lds : [])
       setJobs(Array.isArray(jbs) ? jbs : [])
+      setClients(Array.isArray(cls) ? cls : [])
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [])
@@ -111,7 +115,7 @@ export default function DashboardPage() {
 
       {/* Metrics */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '36px', flexWrap: 'wrap' }}>
-        <MetricCard label="Total Clients" value={loading ? '—' : '0'} sub="Manage in Clients" />
+        <MetricCard label="Total Clients" value={loading ? '—' : clients.length} sub="Manage in Clients" />
         <MetricCard label="Active Jobs" value={loading ? '—' : activeJobs} sub="In kanban pipeline" />
         <MetricCard label="Outstanding (€)" value={loading ? '—' : fmtEur(outstanding)} sub="Sent / overdue" />
         <MetricCard label="New Leads (7d)" value={loading ? '—' : newLeads} sub="All sources" />

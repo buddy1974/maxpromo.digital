@@ -41,6 +41,20 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function DELETE(request: NextRequest) {
+  try {
+    const sql = getDb()
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    await sql`DELETE FROM os_clients WHERE id = ${id}`
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('[/api/os/clients DELETE]', error)
+    return NextResponse.json({ error: 'Failed to delete client' }, { status: 500 })
+  }
+}
+
 export async function PATCH(request: NextRequest) {
   try {
     const sql = getDb()

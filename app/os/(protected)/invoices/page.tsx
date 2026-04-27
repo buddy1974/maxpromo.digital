@@ -41,11 +41,17 @@ export default function InvoicesPage() {
   }, [])
 
   async function markPaid(id: string) {
-    await fetch('/api/os/invoices', {
+    const res = await fetch('/api/os/invoices', {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, status: 'paid', paid_date: new Date().toISOString().split('T')[0] }),
     })
-    setInvoices(prev => prev.map(i => i.id === id ? { ...i, status: 'paid' } : i))
+    if (res.ok) setInvoices(prev => prev.map(i => i.id === id ? { ...i, status: 'paid' } : i))
+  }
+
+  async function deleteInvoice(id: string, num: string) {
+    if (!confirm(`Delete invoice ${num}? This cannot be undone.`)) return
+    const res = await fetch(`/api/os/invoices?id=${id}`, { method: 'DELETE' })
+    if (res.ok) setInvoices(prev => prev.filter(i => i.id !== id))
   }
 
   const fmtEur = (n: number) =>
@@ -109,7 +115,7 @@ export default function InvoicesPage() {
               filtered.map(inv => (
                 <tr key={inv.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                   <td style={{ padding: '12px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '12px', color: '#F97316' }}>{inv.invoice_number}</span>
+                    <Link href={`/os/invoices/${inv.id}`} style={{ fontFamily: mono, fontSize: '12px', color: '#F97316', textDecoration: 'none' }}>{inv.invoice_number}</Link>
                   </td>
                   <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '13px', color: '#FFF' }}>{inv.client_name}</td>
                   <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: '#555' }}>
@@ -123,7 +129,7 @@ export default function InvoicesPage() {
                   </td>
                   <td style={{ padding: '12px 16px' }}><StatusBadge status={inv.status} /></td>
                   <td style={{ padding: '12px 16px' }}>
-                    <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                       <a
                         href={`/os/invoices/${inv.id}/print`}
                         target="_blank"
@@ -136,9 +142,15 @@ export default function InvoicesPage() {
                           onClick={() => markPaid(inv.id)}
                           style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                         >
-                          Paid
+                          Paid ✓
                         </button>
                       )}
+                      <button
+                        onClick={() => deleteInvoice(inv.id, inv.invoice_number)}
+                        style={{ fontFamily: mono, fontSize: '10px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
