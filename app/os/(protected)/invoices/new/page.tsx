@@ -415,9 +415,20 @@ export default function NewInvoicePage() {
       const res = await fetch('/api/os/send-invoice', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          invoice_id: id, clientEmails, client_name: clientName,
-          invoice_number: invoiceNumber, date, due_date: dueDate,
-          line_items: lineItems.filter(i => i.description), total: subtotal,
+          invoice_id: id,
+          clientEmails,
+          client_name: clientName,
+          invoice_number: invoiceNumber,
+          date,
+          due_date: dueDate,
+          line_items: lineItems.filter(i => i.description),
+          subtotal,
+          total: subtotal,
+          anzahlung: hasAnzahlung ? Number(anzahlung) : 0,
+          anzahlung_date: hasAnzahlung ? anzahlungDate : '',
+          anzahlung_method: hasAnzahlung ? anzahlungMethod : '',
+          restbetrag: hasAnzahlung ? restbetrag : subtotal,
+          address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join(', '),
           sendCopyToMarcel: sendCopy,
         }),
       })
