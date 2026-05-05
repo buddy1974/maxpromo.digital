@@ -1,12 +1,21 @@
 'use client'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 const mono = 'var(--font-roboto-mono)'
 const sans = 'var(--font-inter)'
 
-export default function OsLoginPage() {
+/**
+ * Inner form component — uses useSearchParams() to read the ?returnTo
+ * param. Next.js 15+ requires any client component using useSearchParams
+ * to be wrapped in a <Suspense> boundary at its import site, otherwise
+ * static generation bails out with "missing-suspense-with-csr-bailout".
+ *
+ * The export below provides that Suspense wrapper so the page itself can
+ * still pre-render at build time.
+ */
+function LoginForm() {
   const router = useRouter()
   const search = useSearchParams()
   const [password, setPassword] = useState('')
@@ -38,6 +47,65 @@ export default function OsLoginPage() {
   }
 
   return (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}>
+      <label style={{ fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
+        Access Code
+      </label>
+
+      <input
+        type="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        autoFocus
+        autoComplete="current-password"
+        style={{
+          background: '#0D0D0D',
+          border: `1px solid ${error ? '#ef4444' : 'rgba(255,255,255,0.10)'}`,
+          borderRadius: '4px',
+          color: '#FFFFFF',
+          fontFamily: mono,
+          fontSize: '14px',
+          padding: '10px 14px',
+          outline: 'none',
+          width: '100%',
+          boxSizing: 'border-box',
+          transition: 'border-color 0.15s ease',
+        }}
+      />
+
+      {error && (
+        <p style={{ fontFamily: sans, fontSize: '12px', color: '#ef4444', margin: '4px 0 0' }}>
+          {error}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={loading || !password}
+        style={{
+          marginTop: '12px',
+          background: '#F97316',
+          border: 'none',
+          borderRadius: '4px',
+          color: '#000000',
+          fontFamily: sans,
+          fontWeight: 700,
+          fontSize: '13px',
+          padding: '10px 20px',
+          cursor: loading || !password ? 'not-allowed' : 'pointer',
+          opacity: loading || !password ? 0.6 : 1,
+          width: '100%',
+          transition: 'opacity 0.15s ease',
+        }}
+      >
+        {loading ? 'Entering...' : 'Enter OS →'}
+      </button>
+    </form>
+  )
+}
+
+function LoginShell({ children }: { children: React.ReactNode }) {
+  return (
     <div style={{
       display: 'flex',
       alignItems: 'center',
@@ -54,61 +122,21 @@ export default function OsLoginPage() {
           Business Operating System
         </p>
       </div>
-
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}>
-        <label style={{ fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
-          Access Code
-        </label>
-
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          autoFocus
-          autoComplete="current-password"
-          style={{
-            background: '#0D0D0D',
-            border: `1px solid ${error ? '#ef4444' : 'rgba(255,255,255,0.10)'}`,
-            borderRadius: '4px',
-            color: '#FFFFFF',
-            fontFamily: mono,
-            fontSize: '14px',
-            padding: '10px 14px',
-            outline: 'none',
-            width: '100%',
-            boxSizing: 'border-box',
-            transition: 'border-color 0.15s ease',
-          }}
-        />
-
-        {error && (
-          <p style={{ fontFamily: sans, fontSize: '12px', color: '#ef4444', margin: '4px 0 0' }}>
-            {error}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading || !password}
-          style={{
-            marginTop: '12px',
-            background: '#F97316',
-            border: 'none',
-            borderRadius: '4px',
-            color: '#000000',
-            fontFamily: sans,
-            fontWeight: 700,
-            fontSize: '13px',
-            padding: '10px 20px',
-            cursor: loading || !password ? 'not-allowed' : 'pointer',
-            opacity: loading || !password ? 0.6 : 1,
-            width: '100%',
-            transition: 'opacity 0.15s ease',
-          }}
-        >
-          {loading ? 'Entering...' : 'Enter OS →'}
-        </button>
-      </form>
+      {children}
     </div>
+  )
+}
+
+export default function OsLoginPage() {
+  return (
+    <LoginShell>
+      <Suspense
+        fallback={
+          <div style={{ width: '320px', height: '160px' }} aria-hidden="true" />
+        }
+      >
+        <LoginForm />
+      </Suspense>
+    </LoginShell>
   )
 }
