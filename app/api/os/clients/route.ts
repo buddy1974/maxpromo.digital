@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
+import { withAuth } from '@/lib/auth'
 
-export async function GET() {
+export const GET = withAuth(async () => {
   try {
     const sql = getDb()
     const rows = await sql`SELECT * FROM os_clients ORDER BY created_at DESC`
@@ -10,9 +11,9 @@ export async function GET() {
     console.error('[/api/os/clients GET]', error)
     return NextResponse.json({ error: 'Failed to fetch clients' }, { status: 500 })
   }
-}
+})
 
-export async function POST(request: NextRequest) {
+async function postHandler(request: NextRequest) {
   if (!(process.env.NEON_DATABASE_URL ?? process.env.DATABASE_URL)) {
     console.error('[/api/os/clients POST] DATABASE_URL is not set')
     return NextResponse.json(
@@ -48,8 +49,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create client', detail: msg }, { status: 500 })
   }
 }
+export const POST = withAuth(postHandler)
 
-export async function DELETE(request: NextRequest) {
+export const DELETE = withAuth(async (request: NextRequest) => {
   try {
     const sql = getDb()
     const { searchParams } = new URL(request.url)
@@ -61,9 +63,9 @@ export async function DELETE(request: NextRequest) {
     console.error('[/api/os/clients DELETE]', error)
     return NextResponse.json({ error: 'Failed to delete client' }, { status: 500 })
   }
-}
+})
 
-export async function PATCH(request: NextRequest) {
+export const PATCH = withAuth(async (request: NextRequest) => {
   try {
     const sql = getDb()
     const body = await request.json() as { id: string; [key: string]: unknown }
@@ -89,4 +91,4 @@ export async function PATCH(request: NextRequest) {
     console.error('[/api/os/clients PATCH]', error)
     return NextResponse.json({ error: 'Failed to update client' }, { status: 500 })
   }
-}
+})

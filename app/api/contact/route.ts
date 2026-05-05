@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail, buildContactEmailHtml } from '@/lib/email'
 import { getDb } from '@/lib/db'
+import { enforceRateLimit } from '@/lib/rate-limit'
 
 interface ContactBody {
   name: string
@@ -14,6 +15,9 @@ const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'info@maxpromo.digital'
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
 
 export async function POST(request: NextRequest) {
+  const blocked = enforceRateLimit(request, { scope: 'contact', limit: 5, windowMs: 60_000 })
+  if (blocked) return blocked
+
   try {
     const body = (await request.json()) as ContactBody
     const { name, email, organisation, message, automation } = body

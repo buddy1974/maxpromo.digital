@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callAI, AIMessage } from '@/lib/ai'
+import { enforceRateLimit } from '@/lib/rate-limit'
 
 const MAX_MESSAGES = 24
 
@@ -104,6 +105,11 @@ interface ChatBody {
 }
 
 export async function POST(request: NextRequest) {
+  // Chat is the most exposed LLM endpoint — anonymous, embedded on every
+  // page. Generous for real users, hostile to scripts.
+  const blocked = enforceRateLimit(request, { scope: 'chat', limit: 20, windowMs: 60_000 })
+  if (blocked) return blocked
+
   try {
     const body = (await request.json()) as ChatBody
     const { messages } = body

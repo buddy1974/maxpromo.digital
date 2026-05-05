@@ -201,13 +201,13 @@ export default function NewInvoicePage() {
     setAiLoading(true)
     setAiError('')
     try {
-      const res = await fetch('/api/os/ai/scan-invoice', {
+      const res = await fetch('/api/os/ai/enhance', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ base64: b64, mediaType: mime }),
+        body: JSON.stringify({ kind: 'rechnung', image: b64, mediaType: mime }),
       })
       if (!res.ok) throw new Error('Scan failed')
-      const d = await res.json() as AIExtracted
-      applyExtracted(d)
+      const json = await res.json() as { extracted: AIExtracted }
+      applyExtracted(json.extracted)
       setAiModalOpen(false)
       setPastePreview('')
     } catch {
@@ -257,13 +257,13 @@ export default function NewInvoicePage() {
     if (!rawText.trim()) return
     setAiLoading(true); setAiError('')
     try {
-      const res = await fetch('/api/os/ai/generate-invoice', {
+      const res = await fetch('/api/os/ai/enhance', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: rawText }),
+        body: JSON.stringify({ kind: 'rechnung', text: rawText }),
       })
       if (!res.ok) throw new Error('AI extraction failed')
-      const d = await res.json() as AIExtracted
-      applyExtracted(d)
+      const json = await res.json() as { extracted: AIExtracted }
+      applyExtracted(json.extracted)
       setAiModalOpen(false)
       setRawText('')
     } catch (e) {

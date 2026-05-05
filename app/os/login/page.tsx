@@ -1,27 +1,38 @@
 'use client'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-const OS_PASSWORD = 'maxpromo-os-2026'
 const mono = 'var(--font-roboto-mono)'
 const sans = 'var(--font-inter)'
 
 export default function OsLoginPage() {
   const router = useRouter()
+  const search = useSearchParams()
   const [password, setPassword] = useState('')
-  const [error,    setError]    = useState('')
-  const [loading,  setLoading]  = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-    if (password === OS_PASSWORD) {
-      sessionStorage.setItem('os-auth', 'true')
-      router.replace('/os')
-    } else {
-      setError('Incorrect access code')
+    try {
+      const res = await fetch('/api/os/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        setError((data as { error?: string }).error ?? 'Incorrect access code')
+        setLoading(false)
+        return
+      }
+      const returnTo = search.get('returnTo')
+      router.replace(returnTo && returnTo.startsWith('/os') ? returnTo : '/os')
+    } catch {
+      setError('Network error — please try again')
       setLoading(false)
     }
   }
@@ -35,41 +46,17 @@ export default function OsLoginPage() {
       background: '#0A0A0A',
       flexDirection: 'column',
     }}>
-      {/* Logo */}
       <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-        <p style={{
-          fontFamily: mono,
-          fontSize: '24px',
-          fontWeight: 700,
-          color: '#F97316',
-          letterSpacing: '0.1em',
-          margin: 0,
-        }}>
+        <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 700, color: '#F97316', letterSpacing: '0.1em', margin: 0 }}>
           MAXPROMO OS
         </p>
-        <p style={{
-          fontFamily: sans,
-          fontSize: '13px',
-          color: '#555555',
-          margin: '8px 0 0',
-        }}>
+        <p style={{ fontFamily: sans, fontSize: '13px', color: '#555555', margin: '8px 0 0' }}>
           Business Operating System
         </p>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}
-      >
-        <label style={{
-          fontFamily: mono,
-          fontSize: '10px',
-          color: '#555555',
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          marginBottom: '6px',
-          display: 'block',
-        }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}>
+        <label style={{ fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
           Access Code
         </label>
 
@@ -78,6 +65,7 @@ export default function OsLoginPage() {
           value={password}
           onChange={e => setPassword(e.target.value)}
           autoFocus
+          autoComplete="current-password"
           style={{
             background: '#0D0D0D',
             border: `1px solid ${error ? '#ef4444' : 'rgba(255,255,255,0.10)'}`,
@@ -94,12 +82,7 @@ export default function OsLoginPage() {
         />
 
         {error && (
-          <p style={{
-            fontFamily: sans,
-            fontSize: '12px',
-            color: '#ef4444',
-            margin: '4px 0 0',
-          }}>
+          <p style={{ fontFamily: sans, fontSize: '12px', color: '#ef4444', margin: '4px 0 0' }}>
             {error}
           </p>
         )}

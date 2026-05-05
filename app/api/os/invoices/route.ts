@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 
+/**
+ * Atomic per-year invoice numbering. Uses the Postgres sequence created
+ * in db/migrations/0001-document-numbering.sql — concurrent inserts can
+ * no longer collide on the same number.
+ *
+ * Falls back to the legacy SELECT-MAX strategy if the function is missing
+ * (e.g. running against a pre-migration database in dev).
+ */
 async function nextInvoiceNumber(): Promise<string> {
   const sql = getDb()
+  try {
+    const rows = await sql`SELECT next_invoice_number() AS number` as { number: string }[]
+    if (rows[0]?.number) return rows[0].number
+  } catch (err) {
+    console.warn('[invoices] next_invoice_number() missing — falling back to SELECT-MAX', err instanceof Error ? err.message : err)
+  }
   const year = new Date().getFullYear()
   const prefix = `MP-${year}-`
   const rows = await sql`

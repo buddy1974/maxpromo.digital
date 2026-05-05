@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 
+/**
+ * Atomic per-year angebot numbering — uses the Postgres sequence from
+ * db/migrations/0001-document-numbering.sql. Falls back to SELECT-MAX
+ * if the migration hasn't run yet.
+ */
 async function nextAngebotNumber(): Promise<string> {
-  const sql  = getDb()
+  const sql = getDb()
+  try {
+    const rows = await sql`SELECT next_angebot_number() AS number` as { number: string }[]
+    if (rows[0]?.number) return rows[0].number
+  } catch (err) {
+    console.warn('[angebote] next_angebot_number() missing — falling back to SELECT-MAX', err instanceof Error ? err.message : err)
+  }
   const year = new Date().getFullYear()
   const prefix = `ANG-${year}-`
   const rows = await sql`

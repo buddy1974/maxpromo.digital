@@ -3,6 +3,7 @@ import { callAI } from '@/lib/ai'
 import { AUDIT_SYSTEM_PROMPT } from '@/lib/prompts'
 import { sendEmail, buildAuditLeadEmailHtml } from '@/lib/email'
 import { getDb } from '@/lib/db'
+import { enforceRateLimit } from '@/lib/rate-limit'
 import type { AuditResult } from '@/components/AuditResults'
 
 interface AuditRequestBody {
@@ -18,6 +19,11 @@ interface AuditRequestBody {
 }
 
 export async function POST(request: NextRequest) {
+  // Audit calls Claude with maxTokens 1800 — strict limit so a script can't
+  // burn the budget. 3 audits/min/IP is plenty for real users.
+  const blocked = enforceRateLimit(request, { scope: 'audit', limit: 3, windowMs: 60_000 })
+  if (blocked) return blocked
+
   try {
     const body = (await request.json()) as AuditRequestBody
     const { orgType, teamSize, timeDrains, tools, experience, goal, name, email, company } = body

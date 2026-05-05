@@ -6,12 +6,17 @@ const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
 const sans    = 'var(--font-inter)'
 
-interface LineItem { description: string; qty: number; unit: string; unit_price: number; total: number; isFixedPrice: boolean; aiConfidence?: 'high' | 'medium' | 'low' }
+interface LineItem { description: string; qty: number; unit: string; unit_price: number; total: number; isFixedPrice: boolean; aiConfidence?: 'high' | 'medium' | 'low'; category?: string }
 interface Client   { id: string; name: string; company: string; email: string; address: string; city: string; country: string }
 interface AIExtracted {
   clientName: string; clientCompany: string; clientEmail: string; clientPhone?: string
   clientAddress: string; clientCity: string; clientPostcode?: string
-  lineItems: { description: string; quantity: number; unit: string; unitPrice: number; finalPrice: number; isFixedPrice: boolean; confidence?: 'high' | 'medium' | 'low' }[]
+  lineItems: { description: string; quantity: number; unit: string; unitPrice: number; finalPrice: number; isFixedPrice: boolean; confidence?: 'high' | 'medium' | 'low'; category?: string }[]
+  includedItems?: string[]
+  paymentTerms?: string
+  declaredTotal?: number
+  computedTotal?: number
+  warnings?: string[]
   anzahlung: number; anzahlungDate: string; anzahlungMethod: string
   notes: string; dueDate: string; validUntil?: string
   overallConfidence?: 'high' | 'medium' | 'low'
@@ -139,6 +144,9 @@ export default function NewAngebotPage() {
   const [aiEnhanced,        setAiEnhanced]        = useState(false)
   const [overallConfidence,  setOverallConfidence]  = useState<'high' | 'medium' | 'low' | null>(null)
   const [extractionNotes,   setExtractionNotes]   = useState('')
+  const [includedItems,     setIncludedItems]     = useState<string[]>([])
+  const [paymentTerms,      setPaymentTerms]      = useState('')
+  const [aiWarnings,        setAiWarnings]        = useState<string[]>([])
 
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -178,12 +186,13 @@ export default function NewAngebotPage() {
   const triggerImageExtract = useCallback(async (b64: string, mime: string) => {
     setAiLoading(true); setAiError('')
     try {
-      const res = await fetch('/api/os/ai/scan-invoice', {
+      const res = await fetch('/api/os/ai/enhance', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ base64: b64, mediaType: mime }),
+        body: JSON.stringify({ kind: 'angebot', image: b64, mediaType: mime }),
       })
       if (!res.ok) throw new Error('Scan failed')
-      applyExtracted(await res.json() as AIExtracted)
+      const json = await res.json() as { extracted: AIExtracted }
+      applyExtracted(json.extracted)
       setAiModalOpen(false); setPastePreview('')
     } catch {
       setAiError('Could not read image. Try uploading the file instead.')
@@ -225,12 +234,13 @@ export default function NewAngebotPage() {
     if (!rawText.trim()) return
     setAiLoading(true); setAiError('')
     try {
-      const res = await fetch('/api/os/ai/generate-invoice', {
+      const res = await fetch('/api/os/ai/enhance', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: rawText }),
+        body: JSON.stringify({ kind: 'angebot', text: rawText }),
       })
       if (!res.ok) throw new Error('Extraction failed')
-      applyExtracted(await res.json() as AIExtracted)
+      const json = await res.json() as { extracted: AIExtracted }
+      applyExtracted(json.extracted)
       setAiModalOpen(false); setRawText('')
     } catch (e) { setAiError(e instanceof Error ? e.message : 'Failed') }
     finally { setAiLoading(false) }
@@ -242,16 +252,23 @@ export default function NewAngebotPage() {
     if (d.clientAddress) setClientStreet(d.clientAddress)
     if (d.clientCity)    setClientCity(d.clientCity)
     if (d.clientPostcode) setClientPostcode(d.clientPostcode)
-    if (d.notes) setNotes(d.notes)
+    // Build a notes blob that captures payment terms + included items + extractor remarks
+    const noteParts: string[] = []
+    if (d.notes?.trim()) noteParts.push(d.notes.trim())
+    if (d.paymentTerms?.trim()) noteParts.push(`Zahlungsbedingungen: ${d.paymentTerms.trim()}`)
+    if (noteParts.length) setNotes(noteParts.join('\n\n'))
     if (d.validUntil || d.dueDate) setValidUntil(d.validUntil || d.dueDate)
     if (d.lineItems?.length) {
-      setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice, aiConfidence: li.confidence })))
+      setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice, aiConfidence: li.confidence, category: li.category })))
     }
     if (d.anzahlung > 0) {
       setHasAnzahlung(true); setAnzahlung(d.anzahlung)
       if (d.anzahlungDate) setAnzahlungDate(d.anzahlungDate)
       if (d.anzahlungMethod) setAnzahlungMethod(d.anzahlungMethod)
     }
+    setIncludedItems(d.includedItems ?? [])
+    setPaymentTerms(d.paymentTerms ?? '')
+    setAiWarnings(d.warnings ?? [])
     setOverallConfidence(d.overallConfidence ?? 'medium')
     setExtractionNotes(d.extractionNotes ?? '')
     setAiEnhanced(true)
@@ -285,9 +302,39 @@ export default function NewAngebotPage() {
     setSaving(true)
     setSaveError('')
     try {
+      // Compose notes from user-edited notes + included items (free) + payment terms.
+      // Once Stage-2 schema lands these get their own columns; for now we
+      // round-trip them via the existing `notes` jsonb-free field so nothing
+      // is silently lost.
+      const noteParts: string[] = []
+      if (notes.trim()) noteParts.push(notes.trim())
+      if (includedItems.length > 0) {
+        noteParts.push(
+          'Inklusive (kostenlos):\n' + includedItems.map(it => `  • ${it}`).join('\n'),
+        )
+      }
+      if (paymentTerms.trim() && !notes.includes(paymentTerms)) {
+        noteParts.push(`Zahlungsbedingungen: ${paymentTerms.trim()}`)
+      }
+      const finalNotes = noteParts.join('\n\n')
+
       const res = await fetch('/api/os/angebote', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ angebot_number: number, client_id: clientId || undefined, client_name: clientName, client_email: clientEmail, client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'), line_items: lineItems.filter(i => i.description), subtotal, total: subtotal, status: 'draft', valid_until: validUntil, notes, anzahlung: hasAnzahlung ? Number(anzahlung) : 0, anzahlung_date: hasAnzahlung ? anzahlungDate : null }),
+        body: JSON.stringify({
+          angebot_number: number,
+          client_id: clientId || undefined,
+          client_name: clientName,
+          client_email: clientEmail,
+          client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'),
+          line_items: lineItems.filter(i => i.description),
+          subtotal,
+          total: subtotal,
+          status: 'draft',
+          valid_until: validUntil,
+          notes: finalNotes,
+          anzahlung: hasAnzahlung ? Number(anzahlung) : 0,
+          anzahlung_date: hasAnzahlung ? anzahlungDate : null,
+        }),
       })
       if (!res.ok) {
         const err = await res.json() as { error?: string }
@@ -397,6 +444,39 @@ export default function NewAngebotPage() {
           {aiEnhanced && extractionNotes && (
             <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.07)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', color: '#888', margin: 0, letterSpacing: '0.04em' }}>ℹ️  {extractionNotes}</p>
+            </div>
+          )}
+
+          {/* Sum-reconciliation + missing-data warnings (server-side) */}
+          {aiEnhanced && aiWarnings.length > 0 && (
+            <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>⚠ Verify before sending</p>
+              <ul style={{ margin: 0, paddingLeft: '18px' }}>
+                {aiWarnings.map((w, i) => (
+                  <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: '#FCA5A5', lineHeight: 1.5, marginBottom: '2px' }}>{w}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Included (free) items — kept out of line items deliberately */}
+          {aiEnhanced && includedItems.length > 0 && (
+            <div style={{ background: '#0D0D0D', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid #22c55e', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Inklusive (kostenlos) — nicht berechnet</p>
+              <ul style={{ margin: 0, paddingLeft: '18px' }}>
+                {includedItems.map((it, i) => (
+                  <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: '#CCC', lineHeight: 1.5, marginBottom: '2px' }}>{it}</li>
+                ))}
+              </ul>
+              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', margin: '8px 0 0', letterSpacing: '0.05em' }}>Will be listed in the &ldquo;Inklusive&rdquo; section of the Angebot, not as paid line items.</p>
+            </div>
+          )}
+
+          {/* Payment terms — captured but stored as part of notes when saving */}
+          {aiEnhanced && paymentTerms && (
+            <div style={{ background: '#0D0D0D', border: '1px solid rgba(249,115,22,0.25)', borderLeft: '3px solid #F97316', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', margin: '0 0 4px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Zahlungsbedingungen</p>
+              <p style={{ fontFamily: sans, fontSize: '12px', color: '#CCC', margin: 0, lineHeight: 1.5 }}>{paymentTerms}</p>
             </div>
           )}
 

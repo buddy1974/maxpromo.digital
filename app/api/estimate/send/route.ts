@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { getDb } from '@/lib/db'
+import { enforceRateLimit } from '@/lib/rate-limit'
 
 interface AddonItem {
   label: string
@@ -204,6 +205,9 @@ function buildEstimateEmailHtml(data: SendEstimateBody, isInternal: boolean): st
 }
 
 export async function POST(request: NextRequest) {
+  const blocked = enforceRateLimit(request, { scope: 'estimate-send', limit: 5, windowMs: 60_000 })
+  if (blocked) return blocked
+
   try {
     const body = (await request.json()) as SendEstimateBody
 

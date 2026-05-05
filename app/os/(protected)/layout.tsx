@@ -41,7 +41,8 @@ interface AIMsg { role: 'user' | 'assistant'; content: string }
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const router   = useRouter()
   const pathname = usePathname()
-  const [auth, setAuth]           = useState<boolean | null>(null)
+  // Auth is now enforced by middleware.ts (signed httpOnly cookie). No
+  // client-side check needed — if we reach this layout, we're authed.
   const [mobileOpen, setMobileOpen] = useState(false)
   const [aiOpen, setAiOpen]       = useState(false)
   const [msgs, setMsgs]           = useState<AIMsg[]>([])
@@ -64,18 +65,15 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   const qsFileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    const ok = sessionStorage.getItem('os-auth') === 'true'
-    if (!ok) router.replace('/os/login')
-    else setAuth(true)
-  }, [router])
-
-  useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [msgs])
 
-  function logout() {
-    sessionStorage.removeItem('os-auth')
-    router.replace('/os/login')
+  async function logout() {
+    try {
+      await fetch('/api/os/logout', { method: 'POST' })
+    } finally {
+      router.replace('/os/login')
+    }
   }
 
   async function sendMsg(content: string) {
@@ -117,14 +115,15 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   async function qsExtract() {
     setQsLoading(true); setQsError(''); setQsExtracted(null)
     try {
-      const body = qsTab === 'scan' && qsBase64
-        ? { image: qsBase64, mediaType: qsMime }
-        : { text: qsPaste }
-      const res = await fetch('/api/os/ai/scan-client', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+      const payload = qsTab === 'scan' && qsBase64
+        ? { kind: 'client', image: qsBase64, mediaType: qsMime }
+        : { kind: 'client', text: qsPaste }
+      const res = await fetch('/api/os/ai/enhance', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       })
       if (!res.ok) throw new Error()
-      setQsExtracted(await res.json() as ScannedContact)
+      const json = await res.json() as { extracted: ScannedContact }
+      setQsExtracted(json.extracted)
     } catch { setQsError('Extraction failed. Please try again.') }
     finally { setQsLoading(false) }
   }
@@ -156,14 +155,6 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
 
   function qsReset() {
     setQsExtracted(null); setQsError(''); setQsPreview(''); setQsBase64(''); setQsPaste('')
-  }
-
-  if (!auth) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0A0A0A' }}>
-        <span style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.3em' }}>LOADING...</span>
-      </div>
-    )
   }
 
   const isActive = (href: string) =>
