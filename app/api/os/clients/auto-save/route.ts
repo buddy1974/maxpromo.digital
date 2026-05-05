@@ -41,8 +41,9 @@ export async function POST(request: NextRequest) {
     } else {
       // 2. Auto-create from invoice data
       const rows = await sql`
-        INSERT INTO os_clients (name, email, address, city, phone, status, notes)
+        INSERT INTO os_clients (owner_id, name, email, address, city, phone, status, notes)
         VALUES (
+          '00000000-0000-0000-0000-000000000001',
           ${name},
           ${email},
           ${body.address || null},

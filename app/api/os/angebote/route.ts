@@ -61,13 +61,17 @@ export async function POST(request: NextRequest) {
     }
 
     const angebot_number = body.angebot_number || await nextAngebotNumber()
+    // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
+    // When multi-user auth lands, replace this with the session user's owner_id.
+    const OWNER_ID = '00000000-0000-0000-0000-000000000001'
+
     const rows = await sql`
       INSERT INTO os_angebote
-        (angebot_number, client_id, client_name, client_email, client_address,
+        (owner_id, angebot_number, client_id, client_name, client_email, client_address,
          line_items, subtotal, total, status, valid_until, notes,
          anzahlung, anzahlung_date, anzahlung_method)
       VALUES
-        (${angebot_number}, ${body.client_id || null}, ${body.client_name},
+        (${OWNER_ID}, ${angebot_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
          ${JSON.stringify(body.line_items)}::jsonb, ${body.subtotal}, ${body.total},
          ${body.status || 'draft'}, ${body.valid_until || null}, ${body.notes || null},

@@ -34,9 +34,12 @@ async function postHandler(request: NextRequest) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
     }
 
+    // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
+    const OWNER_ID = '00000000-0000-0000-0000-000000000001'
+
     const rows = await sql`
-      INSERT INTO os_clients (name, company, email, phone, address, city, country, notes, status)
-      VALUES (${body.name.trim()}, ${body.company || null}, ${body.email || null},
+      INSERT INTO os_clients (owner_id, name, company, email, phone, address, city, country, notes, status)
+      VALUES (${OWNER_ID}, ${body.name.trim()}, ${body.company || null}, ${body.email || null},
               ${body.phone || null}, ${body.address || null}, ${body.city || null},
               ${body.country || 'Deutschland'}, ${body.notes || null}, ${body.status || 'active'})
       RETURNING *`

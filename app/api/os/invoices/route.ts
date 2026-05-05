@@ -67,13 +67,16 @@ export async function POST(request: NextRequest) {
 
     const invoice_number = body.invoice_number || await nextInvoiceNumber()
 
+    // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
+    const OWNER_ID = '00000000-0000-0000-0000-000000000001'
+
     const rows = await sql`
       INSERT INTO os_invoices
-        (invoice_number, client_id, client_name, client_email, client_address,
+        (owner_id, invoice_number, client_id, client_name, client_email, client_address,
          line_items, subtotal, total, status, due_date, notes,
          anzahlung, anzahlung_date, anzahlung_method, restbetrag)
       VALUES
-        (${invoice_number}, ${body.client_id || null}, ${body.client_name},
+        (${OWNER_ID}, ${invoice_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
          ${JSON.stringify(body.line_items)}::jsonb, ${body.subtotal}, ${body.total},
          ${body.status || 'draft'}, ${body.due_date || null}, ${body.notes || null},

@@ -25,11 +25,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 })
     }
 
+    // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
+    const OWNER_ID = '00000000-0000-0000-0000-000000000001'
+
     const rows = await sql`
       INSERT INTO os_jobs
-        (title, client_id, client_name, description, stage, priority, value, due_date, tags, notes)
+        (owner_id, title, client_id, client_name, description, stage, priority, value, due_date, tags, notes)
       VALUES
-        (${body.title.trim()}, ${body.client_id || null}, ${body.client_name || null},
+        (${OWNER_ID}, ${body.title.trim()}, ${body.client_id || null}, ${body.client_name || null},
          ${body.description || null}, ${body.stage || 'lead'}, ${body.priority || 'medium'},
          ${body.value ?? null}, ${body.due_date || null},
          ${body.tags ? `{${body.tags.join(',')}}` : null}, ${body.notes || null})

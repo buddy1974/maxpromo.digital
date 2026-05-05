@@ -20,9 +20,12 @@ export async function POST(request: NextRequest) {
       source?: string; category?: string; summary?: string; status?: string; notes?: string
     }
 
+    // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
+    const OWNER_ID = '00000000-0000-0000-0000-000000000001'
+
     const rows = await sql`
-      INSERT INTO os_leads (name, email, phone, company, source, category, summary, status, notes)
-      VALUES (${body.name || null}, ${body.email || null}, ${body.phone || null},
+      INSERT INTO os_leads (owner_id, name, email, phone, company, source, category, summary, status, notes)
+      VALUES (${OWNER_ID}, ${body.name || null}, ${body.email || null}, ${body.phone || null},
               ${body.company || null}, ${body.source || 'manual'}, ${body.category || null},
               ${body.summary || null}, ${body.status || 'new'}, ${body.notes || null})
       RETURNING *`
