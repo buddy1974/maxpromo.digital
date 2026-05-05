@@ -131,9 +131,18 @@ export default function AngebotePage() {
               filtered.map(a => (
                 <tr key={a.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                   <td style={{ padding: '12px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '12px', color: '#F97316' }}>{a.angebot_number}</span>
+                    <Link
+                      href={`/os/angebote/${a.id}`}
+                      style={{ fontFamily: mono, fontSize: '12px', color: '#F97316', textDecoration: 'none', borderBottom: '1px dotted rgba(249,115,22,0.4)' }}
+                    >
+                      {a.angebot_number}
+                    </Link>
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '13px', color: '#FFF' }}>{a.client_name}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '13px', color: '#FFF' }}>
+                    <Link href={`/os/angebote/${a.id}`} style={{ color: '#FFF', textDecoration: 'none' }}>
+                      {a.client_name}
+                    </Link>
+                  </td>
                   <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: '#555' }}>
                     {new Date(a.created_at).toLocaleDateString('de-DE')}
                   </td>
