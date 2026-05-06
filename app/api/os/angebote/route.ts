@@ -104,8 +104,29 @@ export async function PATCH(request: NextRequest) {
   try {
     const sql  = getDb()
     const body = await request.json() as {
-      id: string; status?: string; sent_at?: string; valid_until?: string
-      notes?: string; converted_to_invoice?: boolean
+      id: string
+      // Status / workflow fields
+      status?: string
+      sent_at?: string
+      valid_until?: string
+      converted_to_invoice?: boolean
+      // Client fields
+      client_id?: string | null
+      client_name?: string
+      client_email?: string
+      client_address?: string
+      // Line items + amounts
+      line_items?: unknown[]
+      subtotal?: number
+      total?: number
+      // Anzahlung
+      anzahlung?: number
+      anzahlung_date?: string | null
+      anzahlung_method?: string
+      // Enrichment
+      payment_terms?: string
+      included_items?: string[]
+      notes?: string
     }
 
     if (!body.id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
@@ -115,14 +136,27 @@ export async function PATCH(request: NextRequest) {
         status               = COALESCE(${body.status as string | null}, status),
         sent_at              = COALESCE(${body.sent_at as string | null}, sent_at),
         valid_until          = COALESCE(${body.valid_until as string | null}, valid_until),
-        notes                = COALESCE(${body.notes as string | null}, notes),
-        converted_to_invoice = COALESCE(${body.converted_to_invoice ?? null}, converted_to_invoice)
+        converted_to_invoice = COALESCE(${body.converted_to_invoice ?? null}, converted_to_invoice),
+        client_id            = COALESCE(${body.client_id ?? null}, client_id),
+        client_name          = COALESCE(${body.client_name as string | null}, client_name),
+        client_email         = COALESCE(${body.client_email as string | null}, client_email),
+        client_address       = COALESCE(${body.client_address as string | null}, client_address),
+        line_items           = COALESCE(${body.line_items ? JSON.stringify(body.line_items) : null}::jsonb, line_items),
+        subtotal             = COALESCE(${body.subtotal ?? null}, subtotal),
+        total                = COALESCE(${body.total ?? null}, total),
+        anzahlung            = COALESCE(${body.anzahlung ?? null}, anzahlung),
+        anzahlung_date       = COALESCE(${body.anzahlung_date ?? null}, anzahlung_date),
+        anzahlung_method     = COALESCE(${body.anzahlung_method as string | null}, anzahlung_method),
+        payment_terms        = COALESCE(${body.payment_terms as string | null}, payment_terms),
+        included_items       = COALESCE(${body.included_items ? JSON.stringify(body.included_items) : null}::jsonb, included_items),
+        notes                = COALESCE(${body.notes as string | null}, notes)
       WHERE id = ${body.id}
       RETURNING *`
 
     return NextResponse.json(rows[0])
   } catch (error) {
-    console.error('[/api/os/angebote PATCH]', error)
-    return NextResponse.json({ error: 'Failed to update angebot' }, { status: 500 })
+    const msg = error instanceof Error ? error.message : String(error)
+    console.error('[/api/os/angebote PATCH]', msg)
+    return NextResponse.json({ error: 'Failed to update angebot', detail: msg }, { status: 500 })
   }
 }

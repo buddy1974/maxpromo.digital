@@ -15,6 +15,18 @@ function fmtEur(n: number) {
   return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
+/**
+ * Parse a date that may be either a date-only string ("2026-06-04") OR a
+ * full ISO datetime ("2026-06-04T00:00:00.000Z"). Returns "—" for null
+ * and any unparseable input — never the literal string "Invalid Date".
+ */
+function fmtGermanDate(value: string | null | undefined): string {
+  if (!value) return '—'
+  const d = value.length > 10 ? new Date(value) : new Date(value + 'T12:00:00')
+  if (isNaN(d.getTime())) return '—'
+  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
 function buildWhatsApp(a: Angebot): string {
   const items = (Array.isArray(a.line_items) ? a.line_items : [])
     .map(i => `• ${i.description}: ${fmtEur(Number(i.total))}`)
@@ -73,8 +85,8 @@ export default function AngebotPrintPage() {
   if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fff', fontFamily: 'monospace', color: '#888' }}>Loading angebot...</div>
   if (!angebot) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fff', fontFamily: 'monospace', color: '#888' }}>Angebot not found.</div>
 
-  const date    = new Date(angebot.created_at).toLocaleDateString('de-DE')
-  const validTo = angebot.valid_until ? new Date(angebot.valid_until + 'T12:00:00').toLocaleDateString('de-DE') : '—'
+  const date    = fmtGermanDate(angebot.created_at)
+  const validTo = fmtGermanDate(angebot.valid_until)
   const items   = Array.isArray(angebot.line_items) ? angebot.line_items : []
   const hasAnz  = Number(angebot.anzahlung) > 0
   const restbet = hasAnz ? Number(angebot.total) - Number(angebot.anzahlung) : Number(angebot.total)
@@ -83,13 +95,58 @@ export default function AngebotPrintPage() {
     <>
       <title>Angebot-{angebot.angebot_number}-{angebot.client_name.replace(/[^a-zA-Z0-9À-ž]/g, '-').replace(/-+/g, '-')}</title>
       <style>{`
-        @media print {
-          body { margin: 0; background: #fff !important; }
-          .no-print { display: none !important; }
-          @page { size: A4; margin: 20mm; }
-        }
         body { background: #f0f0f0; }
         * { box-sizing: border-box; }
+
+        @media print {
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #fff !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+          }
+
+          /* Hide every body child whose subtree does NOT contain our document.
+             That kills the global Navbar, Footer, ChatAgent, and CookieBanner
+             coming from app/layout.tsx without needing to touch them. */
+          body > *:not(:has([data-print-doc])) {
+            display: none !important;
+          }
+
+          /* The OS root layout (app/os/layout.tsx) wraps us in a fixed-
+             position div that browsers repeat on every printed page and
+             clip at viewport height. Reset it so the document flows
+             naturally across pages. The :has() selector matches it
+             because it contains [data-print-doc] somewhere inside. */
+          body > *:has([data-print-doc]) {
+            position: static !important;
+            inset: auto !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            background: transparent !important;
+            z-index: auto !important;
+            display: block !important;
+          }
+
+          /* The on-screen toolbar at the top of this page never prints. */
+          .no-print { display: none !important; }
+
+          /* The on-screen page wrapper has a grey background + shadow —
+             remove for paper. */
+          [data-print-doc] {
+            box-shadow: none !important;
+            margin: 0 auto !important;
+            max-width: none !important;
+          }
+
+          @page { size: A4; margin: 18mm 16mm; }
+
+          /* Avoid awkward breaks inside totals / table rows. */
+          table, tr { page-break-inside: avoid; }
+        }
       `}</style>
 
       {/* Toolbar */}
@@ -120,7 +177,7 @@ export default function AngebotPrintPage() {
       </div>
 
       {/* Document */}
-      <div style={{ background: '#fff', maxWidth: '780px', margin: '20px auto', boxShadow: '0 4px 40px rgba(0,0,0,0.15)', fontFamily: 'Arial,sans-serif' }}>
+      <div data-print-doc style={{ background: '#fff', maxWidth: '780px', margin: '20px auto', boxShadow: '0 4px 40px rgba(0,0,0,0.15)', fontFamily: 'Arial,sans-serif' }}>
         {/* Header */}
         <div style={{ background: '#0A0A0A', padding: '32px 40px', borderBottom: '4px solid #F97316' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

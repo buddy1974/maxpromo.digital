@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 
 interface LineItem { description: string; qty: number; unit: string; unit_price: number; total: number; isFixedPrice?: boolean }
 interface Invoice {
@@ -12,6 +12,18 @@ interface Invoice {
 
 function fmtEur(n: number) {
   return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
+}
+
+/**
+ * Parse a date that may be either date-only ("2026-06-04") OR a full
+ * ISO datetime ("2026-06-04T00:00:00.000Z"). Returns "—" for null and
+ * any unparseable input — never "Invalid Date".
+ */
+function fmtGermanDate(value: string | null | undefined): string {
+  if (!value) return '—'
+  const d = value.length > 10 ? new Date(value) : new Date(value + 'T12:00:00')
+  if (isNaN(d.getTime())) return '—'
+  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
 function buildWhatsApp(inv: Invoice): string {
@@ -58,18 +70,17 @@ maxpromo.digital`
 }
 
 export default function PrintPage() {
-  const { id }   = useParams<{ id: string }>()
-  const router   = useRouter()
+  const { id } = useParams<{ id: string }>()
   const [invoice, setInvoice] = useState<Invoice | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (sessionStorage.getItem('os-auth') !== 'true') { router.replace('/os/login'); return }
+    // Auth is enforced by middleware.ts before this page renders.
     fetch(`/api/os/invoices?id=${id}`)
       .then(r => r.json())
       .then(d => { setInvoice(d as Invoice); setLoading(false) })
       .catch(() => setLoading(false))
-  }, [id, router])
+  }, [id])
 
   useEffect(() => {
     if (invoice) setTimeout(() => window.print(), 800)
@@ -78,8 +89,8 @@ export default function PrintPage() {
   if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fff', fontFamily: 'monospace', color: '#888' }}>Loading invoice...</div>
   if (!invoice) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fff', fontFamily: 'monospace', color: '#888' }}>Invoice not found.</div>
 
-  const date    = new Date(invoice.created_at).toLocaleDateString('de-DE')
-  const dueDate = invoice.due_date ? new Date(invoice.due_date + 'T12:00:00').toLocaleDateString('de-DE') : '—'
+  const date    = fmtGermanDate(invoice.created_at)
+  const dueDate = fmtGermanDate(invoice.due_date)
   const items   = Array.isArray(invoice.line_items) ? invoice.line_items : []
   const hasAnz  = Number(invoice.anzahlung) > 0
   const restbet = hasAnz ? Number(invoice.restbetrag ?? (Number(invoice.total) - Number(invoice.anzahlung))) : Number(invoice.total)
@@ -89,13 +100,43 @@ export default function PrintPage() {
       {/* Suggested filename for browser "Save as PDF" dialog */}
       <title>Rechnung-{invoice.invoice_number}-{invoice.client_name.replace(/[^a-zA-Z0-9À-ž]/g, '-').replace(/-+/g, '-')}</title>
       <style>{`
-        @media print {
-          body { margin: 0; background: #fff !important; }
-          .no-print { display: none !important; }
-          @page { size: A4; margin: 20mm; }
-        }
         body { background: #f0f0f0; }
         * { box-sizing: border-box; }
+
+        @media print {
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #fff !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+          }
+          /* Hide global Navbar/Footer/ChatAgent/CookieBanner from app/layout.tsx */
+          body > *:not(:has([data-print-doc])) {
+            display: none !important;
+          }
+          /* Reset the OS root layout's fixed-position wrapper so the
+             document flows naturally across pages. */
+          body > *:has([data-print-doc]) {
+            position: static !important;
+            inset: auto !important;
+            height: auto !important;
+            min-height: 0 !important;
+            overflow: visible !important;
+            background: transparent !important;
+            z-index: auto !important;
+            display: block !important;
+          }
+          .no-print { display: none !important; }
+          [data-print-doc] {
+            box-shadow: none !important;
+            margin: 0 auto !important;
+            max-width: none !important;
+          }
+          @page { size: A4; margin: 18mm 16mm; }
+          table, tr { page-break-inside: avoid; }
+        }
       `}</style>
 
       {/* Toolbar */}
@@ -126,7 +167,7 @@ export default function PrintPage() {
       </div>
 
       {/* Document */}
-      <div style={{ background: '#fff', maxWidth: '780px', margin: '20px auto', boxShadow: '0 4px 40px rgba(0,0,0,0.15)', fontFamily: 'Arial,sans-serif' }}>
+      <div data-print-doc style={{ background: '#fff', maxWidth: '780px', margin: '20px auto', boxShadow: '0 4px 40px rgba(0,0,0,0.15)', fontFamily: 'Arial,sans-serif' }}>
         {/* Header */}
         <div style={{ background: '#0A0A0A', padding: '32px 40px', borderBottom: '4px solid #F97316' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

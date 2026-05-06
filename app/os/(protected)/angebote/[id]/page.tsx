@@ -28,17 +28,24 @@ function fmtEur(n: number) {
   return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export default function AngebotDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
   const [angebot, setAngebot] = useState<Angebot | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // Send-modal state
+  const [sendModalOpen, setSendModalOpen] = useState(false)
+  const [emailInput, setEmailInput] = useState('')
+  const [bccMarcel, setBccMarcel] = useState(true)
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState('')
   const [sendSuccess, setSendSuccess] = useState('')
+
   const [deleting, setDeleting] = useState(false)
-  const [bccMarcel, setBccMarcel] = useState(true)
 
   useEffect(() => {
     if (!id) return
@@ -48,27 +55,65 @@ export default function AngebotDetailPage() {
       .catch(() => { setError('Angebot not found.'); setLoading(false) })
   }, [id])
 
-  async function sendAngebot() {
+  function openSendModal() {
     if (!angebot) return
-    if (!angebot.client_email?.trim()) {
-      setSendError('Client email is missing — edit the Angebot to add one before sending.')
+    setEmailInput(angebot.client_email?.trim() ?? '')
+    setSendError('')
+    setSendSuccess('')
+    setSendModalOpen(true)
+  }
+
+  /**
+   * Sending is one atomic flow:
+   *   1. Validate the email shown in the modal.
+   *   2. If different from the stored client_email, PATCH the angebot
+   *      so it's persisted (no silent override).
+   *   3. POST /api/os/send-angebot with the new email.
+   *
+   * The sender route reads the stored client_email from the row, so the
+   * PATCH must complete before the POST. We do them sequentially.
+   */
+  async function confirmSend() {
+    if (!angebot) return
+    const email = emailInput.trim()
+    if (!email) {
+      setSendError('Please enter an email address.')
       return
     }
-    if (!confirm(`Send Angebot ${angebot.angebot_number} to ${angebot.client_email}?${bccMarcel ? '\n\nA copy will also go to info@maxpromo.digital.' : ''}`)) return
+    if (!EMAIL_RE.test(email)) {
+      setSendError('That doesn’t look like a valid email address.')
+      return
+    }
 
     setSending(true); setSendError(''); setSendSuccess('')
     try {
+      // 1. Persist the email if it changed (or was missing).
+      if (email !== (angebot.client_email ?? '').trim()) {
+        const patch = await fetch('/api/os/angebote', {
+          method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: angebot.id, client_email: email }),
+        })
+        if (!patch.ok) {
+          const err = await patch.json().catch(() => ({})) as { error?: string }
+          throw new Error(err.error ?? 'Could not save the new email')
+        }
+      }
+
+      // 2. Send.
       const res = await fetch('/api/os/send-angebot', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           angebot_id: angebot.id,
+          clientEmails: [email],            // explicit override beats the row
           sendCopyToMarcel: bccMarcel,
         }),
       })
       const data = await res.json() as { error?: string; detail?: string }
       if (!res.ok) throw new Error(data.error ?? `Server error ${res.status}`)
-      setSendSuccess(`Sent to ${angebot.client_email}${bccMarcel ? ' (copy to info@maxpromo.digital)' : ''}.`)
-      setAngebot(prev => prev ? { ...prev, status: 'sent' } : prev)
+
+      setSendSuccess(`Sent to ${email}${bccMarcel ? ' (BCC info@maxpromo.digital)' : ''}.`)
+      setAngebot(prev => prev ? { ...prev, status: 'sent', client_email: email } : prev)
+      setSendModalOpen(false)
     } catch (err) {
       setSendError(err instanceof Error ? err.message : 'Send failed')
     } finally {
@@ -130,6 +175,12 @@ export default function AngebotDetailPage() {
           <p style={{ fontFamily: sans, fontSize: '15px', color: '#888', margin: 0 }}>{angebot.client_name}</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <Link
+            href={`/os/angebote/${angebot.id}/edit`}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#ccc', background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', padding: '9px 16px', textDecoration: 'none', display: 'inline-block' }}
+          >
+            ✎ Edit
+          </Link>
           <a
             href={`/os/angebote/${angebot.id}/print`}
             target="_blank"
@@ -138,10 +189,9 @@ export default function AngebotDetailPage() {
             📄 PDF / Print
           </a>
           <button
-            onClick={sendAngebot}
-            disabled={sending || !angebot.client_email}
-            title={!angebot.client_email ? 'Add a client email first' : ''}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#000', background: '#F97316', border: 'none', borderRadius: '4px', padding: '9px 16px', cursor: sending ? 'wait' : 'pointer', opacity: sending || !angebot.client_email ? 0.5 : 1, fontWeight: 700 }}
+            onClick={openSendModal}
+            disabled={sending}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#000', background: '#F97316', border: 'none', borderRadius: '4px', padding: '9px 16px', cursor: sending ? 'wait' : 'pointer', opacity: sending ? 0.5 : 1, fontWeight: 700 }}
           >
             {sending ? '⟳ Sending...' : '✉ Send to Client'}
           </button>
@@ -155,28 +205,128 @@ export default function AngebotDetailPage() {
         </div>
       </div>
 
-      {/* Send copy to me toggle */}
-      <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <input
-          type="checkbox"
-          id="bcc-marcel"
-          checked={bccMarcel}
-          onChange={e => setBccMarcel(e.target.checked)}
-          style={{ accentColor: '#F97316' }}
-        />
-        <label htmlFor="bcc-marcel" style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.08em', cursor: 'pointer' }}>
-          BCC info@maxpromo.digital when sending
-        </label>
-      </div>
-
-      {sendError && (
-        <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
-          <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: 0 }}>⚠ {sendError}</p>
-        </div>
-      )}
+      {/* Persistent banners (shown on the page after the modal closes) */}
       {sendSuccess && (
         <div style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
           <p style={{ fontFamily: mono, fontSize: '11px', color: '#4ade80', margin: 0 }}>✓ {sendSuccess}</p>
+        </div>
+      )}
+
+      {/* SEND MODAL — opens when user clicks "Send to Client". Always asks
+          for / shows the email so they can edit it inline; no need to
+          bounce back to the edit page when the email is missing. */}
+      {sendModalOpen && (
+        <div
+          onClick={e => e.target === e.currentTarget && setSendModalOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.78)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 200, padding: '24px',
+          }}
+        >
+          <div
+            style={{
+              background: '#111', border: '1px solid rgba(249,115,22,0.3)',
+              borderRadius: '4px', width: '100%', maxWidth: '460px', padding: '28px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <h2 style={{ fontFamily: sans, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>
+                Send Angebot {angebot.angebot_number}
+              </h2>
+              <button
+                onClick={() => setSendModalOpen(false)}
+                style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', lineHeight: 1, cursor: 'pointer' }}
+              >
+                ×
+              </button>
+            </div>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '0 0 22px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              Resend or edit recipient before sending
+            </p>
+
+            <label style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.12em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+              Client email
+            </label>
+            <input
+              type="email"
+              value={emailInput}
+              onChange={e => setEmailInput(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !sending) { e.preventDefault(); confirmSend() }
+                if (e.key === 'Escape') setSendModalOpen(false)
+              }}
+              autoFocus
+              placeholder="kunde@example.com"
+              style={{
+                width: '100%',
+                background: '#0A0A0A',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderRadius: '4px',
+                color: '#FFF',
+                fontFamily: sans,
+                fontSize: '14px',
+                padding: '10px 12px',
+                outline: 'none',
+                boxSizing: 'border-box',
+                marginBottom: '14px',
+              }}
+            />
+
+            <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '0 0 16px', letterSpacing: '0.04em' }}>
+              {angebot.client_email && angebot.client_email !== emailInput.trim()
+                ? `Will overwrite the saved email (${angebot.client_email}) on save.`
+                : !angebot.client_email
+                  ? 'No email is currently saved. The new email will be saved before sending.'
+                  : 'Same as the saved email.'}
+            </p>
+
+            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '20px' }}>
+              <input
+                type="checkbox"
+                checked={bccMarcel}
+                onChange={e => setBccMarcel(e.target.checked)}
+                style={{ accentColor: '#F97316', width: '14px', height: '14px' }}
+              />
+              <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.08em' }}>
+                BCC info@maxpromo.digital
+              </span>
+            </label>
+
+            {sendError && (
+              <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: '8px 12px', marginBottom: '14px', borderRadius: '3px' }}>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: 0 }}>⚠ {sendError}</p>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => setSendModalOpen(false)}
+                disabled={sending}
+                style={{
+                  fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em',
+                  color: '#888', background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px',
+                  padding: '10px 16px', cursor: sending ? 'wait' : 'pointer',
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmSend}
+                disabled={sending || !emailInput.trim()}
+                style={{
+                  fontFamily: mono, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em',
+                  color: '#000', background: '#F97316', border: 'none', borderRadius: '4px',
+                  padding: '10px 18px',
+                  cursor: sending || !emailInput.trim() ? 'not-allowed' : 'pointer',
+                  opacity: sending || !emailInput.trim() ? 0.5 : 1,
+                }}
+              >
+                {sending ? '⟳ Sending…' : 'Send →'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
