@@ -274,11 +274,40 @@ export default function NewAngebotPage() {
     setAiEnhanced(true)
   }
 
+  /**
+   * Keep unit_price ↔ total in sync so the document never displays
+   * inconsistent math. Pauschal items: total === unit_price (qty fixed
+   * at 1). Per-unit items: total = qty × unit_price; if total is edited
+   * directly we back-compute unit_price from total ÷ qty.
+   */
   function updateItem(i: number, field: keyof LineItem, value: string | number | boolean) {
     setLineItems(prev => {
       const items = [...prev]
-      items[i] = { ...items[i], [field]: value }
-      if (!items[i].isFixedPrice && (field === 'qty' || field === 'unit_price')) items[i].total = Number(items[i].qty) * Number(items[i].unit_price)
+      const next = { ...items[i], [field]: value } as LineItem
+      const qty = Math.max(1, Number(next.qty) || 1)
+
+      if (next.isFixedPrice) {
+        next.qty = 1
+        if (field === 'total') next.unit_price = Number(next.total) || 0
+        else if (field === 'unit_price') next.total = Number(next.unit_price) || 0
+      } else {
+        if (field === 'qty' || field === 'unit_price') {
+          next.total = qty * (Number(next.unit_price) || 0)
+        } else if (field === 'total') {
+          next.unit_price = (Number(next.total) || 0) / qty
+        }
+      }
+
+      if (field === 'isFixedPrice') {
+        if (next.isFixedPrice) {
+          next.qty = 1
+          next.unit_price = Number(next.total) || 0
+        } else {
+          next.unit_price = (Number(next.total) || 0) / Math.max(1, Number(next.qty) || 1)
+        }
+      }
+
+      items[i] = next
       return items
     })
   }
@@ -527,7 +556,13 @@ export default function NewAngebotPage() {
                 <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', borderLeft: itemBorderLeft(item) || '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
                   {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: '#ef4444', letterSpacing: '0.08em' }}>⚠ verify</span>}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                    <input value={item.description} onChange={e => updateItem(i, 'description', e.target.value)} placeholder={aiEnhanced && !item.description ? 'Not found — please fill' : 'Description'} style={{ ...inp, flex: 1, border: aiEnhanced && !item.description ? '1px dashed rgba(249,115,22,0.5)' : inp.border as string }} />
+                    <textarea
+                      value={item.description}
+                      onChange={e => updateItem(i, 'description', e.target.value)}
+                      placeholder={aiEnhanced && !item.description ? 'Not found — please fill' : 'Description (Enter for new line)'}
+                      rows={Math.max(1, Math.min(8, (item.description || '').split('\n').length))}
+                      style={{ ...inp, flex: 1, resize: 'vertical', lineHeight: 1.5, fontFamily: sans, minHeight: '36px', border: aiEnhanced && !item.description ? '1px dashed rgba(249,115,22,0.5)' : inp.border as string }}
+                    />
                     <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'rgba(249,115,22,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${item.isFixedPrice ? 'rgba(249,115,22,0.4)' : 'rgba(255,255,255,0.1)'}`, color: item.isFixedPrice ? '#F97316' : '#555', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
                       {item.isFixedPrice ? 'Pauschal' : 'Per Unit'}
                     </button>

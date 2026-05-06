@@ -28,6 +28,17 @@ function fmtEur(n: number) {
   return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
+/** Display Einzelpreis as total ÷ qty so the table math always reconciles. */
+function fmtUnitPrice(total: number, qty: number): string {
+  const q = qty > 0 ? qty : 1
+  const unit = total / q
+  const fractionDigits = Math.abs(unit * q - total) > 0.005 || Math.abs(unit - Math.round(unit * 100) / 100) > 0.0001 ? 4 : 2
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency', currency: 'EUR',
+    minimumFractionDigits: 2, maximumFractionDigits: fractionDigits,
+  }).format(unit)
+}
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function AngebotDetailPage() {
@@ -367,20 +378,24 @@ export default function AngebotDetailPage() {
           <tbody>
             {items.length === 0 ? (
               <tr><td colSpan={5} style={{ padding: '16px', fontFamily: sans, fontSize: '13px', color: '#444', textAlign: 'center' }}>No line items.</td></tr>
-            ) : items.map((item, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: '#F97316' }}>{String(i + 1).padStart(2, '0')}</td>
-                <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: '#FFF' }}>
-                  {item.description}
-                  {!item.isFixedPrice && item.unit && item.qty > 1 && (
-                    <span style={{ fontFamily: mono, fontSize: '11px', color: '#555', marginLeft: '8px' }}>({item.qty} {item.unit})</span>
-                  )}
-                </td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: '#888' }}>{item.isFixedPrice ? '1' : item.qty}</td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: '#888' }}>{fmtEur(Number(item.unit_price || item.total))}</td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(Number(item.total))}</td>
-              </tr>
-            ))}
+            ) : items.map((item, i) => {
+              const qty = item.isFixedPrice ? 1 : Number(item.qty || 1)
+              const total = Number(item.total) || 0
+              return (
+                <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                  <td style={{ padding: '10px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: '#F97316', verticalAlign: 'top' }}>{String(i + 1).padStart(2, '0')}</td>
+                  <td style={{ padding: '10px 16px', fontFamily: sans, fontSize: '14px', color: '#FFF', whiteSpace: 'pre-wrap', verticalAlign: 'top', lineHeight: 1.5 }}>
+                    {item.description}
+                    {!item.isFixedPrice && item.unit && item.qty > 1 && (
+                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#555', marginLeft: '8px' }}>({item.qty} {item.unit})</span>
+                    )}
+                  </td>
+                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: '#888', verticalAlign: 'top' }}>{qty}</td>
+                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: '#888', verticalAlign: 'top' }}>{fmtUnitPrice(total, qty)}</td>
+                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700, verticalAlign: 'top' }}>{fmtEur(total)}</td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
 

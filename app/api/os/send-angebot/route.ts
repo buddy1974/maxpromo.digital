@@ -45,6 +45,21 @@ function fmtEur(n: number): string {
   return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
+/**
+ * Display Einzelpreis as total ÷ qty so Menge × Einzelpreis = Gesamt
+ * is always self-consistent, regardless of whether the stored
+ * unit_price was rounded or never updated when the user edited total.
+ */
+function fmtUnitPrice(total: number, qty: number): string {
+  const q = qty > 0 ? qty : 1
+  const unit = total / q
+  const fractionDigits = Math.abs(unit * q - total) > 0.005 || Math.abs(unit - Math.round(unit * 100) / 100) > 0.0001 ? 4 : 2
+  return new Intl.NumberFormat('de-DE', {
+    style: 'currency', currency: 'EUR',
+    minimumFractionDigits: 2, maximumFractionDigits: fractionDigits,
+  }).format(unit)
+}
+
 function formatGermanDate(dateStr: string | null): string {
   if (!dateStr) return '—'
   const d = new Date(dateStr.length > 10 ? dateStr : dateStr + 'T12:00:00')
@@ -74,14 +89,18 @@ function buildAngebotEmail(a: AngebotRow): string {
   ].filter(Boolean).join('')
 
   const items = Array.isArray(a.line_items) ? a.line_items : []
-  const rows = items.map((item, i) => `
+  const rows = items.map((item, i) => {
+    const qty = item.isFixedPrice ? 1 : Number(item.qty || 1)
+    const total = Number(item.total) || 0
+    return `
     <tr>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#F97316;font-family:monospace;font-size:12px;font-weight:700;">${String(i + 1).padStart(2, '0')}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#111;">${esc(item.description)}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;">${item.isFixedPrice ? '1' : item.qty}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;">${fmtEur(Number(item.unit_price ?? item.total))}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#111;text-align:right;font-family:monospace;font-weight:700;">${fmtEur(Number(item.total))}</td>
-    </tr>`).join('')
+      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#F97316;font-family:monospace;font-size:11px;font-weight:700;vertical-align:top;">${String(i + 1).padStart(2, '0')}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#111;font-size:13px;line-height:1.5;white-space:pre-wrap;vertical-align:top;">${esc(item.description)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${qty}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${fmtUnitPrice(total, qty)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#111;text-align:right;font-family:monospace;font-size:13px;font-weight:700;vertical-align:top;">${fmtEur(total)}</td>
+    </tr>`
+  }).join('')
 
   const totalsHtml = hasAnz ? `
     <tr>
