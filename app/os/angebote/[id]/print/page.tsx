@@ -56,35 +56,26 @@ function buildWhatsApp(a: Angebot): string {
     .map(i => `• ${i.description}: ${fmtEur(Number(i.total))}`)
     .join('\n')
 
-  const validStr = a.valid_until ? new Date(a.valid_until + 'T12:00:00').toLocaleDateString('de-DE') : '—'
+  const validStr = fmtGermanDate(a.valid_until)
 
-  const includedBlock = Array.isArray(a.included_items) && a.included_items.length > 0
-    ? `\n\n✨ Inklusive (kostenlos):\n${a.included_items.map(it => `• ${it}`).join('\n')}`
-    : ''
-
-  const paymentBlock = a.payment_terms ? `\n\n💳 Zahlung:\n${a.payment_terms}` : ''
+  const paymentBlock = a.payment_terms ? `\n\nZahlung: ${a.payment_terms}` : ''
 
   const msg = `Guten Tag ${a.client_name},
 
-anbei mein Angebot Nr. ${a.angebot_number} von MAXPROMO DIGITAL.
+anbei mein Angebot Nr. ${a.angebot_number} (PDF angehängt).
 
-📋 Leistungen:
+Leistungen:
 ${items}
 
-💰 Gesamtbetrag: ${fmtEur(Number(a.total))}${includedBlock}${paymentBlock}
+Gesamtbetrag: ${fmtEur(Number(a.total))}${paymentBlock}
 
-📅 Angebot gültig bis: ${validStr}
+Angebot gültig bis: ${validStr}
 
-Steuernummer: 111/5339/7597
-Gemäß §19 UStG keine MwSt.
-
-Bei Fragen melden Sie sich gerne.
+Gemäß §19 UStG wird keine Umsatzsteuer berechnet.
 
 Mit freundlichen Grüßen
 Marcel Tabit Akwe
-MAXPROMO DIGITAL
-+49 173 3645698
-maxpromo.digital`
+MAXPROMO DIGITAL · maxpromo.digital · +49 173 3645698`
 
   return `https://wa.me/?text=${encodeURIComponent(msg)}`
 }
@@ -123,6 +114,16 @@ export default function AngebotPrintPage() {
         * { box-sizing: border-box; }
 
         @media print {
+          /* Force Chrome / Safari / Firefox to print background colors and
+             images. Without this the dark letterhead and the orange totals
+             row come out as plain white. Setting on every element so we
+             cover the inline backgrounds set on the header div. */
+          *, *::before, *::after {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+
           html, body {
             margin: 0 !important;
             padding: 0 !important;
@@ -168,8 +169,10 @@ export default function AngebotPrintPage() {
 
           @page { size: A4; margin: 18mm 16mm; }
 
-          /* Avoid awkward breaks inside totals / table rows. */
-          table, tr { page-break-inside: avoid; }
+          /* Avoid breaking individual rows mid-row, but let the table itself
+             flow across pages so we don't waste a whole page below the
+             intro letter waiting for the table to fit in one block. */
+          tr { page-break-inside: avoid; }
         }
       `}</style>
 
@@ -181,13 +184,19 @@ export default function AngebotPrintPage() {
         >
           📄 Als PDF speichern
         </button>
+        {/*
+          WhatsApp Click-to-Chat URLs only support text — there's no API
+          to attach a file. The page already auto-triggers print on load
+          (PDF lands in Downloads). This button just opens the chat with
+          the message pre-filled; the user drags the PDF in afterwards.
+        */}
         <a
           href={buildWhatsApp(angebot)}
           target="_blank"
           rel="noopener noreferrer"
           style={{ background: '#25D366', color: '#FFF', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
         >
-          💬 Per WhatsApp senden
+          💬 WhatsApp text
         </a>
         <button
           onClick={() => window.close()}
@@ -195,8 +204,8 @@ export default function AngebotPrintPage() {
         >
           Close
         </button>
-        <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#555', marginLeft: 'auto' }}>
-          WhatsApp: message pre-filled — attach the PDF manually before sending
+        <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', marginLeft: 'auto', maxWidth: '380px', textAlign: 'right', lineHeight: 1.5 }}>
+          WhatsApp can&apos;t auto-attach files. PDF saves to Downloads — drag it into the chat after the text is pre-filled.
         </span>
       </div>
 
@@ -297,35 +306,26 @@ export default function AngebotPrintPage() {
             )}
           </div>
 
-          {/* Included items (free) */}
-          {Array.isArray(angebot.included_items) && angebot.included_items.length > 0 && (
-            <div style={{ background: '#fafafa', borderLeft: '3px solid #22c55e', padding: '14px 20px', marginBottom: '16px' }}>
-              <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#22c55e', textTransform: 'uppercase', letterSpacing: '0.12em', margin: '0 0 8px' }}>Inklusive (kostenlos)</p>
-              <ul style={{ margin: 0, paddingLeft: '18px' }}>
-                {angebot.included_items.map((it, i) => (
-                  <li key={i} style={{ fontSize: '13px', color: '#333', lineHeight: 1.6 }}>{it}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Payment terms */}
+          {/* Compact trailing block: payment terms (if any) + single §19 UStG line + notes + signature.
+              Removed: Inklusive (kostenlos) list, "Alle Preise gemäß…" duplicate legal,
+              "Bei Fragen…" closing line. Per Marcel: keep Angebot/Rechnung tight. */}
           {angebot.payment_terms && (
-            <p style={{ fontSize: '13px', color: '#333', margin: '0 0 12px', fontStyle: 'italic' }}>
-              <strong>Zahlungsbedingungen:</strong> {angebot.payment_terms}
+            <p style={{ fontSize: '12px', color: '#333', margin: '0 0 6px' }}>
+              <strong>Zahlung:</strong> {angebot.payment_terms}
             </p>
           )}
 
           <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: '0 0 4px' }}>
-            Gemäß §19 UStG wird keine Umsatzsteuer berechnet. Dieses Angebot ist gültig bis {validTo}.
+            Gemäß §19 UStG wird keine Umsatzsteuer berechnet. Angebot gültig bis {validTo}.
           </p>
-          {angebot.notes && <p style={{ fontSize: '13px', color: '#555', margin: '12px 0 0', fontStyle: 'italic', whiteSpace: 'pre-wrap' }}>{angebot.notes}</p>}
 
-          <p style={{ fontSize: '14px', color: '#333', margin: '24px 0 0', lineHeight: 1.7 }}>
-            Bei Fragen stehe ich Ihnen jederzeit zur Verfügung.<br /><br />
+          {angebot.notes && (
+            <p style={{ fontSize: '12px', color: '#555', margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>{angebot.notes}</p>
+          )}
+
+          <p style={{ fontSize: '13px', color: '#333', margin: '20px 0 0', lineHeight: 1.5 }}>
             Mit freundlichen Grüßen<br />
-            <strong>Marcel Tabit Akwe</strong><br />
-            Maxpromo Digital
+            <strong>Marcel Tabit Akwe</strong>
           </p>
         </div>
 

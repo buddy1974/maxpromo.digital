@@ -120,17 +120,12 @@ function buildAngebotEmail(a: AngebotRow): string {
       <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmtEur(total)}</td>
     </tr>`
 
-  const includedBlock = Array.isArray(a.included_items) && a.included_items.length > 0
-    ? `<div style="background:#f5fef9;border-left:3px solid #22c55e;padding:14px 18px;margin:0 0 18px;">
-         <p style="font-family:monospace;font-size:11px;color:#22c55e;text-transform:uppercase;letter-spacing:0.12em;margin:0 0 8px;">Inklusive (kostenlos)</p>
-         <ul style="margin:0;padding-left:18px;">
-           ${a.included_items.map(it => `<li style="font-size:13px;color:#333;line-height:1.6;">${esc(it)}</li>`).join('')}
-         </ul>
-       </div>`
-    : ''
+  // Inklusive (kostenlos) list intentionally omitted from the email body
+  // — kept compact per Marcel's preference. The data is still stored in
+  // the row and visible inside the OS for internal reference.
 
   const paymentBlock = a.payment_terms
-    ? `<p style="font-family:monospace;font-size:12px;color:#555;font-style:italic;margin:0 0 12px;"><strong>Zahlungsbedingungen:</strong> ${esc(a.payment_terms)}</p>`
+    ? `<p style="font-size:12px;color:#333;margin:0 0 8px;"><strong>Zahlung:</strong> ${esc(a.payment_terms)}</p>`
     : ''
 
   return `
@@ -177,16 +172,13 @@ function buildAngebotEmail(a: AngebotRow): string {
           ${totalsHtml}
         </table>
 
-        <p style="font-family:monospace;font-size:11px;color:#888;margin:12px 0 18px;">Gemäß §19 UStG wird keine Umsatzsteuer berechnet. Dieses Angebot ist gültig bis ${formatGermanDate(a.valid_until)}.</p>
-
-        ${includedBlock}
         ${paymentBlock}
 
-        <p style="color:#555;font-size:14px;line-height:1.7;margin:0 0 20px;">
-          Bei Rückfragen stehe ich Ihnen jederzeit zur Verfügung.<br><br>
+        <p style="font-family:monospace;font-size:11px;color:#888;margin:8px 0 14px;">Gemäß §19 UStG wird keine Umsatzsteuer berechnet. Angebot gültig bis ${formatGermanDate(a.valid_until)}.</p>
+
+        <p style="color:#333;font-size:13px;line-height:1.5;margin:0 0 16px;">
           Mit freundlichen Grüßen<br>
-          <strong>Marcel Tabit Akwe</strong><br>
-          Maxpromo Digital
+          <strong>Marcel Tabit Akwe</strong>
         </p>
       </div>
 

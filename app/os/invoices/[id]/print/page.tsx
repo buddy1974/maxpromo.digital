@@ -35,9 +35,7 @@ function buildWhatsApp(inv: Invoice): string {
     ? `\nAnzahlung: ${fmtEur(Number(inv.anzahlung))}\nRestbetrag: ${fmtEur(Number(inv.restbetrag ?? (Number(inv.total) - Number(inv.anzahlung))))}`
     : ''
 
-  const dueStr = inv.due_date
-    ? new Date(inv.due_date + 'T12:00:00').toLocaleDateString('de-DE')
-    : '—'
+  const dueStr = fmtGermanDate(inv.due_date)
 
   const msg = `Guten Tag ${inv.client_name},
 
@@ -104,6 +102,14 @@ export default function PrintPage() {
         * { box-sizing: border-box; }
 
         @media print {
+          /* Force backgrounds + colors to appear in print, otherwise
+             Chrome strips the dark letterhead and orange totals row. */
+          *, *::before, *::after {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+
           html, body {
             margin: 0 !important;
             padding: 0 !important;
@@ -135,7 +141,7 @@ export default function PrintPage() {
             max-width: none !important;
           }
           @page { size: A4; margin: 18mm 16mm; }
-          table, tr { page-break-inside: avoid; }
+          tr { page-break-inside: avoid; }
         }
       `}</style>
 
@@ -251,7 +257,7 @@ export default function PrintPage() {
 
           {hasAnz && invoice.anzahlung_date && (
             <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#555', fontStyle: 'italic', margin: '0 0 12px' }}>
-              Vielen Dank für Ihre Anzahlung von {fmtEur(Number(invoice.anzahlung))} am {new Date(invoice.anzahlung_date + 'T12:00:00').toLocaleDateString('de-DE')}.
+              Vielen Dank für Ihre Anzahlung von {fmtEur(Number(invoice.anzahlung))} am {fmtGermanDate(invoice.anzahlung_date)}.
             </p>
           )}
 
