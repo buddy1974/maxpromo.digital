@@ -5,30 +5,38 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 /**
- * The Hero's right-hand console shows a live operations feed, not a dev
- * log. Every row is a real business event happening through a system we
- * installed: an enquiry being routed, an invoice being matched, a ticket
- * being triaged, a compliance pack being assembled. Each entry pairs the
- * runtime that handled it with the business outcome and the elapsed time.
+ * Hero right-hand console — live operations panel.
  *
- * Tools (n8n, Claude, Resend, etc.) are deliberately absent — implementation
- * details belong in the architecture page, not on the control deck.
+ * Each row is a system we installed, named the way the business names
+ * it (not the way the dev names it). Internal tool names like
+ * "lead-qualifier-v2" or "support-agent-01" are gone — replaced with the
+ * operational layer name as it appears in the org. The event line on
+ * each row carries an operational pressure signal, not a debug message:
+ * pending counts, after-hours captures, escalations, drift events.
+ *
+ * Tools (n8n, Claude, Resend…) are deliberately absent — implementation
+ * details live on the architecture page, not on the control deck.
  */
 const SYSTEMS_FEED = [
-  { runtime: 'lead-intake.runtime',    event: 'Enquiry · qualified · routed to night-shift in 2m 14s', status: 'ACTIVE', uptime: '99.8%' },
-  { runtime: 'invoice-flow.runtime',   event: '€1.840 photo invoice · OCR · matched to PO · queued',   status: 'ACTIVE', uptime: '100%'  },
-  { runtime: 'support-triage.runtime', event: '12 tickets · 11 auto-resolved · 1 escalated',           status: 'ACTIVE', uptime: '99.2%' },
-  { runtime: 'compliance.watch',       event: 'CQC evidence pack assembled · review scheduled',        status: 'IDLE',   uptime: '98.9%' },
+  { runtime: 'Client Intake System',       event: '3 after-hours enquiries captured · routed to night-shift in <3 min',       status: 'ACTIVE', uptime: '99.8%' },
+  { runtime: 'Vendor Processing Layer',    event: '17 invoices in queue · 12 auto-approved · 5 flagged for review',            status: 'ACTIVE', uptime: '100%'  },
+  { runtime: 'Communications Triage',      event: 'Inbound volume +24% today · 11 auto-resolved · 1 escalated',                status: 'ACTIVE', uptime: '99.2%' },
+  { runtime: 'Compliance Continuity',      event: 'CQC evidence pack assembled · 0 drift events · audit-ready',                status: 'IDLE',   uptime: '98.9%' },
+  { runtime: 'Field Dispatch Engine',      event: '4 jobs in field · 1 photo-invoice flowed back · time logged',               status: 'ACTIVE', uptime: '99.6%' },
 ]
 
+/**
+ * Live narrative — what just happened, not what the dev console wrote.
+ * Reads like a duty manager's afternoon, not a stack trace.
+ */
 const LOG_LINES = [
-  '22:47 · enquiry received via website form',
-  '22:47 · auto-qualified [score: 87/100]',
+  '22:47 · after-hours enquiry · 3 missed-call recoveries today',
+  '22:47 · auto-qualified [revenue tier: high]',
   '22:48 · routed to night-shift on-call',
-  '22:50 · confirmation sent to client',
+  '22:50 · confirmation sent · client acknowledged',
   '22:51 · booking confirmed [2m 14s end-to-end]',
-  'audit · 3 checks logged · all green',
-  'feed.idle()',
+  'compliance · audit pack updated · drift: 0',
+  'shift handover · 0 unresolved escalations',
 ]
 
 interface StatConfig {
@@ -254,8 +262,9 @@ export default function Hero() {
             </span>
           </motion.h1>
 
-          {/* Sub — lead with the operational outcome. Tools (n8n, Claude,
-              Make…) are implementation details and live in the
+          {/* Sub — mission-critical infrastructure tone. Operational
+              continuity, execution systems, orchestration — not AI
+              capabilities. Tools (n8n, Claude, Make…) live on the
               architecture page, not here. */}
           <motion.p
             custom={2}
@@ -266,12 +275,12 @@ export default function Hero() {
               fontFamily: 'var(--font-body)',
               fontSize: '18px',
               color: 'hsl(40 12% 65%)',
-              maxWidth: '520px',
+              maxWidth: '540px',
               lineHeight: 1.7,
               marginBottom: '2.5rem',
             }}
           >
-            We install the systems that run intake, dispatch, billing, compliance and customer flow — so your team stops carrying the operation in their heads.
+            Operational infrastructure for businesses that can&rsquo;t afford operational drift. We architect the layer between your team and their tools — intake, dispatch, billing, compliance, escalation — orchestrated, monitored, recoverable.
           </motion.p>
 
           {/* CTAs */}
