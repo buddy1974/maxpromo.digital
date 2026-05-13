@@ -4,22 +4,31 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
-const AGENT_STATUSES = [
-  { agent: 'lead-qualifier-v2',  task: 'Scoring 14 new leads from HubSpot',    status: 'ACTIVE', uptime: '99.8%' },
-  { agent: 'invoice-processor',  task: 'Reconciling 6 invoices via Xero API',  status: 'ACTIVE', uptime: '100%'  },
-  { agent: 'support-agent-01',   task: 'Resolved 3 tickets — 1 escalated',     status: 'ACTIVE', uptime: '99.2%' },
-  { agent: 'content-scheduler',  task: 'Queued 12 posts for next 7 days',      status: 'IDLE',   uptime: '98.9%' },
+/**
+ * The Hero's right-hand console shows a live operations feed, not a dev
+ * log. Every row is a real business event happening through a system we
+ * installed: an enquiry being routed, an invoice being matched, a ticket
+ * being triaged, a compliance pack being assembled. Each entry pairs the
+ * runtime that handled it with the business outcome and the elapsed time.
+ *
+ * Tools (n8n, Claude, Resend, etc.) are deliberately absent — implementation
+ * details belong in the architecture page, not on the control deck.
+ */
+const SYSTEMS_FEED = [
+  { runtime: 'lead-intake.runtime',    event: 'Enquiry · qualified · routed to night-shift in 2m 14s', status: 'ACTIVE', uptime: '99.8%' },
+  { runtime: 'invoice-flow.runtime',   event: '€1.840 photo invoice · OCR · matched to PO · queued',   status: 'ACTIVE', uptime: '100%'  },
+  { runtime: 'support-triage.runtime', event: '12 tickets · 11 auto-resolved · 1 escalated',           status: 'ACTIVE', uptime: '99.2%' },
+  { runtime: 'compliance.watch',       event: 'CQC evidence pack assembled · review scheduled',        status: 'IDLE',   uptime: '98.9%' },
 ]
 
 const LOG_LINES = [
-  'agent.start("lead-qualifier-v2")',
-  'fetching leads from HubSpot CRM...',
-  '14 records retrieved',
-  'scoring against ICP criteria...',
-  '9 qualified → routed to sales slack',
-  '5 disqualified → archived',
-  'task complete [2.3s]',
-  'agent.idle()',
+  '22:47 · enquiry received via website form',
+  '22:47 · auto-qualified [score: 87/100]',
+  '22:48 · routed to night-shift on-call',
+  '22:50 · confirmation sent to client',
+  '22:51 · booking confirmed [2m 14s end-to-end]',
+  'audit · 3 checks logged · all green',
+  'feed.idle()',
 ]
 
 interface StatConfig {
@@ -28,11 +37,15 @@ interface StatConfig {
   label: string
 }
 
+/**
+ * Operational signals — not agency brag stats. Each one points at a
+ * measurable outcome a client felt after we installed their layer.
+ */
 const STATS: StatConfig[] = [
-  { target: 6,   display: (n) => `${n}`,      label: 'Systems Live'        },
-  { target: 8,   display: (n) => `${n}`,      label: 'AI Agents Deployed'  },
-  { target: 14,  display: (n) => `${n} days`, label: 'Avg. Delivery'       },
-  { target: 100, display: (n) => `${n}%`,     label: 'Client Retention'    },
+  { target: 7,  display: (n) => `${n}`,       label: 'Systems Live'           },
+  { target: 24, display: (n) => `${n}`,       label: 'Workflows Running'      },
+  { target: 96, display: (n) => `−${n}%`,     label: 'Avg Response Time'      },
+  { target: 32, display: (n) => `+${n}h/wk`,  label: 'Reclaimed per Client'   },
 ]
 
 function useCountUp(target: number, active: boolean, duration = 1800) {
@@ -73,14 +86,10 @@ function StatCounter({ stat }: { stat: StatConfig }) {
         fontFamily: 'var(--font-heading)',
         fontWeight: 700,
         fontSize: '36px',
-        color: 'hsl(40 30% 96%)',
+        color: '#FFFFFF',
         letterSpacing: '-0.04em',
         lineHeight: 1,
         marginBottom: '4px',
-        background: 'linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%))',
-        WebkitBackgroundClip: 'text',
-        backgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
       }}>
         {stat.display(count)}
       </p>
@@ -96,7 +105,7 @@ export default function Hero() {
   const [logIndex, setLogIndex] = useState(0)
 
   useEffect(() => {
-    const t = setInterval(() => setTick((n) => (n + 1) % AGENT_STATUSES.length), 3000)
+    const t = setInterval(() => setTick((n) => (n + 1) % SYSTEMS_FEED.length), 3000)
     return () => clearInterval(t)
   }, [])
 
@@ -105,7 +114,7 @@ export default function Hero() {
     return () => clearInterval(t)
   }, [])
 
-  const active = AGENT_STATUSES[tick]
+  const active = SYSTEMS_FEED[tick]
 
   const fadeUp = {
     hidden: { opacity: 0, y: 24 },
@@ -139,36 +148,14 @@ export default function Hero() {
         }}
       />
 
-      {/* Orbs */}
-      <div
-        className="animate-float"
-        style={{
-          position: 'absolute',
-          top: '15%',
-          left: '8%',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(ellipse at center, hsl(28 100% 58% / 0.18) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          filter: 'blur(40px)',
-        }}
-      />
-      <div
-        className="animate-float"
-        style={{
-          position: 'absolute',
-          bottom: '20%',
-          right: '5%',
-          width: '400px',
-          height: '400px',
-          borderRadius: '50%',
-          background: 'radial-gradient(ellipse at center, hsl(265 100% 70% / 0.1) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          filter: 'blur(60px)',
-          animationDelay: '2s',
-        }}
-      />
+      {/*
+        Removed: the two blurred radial orbs (orange + purple/pink).
+        Reasons:
+          1. Generic AI-agency cliché per the repositioning brief.
+          2. The purple orb (hue 265) violates CLAUDE.md's palette
+             (no blue, no purple, no decorative gradients).
+        The grid background above provides enough depth on its own.
+      */}
 
       <div
         style={{
@@ -260,22 +247,16 @@ export default function Hero() {
               marginBottom: '1.5rem',
             }}
           >
-            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>We build the</span>
-            <span
-              style={{
-                display: 'block',
-                background: 'linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%))',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              machines
+            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>The control layer</span>
+            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>
+              of modern{' '}
+              <span style={{ color: '#F97316' }}>operations</span>.
             </span>
-            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>that run your business.</span>
           </motion.h1>
 
-          {/* Sub */}
+          {/* Sub — lead with the operational outcome. Tools (n8n, Claude,
+              Make…) are implementation details and live in the
+              architecture page, not here. */}
           <motion.p
             custom={2}
             initial="hidden"
@@ -285,13 +266,12 @@ export default function Hero() {
               fontFamily: 'var(--font-body)',
               fontSize: '18px',
               color: 'hsl(40 12% 65%)',
-              maxWidth: '480px',
-              lineHeight: 1.8,
+              maxWidth: '520px',
+              lineHeight: 1.7,
               marginBottom: '2.5rem',
             }}
           >
-            AI agents, n8n workflows and intelligent systems for companies that are
-            done losing hours to manual work.
+            We install the systems that run intake, dispatch, billing, compliance and customer flow — so your team stops carrying the operation in their heads.
           </motion.p>
 
           {/* CTAs */}
@@ -418,7 +398,7 @@ export default function Hero() {
               color: 'hsl(40 12% 65%)',
               textTransform: 'uppercase',
             }}>
-              SYS.AGENTS
+              OPERATIONS · LIVE
             </span>
             <span
               className="status-pulse"
@@ -436,11 +416,11 @@ export default function Hero() {
             </span>
           </div>
 
-          {/* Agent rows */}
+          {/* System rows — each runtime is a layer we installed and run */}
           <div style={{ padding: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {AGENT_STATUSES.map((agent, i) => (
+            {SYSTEMS_FEED.map((row, i) => (
               <div
-                key={agent.agent}
+                key={row.runtime}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -458,7 +438,7 @@ export default function Hero() {
                       width: '6px',
                       height: '6px',
                       borderRadius: '50%',
-                      background: agent.status === 'ACTIVE' ? 'hsl(28 100% 58%)' : 'hsl(40 30% 96% / 0.15)',
+                      background: row.status === 'ACTIVE' ? 'hsl(28 100% 58%)' : 'hsl(40 30% 96% / 0.15)',
                       flexShrink: 0,
                       display: 'inline-block',
                     }}
@@ -468,22 +448,22 @@ export default function Hero() {
                     fontSize: '12px',
                     color: i === tick ? 'hsl(40 30% 96%)' : 'hsl(40 12% 65%)',
                   }}>
-                    {agent.agent}
+                    {row.runtime}
                   </span>
                 </div>
                 <span style={{
                   fontFamily: 'var(--font-mono)',
                   fontSize: '11px',
                   fontWeight: 700,
-                  color: agent.status === 'ACTIVE' ? 'hsl(28 100% 58%)' : 'hsl(40 30% 96% / 0.2)',
+                  color: row.status === 'ACTIVE' ? 'hsl(28 100% 58%)' : 'hsl(40 30% 96% / 0.2)',
                 }}>
-                  {agent.status}
+                  {row.status}
                 </span>
               </div>
             ))}
           </div>
 
-          {/* Current task */}
+          {/* Current operational event — business outcome, not dev log */}
           <div
             style={{
               margin: '0 12px 12px',
@@ -494,10 +474,10 @@ export default function Hero() {
             }}
           >
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)', marginBottom: '6px' }}>
-              // current task
+              // last event
             </p>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'hsl(40 30% 96%)', lineHeight: 1.5 }}>
-              {active.task}
+              {active.event}
             </p>
             <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)' }}>uptime</span>

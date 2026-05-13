@@ -8,56 +8,74 @@ import Link from 'next/link'
 
 /* ─── DATA ─────────────────────────────────────────────────── */
 
+/**
+ * Marquee — operational verbs, not tool names.
+ *
+ * The previous strip ("N8N WORKFLOWS · CLAUDE API · ZAPIER FLOWS · …") was
+ * a tool parade — exactly the "AI freelancer skill bar" signal we're
+ * moving away from. The new strip names what those tools do for the
+ * business: real operational phenomena visitors recognise from their
+ * own workflow.
+ */
 const MARQUEE_ITEMS = [
-  'AI AGENTS', 'N8N WORKFLOWS', 'PROCESS AUTOMATION', 'LEAD ROUTING',
-  'CLAUDE API', 'DOCUMENT AI', 'CHATBOTS', 'INVOICE AUTOMATION',
-  'CRM INTEGRATION', 'MAKE WORKFLOWS', 'AIRTABLE AUTOMATIONS', 'SMART FORMS',
-  'SCHEDULING AI', 'DATA PIPELINES', 'CLOUDFLARE WORKERS', 'NEON POSTGRES',
-  'RENDER DEPLOYS', 'TWILIO SMS', 'SUPABASE', 'ZAPIER FLOWS',
+  'LEAD INTAKE · 24/7', 'DISPATCH ROUTING', 'INVOICE FLOW', 'CARE-PLAN COMPLIANCE',
+  'CUSTOMER TRIAGE', 'STOCK SYNC', 'ESCALATION PATHS', 'ON-CALL ROTATION',
+  'BOOKING ORCHESTRATION', 'CONTRACT INTAKE', 'PHOTO-TO-QUOTE', 'PAYMENT RECONCILIATION',
+  'XRECHNUNG / CQC AUDITS', 'STAFF ALERTS', 'COMMS LOGGING', 'FIELD-OPS TRACKING',
+  'KPI MONITORING', 'WORKFLOW GOVERNANCE', 'INTAKE → ACTION LOOPS', 'SHIFT HANDOVER',
 ]
 
-const SERVICES = [
+/**
+ * Operational Layers — replaces the prior generic "Services" grid.
+ *
+ * Each entry is a layer of the operation we install, not a capability we
+ * sell. Description leads with the business pain, then names the systemic
+ * fix; the chips point at the *-os products that include this layer rather
+ * than at the underlying tools. Implementation details (n8n, Claude, etc.)
+ * are deliberately absent — those live on the architecture page.
+ */
+const LAYERS = [
   {
-    icon: '↗',
-    title: 'AI Agentic Workflows',
-    desc: 'Autonomous agents that read incoming data, apply your business rules, make decisions, and take action — 24/7 without human input.',
-    tags: ['Claude API', 'n8n', 'Webhooks'],
+    icon: '→',
+    title: 'Intake & Routing',
+    desc: 'Enquiries land across email, phone, WhatsApp, web and walk-ins. We install the layer that captures every channel, qualifies in seconds, and routes to the right person or shift — with full audit trail.',
+    tags: ['Multi-channel', 'Live routing', 'Audit trail'],
+    href: '/products',
+  },
+  {
+    icon: '◰',
+    title: 'Dispatch & Field Ops',
+    desc: 'Field teams work off WhatsApp and paper; the office retypes everything. Replace with GPS-tracked dispatch, photo-to-quote, time tracking, digital signatures — synced live to invoicing.',
+    tags: ['HandwerkOS', 'GPS · Signatures', 'Photo-to-quote'],
+    href: '/products/handwerk-os',
+  },
+  {
+    icon: '⊟',
+    title: 'Document Flow',
+    desc: 'Invoices, contracts, applications arrive as photos and PDFs. We install the layer that reads, validates, routes and stores them — XRechnung-compliant, with approval workflows and tamper-proof history.',
+    tags: ['XRechnung', 'OCR · Validation', 'Approval flow'],
     href: '/services',
   },
   {
-    icon: '⟳',
-    title: 'Process & Workflow Automation',
-    desc: 'End-to-end automation using n8n, Make, and Zapier. Invoice processing, onboarding, CRM sync — manual steps eliminated permanently.',
-    tags: ['n8n', 'Make', 'Zapier'],
+    icon: '◇',
+    title: 'Customer Triage',
+    desc: 'Support email floods one inbox; the same questions get answered fifty times a week. Triage classifies, drafts replies, escalates only what needs a human — typical inbound drop: 60–80%.',
+    tags: ['Auto-triage', 'Self-service portal', 'Escalation policy'],
     href: '/services',
   },
   {
-    icon: '◻',
-    title: 'Web Development + AI',
-    desc: 'Full-stack Next.js platforms with embedded AI — intelligent lead capture, live chat agents, automated qualification built in from day one.',
-    tags: ['Next.js', 'Claude API', 'Vercel'],
-    href: '/ai-websites',
+    icon: '▤',
+    title: 'Compliance & Reporting',
+    desc: 'CQC, GDPR, XRechnung, §19 UStG — every audit a fire drill. Continuous compliance posture, auto-assembled evidence packs, drift alerts. The audit becomes a button click.',
+    tags: ['CareOS · PraxisOS', 'Evidence packs', 'Drift alerts'],
+    href: '/products/care-os',
   },
   {
-    icon: '⬡',
-    title: 'App Development + Automation',
-    desc: 'Custom web apps and internal tools with automation at the core — dashboards, client portals, workflow management systems.',
-    tags: ['Next.js', 'Supabase', 'Neon'],
-    href: '/services',
-  },
-  {
-    icon: '▦',
-    title: 'Document & Data Intelligence',
-    desc: 'AI that reads, extracts, classifies, and routes documents without manual handling. Contracts, invoices, applications — processed by Claude.',
-    tags: ['Claude AI', 'Neon', 'Webhooks'],
-    href: '/services',
-  },
-  {
-    icon: '◈',
-    title: 'Systems Integration & APIs',
-    desc: 'We connect your entire tool stack via API and webhook. CRM, ERP, accounting, support — synchronised, automated, monitored in real time.',
-    tags: ['REST APIs', 'Webhooks', 'Make'],
-    href: '/services',
+    icon: '⌗',
+    title: 'Inventory & Stock',
+    desc: 'Counts wrong, reorders late, cash tied up in shelves. Real-time stock sync across channels, automated reorder triggers, supplier feed integration, financial reconciliation.',
+    tags: ['PublishingOS · PrintShop', 'Multi-channel sync', 'Reorder logic'],
+    href: '/products/publishing-os',
   },
 ]
 
@@ -238,28 +256,30 @@ export default function HomePage() {
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
-            <SectionLabel>// 01 — WHAT WE BUILD</SectionLabel>
+            <SectionLabel>// 01 — OPERATIONAL LAYERS</SectionLabel>
             <SectionTitle>
-              Services that{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%))',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                eliminate
-              </span>{' '}
-              manual work
+              The operational layers{' '}
+              <span style={{ color: '#F97316' }}>we install</span>
             </SectionTitle>
+            <p
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '16px',
+                color: 'hsl(40 12% 65%)',
+                lineHeight: 1.7,
+                marginTop: '14px',
+                maxWidth: '640px',
+              }}
+            >
+              Not capabilities. Not features. Layers of the operation — each one a system we run on top of your existing tools so your team stops being the integration.
+            </p>
           </div>
 
           <div
             style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '16px', overflow: 'hidden' }}
             className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {SERVICES.map((s) => (
+            {LAYERS.map((s) => (
               <Link
                 key={s.title}
                 href={s.href}
@@ -336,7 +356,7 @@ export default function HomePage() {
                     letterSpacing: '0.05em',
                   }}
                 >
-                  Learn more →
+                  Inspect this layer →
                 </span>
               </Link>
             ))}
