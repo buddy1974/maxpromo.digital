@@ -2,119 +2,186 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Services',
+  title: 'Operational Layers · The Systems We Install',
   description:
-    '8 AI automation services — agentic workflows, process automation, web and app development, document intelligence, social media, chatbots, and systems integration.',
+    'Six operational layers we install between your team and their tools — intake, dispatch, document flow, communications triage, compliance, inventory. Architected, installed, monitored, recoverable.',
 }
-
-const SERVICES = [
-  {
-    num: '01',
-    title: 'AI Agentic Workflows',
-    desc: 'Autonomous agents that read incoming data, apply your business rules, make decisions, and take action — 24/7 without human input. Lead scoring, contract review, approval chains, exception handling.',
-    who: 'Teams with repetitive decision-making that follows defined rules but consumes significant staff time.',
-    result: '60–80% reduction in processing time',
-    timeline: '2–4 weeks',
-    useCases: ['Lead scoring and qualification', 'Contract review and extraction', 'Customer support triage', 'Expense and invoice approval', 'Compliance checking'],
-  },
-  {
-    num: '02',
-    title: 'Process & Workflow Automation',
-    desc: 'End-to-end automation of operational workflows using n8n, Make, and Zapier. Invoice processing, onboarding sequences, CRM sync, reporting pipelines — manual steps eliminated permanently.',
-    who: 'Teams using multiple tools that don\'t talk to each other — causing manual data transfer, duplication, and errors.',
-    result: '15–40 hours saved per week',
-    timeline: '1–3 weeks per workflow',
-    useCases: ['CRM to accounting sync', 'Email to task routing', 'Sales pipeline automation', 'HR onboarding flows', 'Inventory management'],
-  },
-  {
-    num: '03',
-    title: 'Web Development + AI',
-    desc: 'Full-stack web platforms built on Next.js with embedded AI capabilities. Intelligent lead capture, live chat agents, automated qualification, and real-time proposal generation built in from day one.',
-    who: 'Businesses that need their website to qualify and capture leads automatically.',
-    result: '3–5x more qualified leads captured',
-    timeline: '2–6 weeks',
-    useCases: ['AI chat qualification agents', 'Smart contact forms', 'Personalised content delivery', 'Instant quote generation', 'Knowledge base automation'],
-  },
-  {
-    num: '04',
-    title: 'App Development + Automation',
-    desc: 'Custom web apps and internal tools with automation at the core. Dashboards, client portals, workflow management systems, and AI-powered internal tools — built to your exact specification.',
-    who: 'Organisations that need custom internal tools their off-the-shelf software cannot provide.',
-    result: 'Replaces 2–3 separate tools',
-    timeline: '3–8 weeks',
-    useCases: ['Client portals', 'Internal dashboards', 'Workflow management systems', 'Approval and review tools', 'AI-powered reporting apps'],
-  },
-  {
-    num: '05',
-    title: 'Document & Data Intelligence',
-    desc: 'AI that reads, extracts, classifies, and routes documents without manual handling. Contracts, invoices, applications, reports — processed using Claude\'s advanced document understanding.',
-    who: 'Operations teams processing high volumes of documents manually.',
-    result: '90%+ of documents processed without human touch',
-    timeline: '2–3 weeks',
-    useCases: ['Invoice and PO processing', 'Contract data extraction', 'Application form processing', 'Compliance document review', 'Report generation'],
-  },
-  {
-    num: '06',
-    title: 'Social Media Automation',
-    desc: 'AI-driven content pipelines that generate on-brand posts, schedule across platforms, monitor mentions, respond to comments, and deliver weekly performance reports — fully automated.',
-    who: 'Marketing teams spending hours weekly on content creation and scheduling.',
-    result: '80% reduction in content creation time',
-    timeline: '1–2 weeks',
-    useCases: ['Multi-platform scheduling', 'AI content generation', 'Engagement monitoring', 'Competitor tracking', 'Performance reporting'],
-  },
-  {
-    num: '07',
-    title: 'AI Chatbots & Assistants',
-    desc: 'Custom AI assistants trained on your business data. Customer support agents, internal knowledge bases, sales qualification bots, and booking assistants — powered by Claude, deployed anywhere.',
-    who: 'Businesses handling repetitive queries across support, sales, or internal ops.',
-    result: '70% of queries resolved without human intervention',
-    timeline: '1–3 weeks',
-    useCases: ['Customer support agents', 'Sales qualification bots', 'Internal HR assistants', 'IT helpdesk automation', 'Booking and scheduling agents'],
-  },
-  {
-    num: '08',
-    title: 'Systems Integration & APIs',
-    desc: 'We connect your entire tool stack via API and webhook. CRM, ERP, accounting, support, and communication platforms — synchronised, automated, and monitored in real time.',
-    who: 'Organisations running 5+ disconnected tools requiring manual data management.',
-    result: 'Eliminates 10–20 hrs/week of manual data entry',
-    timeline: '1–4 weeks per integration',
-    useCases: ['CRM + accounting unification', 'ERP and e-commerce sync', 'Multi-platform reporting', 'API connector architecture', 'Webhook pipeline design'],
-  },
-]
 
 const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-inter)' } as const
 const sans = { fontFamily: 'var(--font-inter)' } as const
 
+/**
+ * The six operational layers we install — replacing the prior generic
+ * service grid (AI Agentic Workflows / Process Automation / Social Media
+ * Automation / AI Chatbots / Systems Integration / …). Each entry follows
+ * Pain → Bottleneck → System → Result and points at the *-os products
+ * that include it in production.
+ *
+ * Implementation tools (n8n, Claude, Make, Stripe, etc.) are intentionally
+ * not surfaced here. Those live on the architecture page so this page
+ * stays operational, not technical.
+ */
+interface Layer {
+  num: string
+  name: string
+  /** What it is in one operational sentence. */
+  oneLiner: string
+  /** What's failing in the org today. */
+  pain: string
+  /** What we install to fix it. */
+  system: string
+  /** Measurable change after install. */
+  result: string
+  /** Sub-systems / orchestration components inside the layer. */
+  components: string[]
+  /** Where this layer is running in production. */
+  shipsIn: { name: string; href: string }[]
+}
+
+const LAYERS: Layer[] = [
+  {
+    num: '01',
+    name: 'Client Intake Systems',
+    oneLiner: 'The layer that turns every channel a customer reaches you on into one structured, qualified, routed stream.',
+    pain: 'Enquiries leak through email, phone, WhatsApp, web, walk-ins. Response times slip from minutes to hours. Hot leads cool while staff bounce between inboxes.',
+    system: 'Multi-channel intake landing in a single queue. Auto-qualification against your ICP. Routing to the right person or on-call shift, with full audit trail. After-hours capture without losing context.',
+    result: 'Avg first response: from 4 hours to under 10 minutes. Zero leads lost between channels.',
+    components: ['Unified channel ingestion', 'Qualification scoring', 'Shift-aware routing', 'After-hours capture', 'Audit log + recovery'],
+    shipsIn: [
+      { name: 'RestaurantOS', href: '/products/restaurant-os' },
+      { name: 'PraxisOS', href: '/products/praxis-os' },
+      { name: 'RealEstateOS', href: '/products/real-estate-os' },
+    ],
+  },
+  {
+    num: '02',
+    name: 'Operations Coordination',
+    oneLiner: 'The orchestration layer that connects field crews to the back office without paper, WhatsApp threads, or evening re-keying.',
+    pain: 'Field crews work off WhatsApp and clipboards. Office staff retype job notes into invoicing the next day. Photos sit in private camera rolls. Time logs are guessed at month-end.',
+    system: 'GPS-tracked dispatch and time logging. Photo-to-quote on site, becoming structured invoice drafts. Digital customer signatures. Live sync between field actions and back-office systems.',
+    result: '~9 hours/week reclaimed per crew. Zero re-entry errors. Invoicing cycle from 2 weeks to same-day.',
+    components: ['GPS dispatch + time tracking', 'Photo-to-quote on-site', 'Digital signatures', 'Field-to-office event bus', 'Job-state machine'],
+    shipsIn: [
+      { name: 'HandwerkOS', href: '/products/handwerk-os' },
+    ],
+  },
+  {
+    num: '03',
+    name: 'Revenue Processing Systems',
+    oneLiner: 'The layer that runs everything between work-completed and cash-collected — without retyping, chasing, or month-end fire drills.',
+    pain: 'Invoices arrive as photos, PDFs, paper. Approvals stall in inboxes. XRechnung compliance is an afterthought. Cash flow waits on whoever has time tonight.',
+    system: 'OCR + extraction with validation rules. Approval workflows with role boundaries. XRechnung-compliant outbound invoicing. Reconciliation against POs and ledgers. Payment tracking with overdue logic.',
+    result: '90%+ of inbound documents processed without human touch. Approval cycle hours instead of days. DSO measurably shorter.',
+    components: ['Inbound document classification', 'Extraction + validation', 'Approval workflow', 'XRechnung / e-invoicing', 'Reconciliation + DSO tracking'],
+    shipsIn: [
+      { name: 'HandwerkOS', href: '/products/handwerk-os' },
+      { name: 'PublishingOS', href: '/products/publishing-os' },
+    ],
+  },
+  {
+    num: '04',
+    name: 'Communications Infrastructure',
+    oneLiner: 'The layer that absorbs inbound volume — support email, chat, social, voicemail — and only surfaces what genuinely needs a human.',
+    pain: 'One shared inbox carries support, sales, complaints and supplier questions. The same fifteen questions get answered fifty times a week. Threads die mid-conversation when nobody owns them.',
+    system: 'Auto-classification of inbound traffic. Draft replies for FAQs. Self-service portal for repeat questions. Routing + escalation policy. Conversation ownership tracking with SLAs.',
+    result: 'Inbound human-handled volume drops 60–80%. SLA breaches surface as alerts, not surprises. Same-day response on what matters.',
+    components: ['Auto-classification', 'Drafted replies for FAQs', 'Self-service portal', 'Escalation rules', 'SLA + ownership tracking'],
+    shipsIn: [
+      { name: 'CareOS', href: '/products/care-os' },
+      { name: 'PraxisOS', href: '/products/praxis-os' },
+    ],
+  },
+  {
+    num: '05',
+    name: 'Compliance & Continuity',
+    oneLiner: 'The layer that keeps you continuously audit-ready — instead of treating every audit as a fire drill.',
+    pain: 'CQC, GDPR, XRechnung, §19 UStG, internal QA — every audit means three days of evidence-hunting. Drift between policy and reality only surfaces when an inspector arrives.',
+    system: 'Continuous compliance posture across every system you run. Auto-assembled evidence packs on demand. Drift alerts when policy and operational reality diverge. Tamper-proof activity log.',
+    result: 'Audit prep from days to button-press. Drift events caught before they become findings. Continuous posture report for leadership.',
+    components: ['Continuous posture monitoring', 'On-demand evidence pack', 'Drift detection + alerting', 'Tamper-proof activity log', 'Per-regulation rule sets'],
+    shipsIn: [
+      { name: 'CareOS', href: '/products/care-os' },
+      { name: 'PraxisOS', href: '/products/praxis-os' },
+      { name: 'HandwerkOS', href: '/products/handwerk-os' },
+    ],
+  },
+  {
+    num: '06',
+    name: 'Monitoring & Escalation',
+    oneLiner: 'The operational watchtower — KPIs, anomalies, SLA breaches, supplier exceptions, stock drift — surfaced as alerts before they become losses.',
+    pain: 'Operational pain is usually noticed too late. Stockouts after they happen. Missed bookings after the client phones to complain. Supplier exceptions when payroll arrives short.',
+    system: 'Live KPI watch across every system you run. Anomaly detection per channel. Defined escalation paths with owners. Exception alerts that route to the right desk, not the team chat.',
+    result: 'Operational surprises drop. SLA breaches caught while they’re still reversible. Leadership sees real-time operational health, not weekly snapshots.',
+    components: ['Live KPI watch', 'Anomaly detection', 'Escalation routing', 'Exception alerts', 'Operational health dashboard'],
+    shipsIn: [
+      { name: 'PublishingOS', href: '/products/publishing-os' },
+      { name: 'PrintShop OS', href: '/products/printshop' },
+      { name: 'RestaurantOS', href: '/products/restaurant-os' },
+    ],
+  },
+]
+
+/**
+ * Delivery lifecycle — replaces the previous "From idea to automated"
+ * which read like an agency engagement. This reads like a software
+ * deployment: architecture, install, monitor, recover.
+ */
+const LIFECYCLE = [
+  {
+    step: '01',
+    title: 'Discovery & Operational Mapping',
+    desc: 'We map every channel, every handover, every bottleneck. Outputs: a working diagram of how your operation runs today and where it leaks.',
+  },
+  {
+    step: '02',
+    title: 'System Architecture & Boundaries',
+    desc: 'We design the layer: what it owns, what it doesn’t, where it escalates, how it recovers when something upstream fails. Reviewed with you before any code.',
+  },
+  {
+    step: '03',
+    title: 'Install & Integration',
+    desc: 'We build, integrate, and run in staging against real traffic. Switchover with a documented rollback path — not a hope-and-pray go-live.',
+  },
+  {
+    step: '04',
+    title: 'Continuous Monitoring & Recovery',
+    desc: 'Live observability. Drift alerts. Defined recovery procedures. Monthly operational review. The system is yours; we keep it healthy.',
+  },
+]
+
 export default function ServicesPage() {
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
-      {/* Page header */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+
+      {/* ── Page header ──────────────────────────────────────────────── */}
+      <section style={{ padding: '6rem 2rem 3rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            Services
+            // The Systems We Install
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            What We Build
+          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px', lineHeight: 1.1 }}>
+            Six operational layers.<br />
+            <span style={{ color: '#F97316' }}>One continuous operation.</span>
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
-            Eight service lines — each designed to reduce manual work, increase
-            operational capacity, and deliver measurable ROI.
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.7 }}>
+            We don&rsquo;t sell automations. We install operational layers — each one
+            a system that runs continuously between your team and their tools.
+            Architected, installed, monitored, recoverable.
           </p>
         </div>
       </section>
 
-      {/* Services grid */}
+      {/* ── Operational layers ──────────────────────────────────────── */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '90rem', margin: '0 auto' }}>
+        <div style={{ maxWidth: '88rem', margin: '0 auto' }}>
           <div
             style={{ display: 'grid', gap: '12px' }}
             className="grid-cols-1 lg:grid-cols-2"
           >
-            {SERVICES.map((s) => (
-              <div
-                key={s.num}
+            {LAYERS.map((layer) => (
+              <article
+                key={layer.num}
                 className="dark-card"
                 style={{
                   background: 'hsl(240 12% 7%)',
@@ -123,119 +190,202 @@ export default function ServicesPage() {
                   padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '0',
                   position: 'relative',
                   overflow: 'hidden',
                 }}
               >
-                {/* Top accent line */}
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.6) 50%, transparent 100%)', pointerEvents: 'none' }} />
-                <div style={{ marginBottom: '16px' }}>
-                  <span style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65% / 0.6)', letterSpacing: '0.1em', display: 'block', marginBottom: '8px' }}>
-                    {s.num}
+                {/* Single accent rule on top — no rainbow gradients */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: '#F97316', opacity: 0.5 }} />
+
+                {/* Number + name */}
+                <header style={{ marginBottom: '16px' }}>
+                  <span style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65% / 0.7)', letterSpacing: '0.1em', display: 'block', marginBottom: '8px' }}>
+                    {layer.num} · OPERATIONAL LAYER
                   </span>
-                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '22px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em' }}>
-                    {s.title}
+                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '24px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', lineHeight: 1.2 }}>
+                    {layer.name}
                   </h2>
+                </header>
+
+                <p style={{ ...sans, fontSize: '15px', color: '#F97316', lineHeight: 1.6, marginBottom: '24px', fontStyle: 'italic' }}>
+                  {layer.oneLiner}
+                </p>
+
+                {/* Pain → System → Result narrative */}
+                <div style={{ marginBottom: '20px' }}>
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    // operational pain
+                  </p>
+                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)', lineHeight: 1.7, marginBottom: '14px' }}>
+                    {layer.pain}
+                  </p>
+
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    // what we install
+                  </p>
+                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)', lineHeight: 1.7, marginBottom: '14px' }}>
+                    {layer.system}
+                  </p>
+
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    // operational result
+                  </p>
+                  <p style={{ ...sans, fontSize: '14px', color: '#F97316', lineHeight: 1.7, fontWeight: 600 }}>
+                    {layer.result}
+                  </p>
                 </div>
-                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, marginBottom: '24px' }}>
-                  {s.desc}
-                </p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '24px' }}>
-                  <span style={{ ...mono, fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', letterSpacing: '0.04em', borderRadius: '4px' }}>
-                    ↑ {s.result}
-                  </span>
-                  <span style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65%)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', padding: '4px 10px', letterSpacing: '0.04em', borderRadius: '4px' }}>
-                    ⏱ {s.timeline}
-                  </span>
+
+                {/* Components */}
+                <div style={{ marginBottom: '20px' }}>
+                  <p style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65% / 0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>
+                    // what&rsquo;s inside the layer
+                  </p>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {layer.components.map((c) => (
+                      <li key={c} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '13px', color: 'hsl(40 30% 96% / 0.75)' }}>
+                        <span style={{ width: '4px', height: '4px', background: '#F97316', flexShrink: 0, display: 'inline-block' }} />
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p style={{ ...mono, fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                  // who this is for
-                </p>
-                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.6, marginBottom: '20px' }}>
-                  {s.who}
-                </p>
-                <p style={{ ...mono, fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '10px' }}>
-                  // use cases
-                </p>
-                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {s.useCases.map((uc) => (
-                    <li key={uc} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)' }}>
-                      <span style={{ width: '4px', height: '4px', background: '#F97316', flexShrink: 0, display: 'inline-block', borderRadius: '50%' }} />
-                      {uc}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/automation-audit" style={{ ...mono, fontSize: '13px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', alignSelf: 'flex-start', marginTop: 'auto' }}>
-                  Get an audit →
-                </Link>
-              </div>
+
+                {/* Where it ships */}
+                <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+                  <p style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65% / 0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                    // shipping in production
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    {layer.shipsIn.map((p) => (
+                      <Link
+                        key={p.name}
+                        href={p.href}
+                        style={{ ...mono, fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', letterSpacing: '0.04em', borderRadius: '2px', textDecoration: 'none' }}
+                      >
+                        {p.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Process steps */}
+      {/* ── What we don't do ─────────────────────────────────────────── */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            // Scope · Boundaries
+          </p>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '24px' }}>
+            What we deliberately don&rsquo;t do.
+          </h2>
+          <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, marginBottom: '32px' }}>
+            Saying yes to everything is how agencies become forgettable. These are the things we turn down — every time, on purpose.
+          </p>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
+            {[
+              {
+                no: 'One-shot automations with no operational ownership',
+                why: 'A workflow that nobody monitors decays. We only build systems we (or your team, trained by us) keep running.',
+              },
+              {
+                no: 'Generic marketing-content automation',
+                why: 'Scheduling 12 posts a week from a content prompt isn’t infrastructure. It’s a side feature inside Communications Triage, not a service line.',
+              },
+              {
+                no: 'GPT-wrapper chatbots without grounded data and escalation policy',
+                why: 'A chatbot without a self-service knowledge base, escalation rules, and audit trail is a liability dressed as a feature.',
+              },
+              {
+                no: 'No-code prototypes presented as production systems',
+                why: 'Zaps and Make scenarios are fine prototypes. They’re not infrastructure unless they’re wrapped in monitoring, recovery, and ownership.',
+              },
+              {
+                no: '"Migrate everything to AI" engagements',
+                why: 'Most operational pain isn’t solved by AI. It’s solved by removing handovers, defining ownership, and installing the missing layer.',
+              },
+            ].map((row) => (
+              <li
+                key={row.no}
+                style={{
+                  background: 'hsl(240 12% 7%)',
+                  border: '1px solid hsl(40 30% 96% / 0.06)',
+                  borderLeft: '3px solid hsl(0 84% 60% / 0.6)',
+                  padding: '18px 22px',
+                  borderRadius: '6px',
+                }}
+              >
+                <p style={{ ...grotesk, fontWeight: 700, fontSize: '15px', color: 'hsl(40 30% 96%)', margin: '0 0 6px', letterSpacing: '-0.01em' }}>
+                  {row.no}
+                </p>
+                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.65, margin: 0 }}>
+                  {row.why}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── Delivery lifecycle ───────────────────────────────────────── */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div style={{ maxWidth: '40rem', marginBottom: '3.5rem' }}>
+          <div style={{ maxWidth: '40rem', marginBottom: '3rem' }}>
             <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              How It Works
+              // Delivery Lifecycle
             </p>
             <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)' }}>
-              From idea to automated
+              How a layer goes from missing to monitored.
             </h2>
           </div>
           <div
             style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }}
             className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
           >
-            {[
-              { step: '01', title: 'Process Analysis', desc: 'We map your current workflows and identify the highest-value automation opportunities.' },
-              { step: '02', title: 'System Design', desc: 'Our architects design the full automation architecture, API integrations, and agent logic.' },
-              { step: '03', title: 'Build & Integration', desc: 'We build and integrate the automation system with your existing tools and platforms.' },
-              { step: '04', title: 'Deployment & Monitoring', desc: 'We deploy to production and set up dashboards to monitor performance and reliability.' },
-            ].map((s) => (
-              <div key={s.step} className="process-step" style={{ background: 'hsl(240 12% 7%)', padding: '32px' }}>
-                <p style={{ ...grotesk, fontWeight: 700, fontSize: '48px', background: 'linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%))', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.04em', marginBottom: '12px', lineHeight: 1 }}>
+            {LIFECYCLE.map((s) => (
+              <div key={s.step} style={{ background: 'hsl(240 12% 7%)', padding: '32px' }}>
+                <p style={{ ...grotesk, fontWeight: 700, fontSize: '48px', color: '#F97316', letterSpacing: '-0.04em', marginBottom: '12px', lineHeight: 1 }}>
                   {s.step}
                 </p>
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '10px' }}>
+                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '17px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', marginBottom: '10px', lineHeight: 1.3 }}>
                   {s.title}
                 </h3>
-                <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7 }}>{s.desc}</p>
+                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7 }}>{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* See live systems link */}
-      <div style={{ background: 'hsl(240 14% 4%)', padding: '2rem 2rem', textAlign: 'center', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      {/* ── See live systems link ────────────────────────────────────── */}
+      <div style={{ background: 'hsl(240 14% 4%)', padding: '2rem', textAlign: 'center', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <Link href="/systems" className="sys-cta">
-          See our live systems →
+          See these layers running in production →
         </Link>
       </div>
 
-      {/* CTA */}
+      {/* ── CTA ──────────────────────────────────────────────────────── */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
             Get Started
           </p>
           <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            Not sure which service is right for you?
+            Not sure which layer your operation is missing?
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
-            Run our free Automation Audit and we&apos;ll identify exactly where automation
-            can deliver the highest impact for your business.
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.7 }}>
+            Run the free Automation Audit. We map your current operation, identify the
+            highest-leverage layer to install first, and return a one-page architecture sketch.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link href="/automation-audit" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
-              Free Automation Audit
+              Map my operation
             </Link>
             <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
-              Contact Us
+              Talk to Marcel
             </Link>
           </div>
         </div>

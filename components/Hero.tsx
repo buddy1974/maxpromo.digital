@@ -255,11 +255,9 @@ export default function Hero() {
               marginBottom: '1.5rem',
             }}
           >
-            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>The control layer</span>
-            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>
-              of modern{' '}
-              <span style={{ color: '#F97316' }}>operations</span>.
-            </span>
+            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>We build the</span>
+            <span style={{ display: 'block', color: '#F97316' }}>machines</span>
+            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>that run your business.</span>
           </motion.h1>
 
           {/* Sub — mission-critical infrastructure tone. Operational

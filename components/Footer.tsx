@@ -2,42 +2,64 @@
 
 import Link from 'next/link'
 
+/**
+ * Footer columns — four columns of five links each, identical row counts so
+ * the heights align on desktop. Order matches the audit directive:
+ * Company / Layers / Tools / Legal.
+ *
+ * The Layers column reflects the operational-layer naming we ship under
+ * /services. The old "AI Agentic Workflows / Process Automation / AI
+ * Websites / Custom Integration" capabilities-list is gone — that
+ * language signalled "AI agency" exactly the way the audit called out.
+ */
+/**
+ * Footer columns — explicit order per Marcel's directive:
+ *   Company · Tools · Services · Legal
+ *
+ * Five links per column so all four columns end at the same height.
+ * The Services column lists operational layers (the systems we
+ * install), not capabilities. No tool names ever in any link label —
+ * implementation details belong on the architecture page.
+ */
 const columns = [
   {
     title: 'Company',
     links: [
-      { label: 'Services', href: '/services' },
-      { label: 'Systems', href: '/systems' },
+      { label: 'Services',     href: '/services' },
+      { label: 'Systems',      href: '/systems' },
       { label: 'Case Studies', href: '/case-studies' },
-      { label: 'Automation Lab', href: '/automation-lab' },
-      { label: 'Pricing', href: '/pricing' },
-      { label: 'Contact', href: '/contact' },
-    ],
-  },
-  {
-    title: 'Services',
-    links: [
-      { label: 'AI Agentic Workflows', href: '/services' },
-      { label: 'Process Automation', href: '/services' },
-      { label: 'AI-Powered Websites', href: '/ai-websites' },
-      { label: 'Custom Integration', href: '/services' },
+      { label: 'Pricing',      href: '/pricing' },
+      { label: 'Contact',      href: '/contact' },
     ],
   },
   {
     title: 'Tools',
     links: [
-      { label: 'Free Automation Audit', href: '/automation-audit' },
-      { label: 'Automation Lab', href: '/automation-lab' },
-      { label: 'AI Websites', href: '/ai-websites' },
+      { label: 'Automation Audit', href: '/automation-audit' },
+      { label: 'Automation Lab',   href: '/automation-lab' },
+      { label: 'Discovery Brief',  href: '/discovery' },
+      { label: 'Estimate Tool',    href: '/estimate' },
+      { label: 'AI Websites',      href: '/ai-websites' },
+    ],
+  },
+  {
+    title: 'Services',
+    links: [
+      { label: 'Client Intake & Routing',  href: '/services' },
+      { label: 'Dispatch & Field Ops',     href: '/services' },
+      { label: 'Document Flow',            href: '/services' },
+      { label: 'Customer Triage',          href: '/services' },
+      { label: 'Compliance & Reporting',   href: '/services' },
     ],
   },
   {
     title: 'Legal',
     links: [
-      { label: 'Impressum', href: '/impressum' },
+      { label: 'Impressum',           href: '/impressum' },
       { label: 'Datenschutz / Privacy', href: '/privacy' },
-      { label: 'AGB / Terms', href: '/agb' },
-      { label: 'Cookie Policy', href: '/privacy#cookies' },
+      { label: 'AGB / Terms',         href: '/agb' },
+      { label: 'Cookie Policy',       href: '/privacy#cookies' },
+      { label: 'Data Deletion',       href: '/data-deletion' },
     ],
   },
 ]
@@ -70,10 +92,10 @@ export default function Footer() {
         >
           <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              // Ready to automate?
+              // Where is your operation leaking?
             </p>
             <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '28px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.04em', margin: 0 }}>
-              Let&apos;s build your first agent.
+              Find the missing layer in 30 minutes.
             </h3>
           </div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -92,7 +114,7 @@ export default function Footer() {
                 borderRadius: '8px',
               }}
             >
-              Book my free audit →
+              Map my operation →
             </Link>
             <Link
               href="/contact"
@@ -107,7 +129,7 @@ export default function Footer() {
                 borderRadius: '8px',
               }}
             >
-              Just send me the deck
+              Talk to an architect
             </Link>
           </div>
         </div>
@@ -115,10 +137,28 @@ export default function Footer() {
 
       {/* Main footer */}
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '3.5rem 2rem' }}>
-        <div
-          style={{ display: 'grid', gap: '2.5rem', gridTemplateColumns: 'repeat(2, 1fr)' }}
-          className="md:grid-cols-4"
-        >
+        {/*
+          Force 4-column horizontal layout on desktop via a scoped inline
+          media query — Tailwind's `md:grid-cols-4` was not being
+          generated for production (likely a content-scan gap on v4),
+          which collapsed the footer to a 2×2 grid. Inline CSS bypasses
+          Tailwind entirely so the layout is bulletproof.
+        */}
+        <style>{`
+          .footer-cols-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+          }
+          @media (min-width: 768px) {
+            .footer-cols-grid {
+              grid-template-columns: repeat(4, 1fr);
+              gap: 2rem;
+              align-items: start;
+            }
+          }
+        `}</style>
+        <div className="footer-cols-grid">
           {columns.map((col) => (
             <div key={col.title}>
               <p
@@ -146,41 +186,54 @@ export default function Footer() {
           ))}
         </div>
 
+        {/*
+          Bottom strip — two-row symmetric structure instead of the prior
+          four-item flex-wrap which landed asymmetric on medium widths.
+          Row 1: copyright + status (left)  ·  legal identifier (right)
+          Row 2: tiny hidden /portfolio link, right-aligned. Single source
+          of weight on each side reads enterprise, not cluttered.
+        */}
         <div
           style={{
             marginTop: '3rem',
             paddingTop: '1.5rem',
             borderTop: '1px solid hsl(40 30% 96% / 0.06)',
-            display: 'flex',
-            justifyContent: 'space-between',
+            display: 'grid',
+            gridTemplateColumns: '1fr auto',
             alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: '1rem',
+            gap: '12px 24px',
           }}
+          className="footer-bottom"
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <span
               className="status-pulse"
               style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(28 100% 58%)', display: 'inline-block', flexShrink: 0 }}
             />
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)' }}>
-              © 2026 MAXPROMO DIGITAL — Built by humans. Operated by machines.
+              © 2026 MAXPROMO DIGITAL
+            </span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
+              · Operational infrastructure for SME businesses
             </span>
           </div>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
-            // SYS.STATUS · ALL OPERATIONAL · 99.9% UPTIME
-          </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
-            Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst
-          </span>
-          <a
-            href="/portfolio"
-            style={{ color: 'hsl(240 14% 4%)', fontSize: '10px', textDecoration: 'none', fontFamily: 'var(--font-mono)' }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = 'hsl(240 8% 35%)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'hsl(240 14% 4%)')}
-          >
-            staff
-          </a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
+              All systems operational
+            </span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
+              Steuernr. 111/5339/7597 · FA Essen-NordOst
+            </span>
+            <a
+              href="/portfolio"
+              style={{ color: 'hsl(240 14% 4%)', fontSize: '10px', textDecoration: 'none', fontFamily: 'var(--font-mono)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'hsl(240 8% 35%)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'hsl(240 14% 4%)')}
+              aria-label="Staff portal"
+            >
+              ·
+            </a>
+          </div>
         </div>
       </div>
     </footer>

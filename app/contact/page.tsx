@@ -103,81 +103,89 @@ export default function ContactPage() {
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            Get in Touch
+            // Talk to an architect
           </p>
           <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            Contact Us
+            Where is your operation leaking?
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '36rem', margin: '0 auto', lineHeight: 1.8 }}>
-            Tell us about your project or automation challenge. We&apos;ll respond within one
-            business day.
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '36rem', margin: '0 auto', lineHeight: 1.7 }}>
+            Describe the bottleneck, the handover, the missing layer.
+            Marcel replies personally within one business day with a first read on what to install.
           </p>
         </div>
       </section>
 
       <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem' }}>
-        <div
-          style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '3rem' }}
-          className="grid-cols-1 lg:grid-cols-3"
-        >
-          {/* Sidebar */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div>
-              <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '8px' }}>
-                Maxpromo Digital
-              </h2>
-              <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7 }}>
-                AI agents and automation systems for businesses serious about growth.
-              </p>
-            </div>
+        {/*
+          Restructured from a `[260px sidebar | form]` lopsided grid into
+          a single centered column. The 3 info cards now sit in a
+          symmetric row ABOVE the form, then the form drops centered
+          beneath them — every block is centered to the page axis so
+          there's no visual left-anchor.
+        */}
+        <div style={{ maxWidth: '44rem', margin: '0 auto' }}>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>⚡</span>
-                <div>
-                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: 'hsl(40 30% 96%)', marginBottom: '4px' }}>
-                    Free Automation Audit
-                  </p>
-                  <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.5, marginBottom: '6px' }}>
-                    Start with our free audit to identify your top opportunities.
-                  </p>
+          {/* Three info cards in a symmetric row */}
+          <div
+            style={{ display: 'grid', gap: '12px', marginBottom: '3rem' }}
+            className="grid-cols-1 sm:grid-cols-3"
+          >
+            {[
+              {
+                icon: '⚡',
+                title: 'Free Operational Audit',
+                desc: 'Map your current operation, identify the missing layer.',
+                href: '/automation-audit',
+                cta: 'Run the audit →',
+              },
+              {
+                icon: '◻',
+                title: 'Chat with Max',
+                desc: 'Quick questions answered immediately by the on-site assistant.',
+                href: undefined,
+                cta: undefined,
+              },
+              {
+                icon: '▸',
+                title: 'Response time',
+                desc: 'Marcel replies personally within one business day.',
+                href: undefined,
+                cta: undefined,
+              },
+            ].map((card) => (
+              <div
+                key={card.title}
+                style={{
+                  background: 'hsl(240 12% 7%)',
+                  border: '1px solid hsl(40 30% 96% / 0.06)',
+                  borderRadius: '8px',
+                  padding: '20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                }}
+              >
+                <span style={{ ...mono, fontSize: '16px', color: '#F97316' }}>{card.icon}</span>
+                <p style={{ ...sans, fontWeight: 600, fontSize: '14px', color: 'hsl(40 30% 96%)', margin: 0 }}>
+                  {card.title}
+                </p>
+                <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.55, margin: 0, flex: 1 }}>
+                  {card.desc}
+                </p>
+                {card.href && card.cta && (
                   <Link
-                    href="/automation-audit"
-                    style={{ ...mono, fontSize: '12px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em' }}
+                    href={card.href}
+                    style={{ ...mono, fontSize: '12px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', marginTop: '6px' }}
                   >
-                    Run the audit →
+                    {card.cta}
                   </Link>
-                </div>
+                )}
               </div>
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>◻</span>
-                <div>
-                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: 'hsl(40 30% 96%)', marginBottom: '4px' }}>
-                    Chat with Max
-                  </p>
-                  <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.5 }}>
-                    Quick questions? Our AI assistant can answer immediately.
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <span style={{ ...mono, fontSize: '16px', color: '#F97316', flexShrink: 0, marginTop: '2px' }}>▸</span>
-                <div>
-                  <p style={{ ...sans, fontWeight: 500, fontSize: '14px', color: 'hsl(40 30% 96%)', marginBottom: '4px' }}>
-                    Response time
-                  </p>
-                  <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.5 }}>
-                    Within 1 business day.
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Form */}
-          <div style={{ gridColumn: 'span 1' }} className="lg:col-span-2">
+          {/* Centered form */}
+          <div>
             {status === 'success' ? (
               <div
                 style={{
