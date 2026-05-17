@@ -2,35 +2,12 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 
-const FAQS = [
-  {
-    q: 'How long does it take to build and deploy an automation?',
-    a: 'Most single automations go live in 7-14 days. Complex multi-system builds take 3-6 weeks. We work in clear phases: scope, build, test, launch. You always know where we are.',
-  },
-  {
-    q: 'Do I need technical knowledge to use what you build?',
-    a: 'No. We build systems that run themselves. You get a simple dashboard or Slack/email reporting. No CLI. No logins to configure. If something breaks, we fix it.',
-  },
-  {
-    q: 'What tools do you actually use?',
-    a: 'n8n and Make for workflow automation. Claude API and OpenAI for AI agents. Next.js for web platforms. Supabase and Neon PostgreSQL for data. Cloudflare for infrastructure. We pick the right tool for the job, not the one we want to bill hours on.',
-  },
-  {
-    q: 'Will this work with our existing software?',
-    a: "If it has an API, we can connect to it. We've integrated HubSpot, Xero, Notion, Slack, Gmail, Stripe, Airtable, Shopify, and 40+ others. Bespoke integrations are built where needed.",
-  },
-  {
-    q: 'What happens after you build it?',
-    a: "All our builds include a handover, documentation, and a support window (30-60 days depending on plan). After that, you can self-manage or take a retainer for ongoing support, monitoring, and iteration.",
-  },
-  {
-    q: 'Is the free audit actually free?',
-    a: "Yes. No sales call, no invoice. You complete a 5-minute form, our AI analyses your workflows, and you get a prioritised action plan. You can then decide if you want to work with us. There is no obligation.",
-  },
-]
+const FAQ_KEYS = ['1', '2', '3', '4', '5', '6'] as const
 
 export default function FaqSection() {
+  const t = useTranslations('faq')
   const [open, setOpen] = useState<number | null>(0)
 
   return (
@@ -48,7 +25,7 @@ export default function FaqSection() {
               marginBottom: '12px',
             }}
           >
-            // 05 — FAQ
+            {t('eyebrow')}
           </p>
           <h2
             style={{
@@ -59,15 +36,15 @@ export default function FaqSection() {
               color: 'hsl(40 30% 96%)',
             }}
           >
-            Common questions
+            {t('title')}
           </h2>
         </div>
 
         {/* Accordion */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '800px' }}>
-          {FAQS.map((faq, i) => (
+          {FAQ_KEYS.map((k, i) => (
             <div
-              key={i}
+              key={k}
               className="glass"
               style={{
                 borderRadius: '12px',
@@ -103,7 +80,7 @@ export default function FaqSection() {
                     lineHeight: 1.4,
                   }}
                 >
-                  {faq.q}
+                  {t(`q${k}`)}
                 </span>
                 <span
                   style={{
@@ -142,7 +119,7 @@ export default function FaqSection() {
                         padding: '0 1.5rem 1.5rem',
                       }}
                     >
-                      {faq.a}
+                      {t(`a${k}`)}
                     </p>
                   </motion.div>
                 )}

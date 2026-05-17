@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 
 interface FormData {
   name: string
@@ -13,9 +14,9 @@ interface FormData {
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
-const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
+const mono    = { fontFamily: 'var(--font-roboto-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans = { fontFamily: 'var(--font-inter)' } as const
+const sans    = { fontFamily: 'var(--font-inter)' } as const
 
 const inputBase: React.CSSProperties = {
   ...sans,
@@ -32,6 +33,7 @@ const inputBase: React.CSSProperties = {
 }
 
 export default function ContactPage() {
+  const t = useTranslations('contact')
   const [form, setForm] = useState<FormData>({
     name: '',
     email: '',
@@ -42,7 +44,6 @@ export default function ContactPage() {
   const [status, setStatus] = useState<Status>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
-  // Pre-fill message from ?automation= query param
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const automation = params.get('automation')
@@ -50,7 +51,6 @@ export default function ContactPage() {
       setForm((prev) => ({
         ...prev,
         automation,
-        message: `I'm interested in: ${automation}.\nPlease tell me more about this automation and how it could work for my business.`,
       }))
     }
   }, [])
@@ -80,10 +80,10 @@ export default function ContactPage() {
         }),
       })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Submission failed')
+      if (!res.ok) throw new Error(data.error || t('errorGeneric'))
       setStatus('success')
     } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : 'Something went wrong. Please try again.')
+      setErrorMsg(e instanceof Error ? e.message : t('errorGeneric'))
       setStatus('error')
     }
   }
@@ -97,64 +97,58 @@ export default function ContactPage() {
     e.currentTarget.style.boxShadow = 'none'
   }
 
+  const infoCards = [
+    {
+      icon: '⚡',
+      titleKey: 'cardAuditTitle' as const,
+      descKey: 'cardAuditDesc' as const,
+      href: '/automation-audit',
+      ctaKey: 'cardAuditCta' as const,
+    },
+    {
+      icon: '◻',
+      titleKey: 'cardChatTitle' as const,
+      descKey: 'cardChatDesc' as const,
+      href: undefined,
+      ctaKey: undefined,
+    },
+    {
+      icon: '▸',
+      titleKey: 'cardResponseTitle' as const,
+      descKey: 'cardResponseDesc' as const,
+      href: undefined,
+      ctaKey: undefined,
+    },
+  ]
+
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
       {/* Header */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            // Talk to an architect
+            {t('eyebrow')}
           </p>
           <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            Where is your operation leaking?
+            {t('title')}
           </h1>
           <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '36rem', margin: '0 auto', lineHeight: 1.7 }}>
-            Describe the bottleneck, the handover, the missing layer.
-            Marcel replies personally within one business day with a first read on what to install.
+            {t('subtitle')}
           </p>
         </div>
       </section>
 
       <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem' }}>
-        {/*
-          Restructured from a `[260px sidebar | form]` lopsided grid into
-          a single centered column. The 3 info cards now sit in a
-          symmetric row ABOVE the form, then the form drops centered
-          beneath them — every block is centered to the page axis so
-          there's no visual left-anchor.
-        */}
         <div style={{ maxWidth: '44rem', margin: '0 auto' }}>
 
-          {/* Three info cards in a symmetric row */}
+          {/* Three info cards */}
           <div
             style={{ display: 'grid', gap: '12px', marginBottom: '3rem' }}
             className="grid-cols-1 sm:grid-cols-3"
           >
-            {[
-              {
-                icon: '⚡',
-                title: 'Free Operational Audit',
-                desc: 'Map your current operation, identify the missing layer.',
-                href: '/automation-audit',
-                cta: 'Run the audit →',
-              },
-              {
-                icon: '◻',
-                title: 'Chat with Max',
-                desc: 'Quick questions answered immediately by the on-site assistant.',
-                href: undefined,
-                cta: undefined,
-              },
-              {
-                icon: '▸',
-                title: 'Response time',
-                desc: 'Marcel replies personally within one business day.',
-                href: undefined,
-                cta: undefined,
-              },
-            ].map((card) => (
+            {infoCards.map((card) => (
               <div
-                key={card.title}
+                key={card.titleKey}
                 style={{
                   background: 'hsl(240 12% 7%)',
                   border: '1px solid hsl(40 30% 96% / 0.06)',
@@ -167,17 +161,17 @@ export default function ContactPage() {
               >
                 <span style={{ ...mono, fontSize: '16px', color: '#F97316' }}>{card.icon}</span>
                 <p style={{ ...sans, fontWeight: 600, fontSize: '14px', color: 'hsl(40 30% 96%)', margin: 0 }}>
-                  {card.title}
+                  {t(card.titleKey)}
                 </p>
                 <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.55, margin: 0, flex: 1 }}>
-                  {card.desc}
+                  {t(card.descKey)}
                 </p>
-                {card.href && card.cta && (
+                {card.href && card.ctaKey && (
                   <Link
                     href={card.href}
                     style={{ ...mono, fontSize: '12px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', marginTop: '6px' }}
                   >
-                    {card.cta}
+                    {t(card.ctaKey)}
                   </Link>
                 )}
               </div>
@@ -197,13 +191,13 @@ export default function ContactPage() {
               >
                 <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>✓</p>
                 <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '28px', color: '#FFFFFF', letterSpacing: '-0.03em', marginBottom: '12px' }}>
-                  Message sent!
+                  {t('successTitle')}
                 </h2>
                 <p style={{ ...sans, fontSize: '17px', color: '#F97316', marginBottom: '8px', lineHeight: 1.7, fontWeight: 500 }}>
-                  Message sent. We&apos;ll be in touch within 24 hours.
+                  {t('successDesc')}
                 </p>
                 <p style={{ ...sans, fontSize: '14px', color: '#888888', marginBottom: '1.5rem' }}>
-                  If you don&apos;t hear from us, email us directly at{' '}
+                  {t('successDirect')}{' '}
                   <a href="mailto:info@maxpromo.digital" style={{ color: '#F97316', textDecoration: 'none' }}>
                     info@maxpromo.digital
                   </a>
@@ -212,7 +206,7 @@ export default function ContactPage() {
                   onClick={() => { setStatus('idle'); setForm({ name: '', email: '', organisation: '', message: '', automation: '' }) }}
                   style={{ ...mono, fontSize: '13px', color: '#F97316', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.05em' }}
                 >
-                  Send another message →
+                  {t('successAnother')}
                 </button>
               </div>
             ) : (
@@ -239,14 +233,14 @@ export default function ContactPage() {
                       borderRadius: '2px',
                     }}
                   >
-                    {errorMsg || 'Something went wrong. Please email us directly at info@maxpromo.digital'}
+                    {errorMsg || t('errorGeneric')}
                   </div>
                 )}
 
                 {form.automation && (
                   <div style={{ background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '10px 14px', borderRadius: '2px' }}>
                     <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.05em' }}>
-                      // Enquiring about: {form.automation}
+                      {t('formAutomationLabel')} {form.automation}
                     </p>
                   </div>
                 )}
@@ -254,14 +248,14 @@ export default function ContactPage() {
                 <div style={{ display: 'grid', gap: '20px' }} className="grid-cols-1 sm:grid-cols-2">
                   <div>
                     <label style={{ ...mono, fontSize: '11px', fontWeight: 700, color: '#888888', display: 'block', marginBottom: '8px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                      Full Name <span style={{ color: '#F97316' }}>*</span>
+                      {t('formName')} <span style={{ color: '#F97316' }}>{t('formRequired')}</span>
                     </label>
                     <input
                       type="text"
                       required
                       value={form.name}
                       onChange={(e) => update('name', e.target.value)}
-                      placeholder="Jane Smith"
+                      placeholder={t('formNamePlaceholder')}
                       style={inputBase}
                       onFocus={focusInput}
                       onBlur={blurInput}
@@ -269,14 +263,14 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <label style={{ ...mono, fontSize: '11px', fontWeight: 700, color: '#888888', display: 'block', marginBottom: '8px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                      Email Address <span style={{ color: '#F97316' }}>*</span>
+                      {t('formEmail')} <span style={{ color: '#F97316' }}>{t('formRequired')}</span>
                     </label>
                     <input
                       type="email"
                       required
                       value={form.email}
                       onChange={(e) => update('email', e.target.value)}
-                      placeholder="jane@company.com"
+                      placeholder={t('formEmailPlaceholder')}
                       style={inputBase}
                       onFocus={focusInput}
                       onBlur={blurInput}
@@ -286,14 +280,14 @@ export default function ContactPage() {
 
                 <div>
                   <label style={{ ...mono, fontSize: '11px', fontWeight: 700, color: '#888888', display: 'block', marginBottom: '8px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                    Organisation <span style={{ color: '#F97316' }}>*</span>
+                    {t('formOrg')} <span style={{ color: '#F97316' }}>{t('formRequired')}</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={form.organisation}
                     onChange={(e) => update('organisation', e.target.value)}
-                    placeholder="Company or organisation name"
+                    placeholder={t('formOrgPlaceholder')}
                     style={inputBase}
                     onFocus={focusInput}
                     onBlur={blurInput}
@@ -302,14 +296,14 @@ export default function ContactPage() {
 
                 <div>
                   <label style={{ ...mono, fontSize: '11px', fontWeight: 700, color: '#888888', display: 'block', marginBottom: '8px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                    Message <span style={{ color: '#F97316' }}>*</span>
+                    {t('formMessage')} <span style={{ color: '#F97316' }}>{t('formRequired')}</span>
                   </label>
                   <textarea
                     required
                     rows={5}
                     value={form.message}
                     onChange={(e) => update('message', e.target.value)}
-                    placeholder="Tell us about your project, the processes you'd like to automate, or the challenges you're facing..."
+                    placeholder={t('formMessagePlaceholder')}
                     style={{ ...inputBase, resize: 'none' }}
                     onFocus={focusInput}
                     onBlur={blurInput}
@@ -334,11 +328,11 @@ export default function ContactPage() {
                     transition: 'all 150ms ease',
                   }}
                 >
-                  {status === 'loading' ? 'Sending...' : 'Send Message →'}
+                  {status === 'loading' ? t('formCtaSending') : t('formCta')}
                 </button>
 
                 <p style={{ ...mono, fontSize: '11px', color: '#555555', textAlign: 'center', letterSpacing: '0.05em' }}>
-                  // Your information is never shared with third parties.
+                  {t('formPrivacy')}
                 </p>
               </form>
             )}

@@ -1,73 +1,62 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { getTranslations } from 'next-intl/server'
 
-export const metadata: Metadata = {
-  title: 'Pricing',
-  description: 'Transparent pricing for AI automation, agentic workflows, and AI-powered websites.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('pricing')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDesc'),
+  }
 }
 
-const TIERS = [
+interface TierRef {
+  id: 't1' | 't2' | 't3'
+  href: string
+  featured: boolean
+  hasTag: boolean
+  includesKeys: ReadonlyArray<'I1' | 'I2' | 'I3' | 'I4' | 'I5' | 'I6' | 'I7' | 'I8'>
+}
+
+const TIER_REFS: ReadonlyArray<TierRef> = [
   {
-    name: 'Starter',
-    price: '£2,500',
-    period: 'one-time',
-    tag: null,
-    description: 'For businesses automating their first core workflow.',
-    includes: ['1 automation workflow built end-to-end', 'Up to 3 tool integrations', 'Discovery call and process mapping', 'Testing and quality assurance', '30-day post-launch support', 'Handover documentation'],
-    cta: 'Start with Starter',
-    href: '/contact',
-    featured: false,
+    id: 't1', href: '/contact', featured: false, hasTag: false,
+    includesKeys: ['I1','I2','I3','I4','I5','I6'],
   },
   {
-    name: 'Growth',
-    price: '£6,500',
-    period: 'one-time',
-    tag: 'MOST POPULAR',
-    description: 'For businesses ready to automate multiple workflows and deploy AI agents.',
-    includes: ['Up to 4 automation workflows', 'Unlimited tool integrations', 'AI agent design and deployment', 'Custom API development', 'Priority build queue', '90-day post-launch support', 'Monthly performance review', 'Dedicated Slack channel'],
-    cta: 'Start with Growth',
-    href: '/contact',
-    featured: true,
+    id: 't2', href: '/contact', featured: true, hasTag: true,
+    includesKeys: ['I1','I2','I3','I4','I5','I6','I7','I8'],
   },
   {
-    name: 'Enterprise',
-    price: 'Custom',
-    period: 'quoted',
-    tag: null,
-    description: 'For organisations requiring full automation ecosystems and ongoing retainers.',
-    includes: ['Unlimited workflows and agents', 'Full automation architecture design', 'Ongoing development retainer', 'Dedicated automation engineer', 'SLA-backed uptime guarantee', 'Quarterly strategy reviews', 'Staff training and onboarding', 'White-label options available'],
-    cta: 'Discuss Enterprise',
-    href: '/contact',
-    featured: false,
+    id: 't3', href: '/contact', featured: false, hasTag: false,
+    includesKeys: ['I1','I2','I3','I4','I5','I6','I7','I8'],
   },
 ]
 
-const FAQS = [
-  { q: 'Do you offer ongoing maintenance?', a: 'Yes. All tiers include post-launch support. Beyond that, we offer monthly retainer packages for ongoing development, monitoring, and optimisation — priced based on scope.' },
-  { q: 'How long does a typical project take?', a: 'Starter projects typically take 3–4 weeks. Growth engagements run 6–10 weeks. Enterprise timelines are scoped during the discovery phase. Most clients go live within 60–90 days of kick-off.' },
-  { q: "What if my needs don't fit a tier?", a: "All projects start with a free discovery call. We scope every engagement individually — the tiers above are indicative guides, not rigid packages. Contact us and we'll provide a tailored quote." },
-  { q: 'Is there a minimum commitment?', a: 'No long-term contracts on project work. Our retainer arrangements have a 3-month minimum, after which you can adjust or cancel with 30 days notice.' },
-]
+const FAQ_IDS = ['q1', 'q2', 'q3', 'q4'] as const
 
-const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
+const mono    = { fontFamily: 'var(--font-roboto-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans = { fontFamily: 'var(--font-inter)' } as const
+const sans    = { fontFamily: 'var(--font-inter)' } as const
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const t      = await getTranslations('pricing')
+  const tTiers = await getTranslations('pricing.tiers')
+  const tFaq   = await getTranslations('pricing.faq')
+
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
       {/* Header */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            Pricing
+            {t('eyebrow')}
           </p>
           <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            Transparent, project-based pricing
+            {t('title')}
           </h1>
           <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
-            No retainer lock-ins on project work. No hidden fees. Every engagement starts
-            with a free audit to ensure we scope accurately before any commitment.
+            {t('subtitle')}
           </p>
         </div>
       </section>
@@ -76,9 +65,9 @@ export default function PricingPage() {
       <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ display: 'grid', gap: '16px', alignItems: 'start' }} className="grid-cols-1 lg:grid-cols-3">
-            {TIERS.map((tier) => (
+            {TIER_REFS.map((tier) => (
               <div
-                key={tier.name}
+                key={tier.id}
                 style={{
                   background: tier.featured
                     ? 'linear-gradient(135deg, hsl(28 100% 58% / 0.1), hsl(240 12% 7%) 60%)'
@@ -94,7 +83,7 @@ export default function PricingPage() {
                   position: 'relative',
                 }}
               >
-                {tier.tag && (
+                {tier.hasTag && (
                   <span style={{
                     ...mono,
                     fontSize: '10px',
@@ -111,26 +100,28 @@ export default function PricingPage() {
                     borderRadius: '20px',
                     whiteSpace: 'nowrap',
                   }}>
-                    ✦ {tier.tag}
+                    ✦ {tTiers(`${tier.id}Tag`)}
                   </span>
                 )}
-                <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', marginTop: tier.tag ? '12px' : '0' }}>
-                  {tier.name}
+                <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', marginTop: tier.hasTag ? '12px' : '0' }}>
+                  {tTiers(`${tier.id}Name`)}
                 </p>
                 <p style={{ ...grotesk, fontWeight: 700, fontSize: '42px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4px' }}>
-                  {tier.price}
+                  {tTiers(`${tier.id}Price`)}
                 </p>
                 <p style={{ ...mono, fontSize: '12px', color: 'hsl(40 12% 65%)', marginBottom: '20px', letterSpacing: '0.05em' }}>
-                  {tier.period}
+                  {tTiers(`${tier.id}Period`)}
                 </p>
                 <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, marginBottom: '28px' }}>
-                  {tier.description}
+                  {tTiers(`${tier.id}Desc`)}
                 </p>
                 <div style={{ borderTop: '1px solid hsl(40 30% 96% / 0.08)', paddingTop: '24px', marginBottom: '32px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  {tier.includes.map((item) => (
-                    <div key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 0', borderBottom: '1px solid hsl(40 30% 96% / 0.05)' }}>
+                  {tier.includesKeys.map((ik) => (
+                    <div key={ik} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 0', borderBottom: '1px solid hsl(40 30% 96% / 0.05)' }}>
                       <span style={{ color: '#F97316', flexShrink: 0, ...mono, fontSize: '13px' }}>✓</span>
-                      <span style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)', lineHeight: 1.5 }}>{item}</span>
+                      <span style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)', lineHeight: 1.5 }}>
+                        {tTiers(`${tier.id}${ik}`)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -152,13 +143,13 @@ export default function PricingPage() {
                     borderRadius: '10px',
                   }}
                 >
-                  {tier.cta} →
+                  {tTiers(`${tier.id}Cta`)} →
                 </Link>
               </div>
             ))}
           </div>
           <p style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65%)', textAlign: 'center', marginTop: '24px', letterSpacing: '0.05em' }}>
-            // All projects begin with a free discovery call. Prices are indicative — final quote provided after scoping.
+            {t('footnote')}
           </p>
         </div>
       </section>
@@ -167,26 +158,26 @@ export default function PricingPage() {
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            FAQ
+            {t('faqEyebrow')}
           </p>
           <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '3rem' }}>
-            Common questions
+            {t('faqTitle')}
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            {FAQS.map((faq, i) => (
+            {FAQ_IDS.map((qid, i) => (
               <div
-                key={faq.q}
+                key={qid}
                 style={{
                   borderTop: '1px solid hsl(40 30% 96% / 0.07)',
                   padding: '2rem 0',
-                  borderBottom: i === FAQS.length - 1 ? '1px solid hsl(40 30% 96% / 0.07)' : 'none',
+                  borderBottom: i === FAQ_IDS.length - 1 ? '1px solid hsl(40 30% 96% / 0.07)' : 'none',
                 }}
               >
                 <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '12px' }}>
-                  {faq.q}
+                  {tFaq(qid)}
                 </h3>
                 <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.8 }}>
-                  {faq.a}
+                  {tFaq(`a${qid.substring(1)}`)}
                 </p>
               </div>
             ))}
@@ -198,25 +189,24 @@ export default function PricingPage() {
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
-            Start Today
+            {t('ctaEyebrow')}
           </p>
           <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            Not sure which tier fits?
+            {t('ctaTitle')}
           </h2>
           <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
-            Run the free audit first. We&apos;ll tell you exactly what we&apos;d recommend — before
-            any commitment or cost.
+            {t('ctaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link href="/automation-audit" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
-              Run Free Audit
+              {t('ctaPrimary')}
             </Link>
             <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
-              Contact Us
+              {t('ctaSecondary')}
             </Link>
           </div>
           <p style={{ ...mono, fontSize: '11px', color: 'hsl(240 8% 35%)', marginTop: '20px', letterSpacing: '0.05em' }}>
-            // Free audit · No commitment · 3 onboarding slots open this month
+            {t('ctaFootnote')}
           </p>
         </div>
       </section>

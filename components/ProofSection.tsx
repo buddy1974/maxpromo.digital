@@ -1,27 +1,14 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 
-const RESULTS = [
-  { number: '78%', label: 'reduction in manual processing time', client: 'Operations team, UK logistics co.' },
-  { number: '32h', label: 'saved per week, first month live', client: 'Founder, German trades business' },
-  { number: '3×', label: 'lead response speed after agent deploy', client: 'Sales director, SaaS company' },
-]
-
-const QUOTES = [
-  {
-    quote: "We went from 40 hours of manual invoicing per week to under 4. The agent just runs. I forgot it was there until the report landed in my inbox.",
-    role: "Head of Operations",
-    context: "Manufacturing, 80-person company",
-  },
-  {
-    quote: "I was sceptical. We had tried Make and Zapier before and nothing stuck. MAXPROMO built something that actually understood our business logic.",
-    role: "Founder",
-    context: "UK care management platform",
-  },
-]
+const RESULT_KEYS = ['stat1', 'stat2', 'stat3'] as const
+const QUOTE_KEYS  = ['quote1', 'quote2'] as const
 
 export default function ProofSection() {
+  const t = useTranslations('proof')
+
   return (
     <section style={{ padding: '6rem 2rem', background: 'hsl(240 14% 4%)' }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
@@ -37,7 +24,7 @@ export default function ProofSection() {
               marginBottom: '12px',
             }}
           >
-            // 02 — RESULTS
+            {t('eyebrow')}
           </p>
           <h2
             style={{
@@ -49,17 +36,7 @@ export default function ProofSection() {
               marginBottom: '0',
             }}
           >
-            Numbers from{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%))',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              live systems
-            </span>
+            {t('title')}
           </h2>
         </div>
 
@@ -68,9 +45,9 @@ export default function ProofSection() {
           style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', marginBottom: '3rem', borderRadius: '16px', overflow: 'hidden' }}
           className="grid-cols-1 md:grid-cols-3"
         >
-          {RESULTS.map((r, i) => (
+          {RESULT_KEYS.map((k, i) => (
             <motion.div
-              key={r.label}
+              key={k}
               className="border-gradient"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -90,19 +67,16 @@ export default function ProofSection() {
                   letterSpacing: '-0.04em',
                   lineHeight: 1,
                   marginBottom: '12px',
-                  background: 'linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%))',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
+                  color: '#F97316',
                 }}
               >
-                {r.number}
+                {t(`${k}Value`)}
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'hsl(40 30% 96%)', lineHeight: 1.5, marginBottom: '12px' }}>
-                {r.label}
+                {t(`${k}Desc`)}
               </p>
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)', letterSpacing: '0.05em' }}>
-                — {r.client}
+                {t(`${k}Source`)}
               </p>
             </motion.div>
           ))}
@@ -113,9 +87,9 @@ export default function ProofSection() {
           style={{ display: 'grid', gap: '1rem' }}
           className="grid-cols-1 md:grid-cols-2"
         >
-          {QUOTES.map((q, i) => (
+          {QUOTE_KEYS.map((k, i) => (
             <motion.blockquote
-              key={i}
+              key={k}
               className="glass"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -150,7 +124,7 @@ export default function ProofSection() {
                   fontStyle: 'italic',
                 }}
               >
-                {q.quote}
+                {t(k)}
               </p>
               <figcaption
                 style={{
@@ -159,10 +133,10 @@ export default function ProofSection() {
                 }}
               >
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'hsl(28 100% 58%)', marginBottom: '2px' }}>
-                  {q.role}
+                  {t(`${k}Author`)}
                 </p>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)' }}>
-                  {q.context}
+                  {t(`${k}Detail`)}
                 </p>
               </figcaption>
             </motion.blockquote>
@@ -170,7 +144,7 @@ export default function ProofSection() {
         </div>
 
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)', textAlign: 'center', marginTop: '2rem', letterSpacing: '0.05em' }}>
-          // Names withheld under NDA. The systems are live.
+          {t('footnote')}
         </p>
       </div>
     </section>

@@ -1,132 +1,79 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { getTranslations } from 'next-intl/server'
 
-export const metadata: Metadata = {
-  title: 'Industry Operating Systems We Install',
-  description:
-    'Configurable business operating systems derived from real deployments — for restaurants, trades, clinics, care providers, publishers, print shops, and property companies.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('systems')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDesc'),
+  }
 }
 
-interface App {
-  name: string
-  category: string
-  desc: string
-  features: string[]
-  tags: string[]
+interface AppRef {
+  id: 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6' | 'a7'
+  featureKeys: ReadonlyArray<'F1' | 'F2' | 'F3' | 'F4'>
+  tags: ReadonlyArray<string>
   productPage: string
   contactSlug: string
   publicDemo?: string
-  demoNote: string
+  hasDemoLogin?: boolean
 }
 
-const APPS: App[] = [
+const APP_REFS: ReadonlyArray<AppRef> = [
   {
-    name: 'Restaurant OS',
-    category: 'Restaurant & Hospitality',
-    desc: 'QR-based table ordering system with group bill splitting and integrated payments. Customers scan, order, pay — no app download. Kitchen gets live order display.',
-    features: [
-      'QR code table ordering',
-      'Group bill splitting & individual payments',
-      'Live kitchen display system',
-      'Analytics dashboard',
-    ],
+    id: 'a1',
+    featureKeys: ['F1','F2','F3','F4'],
     tags: ['Next.js', 'Stripe', 'Real-time'],
     productPage: '/products/restaurant-os',
     contactSlug: 'restaurant-os',
     publicDemo: 'https://restaurant-os-one.vercel.app',
-    demoNote: 'Test card: 4242 4242 4242 4242',
   },
   {
-    name: 'PraxisOS',
-    category: 'Medical Practice',
-    desc: 'Complete digital operating system for specialist medical practices in Germany. 16 modules covering the entire practice workflow from appointment to billing.',
-    features: [
-      '16 operational modules',
-      'Patient records & lab results',
-      'Appointment & billing management',
-      'DSGVO-compliant data handling',
-    ],
+    id: 'a2',
+    featureKeys: ['F1','F2','F3','F4'],
     tags: ['Next.js', 'Neon', 'Claude AI'],
     productPage: '/products/praxis-os',
     contactSlug: 'praxis-os',
-    demoNote: 'Demo available on request',
   },
   {
-    name: 'HandwerkOS',
-    category: 'Trade & Construction',
-    desc: 'SaaS platform for trade businesses — electricians, builders, plumbers. Workers photograph handwritten job notes and AI reads them, filling all fields automatically.',
-    features: [
-      'AI reads handwritten job notes',
-      'Job management & scheduling',
-      'Customer & invoice management',
-      'Works in German and English',
-    ],
+    id: 'a3',
+    featureKeys: ['F1','F2','F3','F4'],
     tags: ['Next.js', 'Claude AI', 'TypeScript'],
     productPage: '/products/handwerk-os',
     contactSlug: 'handwerk-os',
     publicDemo: 'https://handwerkos.vercel.app',
-    demoNote: 'Demo login available',
+    hasDemoLogin: true,
   },
   {
-    name: 'CareOS',
-    category: 'Care & Healthcare',
-    desc: 'Full operating system for registered care providers, built from a live UK care provider deployment. Includes a 24/7 AI care assistant, family portal, automated compliance workflows, and a complete care management suite.',
-    features: [
-      '24/7 AI care assistant',
-      'Family portal for relatives',
-      '16 operational modules',
-      'Automated compliance workflows',
-    ],
+    id: 'a4',
+    featureKeys: ['F1','F2','F3','F4'],
     tags: ['Next.js', 'Claude AI', 'Neon'],
     productPage: '/products/care-os',
     contactSlug: 'care-os',
-    demoNote: 'Demo available on request',
   },
   {
-    name: 'PrintShop OS',
-    category: 'Print & Production',
-    desc: 'AI-powered print shop management platform. Customers configure products, upload files, and the AI validates them in real time. Full order and admin system, white-label ready.',
-    features: [
-      'AI file validation on upload',
-      'Product configurator & checkout',
-      'Order & production management',
-      'White-label ready',
-    ],
+    id: 'a5',
+    featureKeys: ['F1','F2','F3','F4'],
     tags: ['Next.js', 'Claude AI', 'Stripe'],
     productPage: '/products/printshop',
     contactSlug: 'printshop-os',
     publicDemo: 'https://printshop.maxpromo.digital',
-    demoNote: 'Demo login available',
+    hasDemoLogin: true,
   },
   {
-    name: 'PublishingOS',
-    category: 'Publishing & Media',
-    desc: 'Business operating system built from a live publishing company deployment, running 8 autonomous AI agents 24/7. Invoice chasing, stock monitoring, staff performance, revenue forecasting, and multilingual WhatsApp — all automated.',
-    features: [
-      '8 autonomous AI agents',
-      'Daily automated reporting & briefings',
-      'Multilingual WhatsApp agent',
-      'Revenue forecasting & competitor monitoring',
-    ],
+    id: 'a6',
+    featureKeys: ['F1','F2','F3','F4'],
     tags: ['Next.js', 'Claude AI', 'n8n', 'Neon'],
     productPage: '/products/publishing-os',
     contactSlug: 'publishing-os',
-    demoNote: 'Demo available on request',
   },
   {
-    name: 'RealEstateOS',
-    category: 'Property & Investment',
-    desc: 'Private AI-powered property intelligence platform built from a live UK property auction deployment. Manages large investor databases, analyses any deal in seconds, and runs targeted email campaigns.',
-    features: [
-      'AI property deal analysis (seconds)',
-      'Full investor CRM',
-      'Campaign studio with AI subject lines',
-      '5 financial calculators',
-    ],
+    id: 'a7',
+    featureKeys: ['F1','F2','F3','F4'],
     tags: ['Next.js', 'Claude AI', 'Drizzle ORM'],
     productPage: '/products/real-estate-os',
     contactSlug: 'real-estate-os',
-    demoNote: 'Demo available on request',
   },
 ]
 
@@ -134,74 +81,39 @@ const mono    = { fontFamily: 'var(--font-roboto-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-inter)' } as const
 const sans    = { fontFamily: 'var(--font-inter)' } as const
 
-const BEFORE = ['Spreadsheets', 'WhatsApp', 'Paper records', 'Manual chasing', 'Disconnected tools']
-const AFTER  = ['AI agents', 'Automated workflows', 'Live dashboards', 'Centralised records', 'One operating system']
+interface ArchRef {
+  no: string
+  id: 'a1' | 'a2' | 'a3' | 'a4'
+  itemKeys: ReadonlyArray<'I1' | 'I2' | 'I3' | 'I4' | 'I5' | 'I6'>
+}
 
-/**
- * Architecture composition — the four layers every system we install
- * sits on. Reads bottom-up the way infrastructure stacks normally do:
- * sources at the bottom, outcomes at the top, orchestration in between.
- *
- * The point of this section is not to teach the visitor systems
- * engineering. It is to demonstrate that we think about an operation
- * as a layered architecture, not as a pile of automations. That is
- * the signal that separates infrastructure companies from agencies.
- */
-const ARCHITECTURE_LAYERS = [
-  {
-    no: '04',
-    name: 'OUTCOME',
-    desc: 'Your team. Your tools. Your customer.',
-    items: ['Confirmation sent', 'Calendar updated', 'Invoice posted', 'Slack notified', 'Audit logged'],
-  },
-  {
-    no: '03',
-    name: 'ORCHESTRATION',
-    desc: 'The control plane. Routing logic, escalation policy, audit trail, governance — runs the operation.',
-    items: ['Routing rules', 'Escalation chains', 'Audit trail', 'Drift alerts', 'Governance policy'],
-  },
-  {
-    no: '02',
-    name: 'INTAKE',
-    desc: 'Every channel captured, qualified, normalised. The operation no longer cares where the request came from.',
-    items: ['Multi-channel capture', 'Identity resolution', 'Qualification', 'Normalisation', 'Deduplication'],
-  },
-  {
-    no: '01',
-    name: 'SOURCES',
-    desc: 'Where work enters your operation today — most of it untracked.',
-    items: ['Email', 'Phone', 'WhatsApp', 'Web forms', 'Walk-ins', 'CRM events'],
-  },
+const ARCH_REFS: ReadonlyArray<ArchRef> = [
+  { no: '04', id: 'a1', itemKeys: ['I1','I2','I3','I4','I5'] },
+  { no: '03', id: 'a2', itemKeys: ['I1','I2','I3','I4','I5'] },
+  { no: '02', id: 'a3', itemKeys: ['I1','I2','I3','I4','I5'] },
+  { no: '01', id: 'a4', itemKeys: ['I1','I2','I3','I4','I5','I6'] },
 ]
 
-/**
- * Lifecycle pipeline — what happens to a single piece of work as it
- * passes through the system. Five stages, named the way operations
- * teams name them, not the way developers name them.
- */
-const LIFECYCLE = [
-  { no: '01', name: 'Intake',   desc: 'Request arrives. Channel-agnostic. Captured with timestamp + context.' },
-  { no: '02', name: 'Qualify',  desc: 'Score against business rules. Confidence noted. Below threshold → review.' },
-  { no: '03', name: 'Route',    desc: 'Send to the right team, shift, or runtime. Escalation rules applied.' },
-  { no: '04', name: 'Act',      desc: 'System or person executes. State machine tracks progress + SLA.' },
-  { no: '05', name: 'Audit',    desc: 'Outcome logged. Tamper-proof history. Drift signal recorded.' },
+const LIFECYCLE_REFS = [
+  { no: '01', id: 's1' as const },
+  { no: '02', id: 's2' as const },
+  { no: '03', id: 's3' as const },
+  { no: '04', id: 's4' as const },
+  { no: '05', id: 's5' as const },
 ]
 
-/**
- * Escalation policy — the moments where the system deliberately
- * stops and hands control back to a person. Naming these moments
- * out loud is the trust signal: it says the system is governed,
- * not autonomous-because-it-feels-modern.
- */
-const ESCALATION_RULES = [
-  { trigger: 'Confidence below threshold',  to: 'Human review queue · senior reviewer',  reason: 'AI uncertain — never act, always escalate.' },
-  { trigger: 'Value above threshold',       to: 'Senior team · with full context',      reason: 'High-value decisions stay human.' },
-  { trigger: 'After SLA breach',            to: 'On-call escalation chain',             reason: 'Time-sensitive requests must not silently age.' },
-  { trigger: 'Compliance flag raised',      to: 'Audit reviewer · with evidence pack',  reason: 'Regulated work always has a named accountable human.' },
-  { trigger: 'Outside business rules',      to: 'Owner notification + work paused',     reason: 'Edge cases are surfaced, not absorbed silently.' },
-]
+const ESCALATION_IDS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const
 
-export default function SystemsPage() {
+export default async function SystemsPage() {
+  const t       = await getTranslations('systems')
+  const tApps   = await getTranslations('systems.apps')
+  const tArch   = await getTranslations('systems.architecture')
+  const tLife   = await getTranslations('systems.lifecycle')
+  const tEsc    = await getTranslations('systems.escalation')
+
+  const beforeItems = t('beforeItems').split(' · ')
+  const afterItems  = t('afterItems').split(' · ')
+
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
 
@@ -209,7 +121,7 @@ export default function SystemsPage() {
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            // LIVE IN PRODUCTION
+            {t('eyebrow')}
           </p>
           <h1
             style={{
@@ -221,10 +133,10 @@ export default function SystemsPage() {
               marginBottom: '20px',
             }}
           >
-            Industry Operating Systems We Install
+            {t('title')}
           </h1>
           <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '48rem', margin: '0 auto', lineHeight: 1.8 }}>
-            These systems started as real deployments. Now they form the foundation of configurable business operating systems for restaurants, trades, clinics, care providers, publishers, print shops, and property companies.
+            {t('subtitle')}
           </p>
         </div>
       </section>
@@ -243,7 +155,7 @@ export default function SystemsPage() {
               marginBottom: '2rem',
             }}
           >
-            From manual operations to installed systems.
+            {t('beforeAfterTitle')}
           </h2>
           <div
             style={{
@@ -256,13 +168,12 @@ export default function SystemsPage() {
             }}
             className="grid-cols-1 sm:grid-cols-2"
           >
-            {/* Before */}
             <div style={{ padding: '28px 32px', borderRight: '1px solid hsl(40 30% 96% / 0.06)' }}>
               <p style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
-                Before
+                {t('before')}
               </p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {BEFORE.map((item) => (
+                {beforeItems.map((item) => (
                   <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)' }}>
                     <span style={{ color: 'hsl(0 84% 60%)', flexShrink: 0, fontSize: '13px' }}>✕</span>
                     {item}
@@ -270,13 +181,12 @@ export default function SystemsPage() {
                 ))}
               </ul>
             </div>
-            {/* After */}
             <div style={{ padding: '28px 32px' }}>
               <p style={{ ...mono, fontSize: '10px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
-                After
+                {t('after')}
               </p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {AFTER.map((item) => (
+                {afterItems.map((item) => (
                   <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '15px', color: 'hsl(40 30% 96%)' }}>
                     <span style={{ color: 'hsl(28 100% 58%)', flexShrink: 0, fontSize: '13px', fontWeight: 700 }}>✓</span>
                     {item}
@@ -288,23 +198,23 @@ export default function SystemsPage() {
         </div>
       </section>
 
-      {/* Architecture composition — the 4-layer stack every system sits on */}
+      {/* Architecture composition */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3rem', maxWidth: '40rem' }}>
             <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              // ARCHITECTURE
+              {t('archEyebrow')}
             </p>
             <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', margin: '0 0 14px' }}>
-              How a system is composed
+              {t('archTitle')}
             </h2>
             <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
-              Every operational runtime we install sits on the same four-layer stack — sources at the bottom, outcomes at the top, the control plane in between.
+              {t('archDesc')}
             </p>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {ARCHITECTURE_LAYERS.map((layer, i) => (
+            {ARCH_REFS.map((layer, i) => (
               <div
                 key={layer.no}
                 style={{
@@ -321,19 +231,19 @@ export default function SystemsPage() {
               >
                 <div>
                   <p style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65%)', letterSpacing: '0.15em', marginBottom: '4px' }}>
-                    LAYER {layer.no}
+                    {t('archLayerLabel')} {layer.no}
                   </p>
                   <p style={{ ...mono, fontSize: '14px', color: 'hsl(40 30% 96%)', letterSpacing: '0.08em', fontWeight: 700, margin: 0 }}>
-                    {layer.name}
+                    {tArch(`${layer.id}Name`)}
                   </p>
                 </div>
                 <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.65, margin: 0 }}>
-                  {layer.desc}
+                  {tArch(`${layer.id}Desc`)}
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'flex-end', maxWidth: '320px' }}>
-                  {layer.items.map((it) => (
-                    <span key={it} style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65%)', background: 'hsl(240 14% 4%)', border: '1px solid hsl(40 30% 96% / 0.08)', padding: '4px 10px', borderRadius: '3px', letterSpacing: '0.04em' }}>
-                      {it}
+                  {layer.itemKeys.map((ik) => (
+                    <span key={ik} style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65%)', background: 'hsl(240 14% 4%)', border: '1px solid hsl(40 30% 96% / 0.08)', padding: '4px 10px', borderRadius: '3px', letterSpacing: '0.04em' }}>
+                      {tArch(`${layer.id}${ik}`)}
                     </span>
                   ))}
                 </div>
@@ -342,23 +252,23 @@ export default function SystemsPage() {
           </div>
 
           <p style={{ ...mono, fontSize: '11px', color: 'hsl(240 8% 35%)', marginTop: '20px', letterSpacing: '0.05em', textAlign: 'center' }}>
-            // Flow: SOURCES → INTAKE → ORCHESTRATION → OUTCOME — every request traced end to end
+            {t('archFlow')}
           </p>
         </div>
       </section>
 
-      {/* Lifecycle pipeline — five stages a request passes through */}
+      {/* Lifecycle pipeline */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '2.5rem', maxWidth: '40rem' }}>
             <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              // LIFECYCLE
+              {t('lifecycleEyebrow')}
             </p>
             <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', margin: '0 0 14px' }}>
-              How a request passes through
+              {t('lifecycleTitle')}
             </h2>
             <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
-              Five stages, named the way an operations team names them. Each stage produces audit signal — nothing happens silently.
+              {t('lifecycleDesc')}
             </p>
           </div>
 
@@ -366,13 +276,13 @@ export default function SystemsPage() {
             style={{ display: 'grid', gap: '0', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }}
             className="grid-cols-1 md:grid-cols-5"
           >
-            {LIFECYCLE.map((step, i) => (
+            {LIFECYCLE_REFS.map((step, i) => (
               <div
                 key={step.no}
                 style={{
                   background: 'hsl(240 12% 7%)',
                   padding: '24px 22px',
-                  borderTop: `2px solid ${i === LIFECYCLE.length - 1 ? 'rgba(34,197,94,0.5)' : 'rgba(249,115,22,0.4)'}`,
+                  borderTop: `2px solid ${i === LIFECYCLE_REFS.length - 1 ? 'rgba(34,197,94,0.5)' : 'rgba(249,115,22,0.4)'}`,
                   position: 'relative',
                 }}
               >
@@ -380,10 +290,10 @@ export default function SystemsPage() {
                   {step.no}
                 </p>
                 <p style={{ ...grotesk, fontSize: '16px', fontWeight: 700, color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', marginBottom: '10px' }}>
-                  {step.name}
+                  {tLife(`${step.id}Name`)}
                 </p>
                 <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.6, margin: 0 }}>
-                  {step.desc}
+                  {tLife(`${step.id}Desc`)}
                 </p>
               </div>
             ))}
@@ -391,25 +301,25 @@ export default function SystemsPage() {
         </div>
       </section>
 
-      {/* Escalation policy — the moments where the system stops and a human takes over */}
+      {/* Escalation policy */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '2.5rem', maxWidth: '44rem' }}>
             <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              // ESCALATION POLICY
+              {t('escalationEyebrow')}
             </p>
             <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', margin: '0 0 14px' }}>
-              When the system steps back
+              {t('escalationTitle')}
             </h2>
             <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
-              A governed system names its boundaries out loud. These are the moments where the runtime deliberately stops, surfaces context, and hands control to a named human.
+              {t('escalationDesc')}
             </p>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {ESCALATION_RULES.map((rule, i) => (
+            {ESCALATION_IDS.map((id) => (
               <div
-                key={rule.trigger}
+                key={id}
                 style={{
                   background: 'hsl(240 12% 7%)',
                   border: '1px solid hsl(40 30% 96% / 0.08)',
@@ -423,26 +333,26 @@ export default function SystemsPage() {
               >
                 <div>
                   <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    Trigger
+                    {t('escTrigger')}
                   </p>
                   <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96%)', fontWeight: 600, margin: 0 }}>
-                    {rule.trigger}
+                    {tEsc(`${id}Trigger`)}
                   </p>
                 </div>
                 <div>
                   <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    Hands to
+                    {t('escHandsTo')}
                   </p>
                   <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96%)', margin: 0 }}>
-                    {rule.to}
+                    {tEsc(`${id}To`)}
                   </p>
                 </div>
                 <div>
                   <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    Why
+                    {t('escWhy')}
                   </p>
                   <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.55, margin: 0 }}>
-                    {rule.reason}
+                    {tEsc(`${id}Why`)}
                   </p>
                 </div>
               </div>
@@ -451,16 +361,16 @@ export default function SystemsPage() {
         </div>
       </section>
 
-      {/* App cards — 2-column grid */}
+      {/* App cards */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '3rem 2rem 4rem' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div
             style={{ display: 'grid', gap: '16px' }}
             className="grid-cols-1 lg:grid-cols-2"
           >
-            {APPS.map((app) => (
+            {APP_REFS.map((app) => (
               <div
-                key={app.name}
+                key={app.id}
                 className="dark-card"
                 style={{
                   background: 'hsl(240 12% 7%)',
@@ -473,7 +383,6 @@ export default function SystemsPage() {
                   overflow: 'hidden',
                 }}
               >
-                {/* Top accent line */}
                 <div
                   style={{
                     position: 'absolute',
@@ -484,7 +393,6 @@ export default function SystemsPage() {
                   }}
                 />
 
-                {/* Category badge */}
                 <span
                   style={{
                     ...mono,
@@ -501,10 +409,9 @@ export default function SystemsPage() {
                     alignSelf: 'flex-start',
                   }}
                 >
-                  {app.category}
+                  {tApps(`${app.id}Category`)}
                 </span>
 
-                {/* Name */}
                 <h2
                   style={{
                     ...grotesk,
@@ -515,10 +422,9 @@ export default function SystemsPage() {
                     marginBottom: '12px',
                   }}
                 >
-                  {app.name}
+                  {tApps(`${app.id}Name`)}
                 </h2>
 
-                {/* Description */}
                 <p
                   style={{
                     ...sans,
@@ -528,10 +434,9 @@ export default function SystemsPage() {
                     marginBottom: '20px',
                   }}
                 >
-                  {app.desc}
+                  {tApps(`${app.id}Desc`)}
                 </p>
 
-                {/* Features */}
                 <ul
                   style={{
                     listStyle: 'none',
@@ -543,9 +448,9 @@ export default function SystemsPage() {
                     flex: 1,
                   }}
                 >
-                  {app.features.map((f) => (
+                  {app.featureKeys.map((fk) => (
                     <li
-                      key={f}
+                      key={fk}
                       style={{
                         display: 'flex',
                         alignItems: 'flex-start',
@@ -558,12 +463,11 @@ export default function SystemsPage() {
                       <span style={{ color: 'hsl(28 100% 58%)', flexShrink: 0, fontWeight: 700, fontSize: '12px', marginTop: '1px' }}>
                         ✓
                       </span>
-                      {f}
+                      {tApps(`${app.id}${fk}`)}
                     </li>
                   ))}
                 </ul>
 
-                {/* Tags */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
                   {app.tags.map((tag) => (
                     <span
@@ -584,17 +488,15 @@ export default function SystemsPage() {
                   ))}
                 </div>
 
-                {/* CTAs */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                   <Link href={app.productPage} className="sys-cta">
-                    Explore System →
+                    {tApps('exploreCta')}
                   </Link>
                   <Link href={`/contact?system=${app.contactSlug}`} className="sys-cta-ghost">
-                    Request Similar System →
+                    {tApps('requestCta')}
                   </Link>
                 </div>
 
-                {/* Demo note */}
                 <p
                   style={{
                     ...mono,
@@ -613,12 +515,12 @@ export default function SystemsPage() {
                         rel="noopener noreferrer"
                         style={{ color: 'hsl(28 100% 58%)', textDecoration: 'none' }}
                       >
-                        View Live →
+                        {tApps('viewLive')}
                       </a>
-                      {app.demoNote !== 'Demo login available' && ` · ${app.demoNote}`}
+                      {!app.hasDemoLogin && ` · ${tApps(`${app.id}Demo`)}`}
                     </>
                   ) : (
-                    `// ${app.demoNote}`
+                    `// ${tApps(`${app.id}Demo`)}`
                   )}
                 </p>
               </div>
@@ -631,7 +533,7 @@ export default function SystemsPage() {
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '52rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
-            // BUILD YOURS
+            {t('ctaEyebrow')}
           </p>
           <h2
             style={{
@@ -643,11 +545,11 @@ export default function SystemsPage() {
               marginBottom: '16px',
             }}
           >
-            Want a system like this
-            <br />built for your business?
+            {t('ctaTitleLine1')}
+            <br />{t('ctaTitleLine2')}
           </h2>
           <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
-            Every system above was built from scratch. Yours is next.
+            {t('ctaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link
@@ -666,7 +568,7 @@ export default function SystemsPage() {
                 boxShadow: '0 0 30px hsl(28 100% 58% / 0.25)',
               }}
             >
-              Start Discovery →
+              {t('ctaPrimary')}
             </Link>
             <Link
               href="/estimate"
@@ -682,11 +584,11 @@ export default function SystemsPage() {
                 borderRadius: '10px',
               }}
             >
-              Get Instant Estimate →
+              {t('ctaSecondary')}
             </Link>
           </div>
           <p style={{ ...mono, fontSize: '11px', color: 'hsl(240 8% 35%)', marginTop: '20px', letterSpacing: '0.05em' }}>
-            // Average delivery: 14 days · 3 onboarding slots open this month
+            {t('ctaFootnote')}
           </p>
         </div>
       </section>

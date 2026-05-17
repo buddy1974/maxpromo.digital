@@ -1,8 +1,10 @@
 'use client'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { useTranslations } from 'next-intl'
 
 export default function NewsletterSignup() {
+  const t = useTranslations('newsletter')
   const [email,   setEmail]   = useState('')
   const [status,  setStatus]  = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
@@ -22,15 +24,15 @@ export default function NewsletterSignup() {
 
       if (data.success) {
         setStatus('success')
-        setMessage(data.status === 'already_subscribed' ? 'You\'re already on the list.' : 'You\'re subscribed. Welcome.')
+        setMessage(t('successDesc'))
         setEmail('')
       } else {
         setStatus('error')
-        setMessage(data.error ?? 'Something went wrong.')
+        setMessage(data.error ?? t('errorGeneric'))
       }
     } catch {
       setStatus('error')
-      setMessage('Connection error. Try again.')
+      setMessage(t('errorGeneric'))
     }
   }
 
@@ -63,7 +65,7 @@ export default function NewsletterSignup() {
             margin: '0 0 16px',
           }}
         >
-          Weekly Insights
+          {t('eyebrow')}
         </p>
 
         <h2
@@ -77,7 +79,7 @@ export default function NewsletterSignup() {
             lineHeight: 1.2,
           }}
         >
-          Get Weekly Automation Insights
+          {t('title')}
         </h2>
 
         <p
@@ -89,7 +91,7 @@ export default function NewsletterSignup() {
             margin: '0 0 32px',
           }}
         >
-          Real builds. Real results. No spam. Unsubscribe anytime.
+          {t('subtitle')}
         </p>
 
         {status === 'success' ? (
@@ -110,7 +112,7 @@ export default function NewsletterSignup() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="your@email.com"
+              placeholder={t('placeholder')}
               required
               style={{
                 flex: 1,
@@ -142,7 +144,7 @@ export default function NewsletterSignup() {
                 whiteSpace: 'nowrap',
               }}
             >
-              {status === 'loading' ? '...' : 'Subscribe'}
+              {status === 'loading' ? '...' : t('cta')}
             </button>
           </form>
         )}

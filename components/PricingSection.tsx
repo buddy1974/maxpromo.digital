@@ -1,62 +1,25 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 
-const PLANS = [
-  {
-    name: 'Spark',
-    price: '€1,499',
-    period: 'one-time',
-    desc: 'One automation system. Ideal for a single high-impact workflow.',
-    features: [
-      '1 custom automation workflow',
-      'n8n or Make deployment',
-      'API & webhook integration',
-      'Testing + handover',
-      '30-day support',
-    ],
-    cta: 'Start with Spark',
-    href: '/estimate',
-    featured: false,
-  },
-  {
-    name: 'Engine',
-    price: '€3,999',
-    period: 'one-time',
-    desc: 'A full automation suite. Multiple agents, connected systems, full stack.',
-    features: [
-      '3-5 automation systems',
-      'AI agent deployment',
-      'CRM / ERP / accounting integration',
-      'Custom dashboard',
-      '60-day support + monitoring',
-      'Priority response',
-    ],
-    cta: 'Book a discovery call',
-    href: '/discovery',
-    featured: true,
-  },
-  {
-    name: 'Operating System',
-    price: 'Custom',
-    period: 'quoted',
-    desc: 'Full AI operating layer for your business. Ongoing, evolving, monitored.',
-    features: [
-      'Unlimited automations',
-      'Dedicated AI agents',
-      'Monthly strategy sessions',
-      'Proactive optimisation',
-      'Custom OS build if needed',
-      'SLA uptime guarantee',
-    ],
-    cta: 'Talk to founders',
-    href: '/contact',
-    featured: false,
-  },
+interface PlanRef {
+  id: 'plan1' | 'plan2' | 'plan3'
+  href: string
+  featured: boolean
+  featureKeys: ReadonlyArray<string>
+}
+
+const PLAN_REFS: PlanRef[] = [
+  { id: 'plan1', href: '/estimate',   featured: false, featureKeys: ['F1','F2','F3','F4','F5'] },
+  { id: 'plan2', href: '/discovery',  featured: true,  featureKeys: ['F1','F2','F3','F4','F5','F6'] },
+  { id: 'plan3', href: '/contact',    featured: false, featureKeys: ['F1','F2','F3','F4','F5','F6'] },
 ]
 
 export default function PricingSection() {
+  const t = useTranslations('pricingSection')
+
   return (
     <section style={{ padding: '6rem 2rem', background: 'hsl(240 12% 6%)' }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
@@ -72,7 +35,7 @@ export default function PricingSection() {
               marginBottom: '12px',
             }}
           >
-            // 04 — PRICING
+            {t('eyebrow')}
           </p>
           <h2
             style={{
@@ -84,11 +47,10 @@ export default function PricingSection() {
               marginBottom: '1rem',
             }}
           >
-            Straightforward pricing.
-            <br />No retainer traps.
+            {t('title')}
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '480px', margin: '0 auto', lineHeight: 1.7 }}>
-            You pay for what gets built. No monthly lock-in unless you want ongoing management.
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7 }}>
+            {t('subtitle')}
           </p>
         </div>
 
@@ -97,9 +59,9 @@ export default function PricingSection() {
           style={{ display: 'grid', gap: '1rem', alignItems: 'start' }}
           className="grid-cols-1 lg:grid-cols-3"
         >
-          {PLANS.map((plan, i) => (
+          {PLAN_REFS.map((plan, i) => (
             <motion.div
-              key={plan.name}
+              key={plan.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
@@ -136,7 +98,7 @@ export default function PricingSection() {
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  ✦ Most chosen
+                  {t('mostChosen')}
                 </span>
               )}
 
@@ -150,7 +112,7 @@ export default function PricingSection() {
                   marginBottom: '12px',
                 }}
               >
-                {plan.name}
+                {t(`${plan.id}Name`)}
               </p>
               <p
                 style={{
@@ -163,19 +125,19 @@ export default function PricingSection() {
                   marginBottom: '4px',
                 }}
               >
-                {plan.price}
+                {t(`${plan.id}Price`)}
               </p>
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)', marginBottom: '1.5rem' }}>
-                {plan.period}
+                {t(`${plan.id}Period`)}
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.65, marginBottom: '2rem' }}>
-                {plan.desc}
+                {t(`${plan.id}Desc`)}
               </p>
 
               <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {plan.features.map((f) => (
+                {plan.featureKeys.map((fk) => (
                   <li
-                    key={f}
+                    key={fk}
                     style={{
                       display: 'flex',
                       alignItems: 'flex-start',
@@ -202,7 +164,7 @@ export default function PricingSection() {
                     >
                       ✓
                     </span>
-                    {f}
+                    {t(`${plan.id}${fk}`)}
                   </li>
                 ))}
               </ul>
@@ -227,14 +189,14 @@ export default function PricingSection() {
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
               >
-                {plan.cta} →
+                {t(`${plan.id}Cta`)} →
               </Link>
             </motion.div>
           ))}
         </div>
 
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(240 8% 35%)', textAlign: 'center', marginTop: '2.5rem', letterSpacing: '0.05em' }}>
-          // All projects include a free pre-build scope call. No contract without your sign-off.
+          {t('footnote')}
         </p>
       </div>
     </section>

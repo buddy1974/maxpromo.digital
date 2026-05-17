@@ -1,7 +1,8 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 function formatGBP(n: number): string {
   return '£' + Math.round(n).toLocaleString('en-GB')
@@ -49,6 +50,7 @@ function SliderInput({ label, value, min, max, prefix, suffix, onChange }: Slide
 }
 
 export default function ROICalculator() {
+  const t = useTranslations('roi')
   const [staff, setStaff] = useState(5)
   const [hours, setHours] = useState(20)
   const [rate, setRate]   = useState(30)
@@ -93,7 +95,7 @@ export default function ROICalculator() {
               marginBottom: '12px',
             }}
           >
-            ROI Calculator
+            {t('eyebrow')}
           </p>
           <h2
             style={{
@@ -105,10 +107,10 @@ export default function ROICalculator() {
               marginBottom: '12px',
             }}
           >
-            See what automation saves you
+            {t('title')}
           </h2>
           <p style={{ fontFamily: 'var(--font-inter)', fontSize: '17px', color: '#888888', lineHeight: 1.8 }}>
-            Real numbers. No fluff. Based on your actual team.
+            {t('subtitle')}
           </p>
         </div>
 
@@ -131,25 +133,25 @@ export default function ROICalculator() {
             }}
           >
             <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>
-              // your team
+              {t('yourTeam')}
             </p>
-            <SliderInput label="Staff handling manual tasks"     value={staff} min={1}  max={50}  suffix=" people" onChange={setStaff} />
-            <SliderInput label="Hours per week on manual work"   value={hours} min={1}  max={40}  suffix=" hrs/wk" onChange={setHours} />
-            <SliderInput label="Average hourly cost per employee" value={rate}  min={10} max={100} prefix="£" suffix="/hr" onChange={setRate} />
+            <SliderInput label={t('staffLabel')}  value={staff} min={1}  max={50}  suffix={` ${t('staffSuffix')}`} onChange={setStaff} />
+            <SliderInput label={t('hoursLabel')}  value={hours} min={1}  max={40}  suffix={` ${t('hoursSuffix')}`} onChange={setHours} />
+            <SliderInput label={t('rateLabel')}   value={rate}  min={10} max={100} prefix="£" suffix="/hr" onChange={setRate} />
           </div>
 
           {/* Outputs */}
           <div style={{ background: 'rgba(0,0,0,0.15)', padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
               <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '32px' }}>
-                // your savings
+                {t('yourSavings')}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '32px' }}>
                 {[
-                  { label: 'Hours saved per week',  value: `${hoursSaved} hrs`, size: '26px' },
-                  { label: 'Monthly cost saved',    value: formatGBP(monthlySaved), size: '26px' },
-                  { label: 'Annual ROI',             value: formatGBP(annualROI), size: '26px' },
-                  { label: 'Typical payback period', value: '60–90 days', size: '22px' },
+                  { label: t('savingsHours'),  value: `${hoursSaved} ${t('hoursSuffix')}`, size: '26px' },
+                  { label: t('savingsMonthly'), value: formatGBP(monthlySaved),            size: '26px' },
+                  { label: t('savingsAnnual'),  value: formatGBP(annualROI),               size: '26px' },
+                  { label: t('payback'),        value: t('paybackValue'),                  size: '22px' },
                 ].map((row) => (
                   <div
                     key={row.label}
@@ -194,15 +196,18 @@ export default function ROICalculator() {
                   e.currentTarget.style.transform = 'translateY(0)'
                 }}
               >
-                Get My Custom Automation Plan →
+                {t('cta')}
               </Link>
               <p style={{ fontFamily: 'var(--font-roboto-mono)', fontSize: '11px', color: '#555555', textAlign: 'center', letterSpacing: '0.05em' }}>
-                // 3 discovery call slots remaining this month
+                {t('footnote')}
               </p>
             </div>
           </div>
         </div>
       </div>
     </section>
+  )
+}
+    </div>
   )
 }
