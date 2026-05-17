@@ -364,7 +364,7 @@ export default function Hero() {
           >
             {STATS.map((stat, i) => (
               <div
-                key={stat.label}
+                key={stat.labelKey}
                 style={{
                   paddingRight: i < STATS.length - 1 ? '1.5rem' : 0,
                   borderRight: i < STATS.length - 1 ? '1px solid hsl(40 30% 96% / 0.07)' : 'none',
