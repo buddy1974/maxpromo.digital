@@ -3,14 +3,24 @@ import AutomationCard from '@/components/AutomationCard'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Automation Systems Library',
+  title: 'Operations Engineering Reference',
   description:
-    '18 production-ready AI agents and automation systems — custom-built to your stack and business logic.',
+    'Eighteen production-grade operational runtimes — decision systems, coordination engines and communications operations we deploy on top of client operations. Architected, installed, and run by Maxpromo.',
 }
 
+/**
+ * Categories reframed from capability buckets into operational domains.
+ *
+ * Old wording ("AI Agents" / "Workflow Automation" / "Content & Social")
+ * read as a freelancer's skill stack. The new headings name the kind of
+ * work each runtime performs inside the operation: decisions, coordination,
+ * communications. Same eighteen runtimes underneath — different surface
+ * vocabulary so the page reads as engineering reference, not a feature
+ * menu.
+ */
 const CATEGORIES = [
   {
-    heading: 'AI Agents',
+    heading: 'Decision Systems',
     automations: [
       { title: 'Lead Qualification Agent', description: 'Evaluates inbound leads against your ICP, scores them, enriches with data, and routes hot leads to sales with a personalised summary.', tools: ['Claude AI', 'HubSpot', 'Apollo.io', 'Slack'] },
       { title: 'Customer Support AI Agent', description: 'Answers queries 24/7 using your knowledge base. Handles tier-1 support, processes FAQs, escalates complex issues with full conversation context.', tools: ['Claude AI', 'Zendesk', 'Slack', 'n8n'] },
@@ -21,7 +31,7 @@ const CATEGORIES = [
     ],
   },
   {
-    heading: 'Workflow Automation',
+    heading: 'Coordination & Process Engines',
     automations: [
       { title: 'Invoice Processing Automation', description: 'Extracts invoice data from email attachments, validates against purchase orders, posts to your accounting system, flags exceptions.', tools: ['Claude AI', 'Xero', 'Make', 'Gmail'] },
       { title: 'CRM Lead Routing Automation', description: 'Routes inbound leads to the right rep based on criteria — with automatic task creation and personalised email notification.', tools: ['HubSpot', 'Salesforce', 'Zapier', 'Slack'] },
@@ -32,7 +42,7 @@ const CATEGORIES = [
     ],
   },
   {
-    heading: 'Content & Social',
+    heading: 'Communications Operations',
     automations: [
       { title: 'Social Media Content Pipeline', description: 'Generates on-brand content from briefs, formats for each platform, schedules publishing, monitors engagement, and delivers weekly performance reports.', tools: ['Claude AI', 'Buffer', 'Airtable', 'n8n'] },
       { title: 'Blog & SEO Content Automation', description: 'Researches keywords, drafts long-form posts in your brand voice, optimises for SEO, and publishes on schedule — end to end.', tools: ['Claude AI', 'WordPress', 'Airtable', 'Make'] },
@@ -55,21 +65,20 @@ export default function AutomationLabPage() {
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            Automation Lab
+            // Reference Library
           </p>
           <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            Automation Systems Library
+            Operations Engineering Reference
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', margin: '0 auto 2rem', lineHeight: 1.8 }}>
-            18 production-ready automation systems. Each is custom-built to your stack and
-            business logic — not a template, not a plugin.
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '46rem', margin: '0 auto 2rem', lineHeight: 1.7 }}>
+            Eighteen production-grade runtimes we deploy on top of client operations. Each one is a system we have architected, installed, and continue to operate — not a catalogue of off-the-shelf widgets to choose from.
           </p>
-          {/* Stat bar */}
+          {/* Operational signal bar — names what's in production, not what we're built on */}
           <div
             className="glass"
             style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '0', borderRadius: '8px', overflow: 'hidden' }}
           >
-            {['18 systems', 'Built on Claude AI', 'Typically live in 1–4 weeks'].map((stat, i, arr) => (
+            {['18 runtimes', '6 verticals in production', 'Typical install · 1–4 weeks'].map((stat, i, arr) => (
               <span
                 key={stat}
                 style={{
@@ -133,21 +142,20 @@ export default function AutomationLabPage() {
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
-            Build Something Custom
+            // Architect a custom layer
           </p>
           <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
-            Don&apos;t see what you need?
+            Need a runtime that isn&apos;t in the reference?
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
-            We build custom automations from scratch. Run our free audit to identify your
-            specific opportunities.
+          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.7 }}>
+            Every operation has at least one layer that doesn&apos;t fit a standard pattern. We architect bespoke runtimes from the ground up — installed, operated, recoverable.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link href="/automation-audit" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
-              Free Automation Audit →
+              Map my operation →
             </Link>
             <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
-              Discuss Your Project
+              Talk to an architect
             </Link>
           </div>
         </div>

@@ -1,10 +1,20 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Inter, Roboto_Mono } from 'next/font/google'
+import { getLocale } from 'next-intl/server'
+import { routing } from '@/i18n/routing'
 import './globals.css'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import ChatAgent from '@/components/ChatAgent'
-import CookieBanner from '@/components/CookieBanner'
+
+/**
+ * Root layout — bare html/body shell.
+ *
+ * The Navbar / Footer / ChatAgent / CookieBanner live in
+ * app/[locale]/layout.tsx so they only render on localized public
+ * routes. The OS panel (app/os/*) supplies its own visual chrome.
+ *
+ * The <html lang="..."> attribute is set from the active locale via
+ * next-intl's getLocale() so screen readers and translation engines
+ * see the right language for the document.
+ */
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -24,44 +34,47 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'MAXPROMO DIGITAL — AI Automation Platform',
+    default: 'MAXPROMO DIGITAL — Operational Infrastructure',
     template: '%s | MAXPROMO DIGITAL',
   },
   description:
-    'AI agents, workflow automation, and intelligent systems for businesses that are serious about growth.',
+    'Operational infrastructure for businesses that cannot afford operational drift. We install the layer between your team and their tools.',
   keywords: [
-    'AI automation',
-    'AI agents',
+    'operational infrastructure',
+    'business operating systems',
     'workflow automation',
-    'business automation',
+    'AI agents',
     'n8n',
     'Claude API',
-    'automation systems',
   ],
   openGraph: {
-    title: 'MAXPROMO DIGITAL — AI Automation Platform',
+    title: 'MAXPROMO DIGITAL — Operational Infrastructure',
     description:
-      'AI agents, workflow automation, and intelligent systems for businesses serious about growth.',
+      'We install the operational layer that runs intake, dispatch, billing, compliance and customer flow.',
     type: 'website',
-    locale: 'en_GB',
   },
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface RootLayoutProps {
   children: React.ReactNode
-}>) {
+}
+
+export default async function RootLayout({ children }: RootLayoutProps) {
+  // getLocale() throws on routes that don't pass through next-intl
+  // middleware (notably /os/* and /api/*). Catch and fall back to the
+  // default locale so the OS panel renders with a valid <html lang>.
+  let locale: string = routing.defaultLocale
+  try {
+    locale = await getLocale()
+  } catch {
+    // intentionally swallowed — non-localized route
+  }
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${spaceGrotesk.variable} ${inter.variable} ${robotoMono.variable} antialiased`}
       >
-        <Navbar />
         {children}
-        <Footer />
-        <ChatAgent />
-        <CookieBanner />
       </body>
     </html>
   )

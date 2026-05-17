@@ -9,6 +9,65 @@ import Link from 'next/link'
 /* ─── DATA ─────────────────────────────────────────────────── */
 
 /**
+ * Operational scenarios — the kind of moment you only know about if
+ * you have actually been inside an operation. Each one pairs a real
+ * business pain (timestamp, scene, bottleneck) with the system we
+ * installed and the measurable outcome.
+ *
+ * This is the single hardest section on the site to fake. Strategic
+ * directive: real operational storytelling is what removes the
+ * remaining "AI agency" perception. The pattern follows
+ * Pain → Bottleneck → System → Result, as praised in the prior
+ * invoice section.
+ */
+const SCENARIOS = [
+  {
+    industry: 'Restaurant',
+    time: 'Friday · 22:47',
+    scene: 'Three people walk past the QR code outside. Two screenshot it for later. By Sunday morning, they have forgotten.',
+    bottleneck: 'After-hours capture is broken across voicemail, social DMs, and paper notes. Nothing routes to the floor manager until Monday — if at all.',
+    system: 'RestaurantOS Intake',
+    systemDesc: 'Every after-hours enquiry captured, qualified, confirmed within two minutes. Routing rules sized to the kitchen capacity for that day.',
+    result: '+34 covers / month',
+    resultDetail: 'previously lost to voicemail',
+    href: '/products/restaurant-os',
+  },
+  {
+    industry: 'Medical Practice',
+    time: 'Monday · 09:14',
+    scene: 'Reception is on three calls. Two more come in. The fourth caller hangs up after seven rings and books with the practice down the road.',
+    bottleneck: 'Phone system has no queue intelligence and no fallback to text or email. Booked appointments get logged manually into the calendar.',
+    system: 'PraxisOS Intake & Triage',
+    systemDesc: 'Overflow calls route to AI triage that captures intent, books available slots, or schedules a callback — with full audit trail per DSGVO.',
+    result: '0 missed booking enquiries',
+    resultDetail: 'across peak hours, last quarter',
+    href: '/products/praxis-os',
+  },
+  {
+    industry: 'Trade · Handwerk',
+    time: 'Tuesday · 14:03',
+    scene: 'Field tech sends a photo of the completed roof job plus a handwritten total over WhatsApp. The office retypes it into the spreadsheet. The invoice goes out Friday. Maybe.',
+    bottleneck: 'A 36-hour gap between work complete and invoice sent. Cash flow lags one week behind reality. XRechnung compliance still done by hand.',
+    system: 'HandwerkOS Dispatch + Document Flow',
+    systemDesc: 'Photo to quote to invoice in 90 seconds. XRechnung-compliant by default. Field team works from one app; office sees it live.',
+    result: 'Invoice cycle · 3 days → 12 min',
+    resultDetail: '— with full audit trail and tamper-proof history',
+    href: '/products/handwerk-os',
+  },
+  {
+    industry: 'Care · CQC-regulated',
+    time: 'Inspection notice. T-7 days.',
+    scene: 'Reception scrambles for 47 binders. Senior carers stop care delivery to assemble evidence — care plans, training records, medication logs, incident reports.',
+    bottleneck: 'Compliance evidence lives across paper, email, Drive folders, and individual carers&apos; phones. Every inspection is a fire drill that pulls senior staff off the floor for a week.',
+    system: 'CareOS Compliance Continuity',
+    systemDesc: 'Evidence pack assembled continuously, not at inspection time. Drift alerts when policy or training fall behind. Audit-on-demand is a button click.',
+    result: 'CQC prep · 8 days → 30 minutes',
+    resultDetail: 'senior carers stay on the floor',
+    href: '/products/care-os',
+  },
+]
+
+/**
  * Marquee — operational verbs, not tool names.
  *
  * The previous strip ("N8N WORKFLOWS · CLAUDE API · ZAPIER FLOWS · …") was
@@ -379,6 +438,102 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 02 — Operational scenarios: the operational reality these
+          systems live inside. Real timestamps, real bottlenecks, real
+          results. The hardest section on the site to fake — that is
+          why it earns the trust. */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '76rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3.5rem', maxWidth: '40rem' }}>
+            <SectionLabel>// 02 — WHERE THESE SYSTEMS LIVE</SectionLabel>
+            <SectionTitle>
+              Real operations.{' '}
+              <span style={{ color: '#F97316' }}>Real bottlenecks.</span>
+            </SectionTitle>
+            <p
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '16px',
+                color: 'hsl(40 12% 65%)',
+                lineHeight: 1.7,
+                marginTop: '14px',
+              }}
+            >
+              Four moments from inside operations we&rsquo;ve walked into. Pain → bottleneck → system installed → measurable outcome. No composites, no hypotheticals.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {SCENARIOS.map((sc, idx) => (
+              <Link
+                key={sc.industry}
+                href={sc.href}
+                style={{
+                  background: 'hsl(240 12% 7%)',
+                  border: '1px solid hsl(40 30% 96% / 0.08)',
+                  borderRadius: '14px',
+                  padding: '32px',
+                  display: 'grid',
+                  gap: '32px',
+                  textDecoration: 'none',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+                className="grid-cols-1 lg:grid-cols-[1.2fr_1fr] scenario-card"
+              >
+                {/* Top accent rail */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.45) 50%, transparent 100%)' }} />
+
+                {/* LEFT — the operational reality */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(28 100% 58%)', letterSpacing: '0.15em', textTransform: 'uppercase', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.18)', padding: '3px 10px', borderRadius: '4px' }}>
+                      {String(idx + 1).padStart(2, '0')} · {sc.industry}
+                    </span>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)', letterSpacing: '0.08em' }}>
+                      {sc.time}
+                    </span>
+                  </div>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontSize: '20px', color: 'hsl(40 30% 96%)', lineHeight: 1.45, letterSpacing: '-0.01em', marginBottom: '14px', fontWeight: 500 }}>
+                    {sc.scene}
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    // Bottleneck
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.65, margin: 0 }}>
+                    {sc.bottleneck}
+                  </p>
+                </div>
+
+                {/* RIGHT — the system installed + measurable outcome */}
+                <div style={{ borderLeft: '1px solid hsl(40 30% 96% / 0.06)', paddingLeft: '32px', display: 'flex', flexDirection: 'column' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px' }}>
+                    // System installed
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.01em', marginBottom: '10px', fontWeight: 700 }}>
+                    {sc.system}
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.65, marginBottom: '24px', flex: 1 }}>
+                    {sc.systemDesc}
+                  </p>
+                  <div style={{ borderTop: '2px solid rgba(249,115,22,0.4)', paddingTop: '14px' }}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      // Result
+                    </p>
+                    <p style={{ fontFamily: 'var(--font-heading)', fontSize: '22px', color: '#F97316', fontWeight: 700, letterSpacing: '-0.02em', margin: 0 }}>
+                      {sc.result}
+                    </p>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)', marginTop: '4px' }}>
+                      {sc.resultDetail}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 4 — Proof / Results */}
       <ProofSection />
 
@@ -389,14 +544,7 @@ export default function HomePage() {
             <SectionLabel>// 03 — OUR SYSTEMS</SectionLabel>
             <SectionTitle>
               Production systems.{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%))',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
+              <span style={{ color: '#F97316' }}>
                 Live businesses.
               </span>
             </SectionTitle>

@@ -1,0 +1,97 @@
+{
+  "nav": {
+    "services": "Leistungen",
+    "systems": "Systeme",
+    "reference": "Referenz",
+    "pricing": "Preise",
+    "blog": "Blog",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "ctaAudit": "Kostenlose Analyse",
+    "menuOpen": "Menü öffnen",
+    "menuClose": "Menü schließen"
+  },
+
+  "localeSwitcher": {
+    "label": "Sprache",
+    "de": "Deutsch",
+    "en": "English"
+  },
+
+  "hero": {
+    "statusOperational": "SYSTEME EINSATZBEREIT",
+    "statusAgents": "8 Agenten im Einsatz",
+    "statusUptime": "99,9% Verfügbarkeit",
+    "headline1": "Wir bauen die",
+    "headlineAccent": "Maschinen,",
+    "headline2": "die Ihr Unternehmen führen.",
+    "sub": "Operative Infrastruktur für Unternehmen, die sich operative Reibungen nicht leisten können. Wir konzipieren die Ebene zwischen Ihrem Team und seinen Werkzeugen — Erfassung, Disposition, Abrechnung, Compliance, Eskalation — orchestriert, überwacht, wiederherstellbar.",
+    "ctaPrimary": "Kostenlose Analyse anfordern",
+    "ctaSecondary": "Im Einsatz sehen →",
+    "urgency": "// Unverbindlich · 30-min Gespräch · 3 Onboarding-Plätze frei diesen Monat",
+    "stat1Label": "Systeme live",
+    "stat2Label": "Workflows laufen",
+    "stat3Label": "Ø Reaktionszeit",
+    "stat4Label": "Pro Kunde zurückgewonnen",
+    "panelTitle": "OPERATIONS · LIVE",
+    "panelStatusLive": "LIVE",
+    "panelLastEvent": "// letztes Ereignis",
+    "panelUptime": "Verfügbarkeit"
+  },
+
+  "footer": {
+    "ctaEyebrow": "// Wo verliert Ihr Betrieb Effizienz?",
+    "ctaHeadline": "Die fehlende Ebene in 30 Minuten finden.",
+    "ctaPrimary": "Betrieb kartieren →",
+    "ctaSecondary": "Architekten sprechen",
+    "colCompany": "Unternehmen",
+    "colTools": "Werkzeuge",
+    "colServices": "Leistungen",
+    "colLegal": "Rechtliches",
+    "links": {
+      "services": "Leistungen",
+      "systems": "Systeme",
+      "caseStudies": "Fallstudien",
+      "pricing": "Preise",
+      "contact": "Kontakt",
+      "automationAudit": "Automatisierungs-Analyse",
+      "automationLab": "Referenz-Bibliothek",
+      "discoveryBrief": "Discovery-Briefing",
+      "estimateTool": "Kostenrechner",
+      "aiWebsites": "KI-Websites",
+      "intakeRouting": "Kunden-Erfassung & Routing",
+      "dispatchField": "Disposition & Außendienst",
+      "documentFlow": "Belegfluss",
+      "customerTriage": "Kunden-Triage",
+      "compliance": "Compliance & Reporting",
+      "impressum": "Impressum",
+      "privacy": "Datenschutz",
+      "agb": "AGB",
+      "cookiePolicy": "Cookie-Richtlinie",
+      "dataDeletion": "Datenlöschung"
+    },
+    "copyright": "© 2026 MAXPROMO DIGITAL",
+    "tagline": "· Operative Infrastruktur für KMU",
+    "operationalSignal": "Alle Systeme operativ",
+    "tax": "St.-Nr. 111/5339/7597 · FA Essen-NordOst"
+  },
+
+  "home": {
+    "layersEyebrow": "// 01 — OPERATIVE EBENEN",
+    "layersTitle1": "Die operativen Ebenen,",
+    "layersTitleAccent": "die wir installieren",
+    "layersLede": "Keine Funktionen. Keine Features. Ebenen des Betriebs — jede ein System, das wir über Ihre bestehenden Werkzeuge legen, damit Ihr Team nicht länger die Integration ist.",
+    "layersCtaCard": "Diese Ebene ansehen →",
+    "layersCtaAll": "Alle Leistungen ansehen →",
+    "scenariosEyebrow": "// 02 — WO DIESE SYSTEME LEBEN",
+    "scenariosTitle1": "Echte Operationen.",
+    "scenariosTitleAccent": "Echte Engpässe.",
+    "scenariosLede": "Vier Momente aus echten Betrieben, in denen wir gearbeitet haben. Schmerz → Engpass → installiertes System → messbares Ergebnis. Keine Konstrukte, keine Annahmen.",
+    "scenariosBottleneckLabel": "// Engpass",
+    "scenariosSystemLabel": "// System installiert",
+    "scenariosResultLabel": "// Ergebnis",
+    "systemsEyebrow": "// 03 — UNSERE SYSTEME",
+    "systemsTitle1": "Produktionssysteme.",
+    "systemsTitleAccent": "Echte Unternehmen."
+  }
+}

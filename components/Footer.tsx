@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
 /**
  * Footer columns — four columns of five links each, identical row counts so
@@ -21,50 +22,70 @@ import Link from 'next/link'
  * install), not capabilities. No tool names ever in any link label —
  * implementation details belong on the architecture page.
  */
-const columns = [
+/**
+ * Footer columns — locale-driven.
+ *
+ * Column titles and link labels are translation keys; the strings live
+ * in messages/{de,en}.json under footer.* and footer.links.*. Hrefs
+ * stay as bare paths — the Link import from @/i18n/navigation
+ * auto-prefixes the current locale.
+ */
+type LinkKey =
+  | 'services' | 'systems' | 'caseStudies' | 'pricing' | 'contact'
+  | 'automationAudit' | 'automationLab' | 'discoveryBrief' | 'estimateTool' | 'aiWebsites'
+  | 'intakeRouting' | 'dispatchField' | 'documentFlow' | 'customerTriage' | 'compliance'
+  | 'impressum' | 'privacy' | 'agb' | 'cookiePolicy' | 'dataDeletion'
+
+const columns: Array<{
+  titleKey: 'colCompany' | 'colTools' | 'colServices' | 'colLegal'
+  links: Array<{ key: LinkKey; href: string }>
+}> = [
   {
-    title: 'Company',
+    titleKey: 'colCompany',
     links: [
-      { label: 'Services',     href: '/services' },
-      { label: 'Systems',      href: '/systems' },
-      { label: 'Case Studies', href: '/case-studies' },
-      { label: 'Pricing',      href: '/pricing' },
-      { label: 'Contact',      href: '/contact' },
+      { key: 'services',    href: '/services' },
+      { key: 'systems',     href: '/systems' },
+      { key: 'caseStudies', href: '/case-studies' },
+      { key: 'pricing',     href: '/pricing' },
+      { key: 'contact',     href: '/contact' },
     ],
   },
   {
-    title: 'Tools',
+    titleKey: 'colTools',
     links: [
-      { label: 'Automation Audit', href: '/automation-audit' },
-      { label: 'Automation Lab',   href: '/automation-lab' },
-      { label: 'Discovery Brief',  href: '/discovery' },
-      { label: 'Estimate Tool',    href: '/estimate' },
-      { label: 'AI Websites',      href: '/ai-websites' },
+      { key: 'automationAudit', href: '/automation-audit' },
+      { key: 'automationLab',   href: '/automation-lab' },
+      { key: 'discoveryBrief',  href: '/discovery' },
+      { key: 'estimateTool',    href: '/estimate' },
+      { key: 'aiWebsites',      href: '/ai-websites' },
     ],
   },
   {
-    title: 'Services',
+    titleKey: 'colServices',
     links: [
-      { label: 'Client Intake & Routing',  href: '/services' },
-      { label: 'Dispatch & Field Ops',     href: '/services' },
-      { label: 'Document Flow',            href: '/services' },
-      { label: 'Customer Triage',          href: '/services' },
-      { label: 'Compliance & Reporting',   href: '/services' },
+      { key: 'intakeRouting',  href: '/services' },
+      { key: 'dispatchField',  href: '/services' },
+      { key: 'documentFlow',   href: '/services' },
+      { key: 'customerTriage', href: '/services' },
+      { key: 'compliance',     href: '/services' },
     ],
   },
   {
-    title: 'Legal',
+    titleKey: 'colLegal',
     links: [
-      { label: 'Impressum',           href: '/impressum' },
-      { label: 'Datenschutz / Privacy', href: '/privacy' },
-      { label: 'AGB / Terms',         href: '/agb' },
-      { label: 'Cookie Policy',       href: '/privacy#cookies' },
-      { label: 'Data Deletion',       href: '/data-deletion' },
+      { key: 'impressum',    href: '/impressum' },
+      { key: 'privacy',      href: '/privacy' },
+      { key: 'agb',          href: '/agb' },
+      { key: 'cookiePolicy', href: '/privacy#cookies' },
+      { key: 'dataDeletion', href: '/data-deletion' },
     ],
   },
 ]
 
 export default function Footer() {
+  const t = useTranslations('footer')
+  const tLinks = useTranslations('footer.links')
+
   return (
     <footer
       style={{
@@ -92,10 +113,10 @@ export default function Footer() {
         >
           <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              // Where is your operation leaking?
+              {t('ctaEyebrow')}
             </p>
             <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '28px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.04em', margin: 0 }}>
-              Find the missing layer in 30 minutes.
+              {t('ctaHeadline')}
             </h3>
           </div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
@@ -114,7 +135,7 @@ export default function Footer() {
                 borderRadius: '8px',
               }}
             >
-              Map my operation →
+              {t('ctaPrimary')}
             </Link>
             <Link
               href="/contact"
@@ -129,7 +150,7 @@ export default function Footer() {
                 borderRadius: '8px',
               }}
             >
-              Talk to an architect
+              {t('ctaSecondary')}
             </Link>
           </div>
         </div>
@@ -160,7 +181,7 @@ export default function Footer() {
         `}</style>
         <div className="footer-cols-grid">
           {columns.map((col) => (
-            <div key={col.title}>
+            <div key={col.titleKey}>
               <p
                 style={{
                   fontFamily: 'var(--font-mono)',
@@ -171,13 +192,13 @@ export default function Footer() {
                   textTransform: 'uppercase',
                 }}
               >
-                {col.title}
+                {t(col.titleKey)}
               </p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {col.links.map((link) => (
-                  <li key={link.label}>
+                  <li key={link.key}>
                     <Link href={link.href} className="footer-link">
-                      {link.label}
+                      {tLinks(link.key)}
                     </Link>
                   </li>
                 ))}
@@ -211,18 +232,18 @@ export default function Footer() {
               style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(28 100% 58%)', display: 'inline-block', flexShrink: 0 }}
             />
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)' }}>
-              © 2026 MAXPROMO DIGITAL
+              {t('copyright')}
             </span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
-              · Operational infrastructure for SME businesses
+              {t('tagline')}
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
-              All systems operational
+              {t('operationalSignal')}
             </span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
-              Steuernr. 111/5339/7597 · FA Essen-NordOst
+              {t('tax')}
             </span>
             <a
               href="/portfolio"

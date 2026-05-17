@@ -1,0 +1,97 @@
+{
+  "nav": {
+    "services": "Services",
+    "systems": "Systems",
+    "reference": "Reference",
+    "pricing": "Pricing",
+    "blog": "Blog",
+    "about": "About",
+    "contact": "Contact",
+    "ctaAudit": "Get my free audit",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu"
+  },
+
+  "localeSwitcher": {
+    "label": "Language",
+    "de": "Deutsch",
+    "en": "English"
+  },
+
+  "hero": {
+    "statusOperational": "SYSTEMS OPERATIONAL",
+    "statusAgents": "8 agents deployed",
+    "statusUptime": "99.9% uptime",
+    "headline1": "We build the",
+    "headlineAccent": "machines",
+    "headline2": "that run your business.",
+    "sub": "Operational infrastructure for businesses that can't afford operational drift. We architect the layer between your team and their tools — intake, dispatch, billing, compliance, escalation — orchestrated, monitored, recoverable.",
+    "ctaPrimary": "Get my free audit",
+    "ctaSecondary": "See it in action →",
+    "urgency": "// No commitment · 30-min call · 3 onboarding slots open this month",
+    "stat1Label": "Systems Live",
+    "stat2Label": "Workflows Running",
+    "stat3Label": "Avg Response Time",
+    "stat4Label": "Reclaimed per Client",
+    "panelTitle": "OPERATIONS · LIVE",
+    "panelStatusLive": "LIVE",
+    "panelLastEvent": "// last event",
+    "panelUptime": "uptime"
+  },
+
+  "footer": {
+    "ctaEyebrow": "// Where is your operation leaking?",
+    "ctaHeadline": "Find the missing layer in 30 minutes.",
+    "ctaPrimary": "Map my operation →",
+    "ctaSecondary": "Talk to an architect",
+    "colCompany": "Company",
+    "colTools": "Tools",
+    "colServices": "Services",
+    "colLegal": "Legal",
+    "links": {
+      "services": "Services",
+      "systems": "Systems",
+      "caseStudies": "Case Studies",
+      "pricing": "Pricing",
+      "contact": "Contact",
+      "automationAudit": "Automation Audit",
+      "automationLab": "Reference Library",
+      "discoveryBrief": "Discovery Brief",
+      "estimateTool": "Estimate Tool",
+      "aiWebsites": "AI Websites",
+      "intakeRouting": "Client Intake & Routing",
+      "dispatchField": "Dispatch & Field Ops",
+      "documentFlow": "Document Flow",
+      "customerTriage": "Customer Triage",
+      "compliance": "Compliance & Reporting",
+      "impressum": "Imprint",
+      "privacy": "Privacy",
+      "agb": "Terms",
+      "cookiePolicy": "Cookie Policy",
+      "dataDeletion": "Data Deletion"
+    },
+    "copyright": "© 2026 MAXPROMO DIGITAL",
+    "tagline": "· Operational infrastructure for SME businesses",
+    "operationalSignal": "All systems operational",
+    "tax": "Tax No. 111/5339/7597 · FA Essen-NordOst"
+  },
+
+  "home": {
+    "layersEyebrow": "// 01 — OPERATIONAL LAYERS",
+    "layersTitle1": "The operational layers",
+    "layersTitleAccent": "we install",
+    "layersLede": "Not capabilities. Not features. Layers of the operation — each one a system we run on top of your existing tools so your team stops being the integration.",
+    "layersCtaCard": "Inspect this layer →",
+    "layersCtaAll": "View all services →",
+    "scenariosEyebrow": "// 02 — WHERE THESE SYSTEMS LIVE",
+    "scenariosTitle1": "Real operations.",
+    "scenariosTitleAccent": "Real bottlenecks.",
+    "scenariosLede": "Four moments from inside operations we've walked into. Pain → bottleneck → system installed → measurable outcome. No composites, no hypotheticals.",
+    "scenariosBottleneckLabel": "// Bottleneck",
+    "scenariosSystemLabel": "// System installed",
+    "scenariosResultLabel": "// Result",
+    "systemsEyebrow": "// 03 — OUR SYSTEMS",
+    "systemsTitle1": "Production systems.",
+    "systemsTitleAccent": "Live businesses."
+  }
+}

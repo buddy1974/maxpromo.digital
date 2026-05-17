@@ -137,6 +137,70 @@ const sans    = { fontFamily: 'var(--font-inter)' } as const
 const BEFORE = ['Spreadsheets', 'WhatsApp', 'Paper records', 'Manual chasing', 'Disconnected tools']
 const AFTER  = ['AI agents', 'Automated workflows', 'Live dashboards', 'Centralised records', 'One operating system']
 
+/**
+ * Architecture composition — the four layers every system we install
+ * sits on. Reads bottom-up the way infrastructure stacks normally do:
+ * sources at the bottom, outcomes at the top, orchestration in between.
+ *
+ * The point of this section is not to teach the visitor systems
+ * engineering. It is to demonstrate that we think about an operation
+ * as a layered architecture, not as a pile of automations. That is
+ * the signal that separates infrastructure companies from agencies.
+ */
+const ARCHITECTURE_LAYERS = [
+  {
+    no: '04',
+    name: 'OUTCOME',
+    desc: 'Your team. Your tools. Your customer.',
+    items: ['Confirmation sent', 'Calendar updated', 'Invoice posted', 'Slack notified', 'Audit logged'],
+  },
+  {
+    no: '03',
+    name: 'ORCHESTRATION',
+    desc: 'The control plane. Routing logic, escalation policy, audit trail, governance — runs the operation.',
+    items: ['Routing rules', 'Escalation chains', 'Audit trail', 'Drift alerts', 'Governance policy'],
+  },
+  {
+    no: '02',
+    name: 'INTAKE',
+    desc: 'Every channel captured, qualified, normalised. The operation no longer cares where the request came from.',
+    items: ['Multi-channel capture', 'Identity resolution', 'Qualification', 'Normalisation', 'Deduplication'],
+  },
+  {
+    no: '01',
+    name: 'SOURCES',
+    desc: 'Where work enters your operation today — most of it untracked.',
+    items: ['Email', 'Phone', 'WhatsApp', 'Web forms', 'Walk-ins', 'CRM events'],
+  },
+]
+
+/**
+ * Lifecycle pipeline — what happens to a single piece of work as it
+ * passes through the system. Five stages, named the way operations
+ * teams name them, not the way developers name them.
+ */
+const LIFECYCLE = [
+  { no: '01', name: 'Intake',   desc: 'Request arrives. Channel-agnostic. Captured with timestamp + context.' },
+  { no: '02', name: 'Qualify',  desc: 'Score against business rules. Confidence noted. Below threshold → review.' },
+  { no: '03', name: 'Route',    desc: 'Send to the right team, shift, or runtime. Escalation rules applied.' },
+  { no: '04', name: 'Act',      desc: 'System or person executes. State machine tracks progress + SLA.' },
+  { no: '05', name: 'Audit',    desc: 'Outcome logged. Tamper-proof history. Drift signal recorded.' },
+]
+
+/**
+ * Escalation policy — the moments where the system deliberately
+ * stops and hands control back to a person. Naming these moments
+ * out loud is the trust signal: it says the system is governed,
+ * not autonomous-because-it-feels-modern.
+ */
+const ESCALATION_RULES = [
+  { trigger: 'Confidence below threshold',  to: 'Human review queue · senior reviewer',  reason: 'AI uncertain — never act, always escalate.' },
+  { trigger: 'Value above threshold',       to: 'Senior team · with full context',      reason: 'High-value decisions stay human.' },
+  { trigger: 'After SLA breach',            to: 'On-call escalation chain',             reason: 'Time-sensitive requests must not silently age.' },
+  { trigger: 'Compliance flag raised',      to: 'Audit reviewer · with evidence pack',  reason: 'Regulated work always has a named accountable human.' },
+  { trigger: 'Outside business rules',      to: 'Owner notification + work paused',     reason: 'Edge cases are surfaced, not absorbed silently.' },
+]
+
 export default function SystemsPage() {
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
@@ -220,6 +284,169 @@ export default function SystemsPage() {
                 ))}
               </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Architecture composition — the 4-layer stack every system sits on */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3rem', maxWidth: '40rem' }}>
+            <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              // ARCHITECTURE
+            </p>
+            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', margin: '0 0 14px' }}>
+              How a system is composed
+            </h2>
+            <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
+              Every operational runtime we install sits on the same four-layer stack — sources at the bottom, outcomes at the top, the control plane in between.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {ARCHITECTURE_LAYERS.map((layer, i) => (
+              <div
+                key={layer.no}
+                style={{
+                  background: 'hsl(240 12% 7%)',
+                  border: '1px solid hsl(40 30% 96% / 0.08)',
+                  borderLeft: `3px solid ${i === 1 ? '#F97316' : 'hsl(40 30% 96% / 0.15)'}`,
+                  borderRadius: '8px',
+                  padding: '20px 24px',
+                  display: 'grid',
+                  gap: '20px',
+                  alignItems: 'start',
+                }}
+                className="grid-cols-1 md:grid-cols-[180px_1fr_auto]"
+              >
+                <div>
+                  <p style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65%)', letterSpacing: '0.15em', marginBottom: '4px' }}>
+                    LAYER {layer.no}
+                  </p>
+                  <p style={{ ...mono, fontSize: '14px', color: 'hsl(40 30% 96%)', letterSpacing: '0.08em', fontWeight: 700, margin: 0 }}>
+                    {layer.name}
+                  </p>
+                </div>
+                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.65, margin: 0 }}>
+                  {layer.desc}
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'flex-end', maxWidth: '320px' }}>
+                  {layer.items.map((it) => (
+                    <span key={it} style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65%)', background: 'hsl(240 14% 4%)', border: '1px solid hsl(40 30% 96% / 0.08)', padding: '4px 10px', borderRadius: '3px', letterSpacing: '0.04em' }}>
+                      {it}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ ...mono, fontSize: '11px', color: 'hsl(240 8% 35%)', marginTop: '20px', letterSpacing: '0.05em', textAlign: 'center' }}>
+            // Flow: SOURCES → INTAKE → ORCHESTRATION → OUTCOME — every request traced end to end
+          </p>
+        </div>
+      </section>
+
+      {/* Lifecycle pipeline — five stages a request passes through */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '2.5rem', maxWidth: '40rem' }}>
+            <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              // LIFECYCLE
+            </p>
+            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', margin: '0 0 14px' }}>
+              How a request passes through
+            </h2>
+            <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
+              Five stages, named the way an operations team names them. Each stage produces audit signal — nothing happens silently.
+            </p>
+          </div>
+
+          <div
+            style={{ display: 'grid', gap: '0', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }}
+            className="grid-cols-1 md:grid-cols-5"
+          >
+            {LIFECYCLE.map((step, i) => (
+              <div
+                key={step.no}
+                style={{
+                  background: 'hsl(240 12% 7%)',
+                  padding: '24px 22px',
+                  borderTop: `2px solid ${i === LIFECYCLE.length - 1 ? 'rgba(34,197,94,0.5)' : 'rgba(249,115,22,0.4)'}`,
+                  position: 'relative',
+                }}
+              >
+                <p style={{ ...mono, fontSize: '10px', color: 'hsl(28 100% 58%)', letterSpacing: '0.15em', marginBottom: '6px' }}>
+                  {step.no}
+                </p>
+                <p style={{ ...grotesk, fontSize: '16px', fontWeight: 700, color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', marginBottom: '10px' }}>
+                  {step.name}
+                </p>
+                <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.6, margin: 0 }}>
+                  {step.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Escalation policy — the moments where the system stops and a human takes over */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '2.5rem', maxWidth: '44rem' }}>
+            <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              // ESCALATION POLICY
+            </p>
+            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', margin: '0 0 14px' }}>
+              When the system steps back
+            </h2>
+            <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
+              A governed system names its boundaries out loud. These are the moments where the runtime deliberately stops, surfaces context, and hands control to a named human.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {ESCALATION_RULES.map((rule, i) => (
+              <div
+                key={rule.trigger}
+                style={{
+                  background: 'hsl(240 12% 7%)',
+                  border: '1px solid hsl(40 30% 96% / 0.08)',
+                  borderRadius: '8px',
+                  padding: '18px 22px',
+                  display: 'grid',
+                  gap: '20px',
+                  alignItems: 'start',
+                }}
+                className="grid-cols-1 md:grid-cols-[200px_1fr_2fr]"
+              >
+                <div>
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    Trigger
+                  </p>
+                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96%)', fontWeight: 600, margin: 0 }}>
+                    {rule.trigger}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    Hands to
+                  </p>
+                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96%)', margin: 0 }}>
+                    {rule.to}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                    Why
+                  </p>
+                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.55, margin: 0 }}>
+                    {rule.reason}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

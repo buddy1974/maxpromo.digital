@@ -1,6 +1,7 @@
 'use client'
 
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
@@ -42,18 +43,21 @@ const LOG_LINES = [
 interface StatConfig {
   target: number
   display: (n: number) => string
-  label: string
+  /** Key under hero.* in messages/{de,en}.json — resolved at render time. */
+  labelKey: 'stat1Label' | 'stat2Label' | 'stat3Label' | 'stat4Label'
 }
 
 /**
  * Operational signals — not agency brag stats. Each one points at a
  * measurable outcome a client felt after we installed their layer.
+ * Labels are translation keys; the locale-specific text lives in
+ * messages/{de,en}.json under hero.*.
  */
 const STATS: StatConfig[] = [
-  { target: 7,  display: (n) => `${n}`,       label: 'Systems Live'           },
-  { target: 24, display: (n) => `${n}`,       label: 'Workflows Running'      },
-  { target: 96, display: (n) => `−${n}%`,     label: 'Avg Response Time'      },
-  { target: 32, display: (n) => `+${n}h/wk`,  label: 'Reclaimed per Client'   },
+  { target: 7,  display: (n) => `${n}`,       labelKey: 'stat1Label' },
+  { target: 24, display: (n) => `${n}`,       labelKey: 'stat2Label' },
+  { target: 96, display: (n) => `−${n}%`,     labelKey: 'stat3Label' },
+  { target: 32, display: (n) => `+${n}h/wk`,  labelKey: 'stat4Label' },
 ]
 
 function useCountUp(target: number, active: boolean, duration = 1800) {
@@ -73,6 +77,7 @@ function useCountUp(target: number, active: boolean, duration = 1800) {
 }
 
 function StatCounter({ stat }: { stat: StatConfig }) {
+  const t = useTranslations('hero')
   const [active, setActive] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const count = useCountUp(stat.target, active)
@@ -102,13 +107,14 @@ function StatCounter({ stat }: { stat: StatConfig }) {
         {stat.display(count)}
       </p>
       <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)', letterSpacing: '0.05em' }}>
-        {stat.label}
+        {t(stat.labelKey)}
       </p>
     </div>
   )
 }
 
 export default function Hero() {
+  const t = useTranslations('hero')
   const [tick, setTick]         = useState(0)
   const [logIndex, setLogIndex] = useState(0)
 
@@ -212,7 +218,7 @@ export default function Hero() {
                   flexShrink: 0,
                 }}
               />
-              SYSTEMS OPERATIONAL
+              {t('statusOperational')}
             </span>
             <span
               className="glass"
@@ -224,7 +230,7 @@ export default function Hero() {
                 borderRadius: '6px',
               }}
             >
-              8 agents deployed
+              {t('statusAgents')}
             </span>
             <span
               className="glass"
@@ -236,7 +242,7 @@ export default function Hero() {
                 borderRadius: '6px',
               }}
             >
-              99.9% uptime
+              {t('statusUptime')}
             </span>
           </motion.div>
 
@@ -255,9 +261,9 @@ export default function Hero() {
               marginBottom: '1.5rem',
             }}
           >
-            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>We build the</span>
-            <span style={{ display: 'block', color: '#F97316' }}>machines</span>
-            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>that run your business.</span>
+            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>{t('headline1')}</span>
+            <span style={{ display: 'block', color: '#F97316' }}>{t('headlineAccent')}</span>
+            <span style={{ display: 'block', color: 'hsl(40 30% 96%)' }}>{t('headline2')}</span>
           </motion.h1>
 
           {/* Sub — mission-critical infrastructure tone. Operational
@@ -278,7 +284,7 @@ export default function Hero() {
               marginBottom: '2.5rem',
             }}
           >
-            Operational infrastructure for businesses that can&rsquo;t afford operational drift. We architect the layer between your team and their tools — intake, dispatch, billing, compliance, escalation — orchestrated, monitored, recoverable.
+            {t('sub')}
           </motion.p>
 
           {/* CTAs */}
@@ -305,7 +311,7 @@ export default function Hero() {
                 boxShadow: '0 0 40px hsl(28 100% 58% / 0.3)',
               }}
             >
-              Get my free audit
+              {t('ctaPrimary')}
             </Link>
             <Link
               href="/automation-lab"
@@ -321,7 +327,7 @@ export default function Hero() {
                 transition: 'border-color 150ms ease',
               }}
             >
-              See it in action →
+              {t('ctaSecondary')}
             </Link>
           </motion.div>
 
@@ -339,7 +345,7 @@ export default function Hero() {
               marginBottom: '2.5rem',
             }}
           >
-            // No commitment · 30-min call · 3 onboarding slots open this month
+            {t('urgency')}
           </motion.p>
 
           {/* Stats */}
@@ -405,7 +411,7 @@ export default function Hero() {
               color: 'hsl(40 12% 65%)',
               textTransform: 'uppercase',
             }}>
-              OPERATIONS · LIVE
+              {t('panelTitle')}
             </span>
             <span
               className="status-pulse"
@@ -419,7 +425,7 @@ export default function Hero() {
               }}
             >
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(28 100% 58%)', display: 'inline-block' }} />
-              LIVE
+              {t('panelStatusLive')}
             </span>
           </div>
 
@@ -481,13 +487,13 @@ export default function Hero() {
             }}
           >
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)', marginBottom: '6px' }}>
-              // last event
+              {t('panelLastEvent')}
             </p>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'hsl(40 30% 96%)', lineHeight: 1.5 }}>
               {active.event}
             </p>
             <div style={{ display: 'flex', gap: '12px', marginTop: '10px' }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)' }}>uptime</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)' }}>{t('panelUptime')}</span>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, color: 'hsl(28 100% 58%)' }}>{active.uptime}</span>
             </div>
           </div>

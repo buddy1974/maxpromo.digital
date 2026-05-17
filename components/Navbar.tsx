@@ -1,17 +1,23 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
+import LocaleSwitcher from './LocaleSwitcher'
 
+/**
+ * NAV_LINKS pairs a route with the translation key under nav.* so the
+ * label flips with the active locale. Keys live in messages/{de,en}.json.
+ */
 const NAV_LINKS = [
-  { href: '/services',        label: 'Services'  },
-  { href: '/systems',         label: 'Systems'   },
-  { href: '/automation-lab',  label: 'Lab'       },
-  { href: '/pricing',         label: 'Pricing'   },
-  { href: '/blog',            label: 'Blog'      },
-  { href: '/about',           label: 'About'     },
-  { href: '/contact',         label: 'Contact'   },
-]
+  { href: '/services',        key: 'services'  },
+  { href: '/systems',         key: 'systems'   },
+  { href: '/automation-lab',  key: 'reference' },
+  { href: '/pricing',         key: 'pricing'   },
+  { href: '/blog',            key: 'blog'      },
+  { href: '/about',           key: 'about'     },
+  { href: '/contact',         key: 'contact'   },
+] as const
 
 const navLinkBase: React.CSSProperties = {
   fontFamily: 'var(--font-mono)',
@@ -31,6 +37,7 @@ const navLinkBase: React.CSSProperties = {
 }
 
 export default function Navbar() {
+  const t = useTranslations('nav')
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
@@ -141,13 +148,14 @@ export default function Navbar() {
                   e.currentTarget.style.color = 'hsl(40 12% 65%)'
                 }}
               >
-                {link.label}
+                {t(link.key)}
               </Link>
             ))}
           </div>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex" style={{ flexShrink: 0 }}>
+          {/* Desktop CTA + locale switcher */}
+          <div className="hidden md:flex" style={{ flexShrink: 0, alignItems: 'center', gap: '10px' }}>
+            <LocaleSwitcher />
             <Link
               href="/automation-audit"
               className="shine"
@@ -169,7 +177,7 @@ export default function Navbar() {
               onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.88')}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
             >
-              Free Audit →
+              {t('ctaAudit')} →
             </Link>
           </div>
 
@@ -259,6 +267,9 @@ export default function Navbar() {
 
           {/* Scrollable nav items */}
           <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', padding: '1rem 1.5rem', gap: '8px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '4px' }}>
+              <LocaleSwitcher />
+            </div>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
@@ -290,7 +301,7 @@ export default function Navbar() {
                   e.currentTarget.style.color = 'hsl(40 12% 65%)'
                 }}
               >
-                {link.label}
+                {t(link.key)}
               </Link>
             ))}
           </div>
@@ -324,7 +335,7 @@ export default function Navbar() {
                 width: '100%',
               }}
             >
-              FREE AUDIT →
+              {t('ctaAudit')} →
             </Link>
           </div>
         </div>
