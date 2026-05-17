@@ -79,26 +79,3 @@ export default async function RootLayout({ children }: RootLayoutProps) {
     </html>
   )
 }
-  children: React.ReactNode
-}
-
-export default async function RootLayout({ children }: RootLayoutProps) {
-  // getLocale() throws on routes that don't pass through next-intl
-  // middleware (notably /os/* and /api/*). Catch and fall back to the
-  // default locale so the OS panel renders with a valid <html lang>.
-  let locale: string = routing.defaultLocale
-  try {
-    locale = await getLocale()
-  } catch {
-    // intentionally swallowed — non-localized route
-  }
-  return (
-    <html lang={locale}>
-      <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${robotoMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  )
-}
