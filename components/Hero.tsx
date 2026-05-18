@@ -19,11 +19,11 @@ import { motion } from 'framer-motion'
  * details live on the architecture page, not on the control deck.
  */
 const SYSTEMS_FEED = [
-  { runtime: 'Client Intake System',       event: '3 after-hours enquiries captured · routed to night-shift in <3 min',       status: 'ACTIVE', uptime: '99.8%' },
-  { runtime: 'Vendor Processing Layer',    event: '17 invoices in queue · 12 auto-approved · 5 flagged for review',            status: 'ACTIVE', uptime: '100%'  },
-  { runtime: 'Communications Triage',      event: 'Inbound volume +24% today · 11 auto-resolved · 1 escalated',                status: 'ACTIVE', uptime: '99.2%' },
-  { runtime: 'Compliance Continuity',      event: 'CQC evidence pack assembled · 0 drift events · audit-ready',                status: 'IDLE',   uptime: '98.9%' },
-  { runtime: 'Field Dispatch Engine',      event: '4 jobs in field · 1 photo-invoice flowed back · time logged',               status: 'ACTIVE', uptime: '99.6%' },
+  { runtime: 'Customer enquiries', event: '3 calls answered overnight — booked into tomorrow', status: 'ACTIVE', uptime: 'running' },
+  { runtime: 'Invoices',           event: '17 in · 12 paid · 5 chasing themselves',             status: 'ACTIVE', uptime: 'running' },
+  { runtime: 'Email replies',      event: '23 answered automatically — 1 forwarded to you',    status: 'ACTIVE', uptime: 'running' },
+  { runtime: 'Audit folder',       event: 'Built today — inspector-ready, zero scramble',      status: 'IDLE',   uptime: 'ready'   },
+  { runtime: 'Field jobs',         event: '4 done — photos, time, invoices all sent',          status: 'ACTIVE', uptime: 'running' },
 ]
 
 /**
@@ -31,31 +31,24 @@ const SYSTEMS_FEED = [
  * Reads like a duty manager's afternoon, not a stack trace.
  */
 const LOG_LINES = [
-  '22:47 · after-hours enquiry · 3 missed-call recoveries today',
-  '22:47 · auto-qualified [revenue tier: high]',
-  '22:48 · routed to night-shift on-call',
-  '22:50 · confirmation sent · client acknowledged',
-  '22:51 · booking confirmed [2m 14s end-to-end]',
-  'compliance · audit pack updated · drift: 0',
-  'shift handover · 0 unresolved escalations',
+  '22:47 · new enquiry while you were closed',
+  '22:47 · looks like a real customer',
+  '22:48 · sent to whoever is on call',
+  '22:50 · auto-reply sent · customer happy',
+  '22:51 · booking confirmed in 2 minutes',
+  '22:55 · invoice paid · no chasing needed',
+  'end of day · nothing missed',
 ]
 
 interface StatConfig {
   target: number
   display: (n: number) => string
   /** Key under hero.* in messages/{de,en}.json — resolved at render time. */
-  labelKey: 'stat1Label' | 'stat2Label' | 'stat3Label' | 'stat4Label'
+  labelKey: 'stat1Label' | 'stat3Label' | 'stat4Label'
 }
 
-/**
- * Operational signals — not agency brag stats. Each one points at a
- * measurable outcome a client felt after we installed their layer.
- * Labels are translation keys; the locale-specific text lives in
- * messages/{de,en}.json under hero.*.
- */
 const STATS: StatConfig[] = [
   { target: 7,  display: (n) => `${n}`,       labelKey: 'stat1Label' },
-  { target: 24, display: (n) => `${n}`,       labelKey: 'stat2Label' },
   { target: 96, display: (n) => `−${n}%`,     labelKey: 'stat3Label' },
   { target: 32, display: (n) => `+${n}h/wk`,  labelKey: 'stat4Label' },
 ]
@@ -356,7 +349,7 @@ export default function Hero() {
             variants={fadeUp}
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridTemplateColumns: 'repeat(3, 1fr)',
               gap: '0',
               paddingTop: '1.5rem',
               borderTop: '1px solid hsl(40 30% 96% / 0.07)',
