@@ -624,10 +624,38 @@
       "v3Title": "Built for real use",
       "v3Desc": "We build things that work in your real business every day. Not demos, not prototypes.",
       "v4Title": "Clear pricing, no surprises",
-      "v4Desc": "Fixed prices, clear timelines, and no hidden extras. You know what you're getting before we start."
+      "v4Desc": "Fixed prices, clear timelines, and no hidden extras. You know what you're getting before we start.",
+      "v5Title": "No unnecessary tech.",
+      "v5Desc": "We only use what you need. No overkill, no tools you'll never touch.",
+      "v6Title": "No empty promises.",
+      "v6Desc": "We say what's realistic — and we deliver it."
+    },
+    "whyEyebrow": "Why Maxpromo?",
+    "whyLead": "Many small businesses do good work but have weak online processes.",
+    "whyClosing": "That's exactly where we help.",
+    "howEyebrow": "How we work",
+    "forEyebrow": "Who we work with",
+    "forList": "Restaurants · Salons · Clinics · Care services · Trades businesses · Cleaning companies · Transport companies · Local shops · Churches and community groups · Small and medium businesses",
+    "why": {
+      "p1": "The website is outdated.",
+      "p2": "Google profile not maintained.",
+      "p3": "Social media neglected.",
+      "p4": "Reviews not answered.",
+      "p5": "Customer enquiries not followed up.",
+      "p6": "Follow-up actions happen too late or not at all."
+    },
+    "how": {
+      "s1Title": "We review your current situation.",
+      "s1Desc": "Website, Google, social media, reviews, customer enquiries and repetitive tasks.",
+      "s2Title": "We show where customers, time or money are being lost.",
+      "s2Desc": "Clearly, simply and without technical jargon.",
+      "s3Title": "We implement the most important improvements.",
+      "s3Desc": "Website, content, Google, follow-up, automation or a dedicated business system.",
+      "s4Title": "We continue to look after you.",
+      "s4Desc": "So your business doesn't fall behind online again."
     },
     "stackEyebrow": "For larger projects",
-    "stackTitle": "Modern tools, kept in the background",
+    "stackTitle": "For larger projects we use modern, proven tools — kept in the background.",
     "stack": {
       "r1Label": "// AI & AUTOMATION",
       "r2Label": "// INFRASTRUCTURE",

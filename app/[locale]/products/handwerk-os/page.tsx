@@ -121,7 +121,7 @@ function HandwerkContactForm() {
           opacity: status === 'loading' ? 0.7 : 1,
         }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET MY FREE SETUP →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'Get my free business check →'}
       </button>
 
       {status === 'success' && (
@@ -131,7 +131,7 @@ function HandwerkContactForm() {
       )}
       {status === 'error' && (
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#FF4D4D', margin: 0 }}>
-          Something went wrong. Email us at hello@maxpromo.digital
+          Something went wrong. Email us at info@maxpromo.digital
         </p>
       )}
     </form>
@@ -275,7 +275,7 @@ export default function HandwerkOSPage() {
             </p>
 
             <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {['Built from real deployment logic', 'Handles real-world edge cases', 'Designed for production environments', 'No prototype logic'].map(line => (
+              {['Im echten Einsatz erprobt', 'Für den Alltag vorbereitet', 'Sicher aufgebaut', 'Nicht nur eine Demo'].map(line => (
                 <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.08em', margin: 0, opacity: 0.85 }}>
                   <span style={{ marginRight: '8px', opacity: 0.5 }}>•</span>{line}
                 </p>
@@ -427,7 +427,7 @@ export default function HandwerkOSPage() {
               → No manual input required · Up to 60% less admin per job · Running in live trade businesses
             </p>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: '6px 0 0' }}>
-              Server-side validated · API-protected · No client-side critical logic
+              Im echten Einsatz erprobt · Sicher aufgebaut · Für den Alltag vorbereitet
             </p>
           </div>
         </section>

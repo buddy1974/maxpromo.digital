@@ -624,10 +624,38 @@
       "v3Title": "Für den echten Einsatz gebaut",
       "v3Desc": "Wir bauen Dinge, die in Ihrem echten Geschäftsalltag funktionieren. Keine Demos, keine Prototypen.",
       "v4Title": "Klare Preise, keine Überraschungen",
-      "v4Desc": "Festpreise, klare Zeitrahmen, keine versteckten Extras. Sie wissen vor dem Start, was Sie bekommen."
+      "v4Desc": "Festpreise, klare Zeitrahmen, keine versteckten Extras. Sie wissen vor dem Start, was Sie bekommen.",
+      "v5Title": "Keine unnötige Technik.",
+      "v5Desc": "Wir nutzen nur das, was Sie brauchen. Kein Overkill, keine Werkzeuge, die Sie nie verwenden.",
+      "v6Title": "Keine leeren Versprechen.",
+      "v6Desc": "Wir sagen, was realistisch ist — und halten es."
+    },
+    "whyEyebrow": "Warum Maxpromo?",
+    "whyLead": "Viele kleine Unternehmen haben gute Arbeit, aber schwache Online-Prozesse.",
+    "whyClosing": "Genau dort helfen wir.",
+    "howEyebrow": "Wie wir arbeiten",
+    "forEyebrow": "Für wen wir arbeiten",
+    "forList": "Restaurants · Salons · Praxen · Pflegedienste · Handwerksbetriebe · Reinigungsfirmen · Transportunternehmen · lokale Geschäfte · Kirchen und Vereine · kleine und mittlere Unternehmen",
+    "why": {
+      "p1": "Die Website ist alt.",
+      "p2": "Google wird nicht gepflegt.",
+      "p3": "Social Media bleibt liegen.",
+      "p4": "Bewertungen werden nicht beantwortet.",
+      "p5": "Kundenanfragen gehen unter.",
+      "p6": "Nachfassaktionen passieren zu spät oder gar nicht."
+    },
+    "how": {
+      "s1Title": "Wir prüfen Ihre aktuelle Situation.",
+      "s1Desc": "Website, Google, Social Media, Bewertungen, Kundenanfragen und wiederkehrende Aufgaben.",
+      "s2Title": "Wir zeigen, wo Kunden, Zeit oder Geld verloren gehen.",
+      "s2Desc": "Klar, einfach und ohne Fachsprache.",
+      "s3Title": "Wir setzen die wichtigsten Verbesserungen um.",
+      "s3Desc": "Website, Inhalte, Google, Follow-up, Automatisierung oder ein eigenes System.",
+      "s4Title": "Wir betreuen Sie weiter.",
+      "s4Desc": "Damit Ihr Geschäft online nicht wieder liegen bleibt."
     },
     "stackEyebrow": "Für größere Projekte",
-    "stackTitle": "Moderne Werkzeuge, im Hintergrund gehalten",
+    "stackTitle": "Für größere Projekte nutzen wir moderne, bewährte Werkzeuge — im Hintergrund gehalten.",
     "stack": {
       "r1Label": "// KI & AUTOMATISIERUNG",
       "r2Label": "// INFRASTRUKTUR",

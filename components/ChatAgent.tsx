@@ -10,14 +10,14 @@ interface Message {
 const GREETING: Message = {
   role: 'assistant',
   content:
-    "👋 Hi! I'm Max — MAXPROMO.DIGITAL's AI assistant.\n\nI can help you with:\n• Our services and capabilities\n• Pricing and timelines\n• How automation could help your business\n• Booking a discovery call\n\nWhat can I help you with today?",
+    "👋 Hallo! Ich bin Max — Ihr Assistent bei MAXPROMO.DIGITAL.\n\nIch helfe Ihnen gerne bei:\n• Website, Google & Social Media\n• Preise und Monatspläne\n• Wie wir Ihrem Betrieb helfen können\n• Kostenlosen Geschäfts-Check\n\nWas kann ich für Sie tun?\n\n(I also speak English — just ask!)",
 }
 
 const QUICK_REPLIES = [
-  'What do you build?',
-  'View pricing',
-  'Book a call',
-  'Run free audit',
+  'Was bieten Sie an?',
+  'Preise ansehen',
+  'Gespräch buchen',
+  'Geschäfts-Check starten',
 ]
 
 const sans = 'var(--font-inter)'
@@ -343,7 +343,7 @@ export default function ChatAgent() {
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Ask me anything..."
+              placeholder="Ihre Frage…"
               rows={1}
               style={{
                 flex: 1,

@@ -118,7 +118,7 @@ function PrintshopContactForm() {
           opacity: status === 'loading' ? 0.7 : 1,
         }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'GET YOUR SYSTEM SETUP →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'Get my free business check →'}
       </button>
       {status === 'success' && (
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: ORANGE, margin: 0 }}>
@@ -127,7 +127,7 @@ function PrintshopContactForm() {
       )}
       {status === 'error' && (
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#CC0000', margin: 0 }}>
-          Something went wrong. Email us at hello@maxpromo.digital
+          Something went wrong. Email us at info@maxpromo.digital
         </p>
       )}
     </form>

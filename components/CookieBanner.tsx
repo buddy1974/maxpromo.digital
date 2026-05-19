@@ -95,7 +95,7 @@ export default function CookieBanner() {
           whiteSpace: 'nowrap',
         }}
       >
-        Got it
+        OK
       </button>
     </div>
   )
