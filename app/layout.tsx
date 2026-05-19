@@ -34,23 +34,25 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'MAXPROMO DIGITAL — Operational Infrastructure',
+    default: 'MAXPROMO DIGITAL — Website, Google & Automation für kleine Unternehmen',
     template: '%s | MAXPROMO DIGITAL',
   },
   description:
-    'Operational infrastructure for businesses that cannot afford operational drift. We install the layer between your team and their tools.',
+    'Maxpromo Digital helps small businesses in Essen, NRW and Germany with websites, Google profiles, social media, customer follow-up and simple automations.',
   keywords: [
-    'operational infrastructure',
-    'business operating systems',
-    'workflow automation',
-    'AI agents',
-    'n8n',
-    'Claude API',
+    'kleine Unternehmen',
+    'Website Pflege',
+    'Google Business',
+    'Social Media',
+    'Automatisierung',
+    'Essen',
+    'NRW',
+    'Germany',
   ],
   openGraph: {
-    title: 'MAXPROMO DIGITAL — Operational Infrastructure',
+    title: 'MAXPROMO DIGITAL — Website, Google & Automation für kleine Unternehmen',
     description:
-      'We install the operational layer that runs intake, dispatch, billing, compliance and customer flow.',
+      'We help restaurants, salons, clinics, trades and local shops in Essen, NRW and Germany get more organised online.',
     type: 'website',
   },
 }
