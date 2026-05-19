@@ -66,14 +66,15 @@ export type ProductCategory =
   | 'ecosystem'
 
 /**
- * Public listing visibility.
+ * Public listing visibility. Governs where the product appears in grids.
  * A product with status 'internal' is always hidden regardless of this field.
  *
- * public   → appears in all grids (systems page, homepage featured)
- * unlisted → accessible by direct URL but not listed in any grid
- * internal → visible only in /os admin; never rendered on public pages
+ * public    → visible everywhere allowed by registry rules
+ * protected → gated access: password-protected, investor preview, beta staging
+ * private   → direct link only; hidden from all discovery grids and listings
+ * internal  → /os admin only; never rendered on any public page
  */
-export type ProductVisibility = 'public' | 'unlisted' | 'internal'
+export type ProductVisibility = 'public' | 'protected' | 'private' | 'internal'
 
 /**
  * Geographic market focus.
@@ -129,18 +130,20 @@ export type CTAType = 'standard' | 'platform' | 'personal-finance'
  * Product revenue model. Null until confirmed per product.
  * Internal only — never serialised into any public API response.
  *
- * installation → one-time install fee + optional monthly care plan
- * saas         → recurring subscription
- * platform     → commission or transaction-based (Drive24 model)
- * freemium     → free tier with paid upgrade (TaxKontrol future)
- * custom       → scoped per client engagement
+ * installation → one-time system installation (RestaurantOS, HandwerkOS)
+ * subscription → recurring monthly revenue (future SaaS products)
+ * commission   → revenue per transaction (Drive24 model)
+ * licensing    → white-label or licensed deployment model
+ * internal     → no external monetization (Maxpromo OS)
+ * hybrid       → mixed revenue strategy (TaxKontrol: installation + subscription)
  */
 export type RevenueModel =
   | 'installation'
-  | 'saas'
-  | 'platform'
-  | 'freemium'
-  | 'custom'
+  | 'subscription'
+  | 'commission'
+  | 'licensing'
+  | 'internal'
+  | 'hybrid'
 
 // =============================================================================
 // SUPPORTING TYPES
