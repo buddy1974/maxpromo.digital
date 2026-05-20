@@ -143,12 +143,11 @@ export function SystemCardFeatured({
           <TrackableLink
             href={product.systemUrl ?? '#'}
             event={{
-              type:      DOMAIN_CLICKED,
-              slug:      product.slug,
-              source:    eventSource,
-              timestamp: 0,
+              type:   DOMAIN_CLICKED,
+              slug:   product.slug,
+              source: eventSource,
               locale,
-              domain:    product.domain,
+              domain: product.domain,
             }}
             target="_blank"
             rel="noopener noreferrer"
@@ -164,12 +163,11 @@ export function SystemCardFeatured({
             <TrackableLink
               href={product.demoUrl ?? product.systemUrl}
               event={{
-                type:      CTA_PRIMARY_CLICKED,
-                slug:      product.slug,
-                source:    eventSource,
-                timestamp: 0,
+                type:     CTA_PRIMARY_CLICKED,
+                slug:     product.slug,
+                source:   eventSource,
                 locale,
-                ctaLabel:  primaryLabel,
+                ctaLabel: primaryLabel,
               }}
               target={product.demoUrl ? '_blank' : undefined}
               rel={product.demoUrl ? 'noopener noreferrer' : undefined}
@@ -182,12 +180,11 @@ export function SystemCardFeatured({
             <TrackableLink
               href={product.bookDemoUrl}
               event={{
-                type:      CTA_SECONDARY_CLICKED,
-                slug:      product.slug,
-                source:    eventSource,
-                timestamp: 0,
+                type:     CTA_SECONDARY_CLICKED,
+                slug:     product.slug,
+                source:   eventSource,
                 locale,
-                ctaLabel:  secondaryLabel,
+                ctaLabel: secondaryLabel,
               }}
               data-event-source={eventSource}
               aria-label={secondaryLabel}

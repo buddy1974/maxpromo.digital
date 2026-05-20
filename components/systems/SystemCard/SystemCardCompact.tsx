@@ -104,10 +104,9 @@ export function SystemCardCompact({
             <TrackableLink
               href={ctaHref}
               event={{
-                type:      CTA_PRIMARY_CLICKED,
-                slug:      product.slug,
-                source:    eventSource,
-                timestamp: 0,
+                type:     CTA_PRIMARY_CLICKED,
+                slug:     product.slug,
+                source:   eventSource,
                 locale,
                 ctaLabel,
               }}
