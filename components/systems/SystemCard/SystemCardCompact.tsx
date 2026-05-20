@@ -10,8 +10,9 @@
  */
 
 import Image from 'next/image'
-import type { ProductEntry } from '@/lib/registry/types'
 import type { SystemCardProps, ImageMode } from './SystemCard'
+import { resolveCompactCTALabel, resolveCompactAriaLabel } from './helpers/cta'
+import { resolveThumbSrc, resolveImageStyle } from './helpers/image'
 
 // =============================================================================
 // TYPES
@@ -39,16 +40,9 @@ export function SystemCardCompact({
     ? product.subline.de
     : product.subline.en
 
-  const ctaHref  = product.landingUrl
-  const thumbSrc = product.media.thumb?.en ?? product.media.card.en
-
-  const objectPosition =
-    imageMode === 'heroCrop' ? 'top' :
-    imageMode === 'contain'  ? 'center' :
-    'center'
-
-  const objectFit: 'cover' | 'contain' =
-    imageMode === 'contain' ? 'contain' : 'cover'
+  const ctaHref                    = product.landingUrl
+  const thumbSrc                   = resolveThumbSrc(product)
+  const { objectFit, objectPosition } = resolveImageStyle(imageMode)
 
   return (
     <article
@@ -102,10 +96,10 @@ export function SystemCardCompact({
             <a
               href={ctaHref}
               data-event-source={product.eventSource}
-              aria-label={`${product.name} — ${locale === 'de' ? 'System ansehen' : 'View system'}`}
+              aria-label={resolveCompactAriaLabel(product.name, locale)}
               className="font-mono text-[11px] text-[#F97316] tracking-wider uppercase hover:opacity-70 transition-opacity"
             >
-              {locale === 'de' ? 'Ansehen →' : 'View →'}
+              {resolveCompactCTALabel(locale)}
             </a>
           )}
         </div>
