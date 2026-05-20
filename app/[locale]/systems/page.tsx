@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
+import { getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
+import SystemsPageGrid from '@/components/systems/SystemsPageGrid'
+import { getSystemsCards } from '@/lib/registry/adapters'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('systems')
@@ -10,72 +13,6 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-interface AppRef {
-  id: 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6' | 'a7'
-  featureKeys: ReadonlyArray<'F1' | 'F2' | 'F3' | 'F4'>
-  tags: ReadonlyArray<string>
-  productPage: string
-  contactSlug: string
-  publicDemo?: string
-  hasDemoLogin?: boolean
-}
-
-const APP_REFS: ReadonlyArray<AppRef> = [
-  {
-    id: 'a1',
-    featureKeys: ['F1','F2','F3','F4'],
-    tags: ['Next.js', 'Stripe', 'Real-time'],
-    productPage: '/products/restaurant-os',
-    contactSlug: 'restaurant-os',
-    publicDemo: 'https://restaurant-os-one.vercel.app',
-  },
-  {
-    id: 'a2',
-    featureKeys: ['F1','F2','F3','F4'],
-    tags: ['Next.js', 'Neon', 'Claude AI'],
-    productPage: '/products/praxis-os',
-    contactSlug: 'praxis-os',
-  },
-  {
-    id: 'a3',
-    featureKeys: ['F1','F2','F3','F4'],
-    tags: ['Next.js', 'Claude AI', 'TypeScript'],
-    productPage: '/products/handwerk-os',
-    contactSlug: 'handwerk-os',
-    publicDemo: 'https://handwerkos.vercel.app',
-    hasDemoLogin: true,
-  },
-  {
-    id: 'a4',
-    featureKeys: ['F1','F2','F3','F4'],
-    tags: ['Next.js', 'Claude AI', 'Neon'],
-    productPage: '/products/care-os',
-    contactSlug: 'care-os',
-  },
-  {
-    id: 'a5',
-    featureKeys: ['F1','F2','F3','F4'],
-    tags: ['Next.js', 'Claude AI', 'Stripe'],
-    productPage: '/products/printshop',
-    contactSlug: 'printshop-os',
-    publicDemo: 'https://printshop.maxpromo.digital',
-    hasDemoLogin: true,
-  },
-  {
-    id: 'a6',
-    featureKeys: ['F1','F2','F3','F4'],
-    tags: ['Next.js', 'Claude AI', 'n8n', 'Neon'],
-    productPage: '/products/publishing-os',
-    contactSlug: 'publishing-os',
-  },
-  {
-    id: 'a7',
-    featureKeys: ['F1','F2','F3','F4'],
-    tags: ['Next.js', 'Claude AI', 'Drizzle ORM'],
-    productPage: '/products/real-estate-os',
-    contactSlug: 'real-estate-os',
-  },
-]
 
 const mono    = { fontFamily: 'var(--font-roboto-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-inter)' } as const
@@ -105,8 +42,9 @@ const LIFECYCLE_REFS = [
 const ESCALATION_IDS = ['e1', 'e2', 'e3', 'e4', 'e5'] as const
 
 export default async function SystemsPage() {
+  const locale  = await getLocale()
+  const cards   = getSystemsCards(locale)
   const t       = await getTranslations('systems')
-  const tApps   = await getTranslations('systems.apps')
   const tArch   = await getTranslations('systems.architecture')
   const tLife   = await getTranslations('systems.lifecycle')
   const tEsc    = await getTranslations('systems.escalation')
@@ -361,173 +299,8 @@ export default async function SystemsPage() {
         </div>
       </section>
 
-      {/* App cards */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '3rem 2rem 4rem' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div
-            style={{ display: 'grid', gap: '16px' }}
-            className="grid-cols-1 lg:grid-cols-2"
-          >
-            {APP_REFS.map((app) => (
-              <div
-                key={app.id}
-                className="dark-card"
-                style={{
-                  background: 'hsl(240 12% 7%)',
-                  border: '1px solid hsl(40 30% 96% / 0.08)',
-                  borderRadius: '12px',
-                  padding: '32px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0, left: 0, right: 0,
-                    height: '2px',
-                    background: 'linear-gradient(90deg, transparent 0%, hsl(28 100% 58% / 0.5) 50%, transparent 100%)',
-                    pointerEvents: 'none',
-                  }}
-                />
-
-                <span
-                  style={{
-                    ...mono,
-                    fontSize: '10px',
-                    color: 'hsl(28 100% 58%)',
-                    background: 'rgba(249,115,22,0.1)',
-                    border: '1px solid rgba(249,115,22,0.2)',
-                    padding: '3px 10px',
-                    borderRadius: '4px',
-                    letterSpacing: '0.06em',
-                    textTransform: 'uppercase',
-                    display: 'inline-block',
-                    marginBottom: '16px',
-                    alignSelf: 'flex-start',
-                  }}
-                >
-                  {tApps(`${app.id}Category`)}
-                </span>
-
-                <h2
-                  style={{
-                    ...grotesk,
-                    fontWeight: 700,
-                    fontSize: 'clamp(1.4rem, 2.5vw, 1.75rem)',
-                    letterSpacing: '-0.03em',
-                    color: 'hsl(40 30% 96%)',
-                    marginBottom: '12px',
-                  }}
-                >
-                  {tApps(`${app.id}Name`)}
-                </h2>
-
-                <p
-                  style={{
-                    ...sans,
-                    fontSize: '15px',
-                    color: 'hsl(40 12% 65%)',
-                    lineHeight: 1.75,
-                    marginBottom: '20px',
-                  }}
-                >
-                  {tApps(`${app.id}Desc`)}
-                </p>
-
-                <ul
-                  style={{
-                    listStyle: 'none',
-                    padding: 0,
-                    margin: '0 0 20px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '8px',
-                    flex: 1,
-                  }}
-                >
-                  {app.featureKeys.map((fk) => (
-                    <li
-                      key={fk}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: '10px',
-                        ...sans,
-                        fontSize: '14px',
-                        color: 'hsl(40 30% 96% / 0.75)',
-                      }}
-                    >
-                      <span style={{ color: 'hsl(28 100% 58%)', flexShrink: 0, fontWeight: 700, fontSize: '12px', marginTop: '1px' }}>
-                        ✓
-                      </span>
-                      {tApps(`${app.id}${fk}`)}
-                    </li>
-                  ))}
-                </ul>
-
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '20px' }}>
-                  {app.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      style={{
-                        ...mono,
-                        fontSize: '10px',
-                        color: 'hsl(40 12% 65%)',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        padding: '3px 9px',
-                        borderRadius: '4px',
-                        letterSpacing: '0.04em',
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                  <Link href={app.productPage} className="sys-cta">
-                    {tApps('exploreCta')}
-                  </Link>
-                  <Link href={`/contact?system=${app.contactSlug}`} className="sys-cta-ghost">
-                    {tApps('requestCta')}
-                  </Link>
-                </div>
-
-                <p
-                  style={{
-                    ...mono,
-                    fontSize: '10px',
-                    color: 'hsl(240 8% 35%)',
-                    margin: '12px 0 0',
-                    letterSpacing: '0.04em',
-                  }}
-                >
-                  {app.publicDemo ? (
-                    <>
-                      {'// '}
-                      <a
-                        href={app.publicDemo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: 'hsl(28 100% 58%)', textDecoration: 'none' }}
-                      >
-                        {tApps('viewLive')}
-                      </a>
-                      {!app.hasDemoLogin && ` · ${tApps(`${app.id}Demo`)}`}
-                    </>
-                  ) : (
-                    `// ${tApps(`${app.id}Demo`)}`
-                  )}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* App cards — registry-driven via SystemsPageGrid → SystemGrid → SystemCardFull */}
+      <SystemsPageGrid cards={cards} locale={locale} />
 
       {/* Bottom CTA */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>

@@ -1027,3 +1027,27 @@ export const INTERNAL_PRODUCTS: ReadonlyArray<ProductEntry> =
  */
 export const FEATURED_PRODUCTS: ReadonlyArray<ProductEntry> =
   PRODUCTS.filter(p => p.featured && p.track === 'commercial')
+
+/**
+ * Systems page app cards grid — hard-coded order. INTENTIONAL. DO NOT derive from filters.
+ *
+ * This order is permanent. It must not change due to priority_score, maturity,
+ * future sorting, or any automated logic. Systems page curation is a deliberate
+ * editorial decision, not a computed result.
+ *
+ * Drive24 is EXCLUDED (founder track — surfaces only via PROTECTED_PRODUCTS).
+ * Maxpromo OS is EXCLUDED (internal track).
+ *
+ * Consumer: app/[locale]/systems/page.tsx (SystemsPageGrid bridge → SystemGrid)
+ * Count: 8
+ */
+export const SYSTEMS_PAGE_PRODUCTS: ReadonlyArray<ProductEntry> = [
+  TAXKONTROL,
+  RESTAURANT_OS,
+  PRINTSHOP_OS,
+  HANDWERK_OS,
+  CARE_OS,
+  PRAXIS_OS,
+  REAL_ESTATE_OS,
+  PUBLISHING_OS,
+]
