@@ -1,41 +1,35 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 
-/* ─── RESPONSIVE STYLES ───────────────────────────────────── */
+/* ─── TOKENS ──────────────────────────────────────────────── */
+const ORANGE = '#F97316'
+const BG     = '#080808'
+const CARD   = '#0F0F0F'
+const BORDER = '#1A1A1A'
 
 const STYLES = `
-  .ro-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .ro-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .ro-ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; }
-  .ro-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
+  .ro-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: ${BORDER}; }
+  .ro-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: ${BORDER}; }
+  .ro-flow   { display: flex; gap: 2px; background: ${BORDER}; overflow-x: auto; }
   @media (max-width: 768px) {
-    .ro-grid-3 { grid-template-columns: 1fr; }
-    .ro-grid-2 { grid-template-columns: 1fr; }
-    .ro-proof  { grid-template-columns: 1fr; }
+    .ro-grid-2, .ro-grid-3 { grid-template-columns: 1fr; }
+    .ro-flow   { flex-direction: column; }
   }
 `
 
 /* ─── FORM ────────────────────────────────────────────────── */
 
 interface RestaurantForm {
-  name: string
-  restaurant: string
-  tables: string
-  email: string
-  phone: string
+  name: string; restaurant: string; tables: string; email: string; phone: string
 }
 
 function RestaurantContactForm() {
-  const [form, setForm] = useState<RestaurantForm>({
-    name: '', restaurant: '', tables: '', email: '', phone: '',
-  })
+  const [form, setForm] = useState<RestaurantForm>({ name: '', restaurant: '', tables: '', email: '', phone: '' })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   function update(field: keyof RestaurantForm) {
-    return (e: React.ChangeEvent<HTMLInputElement>) =>
-      setForm((prev) => ({ ...prev, [field]: e.target.value }))
+    return (e: React.ChangeEvent<HTMLInputElement>) => setForm(prev => ({ ...prev, [field]: e.target.value }))
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -46,147 +40,48 @@ function RestaurantContactForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          organisation: form.restaurant,
+          name: form.name, email: form.email, organisation: form.restaurant,
           message: `Tables: ${form.tables}${form.phone ? `\nPhone: ${form.phone}` : ''}`,
           automation: 'restaurant-os',
         }),
       })
-      if (!res.ok) throw new Error('request failed')
+      if (!res.ok) throw new Error('failed')
       setStatus('success')
-    } catch {
-      setStatus('error')
-    }
+    } catch { setStatus('error') }
   }
 
-  const inputStyle: React.CSSProperties = {
-    background: '#0F0F0F',
-    border: '1px solid #1A1A1A',
-    color: '#F0F0F0',
-    padding: '14px 16px',
-    fontFamily: 'var(--font-body)',
-    fontSize: '15px',
-    width: '100%',
-    outline: 'none',
-    borderRadius: 0,
-    transition: 'border-color 150ms ease',
+  const input: React.CSSProperties = {
+    background: '#0A0A0A', border: `1px solid ${BORDER}`, color: '#F0F0F0',
+    padding: '14px 16px', fontFamily: 'var(--font-body)', fontSize: '15px',
+    width: '100%', outline: 'none', borderRadius: 0, transition: 'border-color 150ms ease',
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ maxWidth: '480px', display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '2.5rem' }}
-    >
-      {(
-        [
-          { field: 'name',       type: 'text',  label: 'Your name',        required: true  },
-          { field: 'restaurant', type: 'text',  label: 'Restaurant name',  required: true  },
-          { field: 'tables',     type: 'text',  label: 'Number of tables', required: true  },
-          { field: 'email',      type: 'email', label: 'Email address',    required: true  },
-          { field: 'phone',      type: 'tel',   label: 'Phone (optional)', required: false },
-        ] as const
-      ).map(({ field, type, label, required }) => (
-        <input
-          key={field}
-          name={field}
-          type={type}
-          placeholder={label}
-          required={required}
-          value={form[field]}
-          onChange={update(field)}
-          style={inputStyle}
-          onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
-          onBlur={(e)  => (e.currentTarget.style.borderColor = '#1A1A1A')}
-        />
+    <form onSubmit={handleSubmit} style={{ maxWidth: '480px', display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '2.5rem' }}>
+      {([
+        { field: 'name',       type: 'text',  label: 'Your name',        required: true  },
+        { field: 'restaurant', type: 'text',  label: 'Restaurant name',  required: true  },
+        { field: 'tables',     type: 'text',  label: 'Number of tables', required: true  },
+        { field: 'email',      type: 'email', label: 'Email address',    required: true  },
+        { field: 'phone',      type: 'tel',   label: 'Phone (optional)', required: false },
+      ] as const).map(({ field, type, label, required }) => (
+        <input key={field} name={field} type={type} placeholder={label} required={required}
+          value={form[field]} onChange={update(field)} style={input}
+          onFocus={e => (e.currentTarget.style.borderColor = ORANGE)}
+          onBlur={e  => (e.currentTarget.style.borderColor = BORDER)} />
       ))}
-
-      <button
-        type="submit"
-        disabled={status === 'loading' || status === 'success'}
-        style={{
-          background: '#F97316',
-          color: '#080808',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '11px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.1em',
-          fontWeight: 700,
-          padding: '16px',
-          width: '100%',
-          border: 'none',
-          cursor: status === 'loading' || status === 'success' ? 'default' : 'pointer',
-          opacity: status === 'loading' ? 0.7 : 1,
-        }}
-      >
+      <button type="submit" disabled={status === 'loading' || status === 'success'}
+        style={{ background: ORANGE, color: BG, fontFamily: 'var(--font-mono)', fontSize: '11px',
+          textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, padding: '16px',
+          width: '100%', border: 'none', cursor: status === 'loading' || status === 'success' ? 'default' : 'pointer',
+          opacity: status === 'loading' ? 0.7 : 1 }}>
         {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Request received' : 'Schedule walkthrough →'}
       </button>
-
-      {status === 'success' && (
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', margin: 0 }}>
-          ✓ Request received. We&apos;ll contact you within 24 hours.
-        </p>
-      )}
-      {status === 'error' && (
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#FF4D4D', margin: 0 }}>
-          Something went wrong. Email us at info@maxpromo.digital
-        </p>
-      )}
+      {status === 'success' && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: ORANGE, margin: 0 }}>We will contact you within 24 hours.</p>}
+      {status === 'error'   && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#FF4D4D', margin: 0 }}>Something went wrong. Email us at info@maxpromo.digital</p>}
     </form>
   )
 }
-
-/* ─── PAGE DATA ───────────────────────────────────────────── */
-
-const AFTER_STATE = [
-  'Orders go directly to the kitchen — zero relay errors',
-  'Bills split in seconds, not 15 minutes at the end of service',
-  'No tablet. No app. No per-feature monthly fee.',
-  'Staff free to focus on service, not taking orders',
-  'Menu updates live in under 10 seconds from any device',
-]
-
-const WHO_FOR = [
-  'Restaurants, cafes, and bars with 4–50 tables',
-  'Currently taking orders on paper pads or relaying orders via WhatsApp to the kitchen',
-  'Splitting bills manually at the end of service — losing 10–20 minutes per group',
-  'Looking to reduce order errors and speed up service without replacing staff',
-  'Want to avoid expensive POS hardware or per-feature monthly subscription costs',
-]
-
-const PROBLEMS = [
-  { label: 'PAPER ORDERS', text: 'Waiter takes orders on paper. Kitchen gets it wrong. Table 4 complains. Every service.' },
-  { label: 'BILL SPLITS',  text: 'Group of 8 wants separate bills. Waiter spends 15 minutes with a calculator at the end of the night.' },
-  { label: 'WHATSAPP KITCHEN', text: 'WhatsApp group for kitchen orders. Rush hour — unread messages, missed orders, service delays.' },
-]
-
-const STEPS = [
-  { title: 'Scan QR Code', desc: 'Each table has a printed QR. Opens the full menu in the browser. No app install. No account needed. Works on every phone.' },
-  { title: 'Choose Dining Mode', desc: 'First scan asks: dining solo or as a group? Sets the payment split logic for the entire table session.' },
-  { title: 'Get a Fruit Seat Code', desc: 'System assigns a fruit — APPLE, KIWI, ORANGE. Visible all session. Waiter calls by fruit name. Zero table confusion.' },
-  { title: 'Browse & Order', desc: 'Full menu with categories, prices, and popular badges. Add to cart. Place order. Order more rounds any time.' },
-  { title: 'Staff Notified on Telegram', desc: 'Every order fires instantly to the staff Telegram group — free, works on any phone. Table, seat, items, total. No tablet watching required.' },
-  { title: 'Flexible Payment', desc: 'Pay solo. Cover the whole table. Split equally. Or select exactly which seats to group. All four modes built in.' },
-]
-
-const FEATURES = [
-  { icon: '[ SEAT ]',    name: 'Zero Table Confusion',           desc: 'No more "who ordered what." Every seat tracked individually by fruit code for the entire visit. Staff call by fruit — not seat number.' },
-  { icon: '[ PAY ]',     name: 'Bill Splitting In Seconds',         desc: 'Solo, full table, equal split, or select seats — all four modes built in. No calculator. No awkward wait at the end of service.' },
-  { icon: '[ ALERT ]',   name: 'Kitchen Notified Instantly',  desc: 'Every order fires instantly to your kitchen Telegram group. No tablet. No monthly alert software fee. Works on any phone.' },
-  { icon: '[ ADMIN ]',   name: 'Live Menu Updates',         desc: 'Update prices or mark items sold out instantly — from any device. Goes live immediately. No code, no delays.' },
-  { icon: '[ SESSION ]', name: 'No Bill Surprises',          desc: 'Solo or group — set at first scan. Staff see the payment mode per table before the bill arrives. No surprises.' },
-  { icon: '[ SAAS ]',    name: 'Run Multiple Venues From One System',                     desc: 'One codebase runs unlimited venues. Each restaurant gets their own slug, menu, tables, and branding from day one.' },
-]
-
-const TECH_STACK = ['NEXT.JS 16', 'NEON POSTGRESQL', 'VERCEL', 'TELEGRAM BOT', 'TYPESCRIPT', 'STRIPE']
-
-const FLOW = [
-  { step: '01', label: 'Customer scans QR code → No waiter needed to present menu' },
-  { step: '02', label: 'Gets a fruit seat code → Zero table confusion' },
-  { step: '03', label: 'Browses menu and orders → Order goes direct to kitchen' },
-  { step: '04', label: 'Kitchen gets Telegram alert → No relay errors' },
-  { step: '05', label: 'Bill paid by seat → No manual calculation required' },
-]
 
 /* ─── PAGE ────────────────────────────────────────────────── */
 
@@ -194,431 +89,299 @@ export default function RestaurantOSPage() {
   return (
     <>
       <style>{STYLES}</style>
-      <main style={{ background: '#080808' }}>
+      <main style={{ background: BG }}>
 
-        {/* ── HERO ── */}
-        <section style={{ padding: '5rem 2rem 5rem', borderBottom: '1px solid #1A1A1A' }}>
+        {/* ── 1. HERO WORLD ── */}
+        <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.15em',
-              color: '#F97316',
-              marginBottom: '1.5rem',
-            }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
               RESTAURANT OPERATIONS SYSTEM
             </p>
-
-            <h1 style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-              letterSpacing: '-0.04em',
-              color: '#F0F0F0',
-              lineHeight: 1.1,
-              marginBottom: '1.5rem',
-              maxWidth: '720px',
-            }}>
-              Stop losing orders between calls, paper notes and WhatsApp.
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
+              Stop losing orders between calls,<br />paper notes and WhatsApp.
             </h1>
-
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '18px',
-              color: '#666666',
-              maxWidth: '580px',
-              lineHeight: 1.8,
-            }}>
-              RestaurantOS helps restaurants keep customer requests, reservations and service activity in one operational flow — without changing how the team already works.
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+              RestaurantOS keeps reservations, orders and daily service moving in one operational flow — without changing how your team already works.
             </p>
 
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
-              <a
-                href="/contact?system=restaurant-os"
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  color: '#080808',
-                  background: '#F97316',
-                  padding: '14px 28px',
-                  textDecoration: 'none',
-                  display: 'inline-block',
-                  transition: 'background 150ms ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = '#EA6A00')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = '#F97316')}
-              >
-                Schedule walkthrough →
-              </a>
-              <a
-                href="https://restaurant-os-one.vercel.app/demo"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '15px',
-                  color: '#F0F0F0',
-                  border: '1px solid #1A1A1A',
-                  padding: '14px 28px',
-                  textDecoration: 'none',
-                  display: 'inline-block',
-                  background: 'transparent',
-                  transition: 'border-color 150ms ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#333333')}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#1A1A1A')}
-              >
-                View live demo →
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* ── BEFORE / AFTER ── */}
-        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '2rem' }}>BEFORE / AFTER THIS SYSTEM</p>
-            <div style={{ display: 'grid', gap: '1px', background: '#1A1A1A' }} className="ro-grid-2">
-              <div style={{ background: '#141414', padding: '28px 32px' }}>
-                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>BEFORE</p>
-                {['Orders taken on paper pads', 'Bills split manually with a calculator', 'Kitchen notified by shouting or WhatsApp', 'Order errors at every service', 'Staff spend time taking orders, not serving'].map(item => (
-                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
-                    <span style={{ color: '#FF4D4D', flexShrink: 0 }}>✕</span>{item}
-                  </p>
-                ))}
-              </div>
-              <div style={{ background: '#141414', padding: '28px 32px' }}>
-                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>AFTER</p>
-                {['Orders go direct to kitchen — 0 relay errors', 'Bills split automatically in any mode', 'Kitchen gets instant Telegram alert per order', 'Zero order errors — no staff relay required', 'Staff focus on service, not coordination'].map(item => (
-                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
-                    <span style={{ color: '#F97316', flexShrink: 0, fontWeight: 700 }}>✓</span>{item}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── WHO THIS IS FOR ── */}
-        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              WHO THIS IS FOR
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
-              Built for your type of venue.
-            </h2>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {WHO_FOR.map((item) => (
-                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#F97316', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* ── AFTER STATE ── */}
-        <section style={{ background: '#080808', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              AFTER THIS SYSTEM IS INSTALLED
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
-              What your service looks like on week two.
-            </h2>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {AFTER_STATE.map((item) => (
-                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', lineHeight: 1.6, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#F97316', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>✓</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '1.5rem 0 0' }}>
-              → 0 relay errors · Orders processed instantly · Staff workload reduced · Running in live venues
-            </p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: '6px 0 0' }}>
-              Im echten Einsatz erprobt · Sicher aufgebaut · Für den Alltag vorbereitet
-            </p>
-          </div>
-        </section>
-
-        {/* ── PROBLEM STRIP ── */}
-        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '4rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              THE PROBLEM
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '28px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
-              What your service looks like tonight
-            </h2>
-            <div className="ro-grid-3">
-              {PROBLEMS.map((p) => (
-                <div key={p.label} style={{ background: '#141414', border: '1px solid #1A1A1A', padding: '32px' }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>{p.label}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>
-                    {p.text}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── HOW IT WORKS ── */}
-        <section style={{ background: '#080808', padding: '6rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              USER JOURNEY
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              Six steps. Zero friction.
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 0, borderTop: '1px solid #1A1A1A' }}>
-              {STEPS.map((step, idx) => (
-                <div
-                  key={step.title}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    gap: '24px',
-                    padding: '24px 0',
-                    borderBottom: '1px solid #1A1A1A',
-                    alignItems: 'flex-start',
-                  }}
-                >
-                  <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '13px',
-                    color: '#F97316',
-                    minWidth: '32px',
-                    flexShrink: 0,
-                    paddingTop: '2px',
-                  }}>
-                    {String(idx + 1).padStart(2, '0')}.
-                  </span>
-                  <div>
-                    <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '16px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '6px' }}>
-                      {step.title}
-                    </h3>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', lineHeight: 1.75, margin: 0 }}>
-                      {step.desc}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── FEATURES ── */}
-        <section style={{ background: '#0F0F0F', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              WHAT&apos;S BUILT
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              Everything the system includes.
-            </h2>
-            <div className="ro-grid-2">
-              {FEATURES.map((f) => (
-                <div key={f.name} style={{ background: '#141414', border: '1px solid #1A1A1A', padding: '32px' }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', color: '#F97316', marginBottom: '16px' }}>
-                    {f.icon}
-                  </p>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '10px' }}>
-                    {f.name}
-                  </h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', lineHeight: 1.75, margin: 0 }}>
-                    {f.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── SYSTEM IN ACTION ── */}
-        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHAT HAPPENS AFTER INSTALLATION</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              Customer scans. Orders land in kitchen. Bill splits automatically. No staff coordination.
-            </h2>
-            <div className="ro-proof">
-              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ LIVE DASHBOARD — SCREENSHOT IN PROGRESS ]</p>
-                </div>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
-                  Live order view — table, seat code, items ordered, and payment status per session.
-                </p>
-              </div>
-              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
-                {[
-                  { label: 'Active orders', text: 'Every table session visible with fruit seat assignments and full order history.' },
-                  { label: 'Instant alerts', text: 'Telegram notification fired per order — table, seat, items, total.' },
-                  { label: 'Bill status', text: 'Payment mode per table set at first scan. Staff briefed before the ask.' },
-                ].map((item) => (
-                  <div key={item.label}>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#F97316', margin: '0 0 6px' }}>{item.label}</p>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── IN PRACTICE ── */}
-        <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>FROM QR SCAN TO SETTLED BILL — ZERO STAFF COORDINATION</p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444', letterSpacing: '0.1em', marginBottom: '1.5rem' }}>
-              Failed payments handled automatically · Stripe retry logic active · Error states managed without staff input
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
-              Table scanned. Order placed. Kitchen notified. Bill paid. Automatically.
-            </h2>
-            <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
-              {FLOW.map((item) => (
-                <div key={item.step} style={{ background: '#141414', padding: '24px 20px', flex: 1, minWidth: '140px' }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#F0F0F0', margin: 0, lineHeight: 1.5 }}>{item.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── TECH STRIP ── */}
-        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#333333', marginBottom: '12px' }}>
-              BUILT ON
-            </p>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              {TECH_STACK.map((tech) => (
-                <span
-                  key={tech}
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '11px',
-                    border: '1px solid #1A1A1A',
-                    padding: '5px 14px',
-                    color: '#333333',
-                    letterSpacing: '0.05em',
-                  }}
-                >
-                  {tech}
+            {/* Proof */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
+              {['Reservations visible to the whole team', 'Orders go directly to the kitchen', 'Bills split automatically in any mode', 'No app required for guests'].map(p => (
+                <span key={p} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '6px 14px', letterSpacing: '0.04em' }}>
+                  → {p}
                 </span>
               ))}
             </div>
-          </div>
-        </section>
 
-        {/* ── SOCIAL PROOF BAR ── */}
-        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0 }}>
-              Live demo at restaurant-os-one.vercel.app — 6 tables, full ordering flow
-            </p>
-            <span style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.15em',
-              background: '#F97316',
-              color: '#080808',
-              padding: '4px 10px',
-              fontWeight: 700,
-            }}>
-              LIVE IN PRODUCTION
-            </span>
-          </div>
-        </section>
-
-        {/* ── WHAT THIS IS NOT ── */}
-        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>NOT A TOOL</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1.25rem' }}>
-              {['Not a dashboard you configure yourself', 'Not another SaaS subscription', 'Not a template built for a different business'].map(line => (
-                <p key={line} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.6, margin: 0, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#FF4D4D', flexShrink: 0 }}>✕</span>{line}
-                </p>
-              ))}
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <a href="#walkthrough" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: BG, background: ORANGE, padding: '14px 28px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#EA6A00')}
+                onMouseLeave={e => (e.currentTarget.style.background = ORANGE)}>
+                Schedule walkthrough →
+              </a>
+              <a href="https://restaurant-os-one.vercel.app/demo" target="_blank" rel="noopener noreferrer"
+                style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '14px 28px', textDecoration: 'none', display: 'inline-block', background: 'transparent', transition: 'border-color 150ms ease' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = '#333')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = BORDER)}>
+                See the system in action →
+              </a>
             </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F0F0F0', letterSpacing: '0.04em', margin: 0 }}>
-              → This is a system installed into your business.
-            </p>
           </div>
         </section>
 
-        {/* ── CONVERSION ── */}
-        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+        {/* ── 2. THIS KEEPS HAPPENING ── */}
+        <section style={{ background: CARD, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              INSTALL THIS SYSTEM
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>
+              THIS KEEPS HAPPENING
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Schedule a walkthrough for your venue.
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2.5rem' }}>
+              The same situations. Every service.
             </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
-              Tell us about your venue and how orders currently move through the team. We walk through how RestaurantOS works in your specific setup — no commitment required. We reply within 24 hours.
-            </p>
-            <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
-              {['Free setup consultation — no charge.', 'Live in 5–10 days from sign-off.', 'No commitment until you are ready.'].map((line) => (
-                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
-                  — {line}
-                </p>
-              ))}
-            </div>
-            <div style={{ marginTop: '1.5rem', background: '#141414', border: '1px solid rgba(249,115,22,0.2)', padding: '16px 24px', maxWidth: '400px', display: 'inline-block' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', margin: '0 0 6px' }}>AVAILABILITY</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>
-                We onboard a limited number of venues per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
-              </p>
-            </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F0F0F0', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '8px' }}>
-              We only install a limited number of systems per month.
-            </p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginBottom: '0' }}>
-              We install this system for you.
-            </p>
-            <RestaurantContactForm />
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#555', letterSpacing: '0.08em', margin: '12px 0 0' }}>
-              // No obligation · Free setup consultation · We reply within 24 hours
-            </p>
-          </div>
-        </section>
-
-        {/* ── WHY MAXPROMO ── */}
-        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHY MAXPROMO</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2rem' }}>
-              Not theory. Real systems, running now.
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1px', background: '#1A1A1A' }}>
+            <div className="ro-grid-2">
               {[
-                { num: '01', text: 'Built from real client briefs — not feature lists' },
-                { num: '02', text: 'Already deployed in production, not in staging' },
-                { num: '03', text: 'Configured to your workflow — not a generic template' },
-                { num: '04', text: 'We hand you a running system, not a prototype' },
-              ].map((item) => (
-                <div key={item.num} style={{ background: '#141414', padding: '28px 32px' }}>
-                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: 'rgba(249,115,22,0.12)', letterSpacing: '-0.04em', margin: '0 0 12px' }}>{item.num}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{item.text}</p>
+                {
+                  label: 'THE RESERVATION',
+                  text:  'A reservation was written in the notebook. The page was turned. Tonight someone arrives for a table that no longer appears in the record. The team apologises. The guest remembers.',
+                },
+                {
+                  label: 'THE WHATSAPP ORDER',
+                  text:  'A table sends their order via message. It arrives during a rush. By the time it is read, three more messages have come in on top of it. The kitchen receives one of the orders. The rest wait.',
+                },
+                {
+                  label: 'THE KITCHEN RELAY',
+                  text:  'A waiter calls the order across to the pass. The information is correct when it leaves. It arrives different. A dish goes out that no one ordered. The correct one follows ten minutes later.',
+                },
+                {
+                  label: 'END OF THE NIGHT',
+                  text:  'Eight guests. Four want to pay separately. Two split one course. One needs a receipt for work. The waiter works through it with a phone calculator while the next table waits to order.',
+                },
+              ].map(item => (
+                <div key={item.label} style={{ background: '#141414', padding: '36px', borderTop: `3px solid ${ORANGE}` }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>{item.label}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8, margin: 0 }}>{item.text}</p>
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* ── 3. OPERATIONAL CHAOS ── */}
+        <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '4rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>
+              HOW ORDERS MOVE RIGHT NOW
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2.5rem' }}>
+              Every step between the guest and the kitchen is a place where something goes wrong.
+            </h2>
+            <div className="ro-flow">
+              {[
+                { step: '01', label: 'Guest requests',     note: 'Call, walk-in, or message' },
+                { step: '02', label: 'Paper record',       note: 'Notebook or verbal note'  },
+                { step: '03', label: 'Staff relay',        note: 'Information moves by voice' },
+                { step: '04', label: 'Kitchen receives',   note: 'Interpretation required'  },
+                { step: '05', label: 'Error or delay',     note: 'Correction costs service'  },
+              ].map(item => (
+                <div key={item.step} style={{ background: '#141414', padding: '28px 24px', flex: 1, minWidth: '140px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', margin: '0 0 6px', lineHeight: 1.4, fontWeight: 600 }}>{item.label}</p>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444', margin: 0, letterSpacing: '0.05em' }}>{item.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 4. SYSTEM INSTALLED ── */}
+        <section style={{ background: CARD, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
+              SYSTEM INSTALLED
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
+              <div>
+                <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.2, marginBottom: '1.5rem' }}>
+                  RestaurantOS connects the request to the kitchen. The chain runs without a relay.
+                </h2>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8 }}>
+                  Guests scan a QR code at the table. No app install. No staff member taking the order. The order goes directly to the kitchen the moment it is placed. Bills split in seconds — by seat, by item, by share, or all at once.
+                </p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8, marginTop: '1rem' }}>
+                  Reservations visible to every team member. Kitchen notified per order. No relay. No interpretation gap.
+                </p>
+              </div>
+              <div style={{ borderLeft: `3px solid ${ORANGE}`, paddingLeft: '2rem' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>WHAT CONNECTS</p>
+                {[
+                  'Guest to kitchen — no verbal relay required',
+                  'Reservation to table — visible to the whole team',
+                  'Order to bill — tracked per seat from the start',
+                  'Payment to receipt — any split mode, instantly',
+                ].map(line => (
+                  <div key={line} style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'flex-start' }}>
+                    <span style={{ color: ORANGE, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>→</span>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.65 }}>{line}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 5. WORKFLOW ── */}
+        <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>
+              HOW A SERVICE RUNS
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
+              From the first scan to the settled bill.
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
+              {[
+                { num: '01', title: 'Guest scans the table QR',     desc: 'Opens the full menu in the browser. No app install. No account. Works on every phone. The table session begins.' },
+                { num: '02', title: 'Seat identity assigned',         desc: 'A fruit name — APPLE, KIWI, ORANGE — ties the guest to their seat for the full visit. The team knows who is where without any coordination.' },
+                { num: '03', title: 'Order placed from the phone',   desc: 'Guest browses, selects, confirms. The order goes directly to the kitchen the moment it is submitted. No waiter involvement required.' },
+                { num: '04', title: 'Kitchen notified instantly',    desc: 'A notification arrives per order — table, seat, items, any modifications. No relay. No voice call. No WhatsApp message.' },
+                { num: '05', title: 'Bill settled in any mode',      desc: 'Solo, full table, equal split, or by selected seats. All four modes are built in. The waiter is not involved in the calculation.' },
+              ].map(step => (
+                <div key={step.num} style={{ display: 'flex', gap: '32px', padding: '28px 0', borderBottom: `1px solid ${BORDER}`, alignItems: 'flex-start' }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: ORANGE, minWidth: '32px', flexShrink: 0, paddingTop: '2px' }}>{step.num}</span>
+                  <div>
+                    <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '6px' }}>{step.title}</h3>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 6. WHAT CHANGED ── */}
+        <section style={{ background: CARD, borderBottom: `1px solid ${BORDER}`, padding: '4rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>
+              WHAT CHANGED AFTER INSTALLATION
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2rem' }}>
+              The team works the same way. The flow behind it does not.
+            </h2>
+            <div style={{ background: BORDER, display: 'flex', flexDirection: 'column', gap: '1px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#141414' }}>
+                <div style={{ padding: '14px 28px', borderRight: `1px solid ${BORDER}` }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>BEFORE</p>
+                </div>
+                <div style={{ padding: '14px 28px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>AFTER</p>
+                </div>
+              </div>
+              {[
+                { before: 'Orders relayed by voice or paper',            after: 'Orders go directly from guest to kitchen'      },
+                { before: 'Reservations in a notebook — sometimes lost', after: 'Reservations visible to every team member'    },
+                { before: 'Bill splits calculated by hand',              after: 'Bills settled in any mode — instantly'        },
+                { before: 'Kitchen notified by call or WhatsApp',        after: 'Kitchen notified per order — automatically'  },
+                { before: 'Order errors corrected at the table',         after: 'Order errors eliminated at the source'        },
+              ].map((row, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#141414' }}>
+                  <div style={{ padding: '18px 28px', borderRight: `1px solid ${BORDER}`, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ color: '#444', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px' }}>✕</span>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#555', margin: 0, lineHeight: 1.6 }}>{row.before}</p>
+                  </div>
+                  <div style={{ padding: '18px 28px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ color: ORANGE, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>✓</span>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', margin: 0, lineHeight: 1.6 }}>{row.after}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 7. PROOF ── */}
+        <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '4rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>
+              SEE THE SYSTEM WORKING
+            </p>
+            <div className="ro-grid-2">
+              <div style={{ background: CARD, padding: '40px', borderTop: `3px solid ${ORANGE}` }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '1rem' }}>
+                  A real venue. A real service flow.
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8, marginBottom: '1.5rem' }}>
+                  The system walkthrough covers a live venue session — from the first QR scan to the final payment. You see how reservations, orders, kitchen notifications and bill splits work together in real time.
+                </p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8 }}>
+                  No slides. No demo account built for a presentation. The operational system, in the environment it runs in.
+                </p>
+              </div>
+              <div style={{ background: CARD, padding: '40px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>WHAT THE WALKTHROUGH COVERS</p>
+                {[
+                  'Guest scan → seat identity → order flow',
+                  'Kitchen notification per order — live',
+                  'Bill settlement — all four split modes',
+                  'Reservation view across the team',
+                  'Admin view — active sessions and order history',
+                ].map(line => (
+                  <div key={line} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ color: ORANGE, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px' }}>→</span>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{line}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 8. WHAT HAPPENS NEXT ── */}
+        <section style={{ background: CARD, borderBottom: `1px solid ${BORDER}`, padding: '4rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>
+              WHAT HAPPENS NEXT
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2.5rem' }}>
+              From the first conversation to a running system.
+            </h2>
+            <div className="ro-grid-2">
+              {[
+                { num: '01', title: 'Short conversation',    desc: 'We learn about the venue — table count, current order flow, where the friction is. This takes 20 minutes.' },
+                { num: '02', title: 'Venue workflow mapped', desc: 'We map how reservations, orders and payments currently move through the team — before changing anything.' },
+                { num: '03', title: 'System configured',    desc: 'RestaurantOS is set up for the venue — tables, QR codes, kitchen notification method, payment modes.' },
+                { num: '04', title: 'Go live gradually',    desc: 'Start with one section of the venue. Expand as the team gets comfortable. No overnight switchover required.' },
+              ].map(item => (
+                <div key={item.num} style={{ background: '#141414', padding: '32px' }}>
+                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '40px', color: `${ORANGE}25`, letterSpacing: '-0.04em', margin: '0 0 12px', lineHeight: 1 }}>{item.num}</p>
+                  <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '8px' }}>{item.title}</h3>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 9. CTA ── */}
+        <section id="walkthrough" style={{ background: BG, padding: '6rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>
+              SCHEDULE A WALKTHROUGH
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
+              See the system working in your type of venue.
+            </h2>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
+              Tell us about the venue and how orders currently move. We walk through the live system and show how RestaurantOS fits the specific way your team already operates.
+            </p>
+            <div style={{ marginTop: '1.5rem', background: '#141414', border: `1px solid ${BORDER}`, padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
+              {['Short conversation first — no commitment.', 'Configured to your venue and workflow.', 'Start with one section. Expand when ready.'].map(line => (
+                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666', margin: '4px 0', letterSpacing: '0.05em' }}>— {line}</p>
+              ))}
+            </div>
+            <RestaurantContactForm />
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.08em', margin: '16px 0 0' }}>
+              // No commitment · We reply within 24 hours · System live in 5–10 days from sign-off
+            </p>
           </div>
         </section>
 
