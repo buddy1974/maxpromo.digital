@@ -16,7 +16,7 @@ import type { SystemCardProps, ImageMode } from './SystemCard'
 import { resolveCompactCTALabel, resolveCompactAriaLabel } from './helpers/cta'
 import { resolveThumbSrc, resolveImageStyle } from './helpers/image'
 import { TrackableLink } from '@/components/systems/interactions/TrackableLink'
-import { CTA_PRIMARY_CLICKED } from '@/lib/analytics/events'
+import { CTA_PRIMARY_CLICKED, CARD_CLICKED } from '@/lib/analytics/events'
 
 // =============================================================================
 // TYPES
@@ -63,7 +63,6 @@ export function SystemCardCompact({
       <div
         className="relative w-full overflow-hidden"
         style={{ aspectRatio: '8 / 5' }}
-        aria-hidden="true"
       >
         {thumbSrc ? (
           <Image
@@ -78,9 +77,17 @@ export function SystemCardCompact({
           <div className="absolute inset-0 bg-[hsl(240_14%_4%)]" />
         )}
 
-        {/* Brand accent strip */}
+        {/* Image area click tracker */}
+        <TrackableLink
+          href={ctaHref}
+          event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
+          className="absolute inset-0 z-[1]"
+          aria-label={product.name}
+        />
+
+        {/* Brand accent strip — pointer-events-none so overlay link receives clicks */}
         <div
-          className="absolute top-0 left-0 right-0 h-[2px] z-10"
+          className="absolute top-0 left-0 right-0 h-[2px] z-10 pointer-events-none"
           style={{ background: product.brandColor }}
           aria-hidden="true"
         />
@@ -89,7 +96,13 @@ export function SystemCardCompact({
       {/* ── BODY */}
       <div className="flex flex-col flex-1 px-5 pt-4 pb-5 gap-2">
         <h3 className="m-0 text-[1rem] font-bold leading-tight tracking-tight text-[hsl(40_30%_96%)]">
-          {product.name}
+          <TrackableLink
+            href={ctaHref}
+            event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
+            className="text-inherit no-underline"
+          >
+            {product.name}
+          </TrackableLink>
         </h3>
         <p className="m-0 text-[13px] leading-relaxed text-[hsl(40_12%_65%)] line-clamp-2 font-mono">
           {subline}

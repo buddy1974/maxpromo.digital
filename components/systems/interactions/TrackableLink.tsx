@@ -50,7 +50,7 @@ export interface TrackableLinkProps {
    * Server components never need to know about runtime timing.
    */
   readonly event: TrackableEventPayload
-  readonly children: React.ReactNode
+  readonly children?: React.ReactNode
   readonly className?: string
   readonly target?: string
   readonly rel?: string

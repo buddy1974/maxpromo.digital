@@ -14,7 +14,7 @@ import type { SystemCardProps } from './SystemCard'
 import { resolvePrimaryLabel, resolveSecondaryLabel } from './helpers/cta'
 import { resolveCategoryLabel } from './helpers/category'
 import { TrackableLink } from '@/components/systems/interactions/TrackableLink'
-import { CTA_PRIMARY_CLICKED, CTA_SECONDARY_CLICKED, DOMAIN_CLICKED } from '@/lib/analytics/events'
+import { CTA_PRIMARY_CLICKED, CTA_SECONDARY_CLICKED, DOMAIN_CLICKED, CARD_CLICKED, DEMO_STARTED } from '@/lib/analytics/events'
 
 // =============================================================================
 // TYPES
@@ -76,7 +76,6 @@ export function SystemCardFeatured({
       <div
         className="relative w-full overflow-hidden"
         style={{ aspectRatio: '19 / 10' }}
-        aria-hidden="true"
       >
         {cardSrc ? (
           <Image
@@ -90,12 +89,20 @@ export function SystemCardFeatured({
           <div className="absolute inset-0 bg-[hsl(240_14%_4%)]" />
         )}
 
-        {/* Bottom gradient to body */}
+        {/* Bottom gradient — pointer-events-none so overlay link receives clicks */}
         <div className="absolute inset-0 bg-gradient-to-t from-[hsl(240_12%_7%)] via-transparent to-transparent opacity-50 pointer-events-none" />
 
-        {/* Live badge */}
+        {/* Image area click tracker */}
+        <TrackableLink
+          href={product.landingUrl ?? product.systemUrl}
+          event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
+          className="absolute inset-0 z-[1]"
+          aria-label={product.name}
+        />
+
+        {/* Live badge — pointer-events-none so overlay link receives clicks */}
         {showBadge && product.status === 'live' && (
-          <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#080808]/80 backdrop-blur-sm border border-[#F97316]/25 z-10">
+          <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#080808]/80 backdrop-blur-sm border border-[#F97316]/25 z-10 pointer-events-none">
             <span className="w-1.5 h-1.5 rounded-full bg-[#F97316] animate-pulse" />
             <span className="font-mono text-[9px] text-[#F97316] tracking-widest uppercase font-bold">Live</span>
           </div>
@@ -113,7 +120,13 @@ export function SystemCardFeatured({
         {/* Name + headline */}
         <div className="space-y-1.5">
           <h3 className="m-0 text-xl font-bold leading-tight tracking-tight text-[hsl(40_30%_96%)]">
-            {product.name}
+            <TrackableLink
+              href={product.landingUrl ?? product.systemUrl}
+              event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
+              className="text-inherit no-underline"
+            >
+              {product.name}
+            </TrackableLink>
           </h3>
           <p className="m-0 font-mono text-[13px] text-[hsl(40_12%_65%)] leading-relaxed">
             {headline}
@@ -162,13 +175,10 @@ export function SystemCardFeatured({
           <div className="flex flex-wrap items-center gap-3 mt-auto pt-4 border-t border-white/[0.06]">
             <TrackableLink
               href={product.demoUrl ?? product.systemUrl}
-              event={{
-                type:     CTA_PRIMARY_CLICKED,
-                slug:     product.slug,
-                source:   eventSource,
-                locale,
-                ctaLabel: primaryLabel,
-              }}
+              event={product.demoUrl
+                ? { type: DEMO_STARTED,       slug: product.slug, source: eventSource, locale, destination: product.demoUrl }
+                : { type: CTA_PRIMARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: primaryLabel }
+              }
               target={product.demoUrl ? '_blank' : undefined}
               rel={product.demoUrl ? 'noopener noreferrer' : undefined}
               data-event-source={eventSource}
