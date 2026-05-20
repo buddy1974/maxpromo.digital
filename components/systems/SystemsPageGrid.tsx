@@ -58,7 +58,6 @@ export default function SystemsPageGrid({
     <SystemGrid
       products={SYSTEMS_PAGE_PRODUCTS}
       variant="featured"
-      columns={2}
       locale={locale}
     />
   )

@@ -89,7 +89,6 @@ export default function HomepageSystemsGrid({
     <SystemGrid
       products={HOMEPAGE_PRODUCTS}
       variant="compact"
-      columns={3}
       locale={locale}
       imageMode="heroCrop"
     />

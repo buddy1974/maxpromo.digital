@@ -6,18 +6,19 @@
  * and renders a SystemCard per product using the specified variant.
  *
  * No filtering logic lives here. Callers import the correct export group:
- *   HOMEPAGE_PRODUCTS  → variant='compact', columns=3
- *   PUBLIC_PRODUCTS    → variant='full',    columns=3
- *   FEATURED_PRODUCTS  → variant='featured', columns=2
+ *   HOMEPAGE_PRODUCTS  → variant='compact'
+ *   SYSTEMS_PAGE_PRODUCTS → variant='featured'
+ *   PUBLIC_PRODUCTS    → variant='featured'
  *
- * Consumers:
- *   app/[locale]/page.tsx        — homepage compact grid (TODO)
- *   app/[locale]/systems/page.tsx — systems page full grid (TODO)
- *   app/[locale]/products/page.tsx — products index (TODO)
+ * Responsive layout is derived automatically from `variant`.
+ * Consumers do NOT pass column counts — all responsive rules live here.
  *
- * TODO: connect registry consumers
- * TODO: homepage integration — import HOMEPAGE_PRODUCTS, pass variant='compact'
- * TODO: systems page integration — import PUBLIC_PRODUCTS, pass variant='full'
+ * Responsive matrix (Tailwind breakpoints):
+ *   compact:  mobile=1 · tablet(md)=2 · desktop(lg)=3
+ *   featured: mobile=1 · tablet(md)=2 · desktop(lg)=3
+ *   full:     mobile=1 · tablet(md)=1 · desktop(lg)=2
+ *   admin:    mobile=1 · tablet(md)=1 · desktop(lg)=1
+ *   table:    mobile=1 · tablet(md)=1 · desktop(lg)=1
  */
 
 import type { ProductEntry } from '@/lib/registry/types'
@@ -25,11 +26,22 @@ import type { CardVariant, ImageMode } from '../SystemCard/SystemCard'
 import SystemCard from '../SystemCard/SystemCard'
 
 // =============================================================================
-// TYPES
+// RESPONSIVE COLUMN MAP
+// Variant → Tailwind responsive grid classes.
+// All class names written as complete strings for static analysis by Tailwind.
 // =============================================================================
 
-/** Supported column counts for the grid layout. */
-export type GridColumns = 2 | 3 | 4
+const RESPONSIVE_GRID_CLASSES: Record<CardVariant, string> = {
+  compact:  'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  featured: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  full:     'grid-cols-1 lg:grid-cols-2',
+  admin:    'grid-cols-1',
+  table:    'grid-cols-1',
+}
+
+// =============================================================================
+// TYPES
+// =============================================================================
 
 /** Props for the SystemGrid component. */
 export interface SystemGridProps {
@@ -45,17 +57,11 @@ export interface SystemGridProps {
   /**
    * Card variant to use for all products in this grid.
    * All cards in one grid use the same variant.
+   * Responsive column layout is derived automatically from this value.
    */
   readonly variant: CardVariant
   /**
-   * Number of columns in the desktop grid layout.
-   * Responsive breakpoints are handled by CSS — this sets the desktop target.
-   * Defaults to 3.
-   */
-  readonly columns?: GridColumns
-  /**
    * Active locale. Passed down to each SystemCard for copy selection.
-   * TODO: derive from next-intl context once integrated with pages.
    */
   readonly locale?: string
   /**
@@ -83,32 +89,31 @@ export interface SystemGridProps {
  * SystemGrid — registry-driven product card grid.
  *
  * Pass a registry export group as `products` and choose a `variant`.
- * The grid handles layout; each card handles content.
+ * Responsive column layout is computed automatically from the variant.
  *
  * @example
  * // Homepage compact grid
  * import { HOMEPAGE_PRODUCTS } from '@/lib/registry/products'
- * <SystemGrid products={HOMEPAGE_PRODUCTS} variant="compact" columns={3} locale="de" />
+ * <SystemGrid products={HOMEPAGE_PRODUCTS} variant="compact" locale="de" />
  *
- * // Systems page full grid
- * import { PUBLIC_PRODUCTS } from '@/lib/registry/products'
- * <SystemGrid products={PUBLIC_PRODUCTS} variant="full" columns={3} locale="de" />
+ * // Systems page featured grid
+ * import { SYSTEMS_PAGE_PRODUCTS } from '@/lib/registry/products'
+ * <SystemGrid products={SYSTEMS_PAGE_PRODUCTS} variant="featured" locale="de" />
  */
 export default function SystemGrid({
   products,
   variant,
-  columns = 3,
   locale = 'de',
   title,
   description,
   imageMode,
 }: SystemGridProps) {
 
-  // Guard: render nothing if the product list is empty.
-  // This prevents layout gaps when a filter group returns zero results.
   if (products.length === 0) {
     return null
   }
+
+  const gridClass = RESPONSIVE_GRID_CLASSES[variant]
 
   return (
     <section data-component="system-grid" data-variant={variant}>
@@ -118,13 +123,11 @@ export default function SystemGrid({
         <header data-section="grid-header">
           {title && (
             <h2 data-field="title">
-              {/* TODO: style heading using Syne/heading font */}
               {title}
             </h2>
           )}
           {description && (
             <p data-field="description">
-              {/* TODO: style as body text */}
               {description}
             </p>
           )}
@@ -133,20 +136,18 @@ export default function SystemGrid({
 
       {/*
         ── GRID
-        Layout: CSS grid with `columns` columns on desktop.
-        Responsive breakpoints are handled by Tailwind className added during
-        visual implementation.
+        Responsive column layout is Tailwind-driven, keyed by variant.
+        All class strings are static literals in RESPONSIVE_GRID_CLASSES
+        so Tailwind's content scanner can detect them at build time.
 
         TODO: add visual styling — background, gap, border-radius
-        TODO: add Tailwind responsive classes (grid-cols-1 sm:grid-cols-2 lg:grid-cols-N)
-        TODO: consider stagger animation with Framer Motion (added in visual pass)
+        TODO: consider stagger animation with Framer Motion (visual pass)
       */}
       <div
         data-section="grid"
-        data-columns={columns}
+        className={gridClass}
         style={{
           display: 'grid',
-          gridTemplateColumns: `repeat(${columns}, 1fr)`,
           gap: '1rem',
         }}
       >

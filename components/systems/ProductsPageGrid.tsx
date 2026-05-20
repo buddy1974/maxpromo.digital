@@ -61,7 +61,6 @@ export default function ProductsPageGrid({
     <SystemGrid
       products={PUBLIC_PRODUCTS}
       variant="featured"
-      columns={2}
       locale={locale}
     />
   )

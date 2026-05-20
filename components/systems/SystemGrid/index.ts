@@ -4,4 +4,4 @@
  */
 
 export { default as SystemGrid } from './SystemGrid'
-export type { SystemGridProps, GridColumns } from './SystemGrid'
+export type { SystemGridProps } from './SystemGrid'
