@@ -15,6 +15,7 @@ import { resolvePrimaryLabel, resolveSecondaryLabel } from './helpers/cta'
 import { resolveCategoryLabel } from './helpers/category'
 import { TrackableLink } from '@/components/systems/interactions/TrackableLink'
 import { CTA_PRIMARY_CLICKED, CTA_SECONDARY_CLICKED, DOMAIN_CLICKED, CARD_CLICKED, DEMO_STARTED } from '@/lib/analytics/events'
+import { resolveCardSrc } from './helpers/image'
 
 // =============================================================================
 // TYPES
@@ -49,9 +50,7 @@ export function SystemCardFeatured({
     ? product.bullets.de
     : product.bullets.en
 
-  const cardSrc = locale === 'de' && product.media.card.de
-    ? product.media.card.de
-    : product.media.card.en
+  const cardSrc = resolveCardSrc(product, locale)
 
   const primaryLabel   = resolvePrimaryLabel(product, locale)
   const secondaryLabel = resolveSecondaryLabel(product, locale)

@@ -1,19 +1,31 @@
 /**
  * components/systems/SystemCard/helpers/image.ts
  *
- * Image source resolution and CSS property mapping for card variants.
+ * Card-level image utilities.
+ * Image SOURCE resolution delegates to lib/images/registry.
+ * Image CSS property mapping lives here (it's styling, not data).
  */
 
 import type { ProductEntry } from '@/lib/registry/types'
 import type { ImageMode } from '../SystemCard'
+import {
+  resolveCardSrc as _resolveCardSrc,
+  resolveThumbSrc as _resolveThumbSrc,
+  toPublicSrc,
+} from '@/lib/images/registry'
 
-/**
- * Resolve the thumbnail src for a compact card.
- * Prefers thumb variant; falls back to card image.
- * Currently locale-agnostic (thumb only has en variant in registry v1.1).
- */
-export function resolveThumbSrc(product: ProductEntry): string {
-  return product.media.thumb?.en ?? product.media.card.en
+// Re-export with the card-ready signature — callers import from this file only.
+
+/** Locale-aware card image src, prefixed for next/image. Null = show placeholder. */
+export function resolveCardSrc(product: ProductEntry, locale: string): string | null {
+  const path = _resolveCardSrc(product, locale)
+  return path ? toPublicSrc(path) : null
+}
+
+/** Locale-aware thumbnail src (prefers thumb, falls back to card), prefixed. */
+export function resolveThumbSrc(product: ProductEntry, locale: string): string | null {
+  const path = _resolveThumbSrc(product, locale)
+  return path ? toPublicSrc(path) : null
 }
 
 /**

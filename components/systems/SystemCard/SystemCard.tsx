@@ -12,9 +12,7 @@
  *   admin     → /os/systems registry row (SystemCardAdmin)
  *   table     → future tabular listing (SystemCardTable)
  *
- * TODO: connect registry consumers
- * TODO: homepage integration (HOMEPAGE_PRODUCTS → variant='compact')
- * TODO: systems page integration (PUBLIC_PRODUCTS → variant='full')
+ * Consumers: HomepageSystemsGrid (compact), SystemsPageGrid (featured), ProductsPageGrid (featured)
  */
 
 import type { ProductEntry } from '@/lib/registry/types'
@@ -53,8 +51,7 @@ export interface SystemCardProps {
   readonly variant?: CardVariant
   /**
    * Active locale for copy selection (en | de).
-   * Passed down from the page's locale param.
-   * TODO: derive from next-intl context once integrated with pages.
+   * Passed down from the page's locale param via SystemGrid.
    */
   readonly locale?: string
   /** Show the LIVE status badge (only visible when product.status === 'live'). */

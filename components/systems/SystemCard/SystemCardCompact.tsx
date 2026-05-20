@@ -47,7 +47,7 @@ export function SystemCardCompact({
     : product.subline.en
 
   const ctaHref                       = product.landingUrl
-  const thumbSrc                      = resolveThumbSrc(product)
+  const thumbSrc                      = resolveThumbSrc(product, locale)
   const { objectFit, objectPosition } = resolveImageStyle(imageMode)
   const ctaLabel                      = resolveCompactCTALabel(locale)
   const eventSource                   = source ?? product.eventSource
