@@ -11,33 +11,14 @@
  *   PUBLIC_PRODUCTS    → variant='featured'
  *
  * Responsive layout is derived automatically from `variant`.
- * Consumers do NOT pass column counts — all responsive rules live here.
- *
- * Responsive matrix (Tailwind breakpoints):
- *   compact:  mobile=1 · tablet(md)=2 · desktop(lg)=3
- *   featured: mobile=1 · tablet(md)=2 · desktop(lg)=3
- *   full:     mobile=1 · tablet(md)=1 · desktop(lg)=2
- *   admin:    mobile=1 · tablet(md)=1 · desktop(lg)=1
- *   table:    mobile=1 · tablet(md)=1 · desktop(lg)=1
+ * Consumers do NOT pass column counts — all responsive rules live in config.ts.
+ * To change breakpoints, edit config.ts only — not this file.
  */
 
 import type { ProductEntry } from '@/lib/registry/types'
 import type { CardVariant, ImageMode } from '../SystemCard/SystemCard'
 import SystemCard from '../SystemCard/SystemCard'
-
-// =============================================================================
-// RESPONSIVE COLUMN MAP
-// Variant → Tailwind responsive grid classes.
-// All class names written as complete strings for static analysis by Tailwind.
-// =============================================================================
-
-const RESPONSIVE_GRID_CLASSES: Record<CardVariant, string> = {
-  compact:  'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-  featured: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-  full:     'grid-cols-1 lg:grid-cols-2',
-  admin:    'grid-cols-1',
-  table:    'grid-cols-1',
-}
+import { RESPONSIVE_GRID_CLASSES } from './config'
 
 // =============================================================================
 // TYPES
@@ -136,11 +117,8 @@ export default function SystemGrid({
 
       {/*
         ── GRID
-        Responsive column layout is Tailwind-driven, keyed by variant.
-        All class strings are static literals in RESPONSIVE_GRID_CLASSES
-        so Tailwind's content scanner can detect them at build time.
-
-        TODO: add visual styling — background, gap, border-radius
+        Responsive columns come from config.ts → RESPONSIVE_GRID_CLASSES[variant].
+        TODO: add visual styling — background, gap, border-radius (visual pass)
         TODO: consider stagger animation with Framer Motion (visual pass)
       */}
       <div
