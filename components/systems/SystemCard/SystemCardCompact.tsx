@@ -13,23 +13,15 @@
  */
 
 import type { ProductEntry } from '@/lib/registry/types'
-import type { SystemCardProps } from './SystemCard'
+import type { SystemCardProps, ImageMode } from './SystemCard'
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-/**
- * Controls how the thumbnail image fills its container.
- * Rendering behavior belongs to the consumer — pass the mode that matches
- * where this card is being placed.
- *
- * cover    → fill container, crop to fit (object-fit: cover)
- * contain  → fit entirely within container, letterbox if needed
- * heroCrop → show only the top portion of the landscape card image
- *            (reveals headline + photo section, hides workflow strip)
- */
-export type ImageMode = 'cover' | 'contain' | 'heroCrop'
+// ImageMode is defined in SystemCard.tsx (shared types) and imported here
+// to avoid circular imports. See SystemCard.tsx for the full definition.
+export type { ImageMode }
 
 /** Props for the compact card variant. */
 export interface SystemCardCompactProps
@@ -37,7 +29,7 @@ export interface SystemCardCompactProps
   /**
    * How the thumbnail image fills its container.
    * Defaults to 'cover'. Pass 'heroCrop' to reveal only the card's
-   * headline and photography section.
+   * headline and photography section (hides workflow strip).
    */
   readonly imageMode?: ImageMode
 }

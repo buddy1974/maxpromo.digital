@@ -21,7 +21,7 @@
  */
 
 import type { ProductEntry } from '@/lib/registry/types'
-import type { CardVariant } from '../SystemCard/SystemCard'
+import type { CardVariant, ImageMode } from '../SystemCard/SystemCard'
 import SystemCard from '../SystemCard/SystemCard'
 
 // =============================================================================
@@ -58,6 +58,11 @@ export interface SystemGridProps {
    * TODO: derive from next-intl context once integrated with pages.
    */
   readonly locale?: string
+  /**
+   * Thumbnail image fill mode — forwarded to SystemCardCompact.
+   * Only applied when variant='compact'. Ignored by all other variants.
+   */
+  readonly imageMode?: ImageMode
   /**
    * Optional section heading above the grid.
    * When provided, renders as an h2.
@@ -96,6 +101,7 @@ export default function SystemGrid({
   locale = 'de',
   title,
   description,
+  imageMode,
 }: SystemGridProps) {
 
   // Guard: render nothing if the product list is empty.
@@ -153,6 +159,7 @@ export default function SystemGrid({
             showBadge
             showDomain={variant !== 'compact'}
             showCTA
+            imageMode={imageMode}
           />
         ))}
       </div>

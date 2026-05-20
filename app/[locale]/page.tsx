@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, getLocale } from 'next-intl/server'
 import Hero from '@/components/Hero'
 import ProofSection from '@/components/ProofSection'
 import PricingSection from '@/components/PricingSection'
@@ -6,6 +6,9 @@ import FaqSection from '@/components/FaqSection'
 import ROICalculator from '@/components/ROICalculator'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { Link } from '@/i18n/navigation'
+import SystemGrid from '@/components/systems/SystemGrid/SystemGrid'
+import { HOMEPAGE_PRODUCTS } from '@/lib/registry/products'
+import { getHomepageCards } from '@/lib/registry/adapters'
 
 /* ─── REFERENCES ─────────────────────────────────────────────
    Layout / link / static-glyph data lives at module scope.
@@ -29,15 +32,6 @@ const LAYER_REFS = [
   { id: 'l6', icon: '⌗', href: '/products/publishing-os' },
 ] as const
 
-const SYSTEM_REFS = [
-  { id: 's1', status: 'LIVE'     as const, href: '/products/handwerk-os' },
-  { id: 's2', status: 'LIVE'     as const, href: '/products/restaurant-os' },
-  { id: 's3', status: 'LIVE'     as const, href: '/products/printshop' },
-  { id: 's4', status: 'DEPLOYED' as const, href: '/products/real-estate-os' },
-  { id: 's5', status: 'DEPLOYED' as const, href: '/products/care-os' },
-  { id: 's6', status: 'DEPLOYED' as const, href: '/products/publishing-os' },
-  { id: 's7', status: 'DEPLOYED' as const, href: '/products/praxis-os' },
-] as const
 
 const PROCESS_REFS = ['p1', 'p2', 'p3', 'p4'] as const
 
@@ -104,14 +98,30 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 /* ─── PAGE ─── */
 
 export default async function HomePage() {
+  const locale      = await getLocale()
   const t           = await getTranslations('home')
   const tLayers     = await getTranslations('home.layers')
   const tScenarios  = await getTranslations('home.scenarios')
-  const tSystems    = await getTranslations('home.ourSystems')
   const tProcess    = await getTranslations('home.process')
   const tTerminal   = await getTranslations('home.terminal')
 
   const marqueeItems = t.raw('marquee') as string[]
+
+  /*
+   * Registry adapter — transforms HOMEPAGE_PRODUCTS into locale-resolved card data.
+   * `cards` is the adapter output (HomepageCardData[]).
+   *
+   * SystemGrid currently accepts ProductEntry[] — so HOMEPAGE_PRODUCTS is passed
+   * directly below. `cards` is available for metadata, SSR props, or any future
+   * consumer that needs the transformed shape.
+   *
+   * TODO: when SystemCardCompact is updated to accept HomepageCardData,
+   * pass `cards` to a HomepageSystemsGrid component instead of using SystemGrid.
+   * TODO: future analytics — use cards.map(c => c.eventSource) for impression tracking
+   * TODO: future experiment flags — A/B select card variants per eventSource
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const cards = getHomepageCards(locale)
 
   return (
     <main>
@@ -341,49 +351,29 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="systems-grid" style={{ borderRadius: '16px', overflow: 'hidden' }}>
-            {SYSTEM_REFS.map((sys) => (
-              <div
-                key={sys.id}
-                className="dark-card"
-                style={{ background: 'hsl(240 12% 7%)', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '12px' }}
-              >
-                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', padding: '3px 8px', border: '1px solid hsl(40 30% 96% / 0.1)', color: 'hsl(40 12% 65%)', display: 'inline-block', borderRadius: '4px' }}>
-                    {tSystems(`${sys.id}Label`)}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '10px',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      background: sys.status === 'LIVE' ? 'hsl(28 100% 58%)' : 'hsl(240 10% 20%)',
-                      color: sys.status === 'LIVE' ? 'hsl(240 14% 4%)' : 'hsl(40 12% 65%)',
-                      padding: '3px 8px',
-                      display: 'inline-block',
-                      fontWeight: 700,
-                      borderRadius: '4px',
-                    }}
-                  >
-                    {sys.status === 'LIVE' ? tSystems('statusLive') : tSystems('statusDeployed')}
-                  </span>
-                </div>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', margin: 0 }}>
-                  {tSystems(`${sys.id}Name`)}
-                </h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, margin: 0, flex: 1 }}>
-                  {tSystems(`${sys.id}Desc`)}
-                </p>
-                <Link href={sys.href} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'hsl(28 100% 58%)', textDecoration: 'none', letterSpacing: '0.05em', alignSelf: 'flex-start' }}>
-                  {t('systemsCta')}
-                </Link>
-              </div>
-            ))}
-          </div>
+          {/*
+            Registry-driven systems grid — Task 1.5
+            Source:    HOMEPAGE_PRODUCTS (6 products, locked editorial order)
+            Adapter:   getHomepageCards() → locale-resolved HomepageCardData[]
+            Component: SystemGrid → SystemCard (variant='compact') → SystemCardCompact
+            imageMode: heroCrop — shows headline + photo section, hides workflow strip
+
+            Grid columns: 3 desktop / 2 tablet / 1 mobile (Tailwind classes on SystemGrid)
+
+            TODO: future analytics  — fire system_card_viewed per product on mount
+            TODO: future click tracking — fire system_card_clicked on CTA interaction
+            TODO: future experiment flags — swap variant per product via session context
+          */}
+          <SystemGrid
+            products={HOMEPAGE_PRODUCTS}
+            variant="compact"
+            columns={3}
+            locale={locale}
+            imageMode="heroCrop"
+          />
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-            <Link href="/products" className="glass" style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+            <Link href="/systems" className="glass" style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
               {t('systemsViewAll')}
             </Link>
           </div>

@@ -31,6 +31,17 @@ import { SystemCardTable } from './SystemCardTable'
 /** All supported card rendering variants. */
 export type CardVariant = 'compact' | 'featured' | 'full' | 'admin' | 'table'
 
+/**
+ * Controls how the thumbnail image fills its container.
+ * Defined here (not in SystemCardCompact) so it can be threaded through
+ * SystemGridProps → SystemCardProps → SystemCardCompact without circular imports.
+ *
+ * cover    → fill container, crop to fit (object-fit: cover)
+ * contain  → fit entirely within container, no crop
+ * heroCrop → show top portion of landscape card (reveals headline + photo section)
+ */
+export type ImageMode = 'cover' | 'contain' | 'heroCrop'
+
 /** Props shared by all SystemCard variants. */
 export interface SystemCardProps {
   /** Product data from the registry. */
@@ -52,6 +63,11 @@ export interface SystemCardProps {
   readonly showDomain?: boolean
   /** Show the primary and secondary CTA buttons. */
   readonly showCTA?: boolean
+  /**
+   * Thumbnail image fill mode — passed to SystemCardCompact.
+   * Only consumed by the compact variant; ignored by full/featured/admin/table.
+   */
+  readonly imageMode?: ImageMode
 }
 
 // =============================================================================
@@ -77,6 +93,7 @@ export default function SystemCard({
   showBadge = true,
   showDomain = true,
   showCTA = true,
+  imageMode,
 }: SystemCardProps) {
 
   if (variant === 'compact') {
@@ -85,6 +102,7 @@ export default function SystemCard({
         product={product}
         locale={locale}
         showCTA={showCTA}
+        imageMode={imageMode}
       />
     )
   }

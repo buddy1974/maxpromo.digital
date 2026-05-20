@@ -5,11 +5,12 @@
 
 // Router (default export)
 export { default as SystemCard } from './SystemCard'
-export type { SystemCardProps, CardVariant } from './SystemCard'
+export type { SystemCardProps, CardVariant, ImageMode } from './SystemCard'
 
 // Compact
 export { SystemCardCompact } from './SystemCardCompact'
-export type { SystemCardCompactProps, ImageMode } from './SystemCardCompact'
+export type { SystemCardCompactProps } from './SystemCardCompact'
+// Note: ImageMode re-exported above from SystemCard (canonical source)
 
 // Featured
 export { SystemCardFeatured } from './SystemCardFeatured'
