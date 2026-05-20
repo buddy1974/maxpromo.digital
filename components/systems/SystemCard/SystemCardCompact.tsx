@@ -97,7 +97,7 @@ export function SystemCardCompact({
               href={ctaHref}
               data-event-source={product.eventSource}
               aria-label={resolveCompactAriaLabel(product.name, locale)}
-              className="font-mono text-[11px] text-[#F97316] tracking-wider uppercase hover:opacity-70 transition-opacity"
+              className="font-mono text-[11px] text-[#F97316] tracking-widest uppercase hover:opacity-70 transition-opacity"
             >
               {resolveCompactCTALabel(locale)}
             </a>
