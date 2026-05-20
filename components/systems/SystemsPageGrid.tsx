@@ -12,15 +12,15 @@
  *     → SystemsCardData[]
  *     → <SystemsPageGrid>                ← this file
  *         → SystemGrid                   ← existing card rendering system
- *           → SystemCard (full)
- *             → SystemCardFull
+ *           → SystemCard (featured)
+ *             → SystemCardFeatured
  *
  * Accepted tech debt (same as HomepageSystemsGrid):
  *   SystemGrid expects ProductEntry[]. SystemsCardData[] is the adapter output.
  *   SYSTEMS_PAGE_PRODUCTS drives rendering today; cards holds adapter metadata.
- *   When SystemCardFull accepts SystemsCardData, remove SYSTEMS_PAGE_PRODUCTS.
+ *   When SystemCardFeatured accepts SystemsCardData, remove SYSTEMS_PAGE_PRODUCTS.
  *
- * TODO: when SystemCardFull accepts SystemsCardData, replace SYSTEMS_PAGE_PRODUCTS
+ * TODO: when SystemCardFeatured accepts SystemsCardData, replace SYSTEMS_PAGE_PRODUCTS
  *       with cards and remove the registry import from this file
  */
 
