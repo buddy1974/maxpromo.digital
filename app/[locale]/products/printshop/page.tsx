@@ -205,13 +205,10 @@ export default function PrintshopPage() {
               // PRINTSHOP OS
             </p>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', letterSpacing: '-0.04em', color: INK, lineHeight: 1.05, marginBottom: '1.5rem', maxWidth: '680px' }}>
-              The print shop that<br />runs itself.
+              Catch file issues before they become expensive reprints.
             </h1>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#444444', maxWidth: '560px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
-              AI-powered print management platform.
-              Customers configure, upload, pay.
-              AI validates files in real time.
-              You print. The system handles everything else.
+              PrintShopOS helps print businesses manage quote requests, file checks and production handovers in one structured workflow — without rebuilding how the shop already works.
             </p>
 
             {/* CTAs */}
@@ -244,9 +241,15 @@ export default function PrintshopPage() {
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888', margin: '0 0 12px' }}>
                 DEMO ACCESS
               </p>
-              {['URL: printshop.maxpromo.digital', 'Admin: admin@printshop.com / admin123'].map((line) => (
-                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#444', margin: '4px 0' }}>{line}</p>
-              ))}
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#444', margin: '0 0 12px', lineHeight: 1.6 }}>
+                See the full print workflow — from customer upload to production queue and invoice.
+              </p>
+              <a
+                href="/contact?system=printshop-os"
+                style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#FFFFFF', background: INK, padding: '10px 20px', textDecoration: 'none', display: 'inline-block', border: `2px solid ${INK}` }}
+              >
+                Request demo access →
+              </a>
             </div>
 
             {/* CMYK dot row */}
@@ -513,7 +516,7 @@ export default function PrintshopPage() {
               <div className="ink-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ background: '#F0F0F0', border: `1px dashed ${K}`, minHeight: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#AAAAAA', margin: 0 }}>
-                    [ DASHBOARD SCREENSHOT ]
+                    [ LIVE DASHBOARD — SCREENSHOT IN PROGRESS ]
                   </p>
                 </div>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#666', margin: 0, lineHeight: 1.6 }}>

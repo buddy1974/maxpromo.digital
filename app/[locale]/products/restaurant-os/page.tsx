@@ -119,7 +119,7 @@ function RestaurantContactForm() {
           opacity: status === 'loading' ? 0.7 : 1,
         }}
       >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'Get my free business check →'}
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Request received' : 'Schedule walkthrough →'}
       </button>
 
       {status === 'success' && (
@@ -155,9 +155,9 @@ const WHO_FOR = [
 ]
 
 const PROBLEMS = [
-  { icon: '🗒', text: 'Waiter takes orders on paper. Kitchen gets it wrong. Table 4 complains. Every service.' },
-  { icon: '🧮', text: 'Group of 8 wants separate bills. Waiter spends 15 minutes with a calculator at the end of the night.' },
-  { icon: '📱', text: 'WhatsApp group for kitchen orders. Rush hour = unread messages, missed orders, angry chefs.' },
+  { label: 'PAPER ORDERS', text: 'Waiter takes orders on paper. Kitchen gets it wrong. Table 4 complains. Every service.' },
+  { label: 'BILL SPLITS',  text: 'Group of 8 wants separate bills. Waiter spends 15 minutes with a calculator at the end of the night.' },
+  { label: 'WHATSAPP KITCHEN', text: 'WhatsApp group for kitchen orders. Rush hour — unread messages, missed orders, service delays.' },
 ]
 
 const STEPS = [
@@ -207,7 +207,7 @@ export default function RestaurantOSPage() {
               color: '#F97316',
               marginBottom: '1.5rem',
             }}>
-              LIVE IN PRODUCTION · MULTI-TENANT READY
+              RESTAURANT OPERATIONS SYSTEM
             </p>
 
             <h1 style={{
@@ -218,33 +218,24 @@ export default function RestaurantOSPage() {
               color: '#F0F0F0',
               lineHeight: 1.1,
               marginBottom: '1.5rem',
+              maxWidth: '720px',
             }}>
-              Restaurant OS
+              Stop losing orders between calls, paper notes and WhatsApp.
             </h1>
 
             <p style={{
               fontFamily: 'var(--font-body)',
               fontSize: '18px',
               color: '#666666',
-              maxWidth: '600px',
+              maxWidth: '580px',
               lineHeight: 1.8,
             }}>
-              Restaurant OS replaces paper order pads, manual bill calculations, and WhatsApp kitchen alerts with a fully automated QR ordering workflow. Customers scan, order, and pay from their phone — orders land in the kitchen instantly, bills split automatically. No app. No tablet. No per-feature monthly fees. For restaurants and cafes with 4–50 tables.
+              RestaurantOS helps restaurants keep customer requests, reservations and service activity in one operational flow — without changing how the team already works.
             </p>
-
-            <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {['Im echten Einsatz erprobt', 'Für den Alltag vorbereitet', 'Sicher aufgebaut', 'Nicht nur eine Demo'].map(line => (
-                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.08em', margin: 0, opacity: 0.85 }}>
-                  <span style={{ marginRight: '8px', opacity: 0.5 }}>•</span>{line}
-                </p>
-              ))}
-            </div>
 
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
               <a
-                href="https://restaurant-os-one.vercel.app/demo/staff"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/contact?system=restaurant-os"
                 style={{
                   fontFamily: 'var(--font-mono)',
                   fontSize: '11px',
@@ -261,10 +252,10 @@ export default function RestaurantOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = '#EA6A00')}
                 onMouseLeave={(e) => (e.currentTarget.style.background = '#F97316')}
               >
-                Watch It Run Live →
+                Schedule walkthrough →
               </a>
               <a
-                href="https://restaurant-os-one.vercel.app/demo/admin"
+                href="https://restaurant-os-one.vercel.app/demo"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
@@ -281,25 +272,7 @@ export default function RestaurantOSPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#333333')}
                 onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#1A1A1A')}
               >
-                See Admin Panel →
-              </a>
-              <a
-                href="https://restaurant-os-one.vercel.app/demo"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '14px',
-                  color: '#666666',
-                  padding: '14px 0',
-                  textDecoration: 'none',
-                  display: 'inline-block',
-                  transition: 'color 150ms ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#F0F0F0')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#666666')}
-              >
-                See customer view →
+                View live demo →
               </a>
             </div>
           </div>
@@ -387,8 +360,8 @@ export default function RestaurantOSPage() {
             </h2>
             <div className="ro-grid-3">
               {PROBLEMS.map((p) => (
-                <div key={p.icon} style={{ background: '#141414', border: '1px solid #1A1A1A', padding: '32px' }}>
-                  <p style={{ fontSize: '28px', marginBottom: '16px' }}>{p.icon}</p>
+                <div key={p.label} style={{ background: '#141414', border: '1px solid #1A1A1A', padding: '32px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>{p.label}</p>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>
                     {p.text}
                   </p>
@@ -481,7 +454,7 @@ export default function RestaurantOSPage() {
             <div className="ro-proof">
               <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ DASHBOARD SCREENSHOT ]</p>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ LIVE DASHBOARD — SCREENSHOT IN PROGRESS ]</p>
                 </div>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
                   Live order view — table, seat code, items ordered, and payment status per session.
@@ -595,10 +568,10 @@ export default function RestaurantOSPage() {
               INSTALL THIS SYSTEM
             </p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Get a free Restaurant OS setup for your venue.
+              Schedule a walkthrough for your venue.
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
-              Tell us about your venue and table count. We map out the full setup, show you exactly how Restaurant OS runs in your space, and send a no-obligation proposal. No commitment. We reply within 24 hours.
+              Tell us about your venue and how orders currently move through the team. We walk through how RestaurantOS works in your specific setup — no commitment required. We reply within 24 hours.
             </p>
             <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
               {['Free setup consultation — no charge.', 'Live in 5–10 days from sign-off.', 'No commitment until you are ready.'].map((line) => (
