@@ -376,8 +376,8 @@ const PRINTSHOP_OS = {
   demoUrl:     'https://printshop.maxpromo.digital',
   landingUrl:  '/products/printshop-os',
   systemUrl:   'https://smartprintshop.de',
-  bookDemoUrl: '/contact?system=printshop-os',
-  contactSlug: 'printshop-os',
+  bookDemoUrl: '/contact?system=printshop',
+  contactSlug: 'printshop', // Locked: slug=printshop-os (route) ≠ contactSlug=printshop (form field)
   hasDemoLogin: true,
   demoCredentials: {
     url:      'https://printshop.maxpromo.digital',
@@ -493,7 +493,7 @@ const CARE_OS = {
 
 const REAL_ESTATE_OS = {
   // ── Identity
-  slug:        'real-estate-os',
+  slug:        'realestate-os',
   name:        'RealEstateOS',
   domainBrand: 'EASY-IMMO24',
   domain:      'easy-immo24.de',
@@ -564,14 +564,14 @@ const REAL_ESTATE_OS = {
   landingUrl:  '/products/real-estate-os',
   systemUrl:   'https://easy-immo24.de',
   bookDemoUrl: '/contact?system=real-estate-os',
-  contactSlug: 'real-estate-os',
+  contactSlug: 'realestate-os',
   hasDemoLogin: false,
 
   // ── CTA
   ctaType: 'standard',
 
   // ── Analytics
-  eventSource:     'real-estate-os',
+  eventSource:     'realestate-os',
   trackingEnabled: true,
 
   // ── Future
@@ -944,3 +944,48 @@ export const PRODUCTS: ReadonlyArray<ProductEntry> = [
   DRIVE24,         // priority_score: 35 — founder track
   MAXPROMO_OS,     // priority_score: null — internal
 ]
+
+// =============================================================================
+// REGISTRY EXPORT GROUPS
+// Pre-filtered slices — consumers import these instead of filtering PRODUCTS.
+// =============================================================================
+
+/**
+ * Homepage featured grid.
+ * Commercial products with featured: true.
+ * Consumer: app/[locale]/page.tsx (SystemCardCompact grid)
+ */
+export const FEATURED_PRODUCTS: ReadonlyArray<ProductEntry> =
+  PRODUCTS.filter(p => p.featured && p.track === 'commercial')
+
+/**
+ * Systems page and products index — all non-internal products.
+ * Includes Drive24 (founder track, visibility: protected).
+ * Consumer: app/[locale]/systems/page.tsx, app/[locale]/products/page.tsx
+ */
+export const PUBLIC_PRODUCTS: ReadonlyArray<ProductEntry> =
+  PRODUCTS.filter(p => p.visibility !== 'internal')
+
+/**
+ * All commercial-track products.
+ * Excludes Drive24 (founder) and Maxpromo OS (internal).
+ * Consumer: /os/analytics lead pipeline, priority-weighted dashboards
+ */
+export const COMMERCIAL_PRODUCTS: ReadonlyArray<ProductEntry> =
+  PRODUCTS.filter(p => p.track === 'commercial')
+
+/**
+ * Founder-track products.
+ * Currently: Drive24 only.
+ * Consumer: /os/systems admin registry view
+ */
+export const FOUNDER_PRODUCTS: ReadonlyArray<ProductEntry> =
+  PRODUCTS.filter(p => p.track === 'founder')
+
+/**
+ * Internal-track products — /os admin view only. Never public.
+ * Currently: Maxpromo OS only.
+ * Consumer: /os/systems admin registry view
+ */
+export const INTERNAL_PRODUCTS: ReadonlyArray<ProductEntry> =
+  PRODUCTS.filter(p => p.track === 'internal')
