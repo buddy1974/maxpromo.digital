@@ -92,12 +92,12 @@ export function SystemCardFeatured({
         {/* Bottom gradient — pointer-events-none so overlay link receives clicks */}
         <div className="absolute inset-0 bg-gradient-to-t from-[hsl(240_12%_7%)] via-transparent to-transparent opacity-50 pointer-events-none" />
 
-        {/* Image area click tracker */}
+        {/* Image area click tracker — overlay mode, aria-hidden (headline link provides AT access) */}
         <TrackableLink
           href={product.landingUrl ?? product.systemUrl}
           event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
           className="absolute inset-0 z-[1]"
-          aria-label={product.name}
+          overlay
         />
 
         {/* Live badge — pointer-events-none so overlay link receives clicks */}

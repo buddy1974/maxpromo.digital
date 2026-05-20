@@ -77,12 +77,12 @@ export function SystemCardCompact({
           <div className="absolute inset-0 bg-[hsl(240_14%_4%)]" />
         )}
 
-        {/* Image area click tracker */}
+        {/* Image area click tracker — overlay mode, aria-hidden (headline link provides AT access) */}
         <TrackableLink
           href={ctaHref}
           event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
           className="absolute inset-0 z-[1]"
-          aria-label={product.name}
+          overlay
         />
 
         {/* Brand accent strip — pointer-events-none so overlay link receives clicks */}

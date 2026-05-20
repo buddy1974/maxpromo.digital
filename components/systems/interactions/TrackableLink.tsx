@@ -5,13 +5,20 @@
  *
  * Minimal client island for analytics-tracked anchor links.
  *
- * Why this exists:
- *   Cards are server components (presentation only). Adding onClick directly
- *   to a card forces the entire card into the client bundle. TrackableLink
- *   isolates the client boundary to this one small component.
+ * Two modes — enforced at the type level:
+ *
+ *   Default (content link):
+ *     children required, aria-label optional.
+ *     Used for: CTA buttons, domain links, headline text links.
+ *
+ *   Overlay (click zone):
+ *     overlay={true}, children forbidden (children?: never).
+ *     Renders aria-hidden="true" — visual click zone only.
+ *     Accessible navigation is provided by a sibling content link (e.g. headline).
+ *     Used for: image area click zones.
  *
  * Server/client boundary contract:
- *   - Parent (server) passes static event fields only — no timestamp.
+ *   - Parent (server) passes static event fields — no timestamp.
  *   - TrackableLink stamps Date.now() at actual click time.
  *   - All event fields are primitives — fully serializable across the boundary.
  *   - Anchor behavior is unchanged: onClick fires analytics, browser follows href.
@@ -25,38 +32,38 @@ import { trackEvent } from '@/lib/analytics/track'
 // =============================================================================
 
 /**
- * Distributive Omit — removes K from each member of a union independently.
- *
- * Standard `Omit<A | B, K>` does NOT distribute: it computes
- * `Pick<A | B, Exclude<keyof (A | B), K>>` which only keeps common keys,
- * stripping type-specific fields like `ctaLabel` or `domain`.
- *
- * Distributive version: `T extends any` triggers conditional type distribution,
- * applying `Omit` to each union member separately and preserving all fields.
+ * Distributive Omit — removes K from each union member independently.
+ * Standard Omit<A | B, K> only keeps common keys; this preserves all fields.
  */
 type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never
 
-/**
- * Analytics event payload without timestamp.
- * Server components pass this — TrackableLink injects timestamp at click time.
- */
+/** Event payload without timestamp — TrackableLink injects it at click time. */
 export type TrackableEventPayload = DistributiveOmit<AnalyticsEvent, 'timestamp'>
 
-export interface TrackableLinkProps {
-  /** Navigation destination — passed to the anchor href. */
+// Shared props across both modes
+interface TrackableLinkBaseProps {
   readonly href: string | undefined
-  /**
-   * Event payload without timestamp. TrackableLink stamps Date.now() on click.
-   * Server components never need to know about runtime timing.
-   */
   readonly event: TrackableEventPayload
-  readonly children?: React.ReactNode
   readonly className?: string
   readonly target?: string
   readonly rel?: string
   readonly 'aria-label'?: string
   readonly 'data-event-source'?: string
 }
+
+// Overlay mode — visual click zone, no content, aria-hidden
+interface OverlayMode {
+  readonly overlay: true
+  readonly children?: never
+}
+
+// Content mode — requires visible children
+interface ContentMode {
+  readonly overlay?: false
+  readonly children: React.ReactNode
+}
+
+export type TrackableLinkProps = TrackableLinkBaseProps & (OverlayMode | ContentMode)
 
 // =============================================================================
 // COMPONENT
@@ -69,6 +76,7 @@ export function TrackableLink({
   className,
   target,
   rel,
+  overlay,
   'aria-label': ariaLabel,
   'data-event-source': dataEventSource,
 }: TrackableLinkProps) {
@@ -79,6 +87,7 @@ export function TrackableLink({
       target={target}
       rel={rel}
       aria-label={ariaLabel}
+      aria-hidden={overlay ? true : undefined}
       data-event-source={dataEventSource}
       onClick={() => {
         trackEvent({ ...event, timestamp: Date.now() } as AnalyticsEvent)
