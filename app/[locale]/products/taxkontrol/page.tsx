@@ -211,10 +211,13 @@ export default function TaxKontrolPage() {
                 Then: "How much of this actually belongs to me?"
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8, marginBottom: '1.5rem' }}>
-                The tax bill arrives. The number is correct — the business earned it. But the reserve was not tracked. The money moved through the account without being set aside. The owner pays in instalments and plans to do it differently next year.
+                The Steuerbescheid arrives. The number is correct — the business earned it. But the Steuerrücklage was not tracked. The money moved through the account and was spent on operations. The owner pays the Nachzahlung in instalments and resolves to start the year differently. The pattern repeats.
+              </p>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8, marginBottom: '1.5rem' }}>
+                The quarterly Vorauszahlung arrives. The business files it based on last year's figure. The business has grown. The estimate is too low. The Finanzamt adjusts it upward. A letter arrives explaining the new amount.
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8 }}>
-                This is not a failure of discipline. It is a missing system. The information existed — income, expenses, obligations — but it was not visible in one place until the deadline made it urgent.
+                These are not failures of discipline. The German tax system was not designed for businesses without accounting departments. TaxKontrol is the system that fills that gap — daily visibility, not annual discovery.
               </p>
             </div>
           </div>

@@ -1,340 +1,157 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+
+const ACCENT = '#818CF8'
+const ORANGE = '#F97316'
+const BG     = '#080808'
+const CARD   = '#0F0F0F'
+const BORDER = '#1A1A1A'
 
 const STYLES = `
-  .co-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .co-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .co-proof  { display: grid; grid-template-columns: 3fr 2fr; gap: 1px; background: #1A1A1A; }
+  .co-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: ${BORDER}; }
+  .co-flow   { display: flex; gap: 2px; background: ${BORDER}; overflow-x: auto; }
   @media (max-width: 768px) {
-    .co-grid-3 { grid-template-columns: 1fr; }
     .co-grid-2 { grid-template-columns: 1fr; }
-    .co-steps { flex-direction: column; }
-    .co-steps > div { border-right: none !important; }
-    .co-proof  { grid-template-columns: 1fr; }
+    .co-flow   { flex-direction: column; }
   }
 `
 
-interface CareForm {
-  name: string
-  organisation: string
-  email: string
-  phone: string
-}
+interface CareForm { name: string; organisation: string; email: string; phone: string }
 
 function CareContactForm() {
   const [form, setForm] = useState<CareForm>({ name: '', organisation: '', email: '', phone: '' })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   function update(field: keyof CareForm) {
-    return (e: React.ChangeEvent<HTMLInputElement>) =>
-      setForm((prev) => ({ ...prev, [field]: e.target.value }))
+    return (e: React.ChangeEvent<HTMLInputElement>) => setForm(p => ({ ...p, [field]: e.target.value }))
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setStatus('loading')
+    e.preventDefault(); setStatus('loading')
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          organisation: form.organisation,
-          message: form.phone ? `Phone: ${form.phone}` : 'CareOS enquiry',
-          automation: 'care-os',
-        }),
-      })
-      if (!res.ok) throw new Error('request failed')
-      setStatus('success')
-    } catch {
-      setStatus('error')
-    }
+      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name, email: form.email, organisation: form.organisation,
+          message: form.phone ? `Phone: ${form.phone}` : 'CareOS enquiry', automation: 'care-os' }) })
+      if (!res.ok) throw new Error('failed'); setStatus('success')
+    } catch { setStatus('error') }
   }
 
-  const inputStyle: React.CSSProperties = {
-    background: '#0F0F0F', border: '1px solid #1A1A1A', color: '#F0F0F0',
-    padding: '14px 16px', fontFamily: 'var(--font-body)', fontSize: '15px',
-    width: '100%', outline: 'none', borderRadius: 0, transition: 'border-color 150ms ease',
-  }
+  const inp: React.CSSProperties = { background: '#0A0A0A', border: `1px solid ${BORDER}`, color: '#F0F0F0', padding: '14px 16px', fontFamily: 'var(--font-body)', fontSize: '15px', width: '100%', outline: 'none', borderRadius: 0, transition: 'border-color 150ms ease' }
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: '480px', display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '2.5rem' }}>
-      {(
-        [
-          { field: 'name',         type: 'text',  label: 'Your name',          required: true  },
-          { field: 'organisation', type: 'text',  label: 'Organisation name',  required: true  },
-          { field: 'email',        type: 'email', label: 'Email address',      required: true  },
-          { field: 'phone',        type: 'tel',   label: 'Phone (optional)',   required: false },
-        ] as const
-      ).map(({ field, type, label, required }) => (
+      {([
+        { field: 'name',         type: 'text',  label: 'Your name',         required: true  },
+        { field: 'organisation', type: 'text',  label: 'Organisation name', required: true  },
+        { field: 'email',        type: 'email', label: 'Email address',     required: true  },
+        { field: 'phone',        type: 'tel',   label: 'Phone (optional)',  required: false },
+      ] as const).map(({ field, type, label, required }) => (
         <input key={field} name={field} type={type} placeholder={label} required={required}
-          value={form[field]} onChange={update(field)} style={inputStyle}
-          onFocus={(e) => (e.currentTarget.style.borderColor = '#F97316')}
-          onBlur={(e)  => (e.currentTarget.style.borderColor = '#1A1A1A')}
-        />
+          value={form[field]} onChange={update(field)} style={inp}
+          onFocus={e => (e.currentTarget.style.borderColor = ORANGE)}
+          onBlur={e  => (e.currentTarget.style.borderColor = BORDER)} />
       ))}
       <button type="submit" disabled={status === 'loading' || status === 'success'}
-        style={{ background: '#F97316', color: '#080808', fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, padding: '16px', width: '100%', border: 'none', cursor: status === 'loading' || status === 'success' ? 'default' : 'pointer', opacity: status === 'loading' ? 0.7 : 1 }}
-      >
-        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Sent' : 'Get my free business check →'}
+        style={{ background: ORANGE, color: BG, fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, padding: '16px', width: '100%', border: 'none', cursor: status === 'loading' || status === 'success' ? 'default' : 'pointer', opacity: status === 'loading' ? 0.7 : 1 }}>
+        {status === 'loading' ? 'Sending...' : status === 'success' ? '✓ Request received' : 'Schedule walkthrough →'}
       </button>
-      {status === 'success' && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', margin: 0 }}>✓ Request received. We&apos;ll contact you within 24 hours.</p>}
+      {status === 'success' && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: ORANGE, margin: 0 }}>We will contact you within 24 hours.</p>}
       {status === 'error'   && <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#FF4D4D', margin: 0 }}>Something went wrong. Email us at info@maxpromo.digital</p>}
     </form>
   )
 }
 
-/* ─── PAGE DATA ───────────────────────────────────────────── */
-
-const AFTER_STATE = [
-  'Every care plan searchable, auditable, and CQC-ready',
-  'Compliance tracked automatically — no certificates expire unnoticed',
-  'Rota gaps spotted before they become incidents',
-  'Senior staff admin time cut by up to 40% with AI',
-  'Families have real-time visibility — fewer calls to the service',
-]
-
-const WHO_FOR = [
-  'CQC-registered supported living and residential care providers in the UK',
-  'Managing 5–50+ service users with paper care plans and handwritten MAR charts',
-  'Building rotas in spreadsheets, sharing via WhatsApp, discovering shift gaps too late',
-  'DBS certificates and training records scattered — compliance risk building unnoticed',
-  'Preparing for a CQC inspection, or recovering after a report with improvement requirements',
-]
-
-const PROBLEMS = [
-  { icon: '📋', text: 'Incident reports in folders. Care plans on paper. No search. No audit trail. CQC inspection exposes every gap.' },
-  { icon: '📅', text: 'Rotas built in spreadsheets, shared via WhatsApp. Shift gaps discovered too late. Clock-in done on paper.' },
-  { icon: '⚠️', text: 'DBS certificates expiring unnoticed. Training records scattered. Compliance risk building in the background.' },
-]
-
-const FEATURES = [
-  { icon: '[ CARE ]',   name: 'CQC-Ready Documentation — Zero Paper Folders',      desc: 'Every care plan searchable, auditable, and inspection-ready from day one. No folders, no gaps, no handwriting to decipher.' },
-  { icon: '[ EMAR ]',   name: 'MAR Charts That Hold Up to Any Inspection',          desc: 'Medication records with no gaps, no handwriting issues. Schedules and administration logs per service user — fully auditable.' },
-  { icon: '[ CQC ]',    name: 'Never Fail Because a Certificate Lapsed',             desc: 'Every CQC requirement tracked with due dates, status, and action owner. Nothing expires unnoticed. Inspection-ready always.' },
-  { icon: '[ ROTA ]',   name: 'Spot Shift Gaps Before They Become Incidents',        desc: 'Weekly rota builder with clock-in/out tracking and automatic staff notifications. Gaps visible before service starts.' },
-  { icon: '[ AI ]',     name: 'Cut Senior Staff Admin Time By Up To 40%',            desc: 'Reports written, emails drafted, briefings generated by AI. Senior staff focus on care, not paperwork. Powered by Claude.' },
-  { icon: '[ FAMILY ]', name: 'Families Stay Informed Online', desc: 'Daily updates, care plans, and medication schedules visible online. Fewer calls to staff. Better trust, less friction.' },
-]
-
-const STEPS = [
-  { num: '01', title: 'Everything goes digital',                   desc: 'Care plans, incidents, medications, and daily notes logged digitally. Searchable, auditable, and ready for any inspection.' },
-  { num: '02', title: 'Automation handles the repetitive work',    desc: 'Training alerts, invoice chasing, rota gap detection — all handled by automation running 24/7 without staff input.' },
-  { num: '03', title: 'AI works for leadership',                   desc: 'Daily executive briefing generated every morning. AI assistant answers questions in plain English. Emails drafted. Reports written.' },
-]
-
-const FLOW = [
-  { step: '01', label: 'Staff logs care note → Audit trail updated instantly' },
-  { step: '02', label: 'Medication recorded → MAR chart updated automatically' },
-  { step: '03', label: 'Incident flagged → Manager notified immediately' },
-  { step: '04', label: 'Manager notified → 0 missed alerts' },
-  { step: '05', label: 'CQC audit trail complete → Inspection-ready at all times' },
-]
-
-/* ─── PAGE ────────────────────────────────────────────────── */
-
 export default function CareOSPage() {
   return (
     <>
       <style>{STYLES}</style>
-      <main style={{ background: '#080808' }}>
+      <main style={{ background: BG }}>
 
-        {/* ── HERO ── */}
-        <section style={{ padding: '5rem 2rem', borderBottom: '1px solid #1A1A1A' }}>
+        {/* 1. HERO */}
+        <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1.5rem' }}>
-              ENTERPRISE SYSTEM · CQC READY
-            </p>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem' }}>
-              CareOS
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>CARE MANAGEMENT SYSTEM</p>
+            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
+              Care delivered. Record updated.<br />Family notified. Without three separate systems.
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '600px', lineHeight: 1.8 }}>
-              Complete operating system for registered care providers — built from a live UK care deployment.
-              Digital care plans, medication records, staff scheduling, compliance tracking, and 24/7 AI automation, all connected.
-              Configured for your service and residents. Available to selected providers.
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+              CareOS keeps care plans, medication records, compliance and family communication connected in one operational flow — without adding process to an already stretched team.
             </p>
-            <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              {['Im echten Einsatz erprobt', 'Für den Alltag vorbereitet', 'Sicher aufgebaut', 'Nicht nur eine Demo'].map(line => (
-                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.08em', margin: 0, opacity: 0.85 }}>
-                  <span style={{ marginRight: '8px', opacity: 0.5 }}>•</span>{line}
-                </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
+              {['Digital care plans updated in real time', 'EMAR medication records live', 'CQC compliance tracked continuously', 'Family portal — updated after every visit'].map(p => (
+                <span key={p} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '6px 14px', letterSpacing: '0.04em' }}>→ {p}</span>
               ))}
             </div>
-
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '2.5rem', alignItems: 'center' }}>
-              <Link href="/contact?system=care-os"
-                style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#080808', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = '#EA6A00')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = '#F97316')}
-              >
-                Explore System →
-              </Link>
-              <Link href="/contact?system=care-os"
-                style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', border: '1px solid #1A1A1A', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', background: 'transparent', transition: 'border-color 150ms ease' }}
-                onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#333333')}
-                onMouseLeave={(e) => (e.currentTarget.style.borderColor = '#1A1A1A')}
-              >
-                Request Similar System →
-              </Link>
-            </div>
+            <a href="#walkthrough" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: BG, background: ORANGE, padding: '14px 28px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#EA6A00')}
+              onMouseLeave={e => (e.currentTarget.style.background = ORANGE)}>Schedule walkthrough →</a>
           </div>
         </section>
 
-        {/* ── BEFORE / AFTER ── */}
-        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
+        {/* 2. THIS KEEPS HAPPENING */}
+        <section style={{ background: CARD, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '2rem' }}>BEFORE / AFTER THIS SYSTEM</p>
-            <div style={{ display: 'grid', gap: '1px', background: '#1A1A1A' }} className="co-grid-2">
-              <div style={{ background: '#141414', padding: '28px 32px' }}>
-                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>BEFORE</p>
-                {['Care plans on paper and in folders', 'Rotas built in spreadsheets, shared on WhatsApp', 'Compliance tracked manually — gaps missed', 'DBS certificates expiring unnoticed', 'Senior staff spending 40%+ time on admin'].map(item => (
-                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
-                    <span style={{ color: '#FF4D4D', flexShrink: 0 }}>✕</span>{item}
-                  </p>
-                ))}
-              </div>
-              <div style={{ background: '#141414', padding: '28px 32px' }}>
-                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>AFTER</p>
-                {['Every care note digital, auditable, and CQC-ready', 'Rotas built and distributed automatically', 'Compliance tracked in real time — nothing expires unnoticed', 'Certificate expiry alerts automated', 'AI handles reports, emails, and briefings'].map(item => (
-                  <p key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', lineHeight: 1.6, margin: '0 0 8px', display: 'flex', gap: '10px' }}>
-                    <span style={{ color: '#F97316', flexShrink: 0, fontWeight: 700 }}>✓</span>{item}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── WHO THIS IS FOR ── */}
-        <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              WHO THIS IS FOR
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
-              Built for care providers like yours.
-            </h2>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {WHO_FOR.map((item) => (
-                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#F97316', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>→</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
-        {/* ── AFTER STATE ── */}
-        <section style={{ background: '#080808', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-              AFTER THIS SYSTEM IS INSTALLED
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '1.5rem' }}>
-              What your service looks like on week two.
-            </h2>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {AFTER_STATE.map((item) => (
-                <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', lineHeight: 1.6, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#F97316', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '3px' }}>✓</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '1.5rem 0 0' }}>
-              → 0 missed incidents · Audit trail automated · Staff workload reduced · Used in live care deployments
-            </p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: '6px 0 0' }}>
-              Im echten Einsatz erprobt · Sicher aufgebaut · Für den Alltag vorbereitet
-            </p>
-          </div>
-        </section>
-
-        {/* ── PROBLEM STRIP ── */}
-        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '4rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>THE PROBLEM</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '28px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
-              How care providers operate on paper
-            </h2>
-            <div className="co-grid-3">
-              {PROBLEMS.map((p) => (
-                <div key={p.icon} style={{ background: '#141414', border: '1px solid #1A1A1A', padding: '32px' }}>
-                  <p style={{ fontSize: '28px', marginBottom: '16px' }}>{p.icon}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{p.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── FEATURES ── */}
-        <section style={{ background: '#080808', padding: '6rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHAT&apos;S BUILT</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              16 modules. Everything connected.
-            </h2>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>THIS KEEPS HAPPENING</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2.5rem' }}>The same administration gaps. Every shift.</h2>
             <div className="co-grid-2">
-              {FEATURES.map((f) => (
-                <div key={f.name} style={{ background: '#141414', border: '1px solid #1A1A1A', padding: '32px' }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', color: '#F97316', marginBottom: '16px' }}>{f.icon}</p>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '10px' }}>{f.name}</h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{f.desc}</p>
+              {[
+                { label: 'PAPER CARE PLANS', text: "Care plan is on paper. Updated after the visit — if there is time. The most recent version may not be the one the next carer arrives with. Plans drift from reality." },
+                { label: 'END-OF-SHIFT LOGGING', text: "Medication administered. EMAR updated at the end of the shift — from memory. Incidents recorded the next morning. The gap between delivery and record creates compliance risk." },
+                { label: 'FAMILY PHONE CALLS', text: "Family member calls to ask about yesterday's visit. The information is in a folder or a system that the person answering the phone cannot access from the care setting." },
+                { label: 'COMPLIANCE FOLDERS', text: "CQC inspection approaching. Records exist — but across multiple folders, systems, and formats. Preparing for an inspection takes days that should be spent on care." },
+              ].map(item => (
+                <div key={item.label} style={{ background: '#141414', padding: '36px', borderTop: `3px solid ${ACCENT}` }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>{item.label}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8, margin: 0 }}>{item.text}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── HOW IT WORKS ── */}
-        <section style={{ background: '#0F0F0F', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+        {/* 3. OPERATIONAL CHAOS */}
+        <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '4rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHAT THIS SYSTEM REPLACES</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              Paper care plans. WhatsApp rotas. Spreadsheet compliance. All eliminated.
-            </h2>
-            <div style={{ borderTop: '1px solid #1A1A1A', display: 'flex', flexDirection: 'row' }} className="co-steps">
-              {STEPS.map((step, idx) => (
-                <div key={step.num} style={{ flex: 1, padding: '40px 32px', borderRight: idx < STEPS.length - 1 ? '1px solid #1A1A1A' : 'none', borderBottom: '1px solid #1A1A1A', position: 'relative', overflow: 'hidden' }}>
-                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '80px', color: 'rgba(249,115,22,0.08)', lineHeight: 1, position: 'absolute', top: '16px', right: '24px', margin: 0, letterSpacing: '-0.04em', pointerEvents: 'none' }}>{step.num}</p>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '10px', position: 'relative' }}>{step.title}</h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', lineHeight: 1.75, margin: 0, position: 'relative' }}>{step.desc}</p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>HOW CARE RECORDS MOVE RIGHT NOW</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2.5rem' }}>Every gap between delivery and documentation is a compliance risk.</h2>
+            <div className="co-flow">
+              {[
+                { step: '01', label: 'Care delivered', note: 'On site or in home' },
+                { step: '02', label: 'Paper record',   note: 'Filled after visit' },
+                { step: '03', label: 'EMAR update',    note: 'End of shift, from memory' },
+                { step: '04', label: 'Family update',  note: 'Phone call if remembered' },
+                { step: '05', label: 'Compliance',     note: 'Folders compiled for inspection' },
+              ].map(item => (
+                <div key={item.step} style={{ background: '#141414', padding: '28px 24px', flex: 1, minWidth: '140px' }}>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', margin: '0 0 6px', lineHeight: 1.4, fontWeight: 600 }}>{item.label}</p>
+                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444', margin: 0, letterSpacing: '0.05em' }}>{item.note}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ── SYSTEM IN ACTION ── */}
-        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
+        {/* 4. SYSTEM INSTALLED */}
+        <section style={{ background: CARD, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHAT HAPPENS AFTER INSTALLATION</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
-              Staff logs care. System records it. CQC audit trail updates. Automatically.
-            </h2>
-            <div className="co-proof">
-              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                <div style={{ background: '#141414', border: '1px dashed #2A2A2A', minHeight: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#2A2A2A', margin: 0 }}>[ DASHBOARD SCREENSHOT ]</p>
-                </div>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#444444', margin: 0, lineHeight: 1.6 }}>
-                  Service user dashboard — care plan, medication log, and CQC compliance status per resident.
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>SYSTEM INSTALLED</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
+              <div>
+                <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.2, marginBottom: '1.5rem' }}>
+                  CareOS connects the visit to the record. The record to the family. The record to compliance.
+                </h2>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8 }}>
+                  Care plans are digital and current. Medication records updated at administration time — not at end of shift. Family portal shows the latest visit summary. CQC compliance tracked continuously — not assembled before an inspection.
                 </p>
               </div>
-              <div style={{ background: '#0F0F0F', padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '24px' }}>
-                {[
-                  { label: 'Care plan', text: 'Full care plan, incident log, and daily notes per service user. Fully auditable.' },
-                  { label: 'MAR chart', text: 'Medication schedule and administration log — no gaps, no handwriting.' },
-                  { label: 'CQC status', text: 'Outstanding compliance actions flagged with due dates and action owners.' },
-                ].map((item) => (
-                  <div key={item.label}>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#F97316', margin: '0 0 6px' }}>{item.label}</p>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.text}</p>
+              <div style={{ borderLeft: `3px solid ${ACCENT}`, paddingLeft: '2rem' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>WHAT CONNECTS</p>
+                {['Care plan — digital, current, accessible to the whole team', 'EMAR — updated at medication time, not end of shift', 'Family portal — visit summary after every care delivery', 'CQC compliance — tracked continuously, not compiled before audits', 'AI assistant — handles routine inquiries and initial client intake'].map(line => (
+                  <div key={line} style={{ display: 'flex', gap: '12px', marginBottom: '14px', alignItems: 'flex-start' }}>
+                    <span style={{ color: ACCENT, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>→</span>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.65 }}>{line}</p>
                   </div>
                 ))}
               </div>
@@ -342,112 +159,98 @@ export default function CareOSPage() {
           </div>
         </section>
 
-        {/* ── IN PRACTICE ── */}
-        <section style={{ background: '#0F0F0F', padding: '4rem 2rem', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A' }}>
+        {/* 5. WORKFLOW */}
+        <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>FROM CARE NOTE TO CQC AUDIT TRAIL — ZERO PAPER</p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444', letterSpacing: '0.1em', marginBottom: '1.5rem' }}>
-              Failed log attempts handled automatically · Data validated server-side · Error states controlled at system level
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '22px', color: '#F0F0F0', letterSpacing: '-0.03em', marginBottom: '2rem' }}>
-              Care logged. Medication recorded. Manager notified. Automatically.
-            </h2>
-            <div style={{ display: 'flex', gap: '2px', background: '#1A1A1A', overflowX: 'auto' }}>
-              {FLOW.map((item) => (
-                <div key={item.step} style={{ background: '#141414', padding: '24px 20px', flex: 1, minWidth: '140px' }}>
-                  <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', margin: '0 0 8px', letterSpacing: '0.1em' }}>{item.step}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#F0F0F0', margin: 0, lineHeight: 1.5 }}>{item.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── SOCIAL PROOF BAR ── */}
-        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '20px 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0 }}>
-              Built and delivered for a CQC-registered supported living provider · UK · Live since 2026
-            </p>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', background: '#F97316', color: '#080808', padding: '4px 10px', fontWeight: 700 }}>
-              ENTERPRISE · DEPLOYED
-            </span>
-          </div>
-        </section>
-
-        {/* ── WHAT THIS IS NOT ── */}
-        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', borderBottom: '1px solid #1A1A1A', padding: '3rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>NOT A TOOL</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '1.25rem' }}>
-              {['Not a dashboard you configure yourself', 'Not another SaaS subscription', 'Not a template built for a different business'].map(line => (
-                <p key={line} style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.6, margin: 0, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#FF4D4D', flexShrink: 0 }}>✕</span>{line}
-                </p>
-              ))}
-            </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F0F0F0', letterSpacing: '0.04em', margin: 0 }}>
-              → This is a system installed into your business.
-            </p>
-          </div>
-        </section>
-
-        {/* ── CONVERSION ── */}
-        <section style={{ background: '#080808', padding: '6rem 2rem', borderTop: '1px solid #1A1A1A' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>INSTALL THIS SYSTEM</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>
-              Get a free CareOS audit for your care service.
-            </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>
-              Tell us about your service users and compliance situation. We run a free audit, show how CareOS maps to your workflows and CQC requirements, and send a no-obligation proposal. No commitment. We reply within 24 hours.
-            </p>
-            <div style={{ marginTop: '1.5rem', background: '#0F0F0F', border: '1px solid #1A1A1A', padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
-              {['Free system audit — no charge.', 'Live in 5–10 days from sign-off.', 'No commitment until you are ready.'].map((line) => (
-                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666666', margin: '4px 0', letterSpacing: '0.05em' }}>
-                  — {line}
-                </p>
-              ))}
-            </div>
-            <div style={{ marginTop: '1.5rem', background: '#141414', border: '1px solid rgba(249,115,22,0.2)', padding: '16px 24px', maxWidth: '400px', display: 'inline-block' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', margin: '0 0 6px' }}>AVAILABILITY</p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.6 }}>
-                We onboard a limited number of care providers per month.<br />Next available slot: <span style={{ color: '#F0F0F0', fontWeight: 600 }}>May 2026</span>
-              </p>
-            </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F0F0F0', letterSpacing: '0.05em', marginTop: '2.5rem', marginBottom: '8px' }}>
-              We only install a limited number of systems per month.
-            </p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', letterSpacing: '0.05em', marginBottom: '0' }}>
-              We install this system for you.
-            </p>
-            <CareContactForm />
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#555', letterSpacing: '0.08em', margin: '12px 0 0' }}>
-              // No obligation · Free system audit · We reply within 24 hours
-            </p>
-          </div>
-        </section>
-
-        {/* ── WHY MAXPROMO ── */}
-        <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem' }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>WHY MAXPROMO</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2rem' }}>
-              Not theory. Real systems, running now.
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1px', background: '#1A1A1A' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>HOW CARE MOVES</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>From new client inquiry to documented visit — connected.</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
               {[
-                { num: '01', text: 'Built from real client briefs — not feature lists' },
-                { num: '02', text: 'Already deployed in production, not in staging' },
-                { num: '03', text: 'Configured to your workflow — not a generic template' },
-                { num: '04', text: 'We hand you a running system, not a prototype' },
-              ].map((item) => (
-                <div key={item.num} style={{ background: '#141414', padding: '28px 32px' }}>
-                  <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: 'rgba(249,115,22,0.12)', letterSpacing: '-0.04em', margin: '0 0 12px' }}>{item.num}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{item.text}</p>
+                { num: '01', title: 'New client inquiry',    desc: 'AI assistant collects initial information and creates the client profile. Suitable carer matched automatically based on availability and client needs.' },
+                { num: '02', title: 'Care plan created',     desc: 'Digital care plan built and shared with the whole care team. Updated in real time as the client situation changes.' },
+                { num: '03', title: 'Visit completed',       desc: 'Care delivered on site. Record updated immediately — not at end of shift. Medication administered and logged in EMAR at the time of administration.' },
+                { num: '04', title: 'Family notified',       desc: 'Visit summary sent to family portal automatically after every care delivery. Family can see the latest status without calling the office.' },
+                { num: '05', title: 'Compliance maintained', desc: 'CQC compliance tracked continuously. No pre-inspection assembly required. Records are current and accessible whenever they are needed.' },
+              ].map(step => (
+                <div key={step.num} style={{ display: 'flex', gap: '32px', padding: '28px 0', borderBottom: `1px solid ${BORDER}`, alignItems: 'flex-start' }}>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: ORANGE, minWidth: '32px', flexShrink: 0, paddingTop: '2px' }}>{step.num}</span>
+                  <div>
+                    <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '6px' }}>{step.title}</h3>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', lineHeight: 1.75, margin: 0 }}>{step.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* 6. WHAT CHANGED */}
+        <section style={{ background: CARD, borderBottom: `1px solid ${BORDER}`, padding: '4rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>WHAT CHANGED AFTER INSTALLATION</p>
+            <div style={{ background: BORDER, display: 'flex', flexDirection: 'column', gap: '1px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#141414' }}>
+                <div style={{ padding: '14px 28px', borderRight: `1px solid ${BORDER}` }}><p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>BEFORE</p></div>
+                <div style={{ padding: '14px 28px' }}><p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>AFTER</p></div>
+              </div>
+              {[
+                { before: 'Paper care plans, updated after the fact',    after: 'Digital plans, current and accessible to the team' },
+                { before: 'EMAR updated at end of shift from memory',    after: 'EMAR logged at medication time — immediately'       },
+                { before: 'Family calls the office for an update',       after: 'Family sees the latest visit via the portal'        },
+                { before: 'Compliance assembled before inspections',     after: 'Compliance tracked continuously — always current'   },
+                { before: 'Incident reports written the next day',       after: 'Incidents documented at the time they occur'        },
+              ].map((row, i) => (
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#141414' }}>
+                  <div style={{ padding: '18px 28px', borderRight: `1px solid ${BORDER}`, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ color: '#444', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px' }}>✕</span>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#555', margin: 0, lineHeight: 1.6 }}>{row.before}</p>
+                  </div>
+                  <div style={{ padding: '18px 28px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                    <span style={{ color: ORANGE, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>✓</span>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#F0F0F0', margin: 0, lineHeight: 1.6 }}>{row.after}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* 7–8. PROOF + NEXT */}
+        <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '4rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>SEE THE SYSTEM · WHAT HAPPENS NEXT</p>
+            <div className="co-grid-2">
+              <div style={{ background: CARD, padding: '40px', borderTop: `3px solid ${ACCENT}` }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '1rem' }}>A real care workflow — from intake to visit record.</h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8 }}>The walkthrough covers the full care journey — care plan creation, visit recording, EMAR logging, family portal, and compliance view. The system working for a real supported living operation.</p>
+              </div>
+              <div style={{ background: CARD, padding: '40px' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 20px' }}>WHAT HAPPENS NEXT</p>
+                {[
+                  { num: '01', t: 'Short conversation', d: 'We learn about the organisation — team size, care types, current record-keeping approach.' },
+                  { num: '02', t: 'Workflow reviewed',  d: 'We map how visits, records and compliance currently work before configuring anything.' },
+                  { num: '03', t: 'System configured',  d: 'CareOS set up for the specific care type — care plan templates, compliance requirements, family portal.' },
+                  { num: '04', t: 'Start small',        d: 'Begin with one care type or team. Expand as the team gets comfortable with the new flow.' },
+                ].map(item => (
+                  <div key={item.num} style={{ marginBottom: '20px' }}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, margin: '0 0 4px', letterSpacing: '0.1em' }}>{item.num}</p>
+                    <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '15px', color: '#F0F0F0', margin: '0 0 4px' }}>{item.t}</p>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#666666', margin: 0, lineHeight: 1.6 }}>{item.d}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 9. CTA */}
+        <section id="walkthrough" style={{ background: BG, padding: '6rem 2rem' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>SCHEDULE A WALKTHROUGH</p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>See CareOS working in a real care environment.</h2>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px' }}>Tell us about the organisation. We walk through the live system and show how CareOS fits the specific way your team already delivers and records care.</p>
+            <CareContactForm />
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.08em', margin: '16px 0 0' }}>// No commitment · Reply within 24 hours · DSGVO compliant</p>
           </div>
         </section>
 
