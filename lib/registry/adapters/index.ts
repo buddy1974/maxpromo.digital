@@ -28,6 +28,14 @@ export {
 } from './systems.adapter'
 export type { SystemsCardData } from './systems.adapter'
 
+// ── Products adapter
+export {
+  toProductsCard,
+  getProductsCards,
+  getProductsCardsByCategory,
+} from './products.adapter'
+export type { ProductsCardData } from './products.adapter'
+
 // ── OS adapter
 export {
   toOSRegistryRow,
