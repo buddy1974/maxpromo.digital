@@ -6,8 +6,7 @@ import FaqSection from '@/components/FaqSection'
 import ROICalculator from '@/components/ROICalculator'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { Link } from '@/i18n/navigation'
-import SystemGrid from '@/components/systems/SystemGrid/SystemGrid'
-import { HOMEPAGE_PRODUCTS } from '@/lib/registry/products'
+import HomepageSystemsGrid from '@/components/systems/HomepageSystemsGrid'
 import { getHomepageCards } from '@/lib/registry/adapters'
 
 /* ─── REFERENCES ─────────────────────────────────────────────
@@ -108,19 +107,14 @@ export default async function HomePage() {
   const marqueeItems = t.raw('marquee') as string[]
 
   /*
-   * Registry adapter — transforms HOMEPAGE_PRODUCTS into locale-resolved card data.
-   * `cards` is the adapter output (HomepageCardData[]).
+   * Adapter call — transforms HOMEPAGE_PRODUCTS into locale-resolved HomepageCardData[].
+   * `cards` is the ONLY product data the homepage receives. No registry imports in this file.
    *
-   * SystemGrid currently accepts ProductEntry[] — so HOMEPAGE_PRODUCTS is passed
-   * directly below. `cards` is available for metadata, SSR props, or any future
-   * consumer that needs the transformed shape.
+   * Flow: HOMEPAGE_PRODUCTS → getHomepageCards(locale) → cards → HomepageSystemsGrid
    *
-   * TODO: when SystemCardCompact is updated to accept HomepageCardData,
-   * pass `cards` to a HomepageSystemsGrid component instead of using SystemGrid.
-   * TODO: future analytics — use cards.map(c => c.eventSource) for impression tracking
-   * TODO: future experiment flags — A/B select card variants per eventSource
+   * TODO: future analytics  — pass cards.map(c => c.eventSource) to impression tracker
+   * TODO: future experiment — swap card layout per product via session context
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const cards = getHomepageCards(locale)
 
   return (
@@ -352,25 +346,12 @@ export default async function HomePage() {
           </div>
 
           {/*
-            Registry-driven systems grid — Task 1.5
-            Source:    HOMEPAGE_PRODUCTS (6 products, locked editorial order)
-            Adapter:   getHomepageCards() → locale-resolved HomepageCardData[]
-            Component: SystemGrid → SystemCard (variant='compact') → SystemCardCompact
-            imageMode: heroCrop — shows headline + photo section, hides workflow strip
-
-            Grid columns: 3 desktop / 2 tablet / 1 mobile (Tailwind classes on SystemGrid)
-
-            TODO: future analytics  — fire system_card_viewed per product on mount
-            TODO: future click tracking — fire system_card_clicked on CTA interaction
-            TODO: future experiment flags — swap variant per product via session context
+            Adapter-driven systems grid.
+            cards ← getHomepageCards(locale) ← HOMEPAGE_PRODUCTS (registry, 6 products locked)
+            HomepageSystemsGrid bridges HomepageCardData[] → card shells.
+            No registry import on this page. No ProductEntry here.
           */}
-          <SystemGrid
-            products={HOMEPAGE_PRODUCTS}
-            variant="compact"
-            columns={3}
-            locale={locale}
-            imageMode="heroCrop"
-          />
+          <HomepageSystemsGrid cards={cards} locale={locale} />
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
             <Link href="/systems" className="glass" style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
