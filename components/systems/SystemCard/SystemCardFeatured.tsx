@@ -8,8 +8,9 @@
  */
 
 import Image from 'next/image'
-import type { ProductEntry } from '@/lib/registry/types'
 import type { SystemCardProps } from './SystemCard'
+import { resolvePrimaryLabel, resolveSecondaryLabel } from './helpers/cta'
+import { resolveCategoryLabel } from './helpers/category'
 
 // =============================================================================
 // TYPES
@@ -20,41 +21,6 @@ export interface SystemCardFeaturedProps
     SystemCardProps,
     'product' | 'locale' | 'showBadge' | 'showDomain' | 'showCTA'
   > {}
-
-// =============================================================================
-// HELPERS
-// =============================================================================
-
-function resolvePrimaryLabel(product: ProductEntry, locale: string): string {
-  if (product.ctaPrimary) {
-    return locale === 'de' && product.ctaPrimary.de
-      ? product.ctaPrimary.de
-      : product.ctaPrimary.en
-  }
-  if (locale === 'de') {
-    return product.ctaType === 'platform' ? 'Plattform erkunden →' : 'System ansehen →'
-  }
-  return product.ctaType === 'platform' ? 'Explore platform →' : 'View system →'
-}
-
-function resolveSecondaryLabel(product: ProductEntry, locale: string): string {
-  if (product.ctaSecondary) {
-    return locale === 'de' && product.ctaSecondary.de
-      ? product.ctaSecondary.de
-      : product.ctaSecondary.en
-  }
-  if (locale === 'de') {
-    return product.ctaType === 'platform' ? 'Fahrer werden →' : 'Kostenlosen Setup anfragen →'
-  }
-  return product.ctaType === 'platform' ? 'Become a driver →' : 'Book free setup →'
-}
-
-const CATEGORY_LABELS: Record<string, { en: string; de: string }> = {
-  'business-system':    { en: 'Business System',    de: 'Betriebssystem'       },
-  'platform':           { en: 'Platform',           de: 'Plattform'            },
-  'personal-finance':   { en: 'Personal Finance',   de: 'Privatfinanzen'       },
-  'ecosystem':          { en: 'Ecosystem',          de: 'Ökosystem'            },
-}
 
 // =============================================================================
 // COMPONENT
@@ -82,12 +48,7 @@ export function SystemCardFeatured({
 
   const primaryLabel   = resolvePrimaryLabel(product, locale)
   const secondaryLabel = resolveSecondaryLabel(product, locale)
-
-  const categoryLabel = (() => {
-    const entry = CATEGORY_LABELS[product.category]
-    if (!entry) return product.category
-    return locale === 'de' ? entry.de : entry.en
-  })()
+  const categoryLabel  = resolveCategoryLabel(product.category, locale)
 
   return (
     <article
