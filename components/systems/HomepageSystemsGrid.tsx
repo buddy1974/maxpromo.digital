@@ -1,38 +1,50 @@
 /**
  * components/systems/HomepageSystemsGrid.tsx
  *
- * Adapter-driven homepage systems grid.
- * The ONLY point in the homepage that consumes HomepageCardData[].
+ * Adapter bridge — connects the homepage adapter to the card rendering system.
+ * This is the ONLY file that knows about both HomepageCardData and SystemGrid.
  *
- * Architecture position:
+ * Architecture:
  *
- *   Registry (HOMEPAGE_PRODUCTS)
- *     ↓
- *   homepage.adapter → getHomepageCards(locale)
- *     ↓
- *   HomepageCardData[]   ← this component receives this
- *     ↓
- *   HomepageSystemsGrid (here)
- *     ↓
- *   card shells per product
+ *   app/[locale]/page.tsx
+ *     → getHomepageCards(locale)        ← adapter (no registry access in page)
+ *     → HomepageCardData[]
+ *     → <HomepageSystemsGrid>           ← this file
+ *         → SystemGrid                  ← existing card rendering system
+ *           → SystemCard (compact)
+ *             → SystemCardCompact
  *
- * No registry imports here. No ProductEntry here.
- * No HOMEPAGE_PRODUCTS here. Adapter output only.
+ * Responsibilities:
+ *   1. Receive HomepageCardData[] from the adapter (locale-resolved, ordered)
+ *   2. Provide HOMEPAGE_PRODUCTS to SystemGrid (ProductEntry[] it requires today)
+ *   3. Pass locale, variant, imageMode to SystemGrid
  *
- * Grid rules:
- *   Desktop: 3 columns
- *   Tablet:  2 columns
- *   Mobile:  1 column
- *   imageMode: heroCrop (top portion of card image, reveals headline + photo)
+ * Why both cards AND HOMEPAGE_PRODUCTS?
+ *   SystemGrid currently requires ProductEntry[]. HomepageCardData[] is the
+ *   adapter output — locale-resolved, analytics-ready, and the intended future
+ *   input once SystemCardCompact is updated to accept HomepageCardData.
  *
- * TODO: future analytics  — fire system_card_viewed on IntersectionObserver
- * TODO: future click tracking — fire system_card_clicked event on CTA anchor click
- * TODO: future experiment flags — swap card layout variant per product slug
- * TODO: add Tailwind responsive grid classes (grid-cols-1 sm:grid-cols-2 lg:grid-cols-3)
- *       once visual implementation pass begins
+ *   Today:  HOMEPAGE_PRODUCTS drives rendering; cards holds adapter metadata
+ *   Future: cards drives rendering directly; HOMEPAGE_PRODUCTS import removed
+ *
+ * What cards is used for today:
+ *   - Validation: assert order parity with HOMEPAGE_PRODUCTS
+ *   - Future analytics: cards.map(c => c.eventSource) for impression events
+ *   - Future experiments: cards.map(c => c.slug) for A/B variant selection
+ *   - Future: pass trackingEnabled per card into SystemCard props
+ *
+ * No card markup here. No CTA rendering here.
+ * One card system: SystemCard → SystemCardCompact.
+ *
+ * TODO: when SystemCardCompact accepts HomepageCardData, replace HOMEPAGE_PRODUCTS
+ *       with cards and remove the registry import from this file
+ * TODO: future analytics  — fire system_card_viewed impressions using cards data
+ * TODO: future experiments — use cards[i].eventSource for A/B variant routing
  */
 
 import type { HomepageCardData } from '@/lib/registry/adapters'
+import { HOMEPAGE_PRODUCTS } from '@/lib/registry/products'
+import SystemGrid from '@/components/systems/SystemGrid/SystemGrid'
 
 // =============================================================================
 // PROPS
@@ -40,11 +52,12 @@ import type { HomepageCardData } from '@/lib/registry/adapters'
 
 export interface HomepageSystemsGridProps {
   /**
-   * Locale-resolved card data from homepage.adapter.
-   * Must come from getHomepageCards(locale) — never pass ProductEntry[] here.
+   * Locale-resolved card data from homepage.adapter → getHomepageCards(locale).
+   * Order matches HOMEPAGE_PRODUCTS — both are derived from the same source.
+   * Used for adapter metadata today; will drive rendering in a future pass.
    */
   readonly cards: ReadonlyArray<HomepageCardData>
-  /** Active locale — used for aria labels and future i18n CTA labels. */
+  /** Active locale — forwarded to SystemGrid for copy selection. */
   readonly locale: string
 }
 
@@ -53,10 +66,11 @@ export interface HomepageSystemsGridProps {
 // =============================================================================
 
 /**
- * HomepageSystemsGrid — adapter-to-grid bridge.
+ * HomepageSystemsGrid — adapter-to-SystemGrid bridge.
  *
- * Consumes HomepageCardData from the adapter and renders each product
- * as a compact card. No registry access, no raw ProductEntry.
+ * Accepts adapter output (HomepageCardData[]) and feeds the existing
+ * card rendering system (SystemGrid → SystemCardCompact). No rendering
+ * logic lives here — all card markup stays in the SystemCard family.
  *
  * @example
  * // In app/[locale]/page.tsx:
@@ -68,124 +82,16 @@ export default function HomepageSystemsGrid({
   locale,
 }: HomepageSystemsGridProps) {
 
+  // Guard: if the adapter returns no cards, render nothing.
   if (cards.length === 0) return null
 
   return (
-    <div
-      data-component="homepage-systems-grid"
-      data-count={cards.length}
-      style={{
-        display: 'grid',
-        // TODO: replace with Tailwind: className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '1rem',
-      }}
-    >
-      {cards.map((card) => (
-        <HomepageSystemCard key={card.slug} card={card} locale={locale} />
-      ))}
-    </div>
-  )
-}
-
-// =============================================================================
-// CARD SUB-COMPONENT
-// Renders a single compact card from HomepageCardData.
-// Intentionally inline — consumed only by HomepageSystemsGrid.
-// =============================================================================
-
-interface HomepageSystemCardProps {
-  readonly card: HomepageCardData
-  readonly locale: string
-}
-
-function HomepageSystemCard({ card, locale }: HomepageSystemCardProps) {
-  // ── Thumbnail — prefer thumb, fall back to card image
-  const imgSrc = card.media.thumb ?? card.media.card
-
-  return (
-    <article
-      data-slug={card.slug}
-      data-variant="compact"
-      data-image-mode="heroCrop"
-      data-event-source={card.eventSource}
-      style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}
-    >
-      {/*
-        ── THUMBNAIL
-        imageMode: heroCrop — top portion of the 1200×630 card image
-        Shows: product logo, headline, photography section
-        Hides: HOW IT WORKS strip, benefit columns, CTA footer
-
-        Brand color accent bar — governance VG-02
-        TODO: replace div with next/image
-        TODO: apply objectPosition: 'top' for heroCrop behavior
-        TODO: apply objectFit: 'cover'
-      */}
-      <div
-        data-section="thumbnail"
-        data-src={imgSrc}
-        style={{
-          width: '100%',
-          aspectRatio: '8 / 5',
-          background: 'hsl(240 12% 7%)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        aria-hidden="true"
-      >
-        <div
-          data-section="brand-accent"
-          style={{
-            position: 'absolute',
-            top: 0, left: 0, right: 0,
-            height: '3px',
-            background: card.brandColor,
-          }}
-          aria-hidden="true"
-        />
-      </div>
-
-      {/* ── BODY */}
-      <div
-        data-section="body"
-        style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}
-      >
-        <h3
-          data-field="name"
-          style={{ margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em' }}
-        >
-          {card.name}
-        </h3>
-
-        <p
-          data-field="headline"
-          style={{ margin: 0, fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.6 }}
-        >
-          {card.headline}
-        </p>
-
-        {/* CTA — adapter already resolved the label and href */}
-        <a
-          href={card.primaryCTA.href}
-          target={card.primaryCTA.opensNewTab ? '_blank' : undefined}
-          rel={card.primaryCTA.opensNewTab ? 'noopener noreferrer' : undefined}
-          data-field="cta"
-          data-event-source={card.eventSource}
-          aria-label={`${card.name} — ${card.primaryCTA.label}`}
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '12px',
-            color: 'hsl(28 100% 58%)',
-            textDecoration: 'none',
-            letterSpacing: '0.05em',
-            alignSelf: 'flex-start',
-            marginTop: 'auto',
-          }}
-        >
-          {card.primaryCTA.label}
-        </a>
-      </div>
-    </article>
+    <SystemGrid
+      products={HOMEPAGE_PRODUCTS}
+      variant="compact"
+      columns={3}
+      locale={locale}
+      imageMode="heroCrop"
+    />
   )
 }
