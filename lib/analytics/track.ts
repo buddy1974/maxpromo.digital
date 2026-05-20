@@ -22,11 +22,7 @@ import type { AnalyticsEvent } from './types'
  */
 export function trackEvent(event: AnalyticsEvent): void {
   if (process.env.NODE_ENV === 'development') {
-    console.debug('[analytics]', event.type, {
-      slug:       event.slug,
-      source:     event.source,
-      properties: event.properties,
-    })
+    console.debug('[analytics]', event.type, event)
   }
   // Production: no-op until a provider is wired above.
 }
