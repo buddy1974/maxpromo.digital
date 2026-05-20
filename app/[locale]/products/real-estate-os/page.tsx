@@ -196,6 +196,17 @@ export default function RealEstateOSPage() {
                 </div>
               ))}
             </div>
+
+            <div style={{ marginTop: '3rem' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>THE SYSTEM IN OPERATION</p>
+              <Image
+                src="/images/systems/real-estate-os/card/real-estate-os-de.png"
+                alt="RealEstateOS in operation — AI deal analysis, investor CRM and pipeline view"
+                width={1200}
+                height={630}
+                style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
+              />
+            </div>
           </div>
         </section>
 

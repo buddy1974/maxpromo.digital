@@ -284,6 +284,17 @@ export default function PrintshopPage() {
                 </div>
               ))}
             </div>
+
+            <div style={{ marginTop: '3rem' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888', marginBottom: '1rem' }}>THE SYSTEM IN OPERATION</p>
+              <Image
+                src="/images/systems/printshop-os/card/printshop-os-de.png"
+                alt="PrintShopOS in operation — file validation, production queue and order management"
+                width={1200}
+                height={630}
+                style={{ width: '100%', height: 'auto', borderRadius: '8px', border: `2px solid ${INK}`, display: 'block' }}
+              />
+            </div>
           </div>
         </section>
 

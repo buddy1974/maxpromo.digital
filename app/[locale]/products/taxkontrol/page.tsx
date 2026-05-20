@@ -297,6 +297,20 @@ export default function TaxKontrolPage() {
                 </div>
               ))}
             </div>
+
+            {/* ── SYSTEM IN ACTION ── */}
+            <div style={{ marginTop: '3rem' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>
+                THE SYSTEM IN OPERATION
+              </p>
+              <Image
+                src="/images/systems/taxkontrol/card/taxkontrol-de.png"
+                alt="TaxKontrol dashboard — tax reserve, deadlines and expense tracking visible daily"
+                width={1200}
+                height={630}
+                style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
+              />
+            </div>
           </div>
         </section>
 
