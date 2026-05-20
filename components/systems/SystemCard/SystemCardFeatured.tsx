@@ -1,5 +1,3 @@
-'use client'
-
 /**
  * components/systems/SystemCard/SystemCardFeatured.tsx
  *
@@ -8,14 +6,14 @@
  *
  * Used on: systems page (2-col grid), products page (2-col grid)
  *
- * Client component: required for onClick analytics handlers.
+ * Server component. Client boundary is isolated to TrackableLink.
  */
 
 import Image from 'next/image'
 import type { SystemCardProps } from './SystemCard'
 import { resolvePrimaryLabel, resolveSecondaryLabel } from './helpers/cta'
 import { resolveCategoryLabel } from './helpers/category'
-import { trackEvent } from '@/lib/analytics/track'
+import { TrackableLink } from '@/components/systems/interactions/TrackableLink'
 import { CTA_PRIMARY_CLICKED, CTA_SECONDARY_CLICKED, DOMAIN_CLICKED } from '@/lib/analytics/events'
 
 // =============================================================================
@@ -142,61 +140,61 @@ export function SystemCardFeatured({
 
         {/* Domain */}
         {showDomain && product.domain && (
-          <a
+          <TrackableLink
             href={product.systemUrl ?? '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-[10px] text-[hsl(240_8%_35%)] tracking-wider hover:text-[hsl(40_12%_65%)] transition-colors self-start"
-            onClick={() => trackEvent({
+            event={{
               type:      DOMAIN_CLICKED,
               slug:      product.slug,
               source:    eventSource,
-              timestamp: Date.now(),
+              timestamp: 0,
               locale,
               domain:    product.domain,
-            })}
+            }}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[10px] text-[hsl(240_8%_35%)] tracking-wider hover:text-[hsl(40_12%_65%)] transition-colors self-start"
           >
             {product.domain}
-          </a>
+          </TrackableLink>
         )}
 
         {/* CTA pair */}
         {showCTA && (
           <div className="flex flex-wrap items-center gap-3 mt-auto pt-4 border-t border-white/[0.06]">
-            <a
+            <TrackableLink
               href={product.demoUrl ?? product.systemUrl}
+              event={{
+                type:      CTA_PRIMARY_CLICKED,
+                slug:      product.slug,
+                source:    eventSource,
+                timestamp: 0,
+                locale,
+                ctaLabel:  primaryLabel,
+              }}
               target={product.demoUrl ? '_blank' : undefined}
               rel={product.demoUrl ? 'noopener noreferrer' : undefined}
               data-event-source={eventSource}
               aria-label={primaryLabel}
               className="font-mono text-[11px] font-bold uppercase tracking-widest bg-[#F97316] text-[#080808] px-5 py-2.5 hover:bg-[#EA6A00] transition-colors"
-              onClick={() => trackEvent({
-                type:      CTA_PRIMARY_CLICKED,
-                slug:      product.slug,
-                source:    eventSource,
-                timestamp: Date.now(),
-                locale,
-                ctaLabel:  primaryLabel,
-              })}
             >
               {primaryLabel}
-            </a>
-            <a
+            </TrackableLink>
+            <TrackableLink
               href={product.bookDemoUrl}
-              data-event-source={eventSource}
-              aria-label={secondaryLabel}
-              className="font-mono text-[11px] uppercase tracking-widest border border-white/20 text-[hsl(40_30%_96%)] px-5 py-2.5 hover:border-white/40 transition-colors"
-              onClick={() => trackEvent({
+              event={{
                 type:      CTA_SECONDARY_CLICKED,
                 slug:      product.slug,
                 source:    eventSource,
-                timestamp: Date.now(),
+                timestamp: 0,
                 locale,
                 ctaLabel:  secondaryLabel,
-              })}
+              }}
+              data-event-source={eventSource}
+              aria-label={secondaryLabel}
+              className="font-mono text-[11px] uppercase tracking-widest border border-white/20 text-[hsl(40_30%_96%)] px-5 py-2.5 hover:border-white/40 transition-colors"
             >
               {secondaryLabel}
-            </a>
+            </TrackableLink>
           </div>
         )}
       </div>

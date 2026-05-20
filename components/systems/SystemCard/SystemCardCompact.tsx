@@ -1,5 +1,3 @@
-'use client'
-
 /**
  * components/systems/SystemCard/SystemCardCompact.tsx
  *
@@ -10,14 +8,14 @@
  * Used on: homepage (3-col grid)
  * imageMode='heroCrop' → object-position: top (reveals headline band of card image)
  *
- * Client component: required for onClick analytics handlers.
+ * Server component. Client boundary is isolated to TrackableLink.
  */
 
 import Image from 'next/image'
 import type { SystemCardProps, ImageMode } from './SystemCard'
 import { resolveCompactCTALabel, resolveCompactAriaLabel } from './helpers/cta'
 import { resolveThumbSrc, resolveImageStyle } from './helpers/image'
-import { trackEvent } from '@/lib/analytics/track'
+import { TrackableLink } from '@/components/systems/interactions/TrackableLink'
 import { CTA_PRIMARY_CLICKED } from '@/lib/analytics/events'
 
 // =============================================================================
@@ -103,22 +101,22 @@ export function SystemCardCompact({
             {product.domain}
           </span>
           {showCTA && (
-            <a
+            <TrackableLink
               href={ctaHref}
-              data-event-source={eventSource}
-              aria-label={resolveCompactAriaLabel(product.name, locale)}
-              className="font-mono text-[11px] text-[#F97316] tracking-widest uppercase hover:opacity-70 transition-opacity"
-              onClick={() => trackEvent({
+              event={{
                 type:      CTA_PRIMARY_CLICKED,
                 slug:      product.slug,
                 source:    eventSource,
-                timestamp: Date.now(),
+                timestamp: 0,
                 locale,
                 ctaLabel,
-              })}
+              }}
+              aria-label={resolveCompactAriaLabel(product.name, locale)}
+              data-event-source={eventSource}
+              className="font-mono text-[11px] text-[#F97316] tracking-widest uppercase hover:opacity-70 transition-opacity"
             >
               {ctaLabel}
-            </a>
+            </TrackableLink>
           )}
         </div>
       </div>
