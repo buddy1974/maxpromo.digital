@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * components/systems/SystemCard/SystemCardFeatured.tsx
  *
@@ -5,12 +7,16 @@
  * 3-bullet list, domain, primary + secondary CTA.
  *
  * Used on: systems page (2-col grid), products page (2-col grid)
+ *
+ * Client component: required for onClick analytics handlers.
  */
 
 import Image from 'next/image'
 import type { SystemCardProps } from './SystemCard'
 import { resolvePrimaryLabel, resolveSecondaryLabel } from './helpers/cta'
 import { resolveCategoryLabel } from './helpers/category'
+import { trackEvent } from '@/lib/analytics/track'
+import { CTA_PRIMARY_CLICKED, CTA_SECONDARY_CLICKED, DOMAIN_CLICKED } from '@/lib/analytics/events'
 
 // =============================================================================
 // TYPES
@@ -20,7 +26,9 @@ export interface SystemCardFeaturedProps
   extends Pick<
     SystemCardProps,
     'product' | 'locale' | 'showBadge' | 'showDomain' | 'showCTA'
-  > {}
+  > {
+  readonly source?: string
+}
 
 // =============================================================================
 // COMPONENT
@@ -32,6 +40,7 @@ export function SystemCardFeatured({
   showBadge = true,
   showDomain = true,
   showCTA = true,
+  source,
 }: SystemCardFeaturedProps) {
 
   const headline = locale === 'de' && product.headline.de
@@ -49,6 +58,7 @@ export function SystemCardFeatured({
   const primaryLabel   = resolvePrimaryLabel(product, locale)
   const secondaryLabel = resolveSecondaryLabel(product, locale)
   const categoryLabel  = resolveCategoryLabel(product.category, locale)
+  const eventSource    = source ?? product.eventSource
 
   return (
     <article
@@ -137,6 +147,14 @@ export function SystemCardFeatured({
             target="_blank"
             rel="noopener noreferrer"
             className="font-mono text-[10px] text-[hsl(240_8%_35%)] tracking-wider hover:text-[hsl(40_12%_65%)] transition-colors self-start"
+            onClick={() => trackEvent({
+              type:      DOMAIN_CLICKED,
+              slug:      product.slug,
+              source:    eventSource,
+              timestamp: Date.now(),
+              locale,
+              domain:    product.domain,
+            })}
           >
             {product.domain}
           </a>
@@ -149,17 +167,33 @@ export function SystemCardFeatured({
               href={product.demoUrl ?? product.systemUrl}
               target={product.demoUrl ? '_blank' : undefined}
               rel={product.demoUrl ? 'noopener noreferrer' : undefined}
-              data-event-source={product.eventSource}
+              data-event-source={eventSource}
               aria-label={primaryLabel}
               className="font-mono text-[11px] font-bold uppercase tracking-widest bg-[#F97316] text-[#080808] px-5 py-2.5 hover:bg-[#EA6A00] transition-colors"
+              onClick={() => trackEvent({
+                type:      CTA_PRIMARY_CLICKED,
+                slug:      product.slug,
+                source:    eventSource,
+                timestamp: Date.now(),
+                locale,
+                ctaLabel:  primaryLabel,
+              })}
             >
               {primaryLabel}
             </a>
             <a
               href={product.bookDemoUrl}
-              data-event-source={product.eventSource}
+              data-event-source={eventSource}
               aria-label={secondaryLabel}
               className="font-mono text-[11px] uppercase tracking-widest border border-white/20 text-[hsl(40_30%_96%)] px-5 py-2.5 hover:border-white/40 transition-colors"
+              onClick={() => trackEvent({
+                type:      CTA_SECONDARY_CLICKED,
+                slug:      product.slug,
+                source:    eventSource,
+                timestamp: Date.now(),
+                locale,
+                ctaLabel:  secondaryLabel,
+              })}
             >
               {secondaryLabel}
             </a>

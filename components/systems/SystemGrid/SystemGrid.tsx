@@ -60,6 +60,11 @@ export interface SystemGridProps {
    * Rendered as a paragraph when provided.
    */
   readonly description?: string
+  /**
+   * Analytics surface identifier — forwarded to each SystemCard for trackEvent().
+   * Set by bridge components: 'homepage_compact' | 'systems_featured' | 'products_featured'
+   */
+  readonly source?: string
 }
 
 // =============================================================================
@@ -88,6 +93,7 @@ export default function SystemGrid({
   title,
   description,
   imageMode,
+  source,
 }: SystemGridProps) {
 
   if (products.length === 0) {
@@ -139,6 +145,7 @@ export default function SystemGrid({
             showDomain={variant !== 'compact'}
             showCTA
             imageMode={imageMode}
+            source={source}
           />
         ))}
       </div>

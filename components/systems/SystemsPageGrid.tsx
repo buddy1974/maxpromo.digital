@@ -59,6 +59,7 @@ export default function SystemsPageGrid({
       products={SYSTEMS_PAGE_PRODUCTS}
       variant="featured"
       locale={locale}
+      source="systems_featured"
     />
   )
 }

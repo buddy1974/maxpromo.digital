@@ -68,6 +68,12 @@ export interface SystemCardProps {
    * Only consumed by the compact variant; ignored by full/featured/admin/table.
    */
   readonly imageMode?: ImageMode
+  /**
+   * Analytics surface identifier — which page/grid is rendering this card.
+   * Passed through to sub-components for trackEvent() source field.
+   * e.g. 'homepage_compact' | 'systems_featured' | 'products_featured'
+   */
+  readonly source?: string
 }
 
 // =============================================================================
@@ -94,6 +100,7 @@ export default function SystemCard({
   showDomain = true,
   showCTA = true,
   imageMode,
+  source,
 }: SystemCardProps) {
 
   if (variant === 'compact') {
@@ -103,6 +110,7 @@ export default function SystemCard({
         locale={locale}
         showCTA={showCTA}
         imageMode={imageMode}
+        source={source}
       />
     )
   }
@@ -115,6 +123,7 @@ export default function SystemCard({
         showBadge={showBadge}
         showDomain={showDomain}
         showCTA={showCTA}
+        source={source}
       />
     )
   }

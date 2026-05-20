@@ -62,6 +62,7 @@ export default function ProductsPageGrid({
       products={PUBLIC_PRODUCTS}
       variant="featured"
       locale={locale}
+      source="products_featured"
     />
   )
 }

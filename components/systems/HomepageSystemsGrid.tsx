@@ -91,6 +91,7 @@ export default function HomepageSystemsGrid({
       variant="compact"
       locale={locale}
       imageMode="heroCrop"
+      source="homepage_compact"
     />
   )
 }

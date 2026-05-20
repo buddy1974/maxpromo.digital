@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * components/systems/SystemCard/SystemCardCompact.tsx
  *
@@ -7,12 +9,16 @@
  *
  * Used on: homepage (3-col grid)
  * imageMode='heroCrop' → object-position: top (reveals headline band of card image)
+ *
+ * Client component: required for onClick analytics handlers.
  */
 
 import Image from 'next/image'
 import type { SystemCardProps, ImageMode } from './SystemCard'
 import { resolveCompactCTALabel, resolveCompactAriaLabel } from './helpers/cta'
 import { resolveThumbSrc, resolveImageStyle } from './helpers/image'
+import { trackEvent } from '@/lib/analytics/track'
+import { CTA_PRIMARY_CLICKED } from '@/lib/analytics/events'
 
 // =============================================================================
 // TYPES
@@ -23,6 +29,7 @@ export type { ImageMode }
 export interface SystemCardCompactProps
   extends Pick<SystemCardProps, 'product' | 'locale' | 'showCTA'> {
   readonly imageMode?: ImageMode
+  readonly source?: string
 }
 
 // =============================================================================
@@ -34,15 +41,18 @@ export function SystemCardCompact({
   locale = 'de',
   showCTA = true,
   imageMode = 'cover',
+  source,
 }: SystemCardCompactProps) {
 
   const subline = locale === 'de' && product.subline.de
     ? product.subline.de
     : product.subline.en
 
-  const ctaHref                    = product.landingUrl
-  const thumbSrc                   = resolveThumbSrc(product)
+  const ctaHref                       = product.landingUrl
+  const thumbSrc                      = resolveThumbSrc(product)
   const { objectFit, objectPosition } = resolveImageStyle(imageMode)
+  const ctaLabel                      = resolveCompactCTALabel(locale)
+  const eventSource                   = source ?? product.eventSource
 
   return (
     <article
@@ -95,11 +105,19 @@ export function SystemCardCompact({
           {showCTA && (
             <a
               href={ctaHref}
-              data-event-source={product.eventSource}
+              data-event-source={eventSource}
               aria-label={resolveCompactAriaLabel(product.name, locale)}
               className="font-mono text-[11px] text-[#F97316] tracking-widest uppercase hover:opacity-70 transition-opacity"
+              onClick={() => trackEvent({
+                type:      CTA_PRIMARY_CLICKED,
+                slug:      product.slug,
+                source:    eventSource,
+                timestamp: Date.now(),
+                locale,
+                ctaLabel,
+              })}
             >
-              {resolveCompactCTALabel(locale)}
+              {ctaLabel}
             </a>
           )}
         </div>
