@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 
 const BLUE   = '#60A5FA'
 const ORANGE = '#F97316'
@@ -11,9 +12,11 @@ const BORDER = '#1A1A1A'
 const STYLES = `
   .px-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: ${BORDER}; }
   .px-flow   { display: flex; gap: 2px; background: ${BORDER}; overflow-x: auto; }
+  .px-hero   { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
   @media (max-width: 768px) {
     .px-grid-2 { grid-template-columns: 1fr; }
     .px-flow   { flex-direction: column; }
+    .px-hero   { grid-template-columns: 1fr; gap: 2rem; }
   }
 `
 
@@ -71,7 +74,8 @@ export default function PraxisOSPage() {
 
         {/* 1. HERO */}
         <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="px-hero">
+          <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>PRACTICE OPERATIONS SYSTEM</p>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
               Stop turning patient communication<br />into a phone chain.
@@ -87,6 +91,17 @@ export default function PraxisOSPage() {
             <a href="#walkthrough" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: BG, background: ORANGE, padding: '14px 28px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#EA6A00')}
               onMouseLeave={e => (e.currentTarget.style.background = ORANGE)}>Schedule walkthrough →</a>
+          </div>
+          <div>
+            <Image
+              src="/images/systems/praxis-os/card/praxis-os-en.png"
+              alt="Medical practice reception — patient booking and appointment management workflow"
+              width={760}
+              height={400}
+              style={{ width: '100%', height: 'auto', borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}
+              priority
+            />
+          </div>
           </div>
         </section>
 

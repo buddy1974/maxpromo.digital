@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const NAVY   = '#1E3A5F'
@@ -11,8 +12,10 @@ const BORDER = '#1A1A1A'
 
 const STYLES = `
   .tk-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: ${BORDER}; }
+  .tk-hero   { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
   @media (max-width: 768px) {
     .tk-grid-2 { grid-template-columns: 1fr; }
+    .tk-hero   { grid-template-columns: 1fr; gap: 2rem; }
   }
 `
 
@@ -131,7 +134,8 @@ export default function TaxKontrolPage() {
 
         {/* ── HERO ── */}
         <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="tk-hero">
+          <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
               TAXKONTROL · FINANCIAL VISIBILITY SYSTEM
             </p>
@@ -166,6 +170,17 @@ export default function TaxKontrolPage() {
                 <span key={t} style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase' }}>— {t}</span>
               ))}
             </div>
+          </div>
+          <div>
+            <Image
+              src="/images/systems/taxkontrol/card/taxkontrol-en.png"
+              alt="Business owner reviewing financial position — tax reserve and obligations visible"
+              width={760}
+              height={400}
+              style={{ width: '100%', height: 'auto', borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}
+              priority
+            />
+          </div>
           </div>
         </section>
 

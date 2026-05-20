@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const GREEN  = '#22C55E'
@@ -12,9 +13,11 @@ const BORDER = '#1A1A1A'
 const STYLES = `
   .hw-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: ${BORDER}; }
   .hw-flow   { display: flex; gap: 2px; background: ${BORDER}; overflow-x: auto; }
+  .hw-hero   { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
   @media (max-width: 768px) {
     .hw-grid-2 { grid-template-columns: 1fr; }
     .hw-flow   { flex-direction: column; }
+    .hw-hero   { grid-template-columns: 1fr; gap: 2rem; }
   }
 `
 
@@ -76,7 +79,8 @@ export default function HandwerkOSPage() {
 
         {/* 1. HERO */}
         <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="hw-hero">
+          <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>FIELD OPERATIONS SYSTEM</p>
             <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
               Stop re-entering paperwork<br />after every site visit.
@@ -98,6 +102,17 @@ export default function HandwerkOSPage() {
                 onMouseEnter={e => (e.currentTarget.style.borderColor = '#333')}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = BORDER)}>See the system in action →</a>
             </div>
+          </div>
+          <div>
+            <Image
+              src="/images/systems/handwerk-os/card/handwerk-os-en.png"
+              alt="Field worker on construction site — job sheet photographed for instant record creation"
+              width={760}
+              height={400}
+              style={{ width: '100%', height: 'auto', borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}
+              priority
+            />
+          </div>
           </div>
         </section>
 

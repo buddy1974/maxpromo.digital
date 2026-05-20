@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 
 /* ─── CMYK TOKENS ─────────────────────────────────────────── */
@@ -14,11 +15,13 @@ const ORANGE = '#F97316'
 const STYLES = `
   .ps-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: ${INK}; }
   .ps-flow   { display: flex; gap: 2px; background: ${INK}; overflow-x: auto; }
+  .ps-hero   { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
   .ink-card  { background: #FFFFFF; padding: 28px 32px; }
   .cmyk-dot  { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   @media (max-width: 768px) {
     .ps-grid-2 { grid-template-columns: 1fr; }
     .ps-flow   { flex-direction: column; }
+    .ps-hero   { grid-template-columns: 1fr; gap: 2rem; }
   }
 `
 
@@ -94,7 +97,8 @@ export default function PrintshopPage() {
 
         {/* ── 1. HERO WORLD ── */}
         <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: `2px solid ${INK}` }}>
-          <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
+          <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="ps-hero">
+          <div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
               PRINT WORKFLOW SYSTEM
             </p>
@@ -141,6 +145,17 @@ export default function PrintshopPage() {
                 EN · DE · FR · Stripe payments active
               </span>
             </div>
+          </div>
+          <div>
+            <Image
+              src="/images/systems/printshop-os/card/printshop-os-en.png"
+              alt="Print production workflow — artwork being validated and prepared for press"
+              width={760}
+              height={400}
+              style={{ width: '100%', height: 'auto', borderRadius: '8px', border: `2px solid ${INK}`, boxShadow: '0 8px 32px -8px rgba(0,0,0,0.2)' }}
+              priority
+            />
+          </div>
           </div>
         </section>
 
