@@ -951,41 +951,79 @@ export const PRODUCTS: ReadonlyArray<ProductEntry> = [
 // =============================================================================
 
 /**
- * Homepage featured grid.
- * Commercial products with featured: true.
+ * Homepage grid — hard-coded order. INTENTIONAL. DO NOT derive from filters.
+ *
+ * This order is permanent. It must not change due to priority_score, maturity,
+ * future sorting, or any automated logic. Homepage curation is a deliberate
+ * editorial decision, not a computed result.
+ *
  * Consumer: app/[locale]/page.tsx (SystemCardCompact grid)
+ * Count: 6
  */
-export const FEATURED_PRODUCTS: ReadonlyArray<ProductEntry> =
-  PRODUCTS.filter(p => p.featured && p.track === 'commercial')
+export const HOMEPAGE_PRODUCTS: ReadonlyArray<ProductEntry> = [
+  TAXKONTROL,
+  RESTAURANT_OS,
+  PRINTSHOP_OS,
+  HANDWERK_OS,
+  CARE_OS,
+  PRAXIS_OS,
+]
 
 /**
- * Systems page and products index — all non-internal products.
- * Includes Drive24 (founder track, visibility: protected).
+ * Fully public products — systems page and products index.
+ * Only products with visibility: 'public'. Excludes:
+ *   — Drive24 (visibility: 'protected') — surfaces only via PROTECTED_PRODUCTS
+ *   — Maxpromo OS (visibility: 'internal') — surfaces only via INTERNAL_PRODUCTS
+ *
  * Consumer: app/[locale]/systems/page.tsx, app/[locale]/products/page.tsx
+ * Count: 8
  */
 export const PUBLIC_PRODUCTS: ReadonlyArray<ProductEntry> =
-  PRODUCTS.filter(p => p.visibility !== 'internal')
+  PRODUCTS.filter(p => p.visibility === 'public')
+
+/**
+ * Gated products — password-protected, investor previews, or founder projects.
+ * NOT shown in standard public grids. Accessible by direct URL or explicit invite.
+ * Currently: Drive24 only (founder track, Cameroon market).
+ *
+ * Future use: beta systems, investor demo pages, client staging environments.
+ * Consumer: /os/systems admin view, future password-gated landing pages
+ * Count: 1
+ */
+export const PROTECTED_PRODUCTS: ReadonlyArray<ProductEntry> =
+  PRODUCTS.filter(p => p.visibility === 'protected')
 
 /**
  * All commercial-track products.
  * Excludes Drive24 (founder) and Maxpromo OS (internal).
  * Consumer: /os/analytics lead pipeline, priority-weighted dashboards
+ * Count: 8
  */
 export const COMMERCIAL_PRODUCTS: ReadonlyArray<ProductEntry> =
   PRODUCTS.filter(p => p.track === 'commercial')
 
 /**
- * Founder-track products.
- * Currently: Drive24 only.
+ * Founder-track products. Currently: Drive24 only.
  * Consumer: /os/systems admin registry view
+ * Count: 1
  */
 export const FOUNDER_PRODUCTS: ReadonlyArray<ProductEntry> =
   PRODUCTS.filter(p => p.track === 'founder')
 
 /**
- * Internal-track products — /os admin view only. Never public.
+ * Internal-track products — /os admin view only. Never rendered publicly.
  * Currently: Maxpromo OS only.
  * Consumer: /os/systems admin registry view
+ * Count: 1
  */
 export const INTERNAL_PRODUCTS: ReadonlyArray<ProductEntry> =
   PRODUCTS.filter(p => p.track === 'internal')
+
+/**
+ * Products with featured: true — for editorial/dashboard use.
+ * DO NOT use for the homepage grid. Homepage uses HOMEPAGE_PRODUCTS (hard-coded order).
+ * Use this for: CMS preview, featured badge logic, OS analytics highlighting.
+ * Count: 6
+ */
+export const FEATURED_PRODUCTS: ReadonlyArray<ProductEntry> =
+  PRODUCTS.filter(p => p.featured && p.track === 'commercial')
