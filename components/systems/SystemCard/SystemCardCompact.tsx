@@ -1,20 +1,14 @@
 /**
  * components/systems/SystemCard/SystemCardCompact.tsx
  *
- * Compact card variant — used in the homepage HOMEPAGE_PRODUCTS grid.
- * Shows: thumbnail image (Size 3 crop), product name, 1-line subline, CTA.
+ * Compact card variant — thumbnail-first, minimal content.
+ * Shows: thumbnail image, product name, 1-line subline, optional CTA.
  * Does NOT show: bullet list, HOW IT WORKS strip, domain footer.
  *
- * Governance: this component renders the top ~40% of the master card image.
- * The full landscape card (1200×630) is visible on the systems page (full variant).
- * Here only the hero portion is shown.
- *
- * Consumer:
- *   app/[locale]/page.tsx — HOMEPAGE_PRODUCTS grid
- *   Rendered by SystemGrid with variant='compact'
+ * Which context uses this variant, and how many columns, is decided by
+ * the consumer. This component has no opinion about where it is rendered.
  *
  * TODO: connect registry consumers
- * TODO: homepage integration (import HOMEPAGE_PRODUCTS from registry)
  * TODO: add next/image optimisation once image paths are confirmed deployed
  */
 
@@ -22,67 +16,90 @@ import type { ProductEntry } from '@/lib/registry/types'
 import type { SystemCardProps } from './SystemCard'
 
 // =============================================================================
-// COMPACT-SPECIFIC PROPS
-// Subset of SystemCardProps — compact variant only uses what it needs.
+// TYPES
 // =============================================================================
 
+/**
+ * Controls how the thumbnail image fills its container.
+ * Rendering behavior belongs to the consumer — pass the mode that matches
+ * where this card is being placed.
+ *
+ * cover    → fill container, crop to fit (object-fit: cover)
+ * contain  → fit entirely within container, letterbox if needed
+ * heroCrop → show only the top portion of the landscape card image
+ *            (reveals headline + photo section, hides workflow strip)
+ */
+export type ImageMode = 'cover' | 'contain' | 'heroCrop'
+
+/** Props for the compact card variant. */
 export interface SystemCardCompactProps
-  extends Pick<SystemCardProps, 'product' | 'locale' | 'showCTA'> {}
+  extends Pick<SystemCardProps, 'product' | 'locale' | 'showCTA'> {
+  /**
+   * How the thumbnail image fills its container.
+   * Defaults to 'cover'. Pass 'heroCrop' to reveal only the card's
+   * headline and photography section.
+   */
+  readonly imageMode?: ImageMode
+}
 
 // =============================================================================
 // COMPONENT
 // =============================================================================
 
 /**
- * SystemCardCompact — homepage mini card.
+ * SystemCardCompact — thumbnail-first mini card.
  *
- * Renders a thumbnail-first card with product name, one-line subline,
- * and a single CTA link. No bullet list. No workflow. No status badge.
+ * Renders a compact product card with thumbnail, name, subline, and CTA.
+ * The consumer decides the context, layout, and image mode.
  *
  * @example
- * // Rendered by SystemCard router:
+ * // Via SystemCard router (preferred):
  * <SystemCard product={p} variant="compact" locale="de" />
  *
- * // Or directly (prefer routing through SystemCard):
- * <SystemCardCompact product={p} locale="de" showCTA />
+ * // Direct use with explicit image mode:
+ * <SystemCardCompact product={p} locale="de" imageMode="heroCrop" showCTA />
  */
 export function SystemCardCompact({
   product,
   locale = 'de',
   showCTA = true,
+  imageMode = 'cover',
 }: SystemCardCompactProps) {
 
-  // ── Locale-aware content helpers
-  const headline = locale === 'de' && product.headline.de
-    ? product.headline.de
-    : product.headline.en
-
+  // ── Locale-aware content
   const subline = locale === 'de' && product.subline.de
     ? product.subline.de
     : product.subline.en
 
-  // ── CTA href — always links to the internal product landing page
-  // TODO: update to use product.systemUrl (branded domain) once domains are live
+  // ── CTA href — links to internal product page
+  // TODO: update to product.systemUrl once product domains are live
   const ctaHref = product.landingUrl
+
+  // ── Thumbnail src — prefer thumb variant, fall back to card
+  // TODO: add locale-aware src (product.media.thumb?.de when locale==='de' && de exists)
+  const thumbSrc = product.media.thumb?.en ?? product.media.card.en
 
   return (
     <article
       data-slug={product.slug}
       data-variant="compact"
-      style={{
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
+      data-image-mode={imageMode}
+      style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}
     >
       {/*
         ── THUMBNAIL
-        TODO: replace with next/image once /public/images/systems/[slug]/thumb/ exists
-        TODO: add locale-aware src (thumb.de when locale === 'de' && thumb.de exists)
-        Size target: 480×300 (Size 3 — top half of master card)
+        imageMode controls object-fit behavior:
+          cover    → fill, crop   → { objectFit: 'cover' }
+          contain  → fit, no crop → { objectFit: 'contain' }
+          heroCrop → show top     → { objectFit: 'cover', objectPosition: 'top' }
+
+        TODO: replace div with next/image
+        TODO: use thumbSrc once /public/images/systems/[slug]/thumb/ is deployed
+        TODO: set objectFit and objectPosition from imageMode
       */}
       <div
         data-section="thumbnail"
+        data-src={thumbSrc}
         style={{
           width: '100%',
           aspectRatio: '8 / 5',
@@ -91,28 +108,21 @@ export function SystemCardCompact({
           overflow: 'hidden',
         }}
         aria-hidden="true"
-      >
-        {/* TODO: <Image src={product.media.thumb?.en ?? product.media.card.en} ... /> */}
-      </div>
+      />
 
-      {/*
-        ── BODY — product name, subline, CTA
-      */}
+      {/* ── BODY */}
       <div
         data-section="body"
         style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
       >
-        {/* Product name */}
         <h3 data-field="name" style={{ margin: 0 }}>
           {product.name}
         </h3>
 
-        {/* Locale-aware subline */}
         <p data-field="subline" style={{ margin: 0 }}>
           {subline}
         </p>
 
-        {/* CTA — only rendered when showCTA is true */}
         {showCTA && (
           <a
             href={ctaHref}
@@ -120,16 +130,11 @@ export function SystemCardCompact({
             data-event-source={product.eventSource}
             aria-label={`${product.name} — ${locale === 'de' ? 'System ansehen' : 'View system'}`}
           >
-            {/* TODO: translate CTA label via next-intl or registry ctaPrimary */}
+            {/* TODO: translate via next-intl or registry ctaPrimary override */}
             {locale === 'de' ? 'System ansehen →' : 'View system →'}
           </a>
         )}
       </div>
-
-      {/*
-        ── DOMAIN LABEL (compact variant always hides domain)
-        Domain is visible on the full variant only.
-      */}
     </article>
   )
 }

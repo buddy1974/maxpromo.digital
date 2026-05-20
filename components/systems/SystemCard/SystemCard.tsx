@@ -6,11 +6,11 @@
  * Shared types for the card family are defined and exported from here.
  *
  * Variants:
- *   compact   → homepage grid (SystemCardCompact)
- *   featured  → featured sections (SystemCardFeatured)
- *   full      → systems page and products index (inline below)
- *   admin     → /os/systems registry table row (inline below)
- *   table     → future tabular listing (inline below)
+ *   compact   → thumbnail-first mini card (SystemCardCompact)
+ *   featured  → editorial rich card (SystemCardFeatured)
+ *   full      → systems page full card (SystemCardFull)
+ *   admin     → /os/systems registry row (SystemCardAdmin)
+ *   table     → future tabular listing (SystemCardTable)
  *
  * TODO: connect registry consumers
  * TODO: homepage integration (HOMEPAGE_PRODUCTS → variant='compact')
@@ -20,6 +20,9 @@
 import type { ProductEntry } from '@/lib/registry/types'
 import { SystemCardCompact } from './SystemCardCompact'
 import { SystemCardFeatured } from './SystemCardFeatured'
+import { SystemCardFull } from './SystemCardFull'
+import { SystemCardAdmin } from './SystemCardAdmin'
+import { SystemCardTable } from './SystemCardTable'
 
 // =============================================================================
 // SHARED TYPES — imported by all variants
@@ -60,11 +63,12 @@ export interface SystemCardProps {
  *
  * Import this component whenever you need a product card.
  * Pass `variant` to select the rendering mode.
- * All variant-specific components are internal to this folder.
+ * All variant-specific components live in this folder.
  *
  * @example
  * <SystemCard product={p} variant="compact" locale="de" />
  * <SystemCard product={p} variant="full" showBadge showDomain showCTA />
+ * <SystemCard product={p} variant="admin" />
  */
 export default function SystemCard({
   product,
@@ -75,7 +79,6 @@ export default function SystemCard({
   showCTA = true,
 }: SystemCardProps) {
 
-  // ── Compact — homepage grid
   if (variant === 'compact') {
     return (
       <SystemCardCompact
@@ -86,7 +89,6 @@ export default function SystemCard({
     )
   }
 
-  // ── Featured — editorial featured sections
   if (variant === 'featured') {
     return (
       <SystemCardFeatured
@@ -99,54 +101,32 @@ export default function SystemCard({
     )
   }
 
-  // ── Full — systems page and products index
   if (variant === 'full') {
     return (
-      <article
-        data-slug={product.slug}
-        data-variant="full"
-        style={{ position: 'relative' }}
-      >
-        {/*
-          TODO: implement full variant
-          Sections: thumbnail image, status badge (if showBadge), category label,
-          product name, subline, 3 bullets, domain footer (if showDomain),
-          primary + secondary CTA (if showCTA)
-          Design reference: /public/images/systems/[slug]/card/[slug]-[locale].png
-        */}
-        <div data-shell="full" style={{ display: 'none' }} aria-hidden="true" />
-      </article>
+      <SystemCardFull
+        product={product}
+        locale={locale}
+        showBadge={showBadge}
+        showDomain={showDomain}
+        showCTA={showCTA}
+      />
     )
   }
 
-  // ── Admin — /os/systems registry view
   if (variant === 'admin') {
     return (
-      <div
-        data-slug={product.slug}
-        data-variant="admin"
-        role="row"
-      >
-        {/*
-          TODO: implement admin variant
-          Columns: product name, domain (link), status dropdown, maturity,
-          featured toggle, priority_score, demo URL, health indicator,
-          action buttons (open system, open landing, open domain, book demo)
-        */}
-        <div data-shell="admin" style={{ display: 'none' }} aria-hidden="true" />
-      </div>
+      <SystemCardAdmin
+        product={product}
+        locale={locale}
+      />
     )
   }
 
-  // ── Table — future tabular listing
-  // Placeholder — not yet designed.
+  // ── Table / fallback
   return (
-    <div
-      data-slug={product.slug}
-      data-variant="table"
-    >
-      {/* TODO: implement table variant */}
-      <div data-shell="table" style={{ display: 'none' }} aria-hidden="true" />
-    </div>
+    <SystemCardTable
+      product={product}
+      locale={locale}
+    />
   )
 }
