@@ -1,28 +1,18 @@
 /**
  * components/systems/SystemCard/SystemCardFeatured.tsx
  *
- * Featured card variant — used in featured sections and editorial highlights.
- * Shows: thumbnail (card size), status badge (if live), product name, headline,
- *        3 bullets, domain footer (optional), primary + secondary CTA (optional).
+ * Featured card variant — large image, category badge, headline,
+ * 3-bullet list, domain, primary + secondary CTA.
  *
- * Richer than Compact, leaner than Full (no HOW IT WORKS strip).
- * Intended for: homepage featured block if ever reintroduced, campaign pages,
- * seasonal highlights, landing page embeds.
- *
- * Consumer:
- *   Rendered by SystemCard with variant='featured'
- *   Rendered by SystemGrid with variant='featured'
- *
- * TODO: connect registry consumers
- * TODO: add next/image for thumbnail rendering
- * TODO: wire brand color accent to headline word highlighting
+ * Used on: systems page (2-col grid), products page (2-col grid)
  */
 
+import Image from 'next/image'
 import type { ProductEntry } from '@/lib/registry/types'
 import type { SystemCardProps } from './SystemCard'
 
 // =============================================================================
-// FEATURED-SPECIFIC PROPS
+// TYPES
 // =============================================================================
 
 export interface SystemCardFeaturedProps
@@ -32,21 +22,44 @@ export interface SystemCardFeaturedProps
   > {}
 
 // =============================================================================
+// HELPERS
+// =============================================================================
+
+function resolvePrimaryLabel(product: ProductEntry, locale: string): string {
+  if (product.ctaPrimary) {
+    return locale === 'de' && product.ctaPrimary.de
+      ? product.ctaPrimary.de
+      : product.ctaPrimary.en
+  }
+  if (locale === 'de') {
+    return product.ctaType === 'platform' ? 'Plattform erkunden →' : 'System ansehen →'
+  }
+  return product.ctaType === 'platform' ? 'Explore platform →' : 'View system →'
+}
+
+function resolveSecondaryLabel(product: ProductEntry, locale: string): string {
+  if (product.ctaSecondary) {
+    return locale === 'de' && product.ctaSecondary.de
+      ? product.ctaSecondary.de
+      : product.ctaSecondary.en
+  }
+  if (locale === 'de') {
+    return product.ctaType === 'platform' ? 'Fahrer werden →' : 'Kostenlosen Setup anfragen →'
+  }
+  return product.ctaType === 'platform' ? 'Become a driver →' : 'Book free setup →'
+}
+
+const CATEGORY_LABELS: Record<string, { en: string; de: string }> = {
+  'business-system':    { en: 'Business System',    de: 'Betriebssystem'       },
+  'platform':           { en: 'Platform',           de: 'Plattform'            },
+  'personal-finance':   { en: 'Personal Finance',   de: 'Privatfinanzen'       },
+  'ecosystem':          { en: 'Ecosystem',          de: 'Ökosystem'            },
+}
+
+// =============================================================================
 // COMPONENT
 // =============================================================================
 
-/**
- * SystemCardFeatured — rich editorial card.
- *
- * Shows the product name, headline, 3 governance-enforced bullets,
- * and optional status badge, domain label, and CTA pair.
- *
- * Bullets are locale-aware and must match the BulletTuple (exactly 3).
- * The tuple is enforced at compile time in the registry.
- *
- * @example
- * <SystemCard product={p} variant="featured" locale="de" showBadge showDomain showCTA />
- */
 export function SystemCardFeatured({
   product,
   locale = 'de',
@@ -55,45 +68,25 @@ export function SystemCardFeatured({
   showCTA = true,
 }: SystemCardFeaturedProps) {
 
-  // ── Locale-aware content helpers
   const headline = locale === 'de' && product.headline.de
     ? product.headline.de
     : product.headline.en
 
-  const subline = locale === 'de' && product.subline.de
-    ? product.subline.de
-    : product.subline.en
-
-  // Bullets are a BulletTuple — readonly [string, string, string]
-  // TypeScript guarantees exactly 3 items; no runtime length check needed.
   const bullets = locale === 'de' && product.bullets.de
     ? product.bullets.de
     : product.bullets.en
 
-  // ── CTA labels — use registry override if set, otherwise use ctaType default
-  const primaryLabel = (() => {
-    if (product.ctaPrimary) {
-      return locale === 'de' && product.ctaPrimary.de
-        ? product.ctaPrimary.de
-        : product.ctaPrimary.en
-    }
-    // Default labels per ctaType (governance rule Section 3)
-    if (locale === 'de') {
-      return product.ctaType === 'platform' ? 'Plattform erkunden →' : 'System ansehen →'
-    }
-    return product.ctaType === 'platform' ? 'Explore platform →' : 'View system →'
-  })()
+  const cardSrc = locale === 'de' && product.media.card.de
+    ? product.media.card.de
+    : product.media.card.en
 
-  const secondaryLabel = (() => {
-    if (product.ctaSecondary) {
-      return locale === 'de' && product.ctaSecondary.de
-        ? product.ctaSecondary.de
-        : product.ctaSecondary.en
-    }
-    if (locale === 'de') {
-      return product.ctaType === 'platform' ? 'Fahrer werden →' : 'Kostenlosen Setup anfragen →'
-    }
-    return product.ctaType === 'platform' ? 'Become a driver →' : 'Book free setup →'
+  const primaryLabel   = resolvePrimaryLabel(product, locale)
+  const secondaryLabel = resolveSecondaryLabel(product, locale)
+
+  const categoryLabel = (() => {
+    const entry = CATEGORY_LABELS[product.category]
+    if (!entry) return product.category
+    return locale === 'de' ? entry.de : entry.en
   })()
 
   return (
@@ -101,130 +94,112 @@ export function SystemCardFeatured({
       data-slug={product.slug}
       data-variant="featured"
       data-category={product.category}
-      style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.06] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5)] bg-[hsl(240_12%_7%)] transition-shadow duration-300 hover:shadow-[0_12px_48px_-8px_rgba(0,0,0,0.8)]"
     >
-      {/*
-        ── THUMBNAIL (card size — full landscape image)
-        TODO: replace with next/image
-        TODO: locale-aware: use product.media.card.de when locale === 'de' && de exists
-        TODO: apply brandColor as an accent overlay or border-top strip
-        Governance: layout A = human RIGHT, layout B = scene LEFT (see VG-07)
-      */}
+      {/* Brand accent top bar */}
       <div
-        data-section="thumbnail"
-        data-layout={product.layoutVariant}
-        style={{
-          width: '100%',
-          aspectRatio: '19 / 10',
-          background: product.backgroundDark ? 'hsl(240 14% 4%)' : 'hsl(0 0% 97%)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
+        className="absolute top-0 left-0 right-0 h-[2px] z-10"
+        style={{ background: product.brandColor }}
+        aria-hidden="true"
+      />
+
+      {/* ── IMAGE */}
+      <div
+        className="relative w-full overflow-hidden"
+        style={{ aspectRatio: '19 / 10' }}
         aria-hidden="true"
       >
-        {/* TODO: <Image src={product.media.card.en} alt={product.name} fill /> */}
+        {cardSrc ? (
+          <Image
+            src={`/${cardSrc}`}
+            alt={product.name}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-[hsl(240_14%_4%)]" />
+        )}
 
-        {/* Brand color accent bar — top of card (governance VG-02) */}
-        <div
-          data-section="brand-accent"
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '3px',
-            background: product.brandColor,
-          }}
-          aria-hidden="true"
-        />
+        {/* Bottom gradient to body */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(240_12%_7%)] via-transparent to-transparent opacity-50 pointer-events-none" />
+
+        {/* Live badge */}
+        {showBadge && product.status === 'live' && (
+          <div className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#080808]/80 backdrop-blur-sm border border-[#F97316]/25 z-10">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F97316] animate-pulse" />
+            <span className="font-mono text-[9px] text-[#F97316] tracking-widest uppercase font-bold">Live</span>
+          </div>
+        )}
       </div>
 
       {/* ── BODY */}
-      <div
-        data-section="body"
-        style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
-      >
-        {/* Status badge — only rendered when showBadge and product is live */}
-        {showBadge && product.status === 'live' && (
-          <span data-field="status-badge" aria-label="Live">
-            {/* TODO: style with LIVE badge (orange, uppercase, monospace) */}
-            LIVE
-          </span>
-        )}
+      <div className="flex flex-col flex-1 px-6 pt-5 pb-6 gap-4">
 
-        {/* Category label */}
-        <span data-field="category">
-          {/* TODO: translate category label */}
-          {product.category}
+        {/* Category badge */}
+        <span className="self-start font-mono text-[10px] text-[#F97316] bg-[#F97316]/10 border border-[#F97316]/20 px-2.5 py-1 rounded tracking-widest uppercase">
+          {categoryLabel}
         </span>
 
-        {/* Product name */}
-        <h3 data-field="name" style={{ margin: 0 }}>
-          {product.name}
-        </h3>
+        {/* Name + headline */}
+        <div className="space-y-1.5">
+          <h3 className="m-0 text-xl font-bold leading-tight tracking-tight text-[hsl(40_30%_96%)]">
+            {product.name}
+          </h3>
+          <p className="m-0 font-mono text-[13px] text-[hsl(40_12%_65%)] leading-relaxed">
+            {headline}
+          </p>
+        </div>
 
-        {/* Headline — locale-aware */}
-        <p data-field="headline" style={{ margin: 0 }}>
-          {/*
-            TODO: highlight the accent word using product.brandColor
-            The exact word is determined by brand guidelines — not in registry yet.
-          */}
-          {headline}
-        </p>
-
-        {/* Subline — locale-aware */}
-        <p data-field="subline" style={{ margin: 0 }}>
-          {subline}
-        </p>
-
-        {/* Bullets — BulletTuple guarantees exactly 3 (VG-09) */}
-        <ul data-field="bullets" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        {/* Bullets — BulletTuple guarantees exactly 3 */}
+        <ul className="list-none p-0 m-0 space-y-2">
           {bullets.map((bullet, i) => (
-            <li key={i} data-bullet-index={i}>
-              {/* TODO: style bullet icon with product.brandColor */}
-              {bullet}
+            <li key={i} className="flex items-start gap-2.5">
+              <span
+                className="font-mono text-[11px] font-bold mt-0.5 flex-shrink-0"
+                style={{ color: product.brandColor }}
+                aria-hidden="true"
+              >
+                ✓
+              </span>
+              <span className="font-mono text-[13px] text-[hsl(40_12%_65%)] leading-snug">
+                {bullet}
+              </span>
             </li>
           ))}
         </ul>
 
-        {/* Domain footer — only rendered when showDomain is true */}
-        {showDomain && (
+        {/* Domain */}
+        {showDomain && product.domain && (
           <a
-            href={product.systemUrl}
+            href={product.systemUrl ?? '#'}
             target="_blank"
             rel="noopener noreferrer"
-            data-field="domain"
-            aria-label={`${product.name} — ${product.domain}`}
+            className="font-mono text-[10px] text-[hsl(240_8%_35%)] tracking-wider hover:text-[hsl(40_12%_65%)] transition-colors self-start"
           >
-            {/* TODO: style as small monospace grey text (bottom of card, VG-12) */}
             {product.domain}
           </a>
         )}
 
-        {/* CTA pair — only rendered when showCTA is true */}
+        {/* CTA pair */}
         {showCTA && (
-          <div data-field="cta-group">
-            {/* Primary CTA — links to demo URL or system URL */}
+          <div className="flex flex-wrap items-center gap-3 mt-auto pt-4 border-t border-white/[0.06]">
             <a
               href={product.demoUrl ?? product.systemUrl}
               target={product.demoUrl ? '_blank' : undefined}
               rel={product.demoUrl ? 'noopener noreferrer' : undefined}
-              data-field="cta-primary"
               data-event-source={product.eventSource}
               aria-label={primaryLabel}
+              className="font-mono text-[11px] font-bold uppercase tracking-widest bg-[#F97316] text-[#080808] px-5 py-2.5 hover:bg-[#EA6A00] transition-colors"
             >
-              {/* TODO: style as orange button (#F97316) — governance VG-03 */}
               {primaryLabel}
             </a>
-
-            {/* Secondary CTA — links to booking/contact */}
             <a
               href={product.bookDemoUrl}
-              data-field="cta-secondary"
               data-event-source={product.eventSource}
               aria-label={secondaryLabel}
+              className="font-mono text-[11px] uppercase tracking-widest border border-white/20 text-[hsl(40_30%_96%)] px-5 py-2.5 hover:border-white/40 transition-colors"
             >
-              {/* TODO: style as ghost/border button */}
               {secondaryLabel}
             </a>
           </div>
