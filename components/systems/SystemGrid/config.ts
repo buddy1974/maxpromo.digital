@@ -12,7 +12,7 @@
  *
  * Responsive matrix:
  *   compact:  mobile=1 · tablet(md)=2 · desktop(lg)=3
- *   featured: mobile=1 · tablet(md)=2 · desktop(lg)=3
+ *   featured: mobile=1 · tablet(md)=1 · desktop(lg)=2
  *   full:     mobile=1 · tablet(md)=1 · desktop(lg)=2
  *   admin:    mobile=1 · tablet(md)=1 · desktop(lg)=1
  *   table:    mobile=1 · tablet(md)=1 · desktop(lg)=1
@@ -26,7 +26,7 @@ import type { CardVariant } from '../SystemCard/SystemCard'
  */
 export const RESPONSIVE_GRID_CLASSES: Record<CardVariant, string> = {
   compact:  'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
-  featured: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+  featured: 'grid-cols-1 lg:grid-cols-2',
   full:     'grid-cols-1 lg:grid-cols-2',
   admin:    'grid-cols-1',
   table:    'grid-cols-1',

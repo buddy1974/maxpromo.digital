@@ -88,6 +88,7 @@ export function TrackableLink({
       rel={rel}
       aria-label={ariaLabel}
       aria-hidden={overlay ? true : undefined}
+      tabIndex={overlay ? -1 : undefined}
       data-event-source={dataEventSource}
       onClick={() => {
         trackEvent({ ...event, timestamp: Date.now() } as AnalyticsEvent)
