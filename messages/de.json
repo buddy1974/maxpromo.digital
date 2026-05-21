@@ -25,7 +25,7 @@
     "headline2": "die Ihr Unternehmen führen.",
     "sub": "Für Unternehmer, die genug haben von verpassten Anrufen, langsamen Antworten, wiederkehrender Büroarbeit und Werkzeugen, die nicht zusammenarbeiten. Wir bauen ein einfaches System, das hilft, schneller zu antworten, Kunden nachzufassen, Rechnungen zu organisieren und jede Woche Zeit zu sparen.",
     "ctaPrimary": "Kostenlosen Geschäfts-Check anfragen",
-    "ctaSecondary": "Echtes Beispiel ansehen →",
+    "ctaSecondary": "So funktioniert es →",
     "urgency": "// Kein Druck · 30 Minuten Gespräch · Wir nehmen 3 neue Kunden pro Monat an",
     "stat1Label": "Systeme live",
     "stat2Label": "Anrufe nach Feierabend gefangen",
@@ -228,7 +228,48 @@
     "finalCtaPrimary": "Kostenlosen Geschäfts-Check anfragen",
     "finalCtaSecondary": "Schreiben Sie uns →",
     "finalCtaFootnote": "// Kostenloser Geschäfts-Check · Unverbindlich · Gemäß §19 UStG keine Umsatzsteuer",
-    "builtOnEyebrow": "// gebaut auf"
+    "builtOnEyebrow": "// gebaut auf",
+    "benefits": {
+      "eyebrow": "// Was sich ändert",
+      "title": "Ihr Betrieb.",
+      "titleAccent": "Läuft besser.",
+      "b1Title": "Jede Kundenanfrage erfasst.",
+      "b1Desc": "WhatsApp, Website, E-Mail, Telefon. Jede Nachricht erfasst, weitergeleitet und bestätigt — auch nachts.",
+      "b2Title": "Rechnungen raus. Geld kommt.",
+      "b2Desc": "Rechnungen gehen automatisch raus. Follow-ups laufen von selbst. Sie kümmern sich um die Arbeit, nicht ums Hinterherlaufen.",
+      "b3Title": "Jede Woche sichtbar.",
+      "b3Desc": "Google, Social, WhatsApp. Inhalte gehen pünktlich raus — ohne dass Sie daran denken müssen.",
+      "b4Title": "Weniger Verwaltung. Mehr Arbeit.",
+      "b4Desc": "Repetitive manuelle Schritte entfernt. Ihr Team erledigt, wozu es wirklich gebraucht wird."
+    },
+    "whyUs": {
+      "eyebrow": "// Warum Maxpromo",
+      "title": "Wir installieren es.",
+      "titleAccent": "Wir betreiben es.",
+      "w1Title": "Kein einmaliges Projekt",
+      "w1Desc": "Wir bleiben nach dem Go-live verantwortlich. Das System läuft, wir pflegen es. Sie werden nicht mit Dokumentation und einem Abschied zurückgelassen.",
+      "w2Title": "Fester Umfang. Fester Preis.",
+      "w2Desc": "Sie wissen genau, was gebaut wird und was es kostet, bevor wir anfangen. Kein Scope-Creep, keine versteckten Extras.",
+      "w3Title": "Für deutsche Betriebe gebaut",
+      "w3Desc": "DSGVO-konform. XRechnung-fertig. Gebaut für die Art, wie deutsche Betriebe tatsächlich funktionieren.",
+      "w4Title": "Ein System. Alles verbunden.",
+      "w4Desc": "Wir verbinden die Werkzeuge, die Sie bereits nutzen — Anfragen, Rechnungen, Inhalte, Compliance — an einem Ort."
+    },
+    "proof": {
+      "eyebrow": "// Echte Ergebnisse",
+      "title": "Aus Live-Deployments.",
+      "p1Value": "78%",
+      "p1Label": "weniger manuelle Verarbeitung",
+      "p1Source": "Betriebsmanagement · 6 Wochen",
+      "p2Value": "14.000 £/Mo",
+      "p2Label": "an Betriebskosten eingespart",
+      "p2Source": "Beratung · 4 Wochen",
+      "p3Value": "3 Tage → 4h",
+      "p3Label": "Rechnungszyklus komprimiert",
+      "p3Source": "Logistik · 8 Wochen",
+      "note": "// Ergebnisse aus Live-Systemen. Kundendaten unter NDA.",
+      "viewAll": "Alle Fallstudien ansehen →"
+    }
   },
   "proof": {
     "eyebrow": "// 03 — ERGEBNISSE",

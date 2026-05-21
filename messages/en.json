@@ -25,7 +25,7 @@
     "headline2": "that run your business.",
     "sub": "For business owners tired of missed calls, slow replies, repetitive admin and tools that never work together. We build one simple system that helps you reply faster, follow up with customers, organise invoices and save time every week.",
     "ctaPrimary": "Get my free business check",
-    "ctaSecondary": "See a real example →",
+    "ctaSecondary": "See how it works →",
     "urgency": "// No pressure · 30-min call · We take on 3 new clients a month",
     "stat1Label": "Systems live",
     "stat2Label": "Calls caught after-hours",
@@ -228,7 +228,48 @@
     "finalCtaPrimary": "Get my free business check",
     "finalCtaSecondary": "Talk to us →",
     "finalCtaFootnote": "// Free business check · No commitment · Gemäß §19 UStG keine Umsatzsteuer",
-    "builtOnEyebrow": "// built on"
+    "builtOnEyebrow": "// built on",
+    "benefits": {
+      "eyebrow": "// What changes",
+      "title": "Your business.",
+      "titleAccent": "Running better.",
+      "b1Title": "Every customer enquiry, caught.",
+      "b1Desc": "WhatsApp, website, email, phone. Every message captured, routed, and acknowledged — even overnight.",
+      "b2Title": "Invoices sent. Money arrives.",
+      "b2Desc": "Invoices go out automatically. Follow-ups run on their own. You focus on the work, not the chasing.",
+      "b3Title": "Visible every week.",
+      "b3Desc": "Google, social, WhatsApp. Content published on schedule — without you thinking about it.",
+      "b4Title": "Less admin. More work.",
+      "b4Desc": "Repetitive manual steps removed. Your team does what it is actually needed for."
+    },
+    "whyUs": {
+      "eyebrow": "// Why Maxpromo",
+      "title": "We install it.",
+      "titleAccent": "We run it.",
+      "w1Title": "Not a one-time project",
+      "w1Desc": "We stay responsible after go-live. The system runs, we maintain it. You are not left with documentation and a goodbye.",
+      "w2Title": "Fixed scope. Fixed price.",
+      "w2Desc": "You know exactly what gets built and what it costs before we start. No scope creep, no hidden extras.",
+      "w3Title": "Built for German businesses",
+      "w3Desc": "DSGVO-compliant. XRechnung-ready. Built for the way German businesses actually operate.",
+      "w4Title": "One system. Everything connected.",
+      "w4Desc": "We connect the tools you already use — enquiries, invoicing, content, compliance — in one place."
+    },
+    "proof": {
+      "eyebrow": "// Real results",
+      "title": "From live deployments.",
+      "p1Value": "78%",
+      "p1Label": "reduction in manual processing time",
+      "p1Source": "Operations · 6 weeks",
+      "p2Value": "£14k/mo",
+      "p2Label": "saved in operational costs",
+      "p2Source": "Professional services · 4 weeks",
+      "p3Value": "3 days → 4h",
+      "p3Label": "invoice cycle compressed",
+      "p3Source": "Logistics · 8 weeks",
+      "note": "// Results from live production systems. Client details withheld under NDA.",
+      "viewAll": "See all case studies →"
+    }
   },
   "proof": {
     "eyebrow": "// 03 — RESULTS",
