@@ -20,7 +20,25 @@
       "Bash(find . -type f '\\(' -name '*.tsx' -o -name '*.ts' -o -name '*.css' '\\)' -not -path './node_modules/*' -not -path './.next/*' -exec sed -i -e 's/var\\(--font-space-grotesk\\)/var\\(--font-inter\\)/g' -e 's/var\\(--font-dm-sans\\)/var\\(--font-inter\\)/g' -e 's/var\\(--font-space-mono\\)/var\\(--font-roboto-mono\\)/g' -e 's/var\\(--font-ibm-mono\\)/var\\(--font-roboto-mono\\)/g' -e 's/var\\(--font-syne\\)/var\\(--font-inter\\)/g' '{}' +)",
       "Bash(xargs sed *)",
       "Bash(curl *)",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(git tag *)",
+      "Bash(ls lib/)",
+      "Bash(ls lib/registry/)",
+      "Bash(grep -v \"//\")",
+      "Bash(Remove-Item \"C:\\\\Users\\\\loneb\\\\Documents\\\\ai-software-dev\\\\projects\\\\maxpromo.digital\\\\lib\\\\registry\\\\adapters\\\\utils.ts\")",
+      "PowerShell(Remove-Item *)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\loneb\\\\Desktop\\\\mpd\\\\app images\")",
+      "Bash(Select-Object Name, Length)",
+      "Bash(Format-Table)",
+      "Bash(cp 'C:/Users/loneb/Desktop/mpd/app images/RESTO-EN.png' C:/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/public/images/systems/restaurant-os/card/restaurant-os-en.png)",
+      "Bash(cp 'C:/Users/loneb/Desktop/mpd/app images/RESTO-de.png' C:/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/public/images/systems/restaurant-os/card/restaurant-os-de.png)",
+      "Bash(cp 'C:/Users/loneb/Desktop/mpd/app images/handwork-EN.png' C:/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/public/images/systems/handwerk-os/card/handwerk-os-en.png)",
+      "Bash(cp 'C:/Users/loneb/Desktop/mpd/app images/handwork-DE.png' C:/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/public/images/systems/handwerk-os/card/handwerk-os-de.png)",
+      "Bash(cp 'C:/Users/loneb/Desktop/mpd/app images/praxis-en.png' C:/Users/loneb/Documents/ai-software-dev/projects/maxpromo.digital/public/images/systems/praxis-os/card/praxis-os-en.png)",
+      "Bash(Get-ChildItem \"C:\\\\Users\\\\loneb\\\\Documents\\\\ai-software-dev\\\\projects\\\\maxpromo.digital\\\\public\\\\images\\\\systems\" -Recurse -Filter \"*.png\")",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loneb\\\\Documents\\\\ai-software-dev\\\\projects\\\\maxpromo.digital\\\\app\" -Recurse -Filter \"page.tsx\")"
     ]
   }
 }

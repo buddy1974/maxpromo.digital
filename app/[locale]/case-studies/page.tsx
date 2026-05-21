@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 
 export const metadata: Metadata = {
   title: 'Case Studies',
@@ -39,9 +39,9 @@ const CASE_STUDIES = [
   },
 ]
 
-const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans = { fontFamily: 'var(--font-inter)' } as const
+const mono = { fontFamily: 'var(--font-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-heading)' } as const
+const sans = { fontFamily: 'var(--font-body)' } as const
 
 export default function CaseStudiesPage() {
   return (

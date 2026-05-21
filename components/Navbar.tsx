@@ -10,13 +10,11 @@ import LocaleSwitcher from './LocaleSwitcher'
  * label flips with the active locale. Keys live in messages/{de,en}.json.
  */
 const NAV_LINKS = [
-  { href: '/services',        key: 'services'  },
-  { href: '/systems',         key: 'systems'   },
-  { href: '/automation-lab',  key: 'reference' },
-  { href: '/pricing',         key: 'pricing'   },
-  { href: '/blog',            key: 'blog'      },
-  { href: '/about',           key: 'about'     },
-  { href: '/contact',         key: 'contact'   },
+  { href: '/services',  key: 'services' },
+  { href: '/systems',   key: 'systems'  },
+  { href: '/blog',      key: 'blog'     },
+  { href: '/about',     key: 'about'    },
+  { href: '/contact',   key: 'contact'  },
 ] as const
 
 const navLinkBase: React.CSSProperties = {

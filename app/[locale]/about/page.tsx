@@ -10,9 +10,9 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-const mono    = { fontFamily: 'var(--font-roboto-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans    = { fontFamily: 'var(--font-inter)' } as const
+const mono    = { fontFamily: 'var(--font-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-heading)' } as const
+const sans    = { fontFamily: 'var(--font-body)' } as const
 
 interface StackRow {
   id: 'r1' | 'r2' | 'r3'

@@ -3,71 +3,31 @@
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 
-/**
- * Footer columns — four columns of five links each, identical row counts so
- * the heights align on desktop. Order matches the audit directive:
- * Company / Layers / Tools / Legal.
- *
- * The Layers column reflects the operational-layer naming we ship under
- * /services. The old "AI Agentic Workflows / Process Automation / AI
- * Websites / Custom Integration" capabilities-list is gone — that
- * language signalled "AI agency" exactly the way the audit called out.
- */
-/**
- * Footer columns — explicit order per Marcel's directive:
- *   Company · Tools · Services · Legal
- *
- * Five links per column so all four columns end at the same height.
- * The Services column lists operational layers (the systems we
- * install), not capabilities. No tool names ever in any link label —
- * implementation details belong on the architecture page.
- */
-/**
- * Footer columns — locale-driven.
- *
- * Column titles and link labels are translation keys; the strings live
- * in messages/{de,en}.json under footer.* and footer.links.*. Hrefs
- * stay as bare paths — the Link import from @/i18n/navigation
- * auto-prefixes the current locale.
- */
 type LinkKey =
-  | 'services' | 'systems' | 'caseStudies' | 'pricing' | 'contact'
-  | 'automationAudit' | 'automationLab' | 'discoveryBrief' | 'estimateTool' | 'aiWebsites'
-  | 'intakeRouting' | 'dispatchField' | 'documentFlow' | 'customerTriage' | 'compliance'
-  | 'impressum' | 'privacy' | 'agb' | 'cookiePolicy' | 'dataDeletion'
+  | 'about' | 'services' | 'systems' | 'caseStudies' | 'contact'
+  | 'automationAudit' | 'blog' | 'automationLab'
+  | 'impressum' | 'privacy' | 'agb' | 'dataDeletion'
 
 const columns: Array<{
-  titleKey: 'colCompany' | 'colTools' | 'colServices' | 'colLegal'
+  titleKey: 'colCompany' | 'colResources' | 'colLegal'
   links: Array<{ key: LinkKey; href: string }>
 }> = [
   {
     titleKey: 'colCompany',
     links: [
+      { key: 'about',       href: '/about' },
       { key: 'services',    href: '/services' },
       { key: 'systems',     href: '/systems' },
       { key: 'caseStudies', href: '/case-studies' },
-      { key: 'pricing',     href: '/pricing' },
       { key: 'contact',     href: '/contact' },
     ],
   },
   {
-    titleKey: 'colTools',
+    titleKey: 'colResources',
     links: [
       { key: 'automationAudit', href: '/automation-audit' },
+      { key: 'blog',            href: '/blog' },
       { key: 'automationLab',   href: '/automation-lab' },
-      { key: 'discoveryBrief',  href: '/discovery' },
-      { key: 'estimateTool',    href: '/estimate' },
-      { key: 'aiWebsites',      href: '/ai-websites' },
-    ],
-  },
-  {
-    titleKey: 'colServices',
-    links: [
-      { key: 'intakeRouting',  href: '/services' },
-      { key: 'dispatchField',  href: '/services' },
-      { key: 'documentFlow',   href: '/services' },
-      { key: 'customerTriage', href: '/services' },
-      { key: 'compliance',     href: '/services' },
     ],
   },
   {
@@ -76,14 +36,13 @@ const columns: Array<{
       { key: 'impressum',    href: '/impressum' },
       { key: 'privacy',      href: '/privacy' },
       { key: 'agb',          href: '/agb' },
-      { key: 'cookiePolicy', href: '/privacy#cookies' },
       { key: 'dataDeletion', href: '/data-deletion' },
     ],
   },
 ]
 
 export default function Footer() {
-  const t = useTranslations('footer')
+  const t      = useTranslations('footer')
   const tLinks = useTranslations('footer.links')
 
   return (
@@ -94,12 +53,7 @@ export default function Footer() {
       }}
     >
       {/* CTA strip */}
-      <div
-        style={{
-          borderBottom: '1px solid hsl(40 30% 96% / 0.06)',
-          padding: '3rem 2rem',
-        }}
-      >
+      <div style={{ borderBottom: '1px solid hsl(40 30% 96% / 0.06)', padding: '3rem 2rem' }}>
         <div
           style={{
             maxWidth: '80rem',
@@ -158,13 +112,6 @@ export default function Footer() {
 
       {/* Main footer */}
       <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '3.5rem 2rem' }}>
-        {/*
-          Force 4-column horizontal layout on desktop via a scoped inline
-          media query — Tailwind's `md:grid-cols-4` was not being
-          generated for production (likely a content-scan gap on v4),
-          which collapsed the footer to a 2×2 grid. Inline CSS bypasses
-          Tailwind entirely so the layout is bulletproof.
-        */}
         <style>{`
           .footer-cols-grid {
             display: grid;
@@ -173,7 +120,7 @@ export default function Footer() {
           }
           @media (min-width: 768px) {
             .footer-cols-grid {
-              grid-template-columns: repeat(4, 1fr);
+              grid-template-columns: repeat(3, 1fr);
               gap: 2rem;
               align-items: start;
             }
@@ -207,13 +154,7 @@ export default function Footer() {
           ))}
         </div>
 
-        {/*
-          Bottom strip — two-row symmetric structure instead of the prior
-          four-item flex-wrap which landed asymmetric on medium widths.
-          Row 1: copyright + status (left)  ·  legal identifier (right)
-          Row 2: tiny hidden /portfolio link, right-aligned. Single source
-          of weight on each side reads enterprise, not cluttered.
-        */}
+        {/* Bottom strip */}
         <div
           style={{
             marginTop: '3rem',

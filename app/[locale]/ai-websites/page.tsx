@@ -1,205 +1,255 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
+import { getTranslations, getLocale } from 'next-intl/server'
 
 export const metadata: Metadata = {
-  title: 'AI Websites',
+  title: 'Websites & Business Platforms — Maxpromo Digital',
   description:
-    'Websites enhanced with AI capabilities — chat assistants, automated lead capture, knowledge bots, and smart search systems built with Next.js.',
+    'Websites that do more than look good. Lead capture, booking systems, customer portals, and business automation — all in one platform.',
 }
 
-const FEATURES = [
+const CAPABILITIES = [
   {
-    icon: '◻',
-    title: 'AI Chat Assistants',
-    description:
-      'Embed an AI assistant trained on your business content that answers visitor questions, qualifies leads, and books calls — 24 hours a day.',
+    id: 'c1',
+    icon: '→',
+    titleKey: 'cap1Title',
+    descKey:  'cap1Desc',
   },
   {
-    icon: '↗',
-    title: 'Automated Lead Capture',
-    description:
-      'Intelligently capture and qualify visitors through conversational flows. Only the best leads reach your inbox, pre-qualified and ready to close.',
+    id: 'c2',
+    icon: '◰',
+    titleKey: 'cap2Title',
+    descKey:  'cap2Desc',
   },
   {
-    icon: '⬡',
-    title: 'Knowledge Bots',
-    description:
-      'Deploy a bot trained on your documentation, FAQs, and product information — reducing support volume and improving customer self-service.',
+    id: 'c3',
+    icon: '⊟',
+    titleKey: 'cap3Title',
+    descKey:  'cap3Desc',
   },
   {
-    icon: '⟳',
-    title: 'Smart Search Systems',
-    description:
-      'Replace keyword search with semantic AI search that understands intent, surfacing the right content even when visitors use different phrasing.',
+    id: 'c4',
+    icon: '◇',
+    titleKey: 'cap4Title',
+    descKey:  'cap4Desc',
   },
   {
-    icon: '▸',
-    title: 'Automated Email Sequences',
-    description:
-      'Trigger personalised email sequences based on visitor behaviour, form submissions, or chatbot interactions — connected to your CRM.',
+    id: 'c5',
+    icon: '▤',
+    titleKey: 'cap5Title',
+    descKey:  'cap5Desc',
   },
   {
-    icon: '◆',
-    title: 'Analytics & Reporting',
-    description:
-      'Track AI interaction metrics, lead conversion rates, and chatbot performance from a central dashboard.',
+    id: 'c6',
+    icon: '⌗',
+    titleKey: 'cap6Title',
+    descKey:  'cap6Desc',
   },
-]
+] as const
 
-const TECH_STACK = [
-  { name: 'Next.js 14', desc: 'App Router, server components, edge functions' },
-  { name: 'Claude / OpenAI', desc: 'AI models for chat and content generation' },
-  { name: 'Vercel', desc: 'Global CDN deployment with zero config' },
-  { name: 'Supabase', desc: 'Database, auth, and real-time data' },
-  { name: 'Resend', desc: 'Transactional email and lead notifications' },
-  { name: 'n8n / Make', desc: 'Backend workflow automation and CRM sync' },
-]
+const INDUSTRIES = [
+  'Restaurants',
+  'Clinics & Practices',
+  'Trades businesses',
+  'Care services',
+  'Real estate',
+  'Professional services',
+] as const
 
-const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans = { fontFamily: 'var(--font-inter)' } as const
+export default async function WebsitesPlatformsPage() {
+  const locale = await getLocale()
+  const t      = await getTranslations('websitesPlatforms')
 
-export default function AIWebsitesPage() {
   return (
-    <main style={{ background: '#FFFFFF' }}>
-      {/* Header */}
-      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
-        <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            AI Websites
-          </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: '#0A0A0A', marginBottom: '20px' }}>
-            Websites That Work For You
-          </h1>
-          <p style={{ ...sans, fontSize: '17px', color: '#555555', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
-            Not brochure sites. Dynamic AI-powered platforms that engage visitors,
-            answer questions, qualify leads, and drive conversions — automatically.
-          </p>
-        </div>
-      </section>
+    <main style={{ background: 'hsl(240 14% 4%)' }}>
 
-      {/* Features grid */}
-      <section style={{ background: '#FAFAFA', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>
-            Capabilities
+      {/* Hero */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            {t('eyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#0A0A0A', textAlign: 'center', marginBottom: '3.5rem' }}>
-            AI-Enhanced Capabilities
-          </h2>
-          <div
-            style={{ display: 'grid', gap: '1px', background: '#E5E5E5' }}
-            className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          <h1
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: 'clamp(2.5rem, 5vw, 3.75rem)',
+              letterSpacing: '-0.04em',
+              color: 'hsl(40 30% 96%)',
+              marginBottom: '20px',
+              lineHeight: 1.1,
+            }}
           >
-            {FEATURES.map((f) => (
-              <div
-                key={f.title}
-                style={{ background: '#FFFFFF', padding: '36px' }}
-              >
-                <span style={{ ...mono, fontSize: '20px', color: '#F97316', display: 'block', marginBottom: '16px' }}>
-                  {f.icon}
+            {t('title')}{' '}
+            <span style={{ color: '#F97316' }}>{t('titleAccent')}</span>
+          </h1>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', lineHeight: 1.8, marginBottom: '2rem' }}>
+            {t('intro')}
+          </p>
+
+          {/* Pain → system signal */}
+          <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', paddingTop: '1.5rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+            {(['signal1', 'signal2', 'signal3'] as const).map((k) => (
+              <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ color: '#F97316', fontFamily: 'var(--font-mono)', fontSize: '13px' }}>✓</span>
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)' }}>
+                  {t(k)}
                 </span>
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '10px' }}>
-                  {f.title}
-                </h3>
-                <p style={{ ...sans, fontSize: '15px', color: '#666666', lineHeight: 1.7 }}>{f.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Tech stack */}
-      <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: '1px solid #F0F0F0' }}>
-        <div style={{ maxWidth: '60rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>
-            Tech Stack
-          </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#0A0A0A', textAlign: 'center', marginBottom: '12px' }}>
-            Our Technology Stack
-          </h2>
-          <p style={{ ...sans, fontSize: '17px', color: '#666666', textAlign: 'center', marginBottom: '3.5rem', lineHeight: 1.7 }}>
-            Production-grade technologies chosen for performance, scalability, and AI capability.
-          </p>
+      {/* Pain section */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ maxWidth: '44rem', marginBottom: '3rem' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              {t('painEyebrow')}
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', lineHeight: 1.2 }}>
+              {t('painTitle')}
+            </h2>
+          </div>
           <div
-            style={{ display: 'grid', gap: '1px', background: '#E5E5E5' }}
+            style={{ display: 'grid', gap: '12px' }}
             className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           >
-            {TECH_STACK.map((t) => (
-              <div key={t.name} style={{ background: '#FAFAFA', padding: '28px' }}>
-                <p style={{ ...grotesk, fontWeight: 700, fontSize: '16px', color: '#0A0A0A', letterSpacing: '-0.02em', marginBottom: '6px' }}>
-                  {t.name}
+            {(['pain1', 'pain2', 'pain3', 'pain4', 'pain5', 'pain6'] as const).map((k) => (
+              <div
+                key={k}
+                style={{
+                  background: 'hsl(240 12% 7%)',
+                  border: '1px solid hsl(40 30% 96% / 0.07)',
+                  padding: '24px 28px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px',
+                }}
+              >
+                <span style={{ color: '#F97316', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '14px', paddingTop: '2px' }}>✕</span>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
+                  {t(k)}
                 </p>
-                <p style={{ ...sans, fontSize: '14px', color: '#888888', lineHeight: 1.6 }}>{t.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* This site as a demo */}
-      <section style={{ background: '#FFF4ED', padding: '3.5rem 2rem', borderTop: '1px solid #FFE0CC', borderBottom: '1px solid #FFE0CC' }}>
-        <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-            Live Demo
+      {/* What we build */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3.5rem' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              {t('capEyebrow')}
+            </p>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3.5vw, 2.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', maxWidth: '36rem' }}>
+              {t('capTitle')}
+            </h2>
+          </div>
+          <div
+            style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '16px', overflow: 'hidden' }}
+            className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {CAPABILITIES.map((cap) => (
+              <div
+                key={cap.id}
+                style={{ background: 'hsl(240 12% 7%)', padding: '2.5rem', position: 'relative', overflow: 'hidden' }}
+              >
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.35) 50%, transparent 100%)', pointerEvents: 'none' }} />
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: '#F97316', display: 'block', marginBottom: '20px' }}>
+                  {cap.icon}
+                </span>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '10px' }}>
+                  {t(cap.titleKey)}
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, margin: 0 }}>
+                  {t(cap.descKey)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Industries */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(40 12% 65%)', letterSpacing: '0.15em', textTransform: 'uppercase', flexShrink: 0 }}>
+            {t('industriesLabel')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '24px', color: '#0A0A0A', letterSpacing: '-0.03em', marginBottom: '16px' }}>
-            This website is an AI website
-          </h2>
-          <p style={{ ...sans, fontSize: '15px', color: '#555555', lineHeight: 1.7 }}>
-            MaxPromo.digital itself demonstrates the capabilities we build. The chat assistant
-            in the bottom right, the automation audit tool, and the contact form are all powered
-            by the same AI infrastructure we deploy for clients.
-          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            {INDUSTRIES.map((ind) => (
+              <span
+                key={ind}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '11px',
+                  color: 'hsl(40 12% 65%)',
+                  border: '1px solid hsl(40 30% 96% / 0.08)',
+                  background: 'hsl(240 12% 8%)',
+                  padding: '5px 14px',
+                  letterSpacing: '0.04em',
+                }}
+              >
+                {ind}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section style={{ background: '#0A0A0A', padding: '5rem 2rem' }}>
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
-            Start a Project
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
+            {t('ctaEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#FAFAFF', marginBottom: '20px' }}>
-            Ready for an AI-powered website?
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+            {t('ctaTitle')}
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: '#6B6B7A', marginBottom: '2.5rem', lineHeight: 1.8 }}>
-            Let&apos;s discuss what your site could do with AI built in from the ground up.
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
+            {t('ctaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link
-              href="/contact"
+              href="/automation-audit"
+              className="shine"
               style={{
-                ...mono,
+                fontFamily: 'var(--font-mono)',
                 fontWeight: 700,
                 fontSize: '15px',
-                color: '#0A0A0A',
+                color: 'hsl(240 14% 4%)',
                 background: '#F97316',
                 padding: '14px 28px',
                 textDecoration: 'none',
                 display: 'inline-block',
+                borderRadius: '10px',
               }}
             >
-              Start a Project
+              {t('ctaPrimary')}
             </Link>
             <Link
-              href="/automation-audit"
+              href="/contact"
+              className="glass"
               style={{
-                ...sans,
-                fontWeight: 500,
+                fontFamily: 'var(--font-body)',
                 fontSize: '15px',
-                color: '#FAFAFF',
-                border: '1px solid rgba(255,255,255,0.15)',
+                color: 'hsl(40 30% 96%)',
                 padding: '14px 28px',
                 textDecoration: 'none',
                 display: 'inline-block',
+                borderRadius: '10px',
               }}
             >
-              Free Automation Audit
+              {t('ctaSecondary')}
             </Link>
           </div>
         </div>
       </section>
+
     </main>
   )
 }
