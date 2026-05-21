@@ -38,7 +38,10 @@
       "Bash(Get-ChildItem \"C:\\\\Users\\\\loneb\\\\Documents\\\\ai-software-dev\\\\projects\\\\maxpromo.digital\\\\public\\\\images\\\\systems\" -Recurse -Filter \"*.png\")",
       "Bash(Select-Object FullName)",
       "Bash(Sort-Object FullName)",
-      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loneb\\\\Documents\\\\ai-software-dev\\\\projects\\\\maxpromo.digital\\\\app\" -Recurse -Filter \"page.tsx\")"
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loneb\\\\Documents\\\\ai-software-dev\\\\projects\\\\maxpromo.digital\\\\app\" -Recurse -Filter \"page.tsx\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\loneb\\\\Documents\\\\ai-software-dev\\\\projects\\\\maxpromo.digital\" -Recurse -Force)",
+      "Bash(ConvertTo-Csv -NoTypeInformation)",
+      "Bash(Out-String)"
     ]
   }
 }

@@ -35,7 +35,73 @@
     "panelStatusLive": "LIVE",
     "panelLastEvent": "// zuletzt",
     "panelUptime": "läuft",
-    "eyebrow": "WIR BAUEN SYSTEME"
+    "eyebrow": "WIR BAUEN SYSTEME",
+    "ticker": [
+      "● Neue Audit-Anfrage — Essen",
+      "◆ Restaurant OS aktiv",
+      "⊟ KI-Agent online — antwortet",
+      "→ Rechnung erstellt — Maxpromo OS",
+      "◆ Workflow abgeschlossen — 3,2s",
+      "⊟ Neuer Lead erfasst",
+      "● CRM synchronisiert — 14 Datensätze",
+      "◆ Automatisierung abgeschlossen",
+      "→ Bewertung gesammelt — Google",
+      "● Maxpromo Digital LIVE"
+    ],
+    "slides": [
+      {
+        "label": "SYSTEM STATUS",
+        "items": [
+          "+14 Leads heute",
+          "KI aktiv",
+          "Revenue-Pipeline live"
+        ],
+        "meta": [
+          "+2 ↑",
+          "antwortet",
+          "● live"
+        ]
+      },
+      {
+        "label": "HEUTE",
+        "items": [
+          "37 Aufgaben automatisiert",
+          "11h eingespart",
+          "Keine verpassten Anrufe"
+        ],
+        "meta": [
+          "+5 diese Stunde",
+          "████████░░",
+          "✓"
+        ]
+      },
+      {
+        "label": "BUSINESS OS",
+        "items": [
+          "CRM synchronisiert",
+          "Termine gebucht",
+          "Rechnungen aktiv"
+        ],
+        "meta": [
+          "14 Datensätze",
+          "✓ bestätigt",
+          "3 offen"
+        ]
+      },
+      {
+        "label": "BUILD-PIPELINE",
+        "items": [
+          "Claude verbunden",
+          "18 Workflows aktiv",
+          "Deploy erfolgreich"
+        ],
+        "meta": [
+          "● online",
+          "läuft",
+          "✓ vor 2 Min"
+        ]
+      }
+    ]
   },
   "footer": {
     "ctaEyebrow": "// Wo verlieren Sie Kunden, Zeit oder Geld?",

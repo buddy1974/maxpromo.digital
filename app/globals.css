@@ -718,3 +718,60 @@ button.os-nav-item {
     box-shadow: none;
   }
 }
+
+/* ─── HERO SYSTEM — Ken Burns (4 directional variants) ─── */
+
+@keyframes ken-burns-1 {
+  from { transform: scale(1)    translate(0, 0);       }
+  to   { transform: scale(1.06) translate(-1.5%, -0.8%); }
+}
+@keyframes ken-burns-2 {
+  from { transform: scale(1)    translate(0, 0);      }
+  to   { transform: scale(1.06) translate(1.5%, -0.5%); }
+}
+@keyframes ken-burns-3 {
+  from { transform: scale(1)    translate(-1.5%, 0);  }
+  to   { transform: scale(1.06) translate(0, -1%);    }
+}
+@keyframes ken-burns-4 {
+  from { transform: scale(1.02) translate(0, -0.8%);  }
+  to   { transform: scale(1.06) translate(1%, 0);     }
+}
+
+.hero-ken-burns-1 { animation: ken-burns-1 8s ease-in-out both; }
+.hero-ken-burns-2 { animation: ken-burns-2 8s ease-in-out both; }
+.hero-ken-burns-3 { animation: ken-burns-3 8s ease-in-out both; }
+.hero-ken-burns-4 { animation: ken-burns-4 8s ease-in-out both; }
+
+/* Slide progress bar fill */
+@keyframes progress-fill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+.hero-progress-bar {
+  animation: progress-fill 6.5s linear both;
+}
+
+/* Live card pulse dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1);   }
+  50%       { opacity: 0.4; transform: scale(0.75); }
+}
+.pulse-dot-1 { animation: pulse-dot 2s ease-in-out infinite; }
+.pulse-dot-2 { animation: pulse-dot 2s ease-in-out 0.4s infinite; }
+.pulse-dot-3 { animation: pulse-dot 2s ease-in-out 0.8s infinite; }
+
+/* Ticker scroll */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.hero-ticker-track {
+  animation: ticker-scroll 45s linear infinite;
+}
+
+/* Pain card hover — CSS for server-component fallback */
+.pain-card-img { transition: transform 500ms var(--ease-out-expo); }
+.pain-card:hover .pain-card-img { transform: scale(1.04); }
+.pain-card { transition: box-shadow 300ms ease; }
+.pain-card:hover { box-shadow: 0 0 40px rgba(249,115,22,0.07); }

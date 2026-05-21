@@ -6,6 +6,8 @@ import { getLatestPosts } from '@/lib/blog/posts'
 import { PainSlider } from '@/components/ui/PainSlider'
 import { PainCards } from '@/components/homepage/PainCards'
 import { SystemsTabs } from '@/components/homepage/SystemsTabs'
+import { ProofMetrics } from '@/components/homepage/ProofMetrics'
+import type { ProofMetric } from '@/components/homepage/ProofMetrics'
 
 /* ─── HELPERS ─── */
 
@@ -153,21 +155,14 @@ export default async function HomePage() {
               {tProof('viewAll')}
             </Link>
           </div>
-          <div style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '16px', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-3">
-            {PROOF_REFS.map((id) => (
-              <div key={id} style={{ background: 'hsl(240 12% 7%)', padding: '2.5rem' }}>
-                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F97316', lineHeight: 1, marginBottom: '12px' }}>
-                  {tProof(`${id}Value`)}
-                </p>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', lineHeight: 1.5, marginBottom: '10px' }}>
-                  {tProof(`${id}Label`)}
-                </p>
-                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(40 12% 50%)', letterSpacing: '0.05em' }}>
-                  {tProof(`${id}Source`)}
-                </p>
-              </div>
-            ))}
-          </div>
+          <ProofMetrics
+            metrics={PROOF_REFS.map((id): ProofMetric => ({
+              id,
+              value:  tProof(`${id}Value`),
+              label:  tProof(`${id}Label`),
+              source: tProof(`${id}Source`),
+            }))}
+          />
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 28%)', marginTop: '1rem', letterSpacing: '0.05em' }}>
             {tProof('note')}
           </p>
