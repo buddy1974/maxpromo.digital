@@ -11,13 +11,11 @@
     "menuOpen": "Menü öffnen",
     "menuClose": "Menü schließen"
   },
-
   "localeSwitcher": {
     "label": "Sprache",
     "de": "Deutsch",
     "en": "English"
   },
-
   "hero": {
     "statusOperational": "FÜR ECHTE UNTERNEHMEN IM EINSATZ",
     "statusAgents": "Für KMU gebaut",
@@ -38,7 +36,6 @@
     "panelLastEvent": "// zuletzt",
     "panelUptime": "läuft"
   },
-
   "footer": {
     "ctaEyebrow": "// Wo verlieren Sie Kunden, Zeit oder Geld?",
     "ctaHeadline": "Lassen Sie uns in 30 Minuten prüfen, was verbessert werden kann.",
@@ -66,14 +63,28 @@
     "operationalSignal": "Immer erreichbar",
     "tax": "St.-Nr. 111/5339/7597 · FA Essen-NordOst"
   },
-
   "home": {
     "marquee": [
-      "WEBSITE AKTUELL · 24/7", "KUNDEN NACHFASSEN", "RECHNUNGEN ORGANISIEREN", "BEWERTUNGEN BEANTWORTEN",
-      "WENIGER VERPASSTE ANRUFE", "BESTAND VERWALTEN", "POSTFACH AUFRÄUMEN", "GOOGLE AKTUELL HALTEN",
-      "BUCHUNGEN EINFACHER", "WENIGER PAPIERKRAM", "FOTO-ZU-ANGEBOT", "ZAHLUNGEN VERFOLGEN",
-      "SOCIAL-MEDIA-BEITRÄGE", "MITARBEITER ERINNERN", "SCHNELLERE ANTWORTEN", "TERMINE VERWALTEN",
-      "ÖFFNUNGSZEITEN AKTUELL", "MONATSBERICHT", "REGELMÄSSIGE BEITRÄGE", "KEINE ANFRAGEN VERPASSEN"
+      "WEBSITE AKTUELL · 24/7",
+      "KUNDEN NACHFASSEN",
+      "RECHNUNGEN ORGANISIEREN",
+      "BEWERTUNGEN BEANTWORTEN",
+      "WENIGER VERPASSTE ANRUFE",
+      "BESTAND VERWALTEN",
+      "POSTFACH AUFRÄUMEN",
+      "GOOGLE AKTUELL HALTEN",
+      "BUCHUNGEN EINFACHER",
+      "WENIGER PAPIERKRAM",
+      "FOTO-ZU-ANGEBOT",
+      "ZAHLUNGEN VERFOLGEN",
+      "SOCIAL-MEDIA-BEITRÄGE",
+      "MITARBEITER ERINNERN",
+      "SCHNELLERE ANTWORTEN",
+      "TERMINE VERWALTEN",
+      "ÖFFNUNGSZEITEN AKTUELL",
+      "MONATSBERICHT",
+      "REGELMÄSSIGE BEITRÄGE",
+      "KEINE ANFRAGEN VERPASSEN"
     ],
     "layersEyebrow": "// 01 — WAS WIR FÜR SIE LÖSEN",
     "layersTitle1": "Sechs Dinge, um die kleine Unternehmen",
@@ -101,7 +112,6 @@
       "l6Desc": "Falsche Zählungen, zu späte Nachbestellungen, Kapital im Regal gebunden. Unser System verfolgt den Bestand automatisch, bestellt nach, wenn es knapp wird, und stimmt mit Ihrer Buchhaltung ab. Keine Tabellen.",
       "l6Tags": "Live-Bestand · Auto-Nachbestellung · Keine Tabellen"
     },
-
     "scenariosEyebrow": "// 02 — WO DIESE SYSTEME LEBEN",
     "scenariosTitle1": "Echte Operationen.",
     "scenariosTitleAccent": "Echte Engpässe.",
@@ -143,7 +153,6 @@
       "s4Result": "CQC-Vorbereitung · 8 Tage → 30 Min",
       "s4ResultDetail": "Pflegekräfte bleiben am Patienten"
     },
-
     "systemsEyebrow": "// 04 — UNSERE SYSTEME",
     "systemsTitle1": "Produktionssysteme.",
     "systemsTitleAccent": "Echte Unternehmen.",
@@ -175,7 +184,6 @@
       "statusLive": "LIVE",
       "statusDeployed": "INSTALLIERT"
     },
-
     "processEyebrow": "// SO ARBEITEN WIR",
     "processTitle": "Von der Idee zum Betrieb",
     "process": {
@@ -196,7 +204,6 @@
       "p4Title": "Launch & Monitoring",
       "p4Desc": "Live-Betrieb mit voller Beobachtbarkeit. Wir überwachen, optimieren und iterieren."
     },
-
     "terminal": {
       "line1": "$ maxpromo audit --org \"Acme GmbH\"",
       "line2": "  scanne 12 operative Workflows...",
@@ -215,7 +222,6 @@
       "auditCta": "Kostenlosen Geschäfts-Check anfragen →",
       "windowTitle": "audit — zsh"
     },
-
     "finalCtaEyebrow": "// Bereit anzufangen?",
     "finalCtaTitle": "Zeit sparen. Mehr Kunden erreichen. Weniger Verwaltung.",
     "finalCtaDesc": "Holen Sie sich einen kostenlosen Geschäfts-Check und erfahren Sie, was verbessert werden kann — in unter 5 Minuten. Unverbindlich.",
@@ -224,7 +230,6 @@
     "finalCtaFootnote": "// Kostenloser Geschäfts-Check · Unverbindlich · Gemäß §19 UStG keine Umsatzsteuer",
     "builtOnEyebrow": "// gebaut auf"
   },
-
   "proof": {
     "eyebrow": "// 03 — ERGEBNISSE",
     "title": "Zahlen aus laufenden Systemen",
@@ -245,7 +250,6 @@
     "quote2Detail": "UK Pflegemanagement-Plattform",
     "footnote": "// Namen unter NDA. Die Systeme sind live."
   },
-
   "roi": {
     "eyebrow": "ROI-Rechner",
     "title": "Sehen Sie, was Automatisierung spart",
@@ -265,7 +269,6 @@
     "cta": "Kostenlosen Geschäfts-Check anfragen →",
     "footnote": "// Kostenloser Geschäfts-Check · Unverbindlich"
   },
-
   "pricingSection": {
     "eyebrow": "// 05 — UNSERE PLÄNE",
     "title": "Einfache Monatspläne.",
@@ -305,7 +308,6 @@
     "plan3F5": "Strategie-Gespräche",
     "plan3F6": "WhatsApp-Support"
   },
-
   "faq": {
     "eyebrow": "// 06 — FAQ",
     "title": "Häufige Fragen",
@@ -322,7 +324,6 @@
     "q6": "Ist die kostenlose Analyse wirklich kostenlos?",
     "a6": "Ja. Keine Karte, keine Anrufe, keine Follow-ups, außer Sie fragen. Sie beantworten sechs kurze Fragen und erhalten einen priorisierten Automatisierungs-Aktionsplan in unter fünf Minuten."
   },
-
   "newsletter": {
     "eyebrow": "Wöchentliche Insights",
     "title": "Wöchentliche Automatisierungs-Insights",
@@ -333,7 +334,6 @@
     "successDesc": "Die erste Ausgabe kommt diesen Donnerstag.",
     "errorGeneric": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
   },
-
   "services": {
     "metaTitle": "Operative Ebenen · Die Systeme, die wir installieren",
     "metaDesc": "Sechs operative Ebenen, die wir zwischen Ihrem Team und seinen Werkzeugen installieren — Erfassung, Disposition, Belegfluss, Kommunikations-Triage, Compliance, Bestand.",
@@ -476,7 +476,6 @@
       "ctaCard": "Mehr erfahren →"
     }
   },
-
   "caseStudies": {
     "metaTitle": "Fallstudien — Maxpromo Digital",
     "metaDesc": "Echte Ergebnisse aus Live-Deployments — Zeit gespart, Kosten reduziert, Prozesse transformiert.",
@@ -495,33 +494,32 @@
     "ctaSecondary": "Mit unserem Team sprechen →",
     "cs1Tag": "OPERATIONS",
     "cs1Headline": "78% reduction in manual processing time",
-    "cs1Challenge": "An operations team managing complex programme delivery was spending over 60% of staff time on manual data entry, report compilation, and cross-referencing records across multiple spreadsheets. The process was error-prone, slow, and preventing the team from focusing on core delivery work.",
-    "cs1Solution": "We deployed a document processing AI pipeline that automatically extracts, validates, and categorises incoming reports and records. An n8n workflow routes data into the correct Airtable bases and triggers summary reports for programme managers — without any manual intervention.",
-    "cs1Result1": "78% reduction in manual data processing time",
-    "cs1Result2": "12 staff hours saved per week",
-    "cs1Result3": "Error rate dropped from 8% to under 0.5%",
-    "cs1Result4": "Programme managers receive auto-generated weekly summaries",
-    "cs1Timeline": "6 weeks",
+    "cs1Challenge": "Ein Operations-Team, das ein komplexes Programmmanagement verantwortete, verbrachte über 60% der Arbeitszeit mit manueller Dateneingabe, Berichterstellung und dem Abgleich von Datensätzen aus mehreren Tabellen. Der Prozess war fehleranfällig, langsam und hinderte das Team daran, sich auf die eigentliche Lieferarbeit zu konzentrieren.",
+    "cs1Solution": "Wir haben eine KI-gestützte Dokumentenverarbeitungspipeline eingesetzt, die eingehende Berichte und Datensätze automatisch extrahiert, validiert und kategorisiert. Ein n8n-Workflow leitet Daten in die korrekten Airtable-Datenbanken und löst Zusammenfassungsberichte für Programm-Manager aus — ohne manuelle Eingriffe.",
+    "cs1Result1": "78% weniger manuelle Datenverarbeitung",
+    "cs1Result2": "12 Mitarbeiterstunden pro Woche eingespart",
+    "cs1Result3": "Fehlerrate von 8% auf unter 0,5% gesunken",
+    "cs1Result4": "Programm-Manager erhalten automatisch erstellte Wochenberichte",
+    "cs1Timeline": "6 Wochen",
     "cs2Tag": "PROFESSIONAL SERVICES",
     "cs2Headline": "£14,000/month saved in operational costs",
-    "cs2Challenge": "A mid-sized consulting firm was manually processing client invoices, reconciling expenses, and generating monthly financial reports. Three members of the finance team spent an average of 2 days per month solely on invoice reconciliation. With a growing client base, this was becoming unsustainable.",
-    "cs2Solution": "We built a fully automated invoice processing system that ingests invoices via email, extracts line items using document AI, validates against purchase orders in their ERP, and posts approved invoices directly to Xero. A Slack notification alerts the finance lead only when human review is required.",
-    "cs2Result1": "£14,000/month saved in operational costs",
-    "cs2Result2": "Invoice processing time cut from 2 days to 90 minutes/month",
-    "cs2Result3": "94% of invoices processed without human intervention",
-    "cs2Result4": "Finance team reallocated to higher-value client work",
-    "cs2Timeline": "4 weeks",
+    "cs2Challenge": "Ein mittelgroßes Beratungsunternehmen verarbeitete Kundenrechnungen, stimmte Ausgaben ab und erstellte monatliche Finanzberichte manuell. Drei Mitglieder des Finanzteams verbrachten durchschnittlich 2 Arbeitstage pro Monat allein mit der Rechnungsabstimmung. Angesichts des wachsenden Kundenstamms wurde dies zunehmend unhaltbar.",
+    "cs2Solution": "Wir haben ein vollautomatisiertes Rechnungsverarbeitungssystem entwickelt, das Rechnungen per E-Mail erfasst, Positionen per Dokumenten-KI extrahiert, gegen Bestellungen im ERP-System validiert und freigegebene Rechnungen direkt in Xero bucht. Eine Slack-Benachrichtigung informiert den Finanzverantwortlichen nur wenn eine menschliche Prüfung erforderlich ist.",
+    "cs2Result1": "14.000 £/Monat an Betriebskosten eingespart",
+    "cs2Result2": "Rechnungsverarbeitung von 2 Tagen auf 90 Minuten/Monat reduziert",
+    "cs2Result3": "94% der Rechnungen ohne menschliches Eingreifen verarbeitet",
+    "cs2Result4": "Finanzteam für höherwertige Kundenprojekte freigestellt",
+    "cs2Timeline": "4 Wochen",
     "cs3Tag": "LOGISTICS",
     "cs3Headline": "Invoice cycle: 3 days → 4 hours",
-    "cs3Challenge": "A logistics operation was losing competitive advantage due to a slow invoicing cycle. Invoices were manually compiled from multiple driver reports, fuel logs, and delivery confirmations — a process taking 3 full working days per billing cycle. Late invoices were causing cash flow problems and client dissatisfaction.",
-    "cs3Solution": "We integrated all data sources — driver apps, GPS systems, fuel cards, and delivery confirmation data — into a unified pipeline. An AI agent compiles draft invoices automatically, flags exceptions, and sends approved invoices to clients via the existing billing system. The entire cycle now runs overnight.",
-    "cs3Result1": "Invoice cycle compressed from 3 days to 4 hours",
-    "cs3Result2": "Cash flow improved by approximately 18 days per quarter",
-    "cs3Result3": "Zero manual compilation for 91% of invoices",
-    "cs3Result4": "Client satisfaction scores increased significantly",
-    "cs3Timeline": "8 weeks"
+    "cs3Challenge": "Ein Logistikunternehmen verlor durch einen langsamen Rechnungsstellungszyklus an Wettbewerbsfähigkeit. Rechnungen wurden manuell aus mehreren Fahrerberichten, Treibstoffprotokollen und Lieferbestätigungen zusammengestellt — ein Prozess, der 3 volle Arbeitstage pro Abrechnungszyklus in Anspruch nahm. Verspätete Rechnungen verursachten Liquiditätsprobleme und Kundenunzufriedenheit.",
+    "cs3Solution": "Wir haben alle Datenquellen — Fahrer-Apps, GPS-Systeme, Tankkarten und Lieferbestätigungsdaten — in eine einheitliche Pipeline integriert. Ein KI-Agent erstellt automatisch Rechnungsentwürfe, markiert Ausnahmen und sendet freigegebene Rechnungen über das bestehende Abrechnungssystem an Kunden. Der gesamte Zyklus läuft jetzt automatisch über Nacht.",
+    "cs3Result1": "Rechnungszyklus von 3 Tagen auf 4 Stunden komprimiert",
+    "cs3Result2": "Liquidität um ca. 18 Tage pro Quartal verbessert",
+    "cs3Result3": "Null manuelle Erstellung für 91% der Rechnungen",
+    "cs3Result4": "Kundenzufriedenheit deutlich gestiegen",
+    "cs3Timeline": "8 Wochen"
   },
-
   "workflowAutomation": {
     "metaTitle": "Workflow-Automatisierung — Maxpromo Digital",
     "metaDesc": "Manuelle Dateneingabe, doppelte Arbeit und vergessene Follow-ups entfernen. Wir verbinden Ihre Werkzeuge und automatisieren die Routinearbeit.",
@@ -570,9 +568,21 @@
     "ctaTitle": "Lassen Sie uns Ihre manuelle Arbeit analysieren.",
     "ctaDesc": "Starten Sie mit einem kostenlosen Business-Check. Wir identifizieren die wertvollste Automatisierung in Ihrem Betrieb.",
     "ctaPrimary": "Kostenlosen Business-Check anfragen →",
-    "ctaSecondary": "Mit uns sprechen →"
+    "ctaSecondary": "Mit uns sprechen →",
+    "proofEyebrow": "Vorher vs. nachher",
+    "proofBefore": [
+      "Gleiche Daten täglich in mehrere Systeme eingetragen",
+      "Follow-ups passieren wenn jemand daran denkt",
+      "Berichte werden jeden Freitag manuell zusammengestellt"
+    ],
+    "proofAfter": [
+      "Daten fließen automatisch zwischen allen Werkzeugen",
+      "Follow-ups laufen pünktlich, jedes Mal",
+      "Berichte werden automatisch geliefert — kein manueller Aufwand"
+    ],
+    "proofBeforeLabel": "Vorher",
+    "proofAfterLabel": "Nachher"
   },
-
   "aiAgents": {
     "metaTitle": "KI-Agenten — Maxpromo Digital",
     "metaDesc": "KI-Agenten übernehmen Erstantwort, Klassifizierung, Routing, FAQ und Monitoring — Unterstützung für Ihr Team bei klar definierten Aufgaben.",
@@ -630,9 +640,21 @@
     "ctaTitle": "Lassen Sie uns identifizieren, wo ein Agent passt.",
     "ctaDesc": "Starten Sie mit einem kostenlosen Business-Check. Wir finden den wertvollsten Agenten für Ihren Betrieb.",
     "ctaPrimary": "Kostenlosen Business-Check anfragen →",
-    "ctaSecondary": "Mit uns sprechen →"
+    "ctaSecondary": "Mit uns sprechen →",
+    "proofEyebrow": "Vorher vs. nachher",
+    "proofBefore": [
+      "Erstantwort wartet bis jemand verfügbar ist",
+      "Gleiche Fragen werden täglich manuell beantwortet",
+      "Anfragen warten über Nacht oder über das Wochenende"
+    ],
+    "proofAfter": [
+      "Jede Anfrage wird in Sekunden bestätigt",
+      "Häufige Fragen sofort bearbeitet, 24/7",
+      "Keine Anfrage wartet auf Öffnungszeiten"
+    ],
+    "proofBeforeLabel": "Vorher",
+    "proofAfterLabel": "Nachher"
   },
-
   "systems": {
     "metaTitle": "Branchen-Betriebssysteme, die wir installieren",
     "metaDesc": "Konfigurierbare Geschäfts-Betriebssysteme aus echten Deployments — für Restaurants, Handwerk, Praxen, Pflegeanbieter, Verlage, Druckereien und Immobilienunternehmen.",
@@ -787,7 +809,6 @@
     "ctaSecondary": "Sofort-Kostenrechner →",
     "ctaFootnote": "// Durchschnittliche Lieferung: 14 Tage · 3 Onboarding-Plätze frei diesen Monat"
   },
-
   "about": {
     "metaTitle": "Über uns — Maxpromo Digital",
     "metaDesc": "Wir bauen und installieren Betriebssysteme für Unternehmen — weniger Handarbeit, vernetzte Abläufe, mehr Zeit für das Wesentliche.",
@@ -847,7 +868,6 @@
     "ctaPrimary": "Kostenlosen Business-Check anfragen →",
     "ctaSecondary": "Kontakt"
   },
-
   "pricing": {
     "metaTitle": "Preise",
     "metaDesc": "Einfache Monatspläne für kleine Unternehmen — Website, Google, Social Media und Automatisierung. Keine Langzeitverträge.",
@@ -914,7 +934,6 @@
     "ctaSecondary": "Kontakt",
     "ctaFootnote": "// Kostenloser Geschäfts-Check · Unverbindlich · Gemäß §19 UStG keine Umsatzsteuer"
   },
-
   "contact": {
     "eyebrow": "// Schreiben Sie uns",
     "title": "Wo verlieren Sie Zeit oder Kunden?",
@@ -945,7 +964,6 @@
     "successAnother": "Weitere Nachricht senden →",
     "errorGeneric": "Etwas ist schiefgelaufen. Bitte schreiben Sie direkt an info@maxpromo.digital"
   },
-
   "websitesPlatforms": {
     "eyebrow": "Websites & Business-Plattformen",
     "title": "Eine Website, die",
@@ -954,7 +972,6 @@
     "signal1": "Keine Programmierkenntnisse nötig",
     "signal2": "Verbindet sich mit Ihren bestehenden Werkzeugen",
     "signal3": "Läuft 24/7 ohne Personal",
-
     "painEyebrow": "Das Problem",
     "painTitle": "Die meisten Websites tun nichts, nachdem der Besucher gelandet ist.",
     "pain1": "Besucher gehen ohne Kontaktaufnahme.",
@@ -963,7 +980,6 @@
     "pain4": "Kein Follow-up, wenn jemand Interesse zeigt.",
     "pain5": "Die Website und Ihre Werkzeuge leben in getrennten Welten.",
     "pain6": "Sie können sie nicht aktualisieren, ohne einen Entwickler zu beauftragen.",
-
     "capEyebrow": "Was wir bauen",
     "capTitle": "Jede Plattform wird um das gebaut, was der Betrieb wirklich braucht.",
     "cap1Title": "Websites & Landing Pages",
@@ -978,16 +994,13 @@
     "cap5Desc": "Immer verfügbare Antworten auf häufige Fragen, Verfügbarkeitsprüfungen und erste Qualifizierung — ohne Personal.",
     "cap6Title": "Automatisierung & Integrationen",
     "cap6Desc": "Website mit CRM, Rechnungsstellung, E-Mail, WhatsApp und anderen Werkzeugen verbinden. Daten fließen automatisch.",
-
     "industriesLabel": "Passend für",
-
     "ctaEyebrow": "Bereit anzufangen?",
     "ctaTitle": "Lassen Sie uns planen, was Ihre Plattform leisten soll.",
     "ctaDesc": "Starten Sie mit einem kostenlosen Business-Check. Wir zeigen, was Ihre Website leisten sollte — und was gerade fehlt.",
     "ctaPrimary": "Kostenlosen Business-Check anfragen →",
     "ctaSecondary": "Mit uns sprechen →"
   },
-
   "blog": {
     "homepageEyebrow": "Aktuelle Einblicke",
     "homepageTitle": "Aus der",
@@ -995,7 +1008,6 @@
     "homepageLede": "Beobachtungen zu Automatisierung, KI-Systemen und was für Unternehmer wirklich funktioniert.",
     "homepageViewAll": "Alle Artikel ansehen →",
     "readArticle": "Artikel lesen →",
-
     "indexEyebrow": "// Blog",
     "indexTitle": "Einblicke aus",
     "indexTitleAccent": "der Praxis.",
@@ -1003,7 +1015,6 @@
     "filterAll": "Alle Themen",
     "emptyTitle": "Noch keine Artikel veröffentlicht.",
     "emptyDesc": "Wir schreiben über Agent-Design, Automatisierung und die Systeme hinter dem OS. Bald mehr.",
-
     "publishedOn": "Veröffentlicht",
     "readCount": "Aufrufe",
     "backToAll": "← Alle Artikel",
@@ -1018,7 +1029,6 @@
     "bottomCtaPrimary": "Kostenlosen Check anfordern →",
     "bottomCtaSecondary": "Mit uns sprechen →"
   },
-
   "socialMedia": {
     "metaTitle": "Social-Media-Systeme — Maxpromo Digital",
     "metaDesc": "Konstante Präsenz ohne täglichen Aufwand. Wöchentliche Inhalte, Angebote, Google-Updates und WhatsApp — automatisch geplant und veröffentlicht.",
@@ -1067,9 +1077,21 @@
     "ctaTitle": "Lassen Sie uns Ihre Social Media übernehmen.",
     "ctaDesc": "Starten Sie mit einem kostenlosen Business-Check. Wir zeigen, welche Kanäle für Ihren Betrieb wichtig sind und wie konstante Präsenz aussieht.",
     "ctaPrimary": "Kostenlosen Business-Check anfragen →",
-    "ctaSecondary": "Mit uns sprechen →"
+    "ctaSecondary": "Mit uns sprechen →",
+    "proofEyebrow": "Vorher vs. nachher",
+    "proofBefore": [
+      "Posten stoppt sobald es hektisch wird",
+      "Angebote kommen zu spät oder gar nicht",
+      "Google-Profil seit Wochen nicht angefasst"
+    ],
+    "proofAfter": [
+      "Inhalte gehen jede Woche automatisch live",
+      "Angebote im Voraus geplant — immer pünktlich",
+      "Google Business jede Woche aktualisiert — ohne daran zu denken"
+    ],
+    "proofBeforeLabel": "Vorher",
+    "proofAfterLabel": "Nachher"
   },
-
   "reviews": {
     "metaTitle": "Bewertungen & Reputation — Maxpromo Digital",
     "metaDesc": "Zufriedene Kunden werden zu Google-Bewertungen. Automatische Bewertungsanfragen, Antwortmanagement und Reputationsmonitoring.",
@@ -1118,9 +1140,21 @@
     "ctaTitle": "Lassen Sie uns Ihr Bewertungssystem aufbauen.",
     "ctaDesc": "Starten Sie mit einem kostenlosen Business-Check. Wir analysieren Ihre aktuelle Reputation und zeigen genau, wo Bewertungen verloren gehen.",
     "ctaPrimary": "Kostenlosen Business-Check anfragen →",
-    "ctaSecondary": "Mit uns sprechen →"
+    "ctaSecondary": "Mit uns sprechen →",
+    "proofEyebrow": "Vorher vs. nachher",
+    "proofBefore": [
+      "Zufriedene Kunden gehen ohne Bewertung",
+      "Negative Bewertungen bleiben tagelang unbeantwortet",
+      "Google-Profil zeigt ein anderes Bild als die Realität"
+    ],
+    "proofAfter": [
+      "Jeder Kunde erhält automatisch eine Bewertungsanfrage",
+      "Jede Bewertung — positiv oder negativ — bekommt eine Antwort",
+      "Bewertung spiegelt tatsächliche Qualität des Betriebs wider"
+    ],
+    "proofBeforeLabel": "Vorher",
+    "proofAfterLabel": "Nachher"
   },
-
   "customerInquiries": {
     "metaTitle": "Kundenanfragen — Maxpromo Digital",
     "metaDesc": "Ein System für alle eingehenden Nachrichten. WhatsApp, Website, E-Mail, Google — geroutet, beantwortet und automatisch nachgefasst.",
@@ -1184,6 +1218,19 @@
     "ctaTitle": "Lassen Sie uns die Anfragen-Lücke schließen.",
     "ctaDesc": "Starten Sie mit einem kostenlosen Business-Check. Wir zeigen, wo Nachrichten aktuell verloren gehen und wie die Lösung aussieht.",
     "ctaPrimary": "Kostenlosen Business-Check anfragen →",
-    "ctaSecondary": "Mit uns sprechen →"
+    "ctaSecondary": "Mit uns sprechen →",
+    "proofEyebrow": "Vorher vs. nachher",
+    "proofBefore": [
+      "Anfragen kommen von 5 verschiedenen Orten — alle getrennt",
+      "Nachrichten gehen unter wenn es hektisch wird",
+      "Antwort dauert Stunden oder kommt gar nicht"
+    ],
+    "proofAfter": [
+      "Alle Kanäle fließen in einen Posteingang",
+      "Nichts geht durch — egal wie hektisch",
+      "Erste Antwort in Minuten, nicht Stunden"
+    ],
+    "proofBeforeLabel": "Vorher",
+    "proofAfterLabel": "Nachher"
   }
 }

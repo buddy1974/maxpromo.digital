@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
+import { ServiceImage } from '@/components/ui/ServiceImage'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('aiAgents')
@@ -15,6 +16,8 @@ const HOW_STEPS     = ['how1', 'how2', 'how3', 'how4'] as const
 export default async function AIAgentsPage() {
   const t = await getTranslations('aiAgents')
   const notThisItems = t.raw('notThisItems') as string[]
+  const proofBefore  = t.raw('proofBefore') as string[]
+  const proofAfter   = t.raw('proofAfter') as string[]
 
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
@@ -42,6 +45,17 @@ export default async function AIAgentsPage() {
           </div>
         </div>
       </section>
+
+      {/* Service image */}
+      <div style={{ background: 'hsl(240 14% 4%)', padding: '0 2rem 3rem' }}>
+        <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
+          <ServiceImage
+            src="/images/services/agents/hero.jpg"
+            alt="AI agent conversation interface with routing and response timeline"
+            placeholder="// image: conversation UI · response timeline · monitoring"
+          />
+        </div>
+      </div>
 
       {/* Approach */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
@@ -142,6 +156,37 @@ export default async function AIAgentsPage() {
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.6, margin: 0 }}>{item}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Proof: before vs after */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '2rem', textAlign: 'center' }}>
+            {t('proofEyebrow')}
+          </p>
+          <div style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }} className="grid-cols-1 md:grid-cols-2">
+            <div style={{ background: 'hsl(240 12% 7%)', padding: '2rem 2.5rem' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(0 84% 60% / 0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>{t('proofBeforeLabel')}</p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {proofBefore.map((item, i) => (
+                  <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 55%)' }}>
+                    <span style={{ color: 'hsl(0 84% 60% / 0.6)', flexShrink: 0, fontFamily: 'var(--font-mono)' }}>✕</span>{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div style={{ background: 'hsl(240 12% 8%)', padding: '2rem 2.5rem' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>{t('proofAfterLabel')}</p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {proofAfter.map((item, i) => (
+                  <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)' }}>
+                    <span style={{ color: '#F97316', flexShrink: 0, fontFamily: 'var(--font-mono)' }}>✓</span>{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>

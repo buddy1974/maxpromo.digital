@@ -11,13 +11,11 @@
     "menuOpen": "Open menu",
     "menuClose": "Close menu"
   },
-
   "localeSwitcher": {
     "label": "Language",
     "de": "Deutsch",
     "en": "English"
   },
-
   "hero": {
     "statusOperational": "WORKING FOR REAL BUSINESSES",
     "statusAgents": "Built for SMEs",
@@ -38,7 +36,6 @@
     "panelLastEvent": "// latest",
     "panelUptime": "running"
   },
-
   "footer": {
     "ctaEyebrow": "// Where are you losing customers, time or money?",
     "ctaHeadline": "Let us check what can be improved in 30 minutes.",
@@ -66,14 +63,28 @@
     "operationalSignal": "Always available",
     "tax": "Tax No. 111/5339/7597 · FA Essen-NordOst"
   },
-
   "home": {
     "marquee": [
-      "WEBSITE UP TO DATE · 24/7", "CUSTOMER FOLLOW-UP", "INVOICE FLOW", "REVIEW RESPONSES",
-      "LESS MISSED CALLS", "STOCK MANAGED", "INBOX ORGANISED", "GOOGLE KEPT CURRENT",
-      "BOOKINGS MADE EASY", "LESS PAPERWORK", "PHOTO-TO-QUOTE", "PAYMENT TRACKING",
-      "SOCIAL MEDIA POSTS", "STAFF REMINDERS", "FASTER REPLIES", "SCHEDULE MANAGED",
-      "OPENING HOURS CURRENT", "MONTHLY REPORT", "REGULAR POSTS", "NO MISSED ENQUIRIES"
+      "WEBSITE UP TO DATE · 24/7",
+      "CUSTOMER FOLLOW-UP",
+      "INVOICE FLOW",
+      "REVIEW RESPONSES",
+      "LESS MISSED CALLS",
+      "STOCK MANAGED",
+      "INBOX ORGANISED",
+      "GOOGLE KEPT CURRENT",
+      "BOOKINGS MADE EASY",
+      "LESS PAPERWORK",
+      "PHOTO-TO-QUOTE",
+      "PAYMENT TRACKING",
+      "SOCIAL MEDIA POSTS",
+      "STAFF REMINDERS",
+      "FASTER REPLIES",
+      "SCHEDULE MANAGED",
+      "OPENING HOURS CURRENT",
+      "MONTHLY REPORT",
+      "REGULAR POSTS",
+      "NO MISSED ENQUIRIES"
     ],
     "layersEyebrow": "// 01 — WHAT WE FIX FOR YOU",
     "layersTitle1": "Six things small businesses",
@@ -101,7 +112,6 @@
       "l6Desc": "Counts wrong, reorders too late, cash tied up on shelves. Our system tracks stock automatically, reorders when you're running low, and reconciles with your books. No spreadsheets.",
       "l6Tags": "Live stock · Auto-reorder · No spreadsheets"
     },
-
     "scenariosEyebrow": "// 02 — WHERE THESE SYSTEMS LIVE",
     "scenariosTitle1": "Real operations.",
     "scenariosTitleAccent": "Real bottlenecks.",
@@ -143,7 +153,6 @@
       "s4Result": "CQC prep · 8 days → 30 minutes",
       "s4ResultDetail": "senior carers stay on the floor"
     },
-
     "systemsEyebrow": "// 04 — OUR SYSTEMS",
     "systemsTitle1": "Production systems.",
     "systemsTitleAccent": "Live businesses.",
@@ -175,7 +184,6 @@
       "statusLive": "LIVE",
       "statusDeployed": "DEPLOYED"
     },
-
     "processEyebrow": "// HOW IT WORKS",
     "processTitle": "From idea to operational",
     "process": {
@@ -196,7 +204,6 @@
       "p4Title": "Launch & Monitor",
       "p4Desc": "Go live with full observability. We monitor, optimise, and iterate."
     },
-
     "terminal": {
       "line1": "$ maxpromo audit --org \"Acme Ltd\"",
       "line2": "  scanning 12 operational workflows...",
@@ -215,7 +222,6 @@
       "auditCta": "Get my free business check →",
       "windowTitle": "audit — zsh"
     },
-
     "finalCtaEyebrow": "// Ready to get started?",
     "finalCtaTitle": "Save time. Reach more customers. Less admin.",
     "finalCtaDesc": "Get a free business check and find out where you can improve — in under 5 minutes. No commitment needed.",
@@ -224,7 +230,6 @@
     "finalCtaFootnote": "// Free business check · No commitment · Gemäß §19 UStG keine Umsatzsteuer",
     "builtOnEyebrow": "// built on"
   },
-
   "proof": {
     "eyebrow": "// 03 — RESULTS",
     "title": "Numbers from live systems",
@@ -245,7 +250,6 @@
     "quote2Detail": "UK care management platform",
     "footnote": "// Names withheld under NDA. The systems are live."
   },
-
   "roi": {
     "eyebrow": "ROI Calculator",
     "title": "See what automation saves you",
@@ -265,7 +269,6 @@
     "cta": "Get my free business check →",
     "footnote": "// Free business check · No commitment"
   },
-
   "pricingSection": {
     "eyebrow": "// 05 — OUR PLANS",
     "title": "Simple monthly plans.",
@@ -305,7 +308,6 @@
     "plan3F5": "Strategy calls",
     "plan3F6": "WhatsApp support"
   },
-
   "faq": {
     "eyebrow": "// 06 — FAQ",
     "title": "Common questions",
@@ -322,7 +324,6 @@
     "q6": "Is the free audit actually free?",
     "a6": "Yes. No card, no calls, no follow-up calls unless you ask. You answer six short questions and get a prioritised automation action plan in under five minutes."
   },
-
   "newsletter": {
     "eyebrow": "Weekly Insights",
     "title": "Get Weekly Automation Insights",
@@ -333,7 +334,6 @@
     "successDesc": "Watch for the first issue this Thursday.",
     "errorGeneric": "Something went wrong. Please try again."
   },
-
   "services": {
     "metaTitle": "Operational Layers · The Systems We Install",
     "metaDesc": "Six operational layers we install between your team and their tools — intake, dispatch, document flow, communications triage, compliance, inventory.",
@@ -476,7 +476,6 @@
       "ctaCard": "Learn more →"
     }
   },
-
   "caseStudies": {
     "metaTitle": "Case Studies — Maxpromo Digital",
     "metaDesc": "Real results from live deployments — time saved, costs reduced, processes transformed.",
@@ -521,7 +520,6 @@
     "cs3Result4": "Client satisfaction scores increased significantly",
     "cs3Timeline": "8 weeks"
   },
-
   "workflowAutomation": {
     "metaTitle": "Workflow Automation — Maxpromo Digital",
     "metaDesc": "Remove manual data entry, duplicate work, and forgotten follow-ups. We connect your tools and automate the repetitive work.",
@@ -570,9 +568,21 @@
     "ctaTitle": "Let us map your manual work.",
     "ctaDesc": "Start with a free business check. We'll identify the highest-value automation in your operation.",
     "ctaPrimary": "Get my free business check →",
-    "ctaSecondary": "Talk to us →"
+    "ctaSecondary": "Talk to us →",
+    "proofEyebrow": "Before vs. after",
+    "proofBefore": [
+      "Same data entered in multiple systems daily",
+      "Follow-ups happen when someone remembers",
+      "Reports compiled manually every Friday"
+    ],
+    "proofAfter": [
+      "Data flows automatically between all tools",
+      "Follow-ups run on schedule, every time",
+      "Reports delivered automatically — no assembly needed"
+    ],
+    "proofBeforeLabel": "Before",
+    "proofAfterLabel": "After"
   },
-
   "aiAgents": {
     "metaTitle": "AI Agents — Maxpromo Digital",
     "metaDesc": "AI agents handle first response, classification, routing, FAQ, and monitoring — supporting your team with specific, well-defined tasks.",
@@ -630,9 +640,21 @@
     "ctaTitle": "Let us identify where an agent fits.",
     "ctaDesc": "Start with a free business check. We'll find the single highest-value agent for your operation and show exactly what it would handle.",
     "ctaPrimary": "Get my free business check →",
-    "ctaSecondary": "Talk to us →"
+    "ctaSecondary": "Talk to us →",
+    "proofEyebrow": "Before vs. after",
+    "proofBefore": [
+      "First response waits until someone is available",
+      "Same questions answered manually throughout the day",
+      "Enquiries wait overnight or over the weekend"
+    ],
+    "proofAfter": [
+      "Every enquiry acknowledged in seconds",
+      "Common questions handled instantly, 24/7",
+      "No enquiry waits for business hours"
+    ],
+    "proofBeforeLabel": "Before",
+    "proofAfterLabel": "After"
   },
-
   "systems": {
     "metaTitle": "Industry Operating Systems We Install",
     "metaDesc": "Configurable business operating systems derived from real deployments — for restaurants, trades, clinics, care providers, publishers, print shops, and property companies.",
@@ -787,7 +809,6 @@
     "ctaSecondary": "Get Instant Estimate →",
     "ctaFootnote": "// Average delivery: 14 days · 3 onboarding slots open this month"
   },
-
   "about": {
     "metaTitle": "About — Maxpromo Digital",
     "metaDesc": "We build and install operating systems for businesses — reducing manual work, connecting workflows, and giving owners back their time.",
@@ -847,7 +868,6 @@
     "ctaPrimary": "Get my free business check →",
     "ctaSecondary": "Contact us"
   },
-
   "pricing": {
     "metaTitle": "Pricing",
     "metaDesc": "Simple monthly plans for small businesses — website care, Google, social media and automation. No long-term contracts.",
@@ -914,7 +934,6 @@
     "ctaSecondary": "Contact us",
     "ctaFootnote": "// Free business check · No commitment · Gemäß §19 UStG keine Umsatzsteuer"
   },
-
   "contact": {
     "eyebrow": "// Talk to us",
     "title": "Where are you losing time or customers?",
@@ -945,7 +964,6 @@
     "successAnother": "Send another message →",
     "errorGeneric": "Something went wrong. Please email us directly at info@maxpromo.digital"
   },
-
   "websitesPlatforms": {
     "eyebrow": "Websites & Business Platforms",
     "title": "A website that",
@@ -954,7 +972,6 @@
     "signal1": "No coding required from you",
     "signal2": "Connects to your existing tools",
     "signal3": "Runs 24/7 without staff",
-
     "painEyebrow": "The problem",
     "painTitle": "Most websites do nothing after the visitor lands.",
     "pain1": "Visitors leave without making contact.",
@@ -963,7 +980,6 @@
     "pain4": "No follow-up when someone shows interest.",
     "pain5": "The website and your tools live in separate worlds.",
     "pain6": "You can't update it without hiring a developer.",
-
     "capEyebrow": "What we build",
     "capTitle": "Every platform is built around what the business actually needs.",
     "cap1Title": "Websites & Landing Pages",
@@ -978,16 +994,13 @@
     "cap5Desc": "Always-on responses for common questions, availability checks, and initial qualification — without staff.",
     "cap6Title": "Automation & Integrations",
     "cap6Desc": "Connect the website to your CRM, invoicing, email, WhatsApp, and other tools. Data flows automatically.",
-
     "industriesLabel": "Works for",
-
     "ctaEyebrow": "Ready to start?",
     "ctaTitle": "Let us design what your platform should do.",
     "ctaDesc": "Start with a free business check. We'll map what your website should handle — and what it's currently missing.",
     "ctaPrimary": "Get my free business check →",
     "ctaSecondary": "Talk to us →"
   },
-
   "blog": {
     "homepageEyebrow": "Latest insights",
     "homepageTitle": "From the",
@@ -995,7 +1008,6 @@
     "homepageLede": "Real observations on automation, AI systems, and what actually works for business owners.",
     "homepageViewAll": "View all articles →",
     "readArticle": "Read article →",
-
     "indexEyebrow": "// Blog",
     "indexTitle": "Insights from",
     "indexTitleAccent": "the field.",
@@ -1003,7 +1015,6 @@
     "filterAll": "All topics",
     "emptyTitle": "No articles published yet.",
     "emptyDesc": "We write about agent design, automation at scale, and the systems behind the OS. Check back soon.",
-
     "publishedOn": "Published",
     "readCount": "reads",
     "backToAll": "← All articles",
@@ -1018,7 +1029,6 @@
     "bottomCtaPrimary": "Get my free audit →",
     "bottomCtaSecondary": "Talk to us →"
   },
-
   "socialMedia": {
     "metaTitle": "Social Media Systems — Maxpromo Digital",
     "metaDesc": "Consistent social media without the daily effort. Weekly content, offers, Google updates and WhatsApp — scheduled and published automatically.",
@@ -1067,9 +1077,21 @@
     "ctaTitle": "Let us run your social media.",
     "ctaDesc": "Start with a free business check. We'll map which channels matter for your business and what consistent presence looks like.",
     "ctaPrimary": "Get my free business check →",
-    "ctaSecondary": "Talk to us →"
+    "ctaSecondary": "Talk to us →",
+    "proofEyebrow": "Before vs. after",
+    "proofBefore": [
+      "Posting stops during busy periods",
+      "Offers go out late or not at all",
+      "Google profile untouched for weeks"
+    ],
+    "proofAfter": [
+      "Content goes live every week, automatically",
+      "Offers scheduled in advance — always on time",
+      "Google Business updated weekly without thinking about it"
+    ],
+    "proofBeforeLabel": "Before",
+    "proofAfterLabel": "After"
   },
-
   "reviews": {
     "metaTitle": "Reviews & Reputation — Maxpromo Digital",
     "metaDesc": "Turn happy customers into Google reviews. Automated review requests, response management, and reputation monitoring.",
@@ -1118,9 +1140,21 @@
     "ctaTitle": "Let us build your review system.",
     "ctaDesc": "Start with a free business check. We'll audit your current reputation and show exactly where reviews are being lost.",
     "ctaPrimary": "Get my free business check →",
-    "ctaSecondary": "Talk to us →"
+    "ctaSecondary": "Talk to us →",
+    "proofEyebrow": "Before vs. after",
+    "proofBefore": [
+      "Happy customers leave without leaving a review",
+      "Negative reviews sit unanswered for days",
+      "Google profile tells a different story than reality"
+    ],
+    "proofAfter": [
+      "Every customer receives a review request automatically",
+      "Every review — positive or negative — gets a response",
+      "Rating reflects actual quality of your service"
+    ],
+    "proofBeforeLabel": "Before",
+    "proofAfterLabel": "After"
   },
-
   "customerInquiries": {
     "metaTitle": "Customer Inquiries — Maxpromo Digital",
     "metaDesc": "One system for all incoming messages. WhatsApp, website, email, Google — routed, answered, and followed up automatically.",
@@ -1184,6 +1218,19 @@
     "ctaTitle": "Let us close the enquiry gap.",
     "ctaDesc": "Start with a free business check. We'll map where messages are currently being missed and what the fix looks like.",
     "ctaPrimary": "Get my free business check →",
-    "ctaSecondary": "Talk to us →"
+    "ctaSecondary": "Talk to us →",
+    "proofEyebrow": "Before vs. after",
+    "proofBefore": [
+      "Enquiries arrive from 5 different places — all separate",
+      "Messages missed when things get busy",
+      "Response takes hours or never comes"
+    ],
+    "proofAfter": [
+      "All channels feed into one inbox",
+      "Nothing slips through — no matter how busy",
+      "First response in minutes, not hours"
+    ],
+    "proofBeforeLabel": "Before",
+    "proofAfterLabel": "After"
   }
 }
