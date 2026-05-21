@@ -254,23 +254,23 @@
     "processEyebrow": "// SO ARBEITEN WIR",
     "processTitle": "Von der Idee zum Betrieb",
     "process": {
-      "processEyebrow": "// So arbeiten wir",
-      "processTitle": "Von der Idee zum Betrieb.",
+      "processEyebrow": "// Vom ersten Gespräch zum laufenden System",
+      "processTitle": "Fünf Schritte. Dann läuft es.",
       "p1Num": "01",
       "p1Time": "30 Min",
       "p1Title": "Geschäfts-Check",
       "p1Desc": "Wir analysieren, wo Zeit, Kunden und Übersicht verloren gehen. Klares Bild vor jeder Verpflichtung.",
       "p2Num": "02",
       "p2Time": "1–2 Tage",
-      "p2Title": "Ablauf verstehen",
+      "p2Title": "Abläufe verstehen",
       "p2Desc": "Wir dokumentieren Ihre Abläufe, Werkzeuge und Übergaben. Wir finden, was manuell, kaputt oder fehlend ist.",
       "p3Num": "03",
       "p3Time": "2–3 Tage",
-      "p3Title": "Lösung planen",
+      "p3Title": "System gestalten",
       "p3Desc": "Wir gestalten das System: Umfang, Werkzeuge, Integrationen. Sie sehen genau, was gebaut wird.",
       "p4Num": "04",
       "p4Time": "1–4 Wo",
-      "p4Title": "Umsetzen und installieren",
+      "p4Title": "Bauen und live gehen",
       "p4Desc": "Wir bauen, testen und gehen live. Jeder Schritt wird geprüft, bevor das System produktiv läuft.",
       "p5Num": "05",
       "p5Time": "Laufend",
@@ -295,9 +295,9 @@
       "auditCta": "Kostenlosen Geschäfts-Check anfragen →",
       "windowTitle": "audit — zsh"
     },
-    "finalCtaEyebrow": "// Bereit loszulegen?",
-    "finalCtaTitle": "Lassen Sie uns prüfen, wo Ihr Betrieb Zeit, Kunden oder Übersicht verliert.",
-    "finalCtaDesc": "Kostenloser Geschäfts-Check. 30 Minuten. Wir zeigen den größten Hebel — vor jeder Verpflichtung.",
+    "finalCtaEyebrow": "// Bereit?",
+    "finalCtaTitle": "Sehen Sie, was Ihr Betrieb aufhören könnte, manuell zu tun.",
+    "finalCtaDesc": "30 Minuten. Unverbindlich.",
     "finalCtaPrimary": "Kostenlosen Geschäfts-Check anfragen",
     "finalCtaSecondary": "Mit Maxpromo sprechen",
     "finalCtaFootnote": "// Unverbindlich · Kein Druck · 30 Minuten",
@@ -317,20 +317,20 @@
     },
     "whyUs": {
       "eyebrow": "// Warum Maxpromo",
-      "title": "Warum Betriebe mit",
-      "titleAccent": "Maxpromo arbeiten.",
+      "title": "Was diesen Ansatz",
+      "titleAccent": "anders macht.",
       "w1Title": "Klarer Einstieg statt Technik-Chaos",
       "w1Desc": "Wir starten bei Ihrem Alltag — nicht bei Tools. Sie wissen, was sich ändert, bevor wir anfangen.",
       "w2Title": "Bestehende Werkzeuge bleiben nutzbar",
       "w2Desc": "Wir verbinden, was bereits vorhanden ist. Kein Herausreißen, kein Umlernen.",
       "w3Title": "Systeme, die mitwachsen",
-      "w3Desc": "Klein starten. Später erweitern. Sie wachsen nie aus dem heraus, was wir bauen.",
+      "w3Desc": "Mit einem System starten. Mehr hinzufügen, wenn der Betrieb wächst. Sie wachsen nie aus dem heraus, was wir bauen.",
       "w4Title": "Verantwortung nach dem Launch",
-      "w4Desc": "Wir bauen nicht nur — wir begleiten den Betrieb. Pflegen, anpassen, verbessern."
+      "w4Desc": "Wir bauen es. Wir gehen mit Ihnen live. Dann bleiben wir — pflegen, anpassen, verbessern. Dauerhaft, kein Einmalprojekt."
     },
     "proof": {
-      "eyebrow": "// Echte Ergebnisse",
-      "title": "Aus Live-Deployments.",
+      "eyebrow": "// Aus laufenden Systemen",
+      "title": "Installiert und aktiv.",
       "p1Value": "78%",
       "p1Label": "weniger manuelle Verarbeitung",
       "p1Source": "Betriebsmanagement · 6 Wochen",
@@ -341,7 +341,8 @@
       "p3Label": "Rechnungszyklus komprimiert",
       "p3Source": "Logistik · 8 Wochen",
       "note": "// Ergebnisse aus Live-Systemen. Kundendaten unter NDA.",
-      "viewAll": "Alle Fallstudien ansehen →"
+      "viewAll": "Alle Fallstudien ansehen →",
+      "subtitle": "Diese Zahlen kommen aus echten Systemen, die in echten Betrieben laufen. Keine Demos. Keine Experimente."
     },
     "slider": {
       "prefix": "Noch immer kämpfen mit:",
@@ -359,9 +360,9 @@
       "i6Fix": "Verfolgt und automatisch nachbestellt."
     },
     "painCards": {
-      "eyebrow": "// Was wir lösen",
-      "title": "Sechs Probleme,",
-      "titleAccent": "die jeder Betrieb kennt.",
+      "eyebrow": "// Klingt bekannt?",
+      "title": "Sechs Dinge, die Ihren Betrieb",
+      "titleAccent": "Zeit, Kunden und Übersicht kosten.",
       "p1Tag": "Kundenanfragen",
       "p1Title": "Anfragen gehen unter?",
       "p1Desc": "Kunden melden sich per WhatsApp, Website, Telefon — und hören nichts mehr. Sie buchen woanders.",
@@ -376,7 +377,7 @@
       "p3Cta": "Unsere Lösung",
       "p4Tag": "Außendienst",
       "p4Title": "Außendienst ohne Übersicht?",
-      "p4Desc": "Aufträge per WhatsApp. Zeiten per Hand. Das Büro weiß erst was passiert ist, wenn der Fahrer anruft.",
+      "p4Desc": "Aufträge per WhatsApp-Thread. Zeiten per Hand. Bis die Rechnung raus ist, vergehen drei Tage.",
       "p4Cta": "Unsere Lösung",
       "p5Tag": "Bewertungen",
       "p5Title": "Bewertungen werden vergessen?",
@@ -384,7 +385,7 @@
       "p5Cta": "Unsere Lösung",
       "p6Tag": "Systeme",
       "p6Title": "Tools arbeiten nicht zusammen?",
-      "p6Desc": "Daten manuell zwischen Systemen kopiert. Nichts verbunden. Ihr Team füllt die Lücke mit Zeit und Tabellen.",
+      "p6Desc": "Fünf Werkzeuge. Keines spricht mit dem anderen. Ihr Team überbrückt die Lücke täglich von Hand.",
       "p6Cta": "Unsere Lösung"
     },
     "projectTypes": {
@@ -402,12 +403,55 @@
       "pt3Items": "Portale · Dashboards · Branchen-Systeme · Interne Tools"
     },
     "systemsTabs": {
-      "eyebrow": "// Produktionssysteme",
-      "title": "Echte Betriebe.",
-      "titleAccent": "Echte Operationen.",
-      "subtitle": "Jedes System unten ist gebaut, installiert und läuft für echte Kunden. Keine Prototypen. Keine Demos.",
+      "eyebrow": "// Was wir bauen",
+      "title": "Betriebssysteme,",
+      "titleAccent": "die heute laufen.",
+      "subtitle": "Klicken Sie auf ein System und sehen Sie, wie es funktioniert.",
       "viewAll": "Alle Systeme ansehen",
       "viewSystem": "System ansehen"
+    },
+    "teamTrust": {
+      "eyebrow": "// Das Maxpromo-Team",
+      "title": "Gebaut von Betreibern.",
+      "titleAccent": "Nicht nur Entwicklern.",
+      "body": "Wir bauen Systeme für echte Arbeit.",
+      "pain1": "Verpasste Anfragen.",
+      "pain2": "Manuelle Verwaltung.",
+      "pain3": "Team-Chaos.",
+      "pain4": "Getrennte Werkzeuge.",
+      "closing": "Die Probleme sind real. Die Systeme sollten es auch sein.",
+      "l1Label": "Betreiber",
+      "l1Desc": "Wir beginnen bei Ihrem Betriebsalltag — nicht bei einem Konzept.",
+      "l2Label": "Entwickler",
+      "l2Desc": "Wir bauen Systeme, die live gehen und live bleiben.",
+      "l3Label": "Automatisierungsspezialisten",
+      "l3Desc": "Jeder Workflow ist für den echten Einsatz gestaltet. Kein Demo.",
+      "footer": "Installiert für Betriebe in verschiedenen Branchen und Märkten."
+    },
+    "faq": {
+      "eyebrow": "// Häufige Fragen",
+      "items": [
+        {
+          "q": "Wie lange dauert die Installation?",
+          "a": "Zwischen 2 und 6 Wochen. Je nach System. Wir sagen es Ihnen im Geschäfts-Check."
+        },
+        {
+          "q": "Muss ich meine bestehenden Werkzeuge ersetzen?",
+          "a": "Nein. Wir verbinden, was Sie bereits nutzen. Nichts wird entfernt."
+        },
+        {
+          "q": "Was passiert nach dem Launch?",
+          "a": "Wir bleiben dabei. Wartung, Anpassungen und Verbesserungen sind enthalten — nicht extra berechnet."
+        },
+        {
+          "q": "Ist das nur für größere Unternehmen?",
+          "a": "Nein. Die meisten unserer Kunden sind Teams mit 3 bis 50 Personen."
+        },
+        {
+          "q": "Was kostet es?",
+          "a": "Wir senden nach dem Geschäfts-Check ein Festpreisangebot. Keine Schätzungen. Keine Überraschungen."
+        }
+      ]
     }
   },
   "proof": {

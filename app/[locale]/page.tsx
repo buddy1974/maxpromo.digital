@@ -8,6 +8,8 @@ import { PainCards } from '@/components/homepage/PainCards'
 import { SystemsTabs } from '@/components/homepage/SystemsTabs'
 import { ProofMetrics } from '@/components/homepage/ProofMetrics'
 import type { ProofMetric } from '@/components/homepage/ProofMetrics'
+import { TeamTrust } from '@/components/homepage/TeamTrust'
+import { FaqAccordion } from '@/components/homepage/FaqAccordion'
 
 /* ─── HELPERS ─── */
 
@@ -34,46 +36,81 @@ export default async function HomePage() {
   const t            = await getTranslations('home')
   const tProcess     = await getTranslations('home.process')
   const tWhyUs       = await getTranslations('home.whyUs')
-  const tProjectTypes= await getTranslations('home.projectTypes')
   const tProof       = await getTranslations('home.proof')
   const tSystemsTabs = await getTranslations('home.systemsTabs')
   const tBlog        = await getTranslations('blog')
 
-  const marqueeItems = t.raw('marquee') as string[]
-  const latestPosts  = getLatestPosts(locale, 3)
+  const latestPosts = getLatestPosts(locale, 3)
 
-  const PROCESS_REFS = ['p1','p2','p3','p4','p5'] as const
-  const WHY_REFS     = ['w1','w2','w3','w4'] as const
-  const PT_REFS      = ['pt1','pt2','pt3'] as const
-  const PT_ICONS     = ['◰','◇','⌗'] as const
-  const PROOF_REFS   = ['p1','p2','p3'] as const
+  const WHY_REFS   = ['w1', 'w2', 'w3', 'w4'] as const
+  const PROOF_REFS = ['p1', 'p2', 'p3'] as const
+  const PROCESS_REFS = ['p1', 'p2', 'p3', 'p4', 'p5'] as const
 
   return (
     <main>
 
-      {/* 1 — Hero */}
+      {/* 1 — Hero (LOCKED) */}
       <Hero />
 
-      {/* Pain slider — rotating problem strip below hero */}
+      {/* Pain Slider — rotating problem strip below hero */}
       <PainSlider />
 
-      {/* 2 — Marquee ticker */}
-      <div style={{ background: 'hsl(240 12% 5%)', borderTop: '1px solid hsl(40 30% 96% / 0.05)', borderBottom: '1px solid hsl(40 30% 96% / 0.05)', padding: '14px 0', overflow: 'hidden' }}>
-        <div className="animate-marquee" style={{ display: 'flex', whiteSpace: 'nowrap', width: 'max-content' }}>
-          {[...marqueeItems, ...marqueeItems].map((item, i) => (
-            <span key={i} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 30% 96% / 0.3)', textTransform: 'uppercase', letterSpacing: '0.15em', marginRight: '2rem', display: 'inline-flex', alignItems: 'center', gap: '2rem' }}>
-              {item}
-              <span style={{ color: 'rgba(249,115,22,0.35)' }}>◆</span>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* 3 — Pain cards */}
+      {/* 2 — Pain Cards */}
       <PainCards />
 
-      {/* 4 — Why Maxpromo */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      {/* 3 — Proof strip */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+            <div>
+              <SectionLabel>{tProof('eyebrow')}</SectionLabel>
+              <SectionTitle>{tProof('title')}</SectionTitle>
+            </div>
+            <Link href="/case-studies" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
+              {tProof('viewAll')}
+            </Link>
+          </div>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'hsl(40 12% 60%)', lineHeight: 1.7, marginBottom: '2.5rem', maxWidth: '44rem' }}>
+            {tProof('subtitle')}
+          </p>
+          <ProofMetrics
+            metrics={PROOF_REFS.map((id): ProofMetric => ({
+              id,
+              value:  tProof(`${id}Value`),
+              label:  tProof(`${id}Label`),
+              source: tProof(`${id}Source`),
+            }))}
+          />
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 28%)', marginTop: '1rem', letterSpacing: '0.05em' }}>
+            {tProof('note')}
+          </p>
+        </div>
+      </section>
+
+      {/* 4 — Systems tabs */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
+            <div>
+              <SectionLabel>{tSystemsTabs('eyebrow')}</SectionLabel>
+              <SectionTitle>
+                {tSystemsTabs('title')}{' '}
+                <span style={{ color: '#F97316' }}>{tSystemsTabs('titleAccent')}</span>
+              </SectionTitle>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', marginTop: '10px', lineHeight: 1.7 }}>
+                {tSystemsTabs('subtitle')}
+              </p>
+            </div>
+            <Link href="/systems" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
+              {tSystemsTabs('viewAll')} →
+            </Link>
+          </div>
+          <SystemsTabs />
+        </div>
+      </section>
+
+      {/* 5 — Why Maxpromo */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem', maxWidth: '44rem' }}>
             <SectionLabel>{tWhyUs('eyebrow')}</SectionLabel>
@@ -111,88 +148,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5 — Project types */}
+      {/* 6 — Team trust */}
+      <TeamTrust />
+
+      {/* 7 — How we work */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div style={{ marginBottom: '3.5rem', maxWidth: '44rem' }}>
-            <SectionLabel>{tProjectTypes('eyebrow')}</SectionLabel>
-            <SectionTitle>
-              {tProjectTypes('title')}{' '}
-              <span style={{ color: '#F97316' }}>{tProjectTypes('titleAccent')}</span>
-            </SectionTitle>
-          </div>
-          <div style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '16px', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-3">
-            {PT_REFS.map((id, i) => (
-              <div key={id} style={{ background: 'hsl(240 12% 7%)', padding: '2.5rem', position: 'relative', overflow: 'hidden' }}>
-                <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #F97316 0%, rgba(249,115,22,0.2) 60%, transparent 100%)' }} />
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '28px', color: '#F97316', display: 'block', marginBottom: '1.25rem' }}>
-                  {PT_ICONS[i]}
-                </span>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '10px' }}>
-                  {tProjectTypes(`${id}Title`)}
-                </h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, marginBottom: '1.25rem' }}>
-                  {tProjectTypes(`${id}Desc`)}
-                </p>
-                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(28 100% 58% / 0.6)', letterSpacing: '0.05em' }}>
-                  {tProjectTypes(`${id}Items`)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6 — Proof strip */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
-            <div>
-              <SectionLabel>{tProof('eyebrow')}</SectionLabel>
-              <SectionTitle>{tProof('title')}</SectionTitle>
-            </div>
-            <Link href="/case-studies" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
-              {tProof('viewAll')}
-            </Link>
-          </div>
-          <ProofMetrics
-            metrics={PROOF_REFS.map((id): ProofMetric => ({
-              id,
-              value:  tProof(`${id}Value`),
-              label:  tProof(`${id}Label`),
-              source: tProof(`${id}Source`),
-            }))}
-          />
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 28%)', marginTop: '1rem', letterSpacing: '0.05em' }}>
-            {tProof('note')}
-          </p>
-        </div>
-      </section>
-
-      {/* 7 — Systems tabs */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-            <div>
-              <SectionLabel>{tSystemsTabs('eyebrow')}</SectionLabel>
-              <SectionTitle>
-                {tSystemsTabs('title')}{' '}
-                <span style={{ color: '#F97316' }}>{tSystemsTabs('titleAccent')}</span>
-              </SectionTitle>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', marginTop: '10px', lineHeight: 1.7 }}>
-                {tSystemsTabs('subtitle')}
-              </p>
-            </div>
-            <Link href="/systems" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
-              {tSystemsTabs('viewAll')} →
-            </Link>
-          </div>
-          <SystemsTabs />
-        </div>
-      </section>
-
-      {/* 8 — How we work */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
             <SectionLabel>{tProcess('processEyebrow')}</SectionLabel>
@@ -224,9 +184,12 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* 8 — FAQ */}
+      <FaqAccordion />
+
       {/* 9 — Latest insights (only when posts exist) */}
       {latestPosts.length > 0 && (
-        <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <section style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
           <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
               <div>
@@ -281,12 +244,23 @@ export default async function HomePage() {
       {/* 10 — Final CTA */}
       <section style={{ background: 'hsl(240 14% 3%)', padding: '7rem 2rem', position: 'relative', overflow: 'hidden', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.25, pointerEvents: 'none' }} />
-        <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+        <div style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
           <SectionLabel>{t('finalCtaEyebrow')}</SectionLabel>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 5vw, 3.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '1.25rem', marginTop: '0.5rem', lineHeight: 1.15 }}>
+          <h2
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
+              letterSpacing: '-0.04em',
+              color: 'hsl(40 30% 96%)',
+              marginBottom: '1rem',
+              marginTop: '0.5rem',
+              lineHeight: 1.15,
+            }}
+          >
             {t('finalCtaTitle')}
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: 'hsl(40 12% 55%)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
             {t('finalCtaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginBottom: '1.25rem' }}>

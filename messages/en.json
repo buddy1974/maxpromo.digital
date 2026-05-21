@@ -254,23 +254,23 @@
     "processEyebrow": "// HOW IT WORKS",
     "processTitle": "From idea to operational",
     "process": {
-      "processEyebrow": "// How we work",
-      "processTitle": "From idea to operation.",
+      "processEyebrow": "// From first call to live system",
+      "processTitle": "Five steps. Then it runs.",
       "p1Num": "01",
       "p1Time": "30 min",
       "p1Title": "Business Check",
       "p1Desc": "We map where time, customers and clarity are being lost. Clear picture before any commitment.",
       "p2Num": "02",
       "p2Time": "1–2 days",
-      "p2Title": "Map the operation",
+      "p2Title": "Understand your workflow",
       "p2Desc": "We document your workflows, tools and handovers. We find what is manual, broken or missing.",
       "p3Num": "03",
       "p3Time": "2–3 days",
-      "p3Title": "Plan the solution",
+      "p3Title": "Design the system",
       "p3Desc": "We design the system: scope, tools, integrations. You see exactly what gets built and how.",
       "p4Num": "04",
       "p4Time": "1–4 wks",
-      "p4Title": "Build and install",
+      "p4Title": "Build and go live",
       "p4Desc": "We build, test and go live. Every step verified before the system runs in production.",
       "p5Num": "05",
       "p5Time": "Ongoing",
@@ -295,9 +295,9 @@
       "auditCta": "Get my free business check →",
       "windowTitle": "audit — zsh"
     },
-    "finalCtaEyebrow": "// Ready to fix it?",
-    "finalCtaTitle": "Let us find where your business is losing time, customers or clarity.",
-    "finalCtaDesc": "A free 30-minute business check. We identify the highest-impact change before any commitment.",
+    "finalCtaEyebrow": "// Ready?",
+    "finalCtaTitle": "See what your business could stop doing manually.",
+    "finalCtaDesc": "30 minutes. No pressure.",
     "finalCtaPrimary": "Get your free business check",
     "finalCtaSecondary": "Talk to Maxpromo",
     "finalCtaFootnote": "// No commitment · No pressure · 30 minutes",
@@ -317,20 +317,20 @@
     },
     "whyUs": {
       "eyebrow": "// Why Maxpromo",
-      "title": "Why businesses",
-      "titleAccent": "work with Maxpromo.",
+      "title": "What makes this",
+      "titleAccent": "different.",
       "w1Title": "Clear start, no tech chaos",
       "w1Desc": "We begin with your daily operation — not with tools or concepts. You know what changes before we build it.",
       "w2Title": "Existing tools stay in place",
       "w2Desc": "We connect what you already have. No ripping out, no relearning. The system fits into your workflow.",
       "w3Title": "Systems that grow with you",
-      "w3Desc": "Start small. Add layers as the business grows. You never outgrow what we build.",
+      "w3Desc": "Start with one system. Add more as the business grows. You never outgrow what we build.",
       "w4Title": "Responsibility after launch",
-      "w4Desc": "We do not just build and disappear. We stay on it — maintaining, adjusting, improving as the business evolves."
+      "w4Desc": "We build it. We go live with you. Then we stay — maintaining, adjusting, improving. Ongoing, not a one-off."
     },
     "proof": {
-      "eyebrow": "// Real results",
-      "title": "From live deployments.",
+      "eyebrow": "// From live systems",
+      "title": "Installed and running.",
       "p1Value": "78%",
       "p1Label": "reduction in manual processing time",
       "p1Source": "Operations · 6 weeks",
@@ -341,7 +341,8 @@
       "p3Label": "invoice cycle compressed",
       "p3Source": "Logistics · 8 weeks",
       "note": "// Results from live production systems. Client details withheld under NDA.",
-      "viewAll": "See all case studies →"
+      "viewAll": "See all case studies →",
+      "subtitle": "These numbers come from real systems operating in real businesses. No demos. No experiments."
     },
     "slider": {
       "prefix": "Still dealing with:",
@@ -359,9 +360,9 @@
       "i6Fix": "Tracked and reordered automatically."
     },
     "painCards": {
-      "eyebrow": "// What we solve",
-      "title": "Six problems",
-      "titleAccent": "every growing business faces.",
+      "eyebrow": "// Sound familiar?",
+      "title": "Six things that cost your business",
+      "titleAccent": "time, customers and clarity.",
       "p1Tag": "Customer Enquiries",
       "p1Title": "Enquiries falling through?",
       "p1Desc": "Customers contact you via WhatsApp, website, phone — and never hear back. They book with someone else.",
@@ -376,7 +377,7 @@
       "p3Cta": "Our solution",
       "p4Tag": "Field Operations",
       "p4Title": "Field team without visibility?",
-      "p4Desc": "Jobs tracked on WhatsApp. Time logged by hand. The office only knows what happened when the driver calls.",
+      "p4Desc": "Jobs tracked on WhatsApp threads. Time logged by hand. By the time the invoice goes out, three days have passed.",
       "p4Cta": "Our solution",
       "p5Tag": "Reputation",
       "p5Title": "Reviews going uncollected?",
@@ -384,7 +385,7 @@
       "p5Cta": "Our solution",
       "p6Tag": "Systems",
       "p6Title": "Tools that do not connect?",
-      "p6Desc": "Data copied between systems manually. Nothing connects. Your team fills the gap with time and spreadsheets.",
+      "p6Desc": "Five tools. None of them talk to each other. Your team bridges the gap manually — every single day.",
       "p6Cta": "Our solution"
     },
     "projectTypes": {
@@ -402,12 +403,55 @@
       "pt3Items": "Portals · Dashboards · Industry Systems · Internal Tools"
     },
     "systemsTabs": {
-      "eyebrow": "// Production systems",
-      "title": "Real businesses.",
-      "titleAccent": "Real operations.",
-      "subtitle": "Every system below is built, installed and running. No prototypes. No demos.",
+      "eyebrow": "// What we build",
+      "title": "Business systems",
+      "titleAccent": "running today.",
+      "subtitle": "Click a system and see how it works.",
       "viewAll": "See all systems",
       "viewSystem": "See system"
+    },
+    "teamTrust": {
+      "eyebrow": "// The Maxpromo team",
+      "title": "Built by operators.",
+      "titleAccent": "Not just developers.",
+      "body": "We build systems around real work.",
+      "pain1": "Missed enquiries.",
+      "pain2": "Manual admin.",
+      "pain3": "Team chaos.",
+      "pain4": "Disconnected tools.",
+      "closing": "The problems are real. The systems should be too.",
+      "l1Label": "Operators",
+      "l1Desc": "We start from your daily operation — not from a concept.",
+      "l2Label": "Developers",
+      "l2Desc": "We build systems that go live and stay live.",
+      "l3Label": "Automation specialists",
+      "l3Desc": "Every workflow is designed for real use. Not a demo.",
+      "footer": "Installed for businesses across industries and markets."
+    },
+    "faq": {
+      "eyebrow": "// Common questions",
+      "items": [
+        {
+          "q": "How long does installation take?",
+          "a": "Between 2 and 6 weeks. Depends on the system. We tell you in the business check."
+        },
+        {
+          "q": "Do I need to replace my existing tools?",
+          "a": "No. We connect what you already use. Nothing gets removed."
+        },
+        {
+          "q": "What happens after launch?",
+          "a": "We stay on. Maintenance, adjustments and improvements are included — not billed as extras."
+        },
+        {
+          "q": "Is this only for larger companies?",
+          "a": "No. Most of our clients are teams between 3 and 50 people."
+        },
+        {
+          "q": "What does it cost?",
+          "a": "We send a fixed quote after the business check. No estimates. No surprises."
+        }
+      ]
     }
   },
   "proof": {
