@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
+import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 
 const AMBER  = '#F59E0B'
 const ORANGE = '#F97316'
@@ -268,6 +269,12 @@ export default function RealEstateOSPage() {
             </div>
           </div>
         </section>
+
+        <ConnectedSystems systems={[
+          { slug: 'taxkontrol',   name: 'TaxKontrol',   description: 'Financial visibility.',              href: '/products/taxkontrol'   },
+          { slug: 'publishing-os', name: 'PublishingOS', description: 'Operational pipeline structure.',    href: '/products/publishing-os'},
+          { slug: 'handwerk-os',  name: 'HandwerkOS',   description: 'Project flow inspiration.',          href: '/products/handwerk-os'  },
+        ]} />
 
         {/* 9. CTA */}
         <section id="walkthrough" style={{ background: BG, padding: '6rem 2rem' }}>

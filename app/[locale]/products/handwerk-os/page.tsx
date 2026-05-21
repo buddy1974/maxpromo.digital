@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
+import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const GREEN  = '#22C55E'
@@ -301,6 +302,12 @@ export default function HandwerkOSPage() {
             </div>
           </div>
         </section>
+
+        <ConnectedSystems systems={[
+          { slug: 'taxkontrol', name: 'TaxKontrol', description: 'Understand costs and obligations.',              href: '/products/taxkontrol' },
+          { slug: 'praxis-os',  name: 'PraxisOS',   description: 'Appointment and admin workflow inspiration.',   href: '/products/praxis-os'  },
+          { slug: 'care-os',    name: 'CareOS',     description: 'Field operations and documentation.',           href: '/products/care-os'    },
+        ]} />
 
         {/* 9. CTA */}
         <section id="walkthrough" style={{ background: BG, padding: '6rem 2rem' }}>

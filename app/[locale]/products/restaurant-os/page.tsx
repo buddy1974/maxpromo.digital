@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
+import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const ORANGE = '#F97316'
@@ -390,6 +391,12 @@ export default function RestaurantOSPage() {
             </div>
           </div>
         </section>
+
+        <ConnectedSystems systems={[
+          { slug: 'taxkontrol',    name: 'TaxKontrol',  description: 'Keep financial visibility connected.',         href: '/products/taxkontrol'    },
+          { slug: 'printshop-os', name: 'PrintShopOS', description: 'Manage quotes, files and production.',          href: '/products/printshop'     },
+          { slug: 'handwerk-os',  name: 'HandwerkOS',  description: 'Keep field work and invoices aligned.',         href: '/products/handwerk-os'   },
+        ]} />
 
         {/* ── 9. CTA ── */}
         <section id="walkthrough" style={{ background: BG, padding: '6rem 2rem' }}>

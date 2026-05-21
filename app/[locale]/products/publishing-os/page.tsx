@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
+import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 
 const PURPLE = '#A78BFA'
 const ORANGE = '#F97316'
@@ -268,6 +269,12 @@ export default function PublishingOSPage() {
             </div>
           </div>
         </section>
+
+        <ConnectedSystems systems={[
+          { slug: 'printshop-os',  name: 'PrintShopOS', description: 'Production workflow alignment.',  href: '/products/printshop'    },
+          { slug: 'taxkontrol',    name: 'TaxKontrol',  description: 'Business visibility.',            href: '/products/taxkontrol'   },
+          { slug: 'real-estate-os', name: 'RealEstateOS', description: 'Pipeline management.',          href: '/products/real-estate-os'},
+        ]} />
 
         {/* 9. CTA */}
         <section id="walkthrough" style={{ background: BG, padding: '6rem 2rem' }}>

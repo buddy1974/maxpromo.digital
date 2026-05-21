@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
+import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 
 const BLUE   = '#60A5FA'
 const ORANGE = '#F97316'
@@ -269,6 +270,12 @@ export default function PraxisOSPage() {
             </div>
           </div>
         </section>
+
+        <ConnectedSystems systems={[
+          { slug: 'care-os',       name: 'CareOS',       description: 'Connected care workflows.',         href: '/products/care-os'       },
+          { slug: 'taxkontrol',    name: 'TaxKontrol',   description: 'Financial visibility.',             href: '/products/taxkontrol'    },
+          { slug: 'real-estate-os', name: 'RealEstateOS', description: 'Pipeline and workflow management.', href: '/products/real-estate-os'},
+        ]} />
 
         {/* 9. CTA */}
         <section id="walkthrough" style={{ background: BG, padding: '6rem 2rem' }}>

@@ -654,6 +654,19 @@ button.os-nav-item {
   .os-nav-label { font-size: 15px; }
 }
 
+/* ─── CONNECTED SYSTEMS GRID ────────────────────────────── */
+.cs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .cs-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .cs-grid { grid-template-columns: 1fr; }
+}
+
 /* ─── MAXPROMO MOTION SYSTEM ────────────────────────────── */
 
 /* Keyframes */

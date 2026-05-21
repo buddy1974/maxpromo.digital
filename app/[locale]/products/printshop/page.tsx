@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
+import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 import Link from 'next/link'
 
 /* ─── CMYK TOKENS ─────────────────────────────────────────── */
@@ -398,6 +399,12 @@ export default function PrintshopPage() {
             </div>
           </div>
         </section>
+
+        <ConnectedSystems systems={[
+          { slug: 'taxkontrol',   name: 'TaxKontrol',   description: 'Keep reserves and financial obligations visible.', href: '/products/taxkontrol'   },
+          { slug: 'handwerk-os', name: 'HandwerkOS',   description: 'Connect production and field operations.',         href: '/products/handwerk-os'  },
+          { slug: 'publishing-os', name: 'PublishingOS', description: 'Manage production and distribution workflows.',   href: '/products/publishing-os'},
+        ]} />
 
         {/* ── 9. CTA ── */}
         <section id="walkthrough" style={{ background: Y, padding: '6rem 2rem', borderTop: `2px solid ${INK}` }}>

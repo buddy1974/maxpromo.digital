@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
+import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const NAVY   = '#1E3A5F'
@@ -414,6 +415,12 @@ export default function TaxKontrolPage() {
             </div>
           </div>
         </section>
+
+        <ConnectedSystems systems={[
+          { slug: 'restaurant-os', name: 'RestaurantOS', description: 'See operational activity and revenue flow.',   href: '/products/restaurant-os' },
+          { slug: 'handwerk-os',   name: 'HandwerkOS',   description: 'Track jobs and invoice movement.',            href: '/products/handwerk-os'   },
+          { slug: 'printshop-os',  name: 'PrintShopOS',  description: 'Keep production and finance visible.',        href: '/products/printshop'     },
+        ]} />
 
         {/* ── CTA ── */}
         <section id="walkthrough" style={{ background: BG, padding: '6rem 2rem' }}>
