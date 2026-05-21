@@ -66,7 +66,7 @@ export function SystemCardCompact({
       >
         {thumbSrc ? (
           <Image
-            src={`/${thumbSrc}`}
+            src={thumbSrc}
             alt={product.name}
             fill
             className="transition-transform duration-500 group-hover:scale-[1.04]"

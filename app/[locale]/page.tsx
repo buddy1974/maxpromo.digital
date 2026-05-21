@@ -1,10 +1,5 @@
 import { getTranslations, getLocale } from 'next-intl/server'
 import Hero from '@/components/Hero'
-import ProofSection from '@/components/ProofSection'
-import PricingSection from '@/components/PricingSection'
-import FaqSection from '@/components/FaqSection'
-import ROICalculator from '@/components/ROICalculator'
-import NewsletterSignup from '@/components/NewsletterSignup'
 import { Link } from '@/i18n/navigation'
 import HomepageSystemsGrid from '@/components/systems/HomepageSystemsGrid'
 import { getHomepageCards } from '@/lib/registry/adapters'
@@ -31,7 +26,6 @@ const LAYER_REFS = [
   { id: 'l6', icon: '⌗', href: '/products/publishing-os' },
 ] as const
 
-
 const PROCESS_REFS = ['p1', 'p2', 'p3', 'p4'] as const
 
 interface TerminalLine {
@@ -49,14 +43,6 @@ const TERMINAL_REFS: TerminalLine[] = [
   { key: 'line7', type: 'stat'  },
   { key: 'line8', type: 'stat'  },
 ]
-
-// Tool stack chips — static brand names, no translation needed.
-const STACK_TOOLS = [
-  'Claude AI', 'OpenAI', 'n8n', 'Make', 'Zapier',
-  'Supabase', 'Neon', 'Vercel', 'Render', 'Next.js',
-  'Cloudflare', 'HubSpot', 'Slack', 'Notion', 'Xero',
-  'Twilio', 'Resend', 'Airtable',
-] as const
 
 /* ─── HELPERS ─── */
 
@@ -111,9 +97,6 @@ export default async function HomePage() {
    * `cards` is the ONLY product data the homepage receives. No registry imports in this file.
    *
    * Flow: HOMEPAGE_PRODUCTS → getHomepageCards(locale) → cards → HomepageSystemsGrid
-   *
-   * TODO: future analytics  — pass cards.map(c => c.eventSource) to impression tracker
-   * TODO: future experiment — swap card layout per product via session context
    */
   const cards = getHomepageCards(locale)
 
@@ -156,7 +139,7 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* 01 — Operational layers */}
+      {/* 3 — What Maxpromo installs */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
@@ -244,7 +227,93 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 02 — Operational scenarios */}
+      {/* 4 — Systems preview */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3rem' }}>
+            <SectionLabel>{t('systemsEyebrow')}</SectionLabel>
+            <SectionTitle>
+              {t('systemsTitle1')}{' '}
+              <span style={{ color: '#F97316' }}>{t('systemsTitleAccent')}</span>
+            </SectionTitle>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '600px', marginTop: '1rem', lineHeight: 1.8 }}>
+              {t('systemsLede')}
+            </p>
+          </div>
+
+          {/*
+            Adapter-driven systems grid.
+            cards ← getHomepageCards(locale) ← HOMEPAGE_PRODUCTS (registry, 6 products locked)
+            HomepageSystemsGrid bridges HomepageCardData[] → card shells.
+            No registry import on this page. No ProductEntry here.
+          */}
+          <HomepageSystemsGrid cards={cards} locale={locale} />
+
+          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+            <Link href="/systems" className="glass" style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+              {t('systemsViewAll')}
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 5 — How it works */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3.5rem' }}>
+            <SectionLabel>{t('processEyebrow')}</SectionLabel>
+            <SectionTitle>{t('processTitle')}</SectionTitle>
+          </div>
+
+          <div
+            style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '16px', overflow: 'hidden' }}
+            className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {PROCESS_REFS.map((id, i) => (
+              <div
+                key={id}
+                className="process-step"
+                style={{
+                  background: 'hsl(240 12% 7%)',
+                  padding: '2.5rem 2rem',
+                  position: 'relative',
+                }}
+              >
+                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '56px', lineHeight: 1, marginBottom: '1.25rem', color: '#F97316' }}>
+                  {tProcess(`${id}Num`)}
+                </p>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(40 12% 65%)', background: 'hsl(240 10% 16%)', padding: '3px 8px', borderRadius: '4px', display: 'inline-block', marginBottom: '12px', letterSpacing: '0.05em' }}>
+                  {tProcess(`${id}Time`)}
+                </span>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '10px', display: 'block' }}>
+                  {tProcess(`${id}Title`)}
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75 }}>
+                  {tProcess(`${id}Desc`)}
+                </p>
+                {i < PROCESS_REFS.length - 1 && (
+                  <span
+                    className="hidden lg:block"
+                    style={{
+                      position: 'absolute',
+                      right: '-8px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      color: 'hsl(28 100% 58% / 0.4)',
+                      fontSize: '14px',
+                      zIndex: 1,
+                    }}
+                  >
+                    →
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 6 — Proof / operating examples */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '76rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem', maxWidth: '40rem' }}>
@@ -327,42 +396,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* 03 — Proof / Results */}
-      <ProofSection />
-
-      {/* 04 — Our Systems */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div style={{ marginBottom: '3rem' }}>
-            <SectionLabel>{t('systemsEyebrow')}</SectionLabel>
-            <SectionTitle>
-              {t('systemsTitle1')}{' '}
-              <span style={{ color: '#F97316' }}>{t('systemsTitleAccent')}</span>
-            </SectionTitle>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '600px', marginTop: '1rem', lineHeight: 1.8 }}>
-              {t('systemsLede')}
-            </p>
-          </div>
-
-          {/*
-            Adapter-driven systems grid.
-            cards ← getHomepageCards(locale) ← HOMEPAGE_PRODUCTS (registry, 6 products locked)
-            HomepageSystemsGrid bridges HomepageCardData[] → card shells.
-            No registry import on this page. No ProductEntry here.
-          */}
-          <HomepageSystemsGrid cards={cards} locale={locale} />
-
-          <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-            <Link href="/systems" className="glass" style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
-              {t('systemsViewAll')}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 6 — ROI Calculator */}
-      <ROICalculator />
 
       {/* 7 — Audit terminal */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', position: 'relative' }}>
@@ -469,69 +502,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 8 — Process */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div style={{ marginBottom: '3.5rem' }}>
-            <SectionLabel>{t('processEyebrow')}</SectionLabel>
-            <SectionTitle>{t('processTitle')}</SectionTitle>
-          </div>
-
-          <div
-            style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '16px', overflow: 'hidden' }}
-            className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-          >
-            {PROCESS_REFS.map((id, i) => (
-              <div
-                key={id}
-                className="process-step"
-                style={{
-                  background: 'hsl(240 12% 7%)',
-                  padding: '2.5rem 2rem',
-                  position: 'relative',
-                }}
-              >
-                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '56px', lineHeight: 1, marginBottom: '1.25rem', color: '#F97316' }}>
-                  {tProcess(`${id}Num`)}
-                </p>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(40 12% 65%)', background: 'hsl(240 10% 16%)', padding: '3px 8px', borderRadius: '4px', display: 'inline-block', marginBottom: '12px', letterSpacing: '0.05em' }}>
-                  {tProcess(`${id}Time`)}
-                </span>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '10px', display: 'block' }}>
-                  {tProcess(`${id}Title`)}
-                </h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75 }}>
-                  {tProcess(`${id}Desc`)}
-                </p>
-                {i < PROCESS_REFS.length - 1 && (
-                  <span
-                    className="hidden lg:block"
-                    style={{
-                      position: 'absolute',
-                      right: '-8px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      color: 'hsl(28 100% 58% / 0.4)',
-                      fontSize: '14px',
-                      zIndex: 1,
-                    }}
-                  >
-                    →
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 9 — Pricing */}
-      <PricingSection />
-
-      {/* 10 — FAQ */}
-      <FaqSection />
-
-      {/* 11 — Final CTA */}
+      {/* 8 — Final CTA */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '7rem 2rem', position: 'relative', overflow: 'hidden' }}>
         <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.3, pointerEvents: 'none' }} />
         <div style={{ maxWidth: '700px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>
@@ -592,37 +563,6 @@ export default async function HomePage() {
           </p>
         </div>
       </section>
-
-      {/* 12 — Stack */}
-      <section style={{ background: 'hsl(240 14% 4%)', borderTop: '1px solid hsl(40 30% 96% / 0.06)', padding: '3rem 2rem' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '20px', textAlign: 'center' }}>
-            {t('builtOnEyebrow')}
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-            {STACK_TOOLS.map((tool) => (
-              <span
-                key={tool}
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  color: 'hsl(40 12% 65%)',
-                  border: '1px solid hsl(40 30% 96% / 0.08)',
-                  padding: '5px 12px',
-                  letterSpacing: '0.05em',
-                  borderRadius: '4px',
-                  background: 'hsl(240 12% 8%)',
-                  transition: 'color 150ms ease, border-color 150ms ease',
-                }}
-              >
-                {tool}
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <NewsletterSignup />
 
     </main>
   )
