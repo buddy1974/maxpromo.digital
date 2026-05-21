@@ -23,7 +23,7 @@ export function LiveCardMobile({ slides, activeSlide }: LiveCardMobileProps) {
     <div
       style={{
         position: 'absolute',
-        bottom: '60px',
+        bottom: '90px',
         left: '50%',
         transform: 'translateX(-50%)',
         zIndex: 20,

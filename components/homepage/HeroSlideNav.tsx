@@ -9,12 +9,12 @@ interface HeroSlideNavProps {
 export function HeroSlideNav({ total, active, onSelect }: HeroSlideNavProps) {
   return (
     <div
+      className="hidden md:flex"
       style={{
         position: 'absolute',
         bottom: '48px',
         right: '2rem',
         zIndex: 25,
-        display: 'flex',
         alignItems: 'center',
         gap: '2px',
         background: 'rgba(0,0,0,0.45)',

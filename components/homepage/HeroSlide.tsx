@@ -1,18 +1,13 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 interface HeroSlideProps {
-  src: string      // /images/homepage/hero-{n}.png
+  src: string
   alt: string
-  /** 1-based index drives the ken-burns variant */
-  slideIndex: number
-  /** Whether this slide is currently visible */
+  slideIndex: number   // 1-based — drives Ken Burns variant
   active: boolean
-  /** Mouse parallax offset in px — applied to the image layer */
-  parallaxX?: number
-  parallaxY?: number
 }
 
 const KB_CLASSES = [
@@ -22,17 +17,21 @@ const KB_CLASSES = [
   'hero-ken-burns-4',
 ] as const
 
-export function HeroSlide({
-  src,
-  alt,
-  slideIndex,
-  active,
-  parallaxX = 0,
-  parallaxY = 0,
-}: HeroSlideProps) {
+export function HeroSlide({ src, alt, slideIndex, active }: HeroSlideProps) {
   const [imgError, setImgError] = useState(false)
-  // Force Ken Burns restart when slide becomes active
-  const kbKey = active ? `kb-${slideIndex}-active` : `kb-${slideIndex}-idle`
+  const imgDivRef = useRef<HTMLDivElement>(null)
+
+  // Restart Ken Burns animation when slide becomes active — no key remount, no flash.
+  // Removing and re-adding the class with an interleaved reflow is the only
+  // reliable way to reset a CSS animation without unmounting the element.
+  useEffect(() => {
+    const el = imgDivRef.current
+    if (!el || !active) return
+    const kbClass = KB_CLASSES[(slideIndex - 1) % 4]
+    el.classList.remove(kbClass)
+    void el.offsetWidth   // force reflow so the browser sees the class removal
+    el.classList.add(kbClass)
+  }, [active, slideIndex])
 
   return (
     <div
@@ -47,18 +46,12 @@ export function HeroSlide({
         willChange: 'opacity',
       }}
     >
-      {/* Background image with Ken Burns */}
       {!imgError && (
         <div
-          key={kbKey}
-          className={active ? KB_CLASSES[(slideIndex - 1) % 4] : undefined}
-          style={{
-            position: 'absolute',
-            inset: '-4%',    // oversized so Ken Burns never reveals edge
-            transform: `translate(${parallaxX}px, ${parallaxY}px)`,
-            transition: 'transform 120ms linear',
-            willChange: 'transform',
-          }}
+          ref={imgDivRef}
+          // Parallax is applied at the bgRef wrapper level in Hero.tsx —
+          // no transform here. inset: -4% provides bleed for Ken Burns.
+          style={{ position: 'absolute', inset: '-4%' }}
         >
           <Image
             src={src}
@@ -73,7 +66,7 @@ export function HeroSlide({
         </div>
       )}
 
-      {/* z-1: Dark gradient — dark left (text), fades to right */}
+      {/* z-1: gradient — dark left, fades right */}
       <div
         style={{
           position: 'absolute',
@@ -84,7 +77,7 @@ export function HeroSlide({
         }}
       />
 
-      {/* z-1 bottom: extra fade for ticker readability */}
+      {/* z-1 bottom: extra fade so ticker reads over image */}
       <div
         style={{
           position: 'absolute',
