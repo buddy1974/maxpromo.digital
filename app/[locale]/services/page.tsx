@@ -14,64 +14,19 @@ const mono    = { fontFamily: 'var(--font-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-heading)' } as const
 const sans    = { fontFamily: 'var(--font-body)' } as const
 
-interface LayerRef {
-  num: string
-  id: 'l1' | 'l2' | 'l3' | 'l4' | 'l5' | 'l6'
-  componentKeys: ReadonlyArray<'C1' | 'C2' | 'C3' | 'C4' | 'C5'>
-  shipsIn: ReadonlyArray<{ name: string; href: string }>
+interface ServiceRef {
+  id: 'c1' | 'c2' | 'c3' | 'c4' | 'c5' | 'c6'
+  href: string
+  icon: string
 }
 
-const LAYER_REFS: ReadonlyArray<LayerRef> = [
-  {
-    num: '01', id: 'l1',
-    componentKeys: ['C1','C2','C3','C4','C5'],
-    shipsIn: [
-      { name: 'RestaurantOS',   href: '/products/restaurant-os' },
-      { name: 'PraxisOS',       href: '/products/praxis-os' },
-      { name: 'RealEstateOS',   href: '/products/real-estate-os' },
-    ],
-  },
-  {
-    num: '02', id: 'l2',
-    componentKeys: ['C1','C2','C3','C4','C5'],
-    shipsIn: [
-      { name: 'HandwerkOS', href: '/products/handwerk-os' },
-    ],
-  },
-  {
-    num: '03', id: 'l3',
-    componentKeys: ['C1','C2','C3','C4','C5'],
-    shipsIn: [
-      { name: 'HandwerkOS',    href: '/products/handwerk-os' },
-      { name: 'PublishingOS',  href: '/products/publishing-os' },
-    ],
-  },
-  {
-    num: '04', id: 'l4',
-    componentKeys: ['C1','C2','C3','C4','C5'],
-    shipsIn: [
-      { name: 'CareOS',   href: '/products/care-os' },
-      { name: 'PraxisOS', href: '/products/praxis-os' },
-    ],
-  },
-  {
-    num: '05', id: 'l5',
-    componentKeys: ['C1','C2','C3','C4','C5'],
-    shipsIn: [
-      { name: 'CareOS',     href: '/products/care-os' },
-      { name: 'PraxisOS',   href: '/products/praxis-os' },
-      { name: 'HandwerkOS', href: '/products/handwerk-os' },
-    ],
-  },
-  {
-    num: '06', id: 'l6',
-    componentKeys: ['C1','C2','C3','C4','C5'],
-    shipsIn: [
-      { name: 'PublishingOS', href: '/products/publishing-os' },
-      { name: 'PrintShop OS', href: '/products/printshop' },
-      { name: 'RestaurantOS', href: '/products/restaurant-os' },
-    ],
-  },
+const SERVICE_REFS: ReadonlyArray<ServiceRef> = [
+  { id: 'c1', href: '/services/websites-platforms', icon: '◰' },
+  { id: 'c2', href: '/services/social-media',       icon: '▤' },
+  { id: 'c3', href: '/services/reviews',             icon: '◇' },
+  { id: 'c4', href: '/services/customer-inquiries',  icon: '⊟' },
+  { id: 'c5', href: '/services/workflow-automation', icon: '→' },
+  { id: 'c6', href: '/services/ai-agents',           icon: '⌗' },
 ]
 
 const BOUNDARY_IDS = ['n1', 'n2', 'n3', 'n4', 'n5'] as const
@@ -83,10 +38,10 @@ const LIFECYCLE_REFS = [
 ]
 
 export default async function ServicesPage() {
-  const t       = await getTranslations('services')
-  const tLayers = await getTranslations('services.layers')
-  const tBound  = await getTranslations('services.boundary')
-  const tLife   = await getTranslations('services.lifecycle')
+  const t      = await getTranslations('services')
+  const tCards = await getTranslations('services.cards')
+  const tBound = await getTranslations('services.boundary')
+  const tLife  = await getTranslations('services.lifecycle')
 
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
@@ -107,97 +62,80 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* Operational layers */}
+      {/* Service cards */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '88rem', margin: '0 auto' }}>
-          <div
-            style={{ display: 'grid', gap: '12px' }}
-            className="grid-cols-1 lg:grid-cols-2"
-          >
-            {LAYER_REFS.map((layer) => (
-              <article
-                key={layer.num}
-                className="dark-card"
-                style={{
-                  background: 'hsl(240 12% 7%)',
-                  border: '1px solid hsl(40 30% 96% / 0.08)',
-                  borderRadius: '12px',
-                  padding: '40px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
+          <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 lg:grid-cols-2">
+            {SERVICE_REFS.map((svc) => (
+              <Link
+                key={svc.id}
+                href={svc.href}
+                style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}
               >
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: '#F97316', opacity: 0.5 }} />
+                <article
+                  className="dark-card"
+                  style={{
+                    background: 'hsl(240 12% 7%)',
+                    border: '1px solid hsl(40 30% 96% / 0.08)',
+                    borderRadius: '12px',
+                    padding: '40px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    flex: 1,
+                    transition: 'border-color 200ms ease',
+                  }}
+                >
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: '#F97316', opacity: 0.5 }} />
 
-                <header style={{ marginBottom: '16px' }}>
-                  <span style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65% / 0.7)', letterSpacing: '0.1em', display: 'block', marginBottom: '8px' }}>
-                    {layer.num} · {t('layerLabel')}
+                  <span style={{ ...mono, fontSize: '24px', color: '#F97316', display: 'block', marginBottom: '20px' }}>
+                    {svc.icon}
                   </span>
-                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '24px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', lineHeight: 1.2 }}>
-                    {tLayers(`${layer.id}Name`)}
-                  </h2>
-                </header>
 
-                <p style={{ ...sans, fontSize: '15px', color: '#F97316', lineHeight: 1.6, marginBottom: '24px', fontStyle: 'italic' }}>
-                  {tLayers(`${layer.id}OneLiner`)}
-                </p>
+                  <header style={{ marginBottom: '16px' }}>
+                    <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '22px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', lineHeight: 1.2, marginBottom: '8px' }}>
+                      {tCards(`${svc.id}Title`)}
+                    </h2>
+                    <p style={{ ...sans, fontSize: '15px', color: '#F97316', lineHeight: 1.6, fontStyle: 'italic', margin: 0 }}>
+                      {tCards(`${svc.id}Lede`)}
+                    </p>
+                  </header>
 
-                <div style={{ marginBottom: '20px' }}>
-                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    {t('painLabel')}
-                  </p>
-                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)', lineHeight: 1.7, marginBottom: '14px' }}>
-                    {tLayers(`${layer.id}Pain`)}
-                  </p>
-
-                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    {t('systemLabel')}
-                  </p>
-                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)', lineHeight: 1.7, marginBottom: '14px' }}>
-                    {tLayers(`${layer.id}System`)}
-                  </p>
-
-                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
-                    {t('resultLabel')}
-                  </p>
-                  <p style={{ ...sans, fontSize: '14px', color: '#F97316', lineHeight: 1.7, fontWeight: 600 }}>
-                    {tLayers(`${layer.id}Result`)}
-                  </p>
-                </div>
-
-                <div style={{ marginBottom: '20px' }}>
-                  <p style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65% / 0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>
-                    {t('componentsLabel')}
-                  </p>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {layer.componentKeys.map((ck) => (
-                      <li key={ck} style={{ display: 'flex', alignItems: 'center', gap: '10px', ...sans, fontSize: '13px', color: 'hsl(40 30% 96% / 0.75)' }}>
-                        <span style={{ width: '4px', height: '4px', background: '#F97316', flexShrink: 0, display: 'inline-block' }} />
-                        {tLayers(`${layer.id}${ck}`)}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
-                  <p style={{ ...mono, fontSize: '10px', color: 'hsl(40 12% 65% / 0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px' }}>
-                    {t('shipsInLabel')}
-                  </p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                    {layer.shipsIn.map((p) => (
-                      <Link
-                        key={p.name}
-                        href={p.href}
-                        style={{ ...mono, fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', letterSpacing: '0.04em', borderRadius: '2px', textDecoration: 'none' }}
-                      >
-                        {p.name}
-                      </Link>
-                    ))}
+                  <div style={{ display: 'grid', gap: '14px', marginBottom: '24px' }} className="grid-cols-1 sm:grid-cols-3">
+                    <div>
+                      <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                        {t('painLabel')}
+                      </p>
+                      <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 30% 96% / 0.75)', lineHeight: 1.65, margin: 0 }}>
+                        {tCards(`${svc.id}Pain`)}
+                      </p>
+                    </div>
+                    <div>
+                      <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                        {t('systemLabel')}
+                      </p>
+                      <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 30% 96% / 0.75)', lineHeight: 1.65, margin: 0 }}>
+                        {tCards(`${svc.id}System`)}
+                      </p>
+                    </div>
+                    <div>
+                      <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                        {t('resultLabel')}
+                      </p>
+                      <p style={{ ...sans, fontSize: '13px', color: '#F97316', lineHeight: 1.65, fontWeight: 600, margin: 0 }}>
+                        {tCards(`${svc.id}Result`)}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </article>
+
+                  <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+                    <span style={{ ...mono, fontSize: '12px', color: '#F97316', letterSpacing: '0.05em' }}>
+                      {tCards('ctaCard')}
+                    </span>
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
         </div>
@@ -250,10 +188,7 @@ export default async function ServicesPage() {
               {t('lifecycleTitle')}
             </h2>
           </div>
-          <div
-            style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }}
-            className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-          >
+          <div style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {LIFECYCLE_REFS.map((s) => (
               <div key={s.step} style={{ background: 'hsl(240 12% 7%)', padding: '32px' }}>
                 <p style={{ ...grotesk, fontWeight: 700, fontSize: '48px', color: '#F97316', letterSpacing: '-0.04em', marginBottom: '12px', lineHeight: 1 }}>
@@ -262,7 +197,7 @@ export default async function ServicesPage() {
                 <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '17px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', marginBottom: '10px', lineHeight: 1.3 }}>
                   {tLife(`${s.id}Title`)}
                 </h3>
-                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7 }}>
+                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
                   {tLife(`${s.id}Desc`)}
                 </p>
               </div>
@@ -271,15 +206,8 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* See live systems link */}
-      <div style={{ background: 'hsl(240 14% 4%)', padding: '2rem', textAlign: 'center', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <Link href="/systems" className="sys-cta">
-          {t('seeLiveLink')}
-        </Link>
-      </div>
-
       {/* CTA */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}
