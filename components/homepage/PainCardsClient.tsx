@@ -63,7 +63,7 @@ export function PainCardsClient({ cards }: PainCardsClientProps) {
                   position: 'relative',
                   aspectRatio: '16 / 9',
                   backgroundColor: 'hsl(240 12% 5%)',
-                  backgroundImage: `url(/images/homepage/pain/${card.id}.png)`,
+                  backgroundImage: `url(/images/homepage/${card.id}.png)`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center top',
                   overflow: 'hidden',

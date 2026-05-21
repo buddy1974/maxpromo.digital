@@ -15,10 +15,10 @@ import { HeroParticles } from './homepage/HeroParticles'
 /* ─── slide data ───────────────────────────────────────────── */
 
 const SLIDES = [
-  { src: '/images/homepage/hero-1.png', alt: 'Agency statement — executive workspace' },
-  { src: '/images/homepage/hero-2.png', alt: 'Automation story — field operations in action' },
-  { src: '/images/homepage/hero-3.png', alt: 'Systems story — operations control center' },
-  { src: '/images/homepage/hero-4.png', alt: 'Developer story — engineering studio' },
+  { src: '/images/homepage/hero1.png', alt: 'Agency statement — executive workspace' },
+  { src: '/images/homepage/hero2.png', alt: 'Automation story — field operations in action' },
+  { src: '/images/homepage/hero3.png', alt: 'Systems story — operations control center' },
+  { src: '/images/homepage/hero4.png', alt: 'Developer story — engineering studio' },
 ] as const
 
 const SLIDE_DURATION = 6500 // ms
