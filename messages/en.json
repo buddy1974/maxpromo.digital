@@ -86,12 +86,12 @@
       "REGULAR POSTS",
       "NO MISSED ENQUIRIES"
     ],
-    "layersEyebrow": "// 01 — WHAT WE FIX FOR YOU",
-    "layersTitle1": "Six things small businesses",
-    "layersTitleAccent": "stop worrying about",
-    "layersLede": "These are the bits of running a business that eat your evenings and weekends. We build the system that handles each one, on top of the tools you already use. Built for restaurants, clinics, salons, trades, care services, local shops and small businesses around Essen, NRW and Germany.",
-    "layersCtaCard": "Show me how →",
-    "layersCtaAll": "See everything we fix →",
+    "layersEyebrow": "// What we fix",
+    "layersTitle1": "Six operational gaps.",
+    "layersTitleAccent": "All closed.",
+    "layersLede": "These are the pressures that eat evenings and weekends. We build the system that handles each one — on top of the tools you already use.",
+    "layersCtaCard": "See how →",
+    "layersCtaAll": "See all services →",
     "layers": {
       "l1Title": "Never miss a customer",
       "l1Desc": "Enquiries come in via email, phone, WhatsApp, your website, walk-ins. We catch every one of them, work out who's serious, and send it to the right person — even at 11pm on a Sunday.",
@@ -269,6 +269,21 @@
       "p3Source": "Logistics · 8 weeks",
       "note": "// Results from live production systems. Client details withheld under NDA.",
       "viewAll": "See all case studies →"
+    },
+    "slider": {
+      "prefix": "Still dealing with:",
+      "i1Pain": "missed enquiries after hours",
+      "i1Fix": "We catch every one.",
+      "i2Pain": "invoices sitting unpaid",
+      "i2Fix": "Follow-ups run automatically.",
+      "i3Pain": "social media going quiet",
+      "i3Fix": "Content published every week.",
+      "i4Pain": "answering the same questions",
+      "i4Fix": "Handled. Without you.",
+      "i5Pain": "audit prep taking days",
+      "i5Fix": "Evidence folder builds itself.",
+      "i6Pain": "stock counted by hand",
+      "i6Fix": "Tracked and reordered automatically."
     }
   },
   "proof": {

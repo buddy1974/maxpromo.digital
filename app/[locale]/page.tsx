@@ -5,16 +5,17 @@ import Image from 'next/image'
 import HomepageSystemsGrid from '@/components/systems/HomepageSystemsGrid'
 import { getHomepageCards } from '@/lib/registry/adapters'
 import { getLatestPosts } from '@/lib/blog/posts'
+import { PainSlider } from '@/components/ui/PainSlider'
 
 /* ─── REFERENCES ───────────────────────────────────────────── */
 
 const LAYER_REFS = [
-  { id: 'l1', icon: '→', href: '/services/customer-inquiries' },
-  { id: 'l2', icon: '◰', href: '/services/workflow-automation' },
-  { id: 'l3', icon: '⊟', href: '/services/reviews' },
-  { id: 'l4', icon: '◇', href: '/services/social-media' },
-  { id: 'l5', icon: '▤', href: '/services/ai-agents' },
-  { id: 'l6', icon: '⌗', href: '/services/websites-platforms' },
+  { id: 'l1', num: '01', icon: '⊟', href: '/services/customer-inquiries' },
+  { id: 'l2', num: '02', icon: '◰', href: '/services/workflow-automation' },
+  { id: 'l3', num: '03', icon: '◇', href: '/services/reviews' },
+  { id: 'l4', num: '04', icon: '▤', href: '/services/social-media' },
+  { id: 'l5', num: '05', icon: '⌗', href: '/services/ai-agents' },
+  { id: 'l6', num: '06', icon: '→', href: '/services/websites-platforms' },
 ] as const
 
 const PROCESS_REFS = ['p1', 'p2', 'p3', 'p4'] as const
@@ -83,6 +84,9 @@ export default async function HomePage() {
 
       {/* 1 — Hero */}
       <Hero />
+
+      {/* Pain slider */}
+      <PainSlider />
 
       {/* 2 — Marquee ticker */}
       <div
@@ -159,29 +163,97 @@ export default async function HomePage() {
                     position: 'relative',
                     overflow: 'hidden',
                     textDecoration: 'none',
+                    minHeight: '280px',
                   }}
                 >
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', color: 'hsl(28 100% 58%)', display: 'block', marginBottom: '20px' }}>
+                  {/* Low-opacity radial overlay — brand accent in corner */}
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '180px',
+                      height: '180px',
+                      background: 'radial-gradient(circle at 0% 0%, rgba(249,115,22,0.07) 0%, transparent 70%)',
+                      pointerEvents: 'none',
+                    }}
+                  />
+
+                  {/* Ghost card number — large decorative element */}
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      top: '1rem',
+                      right: '1.5rem',
+                      fontFamily: 'var(--font-heading)',
+                      fontWeight: 700,
+                      fontSize: '80px',
+                      lineHeight: 1,
+                      color: 'rgba(255,255,255,0.03)',
+                      letterSpacing: '-0.04em',
+                      userSelect: 'none',
+                      pointerEvents: 'none',
+                    }}
+                  >
+                    {s.num}
+                  </span>
+
+                  {/* Content */}
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '32px',
+                      color: '#F97316',
+                      display: 'block',
+                      marginBottom: '1.25rem',
+                      position: 'relative',
+                    }}
+                  >
                     {s.icon}
                   </span>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '10px' }}>
+
+                  <h3
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontWeight: 700,
+                      fontSize: '19px',
+                      color: 'hsl(40 30% 96%)',
+                      letterSpacing: '-0.03em',
+                      marginBottom: '10px',
+                      lineHeight: 1.25,
+                      position: 'relative',
+                    }}
+                  >
                     {tLayers(`${s.id}Title`)}
                   </h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, flex: 1, marginBottom: '20px' }}>
+
+                  <p
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '14px',
+                      color: 'hsl(40 12% 60%)',
+                      lineHeight: 1.75,
+                      flex: 1,
+                      marginBottom: '1.25rem',
+                      position: 'relative',
+                    }}
+                  >
                     {tLayers(`${s.id}Desc`)}
                   </p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '16px' }}>
+
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '1rem', position: 'relative' }}>
                     {tags.map((tag) => (
                       <span
                         key={tag}
                         style={{
                           fontFamily: 'var(--font-mono)',
                           fontSize: '10px',
-                          color: 'hsl(28 100% 58% / 0.8)',
-                          background: 'hsl(28 100% 58% / 0.08)',
-                          border: '1px solid hsl(28 100% 58% / 0.15)',
+                          color: 'hsl(28 100% 58% / 0.7)',
+                          background: 'hsl(28 100% 58% / 0.06)',
+                          border: '1px solid hsl(28 100% 58% / 0.12)',
                           padding: '3px 8px',
-                          borderRadius: '4px',
                           letterSpacing: '0.05em',
                         }}
                       >
@@ -189,7 +261,16 @@ export default async function HomePage() {
                       </span>
                     ))}
                   </div>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'hsl(28 100% 58%)', letterSpacing: '0.05em' }}>
+
+                  <span
+                    style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '12px',
+                      color: '#F97316',
+                      letterSpacing: '0.05em',
+                      position: 'relative',
+                    }}
+                  >
                     {t('layersCtaCard')}
                   </span>
                 </Link>

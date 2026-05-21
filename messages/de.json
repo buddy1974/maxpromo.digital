@@ -86,12 +86,12 @@
       "REGELMÄSSIGE BEITRÄGE",
       "KEINE ANFRAGEN VERPASSEN"
     ],
-    "layersEyebrow": "// 01 — WAS WIR FÜR SIE LÖSEN",
-    "layersTitle1": "Sechs Dinge, um die kleine Unternehmen",
-    "layersTitleAccent": "nicht mehr sorgen",
-    "layersLede": "Das sind die Dinge im Geschäftsalltag, die Ihre Abende und Wochenenden fressen. Wir bauen das System, das jede einzelne übernimmt — auf den Werkzeugen, die Sie bereits nutzen. Gebaut für Restaurants, Praxen, Salons, Handwerksbetriebe, Pflegedienste, lokale Geschäfte und kleine Unternehmen in Essen, NRW und Deutschland.",
-    "layersCtaCard": "Zeigen Sie mir wie →",
-    "layersCtaAll": "Alles ansehen, was wir lösen →",
+    "layersEyebrow": "// Was wir lösen",
+    "layersTitle1": "Sechs operative Lücken.",
+    "layersTitleAccent": "Alle geschlossen.",
+    "layersLede": "Das sind die Druckpunkte, die Abende und Wochenenden fressen. Wir bauen das System, das jeden davon übernimmt — auf den Werkzeugen, die Sie schon nutzen.",
+    "layersCtaCard": "So geht es →",
+    "layersCtaAll": "Alle Leistungen ansehen →",
     "layers": {
       "l1Title": "Verpassen Sie keinen Kunden mehr",
       "l1Desc": "Anfragen kommen per E-Mail, Telefon, WhatsApp, Website, Laufkundschaft. Wir fangen jede einzelne ab, prüfen, wer ernsthaft interessiert ist, und leiten sie an die richtige Person — auch sonntags um 23 Uhr.",
@@ -269,6 +269,21 @@
       "p3Source": "Logistik · 8 Wochen",
       "note": "// Ergebnisse aus Live-Systemen. Kundendaten unter NDA.",
       "viewAll": "Alle Fallstudien ansehen →"
+    },
+    "slider": {
+      "prefix": "Noch immer kämpfen mit:",
+      "i1Pain": "Anfragen, die nach Feierabend eingehen",
+      "i1Fix": "Jede wird erfasst.",
+      "i2Pain": "Rechnungen, die unbezahlt liegen",
+      "i2Fix": "Mahnungen laufen automatisch.",
+      "i3Pain": "Social Media, das still wird",
+      "i3Fix": "Inhalte erscheinen jede Woche.",
+      "i4Pain": "denselben Fragen immer wieder",
+      "i4Fix": "Automatisch beantwortet.",
+      "i5Pain": "Audit-Vorbereitung, die Tage dauert",
+      "i5Fix": "Ordner baut sich täglich auf.",
+      "i6Pain": "Lagerbeständen, die per Hand gezählt werden",
+      "i6Fix": "Verfolgt und automatisch nachbestellt."
     }
   },
   "proof": {
