@@ -74,19 +74,35 @@ export async function PainCards() {
                   position: 'relative',
                 }}
               >
-                {/* Image area — placeholder until /public/images/homepage/pain/{id}.jpg is added */}
+                {/*
+                  Image area.
+                  CSS background-image loads /public/images/homepage/pain/{id}.jpg when present.
+                  Ghost glyph shows through when the file is missing — no broken UI.
+                  Add the real photo: the background covers the glyph automatically.
+                */}
                 <div
                   style={{
                     position: 'relative',
                     aspectRatio: '16 / 9',
-                    background: `hsl(240 12% 5%), ${card.imgBg}`,
+                    backgroundColor: 'hsl(240 12% 5%)',
+                    backgroundImage: `url(/images/homepage/pain/${card.id}.jpg)`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center top',
                     overflow: 'hidden',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                   }}
                 >
-                  {/* Large ghost icon — visual weight in absence of image */}
+                  {/* Dark gradient overlay — sits on top of the photo */}
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: 'linear-gradient(to bottom, rgba(10,10,14,0.2) 0%, rgba(10,10,14,0.65) 100%)',
+                      zIndex: 1,
+                    }}
+                  />
+
+                  {/* Fallback glyph — visible when no image is loaded, hidden beneath image */}
                   <span
                     aria-hidden="true"
                     style={{
@@ -94,12 +110,28 @@ export async function PainCards() {
                       fontSize: '96px',
                       color: 'rgba(249,115,22,0.06)',
                       position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
                       userSelect: 'none',
                       pointerEvents: 'none',
+                      zIndex: 0,
                     }}
                   >
                     {card.icon}
                   </span>
+
+                  {/* Subtle radial brand gradient */}
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: card.imgBg,
+                      zIndex: 0,
+                      pointerEvents: 'none',
+                    }}
+                  />
 
                   {/* Orange accent top strip */}
                   <div
@@ -109,13 +141,15 @@ export async function PainCards() {
                       top: 0, left: 0, right: 0,
                       height: '2px',
                       background: 'linear-gradient(90deg, #F97316 0%, rgba(249,115,22,0.3) 60%, transparent 100%)',
+                      zIndex: 2,
                     }}
                   />
 
-                  {/* Category tag */}
+                  {/* Category tag — z-index 3 to sit above overlay */}
                   <span
                     style={{
                       position: 'absolute',
+                      zIndex: 3,
                       top: '14px',
                       left: '14px',
                       fontFamily: 'var(--font-mono)',

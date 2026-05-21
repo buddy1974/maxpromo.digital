@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -14,6 +16,7 @@ const fadeUp = {
 
 export default function Hero() {
   const t = useTranslations('hero')
+  const [imgError, setImgError] = useState(false)
 
   return (
     <section
@@ -26,19 +29,30 @@ export default function Hero() {
         background: 'hsl(240 14% 4%)',
       }}
     >
-      {/* Hero background image — swap in /public/images/homepage/hero.jpg when ready */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: [
-            'linear-gradient(to right, hsl(240 14% 4%) 40%, hsl(240 14% 4% / 0.75) 70%, hsl(240 14% 4% / 0.45) 100%)',
-            'url(/images/homepage/hero.jpg) center right / cover no-repeat',
-          ].join(', '),
-          zIndex: 0,
-        }}
-      />
+      {/* Hero background image
+          Add /public/images/homepage/hero.jpg to show a real scene.
+          onError keeps it graceful — gradient shows through when image is missing. */}
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        {!imgError && (
+          <Image
+            src="/images/homepage/hero.jpg"
+            alt=""
+            fill
+            priority
+            style={{ objectFit: 'cover', objectPosition: 'center right' }}
+            onError={() => setImgError(true)}
+            sizes="100vw"
+          />
+        )}
+        {/* Gradient overlay: dark on the left (text lives here), fades right */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to right, hsl(240 14% 4%) 38%, hsl(240 14% 4% / 0.82) 62%, hsl(240 14% 4% / 0.45) 100%)',
+          }}
+        />
+      </div>
 
       {/* Subtle grid overlay */}
       <div
