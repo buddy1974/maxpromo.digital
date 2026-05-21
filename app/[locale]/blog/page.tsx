@@ -1,51 +1,216 @@
-import Link from 'next/link'
 import type { Metadata } from 'next'
+import { getTranslations, getLocale } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
+import Image from 'next/image'
+import { getPublishedPosts, getPublishedTags } from '@/lib/blog/posts'
 
 export const metadata: Metadata = {
-  title: 'Blog — Coming Soon',
+  title: 'Blog — Maxpromo Digital',
   description:
-    'Long-form writing on AI automation, agent design, and the systems we build at Maxpromo Digital.',
+    'Observations on automation, AI agents, and the systems behind the OS — written for business owners.',
 }
 
-const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans = { fontFamily: 'var(--font-inter)' } as const
+export default async function BlogIndexPage() {
+  const locale = await getLocale()
+  const t      = await getTranslations('blog')
+  const posts  = getPublishedPosts(locale)
+  const tags   = getPublishedTags(locale)
 
-export default function BlogPage() {
   return (
-    <main style={{ background: '#0A0A0A', minHeight: '100vh', padding: '140px 24px 100px' }}>
-      <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
-        <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
-          // Blog
-        </p>
-        <h1 style={{ ...grotesk, fontSize: 'clamp(36px, 6vw, 60px)', color: '#FFFFFF', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 20px', lineHeight: 1.05 }}>
-          Coming soon.
-        </h1>
-        <p style={{ ...sans, fontSize: '17px', color: '#888888', lineHeight: 1.6, margin: '0 auto 36px', maxWidth: '560px' }}>
-          We&rsquo;re writing about agent design, n8n at scale, German Kleinunternehmer billing, and the actual systems behind the OS. The first posts ship Q3 2026.
-        </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link
-            href="/automation-audit"
+    <main style={{ background: '#0A0A0A', minHeight: '100vh', paddingTop: '120px', paddingBottom: '6rem' }}>
+      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 2rem' }}>
+
+        {/* Header */}
+        <div style={{ marginBottom: '4rem', maxWidth: '640px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            {t('indexEyebrow')}
+          </p>
+          <h1
             style={{
-              ...mono, fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase',
-              background: '#F97316', color: '#000', border: 'none', borderRadius: '2px',
-              padding: '14px 22px', textDecoration: 'none', display: 'inline-block',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: 700,
+              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+              letterSpacing: '-0.04em',
+              color: 'hsl(40 30% 96%)',
+              lineHeight: 1.1,
+              marginBottom: '1rem',
             }}
           >
-            Run the audit instead
-          </Link>
-          <Link
-            href="/case-studies"
-            style={{
-              ...mono, fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase',
-              background: 'rgba(255,255,255,0.04)', color: '#FFF', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2px',
-              padding: '14px 22px', textDecoration: 'none', display: 'inline-block',
-            }}
-          >
-            Case studies
-          </Link>
+            {t('indexTitle')}{' '}
+            <span style={{ color: '#F97316' }}>{t('indexTitleAccent')}</span>
+          </h1>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, margin: 0 }}>
+            {t('indexLede')}
+          </p>
         </div>
+
+        {/* Tag filters — only render if posts exist */}
+        {tags.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '3rem' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11px',
+                color: '#F97316',
+                background: 'rgba(249,115,22,0.1)',
+                border: '1px solid rgba(249,115,22,0.25)',
+                padding: '5px 14px',
+                letterSpacing: '0.05em',
+              }}
+            >
+              {t('filterAll')}
+            </span>
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '11px',
+                  color: 'hsl(40 12% 65%)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'rgba(255,255,255,0.03)',
+                  padding: '5px 14px',
+                  letterSpacing: '0.05em',
+                  cursor: 'pointer',
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Article grid or empty state */}
+        {posts.length === 0 ? (
+          <div
+            style={{
+              border: '1px solid rgba(255,255,255,0.06)',
+              background: 'hsl(240 12% 7%)',
+              padding: '5rem 2rem',
+              textAlign: 'center',
+              borderRadius: '2px',
+            }}
+          >
+            <p
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: '1.5rem',
+                fontWeight: 700,
+                letterSpacing: '-0.03em',
+                color: 'hsl(40 30% 96%)',
+                marginBottom: '12px',
+              }}
+            >
+              {t('emptyTitle')}
+            </p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, maxWidth: '480px', margin: '0 auto 2rem' }}>
+              {t('emptyDesc')}
+            </p>
+            <Link
+              href="/automation-audit"
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 700,
+                fontSize: '13px',
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                background: '#F97316',
+                color: '#000',
+                padding: '12px 22px',
+                textDecoration: 'none',
+                display: 'inline-block',
+              }}
+            >
+              {t('bottomCtaPrimary')}
+            </Link>
+          </div>
+        ) : (
+          <div
+            style={{ display: 'grid', gap: '1.5rem' }}
+            className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {posts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}
+              >
+                <article
+                  style={{
+                    background: 'hsl(240 12% 7%)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '2px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: 1,
+                    transition: 'border-color 200ms ease',
+                  }}
+                  className="blog-card"
+                >
+                  {/* Featured image */}
+                  {post.featuredImage && (
+                    <div style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden' }}>
+                      <Image
+                        src={post.featuredImage}
+                        alt={post.title}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    </div>
+                  )}
+
+                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1, gap: '10px' }}>
+                    {/* Tags */}
+                    {post.tags.length > 0 && (
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        {post.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            style={{
+                              fontFamily: 'var(--font-mono)',
+                              fontSize: '10px',
+                              color: '#F97316',
+                              background: 'rgba(249,115,22,0.08)',
+                              border: '1px solid rgba(249,115,22,0.15)',
+                              padding: '2px 8px',
+                              letterSpacing: '0.05em',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Title */}
+                    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.125rem', letterSpacing: '-0.02em', color: 'hsl(40 30% 96%)', lineHeight: 1.35, margin: 0 }}>
+                      {post.title}
+                    </h2>
+
+                    {/* Excerpt */}
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                      {post.excerpt}
+                    </p>
+
+                    {/* Footer row */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 'auto' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)', letterSpacing: '0.05em' }}>
+                        {post.publishedAt}
+                      </span>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.05em' }}>
+                        {t('readArticle')}
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              </Link>
+            ))}
+          </div>
+        )}
+
       </div>
     </main>
   )

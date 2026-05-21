@@ -764,5 +764,36 @@
     "successDirect": "If you don't hear from us, email us directly at",
     "successAnother": "Send another message →",
     "errorGeneric": "Something went wrong. Please email us directly at info@maxpromo.digital"
+  },
+
+  "blog": {
+    "homepageEyebrow": "Latest insights",
+    "homepageTitle": "From the",
+    "homepageTitleAccent": "field.",
+    "homepageLede": "Real observations on automation, AI systems, and what actually works for business owners.",
+    "homepageViewAll": "View all articles →",
+    "readArticle": "Read article →",
+
+    "indexEyebrow": "// Blog",
+    "indexTitle": "Insights from",
+    "indexTitleAccent": "the field.",
+    "indexLede": "How we think about automation, AI agents, and the systems we build — written for the people running real businesses.",
+    "filterAll": "All topics",
+    "emptyTitle": "No articles published yet.",
+    "emptyDesc": "We write about agent design, automation at scale, and the systems behind the OS. Check back soon.",
+
+    "publishedOn": "Published",
+    "readCount": "reads",
+    "backToAll": "← All articles",
+    "shareLabel": "Share this article",
+    "shareCopyLink": "Copy link",
+    "shareCopied": "Copied!",
+    "relatedTitle": "Related system",
+    "relatedCta": "See the system →",
+    "relatedPostsTitle": "Related articles",
+    "bottomCtaEyebrow": "// Ready to install a system?",
+    "bottomCtaTitle": "Start with a free business check.",
+    "bottomCtaPrimary": "Get my free audit →",
+    "bottomCtaSecondary": "Talk to us →"
   }
 }

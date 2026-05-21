@@ -1,8 +1,10 @@
 import { getTranslations, getLocale } from 'next-intl/server'
 import Hero from '@/components/Hero'
 import { Link } from '@/i18n/navigation'
+import Image from 'next/image'
 import HomepageSystemsGrid from '@/components/systems/HomepageSystemsGrid'
 import { getHomepageCards } from '@/lib/registry/adapters'
+import { getLatestPosts } from '@/lib/blog/posts'
 
 /* ─── REFERENCES ─────────────────────────────────────────────
    Layout / link / static-glyph data lives at module scope.
@@ -98,7 +100,9 @@ export default async function HomePage() {
    *
    * Flow: HOMEPAGE_PRODUCTS → getHomepageCards(locale) → cards → HomepageSystemsGrid
    */
-  const cards = getHomepageCards(locale)
+  const cards       = getHomepageCards(locale)
+  const latestPosts = getLatestPosts(locale, 3)
+  const tBlog       = await getTranslations('blog')
 
   return (
     <main>
@@ -397,7 +401,116 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 7 — Audit terminal */}
+      {/* 7 — Latest insights (hidden when no published posts) */}
+      {latestPosts.length > 0 && (
+        <section style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+          <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
+              <div>
+                <SectionLabel>{tBlog('homepageEyebrow')}</SectionLabel>
+                <SectionTitle>
+                  {tBlog('homepageTitle')}{' '}
+                  <span style={{ color: '#F97316' }}>{tBlog('homepageTitleAccent')}</span>
+                </SectionTitle>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, marginTop: '12px', maxWidth: '520px' }}>
+                  {tBlog('homepageLede')}
+                </p>
+              </div>
+              <Link
+                href="/blog"
+                style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}
+              >
+                {tBlog('homepageViewAll')}
+              </Link>
+            </div>
+
+            <div
+              style={{ display: 'grid', gap: '1.5rem' }}
+              className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            >
+              {latestPosts.map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}
+                >
+                  <article
+                    style={{
+                      background: 'hsl(240 12% 7%)',
+                      border: '1px solid rgba(255,255,255,0.06)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                      overflow: 'hidden',
+                    }}
+                    className="mp-card-hover"
+                  >
+                    {/* Featured image */}
+                    {post.featuredImage && (
+                      <div className="mp-img-wrap" style={{ position: 'relative', aspectRatio: '16/9' }}>
+                        <Image
+                          src={post.featuredImage}
+                          alt={post.title}
+                          fill
+                          style={{ objectFit: 'cover' }}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                      </div>
+                    )}
+
+                    <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
+                      {/* Tags */}
+                      {post.tags.length > 0 && (
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                          {post.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              style={{
+                                fontFamily: 'var(--font-mono)',
+                                fontSize: '10px',
+                                color: '#F97316',
+                                background: 'rgba(249,115,22,0.08)',
+                                border: '1px solid rgba(249,115,22,0.15)',
+                                padding: '2px 8px',
+                                letterSpacing: '0.05em',
+                                textTransform: 'uppercase',
+                              }}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Title */}
+                      <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.05rem', letterSpacing: '-0.02em', color: 'hsl(40 30% 96%)', lineHeight: 1.35, margin: 0 }}>
+                        {post.title}
+                      </h3>
+
+                      {/* Excerpt */}
+                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                        {post.excerpt}
+                      </p>
+
+                      {/* Footer */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 'auto' }}>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)', letterSpacing: '0.05em' }}>
+                          {post.publishedAt}
+                        </span>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.05em' }}>
+                          {tBlog('readArticle')}
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 8 — Audit terminal */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', position: 'relative' }}>
         <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.5, pointerEvents: 'none' }} />
         <div

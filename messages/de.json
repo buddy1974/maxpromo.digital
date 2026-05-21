@@ -764,5 +764,36 @@
     "successDirect": "Falls Sie nichts von uns hören, schreiben Sie direkt an",
     "successAnother": "Weitere Nachricht senden →",
     "errorGeneric": "Etwas ist schiefgelaufen. Bitte schreiben Sie direkt an info@maxpromo.digital"
+  },
+
+  "blog": {
+    "homepageEyebrow": "Aktuelle Einblicke",
+    "homepageTitle": "Aus der",
+    "homepageTitleAccent": "Praxis.",
+    "homepageLede": "Beobachtungen zu Automatisierung, KI-Systemen und was für Unternehmer wirklich funktioniert.",
+    "homepageViewAll": "Alle Artikel ansehen →",
+    "readArticle": "Artikel lesen →",
+
+    "indexEyebrow": "// Blog",
+    "indexTitle": "Einblicke aus",
+    "indexTitleAccent": "der Praxis.",
+    "indexLede": "Wie wir über Automatisierung, KI-Agenten und die Systeme denken, die wir bauen — geschrieben für Menschen, die echte Unternehmen führen.",
+    "filterAll": "Alle Themen",
+    "emptyTitle": "Noch keine Artikel veröffentlicht.",
+    "emptyDesc": "Wir schreiben über Agent-Design, Automatisierung und die Systeme hinter dem OS. Bald mehr.",
+
+    "publishedOn": "Veröffentlicht",
+    "readCount": "Aufrufe",
+    "backToAll": "← Alle Artikel",
+    "shareLabel": "Artikel teilen",
+    "shareCopyLink": "Link kopieren",
+    "shareCopied": "Kopiert!",
+    "relatedTitle": "Passendes System",
+    "relatedCta": "System ansehen →",
+    "relatedPostsTitle": "Ähnliche Artikel",
+    "bottomCtaEyebrow": "// Bereit, ein System zu installieren?",
+    "bottomCtaTitle": "Starten Sie mit einem kostenlosen Business-Check.",
+    "bottomCtaPrimary": "Kostenlosen Check anfordern →",
+    "bottomCtaSecondary": "Mit uns sprechen →"
   }
 }
