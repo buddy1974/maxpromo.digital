@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { Reveal } from '@/components/ui/Reveal'
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const ORANGE = '#F97316'
@@ -98,18 +99,18 @@ export default function RestaurantOSPage() {
         <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="ro-hero">
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
+            <p className="mp-hero-1" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
               RESTAURANT OPERATIONS SYSTEM
             </p>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
+            <h1 className="mp-hero-2" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
               Stop losing orders between calls,<br />paper notes and WhatsApp.
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+            <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
               RestaurantOS keeps reservations, orders and daily service moving in one operational flow — without changing how your team already works.
             </p>
 
             {/* Proof */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
+            <div className="mp-hero-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
               {['Reservations visible to the whole team', 'Orders go directly to the kitchen', 'Bills split automatically in any mode', 'No app required for guests'].map(p => (
                 <span key={p} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '6px 14px', letterSpacing: '0.04em' }}>
                   → {p}
@@ -117,7 +118,7 @@ export default function RestaurantOSPage() {
               ))}
             </div>
 
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div className="mp-hero-5" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
               <a href="#walkthrough" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: BG, background: ORANGE, padding: '14px 28px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
                 onMouseEnter={e => (e.currentTarget.style.background = '#EA6A00')}
                 onMouseLeave={e => (e.currentTarget.style.background = ORANGE)}>
@@ -131,13 +132,13 @@ export default function RestaurantOSPage() {
               </a>
             </div>
           </div>
-          <div>
+          <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}>
             <Image
               src="/images/systems/restaurant-os/card/restaurant-os-en.png"
               alt="Restaurant service in operation — orders moving from table to kitchen"
               width={760}
               height={400}
-              style={{ width: '100%', height: 'auto', borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
               priority
             />
           </div>
@@ -253,7 +254,7 @@ export default function RestaurantOSPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               From the first scan to the settled bill.
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
+            <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
               {[
                 { num: '01', title: 'Guest scans the table QR',     desc: 'Opens the full menu in the browser. No app install. No account. Works on every phone. The table session begins.' },
                 { num: '02', title: 'Seat identity assigned',         desc: 'A fruit name — APPLE, KIWI, ORANGE — ties the guest to their seat for the full visit. The team knows who is where without any coordination.' },
@@ -269,10 +270,10 @@ export default function RestaurantOSPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Reveal>
 
             {/* ── SYSTEM IN ACTION ── */}
-            <div style={{ marginTop: '3rem' }}>
+            <Reveal delay={200} style={{ marginTop: '3rem' }}>
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>
                 THE SYSTEM IN OPERATION
               </p>
@@ -283,7 +284,7 @@ export default function RestaurantOSPage() {
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
               />
-            </div>
+            </Reveal>
           </div>
         </section>
 

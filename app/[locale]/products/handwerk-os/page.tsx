@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { Reveal } from '@/components/ui/Reveal'
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const GREEN  = '#22C55E'
@@ -81,14 +82,14 @@ export default function HandwerkOSPage() {
         <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="hw-hero">
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>FIELD OPERATIONS SYSTEM</p>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
+            <p className="mp-hero-1" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>FIELD OPERATIONS SYSTEM</p>
+            <h1 className="mp-hero-2" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
               Stop re-entering paperwork<br />after every site visit.
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+            <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
               HandwerkOS keeps jobs, quotes, time tracking and invoices connected from the first site visit to the paid invoice — without changing how the team already works on site.
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
+            <div className="mp-hero-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
               {['Photo to job record in 10 seconds', 'Quotes generated with market rates', 'GPS time tracking from check-in', 'XRechnung XML on every invoice'].map(p => (
                 <span key={p} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '6px 14px', letterSpacing: '0.04em' }}>→ {p}</span>
               ))}
@@ -103,13 +104,13 @@ export default function HandwerkOSPage() {
                 onMouseLeave={e => (e.currentTarget.style.borderColor = BORDER)}>See the system in action →</a>
             </div>
           </div>
-          <div>
+          <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}>
             <Image
               src="/images/systems/handwerk-os/card/handwerk-os-en.png"
               alt="Field worker on construction site — job sheet photographed for instant record creation"
               width={760}
               height={400}
-              style={{ width: '100%', height: 'auto', borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
               priority
             />
           </div>
@@ -194,7 +195,7 @@ export default function HandwerkOSPage() {
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>HOW A JOB MOVES</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>From the site photograph to the paid invoice.</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
+            <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
               {[
                 { num: '01', title: 'Photograph the job sheet', desc: 'Taken on site with any phone. AI creates the full job record — client, scope, site details — in under 10 seconds. No manual entry.' },
                 { num: '02', title: 'Quote generated',         desc: 'Market-rate pricing suggested automatically. Quote formatted and sent as a PDF to the client directly from the system.' },
@@ -210,9 +211,9 @@ export default function HandwerkOSPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Reveal>
 
-            <div style={{ marginTop: '3rem' }}>
+            <Reveal delay={200} style={{ marginTop: '3rem' }}>
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>THE SYSTEM IN OPERATION</p>
               <Image
                 src="/images/systems/handwerk-os/card/handwerk-os-de.png"
@@ -221,7 +222,7 @@ export default function HandwerkOSPage() {
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
               />
-            </div>
+            </Reveal>
           </div>
         </section>
 

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { Reveal } from '@/components/ui/Reveal'
 
 const ACCENT = '#818CF8'
 const ORANGE = '#F97316'
@@ -75,14 +76,14 @@ export default function CareOSPage() {
         <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="co-hero">
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>CARE MANAGEMENT SYSTEM</p>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
+            <p className="mp-hero-1" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>CARE MANAGEMENT SYSTEM</p>
+            <h1 className="mp-hero-2" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
               Care delivered. Record updated.<br />Family notified. Without three separate systems.
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+            <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
               CareOS keeps care plans, medication records, compliance and family communication connected in one operational flow — without adding process to an already stretched team.
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
+            <div className="mp-hero-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
               {['Digital care plans updated in real time', 'EMAR medication records live', 'CQC compliance tracked continuously', 'Family portal — updated after every visit'].map(p => (
                 <span key={p} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '6px 14px', letterSpacing: '0.04em' }}>→ {p}</span>
               ))}
@@ -91,13 +92,13 @@ export default function CareOSPage() {
               onMouseEnter={e => (e.currentTarget.style.background = '#EA6A00')}
               onMouseLeave={e => (e.currentTarget.style.background = ORANGE)}>Schedule walkthrough →</a>
           </div>
-          <div>
+          <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}>
             <Image
               src="/images/systems/care-os/card/care-os-en.png"
               alt="Caregiver documenting a care visit — records updated in real time"
               width={760}
               height={400}
-              style={{ width: '100%', height: 'auto', borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
               priority
             />
           </div>
@@ -179,7 +180,7 @@ export default function CareOSPage() {
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>HOW CARE MOVES</p>
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>From new client inquiry to documented visit — connected.</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
+            <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
               {[
                 { num: '01', title: 'New client inquiry',    desc: 'AI assistant collects initial information and creates the client profile. Suitable carer matched automatically based on availability and client needs.' },
                 { num: '02', title: 'Care plan created',     desc: 'Digital care plan built and shared with the whole care team. Updated in real time as the client situation changes.' },
@@ -195,9 +196,9 @@ export default function CareOSPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Reveal>
 
-            <div style={{ marginTop: '3rem' }}>
+            <Reveal delay={200} style={{ marginTop: '3rem' }}>
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>THE SYSTEM IN OPERATION</p>
               <Image
                 src="/images/systems/care-os/card/care-os-de.png"
@@ -206,7 +207,7 @@ export default function CareOSPage() {
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
               />
-            </div>
+            </Reveal>
           </div>
         </section>
 

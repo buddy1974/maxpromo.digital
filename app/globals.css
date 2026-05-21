@@ -653,3 +653,55 @@ button.os-nav-item {
   .os-nav-item.active { padding-left: 18px; }
   .os-nav-label { font-size: 15px; }
 }
+
+/* ─── MAXPROMO MOTION SYSTEM ────────────────────────────── */
+
+/* Keyframes */
+@keyframes mp-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero cascade — fires on page load, above the fold */
+.mp-hero-1 { animation: mp-fade-up 0.55s var(--ease-out-expo) 0ms   both; }
+.mp-hero-2 { animation: mp-fade-up 0.55s var(--ease-out-expo) 100ms both; }
+.mp-hero-3 { animation: mp-fade-up 0.55s var(--ease-out-expo) 200ms both; }
+.mp-hero-4 { animation: mp-fade-up 0.55s var(--ease-out-expo) 310ms both; }
+.mp-hero-5 { animation: mp-fade-up 0.55s var(--ease-out-expo) 420ms both; }
+
+/* Image hover — container must have overflow:hidden */
+.mp-img-wrap {
+  overflow: hidden;
+}
+.mp-img-wrap img {
+  transition: transform 600ms var(--ease-out-expo);
+  display: block;
+}
+.mp-img-wrap:hover img {
+  transform: scale(1.03);
+}
+
+/* Card micro-elevation */
+.mp-card-hover {
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+.mp-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.8);
+}
+
+/* Reduce motion — honour system preference */
+@media (prefers-reduced-motion: reduce) {
+  .mp-hero-1, .mp-hero-2, .mp-hero-3, .mp-hero-4, .mp-hero-5 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .mp-img-wrap:hover img {
+    transform: none;
+  }
+  .mp-card-hover:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

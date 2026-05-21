@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { Reveal } from '@/components/ui/Reveal'
 import Link from 'next/link'
 
 /* ─── CMYK TOKENS ─────────────────────────────────────────── */
@@ -99,18 +100,18 @@ export default function PrintshopPage() {
         <section style={{ background: '#FFFFFF', padding: '5rem 2rem', borderBottom: `2px solid ${INK}` }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="ps-hero">
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
+            <p className="mp-hero-1" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
               PRINT WORKFLOW SYSTEM
             </p>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', letterSpacing: '-0.04em', color: INK, lineHeight: 1.05, marginBottom: '1.5rem', maxWidth: '760px' }}>
+            <h1 className="mp-hero-2" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', letterSpacing: '-0.04em', color: INK, lineHeight: 1.05, marginBottom: '1.5rem', maxWidth: '760px' }}>
               Catch file issues before they become expensive reprints.
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#444444', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+            <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#444444', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
               PrintShopOS keeps quotes, artwork validation and production handovers moving in one workflow — without rebuilding how your print shop already works.
             </p>
 
             {/* Proof chips */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '2.5rem' }}>
+            <div className="mp-hero-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '2.5rem' }}>
               {[
                 { label: 'Quotes without back-and-forth email', color: C },
                 { label: 'Files validated before they reach the press', color: M },
@@ -146,13 +147,13 @@ export default function PrintshopPage() {
               </span>
             </div>
           </div>
-          <div>
+          <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '8px', border: `2px solid ${INK}` }}>
             <Image
               src="/images/systems/printshop-os/card/printshop-os-en.png"
               alt="Print production workflow — artwork being validated and prepared for press"
               width={760}
               height={400}
-              style={{ width: '100%', height: 'auto', borderRadius: '8px', border: `2px solid ${INK}`, boxShadow: '0 8px 32px -8px rgba(0,0,0,0.2)' }}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
               priority
             />
           </div>
@@ -267,7 +268,7 @@ export default function PrintshopPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: INK, marginBottom: '3rem' }}>
               From the first request to delivery. Without the back-and-forth.
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', borderTop: `2px solid ${INK}` }}>
+            <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `2px solid ${INK}` }}>
               {[
                 { num: '01', color: C,      title: 'Customer configures and orders', desc: 'Selects product, size and quantity. Price calculates in real time. No quote request. No email. No waiting.' },
                 { num: '02', color: M,      title: 'Artwork uploaded',               desc: 'Customer uploads the file directly. The system checks it immediately — resolution, bleed, colour profile, dimensions.' },
@@ -283,9 +284,9 @@ export default function PrintshopPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Reveal>
 
-            <div style={{ marginTop: '3rem' }}>
+            <Reveal delay={200} style={{ marginTop: '3rem' }}>
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888', marginBottom: '1rem' }}>THE SYSTEM IN OPERATION</p>
               <Image
                 src="/images/systems/printshop-os/card/printshop-os-de.png"
@@ -294,7 +295,7 @@ export default function PrintshopPage() {
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '8px', border: `2px solid ${INK}`, display: 'block' }}
               />
-            </div>
+            </Reveal>
           </div>
         </section>
 

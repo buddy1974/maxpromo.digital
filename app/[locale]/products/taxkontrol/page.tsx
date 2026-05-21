@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import { Reveal } from '@/components/ui/Reveal'
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const NAVY   = '#1E3A5F'
@@ -136,16 +137,16 @@ export default function TaxKontrolPage() {
         <section style={{ padding: '5rem 2rem', borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }} className="tk-hero">
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
+            <p className="mp-hero-1" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1.5rem' }}>
               TAXKONTROL · FINANCIAL VISIBILITY SYSTEM
             </p>
-            <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '2rem', maxWidth: '720px' }}>
+            <h1 className="mp-hero-2" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '2rem', maxWidth: '720px' }}>
               Know where your business stands —<br />before tax season tells you.
             </h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '560px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
+            <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '560px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
               TaxKontrol keeps taxes, reserves and obligations visible — without changing how your business already operates.
             </p>
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div className="mp-hero-4" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
               <a
                 href="#walkthrough"
                 style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: BG, background: ORANGE, padding: '14px 28px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
@@ -171,13 +172,13 @@ export default function TaxKontrolPage() {
               ))}
             </div>
           </div>
-          <div>
+          <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}>
             <Image
               src="/images/systems/taxkontrol/card/taxkontrol-en.png"
               alt="Business owner reviewing financial position — tax reserve and obligations visible"
               width={760}
               height={400}
-              style={{ width: '100%', height: 'auto', borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
               priority
             />
           </div>
@@ -286,7 +287,7 @@ export default function TaxKontrolPage() {
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>
               Five steps. Starts with the current process.
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
+            <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
               {WORKFLOW.map(step => (
                 <div key={step.num} style={{ display: 'flex', gap: '32px', padding: '28px 0', borderBottom: `1px solid ${BORDER}`, alignItems: 'flex-start' }}>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: ORANGE, minWidth: '32px', flexShrink: 0, paddingTop: '2px' }}>{step.num}</span>
@@ -296,10 +297,10 @@ export default function TaxKontrolPage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Reveal>
 
             {/* ── SYSTEM IN ACTION ── */}
-            <div style={{ marginTop: '3rem' }}>
+            <Reveal delay={200} style={{ marginTop: '3rem' }}>
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>
                 THE SYSTEM IN OPERATION
               </p>
@@ -310,7 +311,7 @@ export default function TaxKontrolPage() {
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
               />
-            </div>
+            </Reveal>
           </div>
         </section>
 
