@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
 import { COOKIE_NAME, verifySession } from '@/lib/auth'
 import { routing } from '@/i18n/routing'
+import { resolveHost } from '@/lib/host/resolve'
 
 /**
  * Composed Edge middleware.
@@ -29,13 +30,24 @@ const intlMiddleware = createMiddleware(routing)
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
+  // ── 0. Host resolution (fires first for every matched request) ──────
+  // Normalises the Host header and stamps four x-mp-* request headers so
+  // any server component can read them via `headers()` from 'next/headers'.
+  const hostHeader = req.headers.get('host')
+  const resolution = resolveHost(hostHeader)
+  const resolvedHeaders = new Headers(req.headers)
+  resolvedHeaders.set('x-mp-host',           hostHeader ?? '')
+  resolvedHeaders.set('x-mp-mode',           resolution.mode)
+  resolvedHeaders.set('x-mp-slug',           resolution.slug ?? '')
+  resolvedHeaders.set('x-mp-default-locale', resolution.defaultLocale)
+
   // ── 1. OS auth gate ────────────────────────────────────────────────
   // Anything under /os or /api/os goes through the existing auth check.
   // The login/logout endpoints bypass the gate so the unauthed user
   // can actually authenticate.
   if (pathname.startsWith('/os') || pathname.startsWith('/api/os')) {
     if (PUBLIC_OS_API_PATHS.has(pathname) || pathname === '/os/login') {
-      return NextResponse.next()
+      return NextResponse.next({ request: { headers: resolvedHeaders } })
     }
 
     const token = req.cookies.get(COOKIE_NAME)?.value
@@ -52,18 +64,47 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // Forward verified user id so downstream handlers can read it
-    // without re-parsing the cookie.
-    const headers = new Headers(req.headers)
-    headers.set('x-os-user', session.sub)
-    return NextResponse.next({ request: { headers } })
+    // Forward verified user id alongside the host-resolution headers.
+    resolvedHeaders.set('x-os-user', session.sub)
+    return NextResponse.next({ request: { headers: resolvedHeaders } })
   }
 
-  // ── 2. Locale routing for public site ──────────────────────────────
-  // All non-/os and non-/api/os paths are public marketing routes.
-  // next-intl handles Accept-Language detection, redirects to the
-  // locale-prefixed URL, and sets the NEXT_LOCALE cookie.
-  return intlMiddleware(req)
+  // ── 2. Showcase hosts — no locale prefix in visible URL ────────────
+  // For hosts like restaurant-os.de the user never sees /de/ in the URL.
+  //   • Redirect /de (default) prefix → strip it (canonical = no prefix)
+  //   • Rewrite bare paths → /{defaultLocale}/... so next-intl resolves them
+  if (resolution.mode === 'showcase' && !resolution.useLocalePrefix) {
+    const dl = resolution.defaultLocale
+
+    // /de or /de/... on a de-default host → redirect to strip the prefix
+    if (pathname === `/${dl}` || pathname.startsWith(`/${dl}/`)) {
+      const stripped = pathname.startsWith(`/${dl}/`)
+        ? pathname.slice(`/${dl}`.length)
+        : '/'
+      return NextResponse.redirect(new URL(stripped, req.url))
+    }
+
+    // Bare path (no locale prefix) → internal rewrite so next-intl resolves
+    const hasLocalePrefix =
+      pathname === '/de' || pathname === '/en' ||
+      pathname.startsWith('/de/') || pathname.startsWith('/en/')
+
+    if (!hasLocalePrefix) {
+      const target = pathname === '/' ? `/${dl}` : `/${dl}${pathname}`
+      return NextResponse.rewrite(new URL(target, req.url), {
+        request: { headers: resolvedHeaders },
+      })
+    }
+  }
+
+  // ── 3. Locale routing — hub + showcase-with-prefix ──────────────────
+  // Pass a modified request so x-mp-* headers reach server components via
+  // next-intl's internal NextResponse.next({ request: { headers } }) call.
+  const modReq = new NextRequest(req.url, {
+    method:  req.method,
+    headers: resolvedHeaders,
+  })
+  return intlMiddleware(modReq)
 }
 
 export const config = {
