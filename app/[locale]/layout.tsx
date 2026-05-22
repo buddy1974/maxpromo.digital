@@ -5,13 +5,13 @@ import { headers } from 'next/headers'
 import { routing } from '@/i18n/routing'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import ChatAgent from '@/components/ChatAgent'
 import CookieBanner from '@/components/CookieBanner'
+import Max from '@/components/max/Max'
 
 /**
  * Locale layout — wraps every public marketing route with the
- * translation provider and the global chrome (Navbar, Footer,
- * ChatAgent, CookieBanner).
+ * translation provider and the global chrome (Navbar, Footer, Max, CookieBanner).
+ * Max widget mounts in both hub and showcase branches.
  *
  * setRequestLocale() enables static rendering for translated content
  * — without it, every page would be dynamic on every request.
@@ -48,14 +48,17 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider>
       {isShowcase ? (
-        <>{children}</>
+        <>
+          {children}
+          <Max />
+        </>
       ) : (
         <>
           <Navbar />
           {children}
           <Footer />
-          <ChatAgent />
           <CookieBanner />
+          <Max />
         </>
       )}
     </NextIntlClientProvider>

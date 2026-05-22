@@ -1,0 +1,38 @@
+import type { ChatMessage } from '@/lib/chat/types'
+
+interface MaxMessageProps {
+  message: ChatMessage
+}
+
+/** Single message bubble. User = right/orange-text, Assistant = left/surface. */
+export function MaxMessage({ message }: MaxMessageProps) {
+  const isUser = message.role === 'user'
+
+  return (
+    <div
+      style={{
+        display:       'flex',
+        justifyContent: isUser ? 'flex-end' : 'flex-start',
+        padding:       '0 16px',
+      }}
+    >
+      <div
+        style={{
+          maxWidth:     '82%',
+          padding:      '10px 14px',
+          borderRadius: isUser ? '14px 14px 4px 14px' : '4px 14px 14px 14px',
+          background:   isUser ? 'hsl(28 100% 20%)' : '#1A1A1A',
+          border:       isUser ? 'none' : '1px solid #2A2A2A',
+          fontFamily:   'var(--font-body, system-ui, sans-serif)',
+          fontSize:     '14px',
+          lineHeight:   1.6,
+          color:        isUser ? 'hsl(28 100% 88%)' : '#E0DDD8',
+          whiteSpace:   'pre-wrap',
+          wordBreak:    'break-word',
+        }}
+      >
+        {message.content}
+      </div>
+    </div>
+  )
+}

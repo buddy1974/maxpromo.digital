@@ -21,8 +21,9 @@ type EnvShape = {
   NEON_DATABASE_URL: string
 
   // Anthropic / OpenAI — optional but at least one should be set in prod
-  ANTHROPIC_API_KEY?: string
-  OPENAI_API_KEY?: string
+  ANTHROPIC_API_KEY?:  string
+  ANTHROPIC_MODEL?:    string   // default: claude-sonnet-4-6
+  OPENAI_API_KEY?:     string
 
   // Email (Resend)
   RESEND_API_KEY?: string
@@ -94,8 +95,9 @@ function build(): EnvShape {
 
   return {
     NEON_DATABASE_URL: dbUrl,
-    ANTHROPIC_API_KEY: anthropic,
-    OPENAI_API_KEY: openai,
+    ANTHROPIC_API_KEY:  anthropic,
+    ANTHROPIC_MODEL:    read('ANTHROPIC_MODEL'),
+    OPENAI_API_KEY:     openai,
     RESEND_API_KEY: read('RESEND_API_KEY'),
     RESEND_FROM_EMAIL: read('RESEND_FROM_EMAIL'),
     CONTACT_EMAIL: read('CONTACT_EMAIL'),
