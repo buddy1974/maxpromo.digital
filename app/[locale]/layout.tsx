@@ -7,8 +7,6 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ChatAgent from '@/components/ChatAgent'
 import CookieBanner from '@/components/CookieBanner'
-import { MobileStickyCTA } from '@/components/ui/MobileStickyCTA'
-import { MaxAgent } from '@/components/MaxAgent'
 
 /**
  * Locale layout — wraps every public marketing route with the
@@ -58,8 +56,6 @@ export default async function LocaleLayout({
           <Footer />
           <ChatAgent />
           <CookieBanner />
-          <MobileStickyCTA />
-          <MaxAgent />
         </>
       )}
     </NextIntlClientProvider>
