@@ -1,0 +1,65 @@
+interface ConversionProps {
+  bookDemoUrl:  string
+  demoUrl:      string | null
+  systemUrl:    string
+  domain:       string
+  ctaPrimary:   string
+  locale:       string
+  bridge:       boolean
+}
+
+/**
+ * Final conversion section — always rendered (both showcase and bridge mode).
+ * Bridge mode: secondary CTA links directly to the product domain.
+ * Showcase mode: secondary CTA links to the live demo or system URL.
+ *
+ * TODO Phase 3: Max chat handles the contact form — see MaxAgent component.
+ */
+export function Conversion({ bookDemoUrl, demoUrl, systemUrl, domain, ctaPrimary, locale, bridge }: ConversionProps) {
+  const isDE    = locale === 'de'
+  const eyebrow = isDE ? '// Bereit?' : '// Ready?'
+  const heading = isDE
+    ? 'Sehen Sie es in Ihrem Betrieb.'
+    : 'See it in your business.'
+  const sub     = isDE ? '30 Minuten. Unverbindlich.' : '30 minutes. No pressure.'
+
+  const secondaryLabel = bridge
+    ? (isDE ? `System ansehen bei ${domain} →` : `See full system at ${domain} →`)
+    : (isDE ? 'Live-Demo ansehen →' : 'See it running →')
+  const secondaryHref = bridge ? `https://${domain}` : (demoUrl ?? systemUrl)
+
+  return (
+    <section style={{ padding: '7rem 2rem', borderTop: '1px solid rgba(128,128,128,0.10)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ maxWidth: '560px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-accent)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+          {eyebrow}
+        </p>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4.5vw, 3rem)', letterSpacing: '-0.04em', lineHeight: 1.15, marginBottom: '1rem', color: 'var(--brand-fg)' }}>
+          {heading}
+        </h2>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--brand-muted)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
+          {sub}
+        </p>
+
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a
+            href={bookDemoUrl}
+            style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '14px', letterSpacing: '0.04em', color: '#080808', background: '#F97316', padding: '16px 32px', borderRadius: '10px', textDecoration: 'none', display: 'inline-block', boxShadow: '0 0 36px rgba(249,115,22,0.3)' }}
+          >
+            {ctaPrimary}
+          </a>
+          <a
+            href={secondaryHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--brand-fg)', padding: '16px 28px', borderRadius: '10px', border: '1px solid rgba(128,128,128,0.25)', textDecoration: 'none', display: 'inline-block' }}
+          >
+            {secondaryLabel}
+          </a>
+        </div>
+
+        {/* TODO Phase 3: Max chat handles the contact form — see MaxAgent component */}
+      </div>
+    </section>
+  )
+}

@@ -1,4 +1,8 @@
 import { getTranslations, getLocale } from 'next-intl/server'
+import { headers } from 'next/headers'
+import { notFound } from 'next/navigation'
+import { getLandingData } from '@/lib/registry/adapters/landing.adapter'
+import { LandingEngine } from '@/components/landing/LandingEngine'
 import Hero from '@/components/Hero'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
@@ -32,7 +36,23 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 /* ─── PAGE ─── */
 
 export default async function HomePage() {
-  const locale       = await getLocale()
+  const locale = await getLocale()
+
+  // ── Showcase dispatch ─────────────────────────────────────────────────
+  // Middleware stamps x-mp-mode + x-mp-slug for every request.
+  // When a product domain hits this page (e.g. restaurant-os.de/),
+  // render LandingEngine instead of the hub homepage.
+  const h    = await headers()
+  const mode = h.get('x-mp-mode')
+  const slug = h.get('x-mp-slug')
+
+  if (mode === 'showcase' && slug) {
+    const data = getLandingData(slug, locale)
+    if (!data) return notFound()
+    return <LandingEngine data={data} />
+  }
+  // ── Hub homepage (unchanged below) ───────────────────────────────────
+
   const t            = await getTranslations('home')
   const tProcess     = await getTranslations('home.process')
   const tWhyUs       = await getTranslations('home.whyUs')
@@ -47,7 +67,9 @@ export default async function HomePage() {
   const PROCESS_REFS = ['p1', 'p2', 'p3', 'p4', 'p5'] as const
 
   return (
-    <main>
+    <>
+      <link rel="preload" as="image" href="/images/homepage/hero-1.png" />
+      <main>
 
       {/* 1 — Hero (LOCKED) */}
       <Hero />
@@ -59,7 +81,7 @@ export default async function HomePage() {
       <PainCards />
 
       {/* 3 — Proof strip */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section data-section="proof" style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
             <div>
@@ -88,7 +110,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4 — Systems tabs */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section data-section="systems" style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
             <div>
@@ -277,6 +299,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-    </main>
+      </main>
+    </>
   )
 }

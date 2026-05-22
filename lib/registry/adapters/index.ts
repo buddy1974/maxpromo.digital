@@ -36,6 +36,12 @@ export {
 } from './products.adapter'
 export type { ProductsCardData } from './products.adapter'
 
+// ── Landing adapter (showcase domains + bridge mode)
+export {
+  getLandingData,
+} from './landing.adapter'
+export type { LandingData } from './landing.adapter'
+
 // ── OS adapter
 export {
   toOSRegistryRow,
