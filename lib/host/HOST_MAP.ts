@@ -39,4 +39,7 @@ export const HOST_MAP: Readonly<Record<string, HostResolution>> = {
   // ── Showcase — English default, WITH locale prefix (/de, /en) ──────
   'publishers24.org':  { mode: 'showcase', slug: 'publishing-os', defaultLocale: 'en', useLocalePrefix: true  },
 
+  // ── Showcase — English default, NO locale prefix in URL ─────────────
+  'drive24.live':      { mode: 'showcase', slug: 'drive24',       defaultLocale: 'en', useLocalePrefix: false },
+
 } as const
