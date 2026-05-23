@@ -216,6 +216,20 @@ export interface LocalisedFaq {
   readonly de?: ReadonlyArray<FaqItem>
 }
 
+/** A single tab in the See In Action section. imageUrl is null until screenshots are captured. */
+export interface SeeInActionTab {
+  readonly tab:         string
+  readonly headline:    string
+  readonly description: string
+  readonly imageUrl:    string | null
+}
+
+/** Locale-aware See In Action tab list. */
+export interface LocalisedSeeInAction {
+  readonly en: ReadonlyArray<SeeInActionTab>
+  readonly de?: ReadonlyArray<SeeInActionTab>
+}
+
 /**
  * A single media asset with an optional locale variant.
  * Paths are relative to /public — do not include a leading slash.
@@ -403,6 +417,13 @@ export interface ProductEntry {
    * Optional at baseline — populated as landing pages are built.
    */
   readonly faq?: LocalisedFaq
+
+  /**
+   * See In Action tab structure. Defines module preview tabs for Phase 5 SeeInAction section.
+   * imageUrl is null until screenshots are captured from the live system.
+   * Optional — populated per-product as landing pages are built.
+   */
+  readonly seeInAction?: LocalisedSeeInAction
 
   // ── MEDIA ─────────────────────────────────────────────────────────────────
 

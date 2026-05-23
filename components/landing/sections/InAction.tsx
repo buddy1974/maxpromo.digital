@@ -26,7 +26,7 @@ export function InAction({ workflow, cardImageSrc, domainBrand, locale }: InActi
   ]
 
   return (
-    <section style={{ padding: '5rem 2rem', borderTop: '1px solid rgba(128,128,128,0.10)' }}>
+    <section id="see-in-action" style={{ padding: '5rem 2rem', borderTop: '1px solid rgba(128,128,128,0.10)' }}>
       <div
         style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '4rem', alignItems: 'center' }}
         className="grid-cols-1 lg:grid-cols-2"

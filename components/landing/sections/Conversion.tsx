@@ -1,7 +1,5 @@
 interface ConversionProps {
   bookDemoUrl:  string
-  demoUrl:      string | null
-  systemUrl:    string
   domain:       string
   ctaPrimary:   string
   locale:       string
@@ -15,18 +13,19 @@ interface ConversionProps {
  *
  * TODO Phase 3: Max chat handles the contact form — see MaxAgent component.
  */
-export function Conversion({ bookDemoUrl, demoUrl, systemUrl, domain, ctaPrimary, locale, bridge }: ConversionProps) {
+export function Conversion({ bookDemoUrl, domain, ctaPrimary, locale, bridge }: ConversionProps) {
   const isDE    = locale === 'de'
   const eyebrow = isDE ? '// Bereit?' : '// Ready?'
   const heading = isDE
     ? 'Sehen Sie es in Ihrem Betrieb.'
     : 'See it in your business.'
-  const sub     = isDE ? '30 Minuten. Unverbindlich.' : '30 minutes. No pressure.'
+  const sub     = isDE
+    ? 'Erkunden Sie RestaurantOS mit einem Workflow, der Ihrem Restaurant entspricht.'
+    : 'Explore RestaurantOS using a workflow closer to your restaurant.'
 
-  const secondaryLabel = bridge
-    ? (isDE ? `System ansehen bei ${domain} →` : `See full system at ${domain} →`)
-    : (isDE ? 'Live-Demo ansehen →' : 'See it running →')
-  const secondaryHref = bridge ? `https://${domain}` : (demoUrl ?? systemUrl)
+  const secondaryLabel = isDE
+    ? `System ansehen bei ${domain} →`
+    : `See full system at ${domain} →`
 
   return (
     <section style={{ padding: '7rem 2rem', borderTop: '1px solid rgba(128,128,128,0.10)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
@@ -48,14 +47,16 @@ export function Conversion({ bookDemoUrl, demoUrl, systemUrl, domain, ctaPrimary
           >
             {ctaPrimary}
           </a>
-          <a
-            href={secondaryHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--brand-fg)', padding: '16px 28px', borderRadius: '10px', border: '1px solid rgba(128,128,128,0.25)', textDecoration: 'none', display: 'inline-block' }}
-          >
-            {secondaryLabel}
-          </a>
+          {bridge && (
+            <a
+              href={`https://${domain}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--brand-fg)', padding: '16px 28px', borderRadius: '10px', border: '1px solid rgba(128,128,128,0.25)', textDecoration: 'none', display: 'inline-block' }}
+            >
+              {secondaryLabel}
+            </a>
+          )}
         </div>
 
         {/* TODO Phase 3: Max chat handles the contact form — see MaxAgent component */}

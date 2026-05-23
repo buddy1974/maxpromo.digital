@@ -63,8 +63,8 @@ const RESTAURANT_OS = {
     de: 'QR-Bestellung, Küchenweiterleitung, Rechnungsteilung und Zahlung — alles in einem einfachen System. Keine App für Gäste. Kein Tablet für das Personal.',
   },
   bullets: {
-    en: ['Fewer mistakes', 'Happier guests', 'More time for service'],
-    de: ['Weniger Fehler', 'Zufriedenere Gäste', 'Mehr Zeit für den Service'],
+    en: ['Still shouting for waiters?', 'Still printing menus?', 'Still entering menus manually?'],
+    de: ['Noch immer nach Kellnern rufen?', 'Noch immer Speisekarten drucken?', 'Noch immer Menüs manuell eingeben?'],
   },
   workflow: {
     en: [
@@ -83,6 +83,44 @@ const RESTAURANT_OS = {
     ],
   },
 
+  // ── FAQ (pre-sales objections — these are the silently held doubts, not support questions)
+  faq: {
+    de: [
+      { question: 'Kann ich meine eigene Domain nutzen?',       answer: 'Ja. Das System wird auf Ihrer Domain installiert. Kein Maxpromo-Branding ist sichtbar.' },
+      { question: 'Kann ich Barzahlungen beibehalten?',         answer: 'Ja. QR-Bestellungen und Kartenzahlung laufen parallel zu Ihrem bestehenden Kassensystem. Nichts muss sofort umgestellt werden.' },
+      { question: 'Müssen die Mitarbeiter geschult werden?',    answer: 'Kaum. Das System ist für Restaurantmitarbeiter entwickelt, nicht für IT-Fachkräfte. Die meisten Teams sind in einem 20-Minuten-Walk-through einsatzbereit.' },
+      { question: 'Kann ich das Branding anpassen?',            answer: 'Ja. Farben, Logo und Domain sind Ihre eigenen. Gäste sehen Ihre Marke, nicht unsere.' },
+      { question: 'Kann ich die Lieferfunktion später hinzufügen?', answer: 'Ja. Liefermodul, Reservierungen und Loyalty-Programme können nach der Installation aktiviert werden.' },
+      { question: 'Was passiert nach der Installation?',        answer: 'Sie gehen live. Wir übernehmen Hosting, Updates und Support. Sie konzentrieren sich auf den Service.' },
+    ],
+    en: [
+      { question: 'Can I use my own domain?',       answer: 'Yes. The system is installed on your domain. No Maxpromo branding is visible.' },
+      { question: 'Can I keep cash payments?',      answer: 'Yes. QR ordering and card payments run alongside your existing till. Nothing needs to switch over on day one.' },
+      { question: 'Do staff need training?',        answer: 'Minimal. The system is built for restaurant teams, not IT. Most teams are operational in a 20-minute walkthrough.' },
+      { question: 'Can I customize branding?',      answer: 'Yes. Colours, logo, and domain are yours. Guests see your brand, not ours.' },
+      { question: 'Can I add delivery later?',      answer: 'Yes. Delivery module, reservations, and loyalty can be activated after installation.' },
+      { question: 'What happens after installation?', answer: 'You go live. We handle hosting, updates, and support. You focus on service.' },
+    ],
+  },
+
+  // ── See In Action (Phase 5 — imageUrl null until screenshots captured from live system)
+  seeInAction: {
+    de: [
+      { tab: 'Gäste',    headline: 'Gast scannt, bestellt, zahlt.',       description: 'Keine App. Kein Personal-Tablet. Der Gast öffnet die Speisekarte mit dem Handy und bestellt direkt vom Tisch.', imageUrl: null },
+      { tab: 'Küche',    headline: 'Bestellungen erscheinen sofort.',      description: 'Keine Nachricht, kein Schreien. Bestellung erscheint sofort auf dem Küchenbildschirm — mit Tisch und Position.', imageUrl: null },
+      { tab: 'Admin',    headline: 'Volle Übersicht. Null Papierkram.',    description: 'Tische, Bestellungen, Öffnungszeiten und Menüs — alles in einem Bildschirm verwaltet.', imageUrl: null },
+      { tab: 'Analyse',  headline: 'Umsatz, Tische, Topgerichte.',         description: 'Sehen Sie, was läuft. Topgerichte, Stoßzeiten und Umsatz pro Tisch — täglich aktualisiert.', imageUrl: null },
+      { tab: 'Personal', headline: 'Schichten, Benachrichtigungen, fertig.', description: 'Mitarbeiter erhalten Schichtbenachrichtigungen direkt auf dem Handy. Kein Whiteboard, keine Anrufe.', imageUrl: null },
+    ],
+    en: [
+      { tab: 'Customer',  headline: 'Scan. Order. Pay.',                     description: 'No app. No staff tablet. Guest opens the menu on their phone and orders directly from the table.', imageUrl: null },
+      { tab: 'Kitchen',   headline: 'Orders appear instantly.',              description: 'No relay, no shouting. Order appears immediately on the kitchen screen — with table and position.', imageUrl: null },
+      { tab: 'Admin',     headline: 'Full overview. Zero paperwork.',        description: 'Tables, orders, opening hours, and menus — all managed in one screen.', imageUrl: null },
+      { tab: 'Analytics', headline: 'Revenue, tables, top dishes.',          description: 'See what is working. Top dishes, peak times, and revenue per table — updated daily.', imageUrl: null },
+      { tab: 'Staff',     headline: 'Shifts, alerts, done.',                 description: 'Staff receive shift notifications directly on their phones. No whiteboard, no calls.', imageUrl: null },
+    ],
+  },
+
   // ── Media
   media: {
     card: {
@@ -98,7 +136,7 @@ const RESTAURANT_OS = {
   demoUrl:    'https://restaurant-os-one.vercel.app',
   landingUrl: '/products/restaurant-os',
   systemUrl:  'https://restaurant-os.de',
-  bookDemoUrl: '/contact?system=restaurant-os',
+  bookDemoUrl: 'https://restaurant-os-one.vercel.app/launch-experience',
   contactSlug: 'restaurant-os',
   hasDemoLogin: false,
 

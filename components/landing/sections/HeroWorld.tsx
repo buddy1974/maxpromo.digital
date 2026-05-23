@@ -8,10 +8,8 @@ interface HeroWorldProps {
   bullets:      BulletTuple
   cardImageSrc: string
   ctaPrimary:   string
-  ctaSecondary: string
   bookDemoUrl:  string
-  demoUrl:      string | null
-  systemUrl:    string
+  locale:       string
 }
 
 /**
@@ -21,9 +19,9 @@ interface HeroWorldProps {
  */
 export function HeroWorld({
   domainBrand, headline, subline, bullets,
-  cardImageSrc, ctaPrimary, ctaSecondary,
-  bookDemoUrl, demoUrl, systemUrl,
+  cardImageSrc, ctaPrimary, bookDemoUrl, locale,
 }: HeroWorldProps) {
+  const secondaryLabel = locale === 'de' ? 'System in Aktion →' : 'See it in action →'
   const dotAt = headline.indexOf('. ')
   const line1 = dotAt > -1 ? headline.slice(0, dotAt + 1) : headline
   const line2 = dotAt > -1 ? headline.slice(dotAt + 2)    : null
@@ -66,12 +64,10 @@ export function HeroWorld({
               {ctaPrimary}
             </a>
             <a
-              href={demoUrl ?? systemUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#see-in-action"
               style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--brand-fg)', padding: '14px 28px', borderRadius: '10px', border: '1px solid rgba(128,128,128,0.25)', textDecoration: 'none', display: 'inline-block' }}
             >
-              {ctaSecondary}
+              {secondaryLabel}
             </a>
           </div>
         </div>

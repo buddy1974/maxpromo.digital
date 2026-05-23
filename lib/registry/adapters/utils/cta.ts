@@ -67,16 +67,13 @@ export function resolveSecondaryLabel(product: ProductEntry, locale: string): st
 }
 
 /**
- * Resolves the primary CTA href and whether it should open in a new tab.
- * Demo URLs open in a new tab. System URLs open in a new tab.
- * Internal booking URLs (/contact?system=...) do not.
+ * Resolves the primary CTA href for hub product cards.
+ * Always resolves to the product domain (systemUrl) — never the demo app.
+ * Hub cards are entry points to the product domain, not the demo infrastructure.
  */
 export function resolvePrimaryHref(product: ProductEntry): {
   href: string
   opensNewTab: boolean
 } {
-  if (product.demoUrl) {
-    return { href: product.demoUrl, opensNewTab: true }
-  }
   return { href: product.systemUrl, opensNewTab: true }
 }

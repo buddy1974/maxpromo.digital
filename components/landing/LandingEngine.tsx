@@ -1,12 +1,14 @@
 import { LandingThemeProvider } from './LandingThemeProvider'
-import { HeroWorld }   from './sections/HeroWorld'
-import { Pain }        from './sections/Pain'
-import { BeforeAfter } from './sections/BeforeAfter'
-import { HowItWorks }  from './sections/HowItWorks'
-import { Features }    from './sections/Features'
-import { InAction }    from './sections/InAction'
-import { Faq }         from './sections/Faq'
-import { Conversion }  from './sections/Conversion'
+import { HeroWorld }    from './sections/HeroWorld'
+import { Pain }         from './sections/Pain'
+import { BeforeAfter }  from './sections/BeforeAfter'
+import { HowItWorks }   from './sections/HowItWorks'
+import { Features }     from './sections/Features'
+import { InAction }     from './sections/InAction'
+import { AIImport }     from './sections/AIImport'
+import { Installation } from './sections/Installation'
+import { Faq }          from './sections/Faq'
+import { Conversion }   from './sections/Conversion'
 import type { LandingData } from '@/lib/registry/adapters/landing.adapter'
 
 interface LandingEngineProps {
@@ -36,10 +38,8 @@ export function LandingEngine({ data, bridge = false }: LandingEngineProps) {
         bullets={data.bullets}
         cardImageSrc={data.cardImageSrc}
         ctaPrimary={data.ctaPrimary}
-        ctaSecondary={data.ctaSecondary}
         bookDemoUrl={data.bookDemoUrl}
-        demoUrl={data.demoUrl}
-        systemUrl={data.systemUrl}
+        locale={data.locale}
       />
 
       {!bridge && (
@@ -80,6 +80,10 @@ export function LandingEngine({ data, bridge = false }: LandingEngineProps) {
         />
       )}
 
+      {!bridge && <AIImport />}
+
+      {!bridge && <Installation />}
+
       {/* Faq: show only when data exists and not in bridge mode */}
       {!bridge && data.faq && data.faq.length > 0 && (
         <Faq
@@ -90,8 +94,6 @@ export function LandingEngine({ data, bridge = false }: LandingEngineProps) {
 
       <Conversion
         bookDemoUrl={data.bookDemoUrl}
-        demoUrl={data.demoUrl}
-        systemUrl={data.systemUrl}
         domain={data.domain}
         ctaPrimary={data.ctaPrimary}
         locale={data.locale}
