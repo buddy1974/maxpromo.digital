@@ -61,7 +61,7 @@ export function HeroSlide({ src, alt, slideIndex, active }: HeroSlideProps) {
             loading={slideIndex === 1 ? 'eager' : 'lazy'}
             style={{ objectFit: 'cover', objectPosition: 'center right' }}
             onError={() => setImgError(true)}
-            sizes="100vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 1920px"
           />
         </div>
       )}

@@ -28,40 +28,57 @@ export function SystemsTabs() {
   return (
     <div>
 
-      {/* Tab bar */}
-      <div
-        style={{
-          display: 'flex',
-          overflowX: 'auto',
-          gap: '2px',
-          borderBottom: '1px solid hsl(40 30% 96% / 0.08)',
-          scrollbarWidth: 'none',
-          WebkitOverflowScrolling: 'touch',
-        } as React.CSSProperties}
-      >
-        {systems.map((sys, i) => (
-          <button
-            key={sys.slug}
-            onClick={() => setActive(i)}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              whiteSpace: 'nowrap',
-              padding: '12px 16px',
-              border: 'none',
-              borderBottom: i === active ? '2px solid #F97316' : '2px solid transparent',
-              background: 'none',
-              color: i === active ? '#F97316' : 'hsl(40 12% 50%)',
-              cursor: 'pointer',
-              transition: 'color 150ms ease',
-              flexShrink: 0,
-            }}
-          >
-            {sys.name}
-          </button>
-        ))}
+      {/* Tab bar — horizontally scrollable with a right-edge fade hint on mobile */}
+      <div style={{ position: 'relative' }}>
+        <div
+          style={{
+            display: 'flex',
+            overflowX: 'auto',
+            gap: '2px',
+            borderBottom: '1px solid hsl(40 30% 96% / 0.08)',
+            scrollbarWidth: 'none',
+            WebkitOverflowScrolling: 'touch',
+          } as React.CSSProperties}
+        >
+          {systems.map((sys, i) => (
+            <button
+              key={sys.slug}
+              onClick={() => setActive(i)}
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '11px',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
+                padding: '14px 16px',
+                border: 'none',
+                borderBottom: i === active ? '2px solid #F97316' : '2px solid transparent',
+                background: 'none',
+                color: i === active ? '#F97316' : 'hsl(40 12% 50%)',
+                cursor: 'pointer',
+                transition: 'color 150ms ease',
+                flexShrink: 0,
+                minHeight: '44px',
+              }}
+            >
+              {sys.name}
+            </button>
+          ))}
+        </div>
+        {/* Scroll hint — fades out on desktop via md:hidden */}
+        <div
+          aria-hidden="true"
+          className="md:hidden"
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '48px',
+            background: 'linear-gradient(to right, transparent, hsl(240 14% 4%))',
+            pointerEvents: 'none',
+          }}
+        />
       </div>
 
       {/* Active system panel */}

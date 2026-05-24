@@ -115,14 +115,35 @@ export default function Footer() {
         <style>{`
           .footer-cols-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2.5rem;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+          }
+          @media (min-width: 640px) {
+            .footer-cols-grid {
+              grid-template-columns: repeat(2, 1fr);
+              gap: 2.5rem;
+            }
           }
           @media (min-width: 768px) {
             .footer-cols-grid {
               grid-template-columns: repeat(3, 1fr);
               gap: 2rem;
               align-items: start;
+            }
+          }
+          .footer-bottom {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 12px 24px;
+          }
+          @media (max-width: 639px) {
+            .footer-bottom {
+              grid-template-columns: 1fr;
+              gap: 8px;
+            }
+            .footer-bottom > div:last-child {
+              justify-content: flex-start !important;
             }
           }
         `}</style>
@@ -160,10 +181,6 @@ export default function Footer() {
             marginTop: '3rem',
             paddingTop: '1.5rem',
             borderTop: '1px solid hsl(40 30% 96% / 0.06)',
-            display: 'grid',
-            gridTemplateColumns: '1fr auto',
-            alignItems: 'center',
-            gap: '12px 24px',
           }}
           className="footer-bottom"
         >

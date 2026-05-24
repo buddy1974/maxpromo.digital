@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Link } from '@/i18n/navigation'
 
@@ -42,6 +43,7 @@ export function PainCardsClient({ cards }: PainCardsClientProps) {
                 boxShadow: '0 0 40px rgba(249,115,22,0.09)',
                 transition: { duration: 0.25 },
               }}
+              whileTap={{ scale: 0.98 }}
               style={{
                 background: 'hsl(240 12% 7%)',
                 border: '1px solid hsl(40 30% 96% / 0.07)',
@@ -54,7 +56,7 @@ export function PainCardsClient({ cards }: PainCardsClientProps) {
                 cursor: 'pointer',
               }}
             >
-              {/* Image area — CSS background-image (server-compatible) */}
+              {/* Image area — next/image with WebP/AVIF optimisation */}
               <motion.div
                 className="pain-card-img"
                 whileHover={{ scale: 1.04 }}
@@ -63,12 +65,17 @@ export function PainCardsClient({ cards }: PainCardsClientProps) {
                   position: 'relative',
                   aspectRatio: '16 / 9',
                   backgroundColor: 'hsl(240 12% 5%)',
-                  backgroundImage: `url(/images/homepage/pain/${card.id}.png)`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center top',
                   overflow: 'hidden',
                 }}
               >
+                <Image
+                  src={`/images/homepage/pain/${card.id}.png`}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                  loading="lazy"
+                />
                 {/* Dark gradient overlay */}
                 <div
                   aria-hidden="true"

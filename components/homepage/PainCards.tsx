@@ -27,6 +27,7 @@ export async function PainCards() {
 
   return (
     <section
+      data-section="pain"
       style={{
         background: 'hsl(240 14% 4%)',
         padding: '6rem 2rem',

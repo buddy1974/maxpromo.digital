@@ -26,7 +26,7 @@ export function ProofMetrics({ metrics }: ProofMetricsProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-40px' }}
           transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-          style={{ background: 'hsl(240 12% 7%)', padding: '2.5rem' }}
+          style={{ background: 'hsl(240 12% 7%)', padding: 'clamp(1.25rem, 5vw, 2.5rem)' }}
         >
           {/* Value — fades in, tiny upward tick, single soft pulse via scale */}
           <motion.p

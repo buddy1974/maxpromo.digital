@@ -58,8 +58,9 @@ export default function Hero() {
     No React state updated on every mousemove frame.
     Zero component reconciliation during parallax movement.
   */
-  const bgRef   = useRef<HTMLDivElement>(null)
-  const cardRef = useRef<HTMLDivElement>(null)
+  const bgRef        = useRef<HTMLDivElement>(null)
+  const cardRef      = useRef<HTMLDivElement>(null)
+  const touchStartX  = useRef<number>(0)
 
   // Detect touch device — disable parallax on touch
   useEffect(() => {
@@ -121,6 +122,22 @@ export default function Hero() {
     resetTimer()
   }
 
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }, [])
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    const delta = e.changedTouches[0].clientX - touchStartX.current
+    if (Math.abs(delta) > 50) {
+      if (delta < 0) {
+        setActive((n) => (n + 1) % SLIDES.length)
+      } else {
+        setActive((n) => (n - 1 + SLIDES.length) % SLIDES.length)
+      }
+      resetTimer()
+    }
+  }, [resetTimer])
+
   return (
     <>
       {/*
@@ -146,6 +163,9 @@ export default function Hero() {
 
       <section
         ref={sectionRef}
+        data-section="hero"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
         style={{
           position: 'relative',
           minHeight: 'calc(100vh - 80px)',
@@ -320,8 +340,8 @@ export default function Hero() {
           {slides[active] && <LiveCard slide={slides[active]} />}
         </div>
 
-        {/* Mobile live card */}
-        <LiveCardMobile slides={slides} activeSlide={active} />
+        {/* Mobile live card — controlled; dots drive hero slide */}
+        <LiveCardMobile slides={slides} activeSlide={active} onSlideSelect={handleSelect} />
 
         {/* LIVE ticker */}
         <OperationalTicker items={ticker} />
