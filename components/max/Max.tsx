@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MaxMemoryProvider } from './MaxMemoryProvider'
 import { MaxBubble } from './MaxBubble'
 import { MaxPanel } from './MaxPanel'
@@ -11,9 +11,18 @@ import { MaxPanel } from './MaxPanel'
  * State split:
  *   MaxMemoryProvider  → data (session, messages, loading)
  *   Max               → UI (open/closed)
+ *
+ * open-max-chat event: fired by MobileStickyCTA and any other surface
+ * that needs to open Max programmatically.
  */
 export default function Max() {
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const onOpen = () => setOpen(true)
+    window.addEventListener('open-max-chat', onOpen)
+    return () => window.removeEventListener('open-max-chat', onOpen)
+  }, [])
 
   return (
     <MaxMemoryProvider>
