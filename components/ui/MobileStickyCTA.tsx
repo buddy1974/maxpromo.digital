@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 import { useLocale } from 'next-intl'
+import { OPEN_MAX_CHAT } from '@/lib/events'
 
 type SectionId = 'hero' | 'pain' | 'proof' | 'systems'
 
@@ -113,7 +114,7 @@ export function MobileStickyCTA() {
         >
           <div style={{ maxWidth: '640px', margin: '0 auto', pointerEvents: 'auto' }}>
             <motion.button
-              onClick={() => window.dispatchEvent(new Event('open-max-chat'))}
+              onClick={() => window.dispatchEvent(new Event(OPEN_MAX_CHAT))}
               whileTap={{ scale: 0.97 }}
               animate={{
                 boxShadow: pulsing

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { MaxMemoryProvider } from './MaxMemoryProvider'
 import { MaxBubble } from './MaxBubble'
 import { MaxPanel } from './MaxPanel'
+import { OPEN_MAX_CHAT } from '@/lib/events'
 
 /**
  * Max — unified chat widget. Mounted in both hub and showcase layouts.
@@ -20,8 +21,8 @@ export default function Max() {
 
   useEffect(() => {
     const onOpen = () => setOpen(true)
-    window.addEventListener('open-max-chat', onOpen)
-    return () => window.removeEventListener('open-max-chat', onOpen)
+    window.addEventListener(OPEN_MAX_CHAT, onOpen)
+    return () => window.removeEventListener(OPEN_MAX_CHAT, onOpen)
   }, [])
 
   return (
