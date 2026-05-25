@@ -260,6 +260,8 @@ export interface MediaAssets {
   readonly hero?: LocalisedAsset
   readonly social?: LocalisedAsset
   readonly workflow?: LocalisedAsset
+  /** Pain section: exactly 3 image paths, relative to /public (no leading slash). Maps 1:1 with bullets[]. */
+  readonly pain?: readonly [string, string, string]
 }
 
 // =============================================================================

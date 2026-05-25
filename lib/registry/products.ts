@@ -127,6 +127,11 @@ const RESTAURANT_OS = {
       en: 'images/systems/restaurant-os/card/restaurant-os-en.png',
       de: 'images/systems/restaurant-os/card/restaurant-os-de.png',
     },
+    pain: [
+      'images/systems/restaurant-os/pain/p1.png',
+      'images/systems/restaurant-os/pain/p2.png',
+      'images/systems/restaurant-os/pain/p3.png',
+    ],
   },
   brandColor:     '#F97316',
   layoutVariant:  'A',

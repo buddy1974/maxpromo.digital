@@ -47,6 +47,7 @@ export function LandingEngine({ data, bridge = false }: LandingEngineProps) {
           bullets={data.bullets}
           description={data.description}
           locale={data.locale}
+          images={data.painImages}
         />
       )}
 
