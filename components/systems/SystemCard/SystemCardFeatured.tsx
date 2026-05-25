@@ -14,7 +14,7 @@ import type { SystemCardProps } from './SystemCard'
 import { resolvePrimaryLabel, resolveSecondaryLabel } from './helpers/cta'
 import { resolveCategoryLabel } from './helpers/category'
 import { TrackableLink } from '@/components/systems/interactions/TrackableLink'
-import { CTA_PRIMARY_CLICKED, CTA_SECONDARY_CLICKED, DOMAIN_CLICKED, CARD_CLICKED, DEMO_STARTED } from '@/lib/analytics/events'
+import { CTA_PRIMARY_CLICKED, CTA_SECONDARY_CLICKED, DOMAIN_CLICKED, CARD_CLICKED } from '@/lib/analytics/events'
 import { resolveCardSrc } from './helpers/image'
 
 // =============================================================================
@@ -93,8 +93,10 @@ export function SystemCardFeatured({
 
         {/* Image area click tracker — overlay mode, aria-hidden (headline link provides AT access) */}
         <TrackableLink
-          href={product.landingUrl ?? product.systemUrl}
+          href={product.systemUrl}
           event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
+          target="_blank"
+          rel="noopener noreferrer"
           className="absolute inset-0 z-[1]"
           overlay
         />
@@ -120,8 +122,10 @@ export function SystemCardFeatured({
         <div className="space-y-1.5">
           <h3 className="m-0 text-xl font-bold leading-tight tracking-tight text-[hsl(40_30%_96%)]">
             <TrackableLink
-              href={product.landingUrl ?? product.systemUrl}
+              href={product.systemUrl}
               event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-inherit no-underline"
             >
               {product.name}
@@ -173,13 +177,10 @@ export function SystemCardFeatured({
         {showCTA && (
           <div className="flex flex-wrap items-center gap-3 mt-auto pt-4 border-t border-white/[0.06]">
             <TrackableLink
-              href={product.demoUrl ?? product.systemUrl}
-              event={product.demoUrl
-                ? { type: DEMO_STARTED,       slug: product.slug, source: eventSource, locale, destination: product.demoUrl }
-                : { type: CTA_PRIMARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: primaryLabel }
-              }
-              target={product.demoUrl ? '_blank' : undefined}
-              rel={product.demoUrl ? 'noopener noreferrer' : undefined}
+              href={product.systemUrl}
+              event={{ type: CTA_PRIMARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: primaryLabel }}
+              target="_blank"
+              rel="noopener noreferrer"
               data-event-source={eventSource}
               aria-label={primaryLabel}
               className="font-mono text-[11px] font-bold uppercase tracking-widest bg-[#F97316] text-[#080808] px-5 py-2.5 hover:bg-[#EA6A00] transition-colors"
@@ -187,7 +188,7 @@ export function SystemCardFeatured({
               {primaryLabel}
             </TrackableLink>
             <TrackableLink
-              href={product.bookDemoUrl}
+              href={product.systemUrl}
               event={{
                 type:     CTA_SECONDARY_CLICKED,
                 slug:     product.slug,
@@ -195,6 +196,8 @@ export function SystemCardFeatured({
                 locale,
                 ctaLabel: secondaryLabel,
               }}
+              target="_blank"
+              rel="noopener noreferrer"
               data-event-source={eventSource}
               aria-label={secondaryLabel}
               className="font-mono text-[11px] uppercase tracking-widest border border-white/20 text-[hsl(40_30%_96%)] px-5 py-2.5 hover:border-white/40 transition-colors"

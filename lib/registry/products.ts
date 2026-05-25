@@ -138,10 +138,10 @@ const RESTAURANT_OS = {
   backgroundDark: true,
 
   // ── Links
-  demoUrl:    'https://restaurant-os-one.vercel.app',
+  demoUrl:    'https://demo.restaurant-os.de',
   landingUrl: '/products/restaurant-os',
-  systemUrl:  'https://restaurant-os.de',
-  bookDemoUrl: 'https://restaurant-os-one.vercel.app/launch-experience',
+  systemUrl:  'https://www.restaurant-os.de',
+  bookDemoUrl: 'https://demo.restaurant-os.de/launch-experience',
   contactSlug: 'restaurant-os',
   hasDemoLogin: false,
 

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Image from 'next/image'
-import { Link } from '@/i18n/navigation'
 import { SYSTEMS_PAGE_PRODUCTS } from '@/lib/registry/products'
 
 export function SystemsTabs() {
@@ -20,7 +19,7 @@ export function SystemsTabs() {
     imgSrc: locale === 'de' && p.media.card.de
       ? `/${p.media.card.de}`
       : `/${p.media.card.en}`,
-    href: p.landingUrl,
+    href: p.systemUrl,
   }))
 
   const current = systems[active]
@@ -109,8 +108,10 @@ export function SystemsTabs() {
           >
             {current.headline}
           </h3>
-          <Link
+          <a
             href={current.href}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
               fontFamily: 'var(--font-mono)',
               fontWeight: 700,
@@ -124,7 +125,7 @@ export function SystemsTabs() {
             }}
           >
             {t('viewSystem')} →
-          </Link>
+          </a>
         </div>
 
         {/* Image */}
