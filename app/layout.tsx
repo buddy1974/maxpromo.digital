@@ -33,26 +33,30 @@ const robotoMono = Roboto_Mono({
 })
 
 export const metadata: Metadata = {
+  applicationName: 'Maxpromo Digital',
   title: {
-    default: 'MAXPROMO DIGITAL — Website, Google & Automation für kleine Unternehmen',
-    template: '%s | MAXPROMO DIGITAL',
+    default: 'Maxpromo Digital | KI-Business-Systeme & Automatisierungs-Infrastruktur',
+    template: '%s | Maxpromo Digital',
   },
   description:
-    'Maxpromo Digital helps small businesses in Essen, NRW and Germany with websites, Google profiles, social media, customer follow-up and simple automations.',
+    'Maxpromo Digital entwickelt und installiert KI-gestützte Business-Systeme, Automatisierungs-Workflows und operative Plattformen für Unternehmen, die weniger manuelle Prozesse und mehr Kontrolle wollen.',
   keywords: [
-    'kleine Unternehmen',
-    'Website Pflege',
-    'Google Business',
-    'Social Media',
+    'KI Business Systeme',
     'Automatisierung',
-    'Essen',
-    'NRW',
-    'Germany',
+    'AI Automation',
+    'Business Infrastructure',
+    'Workflow Automatisierung',
+    'Operative Plattformen',
+    'Restaurant OS',
+    'Handwerk OS',
+    'Business Systems',
+    'Prozessautomatisierung',
   ],
   openGraph: {
-    title: 'MAXPROMO DIGITAL — Website, Google & Automation für kleine Unternehmen',
+    siteName: 'Maxpromo Digital',
+    title: 'Maxpromo Digital — AI systems that run business operations',
     description:
-      'We help restaurants, salons, clinics, trades and local shops in Essen, NRW and Germany get more organised online.',
+      'Installed AI automation systems, workflow platforms and productized operating systems for modern businesses.',
     type: 'website',
   },
 }
