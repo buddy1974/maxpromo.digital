@@ -1,11 +1,16 @@
 import type { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
+import createMDX from '@next/mdx'
 
-// Auto-discovers i18n/request.ts. No options needed.
 const withNextIntl = createNextIntlPlugin()
 
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+})
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  pageExtensions: ['ts', 'tsx', 'mdx'],
 }
 
-export default withNextIntl(nextConfig)
+// Compose: withNextIntl(withMDX(nextConfig))
+export default withNextIntl(withMDX(nextConfig))

@@ -1,0 +1,66 @@
+---
+slug: joomla-cicd-case-study
+locale: en
+title: "Case Study: Joomla Migration With CI/CD — From Six Weeks of Dread to 30-Minute Deployments"
+excerpt: "A service business spent 11 years on Joomla. Every change was an act of faith. Here's what was different on the other side."
+category: Case Studies
+tags: ["Case Study", "Joomla", "Migration", "CI/CD", "Legacy Modernization"]
+publishedAt: "2026-05-17"
+status: published
+relatedSystem: null
+author: Maxpromo Digital
+metaTitle: "Case Study: Joomla Migration With CI/CD Pipeline — Real Outcomes"
+metaDescription: "A real Joomla migration: starting point, approach, results. What it means when deployments stop being anxiety-inducing events."
+keywords: ["Joomla migration case study", "CI/CD website", "Joomla to Next.js case study", "website modernization results", "legacy migration experience"]
+readTime: 10
+featuredImage: "/images/blog/case-study.png"
+faq:
+  - q: "How long does a complete Joomla migration with CI/CD pipeline take?"
+    a: "In this project: 8 weeks total — 2 audit, 3 content migration, 2 new platform, 1 stabilization. Simpler systems can move faster."
+  - q: "Will all existing content be transferred?"
+    a: "All content with measurable traffic transfers completely. Pages with no traffic in 18+ months get 301 redirects rather than full migration."
+  - q: "What does 'no more editing directly on the production server' mean in practice?"
+    a: "All changes are committed to Git, automatically tested, and only deployed after approval. There's no longer any way to accidentally break the live site."
+---
+
+## The Starting Point
+
+In early 2025, a service business came to us. Eleven years on Joomla — the original installation dated from around 2014, initially built on a shared hosting package with Hostinger. Three different developers had worked on it over those years. No Git repository. No complete documentation.
+
+That's a profile we know well. We've been working with Joomla since 2009, from the early days of Joomla 1.5 on WAMP and XAMPP development environments through to the Joomla 3.x systems still running in production today. Transforming these systems into modern CI/CD deployment workflows is what we call legacy transformation — not a greenfield rebuild, but a structured migration that carries forward what matters.
+
+Getting a clear picture was the first challenge. Nobody knew exactly what changes had been made when. There was a "live" database and a "test" database — neither confirmed as current. We exported both via phpMyAdmin and compared the SQL dumps to reconstruct the actual production state. The database had been created in latin1 encoding — a classic Joomla 1.5 artifact that had persisted through every subsequent upgrade. Before any content migration could happen, the encoding needed to be resolved.
+
+Changes were being made directly on the production server via FTP. Every update carried a moment of uncertainty.
+
+## The Specific Problem That Kicked This Off
+
+A new services page. It took six weeks. The developer needed to reconstruct current state first, a plugin update for a new feature broke three others, the template stopped working on mobile with new content, and the review process was happening over WhatsApp and screenshots.
+
+## What We Did
+
+**Phase 1 (2 weeks):** Full inventory. 31 extensions, 14 unmaintained, 6 with documented vulnerabilities. Local mirror on XAMPP to test safely. SQL import surfaced the latin1/utf8mb4 encoding issue on first attempt — resolved before migrating content.
+
+**Phase 2 (3 weeks):** Content audit. Of 180 pages, 40 had meaningful traffic. The 40 transferred fully. 301 redirects for the rest.
+
+**Phase 3 (2 weeks):** Next.js + headless CMS + GitHub Actions CI/CD. The workflow: branch → automated tests → staging preview → owner approval → automatic production deployment. No more screenshots. No more surprises. No more direct production server edits.
+
+**Phase 4 (1 week):** DNS switch at 6am. No errors in first four hours. All redirects functioning. No new Search Console errors.
+
+## Results After 3 Months
+
+- **Load time:** 5.8 seconds → 0.9 seconds (LCP)
+- **Core Web Vitals:** "Needs Improvement" → "Good" across all three
+- **SEO:** All top-20 rankings retained. Three pages up 3–5 positions in first 8 weeks
+- **Editorial effort:** New services page: from 6 weeks to 45 minutes
+- **Security:** Zero critical, zero high findings in latest vulnerability scan
+
+## What Changed Most
+
+The business owner said it in one sentence: "I make changes myself now. I wouldn't have believed that before."
+
+That's the real win. The feeling of controlling your own system — instead of being controlled by it.
+
+<BlogArticleCTA locale="en" />
+
+**Continue reading:** [Still Running Joomla in 2026? Here's What It's Actually Costing You →](/en/blog/still-running-joomla-2026)

@@ -4,17 +4,20 @@ import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { getPublishedPosts, getPublishedTags } from '@/lib/blog/posts'
 
-export const metadata: Metadata = {
-  title: 'Blog — Maxpromo Digital',
-  description:
-    'Observations on automation, AI agents, and the systems behind the OS — written for business owners.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('blog')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDesc'),
+  }
 }
 
 export default async function BlogIndexPage() {
-  const locale = await getLocale()
-  const t      = await getTranslations('blog')
-  const posts  = getPublishedPosts(locale)
-  const tags   = getPublishedTags(locale)
+  const locale       = await getLocale()
+  const t            = await getTranslations('blog')
+  const posts        = getPublishedPosts(locale)
+  const tags         = getPublishedTags(locale)
+  const placeholders = t.raw('placeholders') as Array<{ tag: string; title: string; excerpt: string; readTime: string }>
 
   return (
     <main style={{ background: '#0A0A0A', minHeight: '100vh', paddingTop: '120px', paddingBottom: '6rem' }}>
@@ -80,50 +83,60 @@ export default async function BlogIndexPage() {
           </div>
         )}
 
-        {/* Article grid or empty state */}
+        {/* Article grid or placeholder cards */}
         {posts.length === 0 ? (
-          <div
-            style={{
-              border: '1px solid rgba(255,255,255,0.06)',
-              background: 'hsl(240 12% 7%)',
-              padding: '5rem 2rem',
-              textAlign: 'center',
-              borderRadius: '2px',
-            }}
-          >
-            <p
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '1.5rem',
-                fontWeight: 700,
-                letterSpacing: '-0.03em',
-                color: 'hsl(40 30% 96%)',
-                marginBottom: '12px',
-              }}
-            >
+          <>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(240 8% 35%)', letterSpacing: '0.1em', marginBottom: '2rem' }}>
               {t('emptyTitle')}
             </p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, maxWidth: '480px', margin: '0 auto 2rem' }}>
-              {t('emptyDesc')}
-            </p>
-            <Link
-              href="/automation-audit"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 700,
-                fontSize: '13px',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                background: '#F97316',
-                color: '#000',
-                padding: '12px 22px',
-                textDecoration: 'none',
-                display: 'inline-block',
-              }}
+            <div
+              style={{ display: 'grid', gap: '1.5rem' }}
+              className="grid-cols-1 md:grid-cols-2"
             >
-              {t('bottomCtaPrimary')}
-            </Link>
-          </div>
+              {placeholders.map((card, i) => (
+                <article
+                  key={i}
+                  style={{
+                    background: 'hsl(240 12% 7%)',
+                    border: '1px solid rgba(255,255,255,0.06)',
+                    borderRadius: '2px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    opacity: 0.75,
+                  }}
+                >
+                  <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
+                      {card.tag}
+                    </span>
+                    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.125rem', letterSpacing: '-0.02em', color: 'hsl(40 30% 96%)', lineHeight: 1.35, margin: 0 }}>
+                      {card.title}
+                    </h2>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                      {card.excerpt}
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 'auto' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)', letterSpacing: '0.05em' }}>
+                        {card.readTime}
+                      </span>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(240 8% 35%)', letterSpacing: '0.05em' }}>
+                        {t('readArticle')}
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+            <div style={{ marginTop: '3rem', textAlign: 'center' }}>
+              <Link
+                href="/automation-audit"
+                style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#000', padding: '12px 22px', textDecoration: 'none', display: 'inline-block' }}
+              >
+                {t('bottomCtaPrimary')}
+              </Link>
+            </div>
+          </>
         ) : (
           <div
             style={{ display: 'grid', gap: '1.5rem' }}

@@ -1,0 +1,78 @@
+---
+slug: joomla-cicd-case-study
+locale: de
+title: "Fallstudie: Joomla-Migration mit CI/CD — von 6 Wochen Angst zu 30 Minuten Deployment"
+excerpt: "Ein Dienstleistungsbetrieb hat 11 Jahre auf Joomla verbracht. Änderungen waren ein Akt der Hoffnung. Hier ist, was danach anders war."
+category: Case Studies
+tags: ["Fallstudie", "Joomla", "Migration", "CI/CD", "Legacy-Modernisierung"]
+publishedAt: "2026-05-17"
+status: published
+relatedSystem: null
+author: Maxpromo Digital
+metaTitle: "Fallstudie: Joomla-Migration mit CI/CD-Pipeline — was sich wirklich verändert"
+metaDescription: "Eine echte Joomla-Migration: Ausgangslage, Vorgehen, Ergebnisse. Was es bedeutet, wenn Deployments keine Angstzustände mehr sind."
+keywords: ["Joomla Migration Fallstudie", "CI/CD Website", "Joomla zu Next.js Fallstudie", "Website-Modernisierung Ergebnis", "Legacy-Migration Erfahrungsbericht"]
+readTime: 10
+featuredImage: "/images/blog/case-study.png"
+faq:
+  - q: "Wie lange dauert eine vollständige Joomla-Migration mit CI/CD-Pipeline?"
+    a: "Bei diesem Projekt 8 Wochen: 2 Wochen Audit, 3 Wochen Content-Migration, 2 Wochen neue Plattform, 1 Woche Stabilisierung. Einfachere Systeme können schneller gehen."
+  - q: "Werden alle alten Inhalte übertragen?"
+    a: "Alle Inhalte mit messbarem Traffic werden vollständig übertragen. Seiten ohne Traffic in 18+ Monaten erhalten 301-Weiterleitungen statt Vollmigration."
+  - q: "Was bedeutet 'kein direktes Editieren auf dem Produktionsserver' konkret?"
+    a: "Alle Änderungen werden in Git committet, automatisch getestet und erst nach Freigabe deployed. Es gibt keine Möglichkeit mehr, versehentlich etwas auf der Live-Seite zu zerstören."
+---
+
+## Ausgangslage
+
+Anfang 2025 kam ein Dienstleistungsbetrieb aus dem Ruhrgebiet auf uns zu. Elf Jahre Joomla — die ursprüngliche Installation stammte aus 2014, damals auf einem Shared-Hosting-Paket bei Hostinger aufgesetzt. Drei verschiedene Entwickler hatten im Laufe der Jahre daran gearbeitet. Kein Git-Repository, keine vollständige Dokumentation.
+
+Das ist ein Profil, das wir gut kennen. Wir arbeiten seit 2009 mit Joomla — von den frühen Tagen mit Joomla 1.5 bis zu den aktuellen 3.x-Installationen. Die Transformation dieser Systeme in moderne CI/CD-Deployment-Workflows ist Legacy-Transformation: kein Neuaufbau auf der grünen Wiese, sondern ein strukturierter Überführungsprozess, der nichts verliert, was sich über Jahre bewährt hat.
+
+Das Klar-machen war die eigentliche Herausforderung: Niemand wusste mehr genau, welche Änderungen wann gemacht wurden. Es gab eine „live"- und eine „test"-Version der Datenbank. Wir haben beide über phpMyAdmin exportiert und die SQL-Dumps verglichen, um den tatsächlichen Produktionsstand zu rekonstruieren. Die Datenbank war ursprünglich in latin1 angelegt — ein klassisches Joomla-1.5-Erbe, das sich durch alle späteren Versionen mitgeschleppt hatte.
+
+Änderungen wurden direkt auf dem Produktionsserver per FTP gemacht. Jede Anpassung war ein Moment des Zitterns.
+
+## Das konkrete Problem
+
+Der Betrieb wollte eine neue Leistungsseite aufsetzen. Es dauerte sechs Wochen — nicht weil der Inhalt komplex war, sondern weil der Entwickler die aktuelle Version erst rekonstruieren musste, ein Plugin-Update drei weitere brach, das Template-Layout auf Mobile nicht funktionierte und der Review-Prozess über WhatsApp und Screenshots lief.
+
+## Was wir gemacht haben
+
+### Phase 1: Bestandsaufnahme (2 Wochen)
+
+31 Extensions installiert, 14 davon seit mehr als 2 Jahren ohne Update, 6 mit bekannten Sicherheitslücken. Wir haben eine lokale Kopie auf XAMPP aufgesetzt, um Migrationsschritte gefahrlos testen zu können. Der latin1/utf8mb4-Encoding-Konflikt trat beim ersten SQL-Import auf — behoben, bevor Content migriert wurde.
+
+### Phase 2: Content-Audit und Migration (3 Wochen)
+
+Von 180 Seiten hatten 40 messbaren Traffic. Die anderen 140 hatten in 18 Monaten zusammen weniger als 200 Aufrufe. Die 40 relevanten Seiten wurden vollständig migriert. Für alle anderen: 301-Weiterleitungen.
+
+### Phase 3: Neue Plattform und CI/CD-Pipeline (2 Wochen)
+
+Next.js mit Headless CMS, CI/CD über GitHub Actions. Der Workflow: Branch → automatische Tests → Staging-Preview → Freigabe durch Betriebsinhaber → automatisches Produktions-Deployment. Keine Screenshots mehr. Keine Überraschungen. Kein direktes Editieren auf dem Produktionsserver.
+
+### Phase 4: Launch und Stabilisierung (1 Woche)
+
+DNS-Umschaltung um 6:00 Uhr morgens. In den ersten vier Stunden: keine Fehler in den Logs, alle Redirects funktionieren, Search Console ohne neue Fehler.
+
+## Ergebnisse nach 3 Monaten
+
+**Ladezeit:** Von 5,8 Sekunden auf 0,9 Sekunden (LCP)
+
+**Core Web Vitals:** Von „Needs Improvement" auf „Good" in allen drei Kategorien
+
+**SEO:** Alle Top-20-Rankings blieben erhalten. Drei Seiten verbesserten sich um 3–5 Positionen.
+
+**Editorial-Aufwand:** Neue Leistungsseite: von 6 Wochen auf 45 Minuten.
+
+**Sicherheit:** 0 kritische, 0 high Findings im letzten Vulnerability-Scan.
+
+## Was sich am meisten verändert hat
+
+Der Betriebsinhaber: „Ich mache Änderungen jetzt selbst. Das hätte ich vorher nicht geglaubt."
+
+Das ist der eigentliche Gewinn. Das Gefühl, das eigene System zu kontrollieren — statt von ihm kontrolliert zu werden.
+
+<BlogArticleCTA locale="de" />
+
+**Weiter lesen:** [Joomla 2026 — was es wirklich kostet, das System nicht anzufassen →](/de/blog/still-running-joomla-2026)

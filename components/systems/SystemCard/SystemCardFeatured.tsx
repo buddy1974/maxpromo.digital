@@ -78,7 +78,7 @@ export function SystemCardFeatured({
       >
         {cardSrc ? (
           <Image
-            src={`/${cardSrc}`}
+            src={cardSrc}
             alt={product.name}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"

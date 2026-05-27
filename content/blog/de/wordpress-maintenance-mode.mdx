@@ -1,0 +1,54 @@
+---
+slug: wordpress-maintenance-mode
+locale: de
+title: "WordPress im Wartungsmodus: Ursachen, Diagnose und Lösung"
+excerpt: "Die Website zeigt nur noch 'Briefly unavailable for scheduled maintenance.' Kunden kommen nicht rein. Hier ist, was dahintersteckt — und wie man rauskommt."
+category: WordPress Rescue
+tags: ["WordPress", "Wartungsmodus", "CMS-Probleme", "Website-Notfall"]
+publishedAt: "2026-06-05"
+status: draft
+relatedSystem: null
+author: Maxpromo Digital
+metaTitle: "WordPress Wartungsmodus — Ursachen und Lösung in 10 Minuten"
+metaDescription: "WordPress bleibt im Wartungsmodus stecken? Wir erklären warum das passiert, wie man es schnell löst — und wie man es dauerhaft verhindert."
+keywords: ["WordPress Wartungsmodus", "WordPress maintenance mode", "WordPress stuck maintenance", "WordPress .maintenance Datei", "WordPress Update Problem"]
+readTime: 5
+featuredImage: null
+---
+
+## Warum WordPress im Wartungsmodus steckenbleibt
+
+Während eines WordPress-Updates — sei es Core, Theme oder Plugin — legt das System eine Datei namens `.maintenance` im Root-Verzeichnis an. Diese Datei signalisiert, dass gerade gewartet wird. Normalerweise löscht WordPress diese Datei automatisch, wenn das Update abgeschlossen ist.
+
+Wenn das Update abbricht — zum Beispiel wegen eines PHP-Timeouts, eines Serverfehlers oder eines Plugin-Konflikts — bleibt die `.maintenance`-Datei bestehen. WordPress zeigt dann für jeden Besucher die Wartungsseite: „Briefly unavailable for scheduled maintenance. Check back in a minute."
+
+Das klingt harmlos. Wenn niemand es bemerkt, kann die Website stundenlang oder sogar tagelang nicht erreichbar sein.
+
+## Wie man es löst
+
+**Schnellste Lösung:** Verbinden Sie sich per FTP oder SFTP mit dem Server. Im Root-Verzeichnis der WordPress-Installation liegt eine Datei namens `.maintenance`. Löschen Sie sie. Die Website ist sofort wieder erreichbar.
+
+Falls Sie keinen FTP-Zugang haben: Die meisten Hosting-Panels (Hostinger, GoDaddy, A2 Hosting) haben einen integrierten File Manager, der dasselbe erlaubt.
+
+## Warum das trotzdem ein Warnsignal ist
+
+Das Symptom ist schnell behoben. Das zugrunde liegende Problem — warum das Update abgebrochen ist — bleibt.
+
+Häufige Ursachen für abgebrochene WordPress-Updates:
+
+- PHP-Memory-Limit zu niedrig (typisch auf günstigen Shared-Hosting-Paketen)
+- Plugin-Konflikt, der beim Update-Prozess einen Fatal Error wirft
+- Datenbankverbindungsfehler während des Updates
+- Serverauszeit bei großen Updates
+
+Wir haben Installationen übernommen, bei denen das Problem mehrfach im Monat auftrat — weil niemand das Grundproblem behoben hatte.
+
+## Was das mit dem größeren Bild zu tun hat
+
+WordPress-Installationen, die regelmäßig in Problemzustände fallen, sind meistens Installationen, die über Jahre ohne strukturierte Wartung gewachsen sind: zu viele Plugins, veraltete PHP-Version, kein Backup-Prozess.
+
+Das ist lösbar — entweder durch Bereinigung und strukturierte Wartung, oder bei fortgeschrittenem Zustand durch Migration auf eine Plattform, die diese Probleme strukturell nicht hat.
+
+<BlogArticleCTA locale="de" />
+
+**Weiter lesen:** [Kann KI eine alte WordPress-Website modernisieren? →](/de/blog/wordpress-modernization)
