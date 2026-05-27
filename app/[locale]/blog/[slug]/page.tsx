@@ -112,7 +112,7 @@ const mdxComponents = {
     return (
       <div style={{ background: 'hsl(240 12% 7%)', border: '1px solid rgba(249,115,22,0.2)', padding: '2rem', margin: '2.5rem 0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
-          // {l === 'de' ? 'Kostenloser Audit' : 'Free audit'}
+          {'// '}{l === 'de' ? 'Kostenloser Audit' : 'Free audit'}
         </p>
         <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.25rem, 3vw, 1.625rem)', letterSpacing: '-0.03em', color: 'hsl(40 30% 96%)', margin: 0, lineHeight: 1.2 }}>
           {l === 'de' ? 'Noch eine alte Website im Einsatz?' : 'Still running an old website?'}
@@ -123,12 +123,12 @@ const mdxComponents = {
             : 'Show us your current website, CMS, workflow, online shop or manual process. We identify what can be modernized, automated or transformed.'}
         </p>
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '4px' }}>
-          <a
+          <Link
             href="/automation-audit"
             style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#000', padding: '11px 18px', textDecoration: 'none', display: 'inline-block' }}
           >
             {l === 'de' ? 'Business Systems Audit anfordern →' : 'Request Business Systems Audit →'}
-          </a>
+          </Link>
           <a
             href={`https://wa.me/${wa}?text=${msg}`}
             target="_blank"
@@ -222,7 +222,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
           {/* Category eyebrow */}
           {(post.category ?? post.tags[0]) && (
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', marginTop: 0 }}>
-              // {post.category ?? post.tags[0]}
+              {'// '}{post.category ?? post.tags[0]}
             </p>
           )}
 

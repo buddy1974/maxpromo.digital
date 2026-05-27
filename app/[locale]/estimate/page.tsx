@@ -679,7 +679,7 @@ ${contactName} — ${phone || email}`
             textAlign: 'center',
           }}
         >
-          Marcel meldet sich innerhalb von 24 Stunden.
+          Wir melden uns innerhalb von 24 Stunden.
         </p>
       </div>
     )

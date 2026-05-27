@@ -3,40 +3,65 @@
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 
-type LinkKey =
-  | 'about' | 'services' | 'systems' | 'caseStudies' | 'contact'
-  | 'automationAudit' | 'blog' | 'automationLab'
-  | 'impressum' | 'privacy' | 'agb' | 'dataDeletion'
+type InternalLinkKey =
+  | 'about' | 'services' | 'systems' | 'contact' | 'blog'
+  | 'automationAudit' | 'impressum' | 'privacy' | 'agb'
 
-const columns: Array<{
-  titleKey: 'colCompany' | 'colResources' | 'colLegal'
-  links: Array<{ key: LinkKey; href: string }>
-}> = [
+type ExternalLinkKey =
+  | 'restaurantOs' | 'printshopOs' | 'taxkontrol' | 'praxisOs' | 'handwerkOs' | 'publishingOs'
+
+type ServiceLinkKey =
+  | 'legacyModernization' | 'workflowAutomation' | 'aiSystems' | 'websiteSystems' | 'contentNewsletter'
+
+interface InternalLink { key: InternalLinkKey; href: string; external?: false }
+interface ExternalLink { key: ExternalLinkKey; href: string; external: true }
+interface ServiceLink  { key: ServiceLinkKey;  href: string; external?: false }
+
+type AnyLink = InternalLink | ExternalLink | ServiceLink
+
+interface Column {
+  titleKey: 'colCompany' | 'colSystems' | 'colServices' | 'colLegal'
+  links: AnyLink[]
+}
+
+const COLUMNS: Column[] = [
   {
     titleKey: 'colCompany',
     links: [
-      { key: 'about',       href: '/about' },
-      { key: 'services',    href: '/services' },
-      { key: 'systems',     href: '/systems' },
-      { key: 'caseStudies', href: '/case-studies' },
-      { key: 'contact',     href: '/contact' },
+      { key: 'about',    href: '/about' },
+      { key: 'services', href: '/services' },
+      { key: 'systems',  href: '/systems' },
+      { key: 'blog',     href: '/blog' },
+      { key: 'contact',  href: '/contact' },
     ],
   },
   {
-    titleKey: 'colResources',
+    titleKey: 'colSystems',
     links: [
-      { key: 'automationAudit', href: '/automation-audit' },
-      { key: 'blog',            href: '/blog' },
-      { key: 'automationLab',   href: '/automation-lab' },
+      { key: 'restaurantOs',  href: 'https://www.restaurant-os.de',  external: true },
+      { key: 'printshopOs',   href: 'https://www.smartprintshop.de', external: true },
+      { key: 'taxkontrol',    href: 'https://www.taxkontrol.de',      external: true },
+      { key: 'praxisOs',      href: 'https://www.super-praxis.de',    external: true },
+      { key: 'handwerkOs',    href: 'https://www.superhandwerk.de',   external: true },
+      { key: 'publishingOs',  href: 'https://www.publishers24.org',   external: true },
+    ],
+  },
+  {
+    titleKey: 'colServices',
+    links: [
+      { key: 'legacyModernization', href: '/services' },
+      { key: 'workflowAutomation',  href: '/services/workflow-automation' },
+      { key: 'aiSystems',           href: '/services/ai-agents' },
+      { key: 'websiteSystems',      href: '/services/websites-platforms' },
+      { key: 'contentNewsletter',   href: '/services' },
     ],
   },
   {
     titleKey: 'colLegal',
     links: [
-      { key: 'impressum',    href: '/impressum' },
-      { key: 'privacy',      href: '/privacy' },
-      { key: 'agb',          href: '/agb' },
-      { key: 'dataDeletion', href: '/data-deletion' },
+      { key: 'impressum', href: '/impressum' },
+      { key: 'privacy',   href: '/privacy' },
+      { key: 'agb',       href: '/agb' },
     ],
   },
 ]
@@ -124,9 +149,9 @@ export default function Footer() {
               gap: 2.5rem;
             }
           }
-          @media (min-width: 768px) {
+          @media (min-width: 1024px) {
             .footer-cols-grid {
-              grid-template-columns: repeat(3, 1fr);
+              grid-template-columns: repeat(4, 1fr);
               gap: 2rem;
               align-items: start;
             }
@@ -148,7 +173,7 @@ export default function Footer() {
           }
         `}</style>
         <div className="footer-cols-grid">
-          {columns.map((col) => (
+          {COLUMNS.map((col) => (
             <div key={col.titleKey}>
               <p
                 style={{
@@ -165,9 +190,20 @@ export default function Footer() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {col.links.map((link) => (
                   <li key={link.key}>
-                    <Link href={link.href} className="footer-link">
-                      {tLinks(link.key)}
-                    </Link>
+                    {link.external ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="footer-link"
+                      >
+                        {tLinks(link.key)}
+                      </a>
+                    ) : (
+                      <Link href={link.href} className="footer-link">
+                        {tLinks(link.key)}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -198,10 +234,13 @@ export default function Footer() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
-              {t('operationalSignal')}
+              {t('address')}
             </span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
               {t('tax')}
+            </span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
+              {t('taxClause')}
             </span>
             <a
               href="/portfolio"

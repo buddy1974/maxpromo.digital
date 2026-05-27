@@ -141,7 +141,7 @@ const RESTAURANT_OS = {
   demoUrl:    'https://demo.restaurant-os.de',
   landingUrl: '/products/restaurant-os',
   systemUrl:  'https://www.restaurant-os.de',
-  bookDemoUrl: 'https://demo.restaurant-os.de/launch-experience',
+  bookDemoUrl: 'https://demo.restaurant-os.de/demo/menu/1',
   contactSlug: 'restaurant-os',
   hasDemoLogin: false,
 
@@ -238,7 +238,7 @@ const HANDWERK_OS = {
   demoCredentials: {
     url:      'https://handwerkos.vercel.app',
     email:    'admin@handwerkos.de',
-    password: 'admin123456',
+    password: '', // Demo access available during guided review — do not commit credentials
   },
 
   // ── CTA
@@ -424,8 +424,8 @@ const PRINTSHOP_OS = {
   hasDemoLogin: true,
   demoCredentials: {
     url:      'https://printshop.maxpromo.digital',
-    email:    'demo@smartprintshop.de',   // TODO: confirm demo credentials
-    password: 'demo123',                   // TODO: confirm demo credentials
+    email:    'demo@smartprintshop.de',
+    password: '', // Demo access available during guided review — do not commit credentials
   },
 
   // ── CTA
@@ -735,9 +735,9 @@ const TAXKONTROL = {
     de: 'Ihre Steuern. Einfach. Im Griff.',
   },
   subline: {
-    // VG-06 exception: personal-finance product uses app description, not We/You pattern
-    en: 'The smart app for self-employed and small businesses in Germany.',
-    de: 'Die smarte App für Selbstständige und kleine Unternehmen in Deutschland.',
+    // VG-06 exception: personal-finance product uses system description, not We/You pattern
+    en: 'Financial visibility system for self-employed and small businesses in Germany.',
+    de: 'Finanzkontrollsystem für Selbstständige und kleine Unternehmen in Deutschland.',
   },
   description: {
     en: 'Understand your taxes, track income and expenses, never miss a deadline. Built for self-employed, salons, studios, and small businesses in Germany. GDPR-compliant, hosted in Germany.',

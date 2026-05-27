@@ -125,7 +125,7 @@ export default function DiscoveryPage() {
         {status === 'success' ? (
           <div style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.25)', padding: '32px', borderRadius: '2px', textAlign: 'center' }}>
             <p style={{ ...mono, fontSize: '11px', color: '#22c55e', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 12px' }}>✓ Brief received</p>
-            <p style={{ ...sans, fontSize: '16px', color: '#FFFFFF', margin: '0 0 8px' }}>Thanks — Marcel will reply within 24 hours.</p>
+            <p style={{ ...sans, fontSize: '16px', color: '#FFFFFF', margin: '0 0 8px' }}>Thanks — we will reply within 24 hours.</p>
             <p style={{ ...sans, fontSize: '14px', color: '#888888', margin: 0 }}>
               In the meantime, take the <Link href="/automation-audit" style={{ color: '#F97316' }}>free automation audit</Link>.
             </p>

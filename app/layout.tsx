@@ -35,28 +35,29 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   applicationName: 'Maxpromo Digital',
   title: {
-    default: 'Maxpromo Digital | KI-Business-Systeme & Automatisierungs-Infrastruktur',
+    default: 'Maxpromo Digital | AI Business Systems & Automation Infrastructure',
     template: '%s | Maxpromo Digital',
   },
   description:
-    'Maxpromo Digital entwickelt und installiert KI-gestützte Business-Systeme, Automatisierungs-Workflows und operative Plattformen für Unternehmen, die weniger manuelle Prozesse und mehr Kontrolle wollen.',
+    'Maxpromo Digital is an Essen-based business systems and automation company. We modernize legacy websites, automate workflows and install AI-powered operational systems for companies.',
   keywords: [
-    'KI Business Systeme',
-    'Automatisierung',
-    'AI Automation',
-    'Business Infrastructure',
-    'Workflow Automatisierung',
-    'Operative Plattformen',
-    'Restaurant OS',
-    'Handwerk OS',
     'Business Systems',
-    'Prozessautomatisierung',
+    'AI Automation',
+    'Legacy Modernization',
+    'Workflow Automation',
+    'Essen',
+    'Joomla Modernization',
+    'CMS Migration',
+    'AI Business Systems',
+    'Restaurant OS',
+    'PrintShop OS',
+    'Operational Platforms',
   ],
   openGraph: {
     siteName: 'Maxpromo Digital',
-    title: 'Maxpromo Digital — AI systems that run business operations',
+    title: 'Maxpromo Digital | AI Business Systems & Automation Infrastructure',
     description:
-      'Installed AI automation systems, workflow platforms and productized operating systems for modern businesses.',
+      'Essen-based business systems and automation company. We modernize legacy websites, connect workflows and install AI-powered operational systems.',
     type: 'website',
   },
 }

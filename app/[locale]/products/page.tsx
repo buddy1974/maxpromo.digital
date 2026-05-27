@@ -41,10 +41,10 @@ export default async function ProductsPage() {
             ALL SYSTEMS
           </p>
           <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '0', whiteSpace: 'pre-line' }}>
-            {'Seven operating systems.\nBuilt. Deployed. Running.'}
+            {'Seven operating systems.\nBuilt to install and run.'}
           </h1>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '560px', marginTop: '1rem', lineHeight: 1.8 }}>
-            Every system on this page is live and running for a real business. Not prototypes. Not MVPs. Production systems that replace spreadsheets, paper records, and disconnected tools.
+            Each system is configured and installation-ready. Designed to replace spreadsheets, paper records, and disconnected tools.
           </p>
         </div>
       </section>

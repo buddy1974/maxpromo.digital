@@ -44,6 +44,8 @@ export default async function AboutPage() {
   const tWhy    = await getTranslations('about.why')
   const tHow    = await getTranslations('about.how')
 
+  const todayList = t.raw('todayList') as string[]
+
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
 
@@ -62,8 +64,69 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Warum Maxpromo? */}
+      {/* Story — years of real systems work */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '3rem' }} className="grid-cols-1 lg:grid-cols-2">
+          <div>
+            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+              {t('storyEyebrow')}
+            </p>
+            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+              {t('storyTitle')}
+            </h2>
+            <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.85 }}>
+              {t('storyBody')}
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignContent: 'flex-start', paddingTop: '2.5rem' }}>
+            {['Joomla', 'WordPress', 'Drupal', 'TYPO3', 'phpMyAdmin', 'MySQL', 'WAMP', 'XAMPP', '.htaccess', 'PHP', 'Hostinger', 'GoDaddy', 'A2 Hosting', 'CI/CD', 'Git', 'Next.js', 'Supabase', 'n8n', 'Claude AI'].map((tag) => (
+              <span key={tag} style={{ ...mono, fontSize: '11px', color: 'hsl(40 30% 96% / 0.4)', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', padding: '4px 12px', letterSpacing: '0.04em', borderRadius: '4px' }}>
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Transformation */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            {t('transformEyebrow')}
+          </p>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+            {t('transformTitle')}
+          </h2>
+          <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.85 }}>
+            {t('transformBody')}
+          </p>
+        </div>
+      </section>
+
+      {/* Today */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            {t('todayEyebrow')}
+          </p>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '2.5rem' }}>
+            {t('todayTitle')}
+          </h2>
+          <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+            {todayList.map((item, i) => (
+              <div key={i} style={{ background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '10px', padding: '18px 20px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <span style={{ color: '#F97316', flexShrink: 0, ...mono, fontSize: '12px' }}>→</span>
+                <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.6, margin: 0 }}>
+                  {item}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why / pain points */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3.5rem' }}>
             <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
@@ -92,8 +155,8 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Wie wir arbeiten */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      {/* How we work */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3.5rem' }}>
             <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
@@ -121,8 +184,8 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Für wen wir arbeiten */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      {/* Who we work with */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', flexShrink: 0 }}>
             {t('forEyebrow')}
@@ -133,8 +196,8 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Was uns wichtig ist */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      {/* Principles */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3.5rem' }}>
             <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
@@ -164,8 +227,8 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Tech stack — understated, for larger projects */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '3rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      {/* Tech stack */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '3rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
           <p style={{ ...mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
             {t('stackEyebrow')}
@@ -188,7 +251,7 @@ export default async function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem' }}>
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}

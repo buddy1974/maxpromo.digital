@@ -58,6 +58,8 @@ export default async function HomePage() {
   const tWhyUs       = await getTranslations('home.whyUs')
   const tProof       = await getTranslations('home.proof')
   const tSystemsTabs = await getTranslations('home.systemsTabs')
+  const tLegacy      = await getTranslations('home.legacy')
+  const tPhilosophy  = await getTranslations('home.philosophy')
   const tBlog        = await getTranslations('blog')
 
   const latestPosts = getLatestPosts(locale, 3)
@@ -106,6 +108,46 @@ export default async function HomePage() {
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 28%)', marginTop: '1rem', letterSpacing: '0.05em' }}>
             {tProof('note')}
           </p>
+        </div>
+      </section>
+
+      {/* 4a — Legacy modernization */}
+      <section data-section="legacy" style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ maxWidth: '52rem', marginBottom: '3rem' }}>
+            <SectionLabel>{tLegacy('eyebrow')}</SectionLabel>
+            <SectionTitle>{tLegacy('title')}</SectionTitle>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'hsl(40 12% 60%)', lineHeight: 1.75, marginTop: '1rem' }}>
+              {tLegacy('subtitle')}
+            </p>
+          </div>
+          <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {(['c1', 'c2', 'c3', 'c4', 'c5'] as const).map((id) => (
+              <div key={id} style={{ background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '12px', padding: '28px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '15px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', margin: 0 }}>
+                  {tLegacy(`${id}Title`)}
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'hsl(40 12% 50%)', lineHeight: 1.7, margin: 0 }}>
+                  {tLegacy(`${id}Pain`)}
+                </p>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#F97316', lineHeight: 1.6, margin: 0, paddingTop: '8px', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+                  → {tLegacy(`${id}System`)}
+                </p>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '3rem', display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, maxWidth: '52rem', margin: 0 }}>
+              {tLegacy('closing')}
+            </p>
+            <Link
+              href="/contact"
+              className="shine"
+              style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '12px 24px', textDecoration: 'none', display: 'inline-block', borderRadius: '8px', flexShrink: 0 }}
+            >
+              {tLegacy('cta')}
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -172,6 +214,34 @@ export default async function HomePage() {
 
       {/* 6 — Team trust */}
       <TeamTrust />
+
+      {/* 6a — Philosophy */}
+      <section data-section="philosophy" style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '4rem' }} className="grid-cols-1 lg:grid-cols-2">
+          <div>
+            <SectionLabel>{tPhilosophy('eyebrow')}</SectionLabel>
+            <SectionTitle>{tPhilosophy('title')}</SectionTitle>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'hsl(40 12% 60%)', lineHeight: 1.85, marginTop: '1.5rem', whiteSpace: 'pre-line' }}>
+              {tPhilosophy('body')}
+            </p>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: '#F97316', marginTop: '2rem', letterSpacing: '0.04em' }}>
+              → {tPhilosophy('closing')}
+            </p>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', justifyContent: 'center' }}>
+            {(['step1', 'step2', 'step3', 'step4', 'step5'] as const).map((s, i) => (
+              <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '10px', padding: '18px 24px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.01em' }}>
+                  {tPhilosophy(s)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* 7 — How we work */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>

@@ -195,11 +195,14 @@ export default async function SystemsPage() {
         </div>
       </section>
 
-      {/* Lifecycle pipeline */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      {/* App cards — registry-driven via SystemsPageGrid → SystemGrid → SystemCardFull */}
+      <SystemsPageGrid cards={cards} locale={locale} />
+
+      {/* Operations Lifecycle — premium timeline, below system cards */}
+      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div style={{ marginBottom: '2.5rem', maxWidth: '40rem' }}>
-            <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <div style={{ marginBottom: '3rem', maxWidth: '44rem' }}>
+            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
               {t('lifecycleEyebrow')}
             </p>
             <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', margin: '0 0 14px' }}>
@@ -209,9 +212,8 @@ export default async function SystemsPage() {
               {t('lifecycleDesc')}
             </p>
           </div>
-
           <div
-            style={{ display: 'grid', gap: '0', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }}
+            style={{ display: 'grid', overflow: 'hidden', border: '1px solid hsl(40 30% 96% / 0.08)' }}
             className="grid-cols-1 md:grid-cols-5"
           >
             {LIFECYCLE_REFS.map((step, i) => (
@@ -219,18 +221,22 @@ export default async function SystemsPage() {
                 key={step.no}
                 style={{
                   background: 'hsl(240 12% 7%)',
-                  padding: '24px 22px',
-                  borderTop: `2px solid ${i === LIFECYCLE_REFS.length - 1 ? 'rgba(34,197,94,0.5)' : 'rgba(249,115,22,0.4)'}`,
-                  position: 'relative',
+                  borderTop: '2px solid #F97316',
+                  borderRight: i < LIFECYCLE_REFS.length - 1 ? '1px solid hsl(40 30% 96% / 0.06)' : 'none',
+                  borderBottom: '1px solid hsl(40 30% 96% / 0.06)',
+                  padding: '32px 24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px',
                 }}
               >
-                <p style={{ ...mono, fontSize: '10px', color: 'hsl(28 100% 58%)', letterSpacing: '0.15em', marginBottom: '6px' }}>
+                <p style={{ ...mono, fontWeight: 700, fontSize: '40px', color: '#F97316', letterSpacing: '-0.06em', lineHeight: 1, opacity: 0.3, margin: 0 }}>
                   {step.no}
                 </p>
-                <p style={{ ...grotesk, fontSize: '16px', fontWeight: 700, color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', marginBottom: '10px' }}>
+                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '16px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', margin: 0, lineHeight: 1.3 }}>
                   {tLife(`${step.id}Name`)}
-                </p>
-                <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.6, margin: 0 }}>
+                </h3>
+                <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.65, margin: 0 }}>
                   {tLife(`${step.id}Desc`)}
                 </p>
               </div>
@@ -239,11 +245,11 @@ export default async function SystemsPage() {
         </div>
       </section>
 
-      {/* Escalation policy */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
-          <div style={{ marginBottom: '2.5rem', maxWidth: '44rem' }}>
-            <p style={{ ...mono, fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+      {/* Escalation Policy — premium operational rows, below lifecycle */}
+      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+          <div style={{ marginBottom: '3rem', maxWidth: '44rem' }}>
+            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
               {t('escalationEyebrow')}
             </p>
             <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', margin: '0 0 14px' }}>
@@ -253,40 +259,38 @@ export default async function SystemsPage() {
               {t('escalationDesc')}
             </p>
           </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'hsl(240 10% 14%)' }}>
             {ESCALATION_IDS.map((id) => (
               <div
                 key={id}
                 style={{
                   background: 'hsl(240 12% 7%)',
-                  border: '1px solid hsl(40 30% 96% / 0.08)',
-                  borderRadius: '8px',
-                  padding: '18px 22px',
+                  padding: '24px 28px',
                   display: 'grid',
                   gap: '20px',
                   alignItems: 'start',
+                  borderLeft: '2px solid rgba(249,115,22,0.3)',
                 }}
-                className="grid-cols-1 md:grid-cols-[200px_1fr_2fr]"
+                className="grid-cols-1 md:grid-cols-[220px_1fr_2fr]"
               >
                 <div>
-                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
                     {t('escTrigger')}
                   </p>
-                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96%)', fontWeight: 600, margin: 0 }}>
+                  <p style={{ ...mono, fontSize: '13px', color: '#F97316', fontWeight: 700, margin: 0, letterSpacing: '0.02em' }}>
                     {tEsc(`${id}Trigger`)}
                   </p>
                 </div>
                 <div>
-                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
                     {t('escHandsTo')}
                   </p>
-                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96%)', margin: 0 }}>
+                  <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96%)', lineHeight: 1.6, margin: 0 }}>
                     {tEsc(`${id}To`)}
                   </p>
                 </div>
                 <div>
-                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.7)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                  <p style={{ ...mono, fontSize: '10px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '6px' }}>
                     {t('escWhy')}
                   </p>
                   <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.55, margin: 0 }}>
@@ -298,9 +302,6 @@ export default async function SystemsPage() {
           </div>
         </div>
       </section>
-
-      {/* App cards — registry-driven via SystemsPageGrid → SystemGrid → SystemCardFull */}
-      <SystemsPageGrid cards={cards} locale={locale} />
 
       {/* Bottom CTA */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
