@@ -131,6 +131,7 @@
       "praxisOs": "PraxisOS",
       "handwerkOs": "HandwerkOS",
       "publishingOs": "PublishingOS",
+      "agentBureau": "Max Agent Bureau",
       "legacyModernization": "Legacy-Modernisierung",
       "workflowAutomation": "Workflow-Automatisierung",
       "aiSystems": "KI-Business-Systeme",
@@ -142,7 +143,7 @@
     "operationalSignal": "Immer erreichbar",
     "tax": "St.-Nr. 111/5339/7597 · FA Essen-NordOst",
     "address": "Körnerstr. 8 · 45143 Essen · Deutschland",
-    "taxClause": "Gemäß §19 UStG wird keine Umsatzsteuer berechnet."
+    "taxClause": "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet."
   },
   "home": {
     "marquee": [

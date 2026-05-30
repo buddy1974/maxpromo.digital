@@ -9,6 +9,7 @@ type InternalLinkKey =
 
 type ExternalLinkKey =
   | 'restaurantOs' | 'printshopOs' | 'taxkontrol' | 'praxisOs' | 'handwerkOs' | 'publishingOs'
+  | 'agentBureau'
 
 type ServiceLinkKey =
   | 'legacyModernization' | 'workflowAutomation' | 'aiSystems' | 'websiteSystems' | 'contentNewsletter'
@@ -38,12 +39,13 @@ const COLUMNS: Column[] = [
   {
     titleKey: 'colSystems',
     links: [
-      { key: 'restaurantOs',  href: 'https://www.restaurant-os.de',  external: true },
-      { key: 'printshopOs',   href: 'https://www.smartprintshop.de', external: true },
-      { key: 'taxkontrol',    href: 'https://www.taxkontrol.de',      external: true },
-      { key: 'praxisOs',      href: 'https://www.super-praxis.de',    external: true },
-      { key: 'handwerkOs',    href: 'https://www.superhandwerk.de',   external: true },
-      { key: 'publishingOs',  href: 'https://www.publishers24.org',   external: true },
+      { key: 'agentBureau',   href: 'https://agents.maxpromo.digital', external: true },
+      { key: 'restaurantOs',  href: 'https://www.restaurant-os.de',    external: true },
+      { key: 'printshopOs',   href: 'https://www.smartprintshop.de',   external: true },
+      { key: 'taxkontrol',    href: 'https://www.taxkontrol.de',       external: true },
+      { key: 'praxisOs',      href: 'https://www.super-praxis.de',     external: true },
+      { key: 'handwerkOs',    href: 'https://www.superhandwerk.de',    external: true },
+      { key: 'publishingOs',  href: 'https://www.publishers24.org',    external: true },
     ],
   },
   {

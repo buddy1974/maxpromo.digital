@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Impressum / Legal Notice',
-  description: 'Pflichtangaben gemäß § 5 TMG — Mandatory information per §5 TMG',
+  description: 'Angaben gemäß § 5 DDG — Mandatory information per § 5 DDG',
   robots: { index: true, follow: false },
 }
 
@@ -79,7 +79,7 @@ export default function ImpressumPage() {
             marginBottom: '3rem',
           }}
         >
-          Pflichtangaben gemäß § 5 TMG · Mandatory information per §5 TMG
+          Angaben gemäß § 5 DDG · Mandatory information per § 5 DDG
         </p>
 
         <Section label="Diensteanbieter / Service Provider">
@@ -109,11 +109,13 @@ export default function ImpressumPage() {
         <Section label="Steuerliche Angaben / Tax Information">
           <p style={{ margin: 0 }}>
             Steuernummer: 111/5339/7597<br />
-            Finanzamt: Essen-NordOst
+            Finanzamt: Essen-NordOst<br /><br />
+            Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.<br />
+            <span style={{ color: '#888888' }}>VAT exempt per § 19 UStG (Kleinunternehmerregelung).</span>
           </p>
         </Section>
 
-        <Section label="Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV">
+        <Section label="Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV">
           <p style={{ margin: 0 }}>
             Marcel Tabit Akwe<br />
             Körnerstr. 8<br />
@@ -155,15 +157,15 @@ export default function ImpressumPage() {
 
         <Section label="Haftung für Inhalte / Liability for Content">
           <p style={{ marginTop: 0 }}>
-            Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten
-            nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als
+            Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten
+            nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als
             Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde
             Informationen zu überwachen.
           </p>
           <p style={{ color: '#888888', marginBottom: 0 }}>
             As a service provider, we are responsible for our own content on these pages in accordance
-            with general laws per §7 Abs. 1 TMG. However, we are not obligated to monitor transmitted
-            or stored third-party information per §§8–10 TMG.
+            with general laws per § 7 Abs. 1 DDG. However, we are not obligated to monitor transmitted
+            or stored third-party information per §§ 8–10 DDG.
           </p>
         </Section>
 
