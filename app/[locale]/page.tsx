@@ -173,47 +173,96 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4b — Max Agent Bureau */}
-      <section data-section="agent-bureau" style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }} className="lg:grid-cols-[1fr_auto]">
-          <div style={{ maxWidth: '52rem' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              {locale === 'de' ? '// Max Agent Bureau' : '// Max Agent Bureau'}
-            </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', lineHeight: 1.15, marginBottom: '1rem' }}>
+      {/* 4b — Max Agent Bureau Gateway */}
+      <section data-section="agent-bureau" style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+
+          {/* Header */}
+          <div style={{ maxWidth: '56rem', marginBottom: '3rem' }}>
+            <SectionLabel>// Max Agent Bureau</SectionLabel>
+            <SectionTitle>
               {locale === 'de'
-                ? <>Ihr Betrieb braucht kein weiteres KI-Tool.<br /><span style={{ color: '#F97316' }}>Er braucht eine Betriebsebene.</span></>
-                : <>Your business does not need another AI tool.<br /><span style={{ color: '#F97316' }}>It needs an operating layer.</span></>}
-            </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'hsl(40 12% 60%)', lineHeight: 1.8, marginBottom: '1.5rem' }}>
+                ? <>Ein KI-Büro, das Arbeit vorbereitet —{' '}<span style={{ color: '#F97316' }}>nicht einfach nur antwortet.</span></>
+                : <>An AI office that prepares work —{' '}<span style={{ color: '#F97316' }}>not just responds to it.</span></>}
+            </SectionTitle>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'hsl(40 12% 60%)', lineHeight: 1.8, marginTop: '1rem', maxWidth: '48rem' }}>
               {locale === 'de'
-                ? 'Max Agent Bureau gibt Betriebsinhabern einen überwachten KI-Stabschef, der Nachverfolgungen, Kundenwartzeiten, Dokumente, Freigaben und tägliche Prioritäten im Blick behält — keine unkontrollierte Automatisierung, kein zufälliger Chatbot.'
-                : 'Max Agent Bureau gives business owners a supervised AI Chief of Staff that watches follow-ups, customer waiting time, documents, approvals, and daily priorities — no uncontrolled automation, no random chatbot.'}
+                ? 'Agent Bureau prüft Abläufe, sammelt Informationen, bereitet Entscheidungen vor und legt kritische Aktionen zur Freigabe vor.'
+                : 'Agent Bureau audits workflows, gathers information, prepares decisions, and submits critical actions for human approval.'}
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '2rem' }}>
-              {(locale === 'de'
-                ? ['Nachverfolgungen', 'Dokumente & Freigaben', 'Kundenwartzeit', 'Tägliche Prioritäten']
-                : ['Follow-ups', 'Documents & Approvals', 'Customer Wait Time', 'Daily Priorities']
-              ).map((tag) => (
-                <span key={tag} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 55%)', background: 'hsl(240 10% 10%)', border: '1px solid hsl(40 30% 96% / 0.08)', padding: '5px 12px', borderRadius: '4px', letterSpacing: '0.04em' }}>
-                  {tag}
-                </span>
-              ))}
-            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flexShrink: 0 }}>
+
+          {/* Workflow strip */}
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0', rowGap: '10px', marginBottom: '3rem', padding: '18px 24px', background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '12px' }}>
+            {(['Audit', 'Diagnose', 'Agent Team', 'Review', 'Execute', 'Log'] as const).map((step, i) => (
+              <span key={step} style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'hsl(40 30% 92%)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.18)', padding: '6px 14px', borderRadius: '4px', whiteSpace: 'nowrap', letterSpacing: '0.04em' }}>
+                  {step}
+                </span>
+                {i < 5 && (
+                  <span style={{ color: 'rgba(249,115,22,0.45)', fontSize: '13px', padding: '0 10px', flexShrink: 0 }}>→</span>
+                )}
+              </span>
+            ))}
+          </div>
+
+          {/* Module cards — 5 items in 3-col grid */}
+          <div style={{ display: 'grid', gap: '12px', marginBottom: '2.5rem' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {(locale === 'de'
+              ? [
+                  { title: 'AI Audit Console',        body: 'Findet Engpässe, Risiken und Automatisierungschancen.' },
+                  { title: 'Customer Waiting Room',   body: 'Sammelt Anfragen, ordnet Prioritäten und hält Kunden sichtbar.' },
+                  { title: 'Approval Desk',           body: 'Entscheidungen bleiben kontrolliert, dokumentiert und freigabepflichtig.' },
+                  { title: 'Document Intake Desk',    body: 'Sortiert Dokumente, erkennt Lücken und bereitet Pakete vor.' },
+                  { title: 'Shadow AI Governance',    body: 'Zeigt, wo KI im Betrieb genutzt wird und wo Kontrolle fehlt.' },
+                ]
+              : [
+                  { title: 'AI Audit Console',        body: 'Identifies bottlenecks, risks, and automation opportunities.' },
+                  { title: 'Customer Waiting Room',   body: 'Collects requests, ranks priorities, keeps clients visible.' },
+                  { title: 'Approval Desk',           body: 'Decisions stay controlled, documented, and approval-gated.' },
+                  { title: 'Document Intake Desk',    body: 'Sorts documents, spots gaps, and prepares delivery packages.' },
+                  { title: 'Shadow AI Governance',    body: 'Shows where AI is used in the business and where control is missing.' },
+                ]
+            ).map((card) => (
+              <div key={card.title} style={{ background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '12px', padding: '24px 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ width: '28px', height: '2px', background: '#F97316', flexShrink: 0 }} />
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '15px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', margin: 0, lineHeight: 1.3 }}>
+                  {card.title}
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'hsl(40 12% 55%)', lineHeight: 1.7, margin: 0 }}>
+                  {card.body}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Trust line */}
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 42%)', letterSpacing: '0.05em', marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ color: '#F97316', fontSize: '14px', flexShrink: 0 }}>⊘</span>
+            {locale === 'de'
+              ? 'Keine autonome Ausführung. Jede kritische Aktion bleibt freigabepflichtig.'
+              : 'No autonomous execution. Every critical action requires human approval.'}
+          </p>
+
+          {/* CTAs */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
             <a
               href="https://agents.maxpromo.digital"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#000', padding: '16px 32px', textDecoration: 'none', display: 'block', textAlign: 'center', borderRadius: '8px', whiteSpace: 'nowrap' }}
+              className="shine"
+              style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#080808', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '8px', whiteSpace: 'nowrap' }}
             >
-              {locale === 'de' ? 'Agent Bureau starten →' : 'Launch Agent Bureau Preview →'}
+              {locale === 'de' ? 'Agent Bureau ansehen →' : 'View Agent Bureau →'}
             </a>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)', textAlign: 'center', margin: 0, letterSpacing: '0.05em' }}>
-              agents.maxpromo.digital
-            </p>
+            <Link
+              href="/automation-audit"
+              style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '8px', border: '1px solid hsl(40 30% 96% / 0.18)', whiteSpace: 'nowrap', letterSpacing: '0.04em' }}
+            >
+              {locale === 'de' ? 'Business-Systeme Audit starten' : 'Start Business Systems Audit'}
+            </Link>
           </div>
+
         </div>
       </section>
 
