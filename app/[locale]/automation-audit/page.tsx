@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import AuditForm from '@/components/AuditForm'
 
 export const metadata: Metadata = {
-  title: 'Free Automation Audit',
+  title: 'Free Business Diagnostic',
   description:
-    'Answer 5 quick questions and receive a personalised AI automation report — 3 specific opportunities for your business, free of charge.',
+    'Answer 10 quick questions about how your business actually operates. We identify your real operational bottlenecks — free, no sales pitch.',
 }
 
 const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
@@ -19,7 +19,7 @@ export default function AutomationAuditPage() {
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
           {/* Breadcrumb */}
           <p style={{ ...mono, fontSize: '10px', color: '#444444', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
-            MAXPROMO.DIGITAL / FREE AUDIT
+            MAXPROMO.DIGITAL / BUSINESS DIAGNOSTIC
           </p>
 
           <h1
@@ -32,7 +32,7 @@ export default function AutomationAuditPage() {
               marginBottom: '16px',
             }}
           >
-            Free Automation Audit
+            Free Business Diagnostic
           </h1>
           <p
             style={{
@@ -44,16 +44,17 @@ export default function AutomationAuditPage() {
               marginBottom: '28px',
             }}
           >
-            Answer 5 questions about your business. Our AI identifies your top 3
-            automation opportunities with specific tool recommendations and ROI estimates.
+            Tell us how your business actually operates — where time gets lost,
+            where mistakes happen, where you rely on single people. We identify
+            your real operational gaps and where systems can take over.
           </p>
 
           {/* Trust pills */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {[
-              '✓ Powered by Claude AI',
+              '✓ No AI jargon',
               '✓ No email spam',
-              '✓ Results in under 60 seconds',
+              '✓ Instant diagnostic feedback',
             ].map((pill) => (
               <span
                 key={pill}

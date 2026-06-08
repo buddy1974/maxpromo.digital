@@ -99,10 +99,10 @@ export default function HandwerkOSPage() {
               <a href="#walkthrough" style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: BG, background: ORANGE, padding: '14px 28px', textDecoration: 'none', display: 'inline-block', transition: 'background 150ms ease' }}
                 onMouseEnter={e => (e.currentTarget.style.background = '#EA6A00')}
                 onMouseLeave={e => (e.currentTarget.style.background = ORANGE)}>Schedule walkthrough →</a>
-              <a href="https://handwerkos.vercel.app" target="_blank" rel="noopener noreferrer"
+              <a href="/contact?system=handwerk-os&request=walkthrough"
                 style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '14px 28px', textDecoration: 'none', display: 'inline-block', background: 'transparent', transition: 'border-color 150ms ease' }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = '#333')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = BORDER)}>See the system in action →</a>
+                onMouseLeave={e => (e.currentTarget.style.borderColor = BORDER)}>Request a Walkthrough →</a>
             </div>
           </div>
           <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}>

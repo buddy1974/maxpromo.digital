@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { sendEmail } from '@/lib/email'
+import { sendTelegramNotification, buildNewsletterMessage } from '@/lib/telegram'
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
 
@@ -76,6 +77,11 @@ export async function POST(request: NextRequest) {
       subject: 'Welcome to Maxpromo Digital Weekly',
       html: buildWelcomeEmail(name ?? ''),
     }).catch(console.error)
+
+    // Send Telegram notification (non-blocking; fire-and-forget)
+    sendTelegramNotification(
+      buildNewsletterMessage({ email, name: name ?? undefined }),
+    ).catch(console.error)
 
     return NextResponse.json({ success: true, status: 'subscribed' })
   } catch (error) {

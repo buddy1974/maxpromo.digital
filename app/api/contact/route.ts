@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail, buildContactEmailHtml } from '@/lib/email'
 import { getDb } from '@/lib/db'
 import { enforceRateLimit } from '@/lib/rate-limit'
+import { sendTelegramNotification, buildContactMessage } from '@/lib/telegram'
 
 interface ContactBody {
   name: string
@@ -22,18 +23,15 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as ContactBody
     const { name, email, organisation, message, automation } = body
 
-    // Validate required fields
     if (!name?.trim() || !email?.trim() || !organisation?.trim() || !message?.trim()) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 })
     }
 
-    // Basic email format check
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
     }
 
-    // Sanitise inputs (prevent header injection)
     const sanitised = {
       name: name.trim().slice(0, 200),
       email: email.trim().slice(0, 200),
@@ -62,6 +60,16 @@ export async function POST(request: NextRequest) {
         VALUES (${sanitised.name}, ${sanitised.email}, ${sanitised.organisation},
                 'contact_form', ${sanitised.message.slice(0, 500)}, 'new')`
     } catch { /* DB may not be configured — ignore */ }
+
+    // Send Telegram notification (non-blocking; fire-and-forget)
+    sendTelegramNotification(
+      buildContactMessage({
+        name: sanitised.name,
+        company: sanitised.organisation,
+        email: sanitised.email,
+        message: sanitised.message,
+      }),
+    ).catch(console.error)
 
     return NextResponse.json({ success: true })
   } catch (error) {

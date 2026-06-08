@@ -1,62 +1,88 @@
-# MaxPromo Digital — Claude Code Project Brief
+# REPOSITORY GOVERNANCE
 
-## Project Identity
+This repository is governed by the AI Operating System.
 
-Name: MaxPromo Digital
-Type: AI Automation Platform (SaaS-level agency site)
-Brand family: MaxPromo — Digital is the AI arm of MaxPromo
+MASTER OPERATING SYSTEM
 
-## Working Directory
+C:\Users\loneb\Documents\AI-OPERATING-SYSTEM\MASTER-AI-OPERATING-SYSTEM.md
 
-C:\Users\loneb\Documents\ai-software-dev\projects\maxpromo.digital
+## REQUIRED STARTUP PROCEDURE
 
-## Tech Stack
+Before performing any work:
 
-- Framework: Next.js (App Router)
-- Language: TypeScript
-- Styling: Tailwind CSS + inline styles
-- Fonts: Syne (headings) · IBM Plex Mono (labels, mono, nav) · DM Sans (body)
-- Database: Supabase
-- Hosting: Vercel
-- DNS/CDN: Cloudflare
+1. Read MASTER-AI-OPERATING-SYSTEM.md
+2. Run repository preflight
+3. Confirm:
 
-## Design Style
+   * Repository name
+   * Repository owner
+   * Lifecycle stage
+   * Repository class
+   * Current task
+4. Read repository documentation
+5. Produce implementation plan
+6. Await approval for material changes
+7. Implement approved plan
+8. Run verification
+9. Update documentation
+10. Produce handover summary
 
-Dark corporate AI aesthetic — black/white/orange only.
+Do not skip preflight.
 
-Background:  #0A0A0A
-Text:        #FFFFFF primary · #888888 muted
-Accent:      #F97316 (orange) — used sparingly on eyebrow labels,
-             logo suffix, CTA buttons, hover states, key word highlights
-Surface:     #111111
-Borders:     rgba(255, 255, 255, 0.08)
-No border radius above 2px
-No blue. No purple. No gradients.
+Do not code before understanding the repository.
 
-Feel: Anthropic meets Linear — serious, enterprise, 2026.
+## REPOSITORY DOCUMENTS
 
-## Project Structure
+Read before implementation:
 
-app/                  Next.js App Router pages
-components/           Shared UI components
-lib/                  Utilities and shared logic
-public/               Static assets
+docs/repository-map.md
+docs/product-brief.md
+docs/architecture.md
+docs/workflow-map.md
+docs/decision-log.md
+docs/known-risks.md
+docs/data-ownership.md
+docs/production-readiness.md
 
-## Key Routes
+If a required document is missing:
 
-/                     Homepage
-/services             Services overview
-/automation-lab       Automation examples
-/ai-websites          AI website service
-/automation-audit     Free audit tool
-/contact              Contact page
+* Report it
+* Create it from the AI Operating System templates
+* Continue only after repository context is established
 
-## Rules
+## SAFETY RULES
 
-- TypeScript always — no plain JS
-- No any type
-- Handle loading + error states
-- Secrets in .env.local only
-- Reuse Supabase client from lib/
-- Server components by default — client only when interactivity required
-- No new dependencies without asking first
+Stop immediately if:
+
+* Repository is unclear
+* Working directory is unclear
+* Documentation conflicts with code
+* Security controls must be bypassed
+* A material architecture decision is required
+
+Escalate to repository owner.
+
+## HUMAN APPROVAL REQUIRED
+
+AI agents must not:
+
+* Approve their own work
+* Approve releases
+* Approve security exceptions
+* Approve architecture changes
+* Approve production deployment
+
+Human approval is required.
+
+## MEMORY RULE
+
+Chat history is not a source of truth.
+
+Durable facts must be written to repository documentation.
+
+Before ending a session:
+
+* Update decision-log.md if decisions were made
+* Update known-risks.md if risks were discovered
+* Update change-log.md if changes were implemented
+* Update lessons learned if applicable

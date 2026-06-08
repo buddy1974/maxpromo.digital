@@ -16,34 +16,44 @@ export default function RestaurantOSPage() {
         </h1>
 
         {/* Description */}
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#888888', lineHeight: 1.75, marginBottom: '2rem' }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#888888', lineHeight: 1.75, marginBottom: '1.5rem' }}>
           QR ordering, kitchen routing and payment — all in one system. No app for guests. No tablet for staff. Installed on your domain.
         </p>
 
+        {/* Benefits */}
+        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {[
+            'Full QR menu with table ordering',
+            'Real-time kitchen routing',
+            'Integrated payment — no third-party POS',
+            'Installed on your own domain',
+          ].map((item) => (
+            <li key={item} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666', letterSpacing: '0.04em', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+              <span style={{ color: '#F97316', flexShrink: 0 }}>→</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+
         {/* CTAs */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <a
-            href="https://www.restaurant-os.de"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/contact?system=restaurant-os"
             style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#000', padding: '14px 24px', textDecoration: 'none', display: 'block', textAlign: 'center' }}
           >
-            Open RestaurantOS Landing →
-          </a>
-          <a
-            href="https://demo.restaurant-os.de/demo/menu/1"
-            target="_blank"
-            rel="noopener noreferrer"
+            Book Consultation →
+          </Link>
+          <Link
+            href="/contact?system=restaurant-os&request=walkthrough"
             style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', background: 'transparent', color: '#F97316', border: '1px solid rgba(249,115,22,0.3)', padding: '14px 24px', textDecoration: 'none', display: 'block', textAlign: 'center' }}
           >
-            Launch Live Experience →
-          </a>
+            Request a Walkthrough →
+          </Link>
         </div>
 
-        {/* Fallback note */}
+        {/* Note */}
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#444444', marginTop: '1.5rem', lineHeight: 1.6 }}>
-          If the live domain is temporarily unavailable,{' '}
-          <Link href="/contact" style={{ color: '#666666', textDecoration: 'underline' }}>contact Maxpromo</Link>.
+          Available for qualified businesses. We schedule a short conversation first.
         </p>
 
       </div>

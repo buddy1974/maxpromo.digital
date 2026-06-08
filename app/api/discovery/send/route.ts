@@ -4,6 +4,7 @@ import { buildFullReportEmailHtml } from '@/lib/email'
 import { getDb } from '@/lib/db'
 import type { AuditResult } from '@/components/AuditResults'
 import type { EstimateData } from '@/components/CostEstimate'
+import { sendTelegramNotification, buildProductInquiryMessage } from '@/lib/telegram'
 
 interface SendRequestBody {
   name: string
@@ -46,6 +47,18 @@ export async function POST(request: NextRequest) {
         VALUES (${name}, ${email}, ${company}, 'discovery_wizard', ${summary}, 'new')
         ON CONFLICT DO NOTHING`
     } catch { /* DB may not be configured — ignore */ }
+
+    // Send Telegram notification (non-blocking; fire-and-forget)
+    sendTelegramNotification(
+      buildProductInquiryMessage({
+        systemName: `Discovery Wizard — ${estimate.estimateTitle}`,
+        name,
+        company,
+        email,
+        message: `Year 1 estimate: €${estimate.totals.yearOneMin}–€${estimate.totals.yearOneMax}. Scope: ${estimate.estimateScope}`,
+        source: 'discovery_wizard',
+      }),
+    ).catch(console.error)
 
     return NextResponse.json({ success: true })
   } catch (error) {

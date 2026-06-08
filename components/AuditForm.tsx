@@ -1,158 +1,114 @@
 'use client'
 
+/**
+ * AuditForm.tsx — Universal Business Diagnostic
+ *
+ * Architecture: pain-first, product-agnostic.
+ * Sections, options, and scoring live in lib/audit-diagnostic.ts.
+ * This component is responsible only for UI state and flow.
+ *
+ * Flow:
+ *  questions (steps 1–10) → loading → received (diagnostic feedback)
+ */
+
 import { useState, useEffect } from 'react'
-import AuditResults, { AuditResult } from './AuditResults'
-import CostEstimate, { EstimateData } from './CostEstimate'
+import Link from 'next/link'
+import {
+  AUDIT_SECTIONS,
+  DIAGNOSTIC_CATEGORIES,
+  computeDiagnosticCategories,
+  type DiagnosticCategoryId,
+  type DiagnosticPayload,
+  type DiagnosticContactData,
+} from '@/lib/audit-diagnostic'
 
-type Stage = 'questions' | 'loading' | 'results' | 'estimate-loading' | 'estimate'
-
-interface FormData {
-  orgType: string
-  teamSize: string
-  timeDrains: string[]
-  timeDrainsOther: string
-  tools: string[]
-  experience: string
-  goal: string
-  name: string
-  email: string
-  company: string
-}
-
-const ORG_TYPES = [
-  'Agency / Consultancy',
-  'Professional Services',
-  'E-commerce / Retail',
-  'Financial Services',
-  'Logistics / Operations',
-  'Marketing / Media',
-  'Healthcare',
-  'Other',
-]
-const TEAM_SIZES = ['1–5', '6–20', '21–100', '100+']
-const TIME_DRAINS = [
-  'Data entry & processing',
-  'Email management',
-  'Report generation',
-  'Invoice & billing',
-  'Lead qualification',
-  'Customer support',
-  'Document handling',
-  'Scheduling & bookings',
-  'Social media posting',
-  'Other',
-]
-const TOOL_OPTIONS = [
-  'Google Workspace',
-  'Microsoft 365',
-  'HubSpot',
-  'Salesforce',
-  'Slack',
-  'Notion',
-  'Airtable',
-  'Xero',
-  'QuickBooks',
-  'Shopify',
-  'Zapier',
-  'Make',
-  'n8n',
-  'Zendesk',
-  'None of these',
-]
-const EXPERIENCE_OPTIONS = [
-  'No automation yet',
-  'A few simple automations',
-  'Moderate — some workflows running',
-  'Advanced — large-scale automation',
-]
-const QUICK_FILLS = [
-  'Our team spends hours on manual data entry between disconnected tools.',
-  'We manually qualify and follow up with every inbound lead.',
-  'Monthly reporting takes days to compile from multiple sources.',
-]
-const LOADING_MESSAGES = [
-  'Analysing your business profile...',
-  'Mapping automation opportunities...',
-  'Calculating potential ROI...',
-  'Preparing recommendations...',
-  'Finalising your report...',
-]
-
-const ESTIMATE_LOADING_MESSAGES = [
-  'Reviewing your audit results...',
-  'Researching German market rates...',
-  'Building your itemised estimate...',
-  'Calculating year-one costs...',
-  'Finalising your Kostenvoranschlag...',
-]
-
-const TOTAL_STEPS = 5
+// ── Font tokens ──────────────────────────────────────────────────────────────
 const mono = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
 const sans = 'var(--font-inter)'
 
-/* ─── STEP INDICATOR ────────────────────────────────────────── */
-function StepIndicator({ current, total }: { current: number; total: number }) {
+// ── Stage / step config ──────────────────────────────────────────────────────
+type Stage = 'questions' | 'loading' | 'received'
+const TOTAL_STEPS = AUDIT_SECTIONS.length + 1 // 9 sections + 1 contact step
+const CONTACT_STEP = TOTAL_STEPS
+
+const LOADING_MESSAGES = [
+  'Mapping your operational challenges...',
+  'Identifying workflow patterns...',
+  'Analysing bottlenecks and friction points...',
+  'Calculating intelligence opportunities...',
+  'Preparing your diagnostic report...',
+]
+
+// ── Sub-components ───────────────────────────────────────────────────────────
+
+function ProgressBar({ current, total }: { current: number; total: number }) {
+  const pct = Math.round(((current - 1) / (total - 1)) * 100)
   return (
-    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
-      {Array.from({ length: total }, (_, i) => {
-        const n = i + 1
-        const done = n < current
-        const active = n === current
-        return (
-          <div
-            key={n}
-            style={{ display: 'flex', alignItems: 'center', flex: n < total ? 1 : 'none' }}
-          >
-            <div
-              style={{
-                width: '28px',
-                height: '28px',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: mono,
-                fontSize: '11px',
-                fontWeight: 700,
-                flexShrink: 0,
-                background: done ? '#F97316' : active ? 'rgba(249,115,22,0.15)' : 'transparent',
-                border: done ? 'none' : active ? '2px solid #F97316' : '1px solid rgba(255,255,255,0.15)',
-                color: done ? '#000' : active ? '#F97316' : '#555555',
-                transition: 'all 250ms ease',
-              }}
-            >
-              {done ? '✓' : n}
-            </div>
-            {n < total && (
-              <div
-                style={{
-                  flex: 1,
-                  height: '1px',
-                  background: done ? '#F97316' : 'rgba(255,255,255,0.08)',
-                  transition: 'background 250ms ease',
-                  margin: '0 4px',
-                }}
-              />
-            )}
-          </div>
-        )
-      })}
+    <div style={{ marginBottom: '36px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '10px',
+        }}
+      >
+        <span
+          style={{
+            fontFamily: mono,
+            fontSize: '10px',
+            color: '#F97316',
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+          }}
+        >
+          Section {current} of {total}
+        </span>
+        <span
+          style={{
+            fontFamily: mono,
+            fontSize: '10px',
+            color: '#444444',
+            letterSpacing: '0.1em',
+          }}
+        >
+          {pct}%
+        </span>
+      </div>
+      <div
+        style={{
+          width: '100%',
+          height: '2px',
+          background: 'rgba(255,255,255,0.07)',
+          position: 'relative',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            height: '100%',
+            width: `${pct}%`,
+            background: '#F97316',
+            boxShadow: '0 0 8px rgba(249,115,22,0.5)',
+            transition: 'width 350ms ease',
+          }}
+        />
+      </div>
     </div>
   )
 }
 
-/* ─── OPTION BUTTON ─────────────────────────────────────────── */
 function OptionBtn({
   label,
   selected,
   onClick,
-  multi = false,
 }: {
   label: string
   selected: boolean
   onClick: () => void
-  multi?: boolean
 }) {
   return (
     <button
@@ -161,60 +117,57 @@ function OptionBtn({
       style={{
         fontFamily: mono,
         fontSize: '12px',
-        letterSpacing: '0.04em',
-        padding: '10px 16px',
-        border: selected ? '1px solid #F97316' : '1px solid rgba(255,255,255,0.12)',
-        background: selected ? 'rgba(249,115,22,0.12)' : 'rgba(255,255,255,0.02)',
+        letterSpacing: '0.03em',
+        padding: '10px 14px',
+        border: selected ? '1px solid #F97316' : '1px solid rgba(255,255,255,0.1)',
+        background: selected ? 'rgba(249,115,22,0.1)' : 'rgba(255,255,255,0.02)',
         color: selected ? '#F97316' : '#888888',
         cursor: 'pointer',
-        transition: 'all 150ms ease',
+        transition: 'all 140ms ease',
         textAlign: 'left',
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
+        lineHeight: 1.4,
       }}
     >
-      {multi && (
-        <span
-          style={{
-            width: '14px',
-            height: '14px',
-            border: selected ? '1px solid #F97316' : '1px solid rgba(255,255,255,0.2)',
-            background: selected ? '#F97316' : 'transparent',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '9px',
-            color: '#000',
-            flexShrink: 0,
-          }}
-        >
-          {selected ? '✓' : ''}
-        </span>
-      )}
+      <span
+        style={{
+          width: '13px',
+          height: '13px',
+          border: selected ? '1px solid #F97316' : '1px solid rgba(255,255,255,0.18)',
+          background: selected ? '#F97316' : 'transparent',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '8px',
+          color: '#000',
+          flexShrink: 0,
+        }}
+      >
+        {selected ? '✓' : ''}
+      </span>
       {label}
     </button>
   )
 }
 
-/* ─── LOADING SCREEN ────────────────────────────────────────── */
-function LoadingScreen({ messages = LOADING_MESSAGES }: { messages?: string[] }) {
+function LoadingScreen() {
   const [msgIndex, setMsgIndex] = useState(0)
   const [progress, setProgress] = useState(0)
 
+  // One-time effect — safe here because component only mounts once
   useEffect(() => {
     const msgInterval = setInterval(() => {
-      setMsgIndex((i) => Math.min(i + 1, messages.length - 1))
-    }, 1500)
-
+      setMsgIndex((i) => Math.min(i + 1, LOADING_MESSAGES.length - 1))
+    }, 1400)
     const start = Date.now()
     const progInterval = setInterval(() => {
       const elapsed = Date.now() - start
-      const pct = Math.min(90, (elapsed / 8000) * 90)
+      const pct = Math.min(92, (elapsed / 6000) * 92)
       setProgress(pct)
-      if (pct >= 90) clearInterval(progInterval)
-    }, 100)
-
+      if (pct >= 92) clearInterval(progInterval)
+    }, 80)
     return () => {
       clearInterval(msgInterval)
       clearInterval(progInterval)
@@ -237,12 +190,12 @@ function LoadingScreen({ messages = LOADING_MESSAGES }: { messages?: string[] })
       <div
         className="audit-pulse"
         style={{
-          width: '48px',
-          height: '48px',
+          width: '44px',
+          height: '44px',
           borderRadius: '50%',
           background: '#F97316',
-          marginBottom: '40px',
-          boxShadow: '0 0 32px rgba(249,115,22,0.4)',
+          marginBottom: '36px',
+          boxShadow: '0 0 28px rgba(249,115,22,0.45)',
         }}
       />
       <p
@@ -250,31 +203,31 @@ function LoadingScreen({ messages = LOADING_MESSAGES }: { messages?: string[] })
           fontFamily: mono,
           fontSize: '13px',
           color: '#FFFFFF',
-          letterSpacing: '0.05em',
-          marginBottom: '8px',
+          letterSpacing: '0.04em',
+          marginBottom: '6px',
           minHeight: '20px',
           textAlign: 'center',
           padding: '0 24px',
         }}
       >
-        {messages[msgIndex]}
+        {LOADING_MESSAGES[msgIndex]}
       </p>
       <p
         style={{
           fontFamily: mono,
-          fontSize: '11px',
-          color: '#444444',
+          fontSize: '10px',
+          color: '#3A3A3A',
           letterSpacing: '0.1em',
-          marginBottom: '48px',
+          marginBottom: '44px',
         }}
       >
-        // powered by claude ai
+        // operational intelligence engine
       </p>
       <div
         style={{
-          width: '280px',
+          width: '260px',
           height: '2px',
-          background: 'rgba(255,255,255,0.08)',
+          background: 'rgba(255,255,255,0.07)',
           position: 'relative',
         }}
       >
@@ -286,7 +239,7 @@ function LoadingScreen({ messages = LOADING_MESSAGES }: { messages?: string[] })
             height: '100%',
             width: `${progress}%`,
             background: '#F97316',
-            transition: 'width 100ms linear',
+            transition: 'width 80ms linear',
             boxShadow: '0 0 8px rgba(249,115,22,0.6)',
           }}
         />
@@ -296,7 +249,7 @@ function LoadingScreen({ messages = LOADING_MESSAGES }: { messages?: string[] })
           fontFamily: mono,
           fontSize: '10px',
           color: '#333333',
-          marginTop: '12px',
+          marginTop: '10px',
           letterSpacing: '0.1em',
         }}
       >
@@ -306,146 +259,395 @@ function LoadingScreen({ messages = LOADING_MESSAGES }: { messages?: string[] })
   )
 }
 
-/* ─── MAIN COMPONENT ────────────────────────────────────────── */
+function DiagnosticReceived({
+  categories,
+  company,
+  name,
+}: {
+  categories: DiagnosticCategoryId[]
+  company: string
+  name: string
+}) {
+  const displayName = company || name || 'your business'
+
+  return (
+    <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 16px' }}>
+      {/* Header */}
+      <div
+        style={{
+          background: '#111111',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderTop: '3px solid #F97316',
+          padding: '48px',
+          marginBottom: '2px',
+        }}
+        className="px-6 md:px-12"
+      >
+        <p
+          style={{
+            fontFamily: mono,
+            fontSize: '10px',
+            color: '#F97316',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            marginBottom: '10px',
+          }}
+        >
+          Diagnostic Received
+        </p>
+        <h2
+          style={{
+            fontFamily: grotesk,
+            fontWeight: 700,
+            fontSize: 'clamp(1.5rem, 4vw, 2.25rem)',
+            letterSpacing: '-0.04em',
+            color: '#FFFFFF',
+            marginBottom: '12px',
+          }}
+        >
+          {displayName} — Operational Intelligence Report
+        </h2>
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: '15px',
+            color: '#666666',
+            lineHeight: 1.7,
+            maxWidth: '520px',
+            marginBottom: '0',
+          }}
+        >
+          Based on your responses, we have identified{' '}
+          <span style={{ color: '#F97316', fontWeight: 600 }}>
+            {categories.length} potential improvement area{categories.length !== 1 ? 's' : ''}
+          </span>
+          . A consultant will review your diagnostic and be in touch within 24 hours.
+        </p>
+      </div>
+
+      {/* Category cards */}
+      <div
+        style={{
+          background: '#111111',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderTop: 'none',
+          padding: '40px 48px',
+          marginBottom: '2px',
+        }}
+        className="px-6 md:px-12"
+      >
+        <p
+          style={{
+            fontFamily: mono,
+            fontSize: '10px',
+            color: '#444444',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase',
+            marginBottom: '24px',
+          }}
+        >
+          // Opportunities detected
+        </p>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+            gap: '12px',
+          }}
+        >
+          {categories.map((catId, i) => {
+            const cat = DIAGNOSTIC_CATEGORIES[catId]
+            return (
+              <div
+                key={catId}
+                style={{
+                  background: 'rgba(249,115,22,0.04)',
+                  border: '1px solid rgba(249,115,22,0.18)',
+                  padding: '20px',
+                  position: 'relative',
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: mono,
+                    fontSize: '9px',
+                    color: '#F97316',
+                    letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
+                    marginBottom: '6px',
+                    opacity: 0.6,
+                  }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </p>
+                <p
+                  style={{
+                    fontFamily: grotesk,
+                    fontWeight: 700,
+                    fontSize: '14px',
+                    color: '#FFFFFF',
+                    letterSpacing: '-0.02em',
+                    marginBottom: '6px',
+                  }}
+                >
+                  {cat.label}
+                </p>
+                <p
+                  style={{
+                    fontFamily: sans,
+                    fontSize: '12px',
+                    color: '#666666',
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}
+                >
+                  {cat.description}
+                </p>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Footer CTA */}
+      <div
+        style={{
+          background: '#111111',
+          border: '1px solid rgba(255,255,255,0.07)',
+          borderTop: 'none',
+          padding: '32px 48px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '16px',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+        className="px-6 md:px-12"
+      >
+        <div>
+          <p
+            style={{
+              fontFamily: grotesk,
+              fontWeight: 600,
+              fontSize: '15px',
+              color: '#FFFFFF',
+              marginBottom: '4px',
+            }}
+          >
+            Want to discuss your results?
+          </p>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.05em' }}>
+            // A consultant will contact you within 24 hours
+          </p>
+        </div>
+        <Link
+          href="/contact"
+          style={{
+            fontFamily: mono,
+            fontWeight: 700,
+            fontSize: '12px',
+            color: '#000000',
+            background: '#F97316',
+            padding: '13px 24px',
+            textDecoration: 'none',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+            display: 'inline-block',
+            boxShadow: '0 4px 20px rgba(249,115,22,0.3)',
+            transition: 'opacity 150ms ease',
+            flexShrink: 0,
+          }}
+        >
+          Talk to us now →
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+// ── Field input ──────────────────────────────────────────────────────────────
+
+function FieldInput({
+  label,
+  type,
+  value,
+  onChange,
+  placeholder,
+  required,
+}: {
+  label: string
+  type: string
+  value: string
+  onChange: (v: string) => void
+  placeholder: string
+  required?: boolean
+}) {
+  return (
+    <div>
+      <label
+        style={{
+          fontFamily: mono,
+          fontSize: '10px',
+          color: '#888888',
+          display: 'block',
+          marginBottom: '8px',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+        }}
+      >
+        {label}{' '}
+        {required && <span style={{ color: '#F97316' }}>*</span>}
+      </label>
+      <input
+        type={type}
+        required={required}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        style={{
+          width: '100%',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          color: '#FFFFFF',
+          fontFamily: sans,
+          fontSize: '15px',
+          padding: '13px 16px',
+          outline: 'none',
+          boxSizing: 'border-box',
+          borderRadius: '2px',
+          transition: 'border-color 150ms ease, box-shadow 150ms ease',
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)'
+          e.currentTarget.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.08)'
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+          e.currentTarget.style.boxShadow = 'none'
+        }}
+      />
+    </div>
+  )
+}
+
+// ── Main component ───────────────────────────────────────────────────────────
+
 export default function AuditForm() {
   const [step, setStep] = useState(1)
   const [stage, setStage] = useState<Stage>('questions')
-  const [form, setForm] = useState<FormData>({
-    orgType: '',
-    teamSize: '',
-    timeDrains: [],
-    timeDrainsOther: '',
-    tools: [],
-    experience: '',
-    goal: '',
+
+  // Multi-select state keyed by section id
+  const [selections, setSelections] = useState<Record<string, string[]>>({})
+  // CEO question (section 9, type textarea)
+  const [ceoQuestion, setCeoQuestion] = useState('')
+  // Contact fields
+  const [contact, setContact] = useState<DiagnosticContactData>({
     name: '',
-    email: '',
     company: '',
+    email: '',
+    phone: '',
   })
-  const [results, setResults] = useState<AuditResult[]>([])
-  const [estimate, setEstimate] = useState<EstimateData | null>(null)
+  // Post-submission
+  const [detectedCategories, setDetectedCategories] = useState<DiagnosticCategoryId[]>([])
   const [error, setError] = useState('')
 
-  const toggleMulti = (field: 'timeDrains' | 'tools', value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: prev[field].includes(value)
-        ? prev[field].filter((v) => v !== value)
-        : [...prev[field], value],
-    }))
+  // ── Section helpers ──────────────────────────────────────────────────────
+
+  const currentSection = AUDIT_SECTIONS.find((s) => s.step === step)
+  const isContactStep = step === CONTACT_STEP
+
+  const toggleOption = (sectionId: string, option: string) => {
+    setSelections((prev) => {
+      const current = prev[sectionId] ?? []
+      return {
+        ...prev,
+        [sectionId]: current.includes(option)
+          ? current.filter((o) => o !== option)
+          : [...current, option],
+      }
+    })
   }
+
+  // ── Validation ───────────────────────────────────────────────────────────
 
   const canProceed = (): boolean => {
-    if (step === 1) return form.orgType !== '' && form.teamSize !== ''
-    if (step === 2) return form.timeDrains.length > 0
-    if (step === 3) return form.tools.length > 0
-    if (step === 4) return form.goal.trim().length > 0
-    if (step === 5) return form.name !== '' && form.email !== '' && form.company !== ''
-    return true
+    if (!currentSection && !isContactStep) return false
+    if (isContactStep) {
+      return (
+        contact.name.trim().length > 0 &&
+        contact.email.trim().length > 0 &&
+        contact.company.trim().length > 0
+      )
+    }
+    if (currentSection?.type === 'textarea') {
+      return ceoQuestion.trim().length >= (currentSection.textareaMinLength ?? 10)
+    }
+    // multi-select: at least one selection required
+    const sectionSelections = selections[currentSection!.id] ?? []
+    return sectionSelections.length > 0
   }
 
-  const runAudit = async () => {
+  // ── Submission ───────────────────────────────────────────────────────────
+
+  const submit = async () => {
     setStage('loading')
     setError('')
 
-    const allTimeDrains =
-      form.timeDrains.includes('Other') && form.timeDrainsOther
-        ? [...form.timeDrains.filter((d) => d !== 'Other'), form.timeDrainsOther]
-        : form.timeDrains
+    // Collect all selected options across all sections
+    const allSelections = Object.values(selections).flat()
+    const categories = computeDiagnosticCategories(allSelections)
+    setDetectedCategories(categories)
 
-    try {
-      const res = await fetch('/api/audit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orgType: form.orgType,
-          teamSize: form.teamSize,
-          timeDrains: allTimeDrains,
-          tools: form.tools,
-          experience: form.experience,
-          goal: form.goal,
-          name: form.name,
-          email: form.email,
-          company: form.company,
-        }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Audit failed')
-      setResults(data.results as AuditResult[])
-      setStage('results')
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.')
-      setStage('questions')
+    const payload: DiagnosticPayload = {
+      selections,
+      ceoQuestion,
+      contact,
+      detectedCategories: categories,
     }
-  }
 
-  const getEstimate = async () => {
-    setStage('estimate-loading')
-    setError('')
+    // Fire API call non-blocking — lead saved + email sent in background
+    fetch('/api/diagnostic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch(() => {
+      // Silent fail — diagnostic display is client-computed, not API-dependent
+    })
 
-    const allTimeDrains =
-      form.timeDrains.includes('Other') && form.timeDrainsOther
-        ? [...form.timeDrains.filter((d) => d !== 'Other'), form.timeDrainsOther]
-        : form.timeDrains
-
-    try {
-      const res = await fetch('/api/discovery/estimate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orgType: form.orgType,
-          teamSize: form.teamSize,
-          timeDrains: allTimeDrains,
-          tools: form.tools,
-          experience: form.experience,
-          goal: form.goal,
-          company: form.company,
-          auditResults: results,
-        }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Estimate failed')
-      setEstimate(data.estimate as EstimateData)
-      setStage('estimate')
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not generate estimate. Please try again.')
-      setStage('results')
-    }
+    // Brief analytical pause for UX before showing results
+    await new Promise((resolve) => setTimeout(resolve, 2800))
+    setStage('received')
   }
 
   const next = () => {
-    if (step < TOTAL_STEPS) setStep((s) => s + 1)
-    else void runAudit()
+    if (step < TOTAL_STEPS) {
+      setStep((s) => s + 1)
+    } else {
+      void submit()
+    }
   }
 
   const back = () => {
     if (step > 1) setStep((s) => s - 1)
   }
 
+  // ── Render: loading ──────────────────────────────────────────────────────
+
   if (stage === 'loading') return <LoadingScreen />
-  if (stage === 'estimate-loading') return <LoadingScreen messages={ESTIMATE_LOADING_MESSAGES} />
-  if (stage === 'results') {
+
+  // ── Render: received ─────────────────────────────────────────────────────
+
+  if (stage === 'received') {
     return (
-      <AuditResults
-        results={results}
-        orgType={form.orgType}
-        company={form.company}
-        onEstimate={() => void getEstimate()}
+      <DiagnosticReceived
+        categories={detectedCategories}
+        company={contact.company}
+        name={contact.name}
       />
     )
   }
-  if (stage === 'estimate' && estimate) {
-    return (
-      <CostEstimate
-        estimate={estimate}
-        company={form.company}
-        name={form.name}
-        email={form.email}
-        auditResults={results}
-        onBack={() => setStage('results')}
-      />
-    )
-  }
+
+  // ── Render: questions ────────────────────────────────────────────────────
 
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 16px' }}>
@@ -457,7 +659,7 @@ export default function AuditForm() {
         }}
         className="px-6 md:px-12"
       >
-        <StepIndicator current={step} total={TOTAL_STEPS} />
+        <ProgressBar current={step} total={TOTAL_STEPS} />
 
         {error && (
           <div
@@ -475,158 +677,96 @@ export default function AuditForm() {
           </div>
         )}
 
-        {/* ── STEP 1: Org type + team size ── */}
-        {step === 1 && (
+        {/* ── Sections 1–8: multi-select ── */}
+        {currentSection && currentSection.type === 'multi-select' && (
           <div>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              Step 1 of 5
-            </p>
-            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '32px' }}>
-              Tell us about your organisation
+            <h2
+              style={{
+                fontFamily: grotesk,
+                fontWeight: 700,
+                fontSize: 'clamp(1.3rem, 3vw, 1.65rem)',
+                letterSpacing: '-0.04em',
+                color: '#FFFFFF',
+                marginBottom: '8px',
+              }}
+            >
+              {currentSection.headline}
             </h2>
-
-            <p style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              Organisation type
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: '14px',
+                color: '#555555',
+                marginBottom: '28px',
+                lineHeight: 1.6,
+              }}
+            >
+              {currentSection.subheadline}
             </p>
             <div
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '8px', marginBottom: '32px' }}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                gap: '8px',
+              }}
             >
-              {ORG_TYPES.map((type) => (
+              {(currentSection.options ?? []).map((option) => (
                 <OptionBtn
-                  key={type}
-                  label={type}
-                  selected={form.orgType === type}
-                  onClick={() => setForm((p) => ({ ...p, orgType: type }))}
+                  key={option}
+                  label={option}
+                  selected={(selections[currentSection.id] ?? []).includes(option)}
+                  onClick={() => toggleOption(currentSection.id, option)}
                 />
               ))}
             </div>
-
-            <p style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              Team size
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {TEAM_SIZES.map((size) => (
-                <OptionBtn
-                  key={size}
-                  label={size}
-                  selected={form.teamSize === size}
-                  onClick={() => setForm((p) => ({ ...p, teamSize: size }))}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── STEP 2: Time drains ── */}
-        {step === 2 && (
-          <div>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              Step 2 of 5
-            </p>
-            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
-              Where does your team lose the most time?
-            </h2>
-            <p style={{ fontFamily: sans, fontSize: '14px', color: '#666666', marginBottom: '24px' }}>
-              Select all that apply.
-            </p>
-            <div
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '8px', marginBottom: '20px' }}
-            >
-              {TIME_DRAINS.map((drain) => (
-                <OptionBtn
-                  key={drain}
-                  label={drain}
-                  selected={form.timeDrains.includes(drain)}
-                  onClick={() => toggleMulti('timeDrains', drain)}
-                  multi
-                />
-              ))}
-            </div>
-            {form.timeDrains.includes('Other') && (
-              <input
-                type="text"
-                value={form.timeDrainsOther}
-                onChange={(e) => setForm((p) => ({ ...p, timeDrainsOther: e.target.value }))}
-                placeholder="Describe your time drain..."
+            {(selections[currentSection.id] ?? []).length > 0 && (
+              <p
                 style={{
-                  width: '100%',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  color: '#FFFFFF',
-                  fontFamily: sans,
-                  fontSize: '14px',
-                  padding: '12px 16px',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                  marginTop: '8px',
-                  borderRadius: '2px',
+                  fontFamily: mono,
+                  fontSize: '10px',
+                  color: '#F97316',
+                  letterSpacing: '0.1em',
+                  marginTop: '16px',
+                  opacity: 0.7,
                 }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)')}
-                onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
-              />
+              >
+                {(selections[currentSection.id] ?? []).length} selected
+              </p>
             )}
           </div>
         )}
 
-        {/* ── STEP 3: Tools + experience ── */}
-        {step === 3 && (
+        {/* ── Section 9: CEO question (textarea) ── */}
+        {currentSection && currentSection.type === 'textarea' && (
           <div>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              Step 3 of 5
-            </p>
-            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
-              What tools does your team use?
-            </h2>
-            <p style={{ fontFamily: sans, fontSize: '14px', color: '#666666', marginBottom: '24px' }}>
-              Select all that apply.
-            </p>
-            <div
-              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '8px', marginBottom: '32px' }}
+            <h2
+              style={{
+                fontFamily: grotesk,
+                fontWeight: 700,
+                fontSize: 'clamp(1.3rem, 3vw, 1.65rem)',
+                letterSpacing: '-0.04em',
+                color: '#FFFFFF',
+                marginBottom: '8px',
+              }}
             >
-              {TOOL_OPTIONS.map((tool) => (
-                <OptionBtn
-                  key={tool}
-                  label={tool}
-                  selected={form.tools.includes(tool)}
-                  onClick={() => toggleMulti('tools', tool)}
-                  multi
-                />
-              ))}
-            </div>
-
-            <p style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
-              Automation experience
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {EXPERIENCE_OPTIONS.map((opt) => (
-                <OptionBtn
-                  key={opt}
-                  label={opt}
-                  selected={form.experience === opt}
-                  onClick={() => setForm((p) => ({ ...p, experience: opt }))}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── STEP 4: Goal ── */}
-        {step === 4 && (
-          <div>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              Step 4 of 5
-            </p>
-            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
-              Describe your biggest operational challenge
+              {currentSection.headline}
             </h2>
-            <p style={{ fontFamily: sans, fontSize: '14px', color: '#666666', marginBottom: '24px' }}>
-              The more specific, the better your report will be.
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: '14px',
+                color: '#555555',
+                marginBottom: '24px',
+                lineHeight: 1.6,
+              }}
+            >
+              {currentSection.subheadline}
             </p>
             <textarea
-              value={form.goal}
-              onChange={(e) => setForm((p) => ({ ...p, goal: e.target.value }))}
-              rows={5}
-              placeholder="e.g. Our sales team manually copies leads from our website into HubSpot and then sends individual follow-up emails. This takes 2–3 hours per day..."
+              value={ceoQuestion}
+              onChange={(e) => setCeoQuestion(e.target.value)}
+              rows={7}
+              placeholder={currentSection.textareaPlaceholder}
               style={{
                 width: '100%',
                 background: 'rgba(255,255,255,0.04)',
@@ -637,116 +777,100 @@ export default function AuditForm() {
                 padding: '16px',
                 resize: 'vertical',
                 outline: 'none',
-                lineHeight: 1.7,
-                minHeight: '120px',
+                lineHeight: 1.75,
+                minHeight: '140px',
                 boxSizing: 'border-box',
                 borderRadius: '2px',
               }}
               onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)')}
               onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
             />
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#444444', letterSpacing: '0.1em', marginTop: '16px', marginBottom: '12px' }}>
-              // QUICK FILL
+            <p
+              style={{
+                fontFamily: mono,
+                fontSize: '10px',
+                color: ceoQuestion.length >= 20 ? '#F97316' : '#444444',
+                letterSpacing: '0.08em',
+                marginTop: '8px',
+                transition: 'color 200ms ease',
+              }}
+            >
+              {ceoQuestion.length} characters
+              {ceoQuestion.length < 20 && (
+                <span style={{ color: '#444444' }}> — minimum 20 required</span>
+              )}
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {QUICK_FILLS.map((fill) => (
-                <button
-                  key={fill}
-                  type="button"
-                  onClick={() => setForm((p) => ({ ...p, goal: fill }))}
-                  style={{
-                    fontFamily: sans,
-                    fontSize: '13px',
-                    color: '#666666',
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    padding: '10px 14px',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    lineHeight: 1.5,
-                    transition: 'all 150ms ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#FFFFFF'
-                    e.currentTarget.style.borderColor = 'rgba(249,115,22,0.2)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = '#666666'
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
-                  }}
-                >
-                  &ldquo;{fill}&rdquo;
-                </button>
-              ))}
-            </div>
           </div>
         )}
 
-        {/* ── STEP 5: Lead capture ── */}
-        {step === 5 && (
+        {/* ── Step 10: Contact ── */}
+        {isContactStep && (
           <div>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              Step 5 of 5
-            </p>
-            <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.4rem, 3vw, 1.75rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
-              Where should we send your report?
+            <h2
+              style={{
+                fontFamily: grotesk,
+                fontWeight: 700,
+                fontSize: 'clamp(1.3rem, 3vw, 1.65rem)',
+                letterSpacing: '-0.04em',
+                color: '#FFFFFF',
+                marginBottom: '8px',
+              }}
+            >
+              Almost done — where should we send your results?
             </h2>
-            <p style={{ fontFamily: sans, fontSize: '14px', color: '#666666', marginBottom: '32px' }}>
-              Your personalised audit will be ready in under 60 seconds.
+            <p
+              style={{
+                fontFamily: sans,
+                fontSize: '14px',
+                color: '#555555',
+                marginBottom: '32px',
+                lineHeight: 1.6,
+              }}
+            >
+              A consultant will review your diagnostic personally and reach out within 24 hours.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '24px' }}>
-              {[
-                { field: 'name' as const, label: 'Full Name', placeholder: 'Jane Smith', type: 'text' },
-                { field: 'email' as const, label: 'Work Email', placeholder: 'jane@company.com', type: 'email' },
-                { field: 'company' as const, label: 'Company', placeholder: 'Your company name', type: 'text' },
-              ].map(({ field, label, placeholder, type }) => (
-                <div key={field}>
-                  <label
-                    style={{
-                      fontFamily: mono,
-                      fontSize: '11px',
-                      color: '#888888',
-                      display: 'block',
-                      marginBottom: '8px',
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    {label} <span style={{ color: '#F97316' }}>*</span>
-                  </label>
-                  <input
-                    type={type}
-                    required
-                    value={form[field]}
-                    onChange={(e) => setForm((p) => ({ ...p, [field]: e.target.value }))}
-                    placeholder={placeholder}
-                    style={{
-                      width: '100%',
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      color: '#FFFFFF',
-                      fontFamily: sans,
-                      fontSize: '15px',
-                      padding: '14px 16px',
-                      outline: 'none',
-                      boxSizing: 'border-box',
-                      borderRadius: '2px',
-                      transition: 'border-color 150ms ease, box-shadow 150ms ease',
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)'
-                      e.currentTarget.style.boxShadow = '0 0 0 3px rgba(249,115,22,0.1)'
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-                      e.currentTarget.style.boxShadow = 'none'
-                    }}
-                  />
-                </div>
-              ))}
+              <FieldInput
+                label="Full Name"
+                type="text"
+                value={contact.name}
+                onChange={(v) => setContact((p) => ({ ...p, name: v }))}
+                placeholder="Jane Smith"
+                required
+              />
+              <FieldInput
+                label="Company"
+                type="text"
+                value={contact.company}
+                onChange={(v) => setContact((p) => ({ ...p, company: v }))}
+                placeholder="Your company name"
+                required
+              />
+              <FieldInput
+                label="Email"
+                type="email"
+                value={contact.email}
+                onChange={(v) => setContact((p) => ({ ...p, email: v }))}
+                placeholder="jane@company.com"
+                required
+              />
+              <FieldInput
+                label="Phone"
+                type="tel"
+                value={contact.phone}
+                onChange={(v) => setContact((p) => ({ ...p, phone: v }))}
+                placeholder="+49 151 ..."
+              />
             </div>
-            <p style={{ fontFamily: mono, fontSize: '11px', color: '#444444', letterSpacing: '0.05em' }}>
-              // No spam. Report delivered in your browser instantly.
+            <p
+              style={{
+                fontFamily: mono,
+                fontSize: '10px',
+                color: '#3A3A3A',
+                letterSpacing: '0.06em',
+              }}
+            >
+              // No spam. Your data is used only to deliver and discuss your diagnostic.
             </p>
           </div>
         )}
@@ -788,7 +912,7 @@ export default function AuditForm() {
             style={{
               fontFamily: mono,
               fontWeight: 700,
-              fontSize: '13px',
+              fontSize: '12px',
               color: '#000000',
               background: '#F97316',
               padding: '13px 28px',
@@ -796,12 +920,13 @@ export default function AuditForm() {
               cursor: canProceed() ? 'pointer' : 'not-allowed',
               opacity: canProceed() ? 1 : 0.4,
               flex: 1,
-              letterSpacing: '0.05em',
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
               transition: 'opacity 150ms ease, box-shadow 150ms ease',
               boxShadow: canProceed() ? '0 4px 20px rgba(249,115,22,0.3)' : 'none',
             }}
           >
-            {step === TOTAL_STEPS ? 'Generate My Automation Report →' : 'Continue →'}
+            {step === TOTAL_STEPS ? 'Submit Diagnostic →' : 'Continue →'}
           </button>
         </div>
       </div>

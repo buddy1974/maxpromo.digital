@@ -4,6 +4,7 @@ import { AUDIT_SYSTEM_PROMPT } from '@/lib/prompts'
 import { sendEmail, buildAuditLeadEmailHtml } from '@/lib/email'
 import { getDb } from '@/lib/db'
 import { enforceRateLimit } from '@/lib/rate-limit'
+import { sendTelegramNotification, buildAuditMessage } from '@/lib/telegram'
 import type { AuditResult } from '@/components/AuditResults'
 
 interface AuditRequestBody {
@@ -91,6 +92,18 @@ Identify their top 3 automation opportunities. Return only a valid JSON array.`
           VALUES (${name}, ${email}, ${company}, 'automation_audit', ${orgType}, ${summary}, 'new')
           ON CONFLICT DO NOTHING`
       } catch { /* DB may not be configured — ignore */ }
+
+      // Send Telegram notification (non-blocking; fire-and-forget)
+      sendTelegramNotification(
+        buildAuditMessage({
+          name,
+          company,
+          email,
+          orgType,
+          timeDrains,
+          goal,
+        }),
+      ).catch(console.error)
     }
 
     return NextResponse.json({ results, model: aiResponse.model })

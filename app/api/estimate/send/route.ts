@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { getDb } from '@/lib/db'
 import { enforceRateLimit } from '@/lib/rate-limit'
+import { sendTelegramNotification, buildProductInquiryMessage } from '@/lib/telegram'
 
 interface AddonItem {
   label: string
@@ -254,6 +255,19 @@ export async function POST(request: NextRequest) {
         VALUES (${body.clientName}, ${body.clientEmail}, ${body.businessName}, 'estimate_tool', ${summary}, 'new')
         ON CONFLICT DO NOTHING`
     } catch { /* DB may not be configured — ignore */ }
+
+    // Send Telegram notification (non-blocking; fire-and-forget)
+    sendTelegramNotification(
+      buildProductInquiryMessage({
+        systemName: `Website Estimate — ${body.pkg}`,
+        name: body.clientName,
+        company: body.businessName,
+        email: body.clientEmail,
+        phone: body.clientPhone,
+        message: `Package: ${body.pkg} (€${body.pkgPrice}). One-time: €${body.totals.oneTime}. Monthly: €${body.totals.monthly}. City: ${body.city || '—'}`,
+        source: 'estimate_tool',
+      }),
+    ).catch(console.error)
 
     return NextResponse.json({ success: true })
   } catch (error) {
