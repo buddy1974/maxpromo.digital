@@ -174,7 +174,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4b — Max Agent Bureau Gateway */}
-      <section data-section="agent-bureau" style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section id="agent-bureau" data-section="agent-bureau" style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
 
           {/* Header */}
@@ -192,40 +192,87 @@ export default async function HomePage() {
             </p>
           </div>
 
-          {/* Workflow strip */}
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0', rowGap: '10px', marginBottom: '3rem', padding: '18px 24px', background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '12px' }}>
-            {(['Audit', 'Diagnose', 'Agent Team', 'Review', 'Execute', 'Log'] as const).map((step, i) => (
-              <span key={step} style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'hsl(40 30% 92%)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.18)', padding: '6px 14px', borderRadius: '4px', whiteSpace: 'nowrap', letterSpacing: '0.04em' }}>
-                  {step}
-                </span>
-                {i < 5 && (
-                  <span style={{ color: 'rgba(249,115,22,0.45)', fontSize: '13px', padding: '0 10px', flexShrink: 0 }}>→</span>
-                )}
-              </span>
-            ))}
+          {/* Workflow infographic — Audit → Diagnose → Agent Team → Review (gate) → Execute → Log */}
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 42%)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '14px' }}>
+            {locale === 'de' ? 'Der Ablauf' : 'The workflow'}
+          </p>
+          <div style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '16px', overflow: 'hidden', marginBottom: '3rem' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-6">
+            {(locale === 'de'
+              ? [
+                  { name: 'Audit',      caption: 'Abläufe prüfen' },
+                  { name: 'Diagnose',   caption: 'Engpässe finden' },
+                  { name: 'Agent Team', caption: 'Aufgaben verteilen' },
+                  { name: 'Review',     caption: 'Mensch gibt frei', gate: true },
+                  { name: 'Execute',    caption: 'Aktion ausführen' },
+                  { name: 'Log',        caption: 'Alles dokumentiert' },
+                ]
+              : [
+                  { name: 'Audit',      caption: 'Scan workflows' },
+                  { name: 'Diagnose',   caption: 'Find bottlenecks' },
+                  { name: 'Agent Team', caption: 'Assign tasks' },
+                  { name: 'Review',     caption: 'Human approves', gate: true },
+                  { name: 'Execute',    caption: 'Run the action' },
+                  { name: 'Log',        caption: 'Everything logged' },
+                ]
+            ).map((step, i, arr) => {
+              const gate = 'gate' in step && step.gate
+              return (
+                <div key={step.name} style={{ background: gate ? 'rgba(249,115,22,0.07)' : 'hsl(240 12% 7%)', padding: '1.5rem 1.25rem', position: 'relative' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    {gate && (
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        <path d="m9 12 2 2 4-4" />
+                      </svg>
+                    )}
+                  </div>
+                  <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '14px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', margin: '0 0 4px 0', lineHeight: 1.25 }}>
+                    {step.name}
+                  </h3>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: gate ? '#F97316' : 'hsl(40 12% 50%)', lineHeight: 1.55, margin: 0 }}>
+                    {step.caption}
+                  </p>
+                  {i < arr.length - 1 && (
+                    <span className="hidden lg:block" style={{ position: 'absolute', right: '-7px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(249,115,22,0.35)', fontSize: '13px', zIndex: 1 }} aria-hidden="true">
+                      →
+                    </span>
+                  )}
+                </div>
+              )
+            })}
           </div>
 
           {/* Module cards — 5 items in 3-col grid */}
           <div style={{ display: 'grid', gap: '12px', marginBottom: '2.5rem' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {(locale === 'de'
               ? [
-                  { title: 'AI Audit Console',        body: 'Findet Engpässe, Risiken und Automatisierungschancen.' },
-                  { title: 'Customer Waiting Room',   body: 'Sammelt Anfragen, ordnet Prioritäten und hält Kunden sichtbar.' },
-                  { title: 'Approval Desk',           body: 'Entscheidungen bleiben kontrolliert, dokumentiert und freigabepflichtig.' },
-                  { title: 'Document Intake Desk',    body: 'Sortiert Dokumente, erkennt Lücken und bereitet Pakete vor.' },
-                  { title: 'Shadow AI Governance',    body: 'Zeigt, wo KI im Betrieb genutzt wird und wo Kontrolle fehlt.' },
+                  { key: 'audit',    title: 'AI Audit Console',      body: 'Findet Engpässe, Risiken und Automatisierungschancen.' },
+                  { key: 'waiting',  title: 'Customer Waiting Room', body: 'Sammelt Anfragen, ordnet Prioritäten und hält Kunden sichtbar.' },
+                  { key: 'approval', title: 'Approval Desk',         body: 'Entscheidungen bleiben kontrolliert, dokumentiert und freigabepflichtig.' },
+                  { key: 'intake',   title: 'Document Intake Desk',  body: 'Sortiert Dokumente, erkennt Lücken und bereitet Pakete vor.' },
+                  { key: 'shadow',   title: 'Shadow AI Governance',  body: 'Zeigt, wo KI im Betrieb genutzt wird und wo Kontrolle fehlt.' },
                 ]
               : [
-                  { title: 'AI Audit Console',        body: 'Identifies bottlenecks, risks, and automation opportunities.' },
-                  { title: 'Customer Waiting Room',   body: 'Collects requests, ranks priorities, keeps clients visible.' },
-                  { title: 'Approval Desk',           body: 'Decisions stay controlled, documented, and approval-gated.' },
-                  { title: 'Document Intake Desk',    body: 'Sorts documents, spots gaps, and prepares delivery packages.' },
-                  { title: 'Shadow AI Governance',    body: 'Shows where AI is used in the business and where control is missing.' },
+                  { key: 'audit',    title: 'AI Audit Console',      body: 'Identifies bottlenecks, risks, and automation opportunities.' },
+                  { key: 'waiting',  title: 'Customer Waiting Room', body: 'Collects requests, ranks priorities, keeps clients visible.' },
+                  { key: 'approval', title: 'Approval Desk',         body: 'Decisions stay controlled, documented, and approval-gated.' },
+                  { key: 'intake',   title: 'Document Intake Desk',  body: 'Sorts documents, spots gaps, and prepares delivery packages.' },
+                  { key: 'shadow',   title: 'Shadow AI Governance',  body: 'Shows where AI is used in the business and where control is missing.' },
                 ]
             ).map((card) => (
-              <div key={card.title} style={{ background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '12px', padding: '24px 24px 24px 24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ width: '28px', height: '2px', background: '#F97316', flexShrink: 0 }} />
+              <div key={card.title} className="mp-card-hover" style={{ background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '12px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <span style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.18)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {card.key === 'audit'    && <><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /><path d="M11 8v6M8 11h6" /></>}
+                    {card.key === 'waiting'  && <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>}
+                    {card.key === 'approval' && <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="m9 12 2 2 4-4" /></>}
+                    {card.key === 'intake'   && <><path d="M14 3v5h5" /><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M9 13h6M9 17h4" /></>}
+                    {card.key === 'shadow'   && <><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></>}
+                  </svg>
+                </span>
                 <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '15px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.02em', margin: 0, lineHeight: 1.3 }}>
                   {card.title}
                 </h3>
@@ -236,25 +283,28 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* Trust line */}
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 42%)', letterSpacing: '0.05em', marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ color: '#F97316', fontSize: '14px', flexShrink: 0 }}>⊘</span>
-            {locale === 'de'
-              ? 'Keine autonome Ausführung. Jede kritische Aktion bleibt freigabepflichtig.'
-              : 'No autonomous execution. Every critical action requires human approval.'}
-          </p>
+          {/* Trust badge — supervised mode */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'rgba(249,115,22,0.05)', border: '1px solid rgba(249,115,22,0.18)', borderRadius: '10px', padding: '14px 20px', marginBottom: '2.5rem', maxWidth: '100%' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'hsl(40 20% 78%)', letterSpacing: '0.03em', lineHeight: 1.6, margin: 0 }}>
+              {locale === 'de'
+                ? 'Keine autonome Ausführung. Jede kritische Aktion bleibt freigabepflichtig.'
+                : 'No autonomous execution. Every critical action requires human approval.'}
+            </p>
+          </div>
 
-          {/* CTAs */}
+          {/* CTAs — gated: no external URLs on public homepage */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
-            <a
-              href="https://agents.maxpromo.digital"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/contact?system=agent-bureau"
               className="shine"
               style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#080808', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '8px', whiteSpace: 'nowrap' }}
             >
-              {locale === 'de' ? 'Agent Bureau ansehen →' : 'View Agent Bureau →'}
-            </a>
+              {locale === 'de' ? 'Beratungsgespräch anfragen →' : 'Request Agent Bureau Consultation →'}
+            </Link>
             <Link
               href="/automation-audit"
               style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '8px', border: '1px solid hsl(40 30% 96% / 0.18)', whiteSpace: 'nowrap', letterSpacing: '0.04em' }}
