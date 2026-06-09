@@ -21,6 +21,7 @@ import {
   type DiagnosticPayload,
   type DiagnosticContactData,
 } from '@/lib/audit-diagnostic'
+import VoiceInputWidget from '@/components/voice/VoiceInputWidget'
 
 // ── Font tokens ──────────────────────────────────────────────────────────────
 const mono = 'var(--font-roboto-mono)'
@@ -762,28 +763,21 @@ export default function AuditForm() {
             >
               {currentSection.subheadline}
             </p>
-            <textarea
+            <VoiceInputWidget
               value={ceoQuestion}
-              onChange={(e) => setCeoQuestion(e.target.value)}
+              onChange={setCeoQuestion}
               rows={7}
               placeholder={currentSection.textareaPlaceholder}
-              style={{
-                width: '100%',
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.1)',
+              context="CEO strategic question about business operations and challenges"
+              lang="de-DE"
+              textareaStyle={{
                 color: '#FFFFFF',
                 fontFamily: sans,
                 fontSize: '14px',
                 padding: '16px',
-                resize: 'vertical',
-                outline: 'none',
                 lineHeight: 1.75,
                 minHeight: '140px',
-                boxSizing: 'border-box',
-                borderRadius: '2px',
               }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)')}
-              onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)')}
             />
             <p
               style={{

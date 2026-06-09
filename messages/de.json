@@ -345,7 +345,7 @@
     },
     "proof": {
       "eyebrow": "// Aus laufenden Systemen",
-      "title": "Installiert und aktiv.",
+      "title": "Systeme, die wir installieren.",
       "p1Value": "78%",
       "p1Label": "weniger manuelle Verarbeitung",
       "p1Source": "Betriebsmanagement · 6 Wochen",
@@ -357,7 +357,7 @@
       "p3Source": "Logistik · 8 Wochen",
       "note": "// Ergebnisse aus Live-Systemen. Kundendaten unter NDA.",
       "viewAll": "Alle Fallstudien ansehen →",
-      "subtitle": "Diese Zahlen kommen aus echten Systemen, die in echten Betrieben laufen. Keine Demos. Keine Experimente."
+      "subtitle": "Beispiele betrieblicher Ergebnisse, auf deren Verbesserung unsere Systeme ausgelegt sind. Entwickelt aus realen Betriebsanforderungen, nicht aus generischen Vorlagen."
     },
     "slider": {
       "prefix": "Noch immer kämpfen mit:",
@@ -421,9 +421,9 @@
       "eyebrow": "// Was wir bauen",
       "title": "Betriebssysteme,",
       "titleAccent": "die heute laufen.",
-      "subtitle": "Klicken Sie auf ein System und sehen Sie, wie es funktioniert.",
+      "subtitle": "Erkunden Sie die Systeme, die wir für verschiedene Betriebsprobleme installieren.",
       "viewAll": "Alle Systeme ansehen",
-      "viewSystem": "System ansehen"
+      "viewSystem": "Beratung anfragen →"
     },
     "teamTrust": {
       "eyebrow": "// Das Maxpromo-Team",
@@ -1095,7 +1095,18 @@
     "transformBody": "Sie brauchen alte Systeme modernisiert, manuelle Arbeit entfernt und Workflows verbunden. Joomla-Installationen, die niemand anfassen will. WordPress-Seiten, die einen Entwickler für Updates benötigen. Katalog-Shops ohne Lager-Logik. E-Mail-Listen, die ungenutzt in Excel liegen. Manuelle Prozesse, die als digitale getarnt sind. Das ist die Lücke, die wir schließen.",
     "todayEyebrow": "// Heute",
     "todayTitle": "Heute installieren wir KI-gestützte Business-Systeme.",
-    "todayList": ["Workflow-Automatisierung", "KI-Agenten", "CRM-Logik", "Interne Dashboards", "Content-Pipelines", "Newsletter-Systeme", "Katalog- und Shop-Modernisierung", "Buchungs- und Bestellsysteme", "Operative Plattformen", "Legacy-CMS-Modernisierung"],
+    "todayList": [
+      "Workflow-Automatisierung",
+      "KI-Agenten",
+      "CRM-Logik",
+      "Interne Dashboards",
+      "Content-Pipelines",
+      "Newsletter-Systeme",
+      "Katalog- und Shop-Modernisierung",
+      "Buchungs- und Bestellsysteme",
+      "Operative Plattformen",
+      "Legacy-CMS-Modernisierung"
+    ],
     "principleEyebrow": "Was uns antreibt",
     "principleTitle": "Wie wir an jedes System herangehen",
     "values": {

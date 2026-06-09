@@ -11,10 +11,12 @@ type ExternalLinkKey =
   | 'restaurantOs' | 'printshopOs' | 'taxkontrol' | 'praxisOs' | 'handwerkOs' | 'publishingOs'
   | 'agentBureau'
 
+type SystemLinkKey = ExternalLinkKey  // kept for label lookups; these are now internal routes
+
 type ServiceLinkKey =
   | 'legacyModernization' | 'workflowAutomation' | 'aiSystems' | 'websiteSystems' | 'contentNewsletter'
 
-interface InternalLink { key: InternalLinkKey; href: string; external?: false }
+interface InternalLink { key: InternalLinkKey | SystemLinkKey; href: string; external?: false }
 interface ExternalLink { key: ExternalLinkKey; href: string; external: true }
 interface ServiceLink  { key: ServiceLinkKey;  href: string; external?: false }
 
@@ -39,13 +41,15 @@ const COLUMNS: Column[] = [
   {
     titleKey: 'colSystems',
     links: [
-      { key: 'agentBureau',   href: 'https://agents.maxpromo.digital', external: true },
-      { key: 'restaurantOs',  href: 'https://www.restaurant-os.de',    external: true },
-      { key: 'printshopOs',   href: 'https://www.smartprintshop.de',   external: true },
-      { key: 'taxkontrol',    href: 'https://www.taxkontrol.de',       external: true },
-      { key: 'praxisOs',      href: 'https://www.super-praxis.de',     external: true },
-      { key: 'handwerkOs',    href: 'https://www.superhandwerk.de',    external: true },
-      { key: 'publishingOs',  href: 'https://www.publishers24.org',    external: true },
+      // Gated: all system links route to consultation request, not directly to app/demo environments.
+      // Internal access continues via direct URL per product-gating rules.
+      { key: 'agentBureau',   href: '/contact?system=agent-bureau' },
+      { key: 'restaurantOs',  href: '/contact?system=restaurant-os' },
+      { key: 'printshopOs',   href: '/contact?system=printshop' },
+      { key: 'taxkontrol',    href: '/contact?system=taxkontrol' },
+      { key: 'praxisOs',      href: '/contact?system=praxis-os' },
+      { key: 'handwerkOs',    href: '/contact?system=handwerk-os' },
+      { key: 'publishingOs',  href: '/contact?system=publishing-os' },
     ],
   },
   {

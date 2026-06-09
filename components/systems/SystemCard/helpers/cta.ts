@@ -29,10 +29,8 @@ export function resolvePrimaryLabel(product: ProductEntry, locale: string): stri
       ? product.ctaPrimary.de
       : product.ctaPrimary.en
   }
-  if (locale === 'de') {
-    return product.ctaType === 'platform' ? 'Plattform erkunden →' : 'System ansehen →'
-  }
-  return product.ctaType === 'platform' ? 'Explore platform →' : 'View system →'
+  // MVP hardening: primary CTA always routes to consultation, not external system.
+  return locale === 'de' ? 'Beratung anfragen →' : 'Book consultation →'
 }
 
 export function resolveSecondaryLabel(product: ProductEntry, locale: string): string {
@@ -41,8 +39,6 @@ export function resolveSecondaryLabel(product: ProductEntry, locale: string): st
       ? product.ctaSecondary.de
       : product.ctaSecondary.en
   }
-  if (locale === 'de') {
-    return product.ctaType === 'platform' ? 'Fahrer werden →' : 'Kostenlosen Setup anfragen →'
-  }
-  return product.ctaType === 'platform' ? 'Become a driver →' : 'Book free setup →'
+  // MVP hardening: secondary CTA requests a walkthrough, not a free immediate setup.
+  return locale === 'de' ? 'Walkthrough anfragen →' : 'Request walkthrough →'
 }

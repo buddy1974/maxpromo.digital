@@ -292,14 +292,12 @@ export default function Hero() {
               >
                 {t('ctaSecondary')} →
               </Link>
-              <a
-                href="https://agents.maxpromo.digital"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/contact?system=agent-bureau"
                 style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#F97316', padding: '16px 24px', textDecoration: 'none', display: 'inline-block', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '10px', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}
               >
-                Agent Bureau →
-              </a>
+                Agent Bureau anfragen →
+              </Link>
             </motion.div>
 
             <motion.div

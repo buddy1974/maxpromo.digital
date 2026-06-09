@@ -141,7 +141,7 @@ const RESTAURANT_OS = {
   demoUrl:    'https://demo.restaurant-os.de',
   landingUrl: '/products/restaurant-os',
   systemUrl:  'https://www.restaurant-os.de',
-  bookDemoUrl: 'https://demo.restaurant-os.de/demo/menu/1',
+  bookDemoUrl: '/contact?system=restaurant-os',
   contactSlug: 'restaurant-os',
   hasDemoLogin: false,
 

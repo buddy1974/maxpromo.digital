@@ -103,11 +103,18 @@ export default function SystemGrid({
   const gridClass = RESPONSIVE_GRID_CLASSES[variant]
 
   return (
-    <section data-component="system-grid" data-variant={variant}>
+    <section
+      data-component="system-grid"
+      data-variant={variant}
+      style={{
+        padding: '4rem 2rem',
+        background: 'hsl(240 12% 6%)',
+      }}
+    >
 
       {/* ── Optional section header */}
       {(title || description) && (
-        <header data-section="grid-header">
+        <header data-section="grid-header" style={{ maxWidth: '80rem', margin: '0 auto 2.5rem' }}>
           {title && (
             <h2 data-field="title">
               {title}
@@ -121,18 +128,15 @@ export default function SystemGrid({
         </header>
       )}
 
-      {/*
-        ── GRID
-        Responsive columns come from config.ts → RESPONSIVE_GRID_CLASSES[variant].
-        TODO: add visual styling — background, gap, border-radius (visual pass)
-        TODO: consider stagger animation with Framer Motion (visual pass)
-      */}
+      {/* ── GRID */}
       <div
         data-section="grid"
         className={gridClass}
         style={{
           display: 'grid',
-          gap: '1rem',
+          gap: '1.25rem',
+          maxWidth: '80rem',
+          margin: '0 auto',
         }}
       >
         {products.map((product) => (

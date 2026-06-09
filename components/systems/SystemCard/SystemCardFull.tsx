@@ -192,9 +192,7 @@ export function SystemCardFull({
         {showCTA && (
           <div data-field="cta-group">
             <a
-              href={product.demoUrl ?? product.systemUrl}
-              target={product.demoUrl ? '_blank' : undefined}
-              rel={product.demoUrl ? 'noopener noreferrer' : undefined}
+              href={product.bookDemoUrl}
               data-field="cta-primary"
               data-event-source={product.eventSource}
             >

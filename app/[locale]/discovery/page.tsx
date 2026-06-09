@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import VoiceInputWidget from '@/components/voice/VoiceInputWidget'
 
 const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-inter)' } as const
@@ -138,11 +139,13 @@ export default function DiscoveryPage() {
             </div>
             <input style={{ ...inputBase, marginBottom: '12px' }} placeholder="Company (optional)" value={company} onChange={e => setCompany(e.target.value)} />
 
-            <textarea
-              style={{ ...inputBase, minHeight: '220px', resize: 'vertical', lineHeight: 1.6, fontFamily: 'var(--font-roboto-mono)', fontSize: '13px' }}
-              placeholder={`Paste your brief, e.g.:\n\nAMAKA CITY — IMPROVEMENT PLAN\nWebsite + hosting + domain → 600 €\nBooking system → 100 €\nSocial media setup + first content → 150 €\nFlyer + business card design → 120 €\nPrinting (2,500 flyers + 1,000 cards) → 185 €\n\nIncluded for free: voucher system, package pricing, intro offers.\n\nPayment in 2 parts possible. Step by step OK.`}
+            <VoiceInputWidget
               value={brief}
-              onChange={e => { setBrief(e.target.value); setEnhanced(null) }}
+              onChange={(v) => { setBrief(v); setEnhanced(null) }}
+              rows={9}
+              placeholder={`Paste your brief, e.g.:\n\nAMAKA CITY — IMPROVEMENT PLAN\nWebsite + hosting + domain → 600 €\nBooking system → 100 €\nSocial media setup + first content → 150 €\nFlyer + business card design → 120 €\nPrinting (2,500 flyers + 1,000 cards) → 185 €\n\nIncluded for free: voucher system, package pricing, intro offers.\n\nPayment in 2 parts possible. Step by step OK.`}
+              context="Discovery brief describing a client project scope and budget for Maxpromo Digital"
+              textareaStyle={{ ...inputBase, minHeight: '220px', resize: 'vertical', lineHeight: 1.6, fontFamily: 'var(--font-roboto-mono)', fontSize: '13px' }}
             />
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '14px', flexWrap: 'wrap' }}>
@@ -225,7 +228,7 @@ export default function DiscoveryPage() {
                   <p style={{ ...mono, fontSize: '11px', color: '#666', margin: '6px 0 0' }}>ℹ️ {enhanced.extractionNotes}</p>
                 )}
                 <p style={{ ...sans, fontSize: '13px', color: '#666', margin: '20px 0 0', fontStyle: 'italic' }}>
-                  This is an indicative breakdown extracted from your text. We&rsquo;ll send a proper proposal once you submit.
+                  This is an indicative breakdown extracted from your text. We’ll send a proper proposal once you submit.
                 </p>
               </div>
             )}

@@ -345,7 +345,7 @@
     },
     "proof": {
       "eyebrow": "// From live systems",
-      "title": "Installed and running.",
+      "title": "Systems we install.",
       "p1Value": "78%",
       "p1Label": "reduction in manual processing time",
       "p1Source": "Operations · 6 weeks",
@@ -357,7 +357,7 @@
       "p3Source": "Logistics · 8 weeks",
       "note": "// Results from live production systems. Client details withheld under NDA.",
       "viewAll": "See all case studies →",
-      "subtitle": "These numbers come from real systems operating in real businesses. No demos. No experiments."
+      "subtitle": "Examples of operational outcomes our systems are designed to improve. Built from real operational use cases, not generic templates."
     },
     "slider": {
       "prefix": "Still dealing with:",
@@ -421,9 +421,9 @@
       "eyebrow": "// What we build",
       "title": "Business systems",
       "titleAccent": "running today.",
-      "subtitle": "Click a system and see how it works.",
+      "subtitle": "Explore the systems we install for different business problems.",
       "viewAll": "See all systems",
-      "viewSystem": "See system"
+      "viewSystem": "Book consultation →"
     },
     "teamTrust": {
       "eyebrow": "// The Maxpromo team",
@@ -1095,7 +1095,18 @@
     "transformBody": "They need old systems modernized, manual work removed, and workflows connected. Joomla installations that nobody wants to touch. WordPress sites that take a developer to update. Catalogue shops with no stock logic. Email lists sitting unused in Excel. Manual processes disguised as digital ones. That is the gap we close.",
     "todayEyebrow": "// Today",
     "todayTitle": "Today we install AI-powered business systems.",
-    "todayList": ["Workflow automation", "AI agents", "CRM logic", "Internal dashboards", "Content pipelines", "Newsletter systems", "Catalogue and shop modernization", "Booking and order systems", "Operational platforms", "Legacy CMS modernization"],
+    "todayList": [
+      "Workflow automation",
+      "AI agents",
+      "CRM logic",
+      "Internal dashboards",
+      "Content pipelines",
+      "Newsletter systems",
+      "Catalogue and shop modernization",
+      "Booking and order systems",
+      "Operational platforms",
+      "Legacy CMS modernization"
+    ],
     "principleEyebrow": "What we stand for",
     "principleTitle": "How we approach every system",
     "values": {

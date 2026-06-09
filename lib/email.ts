@@ -59,7 +59,20 @@ export function buildContactEmailHtml(fields: {
   organisation: string
   message: string
   automation?: string
+  /** Product slug from ?system= param — e.g. 'restaurant-os', 'taxkontrol' */
+  system?: string
 }): string {
+  const systemRow = fields.system
+    ? `<tr>
+        <td style="padding: 8px 0; font-weight: bold; color: #F97316; width: 160px; vertical-align: top;">System:</td>
+        <td style="padding: 8px 0; color: #111111; font-weight: bold;">${escapeHtml(fields.system)}</td>
+      </tr>
+      <tr>
+        <td style="padding: 8px 0; font-weight: bold; color: #666666; width: 160px; vertical-align: top;">Source:</td>
+        <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.system)}_consultation_request</td>
+      </tr>`
+    : ''
+
   const automationRow = fields.automation
     ? `<tr>
         <td style="padding: 8px 0; font-weight: bold; color: #666666; width: 160px; vertical-align: top;">Automation Interest:</td>
@@ -67,11 +80,15 @@ export function buildContactEmailHtml(fields: {
       </tr>`
     : ''
 
+  const headingLabel = fields.system
+    ? `Consultation Request — ${escapeHtml(fields.system)}`
+    : 'New Enquiry — Maxpromo Digital'
+
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
       <div style="background: #0A0A0A; padding: 24px; border-bottom: 3px solid #F97316;">
         <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 700;">
-          New Enquiry — Maxpromo Digital
+          ${headingLabel}
         </h2>
         <p style="color: #888888; margin: 4px 0 0; font-size: 13px;">
           Submitted: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}
@@ -79,6 +96,7 @@ export function buildContactEmailHtml(fields: {
       </div>
       <div style="padding: 24px;">
         <table style="width: 100%; border-collapse: collapse;">
+          ${systemRow}
           <tr>
             <td style="padding: 8px 0; font-weight: bold; color: #666666; width: 160px;">Name:</td>
             <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.name)}</td>

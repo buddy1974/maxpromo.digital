@@ -19,7 +19,7 @@ export function SystemsTabs() {
     imgSrc: locale === 'de' && p.media.card.de
       ? `/${p.media.card.de}`
       : `/${p.media.card.en}`,
-    href: p.systemUrl,
+    href: p.bookDemoUrl, // MVP hardening: routes to consultation, not external system
   }))
 
   const current = systems[active]
@@ -110,8 +110,6 @@ export function SystemsTabs() {
           </h3>
           <a
             href={current.href}
-            target="_blank"
-            rel="noopener noreferrer"
             style={{
               fontFamily: 'var(--font-mono)',
               fontWeight: 700,
@@ -124,7 +122,7 @@ export function SystemsTabs() {
               letterSpacing: '0.05em',
             }}
           >
-            {t('viewSystem')} →
+            {t('viewSystem')}
           </a>
         </div>
 
