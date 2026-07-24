@@ -16,6 +16,11 @@
     "de": "Deutsch",
     "en": "English"
   },
+  "cookieBanner": {
+    "text": "Wir verwenden keine Tracking-Cookies. Nur technisch notwendige Funktionen. Ihre Daten werden gemäß unserer",
+    "privacyLink": "Datenschutzerklärung",
+    "accept": "OK"
+  },
   "hero": {
     "statusOperational": "ESSEN · BUSINESS-SYSTEME",
     "statusAgents": "Legacy-Modernisierung",
@@ -500,7 +505,41 @@
       "step4": "Infrastruktur installieren",
       "step5": "Betrieb unterstützen",
       "closing": "KI beschleunigt die Umsetzung. Erfahrung steuert die Entscheidungen."
-    }
+    },
+    "agentBureau": {
+      "sectionLabel": "// Max Agent Bureau",
+      "titleMain": "Ein KI-Büro, das Arbeit vorbereitet —",
+      "titleAccent": "nicht einfach nur antwortet.",
+      "subtitle": "Agent Bureau prüft Abläufe, sammelt Informationen, bereitet Entscheidungen vor und legt kritische Aktionen zur Freigabe vor.",
+      "workflowLabel": "Der Ablauf",
+      "step1Name": "Audit",
+      "step1Caption": "Abläufe prüfen",
+      "step2Name": "Diagnose",
+      "step2Caption": "Engpässe finden",
+      "step3Name": "Agent Team",
+      "step3Caption": "Aufgaben verteilen",
+      "step4Name": "Review",
+      "step4Caption": "Mensch gibt frei",
+      "step5Name": "Execute",
+      "step5Caption": "Aktion ausführen",
+      "step6Name": "Log",
+      "step6Caption": "Alles dokumentiert",
+      "card1Title": "AI Audit Console",
+      "card1Body": "Findet Engpässe, Risiken und Automatisierungschancen.",
+      "card2Title": "Customer Waiting Room",
+      "card2Body": "Sammelt Anfragen, ordnet Prioritäten und hält Kunden sichtbar.",
+      "card3Title": "Approval Desk",
+      "card3Body": "Entscheidungen bleiben kontrolliert, dokumentiert und freigabepflichtig.",
+      "card4Title": "Document Intake Desk",
+      "card4Body": "Sortiert Dokumente, erkennt Lücken und bereitet Pakete vor.",
+      "card5Title": "Shadow AI Governance",
+      "card5Body": "Zeigt, wo KI im Betrieb genutzt wird und wo Kontrolle fehlt.",
+      "trustBadge": "Keine autonome Ausführung. Jede kritische Aktion bleibt freigabepflichtig.",
+      "primaryCta": "Beratungsgespräch anfragen →",
+      "secondaryCta": "Business-Systeme Audit starten"
+    },
+    "metaTitle": "Maxpromo Digital — KI-Systeme für deutsche Unternehmen",
+    "metaDesc": "Wir installieren KI-Systeme in deutschen KMU — Tabellenkalkulation, manuelle Abläufe und getrennte Tools werden durch Betriebsinfrastruktur ersetzt."
   },
   "proof": {
     "eyebrow": "// 03 — ERGEBNISSE",
@@ -765,7 +804,7 @@
     "ctaPrimary": "Kostenlosen Audit anfragen",
     "ctaSecondary": "Mit unserem Team sprechen →",
     "cs1Tag": "OPERATIONS",
-    "cs1Headline": "78% reduction in manual processing time",
+    "cs1Headline": "78 % weniger manuelle Bearbeitungszeit",
     "cs1Challenge": "Ein Operations-Team, das ein komplexes Programmmanagement verantwortete, verbrachte über 60% der Arbeitszeit mit manueller Dateneingabe, Berichterstellung und dem Abgleich von Datensätzen aus mehreren Tabellen. Der Prozess war fehleranfällig, langsam und hinderte das Team daran, sich auf die eigentliche Lieferarbeit zu konzentrieren.",
     "cs1Solution": "Wir haben eine KI-gestützte Dokumentenverarbeitungspipeline eingesetzt, die eingehende Berichte und Datensätze automatisch extrahiert, validiert und kategorisiert. Ein n8n-Workflow leitet Daten in die korrekten Airtable-Datenbanken und löst Zusammenfassungsberichte für Programm-Manager aus — ohne manuelle Eingriffe.",
     "cs1Result1": "78% weniger manuelle Datenverarbeitung",
@@ -774,7 +813,7 @@
     "cs1Result4": "Programm-Manager erhalten automatisch erstellte Wochenberichte",
     "cs1Timeline": "6 Wochen",
     "cs2Tag": "PROFESSIONAL SERVICES",
-    "cs2Headline": "£14,000/month saved in operational costs",
+    "cs2Headline": "14.000 £/Monat an Betriebskosten eingespart",
     "cs2Challenge": "Ein mittelgroßes Beratungsunternehmen verarbeitete Kundenrechnungen, stimmte Ausgaben ab und erstellte monatliche Finanzberichte manuell. Drei Mitglieder des Finanzteams verbrachten durchschnittlich 2 Arbeitstage pro Monat allein mit der Rechnungsabstimmung. Angesichts des wachsenden Kundenstamms wurde dies zunehmend unhaltbar.",
     "cs2Solution": "Wir haben ein vollautomatisiertes Rechnungsverarbeitungssystem entwickelt, das Rechnungen per E-Mail erfasst, Positionen per Dokumenten-KI extrahiert, gegen Bestellungen im ERP-System validiert und freigegebene Rechnungen direkt in Xero bucht. Eine Slack-Benachrichtigung informiert den Finanzverantwortlichen nur wenn eine menschliche Prüfung erforderlich ist.",
     "cs2Result1": "14.000 £/Monat an Betriebskosten eingespart",
@@ -783,7 +822,7 @@
     "cs2Result4": "Finanzteam für höherwertige Kundenprojekte freigestellt",
     "cs2Timeline": "4 Wochen",
     "cs3Tag": "LOGISTICS",
-    "cs3Headline": "Invoice cycle: 3 days → 4 hours",
+    "cs3Headline": "Rechnungszyklus: 3 Tage → 4 Stunden",
     "cs3Challenge": "Ein Logistikunternehmen verlor durch einen langsamen Rechnungsstellungszyklus an Wettbewerbsfähigkeit. Rechnungen wurden manuell aus mehreren Fahrerberichten, Treibstoffprotokollen und Lieferbestätigungen zusammengestellt — ein Prozess, der 3 volle Arbeitstage pro Abrechnungszyklus in Anspruch nahm. Verspätete Rechnungen verursachten Liquiditätsprobleme und Kundenunzufriedenheit.",
     "cs3Solution": "Wir haben alle Datenquellen — Fahrer-Apps, GPS-Systeme, Tankkarten und Lieferbestätigungsdaten — in eine einheitliche Pipeline integriert. Ein KI-Agent erstellt automatisch Rechnungsentwürfe, markiert Ausnahmen und sendet freigegebene Rechnungen über das bestehende Abrechnungssystem an Kunden. Der gesamte Zyklus läuft jetzt automatisch über Nacht.",
     "cs3Result1": "Rechnungszyklus von 3 Tagen auf 4 Stunden komprimiert",
@@ -1254,7 +1293,60 @@
     "successDesc": "Wir antworten innerhalb eines Werktags.",
     "successDirect": "Falls Sie nichts von uns hören, schreiben Sie direkt an",
     "successAnother": "Weitere Nachricht senden →",
-    "errorGeneric": "Etwas ist schiefgelaufen. Bitte schreiben Sie direkt an info@maxpromo.digital"
+    "errorGeneric": "Etwas ist schiefgelaufen. Bitte schreiben Sie direkt an info@maxpromo.digital",
+    "systemLabel": "System:",
+    "systems": {
+      "agent-bureau": {
+        "eyebrow": "// Agent Bureau — Beratungsgespräch",
+        "title": "Max Agent Bureau kennenlernen",
+        "subtitle": "Sehen Sie, wie ein überwachter KI-Stabschef Ihren Betrieb unterstützt — Nachverfolgungen, Genehmigungen, Prioritäten. Kein Commitment erforderlich."
+      },
+      "restaurant-os": {
+        "eyebrow": "// RestaurantOS — Demo-Anfrage",
+        "title": "RestaurantOS für Ihr Restaurant",
+        "subtitle": "Zeigen Sie uns Ihren Betrieb. Wir richten eine Demo ein, die Ihrem Restaurant entspricht — QR-Bestellung, Küchen­routing und Abrechnung."
+      },
+      "handwerk-os": {
+        "eyebrow": "// HandwerkOS — Walkthrough anfragen",
+        "title": "HandwerkOS für Ihren Handwerksbetrieb",
+        "subtitle": "Walkthrough des Live-Systems — Auftrags­erfassung, Angebote, XRechnung-Export. Konfiguriert für Ihren Betriebstyp."
+      },
+      "praxis-os": {
+        "eyebrow": "// PraxisOS — Beratungsgespräch",
+        "title": "PraxisOS für Ihre Praxis",
+        "subtitle": "Sehen Sie das System in Aktion — Terminverwaltung, Patientenakte, Abrechnung. Wir zeigen Ihnen den Ablauf live."
+      },
+      "printshop": {
+        "eyebrow": "// PrintShopOS — Demo-Anfrage",
+        "title": "PrintShopOS für Ihre Druckerei",
+        "subtitle": "Zeigen Sie uns Ihren Auftragsfluss. Wir konfigurieren eine Demo für Ihren spezifischen Druckbetrieb."
+      },
+      "care-os": {
+        "eyebrow": "// CareOS — Walkthrough anfragen",
+        "title": "CareOS für Ihre Pflegeeinrichtung",
+        "subtitle": "Walkthrough des Live-Systems — Einsatzplanung, Dokumentation, Abrechnung. Konfiguriert für Ihren Pflegebetrieb."
+      },
+      "real-estate-os": {
+        "eyebrow": "// RealEstateOS — Beratungsgespräch",
+        "title": "RealEstateOS für Ihr Immobilienunternehmen",
+        "subtitle": "Sehen Sie das Verwaltungs- und Automatisierungssystem live — Exposés, Mieter, Abrechnungen."
+      },
+      "publishing-os": {
+        "eyebrow": "// PublishingOS — Demo-Anfrage",
+        "title": "PublishingOS für Ihren Verlag",
+        "subtitle": "Zeigen Sie uns Ihren Redaktionsablauf. Wir konfigurieren das System für Ihren Verlagstyp."
+      },
+      "taxkontrol": {
+        "eyebrow": "// TaxKontrol — Walkthrough anfragen",
+        "title": "TaxKontrol für Ihr Unternehmen",
+        "subtitle": "Sehen Sie das System live — Steuerrücklagen, Fristen, Ausgabenerfassung — konfiguriert für Ihren Unternehmenstyp."
+      },
+      "drive24": {
+        "eyebrow": "// Drive24 — Zugang anfragen",
+        "title": "Drive24 — Fahrervermittlung",
+        "subtitle": "Sprechen Sie mit uns über Fahrerzugang oder Partnerschaft."
+      }
+    }
   },
   "websitesPlatforms": {
     "eyebrow": "Websites & Business-Plattformen",
@@ -1274,7 +1366,7 @@
     "pain6": "Sie können sie nicht aktualisieren, ohne einen Entwickler zu beauftragen.",
     "capEyebrow": "Was wir bauen",
     "capTitle": "Jede Plattform wird um das gebaut, was der Betrieb wirklich braucht.",
-    "cap1Title": "Websites & Landing Pages",
+    "cap1Title": "Websites & Landingpages",
     "cap1Desc": "Schnelle, professionelle Websites, die konvertieren — nicht nur anzeigen. Von Anfang an für Suche und Mobilgeräte optimiert.",
     "cap2Title": "Lead-Erfassung & Qualifizierung",
     "cap2Desc": "Smarte Formulare, Chat-Flows und Anfrage-Routing, die Besucher qualifizieren und die richtigen Leads weiterleiten.",
@@ -1573,5 +1665,291 @@
     ],
     "proofBeforeLabel": "Vorher",
     "proofAfterLabel": "Nachher"
+  },
+  "automationAudit": {
+    "metaTitle": "Kostenlose Business-Analyse — Maxpromo Digital",
+    "metaDesc": "Beantworten Sie 10 Fragen darüber, wie Ihr Betrieb wirklich funktioniert. Wir identifizieren Ihre echten operativen Engpässe — kostenlos, ohne Verkaufsgespräch.",
+    "breadcrumb": "MAXPROMO.DIGITAL / BUSINESS-ANALYSE",
+    "heroTitle": "Kostenlose Business-Analyse",
+    "heroSubtitle": "Zeigen Sie uns, wie Ihr Betrieb wirklich funktioniert — wo Zeit verloren geht, wo Fehler entstehen, wo Sie auf einzelne Personen angewiesen sind. Wir identifizieren Ihre echten Betriebslücken und zeigen, wo Systeme übernehmen können.",
+    "pill1": "✓ Kein KI-Fachjargon",
+    "pill2": "✓ Kein E-Mail-Spam",
+    "pill3": "✓ Sofortiges Diagnose-Feedback",
+    "progressSectionLabel": "Abschnitt {current} von {total}",
+    "loadingMessages": [
+      "Erfasse Ihre operativen Herausforderungen...",
+      "Identifiziere Arbeitsablaufmuster...",
+      "Analysiere Engpässe und Reibungspunkte...",
+      "Berechne Automatisierungspotenziale...",
+      "Erstelle Ihren Diagnosebericht..."
+    ],
+    "loadingCaption": "// operative Intelligenz-Engine",
+    "sections": {
+      "stress": {
+        "headline": "Was bremst Ihren Betrieb jede Woche aus?",
+        "subheadline": "Wählen Sie alles aus, was Reibung verursacht. Es gibt keine falschen Antworten.",
+        "options": [
+          "Zu viele E-Mails",
+          "Zu viele WhatsApp-Nachrichten",
+          "Verpasste Kundenanfragen",
+          "Verpasste Anrufe",
+          "Langsame Reaktionszeiten",
+          "Papierkram-Überlastung",
+          "Berichte dauern zu lange",
+          "Compliance-Anforderungen",
+          "Zu viele Tabellenkalkulationen",
+          "Daten werden mehrfach erfasst",
+          "Mitarbeiter wiederholen dieselbe Arbeit",
+          "Informationen überall verstreut",
+          "Dokumente schwer auffindbar",
+          "Freigaben dauern zu lange",
+          "Kunden stellen wiederholt dieselben Fragen",
+          "Nachfassen wird vergessen",
+          "Terminchaos",
+          "Fehlende Übersicht",
+          "Sonstiges"
+        ]
+      },
+      "timeLeaks": {
+        "headline": "Wo verliert Ihr Betrieb die meiste Zeit?",
+        "subheadline": "Wählen Sie alle Bereiche aus, in denen jede Woche Stunden verloren gehen.",
+        "options": [
+          "Kundenkommunikation",
+          "Dokumentenvorbereitung",
+          "Berichtswesen",
+          "Terminplanung",
+          "Interne Abstimmung",
+          "Compliance",
+          "Dateneingabe",
+          "Freigaben",
+          "Kunden-Onboarding",
+          "Mitarbeiter-Onboarding",
+          "Auftragsabwicklung",
+          "Finanzverwaltung",
+          "Bestandsverwaltung",
+          "Qualitätskontrolle",
+          "Projektverfolgung",
+          "Sonstiges"
+        ]
+      },
+      "manualWork": {
+        "headline": "Welche Aufgaben werden noch manuell erledigt?",
+        "subheadline": "Wählen Sie jede Aufgabe aus, die Ihr Team von Hand erledigt und die möglicherweise automatisch laufen könnte.",
+        "options": [
+          "Berichte erstellen",
+          "Kundendokumente zusammenstellen",
+          "Rechnungen nachverfolgen",
+          "Kundendaten erfassen",
+          "Compliance-Unterlagen vorbereiten",
+          "Belege ablegen",
+          "Angebote erstellen",
+          "Tabellenkalkulationen aktualisieren",
+          "Zertifikate vorbereiten",
+          "Kunden-Onboarding",
+          "Mitarbeiter-Onboarding",
+          "Status-Updates",
+          "Freigabeprozesse",
+          "Qualitätsprüfungen",
+          "Datenkonsolidierung",
+          "Sonstiges"
+        ]
+      },
+      "documentChaos": {
+        "headline": "Wie beeinflussen Dokumente Ihre tägliche Arbeit?",
+        "subheadline": "Wählen Sie jede Aussage aus, die auf Ihren Betrieb heute zutrifft.",
+        "options": [
+          "Informationen liegen in mehreren Systemen",
+          "Mitarbeiter suchen ständig nach Dateien",
+          "Berichte dauern zu lange in der Vorbereitung",
+          "Compliance-Dokumentation ist schwierig",
+          "Kundenpakete werden manuell erstellt",
+          "Dokumente werden dupliziert",
+          "Wir stellen Nachweise und Aufzeichnungen manuell zusammen",
+          "Wir erstellen Kundenordner manuell",
+          "Wichtige Dateien sind schwer zu finden",
+          "Wir erfassen dieselben Informationen wiederholt",
+          "Sonstiges"
+        ]
+      },
+      "knowledgeBottleneck": {
+        "headline": "Hängt wichtiges Wissen von bestimmten Personen ab?",
+        "subheadline": "Wählen Sie jede Situation aus, die widerspiegelt, wie Wissen in Ihrem Betrieb funktioniert.",
+        "options": [
+          "Ein Mitarbeiter weiß alles",
+          "Neue Mitarbeiter benötigen umfangreiche Einarbeitung",
+          "Abläufe sind nicht dokumentiert",
+          "Mitarbeiter stellen wiederholt dieselben Fragen",
+          "Informationen sind schwer auffindbar",
+          "Wissen geht verloren, wenn Mitarbeiter das Unternehmen verlassen",
+          "Prozesse existieren nur im Kopf der Mitarbeiter",
+          "Sonstiges"
+        ]
+      },
+      "qualityVerification": {
+        "headline": "Was erfordert wiederholte Prüfung oder Kontrolle?",
+        "subheadline": "Wählen Sie jeden Bereich aus, in dem Ihr Team Zeit mit Prüfen und erneutem Prüfen verbringt.",
+        "options": [
+          "Berechnungen",
+          "Spezifikationen",
+          "Angebote",
+          "Kundenanforderungen",
+          "Compliance-Anforderungen",
+          "Berichte",
+          "Technische Dokumente",
+          "Qualitätsstandards",
+          "Verträge",
+          "Finanzunterlagen",
+          "Produktionsunterlagen",
+          "Prüfnachweise",
+          "Sonstiges"
+        ]
+      },
+      "reportingVisibility": {
+        "headline": "Welche Informationen hätten Sie gerne sofort im Blick?",
+        "subheadline": "Wählen Sie jede Ansicht aus, die Ihre Betriebsführung verbessern würde.",
+        "options": [
+          "Geschäftsentwicklung",
+          "Projektstatus",
+          "Kundenstatus",
+          "Offene Rechnungen",
+          "Teamauslastung",
+          "Compliance-Bereitschaft",
+          "Betriebliche Engpässe",
+          "Finanzübersicht",
+          "Vertriebsleistung",
+          "Status der Serviceleistung",
+          "Produktionsfortschritt",
+          "Sonstiges"
+        ]
+      },
+      "aiOpportunity": {
+        "headline": "Was soll ein intelligenter Assistent für Sie übernehmen?",
+        "subheadline": "Hier geht es nicht um Chatbots. Wählen Sie die operativen Aufgaben aus, die KI Ihnen abnehmen könnte.",
+        "options": [
+          "Dokumente lesen",
+          "Berichte erstellen",
+          "Meetings zusammenfassen",
+          "Dateien organisieren",
+          "Fristen überwachen",
+          "Berechnungen prüfen",
+          "Spezifikationen prüfen",
+          "Compliance-Anforderungen prüfen",
+          "Angebote erstellen",
+          "Kundenpakete vorbereiten",
+          "Zertifikate erstellen",
+          "Informationen aus PDFs extrahieren",
+          "Tabellenkalkulationen analysieren",
+          "Verträge prüfen",
+          "Kunden-Updates erstellen",
+          "Arbeitsabläufe überwachen",
+          "Sonstiges"
+        ]
+      },
+      "ceoQuestion": {
+        "headline": "Was ist aktuell das frustrierendste Problem in Ihrem Betrieb?",
+        "subheadline": "Beschreiben Sie es mit Ihren eigenen Worten. Ohne Filter, ohne Politur — einfach die reale Situation.",
+        "textareaPlaceholder": "z. B. Jeden Monat verbringen wir zwei Tage damit, einen Compliance-Bericht manuell aus sechs verschiedenen Tabellenkalkulationen zusammenzustellen. Wenn er fertig ist, sind die Daten bereits veraltet. Wir wissen, dass etwas nicht stimmt, aber nicht, wo wir anfangen sollen..."
+      }
+    },
+    "selectedCount": "{count} ausgewählt",
+    "charactersCount": "{count} Zeichen",
+    "charactersMinimum": " — mindestens 20 erforderlich",
+    "contactHeadline": "Fast fertig — wohin sollen wir Ihre Ergebnisse senden?",
+    "contactSubheadline": "Ein Berater prüft Ihre Diagnose persönlich und meldet sich innerhalb von 24 Stunden.",
+    "fieldNameLabel": "Vollständiger Name",
+    "fieldNamePlaceholder": "Max Mustermann",
+    "fieldCompanyLabel": "Unternehmen",
+    "fieldCompanyPlaceholder": "Name Ihres Unternehmens",
+    "fieldEmailLabel": "E-Mail",
+    "fieldEmailPlaceholder": "max@unternehmen.de",
+    "fieldPhoneLabel": "Telefon",
+    "fieldPhonePlaceholder": "+49 151 ...",
+    "contactFootnote": "// Kein Spam. Ihre Daten werden nur verwendet, um Ihre Diagnose zu liefern und zu besprechen.",
+    "backButton": "← Zurück",
+    "continueButton": "Weiter →",
+    "submitButton": "Diagnose absenden →",
+    "receivedLabel": "Diagnose eingegangen",
+    "receivedTitle": "{name} — Bericht zur operativen Intelligenz",
+    "receivedFallbackName": "Ihr Unternehmen",
+    "receivedSummary": "Basierend auf Ihren Antworten haben wir {count} potenzielle Verbesserungsbereich{plural} identifiziert. Ein Berater prüft Ihre Diagnose und meldet sich innerhalb von 24 Stunden.",
+    "opportunitiesLabel": "// Erkannte Chancen",
+    "discussTitle": "Möchten Sie Ihre Ergebnisse besprechen?",
+    "discussCaption": "// Ein Berater meldet sich innerhalb von 24 Stunden bei Ihnen",
+    "talkToUsCta": "Jetzt mit uns sprechen →",
+    "categories": {
+      "workflow-automation": {
+        "label": "Workflow-Automatisierung",
+        "description": "Wiederkehrende Prozesse, die sich vollständig automatisieren lassen — ohne manuelle Übergaben"
+      },
+      "document-automation": {
+        "label": "Dokumenten-Automatisierung",
+        "description": "Erstellung, Ablage, Klassifizierung und Verarbeitung von Dokumenten im großen Maßstab"
+      },
+      "reporting-improvements": {
+        "label": "Verbessertes Berichtswesen",
+        "description": "Echtzeit-Dashboards und automatisierte Berichterstellung über alle Ihre Datenquellen hinweg"
+      },
+      "operational-visibility": {
+        "label": "Operative Transparenz",
+        "description": "Live-Status über Betrieb, Teams, Projekte und Auslastung"
+      },
+      "communication-improvements": {
+        "label": "Verbesserte Kommunikation",
+        "description": "Schnellere Antworten, automatisiertes Nachfassen und weniger Kommunikationsaufwand"
+      },
+      "compliance-support": {
+        "label": "Compliance-Unterstützung",
+        "description": "Automatisierte Compliance-Verfolgung, Dokumentation und Prüfungsvorbereitung"
+      },
+      "knowledge-management": {
+        "label": "Wissensmanagement",
+        "description": "Erfassen, Organisieren und Zugänglichmachen von Unternehmenswissen im gesamten Team"
+      },
+      "ai-assisted-operations": {
+        "label": "KI-gestützte Abläufe",
+        "description": "Intelligente Automatisierung für komplexe, urteilsbasierte operative Aufgaben"
+      },
+      "process-optimization": {
+        "label": "Prozessoptimierung",
+        "description": "Beseitigung von Verschwendung, Engpässen und wiederholten manuellen Schritten in Kernprozessen"
+      }
+    },
+    "results": {
+      "reportLabel": "Automatisierungs-Audit-Bericht",
+      "titlePrefix": "{company} — ",
+      "title": "Ihre Automatisierungspotenziale",
+      "subtitle": "{count} Chancen identifiziert{orgTypeSuffix} · Unterstützt von Claude AI",
+      "orgTypeSuffix": " für {orgType}",
+      "statOpportunities": "Chancen",
+      "statAvgTimeline": "Ø Zeitrahmen",
+      "statAvgTimelineFallback": "2–4 Wochen",
+      "statImplementation": "Umsetzung",
+      "statImplementationValue": "Individuell auf Ihren Stack abgestimmt",
+      "opportunityFallback": "Chance {num}",
+      "estRoiLabel": "Gesch. ROI",
+      "complexityLabel": "Komplexität: {value}",
+      "timelineLabel": "⏱ {value}",
+      "problemLabel": "// das Problem",
+      "solutionLabel": "// die Lösung",
+      "toolsLabel": "// Werkzeuge",
+      "readyToBuildLabel": "Bereit umzusetzen?",
+      "ctaTitle": "Verwandeln Sie diese Chancen in laufende Systeme",
+      "ctaBody": "Buchen Sie ein 30-minütiges Erstgespräch. Wir grenzen die wirkungsvollste Automatisierung ein und erstellen ein Festpreisangebot.",
+      "getEstimateCta": "Kostenschätzung anfordern →",
+      "bookCallCta": "Erstgespräch buchen →",
+      "downloadPdfCta": "Bericht herunterladen (PDF)",
+      "bookDiscoveryCallCta": "Erstgespräch buchen"
+    }
+  },
+  "products": {
+    "metaTitle": "Betriebssysteme — Maxpromo Digital",
+    "metaDesc": "Sieben Betriebssysteme — konfiguriert und sofort einsatzbereit. Tabellenkalkulationen, Papierdokumente und getrennte Tools ersetzen.",
+    "heroEyebrow": "ALLE SYSTEME",
+    "heroTitle": "Sieben Betriebssysteme.\nKonfiguriert und einsatzbereit.",
+    "heroSubtitle": "Jedes System ist konfiguriert und sofort einsatzbereit. Entwickelt, um Tabellenkalkulationen, Papierdokumente und getrennte Tools zu ersetzen.",
+    "customEyebrow": "INDIVIDUELLE SYSTEME",
+    "customTitle": "Brauchen Sie etwas, das nicht aufgeführt ist?",
+    "customBody": "Jedes System oben begann als individueller Auftrag. Wenn Ihr Betrieb ein spezifisches operatives Problem hat, bauen wir das System, das es löst.",
+    "customCta": "IHR SYSTEM BESPRECHEN →"
   }
 }

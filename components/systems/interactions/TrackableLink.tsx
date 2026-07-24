@@ -35,7 +35,7 @@ import { trackEvent } from '@/lib/analytics/track'
  * Distributive Omit — removes K from each union member independently.
  * Standard Omit<A | B, K> only keeps common keys; this preserves all fields.
  */
-type DistributiveOmit<T, K extends keyof any> = T extends any ? Omit<T, K> : never
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never
 
 /** Event payload without timestamp — TrackableLink injects it at click time. */
 export type TrackableEventPayload = DistributiveOmit<AnalyticsEvent, 'timestamp'>

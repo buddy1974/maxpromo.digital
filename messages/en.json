@@ -16,6 +16,11 @@
     "de": "Deutsch",
     "en": "English"
   },
+  "cookieBanner": {
+    "text": "We use no tracking cookies. Essential functions only. Your data is handled per our",
+    "privacyLink": "Privacy Policy",
+    "accept": "OK"
+  },
   "hero": {
     "statusOperational": "ESSEN · BUSINESS SYSTEMS",
     "statusAgents": "Legacy modernization",
@@ -500,7 +505,41 @@
       "step4": "Install the infrastructure",
       "step5": "Support the business",
       "closing": "AI accelerates implementation. Experience guides decisions."
-    }
+    },
+    "agentBureau": {
+      "sectionLabel": "// Max Agent Bureau",
+      "titleMain": "An AI office that prepares work —",
+      "titleAccent": "not just responds to it.",
+      "subtitle": "Agent Bureau audits workflows, gathers information, prepares decisions, and submits critical actions for human approval.",
+      "workflowLabel": "The workflow",
+      "step1Name": "Audit",
+      "step1Caption": "Scan workflows",
+      "step2Name": "Diagnose",
+      "step2Caption": "Find bottlenecks",
+      "step3Name": "Agent Team",
+      "step3Caption": "Assign tasks",
+      "step4Name": "Review",
+      "step4Caption": "Human approves",
+      "step5Name": "Execute",
+      "step5Caption": "Run the action",
+      "step6Name": "Log",
+      "step6Caption": "Everything logged",
+      "card1Title": "AI Audit Console",
+      "card1Body": "Identifies bottlenecks, risks, and automation opportunities.",
+      "card2Title": "Customer Waiting Room",
+      "card2Body": "Collects requests, ranks priorities, keeps clients visible.",
+      "card3Title": "Approval Desk",
+      "card3Body": "Decisions stay controlled, documented, and approval-gated.",
+      "card4Title": "Document Intake Desk",
+      "card4Body": "Sorts documents, spots gaps, and prepares delivery packages.",
+      "card5Title": "Shadow AI Governance",
+      "card5Body": "Shows where AI is used in the business and where control is missing.",
+      "trustBadge": "No autonomous execution. Every critical action requires human approval.",
+      "primaryCta": "Request Agent Bureau Consultation →",
+      "secondaryCta": "Start Business Systems Audit"
+    },
+    "metaTitle": "Maxpromo Digital — AI Systems for German Businesses",
+    "metaDesc": "We install AI systems into German SMEs — replacing spreadsheets, manual workflows, and disconnected tools with operational infrastructure."
   },
   "proof": {
     "eyebrow": "// 03 — RESULTS",
@@ -1254,7 +1293,60 @@
     "successDesc": "We will reply within one business day.",
     "successDirect": "If you don't hear from us, email us directly at",
     "successAnother": "Send another message →",
-    "errorGeneric": "Something went wrong. Please email us directly at info@maxpromo.digital"
+    "errorGeneric": "Something went wrong. Please email us directly at info@maxpromo.digital",
+    "systemLabel": "System:",
+    "systems": {
+      "agent-bureau": {
+        "eyebrow": "// Agent Bureau — Consultation Request",
+        "title": "Meet Max Agent Bureau",
+        "subtitle": "See how a supervised AI chief-of-staff supports your operations — follow-ups, approvals, priorities. No commitment required."
+      },
+      "restaurant-os": {
+        "eyebrow": "// RestaurantOS — Demo Request",
+        "title": "RestaurantOS for your restaurant",
+        "subtitle": "Show us your operation. We’ll set up a demo that matches your restaurant — QR ordering, kitchen routing, and billing."
+      },
+      "handwerk-os": {
+        "eyebrow": "// HandwerkOS — Request Walkthrough",
+        "title": "HandwerkOS for your trade business",
+        "subtitle": "Walkthrough of the live system — job capture, quotes, XRechnung export. Configured for your business type."
+      },
+      "praxis-os": {
+        "eyebrow": "// PraxisOS — Consultation Request",
+        "title": "PraxisOS for your practice",
+        "subtitle": "See the system in action — appointment management, patient records, billing. We’ll walk you through the workflow live."
+      },
+      "printshop": {
+        "eyebrow": "// PrintShopOS — Demo Request",
+        "title": "PrintShopOS for your print shop",
+        "subtitle": "Show us your job flow. We configure a demo for your specific print operation."
+      },
+      "care-os": {
+        "eyebrow": "// CareOS — Request Walkthrough",
+        "title": "CareOS for your care facility",
+        "subtitle": "Walkthrough of the live system — scheduling, documentation, billing. Configured for your care operation."
+      },
+      "real-estate-os": {
+        "eyebrow": "// RealEstateOS — Consultation Request",
+        "title": "RealEstateOS for your real estate business",
+        "subtitle": "See the management and automation system live — listings, tenants, billing."
+      },
+      "publishing-os": {
+        "eyebrow": "// PublishingOS — Demo Request",
+        "title": "PublishingOS for your publishing house",
+        "subtitle": "Show us your editorial workflow. We configure the system for your publishing type."
+      },
+      "taxkontrol": {
+        "eyebrow": "// TaxKontrol — Request Walkthrough",
+        "title": "TaxKontrol for your business",
+        "subtitle": "See the system live — tax reserves, deadlines, expense tracking — configured for your business type."
+      },
+      "drive24": {
+        "eyebrow": "// Drive24 — Request Access",
+        "title": "Drive24 — Driver Placement",
+        "subtitle": "Talk to us about driver access or partnership."
+      }
+    }
   },
   "websitesPlatforms": {
     "eyebrow": "Websites & Business Platforms",
@@ -1573,5 +1665,291 @@
     ],
     "proofBeforeLabel": "Before",
     "proofAfterLabel": "After"
+  },
+  "automationAudit": {
+    "metaTitle": "Free Business Diagnostic — Maxpromo Digital",
+    "metaDesc": "Answer 10 quick questions about how your business actually operates. We identify your real operational bottlenecks — free, no sales pitch.",
+    "breadcrumb": "MAXPROMO.DIGITAL / BUSINESS DIAGNOSTIC",
+    "heroTitle": "Free Business Diagnostic",
+    "heroSubtitle": "Tell us how your business actually operates — where time gets lost, where mistakes happen, where you rely on single people. We identify your real operational gaps and where systems can take over.",
+    "pill1": "✓ No AI jargon",
+    "pill2": "✓ No email spam",
+    "pill3": "✓ Instant diagnostic feedback",
+    "progressSectionLabel": "Section {current} of {total}",
+    "loadingMessages": [
+      "Mapping your operational challenges...",
+      "Identifying workflow patterns...",
+      "Analysing bottlenecks and friction points...",
+      "Calculating intelligence opportunities...",
+      "Preparing your diagnostic report..."
+    ],
+    "loadingCaption": "// operational intelligence engine",
+    "sections": {
+      "stress": {
+        "headline": "What slows your business down every week?",
+        "subheadline": "Select everything that causes friction. There are no wrong answers.",
+        "options": [
+          "Too many emails",
+          "Too many WhatsApp messages",
+          "Missed customer enquiries",
+          "Missed calls",
+          "Slow response times",
+          "Paperwork overload",
+          "Reporting takes too long",
+          "Compliance requirements",
+          "Too many spreadsheets",
+          "Data entered multiple times",
+          "Staff repeat the same work",
+          "Information scattered everywhere",
+          "Documents difficult to find",
+          "Approvals take too long",
+          "Customers ask the same questions repeatedly",
+          "Follow-ups are forgotten",
+          "Scheduling chaos",
+          "Lack of visibility",
+          "Other"
+        ]
+      },
+      "timeLeaks": {
+        "headline": "Where does your business lose the most time?",
+        "subheadline": "Select all areas where hours disappear each week.",
+        "options": [
+          "Customer communication",
+          "Document preparation",
+          "Reporting",
+          "Scheduling",
+          "Internal coordination",
+          "Compliance",
+          "Data entry",
+          "Approvals",
+          "Customer onboarding",
+          "Employee onboarding",
+          "Order processing",
+          "Financial administration",
+          "Inventory management",
+          "Quality control",
+          "Project tracking",
+          "Other"
+        ]
+      },
+      "manualWork": {
+        "headline": "Which tasks are still done manually?",
+        "subheadline": "Select every task your team does by hand that could potentially run automatically.",
+        "options": [
+          "Creating reports",
+          "Compiling customer documents",
+          "Chasing invoices",
+          "Entering customer data",
+          "Preparing compliance paperwork",
+          "Filing receipts",
+          "Preparing quotations",
+          "Updating spreadsheets",
+          "Preparing certificates",
+          "Customer onboarding",
+          "Employee onboarding",
+          "Status updates",
+          "Approval processes",
+          "Quality checks",
+          "Data consolidation",
+          "Other"
+        ]
+      },
+      "documentChaos": {
+        "headline": "How do documents affect your daily work?",
+        "subheadline": "Select every statement that applies to your business today.",
+        "options": [
+          "Information lives in multiple systems",
+          "Staff constantly search for files",
+          "Reports take too long to prepare",
+          "Compliance documentation is difficult",
+          "Customer packages are built manually",
+          "Documents are duplicated",
+          "We manually compile evidence and records",
+          "We manually create customer folders",
+          "Important files are hard to find",
+          "We repeatedly collect the same information",
+          "Other"
+        ]
+      },
+      "knowledgeBottleneck": {
+        "headline": "Does important knowledge depend on specific people?",
+        "subheadline": "Select every situation that reflects how knowledge works in your business.",
+        "options": [
+          "One employee knows everything",
+          "New staff require extensive training",
+          "Procedures are undocumented",
+          "Staff repeatedly ask the same questions",
+          "Information is difficult to locate",
+          "Knowledge leaves when employees leave",
+          "Processes exist only in people's heads",
+          "Other"
+        ]
+      },
+      "qualityVerification": {
+        "headline": "What requires repetitive checking or verification?",
+        "subheadline": "Select every area where your team spends time checking and re-checking.",
+        "options": [
+          "Calculations",
+          "Specifications",
+          "Quotes",
+          "Customer requirements",
+          "Compliance requirements",
+          "Reports",
+          "Technical documents",
+          "Quality standards",
+          "Contracts",
+          "Financial records",
+          "Production records",
+          "Audit evidence",
+          "Other"
+        ]
+      },
+      "reportingVisibility": {
+        "headline": "What information do you wish you could see instantly?",
+        "subheadline": "Select every view that would improve how you run the business.",
+        "options": [
+          "Business performance",
+          "Project status",
+          "Customer status",
+          "Outstanding invoices",
+          "Team workload",
+          "Compliance readiness",
+          "Operational bottlenecks",
+          "Financial overview",
+          "Sales performance",
+          "Service delivery status",
+          "Production progress",
+          "Other"
+        ]
+      },
+      "aiOpportunity": {
+        "headline": "What would you love an intelligent assistant to handle?",
+        "subheadline": "This is not about chatbots. Select the operational tasks AI could take off your plate.",
+        "options": [
+          "Reading documents",
+          "Preparing reports",
+          "Summarizing meetings",
+          "Organizing files",
+          "Monitoring deadlines",
+          "Reviewing calculations",
+          "Reviewing specifications",
+          "Checking compliance requirements",
+          "Generating proposals",
+          "Preparing customer packages",
+          "Creating certificates",
+          "Extracting information from PDFs",
+          "Analyzing spreadsheets",
+          "Reviewing contracts",
+          "Creating customer updates",
+          "Monitoring workflows",
+          "Other"
+        ]
+      },
+      "ceoQuestion": {
+        "headline": "What is the single most frustrating problem in your business today?",
+        "subheadline": "Describe it in your own words. No filters, no polish — just the real situation.",
+        "textareaPlaceholder": "e.g. Every month we spend two days manually compiling a compliance report from six different spreadsheets. By the time it's done, the data is already out of date. We know something is wrong but we don't know where to start..."
+      }
+    },
+    "selectedCount": "{count} selected",
+    "charactersCount": "{count} characters",
+    "charactersMinimum": " — minimum 20 required",
+    "contactHeadline": "Almost done — where should we send your results?",
+    "contactSubheadline": "A consultant will review your diagnostic personally and reach out within 24 hours.",
+    "fieldNameLabel": "Full Name",
+    "fieldNamePlaceholder": "Jane Smith",
+    "fieldCompanyLabel": "Company",
+    "fieldCompanyPlaceholder": "Your company name",
+    "fieldEmailLabel": "Email",
+    "fieldEmailPlaceholder": "jane@company.com",
+    "fieldPhoneLabel": "Phone",
+    "fieldPhonePlaceholder": "+49 151 ...",
+    "contactFootnote": "// No spam. Your data is used only to deliver and discuss your diagnostic.",
+    "backButton": "← Back",
+    "continueButton": "Continue →",
+    "submitButton": "Submit Diagnostic →",
+    "receivedLabel": "Diagnostic Received",
+    "receivedTitle": "{name} — Operational Intelligence Report",
+    "receivedFallbackName": "your business",
+    "receivedSummary": "Based on your responses, we have identified {count} potential improvement area{plural}. A consultant will review your diagnostic and be in touch within 24 hours.",
+    "opportunitiesLabel": "// Opportunities detected",
+    "discussTitle": "Want to discuss your results?",
+    "discussCaption": "// A consultant will contact you within 24 hours",
+    "talkToUsCta": "Talk to us now →",
+    "categories": {
+      "workflow-automation": {
+        "label": "Workflow Automation",
+        "description": "Repetitive processes that can be automated end-to-end, eliminating manual handoffs"
+      },
+      "document-automation": {
+        "label": "Document Automation",
+        "description": "Document creation, retrieval, classification, and processing at scale"
+      },
+      "reporting-improvements": {
+        "label": "Reporting Improvements",
+        "description": "Real-time dashboards and automated report generation across your data sources"
+      },
+      "operational-visibility": {
+        "label": "Operational Visibility",
+        "description": "Live status across operations, teams, projects, and workloads"
+      },
+      "communication-improvements": {
+        "label": "Communication Improvements",
+        "description": "Faster response, automated follow-ups, and reduced communication overhead"
+      },
+      "compliance-support": {
+        "label": "Compliance Support",
+        "description": "Automated compliance tracking, documentation, and audit preparation"
+      },
+      "knowledge-management": {
+        "label": "Knowledge Management",
+        "description": "Capturing, organizing, and surfacing institutional knowledge across your team"
+      },
+      "ai-assisted-operations": {
+        "label": "AI-Assisted Operations",
+        "description": "Intelligent automation for complex, judgment-based operational tasks"
+      },
+      "process-optimization": {
+        "label": "Process Optimization",
+        "description": "Eliminating waste, bottlenecks, and repeated manual steps from core processes"
+      }
+    },
+    "results": {
+      "reportLabel": "Automation Audit Report",
+      "titlePrefix": "{company} — ",
+      "title": "Your Automation Opportunities",
+      "subtitle": "{count} opportunities identified{orgTypeSuffix} · Powered by Claude AI",
+      "orgTypeSuffix": " for {orgType}",
+      "statOpportunities": "Opportunities",
+      "statAvgTimeline": "Avg. timeline",
+      "statAvgTimelineFallback": "2–4 weeks",
+      "statImplementation": "Implementation",
+      "statImplementationValue": "Custom to your stack",
+      "opportunityFallback": "Opportunity {num}",
+      "estRoiLabel": "Est. ROI",
+      "complexityLabel": "Complexity: {value}",
+      "timelineLabel": "⏱ {value}",
+      "problemLabel": "// the problem",
+      "solutionLabel": "// the solution",
+      "toolsLabel": "// tools",
+      "readyToBuildLabel": "Ready to Build?",
+      "ctaTitle": "Turn these opportunities into live systems",
+      "ctaBody": "Book a 30-minute discovery call. We'll scope the highest-impact automation and give you a fixed-price proposal.",
+      "getEstimateCta": "Get Cost Estimate →",
+      "bookCallCta": "Book a Discovery Call →",
+      "downloadPdfCta": "Download Report (PDF)",
+      "bookDiscoveryCallCta": "Book Discovery Call"
+    }
+  },
+  "products": {
+    "metaTitle": "Operating Systems — Maxpromo Digital",
+    "metaDesc": "Seven operating systems built to install and run. Replace spreadsheets, paper records, and disconnected tools.",
+    "heroEyebrow": "ALL SYSTEMS",
+    "heroTitle": "Seven operating systems.\nBuilt to install and run.",
+    "heroSubtitle": "Each system is configured and installation-ready. Designed to replace spreadsheets, paper records, and disconnected tools.",
+    "customEyebrow": "CUSTOM SYSTEMS",
+    "customTitle": "Need something that isn’t listed?",
+    "customBody": "Every system above started as a custom brief. If your business has a specific operational problem, we build the system that solves it.",
+    "customCta": "DISCUSS YOUR SYSTEM →"
   }
 }

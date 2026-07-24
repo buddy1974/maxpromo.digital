@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import VoiceInputWidget from '@/components/voice/VoiceInputWidget'
 
@@ -22,9 +23,17 @@ const inputBase: React.CSSProperties = {
   transition: 'border-color 150ms ease',
 }
 
+/* ─── LOCALE HELPER ───────────────────────────────────────── */
+function t(locale: string, de: string, en: string): string {
+  return locale === 'de' ? de : en
+}
+
 type Status = 'idle' | 'enhancing' | 'sending' | 'success' | 'error'
 
 export default function DiscoveryPage() {
+  const params = useParams<{ locale: string }>()
+  const locale = params?.locale === 'de' ? 'de' : 'en'
+
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [company, setCompany] = useState('')
@@ -50,7 +59,7 @@ export default function DiscoveryPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kind: 'angebot', text: brief }),
       })
-      if (!res.ok) throw new Error('AI extraction failed')
+      if (!res.ok) throw new Error(t(locale, 'KI-Extraktion fehlgeschlagen', 'AI extraction failed'))
       const json = await res.json() as {
         extracted: {
           lineItems: Array<{ description: string; finalPrice: number; confidence: string }>
@@ -72,7 +81,7 @@ export default function DiscoveryPage() {
       })
       setStatus('idle')
     } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : 'Failed to enhance')
+      setErrorMsg(e instanceof Error ? e.message : t(locale, 'Verarbeitung fehlgeschlagen', 'Failed to enhance'))
       setStatus('error')
     }
   }
@@ -87,7 +96,7 @@ export default function DiscoveryPage() {
         body: JSON.stringify({
           name: name.trim(),
           email: email.trim(),
-          organisation: company.trim() || 'Discovery (no company)',
+          organisation: company.trim() || t(locale, 'Discovery (kein Unternehmen)', 'Discovery (no company)'),
           automation: 'Discovery Call',
           message: enhanced
             ? `DISCOVERY BRIEF\n\n${brief.trim()}\n\n— AI-STRUCTURED PREVIEW —\n${
@@ -100,10 +109,10 @@ export default function DiscoveryPage() {
             : brief.trim(),
         }),
       })
-      if (!res.ok) throw new Error('Could not send. Please try again.')
+      if (!res.ok) throw new Error(t(locale, 'Konnte nicht gesendet werden. Bitte erneut versuchen.', 'Could not send. Please try again.'))
       setStatus('success')
     } catch (e) {
-      setErrorMsg(e instanceof Error ? e.message : 'Failed to send')
+      setErrorMsg(e instanceof Error ? e.message : t(locale, 'Senden fehlgeschlagen', 'Failed to send'))
       setStatus('error')
     }
   }
@@ -113,37 +122,49 @@ export default function DiscoveryPage() {
       <div style={{ maxWidth: '780px', margin: '0 auto' }}>
 
         <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
-          // Discovery Call
+          {t(locale, '// Erstgespräch', '// Discovery Call')}
         </p>
         <h1 style={{ ...grotesk, fontSize: 'clamp(32px, 5vw, 48px)', color: '#FFFFFF', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 16px', lineHeight: 1.1 }}>
-          Tell us what you need.<br />
-          <span style={{ color: '#888888' }}>We&rsquo;ll structure it for you.</span>
+          {t(locale, 'Sagen Sie uns, was Sie brauchen.', 'Tell us what you need.')}<br />
+          <span style={{ color: '#888888' }}>{t(locale, 'Wir strukturieren es für Sie.', "We'll structure it for you.")}</span>
         </h1>
         <p style={{ ...sans, fontSize: '17px', color: '#888888', lineHeight: 1.6, margin: '0 0 48px', maxWidth: '600px' }}>
-          Paste your raw brief — notes, a forwarded email, a list, even messy bullet points. Our extractor turns it into a structured starting point in seconds. We&rsquo;ll follow up with a real proposal within 24h.
+          {t(locale,
+            'Fügen Sie Ihr Rohbriefing ein — Notizen, eine weitergeleitete E-Mail, eine Liste, auch unordentliche Stichpunkte. Unser Extraktor macht daraus in Sekunden einen strukturierten Ausgangspunkt. Wir melden uns innerhalb von 24 Stunden mit einem echten Angebot.',
+            "Paste your raw brief — notes, a forwarded email, a list, even messy bullet points. Our extractor turns it into a structured starting point in seconds. We'll follow up with a real proposal within 24h.")}
         </p>
 
         {status === 'success' ? (
           <div style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.25)', padding: '32px', borderRadius: '2px', textAlign: 'center' }}>
-            <p style={{ ...mono, fontSize: '11px', color: '#22c55e', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 12px' }}>✓ Brief received</p>
-            <p style={{ ...sans, fontSize: '16px', color: '#FFFFFF', margin: '0 0 8px' }}>Thanks — we will reply within 24 hours.</p>
+            <p style={{ ...mono, fontSize: '11px', color: '#22c55e', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 12px' }}>
+              {t(locale, '✓ Briefing erhalten', '✓ Brief received')}
+            </p>
+            <p style={{ ...sans, fontSize: '16px', color: '#FFFFFF', margin: '0 0 8px' }}>
+              {t(locale, 'Danke — wir melden uns innerhalb von 24 Stunden.', 'Thanks — we will reply within 24 hours.')}
+            </p>
             <p style={{ ...sans, fontSize: '14px', color: '#888888', margin: 0 }}>
-              In the meantime, take the <Link href="/automation-audit" style={{ color: '#F97316' }}>free automation audit</Link>.
+              {t(locale, 'In der Zwischenzeit können Sie die', 'In the meantime, take the')}{' '}
+              <Link href="/automation-audit" style={{ color: '#F97316' }}>
+                {t(locale, 'kostenlose Automatisierungs-Analyse', 'free automation audit')}
+              </Link>
+              {t(locale, ' machen.', '.')}
             </p>
           </div>
         ) : (
           <>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
-              <input style={inputBase} placeholder="Your name" value={name} onChange={e => setName(e.target.value)} />
-              <input style={inputBase} type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+              <input style={inputBase} placeholder={t(locale, 'Ihr Name', 'Your name')} value={name} onChange={e => setName(e.target.value)} />
+              <input style={inputBase} type="email" placeholder={t(locale, 'E-Mail', 'Email')} value={email} onChange={e => setEmail(e.target.value)} />
             </div>
-            <input style={{ ...inputBase, marginBottom: '12px' }} placeholder="Company (optional)" value={company} onChange={e => setCompany(e.target.value)} />
+            <input style={{ ...inputBase, marginBottom: '12px' }} placeholder={t(locale, 'Unternehmen (optional)', 'Company (optional)')} value={company} onChange={e => setCompany(e.target.value)} />
 
             <VoiceInputWidget
               value={brief}
               onChange={(v) => { setBrief(v); setEnhanced(null) }}
               rows={9}
-              placeholder={`Paste your brief, e.g.:\n\nAMAKA CITY — IMPROVEMENT PLAN\nWebsite + hosting + domain → 600 €\nBooking system → 100 €\nSocial media setup + first content → 150 €\nFlyer + business card design → 120 €\nPrinting (2,500 flyers + 1,000 cards) → 185 €\n\nIncluded for free: voucher system, package pricing, intro offers.\n\nPayment in 2 parts possible. Step by step OK.`}
+              placeholder={t(locale,
+                `Fügen Sie Ihr Briefing ein, z. B.:\n\nAMAKA CITY — VERBESSERUNGSPLAN\nWebsite + Hosting + Domain → 600 €\nBuchungssystem → 100 €\nSocial-Media-Einrichtung + erster Content → 150 €\nFlyer- + Visitenkartendesign → 120 €\nDruck (2.500 Flyer + 1.000 Karten) → 185 €\n\nKostenlos inklusive: Gutscheinsystem, Paketpreise, Einführungsangebote.\n\nZahlung in 2 Raten möglich. Schrittweise ist ok.`,
+                `Paste your brief, e.g.:\n\nAMAKA CITY — IMPROVEMENT PLAN\nWebsite + hosting + domain → 600 €\nBooking system → 100 €\nSocial media setup + first content → 150 €\nFlyer + business card design → 120 €\nPrinting (2,500 flyers + 1,000 cards) → 185 €\n\nIncluded for free: voucher system, package pricing, intro offers.\n\nPayment in 2 parts possible. Step by step OK.`)}
               context="Discovery brief describing a client project scope and budget for Maxpromo Digital"
               textareaStyle={{ ...inputBase, minHeight: '220px', resize: 'vertical', lineHeight: 1.6, fontFamily: 'var(--font-roboto-mono)', fontSize: '13px' }}
             />
@@ -160,7 +181,7 @@ export default function DiscoveryPage() {
                   opacity: status === 'enhancing' || !brief.trim() ? 0.5 : 1,
                 }}
               >
-                {status === 'enhancing' ? '⟳ Reading…' : '◈ Structure with AI'}
+                {status === 'enhancing' ? t(locale, '⟳ Lese…', '⟳ Reading…') : t(locale, '◈ Mit KI strukturieren', '◈ Structure with AI')}
               </button>
               <button
                 onClick={sendDiscovery}
@@ -173,7 +194,7 @@ export default function DiscoveryPage() {
                   opacity: status === 'sending' || !name.trim() || !email.trim() || !brief.trim() ? 0.6 : 1,
                 }}
               >
-                {status === 'sending' ? 'Sending…' : 'Send brief →'}
+                {status === 'sending' ? t(locale, 'Wird gesendet…', 'Sending…') : t(locale, 'Briefing senden →', 'Send brief →')}
               </button>
             </div>
 
@@ -184,7 +205,7 @@ export default function DiscoveryPage() {
             {enhanced && (
               <div style={{ marginTop: '36px', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '32px' }}>
                 <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>
-                  // AI-structured preview &middot; {enhanced.overallConfidence} confidence
+                  {t(locale, '// KI-strukturierte Vorschau', '// AI-structured preview')} &middot; {enhanced.overallConfidence} {t(locale, 'Konfidenz', 'confidence')}
                 </p>
 
                 {enhanced.warnings && enhanced.warnings.length > 0 && (
@@ -205,7 +226,7 @@ export default function DiscoveryPage() {
                     </div>
                   ))}
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', paddingTop: '12px', borderTop: '2px solid #F97316' }}>
-                    <span style={{ ...mono, fontSize: '12px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Geschätzt</span>
+                    <span style={{ ...mono, fontSize: '12px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t(locale, 'Geschätzt', 'Estimated')}</span>
                     <span style={{ ...mono, fontSize: '18px', color: '#FFF', fontWeight: 700 }}>
                       €{enhanced.items.reduce((s, i) => s + Number(i.finalPrice || 0), 0).toLocaleString('de-DE')}
                     </span>
@@ -214,7 +235,9 @@ export default function DiscoveryPage() {
 
                 {enhanced.includedItems && enhanced.includedItems.length > 0 && (
                   <div style={{ background: 'rgba(34,197,94,0.04)', border: '1px solid rgba(34,197,94,0.2)', borderLeft: '3px solid #22c55e', padding: '12px 16px', marginTop: '12px', borderRadius: '2px' }}>
-                    <p style={{ ...mono, fontSize: '10px', color: '#22c55e', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 6px' }}>Included free</p>
+                    <p style={{ ...mono, fontSize: '10px', color: '#22c55e', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 6px' }}>
+                      {t(locale, 'Kostenlos inklusive', 'Included free')}
+                    </p>
                     <p style={{ ...sans, fontSize: '13px', color: '#CCC', margin: 0, lineHeight: 1.5 }}>{enhanced.includedItems.join(' · ')}</p>
                   </div>
                 )}
@@ -228,7 +251,9 @@ export default function DiscoveryPage() {
                   <p style={{ ...mono, fontSize: '11px', color: '#666', margin: '6px 0 0' }}>ℹ️ {enhanced.extractionNotes}</p>
                 )}
                 <p style={{ ...sans, fontSize: '13px', color: '#666', margin: '20px 0 0', fontStyle: 'italic' }}>
-                  This is an indicative breakdown extracted from your text. We’ll send a proper proposal once you submit.
+                  {t(locale,
+                    'Dies ist eine indikative Aufschlüsselung, extrahiert aus Ihrem Text. Wir senden Ihnen ein richtiges Angebot, sobald Sie es einreichen.',
+                    "This is an indicative breakdown extracted from your text. We'll send a proper proposal once you submit.")}
                 </p>
               </div>
             )}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
 const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
@@ -20,6 +21,11 @@ const inputBase: React.CSSProperties = {
   boxSizing: 'border-box',
 }
 
+/* ─── LOCALE HELPER ───────────────────────────────────────── */
+function t(locale: string, de: string, en: string): string {
+  return locale === 'de' ? de : en
+}
+
 interface PortfolioItem {
   title: string
   client: string
@@ -28,38 +34,68 @@ interface PortfolioItem {
   metrics: string[]
 }
 
-const PORTFOLIO: PortfolioItem[] = [
-  {
-    title: 'Lead Qualification Agent',
-    client: 'B2B Real Estate Agency · Düsseldorf',
-    type: 'AI Agent',
-    summary: 'Inbound enquiries are scored, routed, and replied to within minutes — Marcel-style style guide, German tone.',
-    metrics: ['18h/week saved', '3x faster response', '+24% qualification rate'],
-  },
-  {
-    title: 'Praxis Anmeldungs-Bot',
-    client: 'Medical Practice · Essen',
-    type: 'Workflow Automation',
-    summary: 'WhatsApp + email intake → triage → calendar → confirmation. Receptionist no longer manually routes new patient enquiries.',
-    metrics: ['~12h/week saved', '99% intake within 1h', 'Zero missed bookings since launch'],
-  },
-  {
-    title: 'Restaurant Bestelldigitalisierung',
-    client: 'Independent Restaurant Group',
-    type: 'AI Website + OS',
-    summary: 'Menu digitisation, online ordering, voucher engine, social-content rotation, all under one operator console.',
-    metrics: ['+38% online orders', '4 social posts/week automated', '€1.2k/mo agency fee replaced'],
-  },
-  {
-    title: 'Handwerk Rechnungs-AI',
-    client: 'Skilled Trades — Multi-Site',
-    type: 'Document AI',
-    summary: 'Field-engineer voice notes & photos → typed Rechnung in German, ready to send. 90s end-to-end.',
-    metrics: ['~9h/week saved per crew', '100% legally compliant', 'Zero re-entry errors'],
-  },
-]
+function getPortfolio(locale: string): PortfolioItem[] {
+  return [
+    {
+      title: t(locale, 'Lead-Qualifizierungs-Agent', 'Lead Qualification Agent'),
+      client: t(locale, 'B2B-Immobilienagentur · Düsseldorf', 'B2B Real Estate Agency · Düsseldorf'),
+      type: t(locale, 'KI-Agent', 'AI Agent'),
+      summary: t(locale,
+        'Eingehende Anfragen werden bewertet, weitergeleitet und innerhalb von Minuten beantwortet — im Marcel-Stil, deutscher Tonfall.',
+        'Inbound enquiries are scored, routed, and replied to within minutes — Marcel-style style guide, German tone.'),
+      metrics: [
+        t(locale, '18 Std./Woche gespart', '18h/week saved'),
+        t(locale, '3x schnellere Antwortzeit', '3x faster response'),
+        t(locale, '+24 % Qualifizierungsrate', '+24% qualification rate'),
+      ],
+    },
+    {
+      title: 'Praxis Anmeldungs-Bot',
+      client: t(locale, 'Arztpraxis · Essen', 'Medical Practice · Essen'),
+      type: t(locale, 'Workflow-Automatisierung', 'Workflow Automation'),
+      summary: t(locale,
+        'WhatsApp- + E-Mail-Aufnahme → Triage → Kalender → Bestätigung. Die Rezeption leitet neue Patientenanfragen nicht mehr manuell weiter.',
+        'WhatsApp + email intake → triage → calendar → confirmation. Receptionist no longer manually routes new patient enquiries.'),
+      metrics: [
+        t(locale, '~12 Std./Woche gespart', '~12h/week saved'),
+        t(locale, '99 % Aufnahme innerhalb 1 Std.', '99% intake within 1h'),
+        t(locale, 'Keine verpassten Termine seit dem Start', 'Zero missed bookings since launch'),
+      ],
+    },
+    {
+      title: t(locale, 'Restaurant-Bestelldigitalisierung', 'Restaurant Bestelldigitalisierung'),
+      client: t(locale, 'Unabhängige Restaurantgruppe', 'Independent Restaurant Group'),
+      type: t(locale, 'KI-Website + Betriebssystem', 'AI Website + OS'),
+      summary: t(locale,
+        'Menü-Digitalisierung, Online-Bestellung, Gutschein-Engine, rotierender Social-Content — alles in einer Betreiberkonsole.',
+        'Menu digitisation, online ordering, voucher engine, social-content rotation, all under one operator console.'),
+      metrics: [
+        t(locale, '+38 % Online-Bestellungen', '+38% online orders'),
+        t(locale, '4 Social-Posts/Woche automatisiert', '4 social posts/week automated'),
+        t(locale, '1.200 €/Monat Agenturkosten ersetzt', '€1.2k/mo agency fee replaced'),
+      ],
+    },
+    {
+      title: 'Handwerk Rechnungs-AI',
+      client: t(locale, 'Handwerksbetrieb — mehrere Standorte', 'Skilled Trades — Multi-Site'),
+      type: t(locale, 'Dokumenten-KI', 'Document AI'),
+      summary: t(locale,
+        'Sprachnotizen und Fotos vom Außendienst → getippte Rechnung auf Deutsch, versandfertig. 90 Sekunden vollständig durchgängig.',
+        'Field-engineer voice notes & photos → typed Rechnung in German, ready to send. 90s end-to-end.'),
+      metrics: [
+        t(locale, '~9 Std./Woche pro Team gespart', '~9h/week saved per crew'),
+        t(locale, '100 % rechtskonform', '100% legally compliant'),
+        t(locale, 'Keine Nacherfassungsfehler', 'Zero re-entry errors'),
+      ],
+    },
+  ]
+}
 
 export default function PortfolioPage() {
+  const params = useParams<{ locale: string }>()
+  const locale = params?.locale === 'de' ? 'de' : 'en'
+  const PORTFOLIO = getPortfolio(locale)
+
   const [password, setPassword] = useState('')
   const [unlocked, setUnlocked] = useState(false)
   const [error, setError] = useState('')
@@ -75,13 +111,13 @@ export default function PortfolioPage() {
         body: JSON.stringify({ password }),
       })
       if (!res.ok) {
-        setError('Incorrect access code')
+        setError(t(locale, 'Falscher Zugangscode', 'Incorrect access code'))
         setLoading(false)
         return
       }
       setUnlocked(true)
     } catch {
-      setError('Network error — please try again')
+      setError(t(locale, 'Netzwerkfehler — bitte erneut versuchen', 'Network error — please try again'))
     } finally {
       setLoading(false)
     }
@@ -92,13 +128,15 @@ export default function PortfolioPage() {
       <main style={{ background: '#0A0A0A', minHeight: '100vh', padding: '120px 24px 80px' }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
-            // Portfolio &middot; Confidential
+            {t(locale, '// Portfolio &middot; Vertraulich', '// Portfolio &middot; Confidential')}
           </p>
           <h1 style={{ ...grotesk, fontSize: 'clamp(32px, 5vw, 48px)', color: '#FFFFFF', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 16px' }}>
-            Selected work.
+            {t(locale, 'Ausgewählte Arbeiten.', 'Selected work.')}
           </h1>
           <p style={{ ...sans, fontSize: '16px', color: '#888888', margin: '0 0 48px', maxWidth: '640px', lineHeight: 1.6 }}>
-            Each system below was built and is in production. Client names redacted under NDA — happy to make an intro on request.
+            {t(locale,
+              'Jedes System unten wurde gebaut und ist im produktiven Einsatz. Kundennamen unter NDA geschwärzt — auf Anfrage stellen wir gerne einen Kontakt her.',
+              'Each system below was built and is in production. Client names redacted under NDA — happy to make an intro on request.')}
           </p>
 
           <div style={{ display: 'grid', gap: '16px' }}>
@@ -132,7 +170,7 @@ export default function PortfolioPage() {
                 padding: '14px 22px', textDecoration: 'none', display: 'inline-block',
               }}
             >
-              Discuss your build →
+              {t(locale, 'Ihr Projekt besprechen →', 'Discuss your build →')}
             </Link>
           </div>
         </div>
@@ -144,13 +182,14 @@ export default function PortfolioPage() {
     <main style={{ background: '#0A0A0A', minHeight: '100vh', padding: '140px 24px 100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <form onSubmit={submit} style={{ width: '100%', maxWidth: '420px' }}>
         <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px', textAlign: 'center' }}>
-          // Portfolio &middot; Access Required
+          {t(locale, '// Portfolio &middot; Zugang erforderlich', '// Portfolio &middot; Access Required')}
         </p>
         <h1 style={{ ...grotesk, fontSize: '32px', color: '#FFFFFF', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 14px', textAlign: 'center' }}>
-          Confidential.
+          {t(locale, 'Vertraulich.', 'Confidential.')}
         </h1>
         <p style={{ ...sans, fontSize: '14px', color: '#888888', margin: '0 0 32px', textAlign: 'center', lineHeight: 1.5 }}>
-          Client work is under NDA. If we&rsquo;ve shared an access code with you, enter it below. Otherwise, <Link href="/contact" style={{ color: '#F97316' }}>reach out</Link>.
+          {t(locale, 'Kundenprojekte unterliegen einer NDA. Wenn wir Ihnen einen Zugangscode mitgeteilt haben, geben Sie ihn unten ein. Andernfalls', 'Client work is under NDA. If we’ve shared an access code with you, enter it below. Otherwise,')}{' '}
+          <Link href="/contact" style={{ color: '#F97316' }}>{t(locale, 'kontaktieren Sie uns', 'reach out')}</Link>.
         </p>
 
         <input
@@ -158,7 +197,7 @@ export default function PortfolioPage() {
           autoFocus
           value={password}
           onChange={e => setPassword(e.target.value)}
-          placeholder="Access code"
+          placeholder={t(locale, 'Zugangscode', 'Access code')}
           style={inputBase}
         />
         {error && (
@@ -174,7 +213,7 @@ export default function PortfolioPage() {
             opacity: loading || !password ? 0.5 : 1, marginTop: '16px', width: '100%',
           }}
         >
-          {loading ? 'Verifying…' : 'Unlock portfolio →'}
+          {loading ? t(locale, 'Wird geprüft…', 'Verifying…') : t(locale, 'Portfolio freischalten →', 'Unlock portfolio →')}
         </button>
       </form>
     </main>

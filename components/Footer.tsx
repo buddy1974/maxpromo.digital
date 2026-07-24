@@ -248,7 +248,7 @@ export default function Footer() {
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
               {t('taxClause')}
             </span>
-            <a
+            <Link
               href="/portfolio"
               style={{ color: 'hsl(240 14% 4%)', fontSize: '10px', textDecoration: 'none', fontFamily: 'var(--font-mono)' }}
               onMouseEnter={(e) => (e.currentTarget.style.color = 'hsl(240 8% 35%)')}
@@ -256,7 +256,7 @@ export default function Footer() {
               aria-label="Staff portal"
             >
               ·
-            </a>
+            </Link>
           </div>
         </div>
       </div>

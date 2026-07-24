@@ -20,7 +20,7 @@ interface AuditRequestBody {
 }
 
 export async function POST(request: NextRequest) {
-  // Audit calls Claude with maxTokens 1800 — strict limit so a script can't
+  // Audit calls Claude with maxTokens 1800 - strict limit so a script can't
   // burn the budget. 3 audits/min/IP is plenty for real users.
   const blocked = enforceRateLimit(request, { scope: 'audit', limit: 3, windowMs: 60_000 })
   if (blocked) return blocked
@@ -31,6 +31,16 @@ export async function POST(request: NextRequest) {
 
     if (!orgType) {
       return NextResponse.json({ error: 'Questionnaire data is required.' }, { status: 400 })
+    }
+
+    if (
+      orgType.length > 200 ||
+      (goal && goal.length > 2000) ||
+      (name && name.length > 200) ||
+      (company && company.length > 200) ||
+      (email && email.length > 254)
+    ) {
+      return NextResponse.json({ error: 'Field too long.' }, { status: 400 })
     }
 
     const userMessage = `Organisation type: ${orgType}
@@ -65,7 +75,7 @@ Identify their top 3 automation opportunities. Return only a valid JSON array.`
       await sendEmail({
         to: process.env.CONTACT_EMAIL ?? 'info@maxpromo.digital',
         from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
-        subject: `New Audit Lead: ${name} — ${company}`,
+        subject: `New Audit Lead: ${name} - ${company}`,
         html: buildAuditLeadEmailHtml({
           name,
           email,
@@ -91,7 +101,7 @@ Identify their top 3 automation opportunities. Return only a valid JSON array.`
           INSERT INTO os_leads (name, email, company, source, category, summary, status)
           VALUES (${name}, ${email}, ${company}, 'automation_audit', ${orgType}, ${summary}, 'new')
           ON CONFLICT DO NOTHING`
-      } catch { /* DB may not be configured — ignore */ }
+      } catch { /* DB may not be configured - ignore */ }
 
       // Send Telegram notification (non-blocking; fire-and-forget)
       sendTelegramNotification(
@@ -131,27 +141,27 @@ function getMockResults(q: {
       problem: `Your team spends significant time manually qualifying leads from ${tasks}.`,
       solution: `Deploy an AI agent that scores incoming leads against your ideal customer profile and routes qualified leads to your CRM automatically. Personalised follow-up sequences trigger without any manual action.`,
       tools: ['n8n', 'Claude AI', 'HubSpot'],
-      roi: '8–12 hrs/week',
+      roi: '8-12 hrs/week',
       complexity: 'Medium',
-      timeline: '2–3 weeks',
+      timeline: '2-3 weeks',
     },
     {
       title: 'Data Sync & Integration Pipeline',
       problem: `Data across your tools (${toolList}) is siloed, requiring manual copying and reconciliation.`,
       solution: `Build an automated integration layer that syncs data across all platforms in real time. Eliminate duplicate entry and maintain a single source of truth across your entire stack.`,
       tools: ['n8n', 'Zapier', 'REST APIs'],
-      roi: '6–10 hrs/week',
+      roi: '6-10 hrs/week',
       complexity: 'Simple',
-      timeline: '1–2 weeks',
+      timeline: '1-2 weeks',
     },
     {
       title: 'AI-Powered Document & Report Processing',
       problem: `Your ${q.orgType} team handles manual document processing and report compilation that consumes disproportionate staff time.`,
       solution: `Implement a document AI pipeline that automatically extracts, validates, and routes incoming documents. Scheduled reports are generated and distributed without manual intervention.`,
       tools: ['Claude AI', 'Airtable', 'Resend'],
-      roi: '5–8 hrs/week',
+      roi: '5-8 hrs/week',
       complexity: 'Medium',
-      timeline: '2–3 weeks',
+      timeline: '2-3 weeks',
     },
   ]
 }

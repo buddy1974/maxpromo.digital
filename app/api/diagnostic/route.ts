@@ -18,6 +18,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Contact details required.' }, { status: 400 })
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(contact.email)) {
+      return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
+    }
+
+    if (
+      contact.name.length > 200 ||
+      contact.email.length > 254 ||
+      (contact.company && contact.company.length > 200) ||
+      (contact.phone && contact.phone.length > 50) ||
+      (ceoQuestion && ceoQuestion.length > 3000)
+    ) {
+      return NextResponse.json({ error: 'Field too long.' }, { status: 400 })
+    }
+
     const { name, email, company, phone } = contact
 
     const questionnaireEntries: Record<string, string> = {}
@@ -45,7 +60,7 @@ export async function POST(request: NextRequest) {
     sendEmail({
       to: process.env.CONTACT_EMAIL ?? 'info@maxpromo.digital',
       from: process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev',
-      subject: `New Business Diagnostic: ${name} — ${company}`,
+      subject: `New Business Diagnostic: ${name} - ${company}`,
       html: buildAuditLeadEmailHtml({
         name,
         email,

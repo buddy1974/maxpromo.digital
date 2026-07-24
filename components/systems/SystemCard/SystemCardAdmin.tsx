@@ -18,7 +18,6 @@
  * TODO: add health indicator from system_health table
  */
 
-import type { ProductEntry } from '@/lib/registry/types'
 import type { SystemCardProps } from './SystemCard'
 
 // =============================================================================
@@ -26,8 +25,7 @@ import type { SystemCardProps } from './SystemCard'
 // =============================================================================
 
 /** Admin variant props — locale optional, no showBadge/showDomain/showCTA needed. */
-export interface SystemCardAdminProps
-  extends Pick<SystemCardProps, 'product' | 'locale'> {}
+export type SystemCardAdminProps = Pick<SystemCardProps, 'product' | 'locale'>
 
 // =============================================================================
 // COMPONENT
@@ -42,7 +40,7 @@ export interface SystemCardAdminProps
  * @example
  * <SystemCard product={p} variant="admin" />
  */
-export function SystemCardAdmin({ product, locale = 'de' }: SystemCardAdminProps) {
+export function SystemCardAdmin({ product }: SystemCardAdminProps) {
 
   return (
     <div

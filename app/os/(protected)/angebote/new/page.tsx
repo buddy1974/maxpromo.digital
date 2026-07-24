@@ -1,6 +1,11 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { AngebotDocument } from '@/components/documents/AngebotDocument'
+import type { CurrencyCode, PaymentMethodId, DocumentLanguage } from '@/lib/documents/config'
+import type { AngebotData } from '@/lib/documents/types'
+import { fmtCurrency } from '@/lib/documents/format'
+import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -27,7 +32,6 @@ interface AIExtracted {
 const UNITS = ['pauschal', 'Stück', 'Stunden', 'Tage', 'Seiten', 'Monat', 'Lizenz']
 const blankItem = (): LineItem => ({ description: '', qty: 1, unit: 'pauschal', unit_price: 0, total: 0, isFixedPrice: true })
 
-function fmtEur(n: number) { return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n) }
 function addDays(d: number) { const dt = new Date(); dt.setDate(dt.getDate() + d); return dt.toISOString().split('T')[0] }
 
 const inp: React.CSSProperties = { width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', boxSizing: 'border-box' }
@@ -104,14 +108,9 @@ function StreetInput({ value, onChange, placeholder, aiEnhanced, onFill }: {
   )
 }
 
-const AI_PLACEHOLDER = `Examples you can paste:
-• WhatsApp: "Hi, brauche Website für Restaurant, 4 Seiten, Speisekarte, Budget 2500€"
-• Email: Paste the whole email — we extract only order details, ignore the rest
-• Notes: "Schmidt & Co, Logo + Website, 3500€ Angebot, gültig 30 Tage"
-• Or paste a screenshot image directly with Ctrl+V ↑`
-
 export default function NewAngebotPage() {
   const router = useRouter()
+  const { t } = useOsLocale()
 
   const [number,      setNumber]      = useState('')
   const [date,        setDate]        = useState(new Date().toISOString().split('T')[0])
@@ -131,6 +130,9 @@ export default function NewAngebotPage() {
   const [anzahlung,       setAnzahlung]       = useState(0)
   const [anzahlungDate,   setAnzahlungDate]   = useState('')
   const [anzahlungMethod, setAnzahlungMethod] = useState('Überweisung')
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>('bank')
+  const [currency,      setCurrency]      = useState<CurrencyCode>('EUR')
+  const [language,      setLanguage]      = useState<DocumentLanguage>('de')
 
   // AI state
   const [aiModalOpen,  setAiModalOpen]  = useState(false)
@@ -190,14 +192,14 @@ export default function NewAngebotPage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kind: 'angebot', image: b64, mediaType: mime }),
       })
-      if (!res.ok) throw new Error('Scan failed')
+      if (!res.ok) throw new Error(t.forms.aiScanFailed)
       const json = await res.json() as { extracted: AIExtracted }
       applyExtracted(json.extracted)
       setAiModalOpen(false); setPastePreview('')
     } catch {
-      setAiError('Could not read image. Try uploading the file instead.')
+      setAiError(t.forms.aiImageReadFailed)
     } finally { setAiLoading(false) }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   function handleDragOver(e: React.DragEvent) { e.preventDefault(); setIsDragOver(true) }
   function handleDragLeave() { setIsDragOver(false) }
@@ -238,11 +240,11 @@ export default function NewAngebotPage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kind: 'angebot', text: rawText }),
       })
-      if (!res.ok) throw new Error('Extraction failed')
+      if (!res.ok) throw new Error(t.forms.aiExtractionFailed)
       const json = await res.json() as { extracted: AIExtracted }
       applyExtracted(json.extracted)
       setAiModalOpen(false); setRawText('')
-    } catch (e) { setAiError(e instanceof Error ? e.message : 'Failed') }
+    } catch (e) { setAiError(e instanceof Error ? e.message : t.forms.aiExtractionFailed) }
     finally { setAiLoading(false) }
   }
 
@@ -323,6 +325,8 @@ export default function NewAngebotPage() {
     else   { setClientPostcode(''); setClientCity(c.city || '') }
   }
 
+  const fmtEur = useCallback((n: number) => fmtCurrency(n, currency), [currency])
+
   const subtotal   = lineItems.reduce((s, i) => s + Number(i.total), 0)
   const restbetrag = subtotal - (hasAnzahlung ? Number(anzahlung) : 0)
 
@@ -363,6 +367,9 @@ export default function NewAngebotPage() {
           notes: finalNotes,
           anzahlung: hasAnzahlung ? Number(anzahlung) : 0,
           anzahlung_date: hasAnzahlung ? anzahlungDate : null,
+          payment_method: paymentMethod,
+          currency,
+          language,
         }),
       })
       if (!res.ok) {
@@ -371,7 +378,7 @@ export default function NewAngebotPage() {
       }
       router.push('/os/angebote')
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'Failed to save. Please try again.')
+      setSaveError(err instanceof Error ? err.message : t.forms.saveFailed)
     } finally { setSaving(false) }
   }
 
@@ -396,8 +403,8 @@ export default function NewAngebotPage() {
           <div style={{ background: '#111', border: '1px solid rgba(249,115,22,0.3)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
               <div>
-                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.02em' }}>AI Angebot Generator</h2>
-                <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: 0 }}>PASTE TEXT, DROP AN IMAGE, OR Ctrl+V A SCREENSHOT</p>
+                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.02em' }}>{t.forms.aiAngebotTitle}</h2>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: 0 }}>{t.forms.aiModalSub}</p>
               </div>
               <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}>×</button>
             </div>
@@ -410,25 +417,27 @@ export default function NewAngebotPage() {
               {aiLoading && pastePreview ? (
                 <div style={{ textAlign: 'center' }}>
                   <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '0 0 8px' }}>⟳ Reading your image...</p>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
                   <img src={pastePreview} alt="" style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain', opacity: 0.5 }} />
                 </div>
               ) : pastePreview ? (
+                // eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs
                 <img src={pastePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '140px', objectFit: 'contain' }} />
               ) : (
                 <p style={{ fontFamily: mono, fontSize: '11px', color: '#444', letterSpacing: '0.06em', textAlign: 'center', margin: 0, lineHeight: 1.8 }}>
-                  📋 Paste image here <strong style={{ color: '#666' }}>Ctrl+V</strong> — or drag &amp; drop a file<br />
-                  <span style={{ fontSize: '10px', opacity: 0.6 }}>Screenshots · Photos · WhatsApp · Email</span>
+                  {t.forms.aiDropZonePrefix} <strong style={{ color: '#666' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
+                  <span style={{ fontSize: '10px', opacity: 0.6 }}>{t.forms.aiDropZoneFormats}</span>
                 </p>
               )}
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>OR PASTE TEXT BELOW</span>
+              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteText}</span>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
             </div>
 
-            <textarea value={rawText} onChange={e => setRawText(e.target.value)} rows={6} placeholder={AI_PLACEHOLDER} style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }} />
+            <textarea value={rawText} onChange={e => setRawText(e.target.value)} rows={6} placeholder={t.forms.aiPlaceholderAngebot} style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }} />
 
             {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>⚠ {aiError}</p>}
 
@@ -451,14 +460,14 @@ export default function NewAngebotPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF', margin: 0 }}>New Angebot</h1>
+              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF', margin: 0 }}>{t.angebotForm.newHeading}</h1>
               {aiEnhanced && (
-                <span style={{ fontFamily: mono, fontSize: '9px', color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>◈ AI Enhanced</span>
+                <span style={{ fontFamily: mono, fontSize: '9px', color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiEnhanced}</span>
               )}
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>◈ AI Generate</button>
-              <button onClick={() => fileRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>▦ Scan Image</button>
+              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiGenerate}</button>
+              <button onClick={() => fileRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.scanImage}</button>
             </div>
           </div>
 
@@ -491,59 +500,81 @@ export default function NewAngebotPage() {
           {/* Included (free) items — kept out of line items deliberately */}
           {aiEnhanced && includedItems.length > 0 && (
             <div style={{ background: '#0D0D0D', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid #22c55e', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Inklusive (kostenlos) — nicht berechnet</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.includedHeading}</p>
               <ul style={{ margin: 0, paddingLeft: '18px' }}>
                 {includedItems.map((it, i) => (
                   <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: '#CCC', lineHeight: 1.5, marginBottom: '2px' }}>{it}</li>
                 ))}
               </ul>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', margin: '8px 0 0', letterSpacing: '0.05em' }}>Will be listed in the &ldquo;Inklusive&rdquo; section of the Angebot, not as paid line items.</p>
+              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', margin: '8px 0 0', letterSpacing: '0.05em' }}>{t.forms.includedNote}</p>
             </div>
           )}
 
           {/* Payment terms — captured but stored as part of notes when saving */}
           {aiEnhanced && paymentTerms && (
             <div style={{ background: '#0D0D0D', border: '1px solid rgba(249,115,22,0.25)', borderLeft: '3px solid #F97316', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', margin: '0 0 4px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Zahlungsbedingungen</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', margin: '0 0 4px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.paymentTermsHeading}</p>
               <p style={{ fontFamily: sans, fontSize: '12px', color: '#CCC', margin: 0, lineHeight: 1.5 }}>{paymentTerms}</p>
             </div>
           )}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-              <Field label="Angebot No"><input value={number} onChange={e => setNumber(e.target.value)} style={inp} /></Field>
-              <Field label="Date"><input type="date" value={date} onChange={e => setDate(e.target.value)} style={inp} /></Field>
-              <Field label="Valid Until"><input type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)} style={inp} /></Field>
+              <Field label={t.angebotForm.fieldAngebotNo}><input value={number} onChange={e => setNumber(e.target.value)} style={inp} /></Field>
+              <Field label={t.angebotForm.fieldDate}><input type="date" value={date} onChange={e => setDate(e.target.value)} style={inp} /></Field>
+              <Field label={t.angebotForm.fieldValidUntil}><input type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)} style={inp} /></Field>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+              <Field label={t.angebotForm.fieldCurrency}>
+                <select value={currency} onChange={e => setCurrency(e.target.value as CurrencyCode)} style={{ ...inp, appearance: 'none' }}>
+                  <option value="EUR">EUR — €</option>
+                  <option value="GBP">GBP — £</option>
+                </select>
+              </Field>
+              <Field label={t.angebotForm.fieldPaymentMethod}>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value as PaymentMethodId)} style={{ ...inp, appearance: 'none' }}>
+                  <option value="bank">{t.status.paymentMethod.bank}</option>
+                  <option value="momo">{t.status.paymentMethod.momo}</option>
+                  <option value="both">{t.status.paymentMethod.both}</option>
+                </select>
+              </Field>
+              <Field label={t.angebotForm.fieldDocumentLanguage}>
+                <select value={language} onChange={e => setLanguage(e.target.value as DocumentLanguage)} style={{ ...inp, appearance: 'none' }}>
+                  <option value="de">Deutsch</option>
+                  <option value="en">English</option>
+                </select>
+              </Field>
             </div>
 
             <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
 
-            <Field label="Select Client">
+            <Field label={t.angebotForm.fieldSelectClient}>
               <select value={clientId} onChange={e => selectClient(e.target.value)} style={{ ...inp, appearance: 'none' }}>
-                <option value="">— Select existing client —</option>
+                <option value="">{t.angebotForm.selectClientPlaceholder}</option>
                 {clients.map(c => <option key={c.id} value={c.id}>{c.name}{c.company ? ` (${c.company})` : ''}</option>)}
               </select>
             </Field>
-            <Field label="Client Name *">
-              <input value={clientName} onChange={e => setClientName(e.target.value)} placeholder={aiEnhanced && !clientName.trim() ? 'Not found — please fill' : 'Or enter manually'} style={aiInp(clientName)} />
+            <Field label={t.angebotForm.fieldClientName}>
+              <input value={clientName} onChange={e => setClientName(e.target.value)} placeholder={aiEnhanced && !clientName.trim() ? t.forms.notFoundFill : t.forms.enterManually} style={aiInp(clientName)} />
             </Field>
-            <Field label="Client Email">
-              <input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder={aiEnhanced && !clientEmail.trim() ? 'Not found — please fill' : ''} style={aiInp(clientEmail)} />
+            <Field label={t.angebotForm.fieldClientEmail}>
+              <input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder={aiEnhanced && !clientEmail.trim() ? t.forms.notFoundFill : t.forms.emailPlaceholder} style={aiInp(clientEmail)} />
             </Field>
-            <Field label="Straße und Hausnummer">
+            <Field label={t.angebotForm.fieldStreet}>
               <StreetInput
                 value={clientStreet}
                 onChange={setClientStreet}
-                placeholder={aiEnhanced && !clientStreet.trim() ? 'Not found — please fill' : 'Musterstraße 12'}
+                placeholder={aiEnhanced && !clientStreet.trim() ? t.forms.notFoundFill : t.forms.streetPlaceholder}
                 aiEnhanced={aiEnhanced && !clientStreet.trim()}
                 onFill={(street, postcode, city) => { setClientStreet(street); setClientPostcode(postcode); setClientCity(city) }}
               />
             </Field>
             <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px' }}>
-              <Field label="PLZ">
+              <Field label={t.angebotForm.fieldPostcode}>
                 <input value={clientPostcode} onChange={e => setClientPostcode(e.target.value)} placeholder="40210" maxLength={10} style={aiInp(clientPostcode)} />
               </Field>
-              <Field label="Stadt">
+              <Field label={t.angebotForm.fieldCity}>
                 <input value={clientCity} onChange={e => setClientCity(e.target.value)} placeholder="Düsseldorf" style={aiInp(clientCity)} />
               </Field>
             </div>
@@ -551,7 +582,7 @@ export default function NewAngebotPage() {
             <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
 
             <div>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>Line Items</p>
+              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
                 <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', borderLeft: itemBorderLeft(item) || '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
                   {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: '#ef4444', letterSpacing: '0.08em' }}>⚠ verify</span>}
@@ -559,20 +590,20 @@ export default function NewAngebotPage() {
                     <textarea
                       value={item.description}
                       onChange={e => updateItem(i, 'description', e.target.value)}
-                      placeholder={aiEnhanced && !item.description ? 'Not found — please fill' : 'Description (Enter for new line)'}
+                      placeholder={aiEnhanced && !item.description ? t.forms.notFoundFill : t.forms.descriptionPlaceholderMultiline}
                       rows={Math.max(1, Math.min(8, (item.description || '').split('\n').length))}
                       style={{ ...inp, flex: 1, resize: 'vertical', lineHeight: 1.5, fontFamily: sans, minHeight: '36px', border: aiEnhanced && !item.description ? '1px dashed rgba(249,115,22,0.5)' : inp.border as string }}
                     />
                     <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'rgba(249,115,22,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${item.isFixedPrice ? 'rgba(249,115,22,0.4)' : 'rgba(255,255,255,0.1)'}`, color: item.isFixedPrice ? '#F97316' : '#555', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
-                      {item.isFixedPrice ? 'Pauschal' : 'Per Unit'}
+                      {item.isFixedPrice ? t.angebotForm.pauschal : t.angebotForm.perUnit}
                     </button>
                     <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#444', cursor: 'pointer', fontSize: '18px', padding: '0 4px' }}>×</button>
                   </div>
                   {item.isFixedPrice ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', flexShrink: 0 }}>BETRAG</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', flexShrink: 0 }}>{t.forms.amountLabel}</span>
                       <input type="number" value={item.total} onChange={e => updateItem(i, 'total', Number(e.target.value))} style={{ ...inp, width: '120px', textAlign: 'right' }} />
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>€</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{currency === 'GBP' ? '£' : '€'}</span>
                     </div>
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: '60px 120px 90px 1fr', gap: '6px', alignItems: 'center' }}>
@@ -586,37 +617,39 @@ export default function NewAngebotPage() {
                   )}
                 </div>
               ))}
-              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', background: 'none', border: '1px dashed rgba(249,115,22,0.3)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>+ Add Item</button>
+              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', background: 'none', border: '1px dashed rgba(249,115,22,0.3)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>{t.angebotForm.addItem}</button>
             </div>
 
             <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>Zwischensumme</span>
+                <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>{t.angebotForm.subtotal}</span>
                 <span style={{ fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
               </div>
               <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
                 <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: '#F97316', width: '14px', height: '14px' }} />
-                <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Anzahlung erhalten</span>
+                <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.angebotForm.depositReceived}</span>
               </label>
               {hasAnzahlung && (
                 <div style={{ marginBottom: '12px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '10px' }}>
-                    <Field label="Anzahlung €"><input type="number" value={anzahlung} onChange={e => setAnzahlung(Number(e.target.value))} style={{ ...inp, textAlign: 'right' }} /></Field>
-                    <Field label="Datum"><input type="date" value={anzahlungDate} onChange={e => setAnzahlungDate(e.target.value)} style={inp} /></Field>
-                    <Field label="Methode">
+                    <Field label={t.angebotForm.depositAmount}><input type="number" value={anzahlung} onChange={e => setAnzahlung(Number(e.target.value))} style={{ ...inp, textAlign: 'right' }} /></Field>
+                    <Field label={t.angebotForm.depositDate}><input type="date" value={anzahlungDate} onChange={e => setAnzahlungDate(e.target.value)} style={inp} /></Field>
+                    <Field label={t.angebotForm.depositMethod}>
                       <select value={anzahlungMethod} onChange={e => setAnzahlungMethod(e.target.value)} style={{ ...inp, appearance: 'none' }}>
-                        <option>Überweisung</option><option>Bar</option><option>PayPal</option><option>Andere</option>
+                        {(['Überweisung', 'Bar', 'PayPal', 'Andere'] as const).map(m => (
+                          <option key={m} value={m}>{t.status.depositMethod[m] ?? m}</option>
+                        ))}
                       </select>
                     </Field>
                   </div>
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#888' }}>Anzahlung</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#888' }}>{t.angebotForm.deposit}</span>
                       <span style={{ fontFamily: mono, fontSize: '12px', color: '#F97316' }}>−{fmtEur(Number(anzahlung))}</span>
                     </div>
                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '6px 0' }} />
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>Restbetrag</span>
+                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>{t.angebotForm.remainingBalance}</span>
                       <span style={{ fontFamily: mono, fontSize: '15px', color: '#FFF', fontWeight: 700 }}>{fmtEur(restbetrag)}</span>
                     </div>
                   </div>
@@ -625,77 +658,52 @@ export default function NewAngebotPage() {
               {!hasAnzahlung && (
                 <div style={{ borderTop: '1px solid rgba(249,115,22,0.3)', paddingTop: '10px', textAlign: 'right' }}>
                   <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF' }}>{fmtEur(subtotal)}</span>
-                  <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0' }}>Gemäß §19 UStG keine MwSt. · Gültig 30 Tage.</p>
+                  <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0' }}>{t.forms.vatValidityNote}</p>
                 </div>
               )}
             </div>
 
-            <Field label="Notes"><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical' }} /></Field>
+            <Field label={t.angebotForm.fieldNotes}><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical' }} /></Field>
 
             <div style={{ marginBottom: '24px' }}>
               <button type="button" onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() ? 0.6 : 1 }}>
-                {saving ? 'Saving...' : 'Save Angebot'}
+                {saving ? t.angebotForm.saving : t.angebotForm.saveAngebot}
               </button>
               {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>}
             </div>
           </div>
         </div>
 
-        {/* PREVIEW */}
+        {/* ── LIVE PREVIEW ──
+             Renders the exact same shared document engine used by the
+             print page (components/documents/AngebotDocument.tsx) — not
+             a third hand-rolled copy — so what you see here is exactly
+             what "Als PDF speichern" will produce. */}
         <div style={{ flex: 1, overflowY: 'auto', background: '#f0f0f0', padding: '28px' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>Live Preview</p>
-          <div style={{ background: '#FFF', maxWidth: '520px', margin: '0 auto', fontFamily: 'Arial,sans-serif', fontSize: '13px', boxShadow: '0 4px 24px rgba(0,0,0,0.15)' }}>
-            <div style={{ background: '#0A0A0A', padding: '22px 28px', borderBottom: '3px solid #F97316' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <p style={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: 700, color: '#FFF', margin: '0 0 4px' }}>MAXPROMO DIGITAL</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: 0 }}>Marcel Tabit Akwe · Körnerstr. 8, 45143 Essen</p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#FFF', margin: '0 0 4px' }}>ANGEBOT</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#F97316', margin: '0 0 2px' }}>Nr: {number}</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: '0 0 2px' }}>Datum: {date ? new Date(date + 'T12:00:00').toLocaleDateString('de-DE') : '—'}</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: 0 }}>Gültig bis: {validUntil ? new Date(validUntil + 'T12:00:00').toLocaleDateString('de-DE') : '—'}</p>
-                </div>
-              </div>
-            </div>
-            <div style={{ padding: '14px 28px', borderBottom: '1px solid #eee', background: '#f9f9f9' }}>
-              <p style={{ margin: '0 0 2px', fontWeight: 600 }}>{clientName || '—'}</p>
-              {(clientStreet || clientCity) && <p style={{ margin: 0, color: '#666', fontSize: '12px', whiteSpace: 'pre-line' }}>{[clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n')}</p>}
-            </div>
-            <div style={{ padding: '18px 28px' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '12px' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #eee', background: '#f5f5f5' }}>
-                    {['Pos', 'Beschreibung', 'Menge', 'Preis'].map(h => (
-                      <th key={h} style={{ padding: '6px 8px', textAlign: h === 'Menge' || h === 'Preis' ? 'right' : 'left', fontFamily: 'monospace', fontSize: '10px', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {lineItems.filter(i => i.description).map((item, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                      <td style={{ padding: '7px 8px', fontFamily: 'monospace', fontSize: '11px', color: '#F97316', fontWeight: 700 }}>{String(i+1).padStart(2,'0')}</td>
-                      <td style={{ padding: '7px 8px', fontSize: '13px', color: '#111' }}>{item.description}{!item.isFixedPrice && item.unit && <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', marginLeft: '4px' }}>({item.qty} {item.unit})</span>}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontFamily: 'monospace', fontSize: '11px', color: '#555' }}>{item.isFixedPrice ? '1' : item.qty}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontFamily: 'monospace', fontSize: '12px', fontWeight: 700 }}>{fmtEur(Number(item.total))}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div style={{ textAlign: 'right', borderTop: '2px solid #F97316', paddingTop: '10px' }}>
-                {hasAnzahlung ? (
-                  <>
-                    <p style={{ fontFamily: 'monospace', fontSize: '12px', color: '#555', margin: '0 0 3px' }}>Zwischensumme: {fmtEur(subtotal)}</p>
-                    <p style={{ fontFamily: 'monospace', fontSize: '12px', color: '#555', margin: '0 0 6px' }}>Anzahlung: −{fmtEur(Number(anzahlung))}</p>
-                    <div style={{ borderTop: '1px solid #eee', paddingTop: '6px' }}><span style={{ fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#111' }}>Restbetrag: {fmtEur(restbetrag)}</span></div>
-                  </>
-                ) : (
-                  <span style={{ fontFamily: 'monospace', fontSize: '16px', fontWeight: 700 }}>Gesamt: {fmtEur(subtotal)}</span>
-                )}
-              </div>
-              <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', margin: '8px 0 0' }}>Gemäß §19 UStG keine Umsatzsteuer. Gültig 30 Tage.</p>
-            </div>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
+          <div style={{ maxWidth: '520px', margin: '0 auto', transform: 'scale(0.94)', transformOrigin: 'top center' }}>
+            <AngebotDocument
+              angebot={{
+                angebot_number: number,
+                created_at: date,
+                valid_until: validUntil,
+                client_name: clientName || '—',
+                client_email: clientEmail,
+                client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'),
+                line_items: lineItems.filter(i => i.description),
+                subtotal,
+                total: subtotal,
+                notes,
+                anzahlung: hasAnzahlung ? Number(anzahlung) : 0,
+                anzahlung_date: hasAnzahlung ? anzahlungDate : null,
+                anzahlung_method: hasAnzahlung ? anzahlungMethod : null,
+                payment_terms: paymentTerms || null,
+                included_items: includedItems,
+                currency,
+                payment_method: paymentMethod,
+                language,
+              } satisfies AngebotData}
+            />
           </div>
         </div>
       </div>

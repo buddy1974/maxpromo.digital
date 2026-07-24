@@ -72,7 +72,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
                 Max
               </p>
               <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '10px', color: '#F97316', margin: 0, letterSpacing: '0.1em' }}>
-                // Business Advisor
+                {'// Business Advisor'}
               </p>
             </div>
           </div>

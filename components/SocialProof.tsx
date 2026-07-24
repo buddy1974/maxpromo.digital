@@ -101,7 +101,7 @@ export default function SocialProof() {
             letterSpacing: '0.05em',
           }}
         >
-          // Results based on client deployments. Names withheld under NDA.
+          {'// Results based on client deployments. Names withheld under NDA.'}
         </p>
       </div>
     </section>

@@ -32,7 +32,10 @@ const robotoMono = Roboto_Mono({
   weight: ['400', '500', '700'],
 })
 
+const SITE_URL = 'https://www.maxpromo.digital'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   applicationName: 'Maxpromo Digital',
   title: {
     default: 'Maxpromo Digital | AI Business Systems & Automation Infrastructure',
@@ -59,6 +62,18 @@ export const metadata: Metadata = {
     description:
       'Essen-based business systems and automation company. We modernize legacy websites, connect workflows and install AI-powered operational systems.',
     type: 'website',
+    url: SITE_URL,
+    // TODO: replace with a dedicated 1200×630 social-preview asset once
+    // produced — logo.png is used as an interim fallback so shared links
+    // never render blank, per the image-repair discipline for this repo.
+    images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Maxpromo Digital' }],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Maxpromo Digital | AI Business Systems & Automation Infrastructure',
+    description:
+      'Essen-based business systems and automation company. We modernize legacy websites, connect workflows and install AI-powered operational systems.',
+    images: ['/logo.png'],
   },
 }
 

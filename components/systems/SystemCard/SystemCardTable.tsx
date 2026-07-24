@@ -16,7 +16,6 @@
  * TODO: assign to a specific consumer page
  */
 
-import type { ProductEntry } from '@/lib/registry/types'
 import type { SystemCardProps } from './SystemCard'
 
 // =============================================================================
@@ -24,8 +23,7 @@ import type { SystemCardProps } from './SystemCard'
 // =============================================================================
 
 /** Table variant props — minimal set. */
-export interface SystemCardTableProps
-  extends Pick<SystemCardProps, 'product' | 'locale'> {}
+export type SystemCardTableProps = Pick<SystemCardProps, 'product' | 'locale'>
 
 // =============================================================================
 // COMPONENT

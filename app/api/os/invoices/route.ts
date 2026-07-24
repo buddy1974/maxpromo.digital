@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
       client_email?: string; client_address?: string; line_items: unknown[]
       subtotal: number; total: number; status?: string; due_date?: string; notes?: string
       anzahlung?: number; anzahlung_date?: string; anzahlung_method?: string; restbetrag?: number
+      payment_method?: string; currency?: string; language?: string
     }
 
     const invoice_number = body.invoice_number || await nextInvoiceNumber()
@@ -74,14 +75,16 @@ export async function POST(request: NextRequest) {
       INSERT INTO os_invoices
         (owner_id, invoice_number, client_id, client_name, client_email, client_address,
          line_items, subtotal, total, status, due_date, notes,
-         anzahlung, anzahlung_date, anzahlung_method, restbetrag)
+         anzahlung, anzahlung_date, anzahlung_method, restbetrag,
+         payment_method, currency, language)
       VALUES
         (${OWNER_ID}, ${invoice_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
          ${JSON.stringify(body.line_items)}::jsonb, ${body.subtotal}, ${body.total},
          ${body.status || 'draft'}, ${body.due_date || null}, ${body.notes || null},
          ${body.anzahlung ?? 0}, ${body.anzahlung_date || null},
-         ${body.anzahlung_method || null}, ${body.restbetrag ?? body.total})
+         ${body.anzahlung_method || null}, ${body.restbetrag ?? body.total},
+         ${body.payment_method || 'bank'}, ${body.currency || 'EUR'}, ${body.language || 'de'})
       RETURNING *`
 
     return NextResponse.json(rows[0], { status: 201 })
@@ -112,20 +115,24 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json() as {
       id: string; status?: string; paid_date?: string; sent_at?: string
       due_date?: string; notes?: string; line_items?: unknown[]; subtotal?: number; total?: number
+      payment_method?: string; currency?: string; language?: string
     }
 
     if (!body.id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
 
     const rows = await sql`
       UPDATE os_invoices SET
-        status     = COALESCE(${body.status as string | null}, status),
-        paid_date  = COALESCE(${body.paid_date as string | null}, paid_date),
-        sent_at    = COALESCE(${body.sent_at as string | null}, sent_at),
-        due_date   = COALESCE(${body.due_date as string | null}, due_date),
-        notes      = COALESCE(${body.notes as string | null}, notes),
-        line_items = COALESCE(${body.line_items ? JSON.stringify(body.line_items) : null}::jsonb, line_items),
-        subtotal   = COALESCE(${body.subtotal ?? null}, subtotal),
-        total      = COALESCE(${body.total ?? null}, total)
+        status         = COALESCE(${body.status as string | null}, status),
+        paid_date      = COALESCE(${body.paid_date as string | null}, paid_date),
+        sent_at        = COALESCE(${body.sent_at as string | null}, sent_at),
+        due_date       = COALESCE(${body.due_date as string | null}, due_date),
+        notes          = COALESCE(${body.notes as string | null}, notes),
+        line_items     = COALESCE(${body.line_items ? JSON.stringify(body.line_items) : null}::jsonb, line_items),
+        subtotal       = COALESCE(${body.subtotal ?? null}, subtotal),
+        total          = COALESCE(${body.total ?? null}, total),
+        payment_method = COALESCE(${body.payment_method as string | null}, payment_method),
+        currency       = COALESCE(${body.currency as string | null}, currency),
+        language       = COALESCE(${body.language as string | null}, language)
       WHERE id = ${body.id}
       RETURNING *`
 

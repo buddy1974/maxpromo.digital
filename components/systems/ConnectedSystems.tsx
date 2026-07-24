@@ -12,6 +12,7 @@
  */
 
 import Image from 'next/image'
+import { useState } from 'react'
 import { Link } from '@/i18n/navigation'
 import { Reveal } from '@/components/ui/Reveal'
 
@@ -36,6 +37,38 @@ export interface ConnectedSystemsProps {
   readonly background?: string
   /** Optional border color — defaults to dark border */
   readonly borderColor?: string
+  /**
+   * Active locale, passed down from the parent server component
+   * (params.locale) — never resolved client-side. Defaults to 'en'
+   * for call sites that have not been updated yet.
+   */
+  readonly locale?: string
+}
+
+const COPY = {
+  en: { eyebrow: 'CONNECTED SYSTEMS', title: 'Operations rarely run in one system.', body: 'Businesses usually solve more than one operational bottleneck. These systems often work together.', cta: 'Explore system →' },
+  de: { eyebrow: 'VERBUNDENE SYSTEME', title: 'Betrieb läuft selten in einem einzigen System.', body: 'Unternehmen lösen meist mehr als einen operativen Engpass. Diese Systeme arbeiten oft zusammen.', cta: 'System entdecken →' },
+} as const
+
+/**
+ * Card thumbnail with graceful locale-image fallback. Prefers
+ * `{slug}-{locale}.png`; if that variant doesn't exist (not every
+ * system has a German-labelled card yet), falls back to the English
+ * asset instead of showing a broken image.
+ */
+function ConnectedSystemImage({ slug, alt, localizedSrc }: { slug: string; alt: string; localizedSrc: string }) {
+  const [useEnFallback, setUseEnFallback] = useState(false)
+  const fallbackSrc = `/images/systems/${slug}/card/${slug}-en.png`
+  return (
+    <Image
+      src={useEnFallback ? fallbackSrc : localizedSrc}
+      alt={alt}
+      fill
+      style={{ objectFit: 'cover' }}
+      sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw"
+      onError={() => setUseEnFallback(true)}
+    />
+  )
 }
 
 // =============================================================================
@@ -46,7 +79,9 @@ export function ConnectedSystems({
   systems,
   background  = '#0F0F0F',
   borderColor = '#1A1A1A',
+  locale      = 'en',
 }: ConnectedSystemsProps) {
+  const copy = locale === 'de' ? COPY.de : COPY.en
   return (
     <section
       style={{
@@ -60,13 +95,13 @@ export function ConnectedSystems({
 
         {/* Header */}
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
-          CONNECTED SYSTEMS
+          {copy.eyebrow}
         </p>
         <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '0.5rem' }}>
-          Operations rarely run in one system.
+          {copy.title}
         </h2>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', maxWidth: '520px', lineHeight: 1.75, marginBottom: '2.5rem' }}>
-          Businesses usually solve more than one operational bottleneck. These systems often work together.
+          {copy.body}
         </p>
 
         {/* Cards */}
@@ -92,12 +127,10 @@ export function ConnectedSystems({
                   className="mp-img-wrap"
                   style={{ position: 'relative', aspectRatio: '19/10' }}
                 >
-                  <Image
-                    src={`/images/systems/${system.slug}/card/${system.slug}-en.png`}
+                  <ConnectedSystemImage
+                    slug={system.slug}
                     alt={system.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, 33vw"
+                    localizedSrc={`/images/systems/${system.slug}/card/${system.slug}-${locale === 'de' ? 'de' : 'en'}.png`}
                   />
                 </div>
 
@@ -110,7 +143,7 @@ export function ConnectedSystems({
                     {system.description}
                   </p>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: '6px' }}>
-                    Explore system →
+                    {copy.cta}
                   </span>
                 </div>
               </Link>

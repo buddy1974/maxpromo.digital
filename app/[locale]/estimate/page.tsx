@@ -356,7 +356,7 @@ function PricePanel({
         IHR ANGEBOT / YOUR ESTIMATE
       </p>
       <p style={{ fontFamily: mono, fontSize: '10px', color: '#444', margin: '0 0 20px' }}>
-        // Preis wird sofort berechnet
+        {'// Preis wird sofort berechnet'}
       </p>
 
       {lineItems.length === 0 ? (
@@ -708,6 +708,14 @@ ${contactName} — ${phone || email}`
             order: 99;
           }
         }
+        @media (max-width: 480px) {
+          .est-contact-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .est-package-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
         @media print {
           body { background: #fff !important; color: #000 !important; }
           .no-print { display: none !important; }
@@ -802,6 +810,7 @@ ${contactName} — ${phone || email}`
               {/* Section A — Contact */}
               <SectionCard label="KONTAKT / CONTACT INFO">
                 <div
+                  className="est-contact-grid"
                   style={{
                     display: 'grid',
                     gridTemplateColumns: '1fr 1fr',
@@ -917,6 +926,7 @@ ${contactName} — ${phone || email}`
                   </p>
                 )}
                 <div
+                  className="est-package-grid"
                   style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(3, 1fr)',
@@ -1408,7 +1418,7 @@ ${contactName} — ${phone || email}`
                     letterSpacing: '0.06em',
                   }}
                 >
-                  // Angebot gilt 30 Tage · Zahlung 50/50
+                  {'// Angebot gilt 30 Tage · Zahlung 50/50'}
                 </p>
               </SectionCard>
             </div>

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -14,6 +15,35 @@ import { ProofMetrics } from '@/components/homepage/ProofMetrics'
 import type { ProofMetric } from '@/components/homepage/ProofMetrics'
 import { TeamTrust } from '@/components/homepage/TeamTrust'
 import { FaqAccordion } from '@/components/homepage/FaqAccordion'
+
+/* ─── METADATA ─── */
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const isDE = locale === 'de'
+  const title = isDE
+    ? 'Maxpromo Digital | KI-Business-Systeme aus Essen'
+    : 'Maxpromo Digital | AI Business Systems Built in Essen'
+  const description = isDE
+    ? 'Wir modernisieren veraltete Websites, automatisieren Workflows und installieren KI-gestützte Betriebssysteme für Restaurants, Handwerk, Praxen und mehr.'
+    : 'We modernize legacy websites, automate workflows, and install AI-powered operating systems for restaurants, trades, medical practices and more.'
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://www.maxpromo.digital/${locale}`,
+      languages: {
+        de: 'https://www.maxpromo.digital/de',
+        en: 'https://www.maxpromo.digital/en',
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: `https://www.maxpromo.digital/${locale}`,
+    },
+  }
+}
 
 /* ─── HELPERS ─── */
 
@@ -179,7 +209,7 @@ export default async function HomePage() {
 
           {/* Header */}
           <div style={{ maxWidth: '56rem', marginBottom: '3rem' }}>
-            <SectionLabel>// Max Agent Bureau</SectionLabel>
+            <SectionLabel>{'// Max Agent Bureau'}</SectionLabel>
             <SectionTitle>
               {locale === 'de'
                 ? <>Ein KI-Büro, das Arbeit vorbereitet —{' '}<span style={{ color: '#F97316' }}>nicht einfach nur antwortet.</span></>

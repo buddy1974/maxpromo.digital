@@ -7,9 +7,15 @@ interface AutomationCardProps {
   title: string
   description: string
   tools: string[]
+  locale: string
 }
 
-export default function AutomationCard({ title, description, tools }: AutomationCardProps) {
+/* ─── LOCALE HELPER ───────────────────────────────────────── */
+function t(locale: string, de: string, en: string): string {
+  return locale === 'de' ? de : en
+}
+
+export default function AutomationCard({ title, description, tools, locale }: AutomationCardProps) {
   const [hovered, setHovered] = useState(false)
 
   return (
@@ -99,7 +105,7 @@ export default function AutomationCard({ title, description, tools }: Automation
         onMouseEnter={(e) => (e.currentTarget.style.textDecoration = 'underline')}
         onMouseLeave={(e) => (e.currentTarget.style.textDecoration = 'none')}
       >
-        Request This →
+        {t(locale, 'Anfragen →', 'Request This →')}
       </Link>
     </div>
   )

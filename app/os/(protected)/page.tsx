@@ -1,23 +1,11 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
 const sans    = 'var(--font-inter)'
-
-function greeting(): string {
-  const h = new Date().getHours()
-  if (h < 12) return 'Good morning'
-  if (h < 18) return 'Good afternoon'
-  return 'Good evening'
-}
-
-function today(): string {
-  return new Date().toLocaleDateString('de-DE', {
-    weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
-  })
-}
 
 interface MetricCardProps { label: string; value: string | number; sub?: string }
 function MetricCard({ label, value, sub }: MetricCardProps) {
@@ -45,11 +33,12 @@ const STATUS_COLORS: Record<string, string> = {
   review: '#eab308', completed: '#22c55e', invoiced: '#22c55e',
 }
 
-function Badge({ status }: { status: string }) {
+/** `label` is the already-translated display string; `status` only drives the colour. */
+function Badge({ status, label }: { status: string; label: string }) {
   const color = STATUS_COLORS[status?.toLowerCase()] ?? '#555'
   return (
     <span style={{ fontFamily: mono, fontSize: '9px', color, background: color + '22', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
-      {status}
+      {label}
     </span>
   )
 }
@@ -67,6 +56,7 @@ function QuickAction({ href, label }: { href: string; label: string }) {
 }
 
 export default function DashboardPage() {
+  const { t, intlLocale } = useOsLocale()
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [leads,    setLeads]    = useState<Lead[]>([])
   const [jobs,     setJobs]     = useState<Job[]>([])
@@ -88,6 +78,15 @@ export default function DashboardPage() {
     }).catch(() => setLoading(false))
   }, [])
 
+  const hours = new Date().getHours()
+  const greeting = hours < 12 ? t.dashboard.greetingMorning
+    : hours < 18 ? t.dashboard.greetingAfternoon
+    : t.dashboard.greetingEvening
+
+  const today = new Date().toLocaleDateString(intlLocale, {
+    weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
+  })
+
   const outstanding = invoices
     .filter(i => i.status === 'sent' || i.status === 'overdue')
     .reduce((sum, i) => sum + Number(i.total), 0)
@@ -99,34 +98,34 @@ export default function DashboardPage() {
   const newLeads = leads.filter(l => new Date(l.created_at) > oneWeekAgo).length
 
   const fmtEur = (n: number) =>
-    new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
+    new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
 
   return (
     <div style={{ padding: '32px 40px', maxWidth: '1200px' }}>
       {/* Header */}
       <div style={{ marginBottom: '36px' }}>
         <h1 style={{ fontFamily: grotesk, fontSize: '28px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
-          {greeting()}, Marcel
+          {greeting}, {t.dashboard.ownerName}
         </h1>
         <p style={{ fontFamily: mono, fontSize: '11px', color: '#555', letterSpacing: '0.1em', margin: 0, textTransform: 'uppercase' }}>
-          {today()}
+          {today}
         </p>
       </div>
 
       {/* Metrics */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '36px', flexWrap: 'wrap' }}>
-        <MetricCard label="Total Clients" value={loading ? '—' : clients.length} sub="Manage in Clients" />
-        <MetricCard label="Active Jobs" value={loading ? '—' : activeJobs} sub="In kanban pipeline" />
-        <MetricCard label="Outstanding (€)" value={loading ? '—' : fmtEur(outstanding)} sub="Sent / overdue" />
-        <MetricCard label="New Leads (7d)" value={loading ? '—' : newLeads} sub="All sources" />
+        <MetricCard label={t.dashboard.metricClients}     value={loading ? '—' : clients.length}      sub={t.dashboard.metricClientsSub} />
+        <MetricCard label={t.dashboard.metricActiveJobs}  value={loading ? '—' : activeJobs}          sub={t.dashboard.metricActiveJobsSub} />
+        <MetricCard label={t.dashboard.metricOutstanding} value={loading ? '—' : fmtEur(outstanding)} sub={t.dashboard.metricOutstandingSub} />
+        <MetricCard label={t.dashboard.metricNewLeads}    value={loading ? '—' : newLeads}            sub={t.dashboard.metricNewLeadsSub} />
       </div>
 
       {/* Quick actions */}
       <div style={{ display: 'flex', gap: '12px', marginBottom: '40px', flexWrap: 'wrap' }}>
-        <QuickAction href="/os/invoices/new"  label="+ New Invoice" />
-        <QuickAction href="/os/angebote/new"  label="+ New Angebot" />
-        <QuickAction href="/os/clients"       label="+ New Client" />
-        <QuickAction href="/os/jobs"          label="+ New Job" />
+        <QuickAction href="/os/invoices/new"  label={t.dashboard.actionNewInvoice} />
+        <QuickAction href="/os/angebote/new"  label={t.dashboard.actionNewAngebot} />
+        <QuickAction href="/os/clients"       label={t.dashboard.actionNewClient} />
+        <QuickAction href="/os/jobs"          label={t.dashboard.actionNewJob} />
       </div>
 
       {/* Activity feed */}
@@ -135,18 +134,18 @@ export default function DashboardPage() {
         {/* Recent invoices */}
         <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>Recent Invoices</p>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentInvoices}</p>
           </div>
           {loading ? (
-            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>Loading...</p>
+            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>{t.common.loading}</p>
           ) : invoices.length === 0 ? (
-            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>No invoices yet.</p>
+            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>{t.dashboard.noInvoices}</p>
           ) : (
             invoices.slice(0, 5).map(inv => (
               <div key={inv.id} style={{ padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF' }}>{inv.invoice_number}</span>
-                  <Badge status={inv.status} />
+                  <Badge status={inv.status} label={t.status.invoice[inv.status] ?? inv.status} />
                 </div>
                 <p style={{ fontFamily: sans, fontSize: '12px', color: '#555', margin: '3px 0 0' }}>
                   {inv.client_name} · {fmtEur(Number(inv.total))}
@@ -156,7 +155,7 @@ export default function DashboardPage() {
           )}
           <div style={{ padding: '12px 20px' }}>
             <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.1em' }}>
-              View all →
+              {t.dashboard.viewAll}
             </Link>
           </div>
         </div>
@@ -164,28 +163,28 @@ export default function DashboardPage() {
         {/* Recent leads */}
         <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>Recent Leads</p>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentLeads}</p>
           </div>
           {loading ? (
-            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>Loading...</p>
+            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>{t.common.loading}</p>
           ) : leads.length === 0 ? (
-            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>No leads yet.</p>
+            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>{t.dashboard.noLeads}</p>
           ) : (
             leads.slice(0, 5).map(lead => (
               <div key={lead.id} style={{ padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontFamily: sans, fontSize: '12px', color: '#FFF' }}>{lead.name || lead.company || 'Anonymous'}</span>
-                  <Badge status={lead.status} />
+                  <span style={{ fontFamily: sans, fontSize: '12px', color: '#FFF' }}>{lead.name || lead.company || t.dashboard.anonymous}</span>
+                  <Badge status={lead.status} label={t.status.lead[lead.status] ?? lead.status} />
                 </div>
                 <p style={{ fontFamily: mono, fontSize: '10px', color: '#444', margin: '3px 0 0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                  {lead.source}
+                  {t.status.leadSource[lead.source] ?? lead.source}
                 </p>
               </div>
             ))
           )}
           <div style={{ padding: '12px 20px' }}>
             <Link href="/os/leads" style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.1em' }}>
-              View all →
+              {t.dashboard.viewAll}
             </Link>
           </div>
         </div>
@@ -193,28 +192,28 @@ export default function DashboardPage() {
         {/* Recent jobs */}
         <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>Recent Jobs</p>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentJobs}</p>
           </div>
           {loading ? (
-            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>Loading...</p>
+            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>{t.common.loading}</p>
           ) : jobs.length === 0 ? (
-            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>No jobs yet.</p>
+            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>{t.dashboard.noJobs}</p>
           ) : (
             jobs.slice(0, 5).map(job => (
               <div key={job.id} style={{ padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontFamily: sans, fontSize: '12px', color: '#FFF' }}>{job.title}</span>
-                  <Badge status={job.stage} />
+                  <Badge status={job.stage} label={t.status.jobStage[job.stage] ?? job.stage} />
                 </div>
                 <p style={{ fontFamily: sans, fontSize: '11px', color: '#555', margin: '3px 0 0' }}>
-                  {job.client_name || 'No client'}{job.value ? ` · ${fmtEur(Number(job.value))}` : ''}
+                  {job.client_name || t.dashboard.noClient}{job.value ? ` · ${fmtEur(Number(job.value))}` : ''}
                 </p>
               </div>
             ))
           )}
           <div style={{ padding: '12px 20px' }}>
             <Link href="/os/jobs" style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.1em' }}>
-              View kanban →
+              {t.dashboard.viewKanban}
             </Link>
           </div>
         </div>

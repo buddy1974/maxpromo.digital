@@ -1,22 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendTelegramNotification } from '@/lib/telegram'
-
-// In-memory rate limiter (resets on cold start)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
-const RATE_LIMIT    = 5
-const WINDOW_MS     = 60_000
-
-function isRateLimited(ip: string): boolean {
-  const now   = Date.now()
-  const entry = rateLimitMap.get(ip)
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + WINDOW_MS })
-    return false
-  }
-  if (entry.count >= RATE_LIMIT) return true
-  entry.count++
-  return false
-}
+import { enforceRateLimit } from '@/lib/rate-limit'
 
 const MAX_FIELD_LENGTH = 200
 const MAX_BODY_BYTES   = 4096
@@ -69,10 +53,8 @@ function buildMessage(p: LeadPayload): string {
 }
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
-  if (isRateLimited(ip)) {
-    return NextResponse.json({ error: 'rate_limited' }, { status: 429 })
-  }
+  const blocked = enforceRateLimit(req, { scope: 'max-agent-submit', limit: 5, windowMs: 60_000 })
+  if (blocked) return blocked
 
   const contentLength = req.headers.get('content-length')
   if (contentLength && parseInt(contentLength, 10) > MAX_BODY_BYTES) {
@@ -106,10 +88,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'missing_contact' }, { status: 400 })
   }
 
-  // Telegram notification (via centralised helper)
-  await sendTelegramNotification(buildMessage(payload)).catch((err: unknown) => {
+  // Telegram is the only delivery channel for this route — if it fails,
+  // nothing was actually recorded, so the response must say so honestly.
+  let telegramOk = false
+  try {
+    const result = await sendTelegramNotification(buildMessage(payload))
+    telegramOk = result.sent
+  } catch (err) {
     console.error('[MaxAgent] Telegram send failed:', err)
-  })
+  }
+
+  if (!telegramOk) {
+    return NextResponse.json({ ok: false, error: 'delivery_failed' }, { status: 502 })
+  }
 
   return NextResponse.json({ ok: true })
 }

@@ -20,18 +20,16 @@
  * TODO: wire brandColor to accent bar and bullet icons
  */
 
-import type { ProductEntry } from '@/lib/registry/types'
 import type { SystemCardProps } from './SystemCard'
 
 // =============================================================================
 // PROPS
 // =============================================================================
 
-export interface SystemCardFullProps
-  extends Pick<
-    SystemCardProps,
-    'product' | 'locale' | 'showBadge' | 'showDomain' | 'showCTA'
-  > {}
+export type SystemCardFullProps = Pick<
+  SystemCardProps,
+  'product' | 'locale' | 'showBadge' | 'showDomain' | 'showCTA'
+>
 
 // =============================================================================
 // COMPONENT

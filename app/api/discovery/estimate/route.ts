@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callAI } from '@/lib/ai'
+import { enforceRateLimit } from '@/lib/rate-limit'
 import type { AuditResult } from '@/components/AuditResults'
 
 interface EstimateRequestBody {
@@ -16,61 +17,61 @@ interface EstimateRequestBody {
 const ESTIMATE_SYSTEM_PROMPT = `You are a senior project estimator at Maxpromo Digital, an AI automation and web development agency based in Germany. You create professional itemised cost estimates (Kostenvoranschlag) following German market standards.
 
 Currency: EUR only.
-VAT notice: "Gemäß §19 UStG wird keine Umsatzsteuer berechnet."
+VAT notice: "Gemaess Paragraph 19 UStG wird keine Umsatzsteuer berechnet."
 Format: Professional, itemised, like a German Angebot.
 
 PRICING GUIDELINES (German market rates):
 
 INFRASTRUCTURE:
-Domain registration: €10–20/year (.de, .com, .eu)
-Web hosting (shared): €5–15/month
-Web hosting (VPS): €20–80/month
+Domain registration: EUR10-20/year (.de, .com, .eu)
+Web hosting (shared): EUR5-15/month
+Web hosting (VPS): EUR20-80/month
 SSL: included/free
 
 MAINTENANCE:
-Maintenance contract: €50–200/month
+Maintenance contract: EUR50-200/month
 
 DESIGN & DEVELOPMENT:
-Landing page (1–3 pages): €800–1,500
-Small website (5–8 pages): €1,500–3,500
-Medium website (10–20 pages): €3,500–7,000
-Large website (20+ pages): €7,000–15,000
-E-commerce/booking platform: €5,000–20,000
-Custom web application: €8,000–30,000
+Landing page (1-3 pages): EUR800-1,500
+Small website (5-8 pages): EUR1,500-3,500
+Medium website (10-20 pages): EUR3,500-7,000
+Large website (20+ pages): EUR7,000-15,000
+E-commerce/booking platform: EUR5,000-20,000
+Custom web application: EUR8,000-30,000
 
 FEATURES (add-on):
-Online booking system: €500–1,500
-Quote calculator: €300–800
-AI chatbot integration: €800–2,000
-Payment gateway integration: €400–900
-Multilingual (per language): €300–600
-CMS/content dashboard: €500–1,200
-Customer portal/login: €800–2,000
-API integrations (per): €300–800
-Google Maps/coverage map: €150–300
-Newsletter integration: €200–400
+Online booking system: EUR500-1,500
+Quote calculator: EUR300-800
+AI chatbot integration: EUR800-2,000
+Payment gateway integration: EUR400-900
+Multilingual (per language): EUR300-600
+CMS/content dashboard: EUR500-1,200
+Customer portal/login: EUR800-2,000
+API integrations (per): EUR300-800
+Google Maps/coverage map: EUR150-300
+Newsletter integration: EUR200-400
 
 AI AUTOMATION (MaxPromo specialty):
-AI lead qualification agent: €1,500–3,500
-Document processing automation: €2,000–5,000
-Social media automation setup: €800–2,000
-WhatsApp automation: €1,000–2,500
-Email automation workflows: €500–1,500
-Reporting automation: €800–2,000
-Full business OS: €5,000–25,000
+AI lead qualification agent: EUR1,500-3,500
+Document processing automation: EUR2,000-5,000
+Social media automation setup: EUR800-2,000
+WhatsApp automation: EUR1,000-2,500
+Email automation workflows: EUR500-1,500
+Reporting automation: EUR800-2,000
+Full business OS: EUR5,000-25,000
 
 CONTENT & DESIGN:
-Logo design: €300–800
-Brand identity package: €800–2,000
-Professional copywriting (per page): €80–150
-Stock photography package: €100–300
+Logo design: EUR300-800
+Brand identity package: EUR800-2,000
+Professional copywriting (per page): EUR80-150
+Stock photography package: EUR100-300
 
 ONGOING:
-Monthly hosting + maintenance: €80–200
-Monthly content updates: €100–300
-Monthly AI automation management: €200–500
-SEO monthly retainer: €200–600
-Priority support: €50–150/month
+Monthly hosting + maintenance: EUR80-200
+Monthly content updates: EUR100-300
+Monthly AI automation management: EUR200-500
+SEO monthly retainer: EUR200-600
+Priority support: EUR50-150/month
 
 Calculate based on what the client selected in their discovery answers and the automation opportunities identified. Be specific and justify each line item. Include only what is relevant to their situation.
 
@@ -82,7 +83,7 @@ Scope levels:
 
 Return ONLY valid JSON matching this exact structure (no markdown fences, no preamble):
 {
-  "estimateTitle": "Kostenvoranschlag — {company}",
+  "estimateTitle": "Kostenvoranschlag - {company}",
   "estimateDate": "{today YYYY-MM-DD}",
   "validUntil": "{today + 30 days YYYY-MM-DD}",
   "currency": "EUR",
@@ -120,28 +121,43 @@ Return ONLY valid JSON matching this exact structure (no markdown fences, no pre
     "yearOneMin": 0,
     "yearOneMax": 0
   },
-  "vatNotice": "Gemäß §19 UStG wird keine Umsatzsteuer berechnet.",
+  "vatNotice": "Gemaess Paragraph 19 UStG wird keine Umsatzsteuer berechnet.",
   "paymentTerms": "50% Anzahlung bei Auftragserteilung, 50% bei Abnahme.",
-  "validityNote": "Dieses Angebot ist 30 Tage gültig.",
+  "validityNote": "Dieses Angebot ist 30 Tage gueltig.",
   "scopeNote": "Two-sentence note about what affects the final price for this specific client.",
   "estimateScope": "Growth",
   "includedInAll": [
     "Responsive design (mobile/tablet/desktop)",
     "SSL certificate (HTTPS)",
     "Basic SEO setup",
-    "DSGVO-konforme Datenschutzerklärung",
+    "DSGVO-konforme Datenschutzerklaerung",
     "Impressum",
     "30 Tage Support nach Abschluss"
   ]
 }`
 
 export async function POST(request: NextRequest) {
+  const blocked = enforceRateLimit(request, { scope: 'discovery-estimate', limit: 8, windowMs: 10 * 60_000 })
+  if (blocked) return blocked
+
+  const rawBody = await request.text()
+  if (!rawBody || rawBody.trim().length === 0) {
+    return NextResponse.json({ error: 'Request body required.' }, { status: 400 })
+  }
+  if (rawBody.length > 5000) {
+    return NextResponse.json({ error: 'Request body too large.' }, { status: 400 })
+  }
+
   try {
-    const body = (await request.json()) as EstimateRequestBody
+    const body = JSON.parse(rawBody) as EstimateRequestBody
     const { orgType, teamSize, timeDrains, tools, experience, goal, company, auditResults } = body
 
     if (!orgType) {
       return NextResponse.json({ error: 'Profile data required.' }, { status: 400 })
+    }
+
+    if (orgType.length > 200 || (goal && goal.length > 2000) || (company && company.length > 200)) {
+      return NextResponse.json({ error: 'Field too long.' }, { status: 400 })
     }
 
     const opportunitySummary = auditResults
@@ -201,7 +217,7 @@ function getFallbackEstimate(
 ) {
   const isAutomation = orgType?.toLowerCase().includes('agency') || orgType?.toLowerCase().includes('service')
   return {
-    estimateTitle: `Kostenvoranschlag — ${company || 'Ihr Unternehmen'}`,
+    estimateTitle: `Kostenvoranschlag - ${company || 'Ihr Unternehmen'}`,
     estimateDate: today.toISOString().split('T')[0],
     validUntil: validUntil.toISOString().split('T')[0],
     currency: 'EUR',
@@ -212,7 +228,7 @@ function getFallbackEstimate(
           {
             id: 'website',
             description: 'Business Website / Unternehmenswebsite',
-            detail: 'Responsive 5–8 page website with contact form, CMS, and DSGVO compliance',
+            detail: 'Responsive 5-8 page website with contact form, CMS, and DSGVO compliance',
             unit: 'pauschal',
             priceMin: 1500,
             priceMax: 3500,
@@ -280,16 +296,16 @@ function getFallbackEstimate(
       yearOneMin: 3960,
       yearOneMax: 8800,
     },
-    vatNotice: 'Gemäß §19 UStG wird keine Umsatzsteuer berechnet.',
+    vatNotice: 'Gemaess Paragraph 19 UStG wird keine Umsatzsteuer berechnet.',
     paymentTerms: '50% Anzahlung bei Auftragserteilung, 50% bei Abnahme.',
-    validityNote: 'Dieses Angebot ist 30 Tage gültig.',
+    validityNote: 'Dieses Angebot ist 30 Tage gueltig.',
     scopeNote: 'The final price depends on the exact scope confirmed at kickoff. Additional features or integrations are scoped separately.',
     estimateScope: 'Growth',
     includedInAll: [
       'Responsive design (mobile/tablet/desktop)',
       'SSL certificate (HTTPS)',
       'Basic SEO setup',
-      'DSGVO-konforme Datenschutzerklärung',
+      'DSGVO-konforme Datenschutzerklaerung',
       'Impressum',
       '30 Tage Support nach Abschluss',
     ],

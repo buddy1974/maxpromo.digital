@@ -1,11 +1,26 @@
 import type { Metadata } from 'next'
+import { setRequestLocale } from 'next-intl/server'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'Data Deletion Request | Maxpromo Digital',
-  description:
-    'Request deletion of your personal data from Maxpromo Digital systems under DSGVO Article 17.',
-  robots: { index: false, follow: false },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const isDE = locale === 'de'
+  return {
+    title: isDE ? 'Antrag auf Datenlöschung | Maxpromo Digital' : 'Data Deletion Request | Maxpromo Digital',
+    description: isDE
+      ? 'Beantragen Sie die Löschung Ihrer personenbezogenen Daten aus den Systemen von Maxpromo Digital gemäß Art. 17 DSGVO.'
+      : 'Request deletion of your personal data from Maxpromo Digital systems under DSGVO Article 17.',
+    robots: { index: false, follow: false },
+  }
+}
+
+/* ─── LOCALE HELPER ───────────────────────────────────────── */
+function t(locale: string, de: string, en: string): string {
+  return locale === 'de' ? de : en
 }
 
 const mono = 'var(--font-roboto-mono)'
@@ -69,7 +84,14 @@ function BulletItem({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function DataDeletionPage() {
+export default async function DataDeletionPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
   return (
     <main
       style={{
@@ -113,7 +135,7 @@ export default function DataDeletionPage() {
             margin: '0 0 10px',
           }}
         >
-          Data Deletion Request
+          {t(locale, 'Antrag auf Datenlöschung', 'Data Deletion Request')}
         </h1>
         <p
           style={{
@@ -124,7 +146,7 @@ export default function DataDeletionPage() {
             letterSpacing: '0.04em',
           }}
         >
-          Datenlöschung / Right to Erasure
+          {t(locale, 'Datenlöschung / Recht auf Löschung', 'Datenlöschung / Right to Erasure')}
         </p>
 
         {/* Intro */}
@@ -137,9 +159,9 @@ export default function DataDeletionPage() {
             margin: '0 0 36px',
           }}
         >
-          Under DSGVO Article 17 (Right to Erasure), you have the right to
-          request the deletion of any personal data we hold about you. To
-          submit a deletion request, contact us using the details below.
+          {t(locale,
+            'Gemäß Art. 17 DSGVO (Recht auf Löschung) haben Sie das Recht, die Löschung sämtlicher personenbezogener Daten zu verlangen, die wir über Sie gespeichert haben. Um einen Löschungsantrag zu stellen, kontaktieren Sie uns über die unten stehenden Angaben.',
+            'Under DSGVO Article 17 (Right to Erasure), you have the right to request the deletion of any personal data we hold about you. To submit a deletion request, contact us using the details below.')}
         </p>
 
         {/* Data Controller */}
@@ -152,11 +174,13 @@ export default function DataDeletionPage() {
             margin: '-20px 0 36px',
           }}
         >
-          Data Controller: Maxpromo Digital · Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst
+          {t(locale,
+            'Verantwortlicher: Maxpromo Digital · Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst',
+            'Data Controller: Maxpromo Digital · Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst')}
         </p>
 
         {/* Card 1 — How to request */}
-        <Card title="Submit a Request">
+        <Card title={t(locale, 'Antrag stellen', 'Submit a Request')}>
           <div
             style={{
               background: 'rgba(249,115,22,0.06)',
@@ -174,7 +198,7 @@ export default function DataDeletionPage() {
                 margin: '0 0 6px',
               }}
             >
-              EMAIL
+              {t(locale, 'E-MAIL', 'EMAIL')}
             </p>
             <a
               href="mailto:info@maxpromo.digital?subject=Data%20Deletion%20Request"
@@ -198,7 +222,7 @@ export default function DataDeletionPage() {
                 margin: '0 0 6px',
               }}
             >
-              SUBJECT LINE
+              {t(locale, 'BETREFFZEILE', 'SUBJECT LINE')}
             </p>
             <p
               style={{
@@ -208,7 +232,7 @@ export default function DataDeletionPage() {
                 margin: 0,
               }}
             >
-              &quot;Data Deletion Request&quot;
+              {t(locale, '„Antrag auf Datenlöschung"', '"Data Deletion Request"')}
             </p>
           </div>
           <p
@@ -220,56 +244,56 @@ export default function DataDeletionPage() {
               margin: 0,
             }}
           >
-            We will confirm receipt within{' '}
-            <span style={{ color: '#FFFFFF' }}>48 hours</span> and process your
-            request within{' '}
-            <span style={{ color: '#FFFFFF' }}>30 days</span>.
+            {t(locale, 'Wir bestätigen den Eingang innerhalb von', 'We will confirm receipt within')}{' '}
+            <span style={{ color: '#FFFFFF' }}>{t(locale, '48 Stunden', '48 hours')}</span>{' '}
+            {t(locale, 'und bearbeiten Ihren Antrag innerhalb von', 'and process your request within')}{' '}
+            <span style={{ color: '#FFFFFF' }}>{t(locale, '30 Tagen', '30 days')}</span>.
           </p>
         </Card>
 
         {/* Card 2 — Data we hold */}
-        <Card title="Data We May Hold">
+        <Card title={t(locale, 'Daten, die wir möglicherweise speichern', 'Data We May Hold')}>
           <ul style={{ padding: 0, margin: 0 }}>
             <BulletItem>
-              Contact form submissions{' '}
+              {t(locale, 'Kontaktformular-Übermittlungen', 'Contact form submissions')}{' '}
               <span style={{ color: '#555555', fontSize: '12px' }}>
-                (name, email, message, company)
+                {t(locale, '(Name, E-Mail, Nachricht, Unternehmen)', '(name, email, message, company)')}
               </span>
             </BulletItem>
             <BulletItem>
-              Automation audit responses{' '}
+              {t(locale, 'Antworten aus der Automatisierungs-Analyse', 'Automation audit responses')}{' '}
               <span style={{ color: '#555555', fontSize: '12px' }}>
-                (business information provided)
+                {t(locale, '(bereitgestellte Unternehmensinformationen)', '(business information provided)')}
               </span>
             </BulletItem>
-            <BulletItem>Discovery wizard submissions</BulletItem>
+            <BulletItem>{t(locale, 'Übermittlungen über den Discovery-Assistenten', 'Discovery wizard submissions')}</BulletItem>
             <BulletItem>
-              Chat conversation content{' '}
+              {t(locale, 'Chat-Gesprächsinhalte', 'Chat conversation content')}{' '}
               <span style={{ color: '#555555', fontSize: '12px' }}>
-                (session only — not stored permanently)
+                {t(locale, '(nur während der Sitzung — nicht dauerhaft gespeichert)', '(session only — not stored permanently)')}
               </span>
             </BulletItem>
             <BulletItem>
-              Server access logs{' '}
+              {t(locale, 'Server-Zugriffsprotokolle', 'Server access logs')}{' '}
               <span style={{ color: '#555555', fontSize: '12px' }}>
-                (IP address, max 7 days)
+                {t(locale, '(IP-Adresse, max. 7 Tage)', '(IP address, max 7 days)')}
               </span>
             </BulletItem>
           </ul>
         </Card>
 
         {/* Card 3 — What happens next */}
-        <Card title="What Happens Next">
+        <Card title={t(locale, 'Wie es weitergeht', 'What Happens Next')}>
           <ul style={{ padding: 0, margin: 0 }}>
-            <BulletItem>We verify your identity via email</BulletItem>
+            <BulletItem>{t(locale, 'Wir verifizieren Ihre Identität per E-Mail', 'We verify your identity via email')}</BulletItem>
             <BulletItem>
-              We locate all data associated with your email address
+              {t(locale, 'Wir ermitteln alle Daten, die mit Ihrer E-Mail-Adresse verknüpft sind', 'We locate all data associated with your email address')}
             </BulletItem>
             <BulletItem>
-              We permanently delete it from all our systems within{' '}
-              <span style={{ color: '#FFFFFF' }}>30 days</span>
+              {t(locale, 'Wir löschen sie dauerhaft aus allen unseren Systemen innerhalb von', 'We permanently delete it from all our systems within')}{' '}
+              <span style={{ color: '#FFFFFF' }}>{t(locale, '30 Tagen', '30 days')}</span>
             </BulletItem>
-            <BulletItem>We send you written confirmation</BulletItem>
+            <BulletItem>{t(locale, 'Wir senden Ihnen eine schriftliche Bestätigung', 'We send you written confirmation')}</BulletItem>
           </ul>
         </Card>
 
@@ -284,8 +308,9 @@ export default function DataDeletionPage() {
             letterSpacing: '0.04em',
           }}
         >
-          This page is provided in compliance with DSGVO Art. 17, Meta Platform
-          Terms, and applicable data protection law.
+          {t(locale,
+            'Diese Seite wird in Übereinstimmung mit Art. 17 DSGVO, den Meta-Plattformbedingungen und geltendem Datenschutzrecht bereitgestellt.',
+            'This page is provided in compliance with DSGVO Art. 17, Meta Platform Terms, and applicable data protection law.')}
         </p>
 
         {/* Back link */}
@@ -299,7 +324,7 @@ export default function DataDeletionPage() {
             letterSpacing: '0.06em',
           }}
         >
-          ← Return to Privacy Policy
+          {t(locale, '← Zurück zur Datenschutzerklärung', '← Return to Privacy Policy')}
         </Link>
       </div>
     </main>

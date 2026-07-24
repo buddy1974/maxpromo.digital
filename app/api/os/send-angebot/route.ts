@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { getDb } from '@/lib/db'
+import type { CurrencyCode, DocumentLanguage } from '@/lib/documents/config'
+import { fmtCurrency, fmtUnitPrice, fmtDocDate, splitClientName } from '@/lib/documents/format'
+import { getLabels } from '@/lib/documents/labels'
+import {
+  escHtml, emailSalutation, buildEmailHeaderHtml, buildEmailAddressBlockHtml,
+  buildEmailTableHeaderHtml, buildEmailFooterHtml, buildEmailVatClauseHtml,
+} from '@/lib/documents/emailHtml'
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'MAXPROMO DIGITAL <info@maxpromo.digital>'
 
@@ -31,62 +38,24 @@ interface AngebotRow {
   anzahlung_method: string | null
   payment_terms: string | null
   included_items: string[] | null
-}
-
-function esc(s: string): string {
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
-
-function fmtEur(n: number): string {
-  return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
-}
-
-/**
- * Display Einzelpreis as total ÷ qty so Menge × Einzelpreis = Gesamt
- * is always self-consistent, regardless of whether the stored
- * unit_price was rounded or never updated when the user edited total.
- */
-function fmtUnitPrice(total: number, qty: number): string {
-  const q = qty > 0 ? qty : 1
-  const unit = total / q
-  const fractionDigits = Math.abs(unit * q - total) > 0.005 || Math.abs(unit - Math.round(unit * 100) / 100) > 0.0001 ? 4 : 2
-  return new Intl.NumberFormat('de-DE', {
-    style: 'currency', currency: 'EUR',
-    minimumFractionDigits: 2, maximumFractionDigits: fractionDigits,
-  }).format(unit)
-}
-
-function formatGermanDate(dateStr: string | null): string {
-  if (!dateStr) return '—'
-  const d = new Date(dateStr.length > 10 ? dateStr : dateStr + 'T12:00:00')
-  return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  currency: CurrencyCode | null
+  language: DocumentLanguage | null
 }
 
 function buildAngebotEmail(a: AngebotRow): string {
-  const dashIdx = a.client_name.indexOf(' — ')
-  const nameOnly  = dashIdx >= 0 ? a.client_name.slice(0, dashIdx).trim() : a.client_name.trim()
-  const company   = dashIdx >= 0 ? a.client_name.slice(dashIdx + 3).trim() : ''
-  const firstName = nameOnly.split(' ')[0]
-
-  const salutation = company
-    ? 'Sehr geehrte Damen und Herren,'
-    : `Sehr geehrte/r ${esc(firstName)},`
+  const language: DocumentLanguage = a.language ?? 'de'
+  const t = getLabels(language)
+  const { name: nameOnly, company } = splitClientName(a.client_name)
+  const salutation = emailSalutation(nameOnly, company, language)
+  const currency = a.currency ?? 'EUR'
+  const fmt = (n: number) => fmtCurrency(n, currency)
+  const fmtDate = (v: string | null) => fmtDocDate(v, language)
 
   const subtotal = Number(a.subtotal ?? a.total)
   const total    = Number(a.total)
   const anzahl   = Number(a.anzahlung ?? 0)
   const hasAnz   = anzahl > 0
   const restbet  = hasAnz ? total - anzahl : total
-
-  const addressLines = [
-    `<p style="color:#111;font-size:15px;margin:0 0 2px;font-weight:600;">${esc(nameOnly)}</p>`,
-    company ? `<p style="color:#555;font-size:13px;margin:0 0 2px;">${esc(company)}</p>` : '',
-    a.client_address ? `<p style="color:#555;font-size:13px;margin:0;">${esc(a.client_address)}</p>` : '',
-  ].filter(Boolean).join('')
 
   const items = Array.isArray(a.line_items) ? a.line_items : []
   const rows = items.map((item, i) => {
@@ -95,29 +64,29 @@ function buildAngebotEmail(a: AngebotRow): string {
     return `
     <tr>
       <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#F97316;font-family:monospace;font-size:11px;font-weight:700;vertical-align:top;">${String(i + 1).padStart(2, '0')}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#111;font-size:13px;line-height:1.5;white-space:pre-wrap;vertical-align:top;">${esc(item.description)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#111;font-size:13px;line-height:1.5;white-space:pre-wrap;vertical-align:top;">${escHtml(item.description)}</td>
       <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${qty}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${fmtUnitPrice(total, qty)}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#111;text-align:right;font-family:monospace;font-size:13px;font-weight:700;vertical-align:top;">${fmtEur(total)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${fmtUnitPrice(total, qty, currency)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#111;text-align:right;font-family:monospace;font-size:13px;font-weight:700;vertical-align:top;">${fmt(total)}</td>
     </tr>`
   }).join('')
 
   const totalsHtml = hasAnz ? `
     <tr>
-      <td colspan="4" style="padding:10px 10px 4px;font-family:monospace;font-size:12px;color:#555;text-align:right;">Zwischensumme</td>
-      <td style="padding:10px 10px 4px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${fmtEur(subtotal)}</td>
+      <td colspan="4" style="padding:10px 10px 4px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${escHtml(t.subtotal)}</td>
+      <td style="padding:10px 10px 4px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${fmt(subtotal)}</td>
     </tr>
     <tr>
-      <td colspan="4" style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">Anzahlung (${esc(a.anzahlung_method ?? 'Überweisung')})</td>
-      <td style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">−${fmtEur(anzahl)}</td>
+      <td colspan="4" style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${escHtml(t.deposit)} (${escHtml(a.anzahlung_method ?? t.bankTransfer)})</td>
+      <td style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">−${fmt(anzahl)}</td>
     </tr>
     <tr style="background:#F97316;">
-      <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">Restbetrag</td>
-      <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmtEur(restbet)}</td>
+      <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.remainingBalance)}</td>
+      <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmt(restbet)}</td>
     </tr>` : `
     <tr style="background:#F97316;">
-      <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">Gesamtbetrag</td>
-      <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmtEur(total)}</td>
+      <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.quoteTotal)}</td>
+      <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmt(total)}</td>
     </tr>`
 
   // Inklusive (kostenlos) list intentionally omitted from the email body
@@ -125,71 +94,51 @@ function buildAngebotEmail(a: AngebotRow): string {
   // the row and visible inside the OS for internal reference.
 
   const paymentBlock = a.payment_terms
-    ? `<p style="font-size:12px;color:#333;margin:0 0 8px;"><strong>Zahlung:</strong> ${esc(a.payment_terms)}</p>`
+    ? `<p style="font-size:12px;color:#333;margin:0 0 8px;"><strong>${escHtml(t.paymentTerms)}:</strong> ${escHtml(a.payment_terms)}</p>`
     : ''
+
+  const introHtml = language === 'en'
+    ? `thank you for your enquiry. Please find enclosed my Quote No. <strong>${escHtml(a.angebot_number)}</strong> dated ${fmtDate(a.created_at)} covering the following services:`
+    : `vielen Dank für Ihre Anfrage. Anbei erhalten Sie mein Angebot Nr. <strong>${escHtml(a.angebot_number)}</strong> vom ${fmtDate(a.created_at)} mit folgenden Leistungen:`
 
   return `
     <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:#ffffff;">
 
-      <div style="background:#0A0A0A;padding:28px 32px;border-bottom:4px solid #F97316;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-          <div>
-            <p style="font-family:monospace;font-size:14px;font-weight:700;color:#FFF;margin:0 0 6px;letter-spacing:0.05em;">MAXPROMO DIGITAL</p>
-            <p style="font-family:monospace;font-size:11px;color:#888;margin:0 0 2px;">Marcel Tabit Akwe</p>
-            <p style="font-family:monospace;font-size:11px;color:#888;margin:0 0 2px;">Körnerstr. 8, 45143 Essen</p>
-            <p style="font-family:monospace;font-size:11px;color:#888;margin:0 0 2px;">info@maxpromo.digital</p>
-            <p style="font-family:monospace;font-size:11px;color:#888;margin:0;">+49 173 3645698</p>
-          </div>
-          <div style="text-align:right;">
-            <p style="font-family:monospace;font-size:18px;font-weight:700;color:#FFF;margin:0 0 6px;letter-spacing:0.1em;">ANGEBOT</p>
-            <p style="font-family:monospace;font-size:12px;color:#F97316;margin:0 0 2px;">Nr. ${esc(a.angebot_number)}</p>
-            <p style="font-family:monospace;font-size:11px;color:#888;margin:0 0 2px;">Datum: ${formatGermanDate(a.created_at)}</p>
-            <p style="font-family:monospace;font-size:11px;color:#888;margin:0;">Gültig bis: ${formatGermanDate(a.valid_until)}</p>
-          </div>
-        </div>
-      </div>
+      ${buildEmailHeaderHtml({
+        docTypeLabel: t.quoteTitle,
+        numberLabel: t.quoteNumber,
+        number: a.angebot_number,
+        dateLabel: t.quoteDate,
+        date: fmtDate(a.created_at),
+        secondaryDateLabel: t.validUntil,
+        secondaryDate: fmtDate(a.valid_until),
+      })}
 
-      <div style="padding:20px 32px;background:#f9f9f9;border-bottom:1px solid #eee;">
-        <p style="color:#888;font-size:10px;margin:0 0 8px;font-family:monospace;text-transform:uppercase;letter-spacing:0.12em;">An / To</p>
-        ${addressLines}
-      </div>
+      ${buildEmailAddressBlockHtml({ nameOnly, company, address: a.client_address, language })}
 
       <div style="padding:24px 32px;">
         <p style="color:#333;font-size:13px;margin:0 0 16px;font-family:monospace;">${salutation}</p>
         <p style="color:#333;font-size:14px;margin:0 0 20px;line-height:1.7;">
-          vielen Dank für Ihre Anfrage. Anbei erhalten Sie mein Angebot Nr. <strong>${esc(a.angebot_number)}</strong> vom ${formatGermanDate(a.created_at)} mit folgenden Leistungen:
+          ${introHtml}
         </p>
 
         <table style="width:100%;border-collapse:collapse;border:1px solid #eee;margin-bottom:4px;">
-          <tr style="background:#f5f5f5;">
-            <th style="padding:8px 10px;font-family:monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.08em;text-align:left;">Pos</th>
-            <th style="padding:8px 10px;font-family:monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.08em;text-align:left;">Beschreibung</th>
-            <th style="padding:8px 10px;font-family:monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.08em;text-align:right;">Menge</th>
-            <th style="padding:8px 10px;font-family:monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.08em;text-align:right;">Einzelpreis</th>
-            <th style="padding:8px 10px;font-family:monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.08em;text-align:right;">Gesamt</th>
-          </tr>
+          ${buildEmailTableHeaderHtml(language)}
           ${rows}
           ${totalsHtml}
         </table>
 
         ${paymentBlock}
 
-        <p style="font-family:monospace;font-size:11px;color:#888;margin:8px 0 14px;">Gemäß §19 UStG wird keine Umsatzsteuer berechnet. Angebot gültig bis ${formatGermanDate(a.valid_until)}.</p>
+        ${buildEmailVatClauseHtml(language, t.quoteValidUntilNote(fmtDate(a.valid_until)))}
 
         <p style="color:#333;font-size:13px;line-height:1.5;margin:0 0 16px;">
-          Mit freundlichen Grüßen<br>
+          ${escHtml(t.closing)}<br>
           <strong>Marcel Tabit Akwe</strong>
         </p>
       </div>
 
-      <div style="background:#0A0A0A;padding:20px 32px;">
-        <p style="font-family:monospace;font-size:11px;color:#555;margin:0 0 4px;">
-          Steuernummer: 111/5339/7597 &nbsp;·&nbsp; Finanzamt: Essen-NordOst
-        </p>
-        <p style="font-family:monospace;font-size:10px;color:#3d3d3d;margin:0;">
-          Maxpromo Digital &nbsp;·&nbsp; Körnerstr. 8 &nbsp;·&nbsp; 45143 Essen &nbsp;·&nbsp; info@maxpromo.digital &nbsp;·&nbsp; +49 173 3645698
-        </p>
-      </div>
+      ${buildEmailFooterHtml(language)}
     </div>`
 }
 
@@ -236,12 +185,13 @@ export async function POST(request: NextRequest) {
 
     const html = buildAngebotEmail(angebot)
     const bcc = body.sendCopyToMarcel !== false ? ['info@maxpromo.digital'] : []
+    const t = getLabels(angebot.language ?? 'de')
 
     const result = await sendEmail({
       to: toEmails,
       from: FROM_EMAIL,
       replyTo: 'info@maxpromo.digital',
-      subject: `Angebot Nr. ${angebot.angebot_number} — Maxpromo Digital`,
+      subject: t.emailSubjectQuote(angebot.angebot_number),
       html,
       bcc,
     })

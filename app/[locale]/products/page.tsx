@@ -1,7 +1,37 @@
+import type { Metadata } from 'next'
 import { getLocale } from 'next-intl/server'
 import Link from 'next/link'
 import { getProductsCards } from '@/lib/registry/adapters'
 import ProductsPageGrid from '@/components/systems/ProductsPageGrid'
+
+/* ─── METADATA ─── */
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const isDE = locale === 'de'
+  const title = isDE
+    ? 'Alle Systeme | Sieben Betriebssysteme von Maxpromo Digital'
+    : 'All Systems | Seven Operating Systems from Maxpromo Digital'
+  const description = isDE
+    ? 'Sieben Betriebssysteme, einsatzbereit zur Installation — für Restaurants, Handwerk, Praxen, Pflege, Verlage, Immobilien und Druckereien.'
+    : 'Seven operating systems, configured and installation-ready — for restaurants, trades, medical practices, care, publishing, real estate and print shops.'
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://www.maxpromo.digital/${locale}/products`,
+      languages: {
+        de: 'https://www.maxpromo.digital/de/products',
+        en: 'https://www.maxpromo.digital/en/products',
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: `https://www.maxpromo.digital/${locale}/products`,
+    },
+  }
+}
 
 /* ─── FILTER CHROME ─────────────────────────────────────────── */
 // Visual filter chips — wired up in a future task.

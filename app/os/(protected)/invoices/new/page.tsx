@@ -1,6 +1,11 @@
 'use client'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { InvoiceDocument } from '@/components/documents/InvoiceDocument'
+import type { CurrencyCode, PaymentMethodId, DocumentLanguage } from '@/lib/documents/config'
+import type { InvoiceData } from '@/lib/documents/types'
+import { fmtCurrency } from '@/lib/documents/format'
+import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -30,7 +35,6 @@ interface AIExtracted {
 const UNITS = ['pauschal', 'Stück', 'Stunden', 'Tage', 'Seiten', 'Monat', 'Lizenz']
 const blankItem = (): LineItem => ({ description: '', qty: 1, unit: 'pauschal', unit_price: 0, total: 0, isFixedPrice: true })
 
-function fmtEur(n: number) { return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n) }
 function addDays(d: number) { const dt = new Date(); dt.setDate(dt.getDate() + d); return dt.toISOString().split('T')[0] }
 
 const inp: React.CSSProperties = {
@@ -113,14 +117,9 @@ function StreetInput({ value, onChange, placeholder, aiEnhanced, onFill }: {
   )
 }
 
-const AI_PLACEHOLDER = `Examples you can paste:
-• WhatsApp: "Hi, brauche Website für Restaurant, 4 Seiten, Speisekarte, Budget 2500€"
-• Email: Paste the whole email — we extract only order details, ignore the rest
-• Notes: "Müller GmbH, Logo + 500 Visitenkarten, 800€, Anzahlung 400 erhalten am 15.4."
-• Or paste a screenshot image directly with Ctrl+V ↑`
-
 export default function NewInvoicePage() {
   const router = useRouter()
+  const { t } = useOsLocale()
 
   const [invoiceNumber, setInvoiceNumber] = useState('')
   const [date,    setDate]    = useState(new Date().toISOString().split('T')[0])
@@ -140,6 +139,9 @@ export default function NewInvoicePage() {
   const [anzahlungDate,   setAnzahlungDate]   = useState('')
   const [anzahlungMethod, setAnzahlungMethod] = useState('Überweisung')
   const [notes,   setNotes]   = useState('')
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>('bank')
+  const [currency,      setCurrency]      = useState<CurrencyCode>('EUR')
+  const [language,      setLanguage]      = useState<DocumentLanguage>('de')
   const [saving,  setSaving]  = useState(false)
   const [sending, setSending] = useState(false)
   const [sendCopy, setSendCopy] = useState(true)
@@ -205,17 +207,17 @@ export default function NewInvoicePage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kind: 'rechnung', image: b64, mediaType: mime }),
       })
-      if (!res.ok) throw new Error('Scan failed')
+      if (!res.ok) throw new Error(t.forms.aiScanFailed)
       const json = await res.json() as { extracted: AIExtracted }
       applyExtracted(json.extracted)
       setAiModalOpen(false)
       setPastePreview('')
     } catch {
-      setAiError('Could not read image. Try uploading the file instead.')
+      setAiError(t.forms.aiImageReadFailed)
     } finally {
       setAiLoading(false)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [t]) // eslint-disable-line react-hooks/exhaustive-deps -- applyExtracted is a stable in-render closure over setState only
 
   // ── Drag & drop ──────────────────────────────────────────────────────────
   function handleDragOver(e: React.DragEvent) { e.preventDefault(); setIsDragOver(true) }
@@ -261,13 +263,13 @@ export default function NewInvoicePage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kind: 'rechnung', text: rawText }),
       })
-      if (!res.ok) throw new Error('AI extraction failed')
+      if (!res.ok) throw new Error(t.forms.aiExtractionFailed)
       const json = await res.json() as { extracted: AIExtracted }
       applyExtracted(json.extracted)
       setAiModalOpen(false)
       setRawText('')
     } catch (e) {
-      setAiError(e instanceof Error ? e.message : 'Failed')
+      setAiError(e instanceof Error ? e.message : t.forms.aiExtractionFailed)
     } finally {
       setAiLoading(false) }
   }
@@ -327,6 +329,8 @@ export default function NewInvoicePage() {
     else   { setClientPostcode(''); setClientCity(c.city || '') }
   }
 
+  const fmtEur = useCallback((n: number) => fmtCurrency(n, currency), [currency])
+
   const subtotal   = lineItems.reduce((s, i) => s + Number(i.total), 0)
   const restbetrag = subtotal - (hasAnzahlung ? Number(anzahlung) : 0)
 
@@ -343,11 +347,13 @@ export default function NewInvoicePage() {
       anzahlung_date: hasAnzahlung ? anzahlungDate : null,
       anzahlung_method: hasAnzahlung ? anzahlungMethod : null,
       restbetrag: hasAnzahlung ? restbetrag : subtotal,
+      payment_method: paymentMethod,
+      currency,
+      language,
     }
     const res  = await fetch('/api/os/invoices', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
     if (!res.ok) {
-      const err = await res.json() as { error?: string }
-      throw new Error(err.error ?? `Server error ${res.status}`)
+      throw new Error(t.forms.serverError(res.status))
     }
     const data = await res.json() as { id: string }
     return data.id
@@ -359,7 +365,7 @@ export default function NewInvoicePage() {
       const id = await saveInvoice(false)
       if (id) router.push('/os/invoices')
     } catch (err) {
-      showToast(`⚠ Save failed: ${err instanceof Error ? err.message : 'Please try again'}`)
+      showToast(t.forms.saveFailedToast(err instanceof Error ? err.message : t.forms.saveFailed))
     } finally { setSaving(false) }
   }
 
@@ -377,7 +383,7 @@ export default function NewInvoicePage() {
       })
       if (res.ok) {
         const data = await res.json() as { created: boolean }
-        if (data.created) showToast(`👤 ${clientName.split(' — ')[0]} saved to your address book`)
+        if (data.created) showToast(t.forms.clientSavedToast(clientName.split(' — ')[0]))
       }
     } catch { /* non-blocking */ }
   }
@@ -385,7 +391,7 @@ export default function NewInvoicePage() {
   function addEmail() {
     const e = emailInput.trim().replace(/,+$/, '')
     if (!e) return
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { setEmailError('Ungültige E-Mail-Adresse'); return }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) { setEmailError(t.forms.emailInvalid); return }
     if (clientEmails.includes(e)) { setEmailInput(''); return }
     setClientEmails(prev => [...prev, e])
     setEmailInput('')
@@ -405,12 +411,12 @@ export default function NewInvoicePage() {
     if (!clientEmails.length) {
       // Try adding whatever is typed in the input first
       if (emailInput.trim()) { addEmail(); return }
-      setSendError('Bitte mindestens eine E-Mail-Adresse eingeben.'); return
+      setSendError(t.forms.emailRequired); return
     }
     setSending(true); setSendError('')
     try {
       const id = await saveInvoice(false)
-      if (!id) { setSendError('Fehler beim Speichern der Rechnung.'); return }
+      if (!id) { setSendError(t.forms.saveInvoiceFailed); return }
 
       const res = await fetch('/api/os/send-invoice', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -430,9 +436,11 @@ export default function NewInvoicePage() {
           restbetrag: hasAnzahlung ? restbetrag : subtotal,
           address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join(', '),
           sendCopyToMarcel: sendCopy,
+          currency,
+          language,
         }),
       })
-      if (!res.ok) { const d = await res.json() as { error?: string }; throw new Error(d.error ?? 'Send failed') }
+      if (!res.ok) throw new Error(t.forms.sendFailed)
 
       // Auto-save client to addressbook
       void autoSaveClient(id)
@@ -440,9 +448,9 @@ export default function NewInvoicePage() {
       // Show success state
       setSentData({ id, number: invoiceNumber, emails: clientEmails, name: clientName })
       setSent(true)
-      showToast(`✓ Rechnung ${invoiceNumber} sent to ${clientEmails.join(', ')}`)
+      showToast(t.forms.invoiceSentToast(invoiceNumber, clientEmails.join(', ')))
     } catch (err) {
-      setSendError(err instanceof Error ? err.message : 'Send failed. Please try again.')
+      setSendError(err instanceof Error ? err.message : t.forms.sendFailed)
     } finally { setSending(false) }
   }
 
@@ -450,7 +458,7 @@ export default function NewInvoicePage() {
   const confColor   = { high: '#22c55e', medium: '#F97316', low: '#ef4444' }
   const confBg      = { high: 'rgba(34,197,94,0.08)', medium: 'rgba(249,115,22,0.08)', low: 'rgba(239,68,68,0.08)' }
   const confBorder  = { high: 'rgba(34,197,94,0.25)', medium: 'rgba(249,115,22,0.25)', low: 'rgba(239,68,68,0.25)' }
-  const confMsg     = { high: '✓ High confidence — review and confirm', medium: '⚠ Some fields need review — check highlighted items', low: '⚠ Low confidence — please verify all fields' }
+  const confMsg     = { high: t.forms.confHigh, medium: t.forms.confMedium, low: t.forms.confLow }
 
   function itemBorderLeft(item: LineItem): string | undefined {
     if (item.aiConfidence === 'low')    return '3px solid #ef4444'
@@ -472,8 +480,8 @@ export default function NewInvoicePage() {
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
               <div>
-                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.02em' }}>AI Invoice Generator</h2>
-                <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: 0 }}>PASTE TEXT, DROP AN IMAGE, OR Ctrl+V A SCREENSHOT</p>
+                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.02em' }}>{t.forms.aiInvoiceTitle}</h2>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: 0 }}>{t.forms.aiModalSub}</p>
               </div>
               <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}>×</button>
             </div>
@@ -500,16 +508,18 @@ export default function NewInvoicePage() {
               {aiLoading && pastePreview ? (
                 <div style={{ textAlign: 'center' }}>
                   <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '0 0 8px' }}>
-                    ⟳ Reading your image...
+                    {t.forms.aiReading}
                   </p>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
                   <img src={pastePreview} alt="" style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain', opacity: 0.5 }} />
                 </div>
               ) : pastePreview ? (
+                // eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs
                 <img src={pastePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '140px', objectFit: 'contain' }} />
               ) : (
                 <p style={{ fontFamily: mono, fontSize: '11px', color: '#444', letterSpacing: '0.06em', textAlign: 'center', margin: 0, lineHeight: 1.8 }}>
-                  📋 Paste image here <strong style={{ color: '#666' }}>Ctrl+V</strong> — or drag &amp; drop a file<br />
-                  <span style={{ fontSize: '10px', opacity: 0.6 }}>Screenshots · Photos · WhatsApp · Email</span>
+                  {t.forms.aiDropZonePrefix} <strong style={{ color: '#666' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
+                  <span style={{ fontSize: '10px', opacity: 0.6 }}>{t.forms.aiDropZoneFormats}</span>
                 </p>
               )}
             </div>
@@ -517,7 +527,7 @@ export default function NewInvoicePage() {
             {/* Divider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>OR PASTE TEXT BELOW</span>
+              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteText}</span>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
             </div>
 
@@ -526,7 +536,7 @@ export default function NewInvoicePage() {
               value={rawText}
               onChange={e => setRawText(e.target.value)}
               rows={6}
-              placeholder={AI_PLACEHOLDER}
+              placeholder={t.forms.aiPlaceholderInvoice}
               style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }}
             />
 
@@ -542,13 +552,13 @@ export default function NewInvoicePage() {
                 disabled={aiLoading || !rawText.trim()}
                 style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
               >
-                {aiLoading && !pastePreview ? 'Extracting...' : 'Generate with AI →'}
+                {aiLoading && !pastePreview ? t.forms.aiExtracting : t.forms.aiGenerateButton}
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}
               >
-                ▦ Browse File
+                {t.forms.aiBrowseFile}
               </button>
             </div>
           </div>
@@ -565,19 +575,19 @@ export default function NewInvoicePage() {
           {/* Header row */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>New Invoice</h1>
+              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>{t.invoiceForm.newHeading}</h1>
               {aiEnhanced && (
                 <span style={{ fontFamily: mono, fontSize: '9px', color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
-                  ◈ AI Enhanced
+                  {t.invoiceForm.aiEnhanced}
                 </span>
               )}
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>
-                ◈ AI Generate
+                {t.invoiceForm.aiGenerate}
               </button>
               <button onClick={() => fileInputRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>
-                ▦ Scan Image
+                {t.invoiceForm.scanImage}
               </button>
             </div>
           </div>
@@ -602,23 +612,45 @@ export default function NewInvoicePage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-              <Field label="Invoice No"><input value={invoiceNumber} onChange={e => setInvoiceNumber(e.target.value)} style={inp} /></Field>
-              <Field label="Date"><input type="date" value={date} onChange={e => setDate(e.target.value)} style={inp} /></Field>
-              <Field label="Due Date"><input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} style={inp} /></Field>
+              <Field label={t.invoiceForm.fieldInvoiceNo}><input value={invoiceNumber} onChange={e => setInvoiceNumber(e.target.value)} style={inp} /></Field>
+              <Field label={t.invoiceForm.fieldDate}><input type="date" value={date} onChange={e => setDate(e.target.value)} style={inp} /></Field>
+              <Field label={t.invoiceForm.fieldDueDate}><input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} style={inp} /></Field>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+              <Field label={t.invoiceForm.fieldCurrency}>
+                <select value={currency} onChange={e => setCurrency(e.target.value as CurrencyCode)} style={{ ...inp, appearance: 'none' }}>
+                  <option value="EUR">EUR — €</option>
+                  <option value="GBP">GBP — £</option>
+                </select>
+              </Field>
+              <Field label={t.invoiceForm.fieldPaymentMethod}>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value as PaymentMethodId)} style={{ ...inp, appearance: 'none' }}>
+                  <option value="bank">{t.status.paymentMethod.bank}</option>
+                  <option value="momo">{t.status.paymentMethod.momo}</option>
+                  <option value="both">{t.status.paymentMethod.both}</option>
+                </select>
+              </Field>
+              <Field label={t.invoiceForm.fieldDocumentLanguage}>
+                <select value={language} onChange={e => setLanguage(e.target.value as DocumentLanguage)} style={{ ...inp, appearance: 'none' }}>
+                  <option value="de">Deutsch</option>
+                  <option value="en">English</option>
+                </select>
+              </Field>
             </div>
 
             <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
 
-            <Field label="Select Client">
+            <Field label={t.invoiceForm.fieldSelectClient}>
               <select value={clientId} onChange={e => selectClient(e.target.value)} style={{ ...inp, appearance: 'none' }}>
-                <option value="">— Select existing client —</option>
+                <option value="">{t.invoiceForm.selectClientPlaceholder}</option>
                 {clients.map(c => <option key={c.id} value={c.id}>{c.name}{c.company ? ` (${c.company})` : ''}</option>)}
               </select>
             </Field>
-            <Field label="Client Name *">
-              <input value={clientName} onChange={e => setClientName(e.target.value)} placeholder={aiEnhanced && !clientName.trim() ? 'Not found — please fill' : 'Or enter manually'} style={aiInp(clientName)} />
+            <Field label={t.invoiceForm.fieldClientName}>
+              <input value={clientName} onChange={e => setClientName(e.target.value)} placeholder={aiEnhanced && !clientName.trim() ? t.forms.notFoundFill : t.invoiceForm.clientNameManual} style={aiInp(clientName)} />
             </Field>
-            <Field label="Client Email(s)">
+            <Field label={t.invoiceForm.fieldClientEmails}>
               {/* ── Email chips input ── */}
               <div
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', background: '#0A0A0A', border: `1px solid ${emailError ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`, padding: '7px 10px', minHeight: '40px', alignItems: 'center', cursor: 'text' }}
@@ -635,7 +667,7 @@ export default function NewInvoicePage() {
                   onChange={ev => { setEmailInput(ev.target.value); setEmailError('') }}
                   onKeyDown={handleEmailKeyDown}
                   onBlur={addEmail}
-                  placeholder={clientEmails.length === 0 ? (aiEnhanced ? 'Not found — add email, press Enter' : 'Add email — press Enter after each one') : ''}
+                  placeholder={clientEmails.length === 0 ? (aiEnhanced ? t.forms.emailAddPlaceholderAi : t.forms.emailAddPlaceholder) : ''}
                   style={{ flex: '1', minWidth: '180px', background: 'none', border: 'none', outline: 'none', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '0' }}
                 />
               </div>
@@ -647,23 +679,23 @@ export default function NewInvoicePage() {
               <input type="checkbox" checked={sendCopy} onChange={e => setSendCopy(e.target.checked)}
                 style={{ width: '14px', height: '14px', accentColor: '#F97316', cursor: 'pointer' }} />
               <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.08em' }}>
-                Send copy to info@maxpromo.digital
+                {t.invoiceForm.sendCopyToMarcel}
               </span>
             </label>
-            <Field label="Straße und Hausnummer">
+            <Field label={t.invoiceForm.fieldStreet}>
               <StreetInput
                 value={clientStreet}
                 onChange={setClientStreet}
-                placeholder={aiEnhanced && !clientStreet.trim() ? 'Not found — please fill' : 'Musterstraße 12'}
+                placeholder={aiEnhanced && !clientStreet.trim() ? t.forms.notFoundFill : t.forms.streetPlaceholder}
                 aiEnhanced={aiEnhanced && !clientStreet.trim()}
                 onFill={(street, postcode, city) => { setClientStreet(street); setClientPostcode(postcode); setClientCity(city) }}
               />
             </Field>
             <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '10px' }}>
-              <Field label="PLZ">
+              <Field label={t.invoiceForm.fieldPostcode}>
                 <input value={clientPostcode} onChange={e => setClientPostcode(e.target.value)} placeholder="40210" maxLength={10} style={aiInp(clientPostcode)} />
               </Field>
-              <Field label="Stadt">
+              <Field label={t.invoiceForm.fieldCity}>
                 <input value={clientCity} onChange={e => setClientCity(e.target.value)} placeholder="Düsseldorf" style={aiInp(clientCity)} />
               </Field>
             </div>
@@ -672,31 +704,31 @@ export default function NewInvoicePage() {
 
             {/* Line items */}
             <div>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>Line Items</p>
+              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.invoiceForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
                 <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', borderLeft: itemBorderLeft(item) || '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
                   {item.aiConfidence === 'low' && (
                     <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: '#ef4444', letterSpacing: '0.08em' }}>
-                      ⚠ verify
+                      {t.forms.verifyBadge}
                     </span>
                   )}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                     <input
                       value={item.description}
                       onChange={e => updateItem(i, 'description', e.target.value)}
-                      placeholder={aiEnhanced && !item.description ? 'Not found — please fill' : 'Description'}
+                      placeholder={aiEnhanced && !item.description ? t.forms.notFoundFill : t.forms.descriptionPlaceholder}
                       style={{ ...inp, flex: 1, border: aiEnhanced && !item.description ? '1px dashed rgba(249,115,22,0.5)' : inp.border as string }}
                     />
                     <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'rgba(249,115,22,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${item.isFixedPrice ? 'rgba(249,115,22,0.4)' : 'rgba(255,255,255,0.1)'}`, color: item.isFixedPrice ? '#F97316' : '#555', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
-                      {item.isFixedPrice ? 'Pauschal' : 'Per Unit'}
+                      {item.isFixedPrice ? t.invoiceForm.pauschal : t.invoiceForm.perUnit}
                     </button>
                     <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#444', cursor: 'pointer', fontSize: '18px', padding: '0 4px', lineHeight: 1 }}>×</button>
                   </div>
                   {item.isFixedPrice ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', flexShrink: 0 }}>BETRAG</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', flexShrink: 0 }}>{t.forms.amountLabel}</span>
                       <input type="number" value={item.total} onChange={e => updateItem(i, 'total', Number(e.target.value))} style={{ ...inp, width: '120px', textAlign: 'right' }} />
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>€</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{currency === 'GBP' ? '£' : '€'}</span>
                     </div>
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: '60px 120px 90px 1fr', gap: '6px', alignItems: 'center' }}>
@@ -711,39 +743,43 @@ export default function NewInvoicePage() {
                 </div>
               ))}
               <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', background: 'none', border: '1px dashed rgba(249,115,22,0.3)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>
-                + Add Item
+                {t.invoiceForm.addItem}
               </button>
             </div>
 
             {/* Totals */}
             <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>Zwischensumme</span>
+                <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>{t.invoiceForm.subtotal}</span>
                 <span style={{ fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
               </div>
               <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
                 <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: '#F97316', width: '14px', height: '14px' }} />
-                <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Anzahlung erhalten / Deposit received</span>
+                <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.invoiceForm.depositReceived}</span>
               </label>
               {hasAnzahlung && (
                 <div style={{ marginBottom: '12px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '10px' }}>
-                    <Field label="Anzahlung €"><input type="number" value={anzahlung} onChange={e => setAnzahlung(Number(e.target.value))} style={{ ...inp, textAlign: 'right' }} /></Field>
-                    <Field label="Datum"><input type="date" value={anzahlungDate} onChange={e => setAnzahlungDate(e.target.value)} style={inp} /></Field>
-                    <Field label="Methode">
+                    <Field label={t.invoiceForm.depositAmount}><input type="number" value={anzahlung} onChange={e => setAnzahlung(Number(e.target.value))} style={{ ...inp, textAlign: 'right' }} /></Field>
+                    <Field label={t.invoiceForm.depositDate}><input type="date" value={anzahlungDate} onChange={e => setAnzahlungDate(e.target.value)} style={inp} /></Field>
+                    <Field label={t.invoiceForm.depositMethod}>
+                      {/* The VALUE is persisted and printed on the document, so it
+                          stays German; only the visible label follows the OS UI. */}
                       <select value={anzahlungMethod} onChange={e => setAnzahlungMethod(e.target.value)} style={{ ...inp, appearance: 'none' }}>
-                        <option>Überweisung</option><option>Bar</option><option>PayPal</option><option>Andere</option>
+                        {(['Überweisung', 'Bar', 'PayPal', 'Andere'] as const).map(m => (
+                          <option key={m} value={m}>{t.status.depositMethod[m] ?? m}</option>
+                        ))}
                       </select>
                     </Field>
                   </div>
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#888' }}>Anzahlung</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#888' }}>{t.invoiceForm.deposit}</span>
                       <span style={{ fontFamily: mono, fontSize: '12px', color: '#F97316' }}>−{fmtEur(Number(anzahlung))}</span>
                     </div>
                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '6px 0' }} />
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>Restbetrag</span>
+                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>{t.invoiceForm.remainingBalance}</span>
                       <span style={{ fontFamily: mono, fontSize: '15px', color: '#FFF', fontWeight: 700 }}>{fmtEur(restbetrag)}</span>
                     </div>
                   </div>
@@ -752,100 +788,63 @@ export default function NewInvoicePage() {
               {!hasAnzahlung && (
                 <div style={{ borderTop: '1px solid rgba(249,115,22,0.3)', paddingTop: '10px', textAlign: 'right' }}>
                   <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF' }}>{fmtEur(subtotal)}</span>
-                  <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0', letterSpacing: '0.06em' }}>Gemäß §19 UStG keine MwSt.</p>
+                  <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0', letterSpacing: '0.06em' }}>{t.invoiceForm.vatNote}</p>
                 </div>
               )}
             </div>
 
-            <Field label="Notes">
+            <Field label={t.invoiceForm.fieldNotes}>
               <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical' }} />
             </Field>
 
             {sendError && (
               <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)', padding: '10px 14px', borderRadius: '2px' }}>
                 <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: 0, letterSpacing: '0.06em' }}>⚠ {sendError}</p>
-                <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', background: 'none', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Retry</button>
+                <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', background: 'none', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t.forms.retry}</button>
               </div>
             )}
 
             <div style={{ display: 'flex', gap: '10px', paddingBottom: '24px' }}>
               <button onClick={handleSaveDraft} disabled={saving} style={{ background: '#111', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1 }}>
-                {saving ? 'Saving...' : 'Save Draft'}
+                {saving ? t.invoiceForm.savingDraft : t.invoiceForm.saveDraft}
               </button>
               <button onClick={handleSend} disabled={sending} style={{ background: sending ? '#7c3a0c' : '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: sending ? 'wait' : 'pointer', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                 {sending && <span style={{ display: 'inline-block', width: '10px', height: '10px', border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#000', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
-                {sending ? 'Sending...' : 'Send Invoice'}
+                {sending ? t.invoiceForm.sendingInvoice : t.invoiceForm.sendInvoice}
               </button>
             </div>
           </div>
         </div>
 
-        {/* ── LIVE PREVIEW ── */}
+        {/* ── LIVE PREVIEW ──
+             Renders the exact same shared document engine used by the
+             print page (components/documents/InvoiceDocument.tsx) — not
+             a third hand-rolled copy — so what you see here is exactly
+             what "Als PDF speichern" will produce. */}
         <div style={{ flex: 1, height: '100vh', overflowY: 'auto', background: '#f0f0f0', padding: '28px' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>Live Preview</p>
-          <div style={{ background: '#FFF', maxWidth: '520px', margin: '0 auto', fontFamily: 'Arial,sans-serif', fontSize: '13px', color: '#111', boxShadow: '0 4px 24px rgba(0,0,0,0.15)' }}>
-            <div style={{ background: '#0A0A0A', padding: '22px 28px', borderBottom: '3px solid #F97316' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <p style={{ fontFamily: 'monospace', fontSize: '14px', fontWeight: 700, color: '#FFF', margin: '0 0 4px' }}>MAXPROMO DIGITAL</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: '0 0 2px' }}>Marcel Tabit Akwe · Körnerstr. 8, 45143 Essen</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: 0 }}>info@maxpromo.digital · maxpromo.digital</p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#FFF', margin: '0 0 4px' }}>RECHNUNG</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#F97316', margin: '0 0 2px' }}>Nr: {invoiceNumber}</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: '0 0 2px' }}>Datum: {date ? new Date(date + 'T12:00:00').toLocaleDateString('de-DE') : '—'}</p>
-                  <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#888', margin: 0 }}>Fällig: {dueDate ? new Date(dueDate + 'T12:00:00').toLocaleDateString('de-DE') : '—'}</p>
-                </div>
-              </div>
-            </div>
-            <div style={{ padding: '14px 28px', borderBottom: '1px solid #eee', background: '#f9f9f9' }}>
-              <p style={{ fontFamily: 'monospace', fontSize: '9px', color: '#888', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 4px' }}>An / To</p>
-              <p style={{ margin: '0 0 2px', fontWeight: 600 }}>{clientName || '—'}</p>
-              {(clientStreet || clientCity) && <p style={{ margin: 0, color: '#666', fontSize: '12px', whiteSpace: 'pre-line' }}>{[clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n')}</p>}
-            </div>
-            <div style={{ padding: '18px 28px' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '12px' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #eee', background: '#f5f5f5' }}>
-                    {['Pos', 'Beschreibung', 'Menge', 'Preis'].map(h => (
-                      <th key={h} style={{ padding: '6px 8px', textAlign: h === 'Menge' || h === 'Preis' ? 'right' : 'left', fontFamily: 'monospace', fontSize: '10px', color: '#888', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {lineItems.filter(i => i.description).map((item, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f0f0f0' }}>
-                      <td style={{ padding: '7px 8px', fontFamily: 'monospace', fontSize: '11px', color: '#F97316', fontWeight: 700 }}>{String(i+1).padStart(2,'0')}</td>
-                      <td style={{ padding: '7px 8px', fontSize: '13px', color: '#111' }}>
-                        {item.description}
-                        {!item.isFixedPrice && item.unit && <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', marginLeft: '4px' }}>({item.qty} {item.unit})</span>}
-                      </td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontFamily: 'monospace', fontSize: '11px', color: '#555' }}>{item.isFixedPrice ? '1' : item.qty}</td>
-                      <td style={{ padding: '7px 8px', textAlign: 'right', fontFamily: 'monospace', fontSize: '12px', color: '#111', fontWeight: 700 }}>{fmtEur(Number(item.total))}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div style={{ textAlign: 'right', borderTop: '2px solid #F97316', paddingTop: '10px' }}>
-                {hasAnzahlung ? (
-                  <>
-                    <p style={{ fontFamily: 'monospace', fontSize: '12px', color: '#555', margin: '0 0 3px' }}>Zwischensumme: {fmtEur(subtotal)}</p>
-                    <p style={{ fontFamily: 'monospace', fontSize: '12px', color: '#555', margin: '0 0 6px' }}>Anzahlung: −{fmtEur(Number(anzahlung))}</p>
-                    <div style={{ borderTop: '1px solid #eee', paddingTop: '6px' }}><span style={{ fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#111' }}>Restbetrag: {fmtEur(restbetrag)}</span></div>
-                    {anzahlungDate && <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', margin: '8px 0 0', textAlign: 'left', fontStyle: 'italic' }}>Vielen Dank für Ihre Anzahlung von {fmtEur(Number(anzahlung))} am {new Date(anzahlungDate + 'T12:00:00').toLocaleDateString('de-DE')}.</p>}
-                  </>
-                ) : (
-                  <span style={{ fontFamily: 'monospace', fontSize: '16px', fontWeight: 700, color: '#111' }}>Gesamt: {fmtEur(subtotal)}</span>
-                )}
-              </div>
-              <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', margin: '10px 0 0' }}>Gemäß §19 UStG wird keine Umsatzsteuer berechnet.</p>
-            </div>
-            <div style={{ padding: '14px 28px', borderTop: '1px solid #eee', background: '#f9f9f9' }}>
-              <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#F97316', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px' }}>Bankverbindung</p>
-              <p style={{ fontFamily: 'monospace', fontSize: '11px', color: '#111', margin: '0 0 2px' }}>Marcel Tabit Akwe · IBAN: DE03 1001 0178 3648 4449 24 · BIC: REVODEB2</p>
-              <p style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', margin: 0 }}>Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst</p>
-            </div>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
+          <div style={{ maxWidth: '520px', margin: '0 auto', transform: 'scale(0.94)', transformOrigin: 'top center' }}>
+            <InvoiceDocument
+              invoice={{
+                invoice_number: invoiceNumber,
+                created_at: date,
+                due_date: dueDate,
+                client_name: clientName || '—',
+                client_email: clientEmails[0] || '',
+                client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'),
+                line_items: lineItems.filter(i => i.description),
+                subtotal,
+                total: subtotal,
+                notes,
+                anzahlung: hasAnzahlung ? Number(anzahlung) : 0,
+                anzahlung_date: hasAnzahlung ? anzahlungDate : null,
+                anzahlung_method: hasAnzahlung ? anzahlungMethod : null,
+                restbetrag: hasAnzahlung ? restbetrag : subtotal,
+                currency,
+                payment_method: paymentMethod,
+                language,
+              } satisfies InvoiceData}
+            />
           </div>
         </div>
       </div>
@@ -858,8 +857,8 @@ export default function NewInvoicePage() {
             <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(34,197,94,0.12)', border: '2px solid #22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <span style={{ color: '#22c55e', fontSize: '32px', lineHeight: 1 }}>✓</span>
             </div>
-            <h2 style={{ color: '#FFF', fontSize: '22px', fontWeight: 700, margin: '0 0 8px', fontFamily: grotesk }}>Rechnung gesendet! ✓</h2>
-            <p style={{ color: '#888', fontFamily: mono, fontSize: '12px', margin: '0 0 4px', letterSpacing: '0.04em' }}>Invoice Nr. {sentData.number} sent to:</p>
+            <h2 style={{ color: '#FFF', fontSize: '22px', fontWeight: 700, margin: '0 0 8px', fontFamily: grotesk }}>{t.invoiceForm.sentHeading}</h2>
+            <p style={{ color: '#888', fontFamily: mono, fontSize: '12px', margin: '0 0 4px', letterSpacing: '0.04em' }}>{t.forms.invoiceNoPrefix} {sentData.number} {t.invoiceForm.sentSubheading}</p>
             <p style={{ color: '#F97316', fontFamily: mono, fontSize: '12px', margin: '0 0 28px', letterSpacing: '0.04em', wordBreak: 'break-all' }}>{sentData.emails.join(', ')}</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -867,13 +866,13 @@ export default function NewInvoicePage() {
                 onClick={() => window.open(`/os/invoices/${sentData.id}/print`, '_blank')}
                 style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}
               >
-                📄 Als PDF speichern
+                {t.invoiceForm.savePdf}
               </button>
               <button
                 onClick={() => router.push('/os/invoices')}
                 style={{ background: '#111', border: '1px solid rgba(255,255,255,0.12)', color: '#888', fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}
               >
-                ← Zurück zu Rechnungen
+                {t.invoiceForm.backToInvoices}
               </button>
             </div>
           </div>

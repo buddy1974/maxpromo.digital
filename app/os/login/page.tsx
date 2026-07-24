@@ -2,6 +2,8 @@
 import { Suspense, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { OsLocaleProvider, useOsLocale } from '@/lib/os-i18n/context'
+import { LanguageSwitcher } from '@/components/os/LanguageSwitcher'
 
 const mono = 'var(--font-roboto-mono)'
 const sans = 'var(--font-inter)'
@@ -14,8 +16,14 @@ const sans = 'var(--font-inter)'
  *
  * The export below provides that Suspense wrapper so the page itself can
  * still pre-render at build time.
+ *
+ * Login sits OUTSIDE app/os/(protected), so it does not inherit that
+ * layout's OsLocaleProvider — it mounts its own. Both read the same
+ * `os_locale` cookie (path=/os), so the language chosen on the login
+ * screen is the language the OS opens in.
  */
 function LoginForm() {
+  const { t } = useOsLocale()
   const router = useRouter()
   const search = useSearchParams()
   const [password, setPassword] = useState('')
@@ -33,15 +41,17 @@ function LoginForm() {
         body: JSON.stringify({ password }),
       })
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        setError((data as { error?: string }).error ?? 'Incorrect access code')
+        // The API's error string is not localised; a rejected password has
+        // exactly one meaning here, so render the dictionary's message
+        // rather than leaking an English server string into a German UI.
+        setError(t.login.incorrectCode)
         setLoading(false)
         return
       }
       const returnTo = search.get('returnTo')
       router.replace(returnTo && returnTo.startsWith('/os') ? returnTo : '/os')
     } catch {
-      setError('Network error — please try again')
+      setError(t.login.networkError)
       setLoading(false)
     }
   }
@@ -49,7 +59,7 @@ function LoginForm() {
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}>
       <label style={{ fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
-        Access Code
+        {t.login.accessCode}
       </label>
 
       <input
@@ -98,13 +108,18 @@ function LoginForm() {
           transition: 'opacity 0.15s ease',
         }}
       >
-        {loading ? 'Entering...' : 'Enter OS →'}
+        {loading ? t.login.entering : t.login.enter}
       </button>
+
+      <div style={{ marginTop: '4px' }}>
+        <LanguageSwitcher />
+      </div>
     </form>
   )
 }
 
 function LoginShell({ children }: { children: React.ReactNode }) {
+  const { t } = useOsLocale()
   return (
     <div style={{
       display: 'flex',
@@ -116,10 +131,10 @@ function LoginShell({ children }: { children: React.ReactNode }) {
     }}>
       <div style={{ marginBottom: '40px', textAlign: 'center' }}>
         <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 700, color: '#F97316', letterSpacing: '0.1em', margin: 0 }}>
-          MAXPROMO OS
+          {t.login.brand}
         </p>
         <p style={{ fontFamily: sans, fontSize: '13px', color: '#555555', margin: '8px 0 0' }}>
-          Business Operating System
+          {t.login.tagline}
         </p>
       </div>
       {children}
@@ -129,14 +144,16 @@ function LoginShell({ children }: { children: React.ReactNode }) {
 
 export default function OsLoginPage() {
   return (
-    <LoginShell>
-      <Suspense
-        fallback={
-          <div style={{ width: '320px', height: '160px' }} aria-hidden="true" />
-        }
-      >
-        <LoginForm />
-      </Suspense>
-    </LoginShell>
+    <OsLocaleProvider>
+      <LoginShell>
+        <Suspense
+          fallback={
+            <div style={{ width: '320px', height: '160px' }} aria-hidden="true" />
+          }
+        >
+          <LoginForm />
+        </Suspense>
+      </LoginShell>
+    </OsLocaleProvider>
   )
 }

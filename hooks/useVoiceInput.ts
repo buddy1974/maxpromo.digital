@@ -192,12 +192,12 @@ export function useVoiceInput(lang = 'de-DE'): VoiceInputState & VoiceInputActio
   const approveRaw = useCallback((onChange: (v: string) => void) => {
     onChange(editedRaw)
     reset()
-  }, [editedRaw]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [editedRaw])
 
   const approveEnhanced = useCallback((onChange: (v: string) => void) => {
     if (enhancedInput) onChange(enhancedInput)
     reset()
-  }, [enhancedInput]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [enhancedInput])
 
   const dismiss = useCallback(() => {
     if (recognitionRef.current) {
@@ -205,7 +205,7 @@ export function useVoiceInput(lang = 'de-DE'): VoiceInputState & VoiceInputActio
       recognitionRef.current = null
     }
     reset()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   function reset() {
     setPhase('idle')

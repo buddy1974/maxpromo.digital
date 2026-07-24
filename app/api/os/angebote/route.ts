@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
       client_email?: string; client_address?: string; line_items: unknown[]
       subtotal: number; total: number; status?: string; valid_until?: string; notes?: string
       anzahlung?: number; anzahlung_date?: string; anzahlung_method?: string
+      payment_method?: string; currency?: string; language?: string
     }
 
     const angebot_number = body.angebot_number || await nextAngebotNumber()
@@ -69,13 +70,14 @@ export async function POST(request: NextRequest) {
       INSERT INTO os_angebote
         (owner_id, angebot_number, client_id, client_name, client_email, client_address,
          line_items, subtotal, total, status, valid_until, notes,
-         anzahlung, anzahlung_date, anzahlung_method)
+         anzahlung, anzahlung_date, anzahlung_method, payment_method, currency, language)
       VALUES
         (${OWNER_ID}, ${angebot_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
          ${JSON.stringify(body.line_items)}::jsonb, ${body.subtotal}, ${body.total},
          ${body.status || 'draft'}, ${body.valid_until || null}, ${body.notes || null},
-         ${body.anzahlung ?? 0}, ${body.anzahlung_date || null}, ${body.anzahlung_method || null})
+         ${body.anzahlung ?? 0}, ${body.anzahlung_date || null}, ${body.anzahlung_method || null},
+         ${body.payment_method || 'bank'}, ${body.currency || 'EUR'}, ${body.language || 'de'})
       RETURNING *`
 
     return NextResponse.json(rows[0], { status: 201 })
@@ -127,6 +129,9 @@ export async function PATCH(request: NextRequest) {
       payment_terms?: string
       included_items?: string[]
       notes?: string
+      payment_method?: string
+      currency?: string
+      language?: string
     }
 
     if (!body.id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
@@ -149,7 +154,10 @@ export async function PATCH(request: NextRequest) {
         anzahlung_method     = COALESCE(${body.anzahlung_method as string | null}, anzahlung_method),
         payment_terms        = COALESCE(${body.payment_terms as string | null}, payment_terms),
         included_items       = COALESCE(${body.included_items ? JSON.stringify(body.included_items) : null}::jsonb, included_items),
-        notes                = COALESCE(${body.notes as string | null}, notes)
+        notes                = COALESCE(${body.notes as string | null}, notes),
+        payment_method       = COALESCE(${body.payment_method as string | null}, payment_method),
+        currency             = COALESCE(${body.currency as string | null}, currency),
+        language             = COALESCE(${body.language as string | null}, language)
       WHERE id = ${body.id}
       RETURNING *`
 

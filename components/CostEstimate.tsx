@@ -301,7 +301,7 @@ function ItemRow({
             </p>
             {item.note && (
               <p style={{ fontFamily: mono, fontSize: '10px', color: '#444444', margin: '4px 0 0' }}>
-                // {item.note}
+                {`// ${item.note}`}
               </p>
             )}
           </div>
@@ -593,7 +593,7 @@ export default function CostEstimate({
               ))}
               {optional && (
                 <p style={{ fontFamily: mono, fontSize: '10px', color: '#444444', padding: '8px 16px', letterSpacing: '0.08em' }}>
-                  // Toggle items on/off to update total estimate
+                  {'// Toggle items on/off to update total estimate'}
                 </p>
               )}
             </div>
@@ -784,7 +784,7 @@ export default function CostEstimate({
 
       {sendState === 'error' && (
         <p style={{ fontFamily: mono, fontSize: '11px', color: '#FF6666', marginTop: '8px' }}>
-          // Could not send email. Please contact info@maxpromo.digital directly.
+          {'// Could not send email. Please contact info@maxpromo.digital directly.'}
         </p>
       )}
     </div>

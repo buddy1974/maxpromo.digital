@@ -4,18 +4,22 @@
  * AuditForm.tsx — Universal Business Diagnostic
  *
  * Architecture: pain-first, product-agnostic.
- * Sections, options, and scoring live in lib/audit-diagnostic.ts.
- * This component is responsible only for UI state and flow.
+ * Sections, options, and scoring live in lib/audit-diagnostic.ts (structure,
+ * ids, and category→option mapping — locale-independent).
+ * Display copy (headlines, subheadlines, options, category labels) is
+ * localized via the `automationAudit` namespace in messages/*.json,
+ * looked up by section id / category id. This component is responsible
+ * only for UI state, flow, and rendering translated copy.
  *
  * Flow:
  *  questions (steps 1–10) → loading → received (diagnostic feedback)
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import {
   AUDIT_SECTIONS,
-  DIAGNOSTIC_CATEGORIES,
   computeDiagnosticCategories,
   type DiagnosticCategoryId,
   type DiagnosticPayload,
@@ -33,17 +37,10 @@ type Stage = 'questions' | 'loading' | 'received'
 const TOTAL_STEPS = AUDIT_SECTIONS.length + 1 // 9 sections + 1 contact step
 const CONTACT_STEP = TOTAL_STEPS
 
-const LOADING_MESSAGES = [
-  'Mapping your operational challenges...',
-  'Identifying workflow patterns...',
-  'Analysing bottlenecks and friction points...',
-  'Calculating intelligence opportunities...',
-  'Preparing your diagnostic report...',
-]
-
 // ── Sub-components ───────────────────────────────────────────────────────────
 
 function ProgressBar({ current, total }: { current: number; total: number }) {
+  const t = useTranslations('automationAudit')
   const pct = Math.round(((current - 1) / (total - 1)) * 100)
   return (
     <div style={{ marginBottom: '36px' }}>
@@ -64,7 +61,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
             textTransform: 'uppercase',
           }}
         >
-          Section {current} of {total}
+          {t('progressSectionLabel', { current, total })}
         </span>
         <span
           style={{
@@ -154,13 +151,15 @@ function OptionBtn({
 }
 
 function LoadingScreen() {
+  const t = useTranslations('automationAudit')
+  const loadingMessages = t.raw('loadingMessages') as string[]
   const [msgIndex, setMsgIndex] = useState(0)
   const [progress, setProgress] = useState(0)
 
   // One-time effect — safe here because component only mounts once
   useEffect(() => {
     const msgInterval = setInterval(() => {
-      setMsgIndex((i) => Math.min(i + 1, LOADING_MESSAGES.length - 1))
+      setMsgIndex((i) => Math.min(i + 1, loadingMessages.length - 1))
     }, 1400)
     const start = Date.now()
     const progInterval = setInterval(() => {
@@ -173,7 +172,7 @@ function LoadingScreen() {
       clearInterval(msgInterval)
       clearInterval(progInterval)
     }
-  }, [])
+  }, [loadingMessages.length])
 
   return (
     <div
@@ -211,7 +210,7 @@ function LoadingScreen() {
           padding: '0 24px',
         }}
       >
-        {LOADING_MESSAGES[msgIndex]}
+        {loadingMessages[msgIndex]}
       </p>
       <p
         style={{
@@ -222,7 +221,7 @@ function LoadingScreen() {
           marginBottom: '44px',
         }}
       >
-        // operational intelligence engine
+        {t('loadingCaption')}
       </p>
       <div
         style={{
@@ -269,7 +268,8 @@ function DiagnosticReceived({
   company: string
   name: string
 }) {
-  const displayName = company || name || 'your business'
+  const t = useTranslations('automationAudit')
+  const displayName = company || name || t('receivedFallbackName')
 
   return (
     <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 16px' }}>
@@ -294,7 +294,7 @@ function DiagnosticReceived({
             marginBottom: '10px',
           }}
         >
-          Diagnostic Received
+          {t('receivedLabel')}
         </p>
         <h2
           style={{
@@ -306,7 +306,7 @@ function DiagnosticReceived({
             marginBottom: '12px',
           }}
         >
-          {displayName} — Operational Intelligence Report
+          {t('receivedTitle', { name: displayName })}
         </h2>
         <p
           style={{
@@ -318,11 +318,10 @@ function DiagnosticReceived({
             marginBottom: '0',
           }}
         >
-          Based on your responses, we have identified{' '}
-          <span style={{ color: '#F97316', fontWeight: 600 }}>
-            {categories.length} potential improvement area{categories.length !== 1 ? 's' : ''}
-          </span>
-          . A consultant will review your diagnostic and be in touch within 24 hours.
+          {t('receivedSummary', {
+            count: categories.length,
+            plural: categories.length !== 1 ? 's' : '',
+          })}
         </p>
       </div>
 
@@ -347,7 +346,7 @@ function DiagnosticReceived({
             marginBottom: '24px',
           }}
         >
-          // Opportunities detected
+          {t('opportunitiesLabel')}
         </p>
         <div
           style={{
@@ -356,57 +355,54 @@ function DiagnosticReceived({
             gap: '12px',
           }}
         >
-          {categories.map((catId, i) => {
-            const cat = DIAGNOSTIC_CATEGORIES[catId]
-            return (
-              <div
-                key={catId}
+          {categories.map((catId, i) => (
+            <div
+              key={catId}
+              style={{
+                background: 'rgba(249,115,22,0.04)',
+                border: '1px solid rgba(249,115,22,0.18)',
+                padding: '20px',
+                position: 'relative',
+              }}
+            >
+              <p
                 style={{
-                  background: 'rgba(249,115,22,0.04)',
-                  border: '1px solid rgba(249,115,22,0.18)',
-                  padding: '20px',
-                  position: 'relative',
+                  fontFamily: mono,
+                  fontSize: '9px',
+                  color: '#F97316',
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  marginBottom: '6px',
+                  opacity: 0.6,
                 }}
               >
-                <p
-                  style={{
-                    fontFamily: mono,
-                    fontSize: '9px',
-                    color: '#F97316',
-                    letterSpacing: '0.18em',
-                    textTransform: 'uppercase',
-                    marginBottom: '6px',
-                    opacity: 0.6,
-                  }}
-                >
-                  {String(i + 1).padStart(2, '0')}
-                </p>
-                <p
-                  style={{
-                    fontFamily: grotesk,
-                    fontWeight: 700,
-                    fontSize: '14px',
-                    color: '#FFFFFF',
-                    letterSpacing: '-0.02em',
-                    marginBottom: '6px',
-                  }}
-                >
-                  {cat.label}
-                </p>
-                <p
-                  style={{
-                    fontFamily: sans,
-                    fontSize: '12px',
-                    color: '#666666',
-                    lineHeight: 1.6,
-                    margin: 0,
-                  }}
-                >
-                  {cat.description}
-                </p>
-              </div>
-            )
-          })}
+                {String(i + 1).padStart(2, '0')}
+              </p>
+              <p
+                style={{
+                  fontFamily: grotesk,
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  color: '#FFFFFF',
+                  letterSpacing: '-0.02em',
+                  marginBottom: '6px',
+                }}
+              >
+                {t(`categories.${catId}.label`)}
+              </p>
+              <p
+                style={{
+                  fontFamily: sans,
+                  fontSize: '12px',
+                  color: '#666666',
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                {t(`categories.${catId}.description`)}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -435,10 +431,10 @@ function DiagnosticReceived({
               marginBottom: '4px',
             }}
           >
-            Want to discuss your results?
+            {t('discussTitle')}
           </p>
           <p style={{ fontFamily: mono, fontSize: '11px', color: '#555555', letterSpacing: '0.05em' }}>
-            // A consultant will contact you within 24 hours
+            {t('discussCaption')}
           </p>
         </div>
         <Link
@@ -459,7 +455,7 @@ function DiagnosticReceived({
             flexShrink: 0,
           }}
         >
-          Talk to us now →
+          {t('talkToUsCta')}
         </Link>
       </div>
     </div>
@@ -534,6 +530,7 @@ function FieldInput({
 // ── Main component ───────────────────────────────────────────────────────────
 
 export default function AuditForm() {
+  const t = useTranslations('automationAudit')
   const [step, setStep] = useState(1)
   const [stage, setStage] = useState<Stage>('questions')
 
@@ -557,14 +554,25 @@ export default function AuditForm() {
   const currentSection = AUDIT_SECTIONS.find((s) => s.step === step)
   const isContactStep = step === CONTACT_STEP
 
-  const toggleOption = (sectionId: string, option: string) => {
+  // Translated copy for the current section, looked up by section id.
+  // Options are pulled from messages/*.json (automationAudit.sections.<id>)
+  // rather than lib/audit-diagnostic.ts, so display copy is localized while
+  // the scoring keys (option strings used in OPTION_SCORES) stay locale-
+  // independent — the English option strings remain the canonical scoring
+  // keys, and the translated labels shown to the user map 1:1 by array index.
+  const sectionOptionKeys = currentSection?.options ?? []
+  const translatedOptions = currentSection
+    ? (t.raw(`sections.${currentSection.id}.options`) as string[] | undefined) ?? sectionOptionKeys
+    : []
+
+  const toggleOption = (sectionId: string, optionKey: string) => {
     setSelections((prev) => {
       const current = prev[sectionId] ?? []
       return {
         ...prev,
-        [sectionId]: current.includes(option)
-          ? current.filter((o) => o !== option)
-          : [...current, option],
+        [sectionId]: current.includes(optionKey)
+          ? current.filter((o) => o !== optionKey)
+          : [...current, optionKey],
       }
     })
   }
@@ -594,7 +602,9 @@ export default function AuditForm() {
     setStage('loading')
     setError('')
 
-    // Collect all selected options across all sections
+    // Collect all selected options across all sections.
+    // Selections are stored keyed by the canonical (English) option string
+    // from lib/audit-diagnostic.ts, so scoring is locale-independent.
     const allSelections = Object.values(selections).flat()
     const categories = computeDiagnosticCategories(allSelections)
     setDetectedCategories(categories)
@@ -691,7 +701,7 @@ export default function AuditForm() {
                 marginBottom: '8px',
               }}
             >
-              {currentSection.headline}
+              {t(`sections.${currentSection.id}.headline`)}
             </h2>
             <p
               style={{
@@ -702,7 +712,7 @@ export default function AuditForm() {
                 lineHeight: 1.6,
               }}
             >
-              {currentSection.subheadline}
+              {t(`sections.${currentSection.id}.subheadline`)}
             </p>
             <div
               style={{
@@ -711,12 +721,12 @@ export default function AuditForm() {
                 gap: '8px',
               }}
             >
-              {(currentSection.options ?? []).map((option) => (
+              {sectionOptionKeys.map((optionKey, i) => (
                 <OptionBtn
-                  key={option}
-                  label={option}
-                  selected={(selections[currentSection.id] ?? []).includes(option)}
-                  onClick={() => toggleOption(currentSection.id, option)}
+                  key={optionKey}
+                  label={translatedOptions[i] ?? optionKey}
+                  selected={(selections[currentSection.id] ?? []).includes(optionKey)}
+                  onClick={() => toggleOption(currentSection.id, optionKey)}
                 />
               ))}
             </div>
@@ -731,7 +741,7 @@ export default function AuditForm() {
                   opacity: 0.7,
                 }}
               >
-                {(selections[currentSection.id] ?? []).length} selected
+                {t('selectedCount', { count: (selections[currentSection.id] ?? []).length })}
               </p>
             )}
           </div>
@@ -750,7 +760,7 @@ export default function AuditForm() {
                 marginBottom: '8px',
               }}
             >
-              {currentSection.headline}
+              {t(`sections.${currentSection.id}.headline`)}
             </h2>
             <p
               style={{
@@ -761,13 +771,13 @@ export default function AuditForm() {
                 lineHeight: 1.6,
               }}
             >
-              {currentSection.subheadline}
+              {t(`sections.${currentSection.id}.subheadline`)}
             </p>
             <VoiceInputWidget
               value={ceoQuestion}
               onChange={setCeoQuestion}
               rows={7}
-              placeholder={currentSection.textareaPlaceholder}
+              placeholder={t(`sections.${currentSection.id}.textareaPlaceholder`)}
               context="CEO strategic question about business operations and challenges"
               lang="de-DE"
               textareaStyle={{
@@ -789,9 +799,9 @@ export default function AuditForm() {
                 transition: 'color 200ms ease',
               }}
             >
-              {ceoQuestion.length} characters
+              {t('charactersCount', { count: ceoQuestion.length })}
               {ceoQuestion.length < 20 && (
-                <span style={{ color: '#444444' }}> — minimum 20 required</span>
+                <span style={{ color: '#444444' }}>{t('charactersMinimum')}</span>
               )}
             </p>
           </div>
@@ -810,7 +820,7 @@ export default function AuditForm() {
                 marginBottom: '8px',
               }}
             >
-              Almost done — where should we send your results?
+              {t('contactHeadline')}
             </h2>
             <p
               style={{
@@ -821,39 +831,39 @@ export default function AuditForm() {
                 lineHeight: 1.6,
               }}
             >
-              A consultant will review your diagnostic personally and reach out within 24 hours.
+              {t('contactSubheadline')}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '24px' }}>
               <FieldInput
-                label="Full Name"
+                label={t('fieldNameLabel')}
                 type="text"
                 value={contact.name}
                 onChange={(v) => setContact((p) => ({ ...p, name: v }))}
-                placeholder="Jane Smith"
+                placeholder={t('fieldNamePlaceholder')}
                 required
               />
               <FieldInput
-                label="Company"
+                label={t('fieldCompanyLabel')}
                 type="text"
                 value={contact.company}
                 onChange={(v) => setContact((p) => ({ ...p, company: v }))}
-                placeholder="Your company name"
+                placeholder={t('fieldCompanyPlaceholder')}
                 required
               />
               <FieldInput
-                label="Email"
+                label={t('fieldEmailLabel')}
                 type="email"
                 value={contact.email}
                 onChange={(v) => setContact((p) => ({ ...p, email: v }))}
-                placeholder="jane@company.com"
+                placeholder={t('fieldEmailPlaceholder')}
                 required
               />
               <FieldInput
-                label="Phone"
+                label={t('fieldPhoneLabel')}
                 type="tel"
                 value={contact.phone}
                 onChange={(v) => setContact((p) => ({ ...p, phone: v }))}
-                placeholder="+49 151 ..."
+                placeholder={t('fieldPhonePlaceholder')}
               />
             </div>
             <p
@@ -864,7 +874,7 @@ export default function AuditForm() {
                 letterSpacing: '0.06em',
               }}
             >
-              // No spam. Your data is used only to deliver and discuss your diagnostic.
+              {t('contactFootnote')}
             </p>
           </div>
         )}
@@ -896,7 +906,7 @@ export default function AuditForm() {
                 e.currentTarget.style.color = '#666666'
               }}
             >
-              ← Back
+              {t('backButton')}
             </button>
           )}
           <button
@@ -920,7 +930,7 @@ export default function AuditForm() {
               boxShadow: canProceed() ? '0 4px 20px rgba(249,115,22,0.3)' : 'none',
             }}
           >
-            {step === TOTAL_STEPS ? 'Submit Diagnostic →' : 'Continue →'}
+            {step === TOTAL_STEPS ? t('submitButton') : t('continueButton')}
           </button>
         </div>
       </div>

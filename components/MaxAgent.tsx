@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLocale } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 
 // ── Flow definition ────────────────────────────────────────────
 
@@ -217,6 +218,23 @@ export function MaxAgent() {
     }
   }, [locked, step, answers, addBot])
 
+  // ── Reset + close ─────────────────────────────────────────
+  // Defined before handleDecision so the decision callback can depend on a
+  // fully-declared reference (avoids access-before-declaration + stale-closure).
+
+  const handleClose = useCallback(() => {
+    setOpen(false)
+    setTimeout(() => {
+      setMsgs([])
+      setStep(0)
+      setAnswers({})
+      setInputPhase('options')
+      setInputVal('')
+      setScore(0)
+      setLocked(false)
+    }, 350)
+  }, [])
+
   // FIX 7: Handle decision (Yes / Not now)
   const handleDecision = useCallback(async (value: string) => {
     if (locked) return
@@ -234,22 +252,7 @@ export function MaxAgent() {
       setInputPhase('done')
       setTimeout(() => handleClose(), 2500)
     }
-  }, [locked, addBot]) // handleClose added below after definition
-
-  // ── Reset + close ─────────────────────────────────────────
-
-  const handleClose = useCallback(() => {
-    setOpen(false)
-    setTimeout(() => {
-      setMsgs([])
-      setStep(0)
-      setAnswers({})
-      setInputPhase('options')
-      setInputVal('')
-      setScore(0)
-      setLocked(false)
-    }, 350)
-  }, [])
+  }, [locked, addBot, handleClose])
 
   // ── Handle text input ──────────────────────────────────────
 
@@ -396,7 +399,7 @@ export function MaxAgent() {
                     Max
                   </p>
                   <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', margin: 0, letterSpacing: '0.1em' }}>
-                    // Business Advisor
+                    {'// Business Advisor'}
                   </p>
                 </div>
               </div>
@@ -526,7 +529,7 @@ export function MaxAgent() {
               {/* Processing */}
               {currentOptions.length > 0 && locked && inputPhase === 'options' && (
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(240 8% 35%)', margin: 0 }}>
-                  // thinking...
+                  {'// thinking...'}
                 </p>
               )}
 
@@ -600,7 +603,7 @@ export function MaxAgent() {
 
               {/* Low-score CTA */}
               {inputPhase === 'low' && (
-                <a
+                <Link
                   href="/automation-audit"
                   style={{
                     display: 'block', textAlign: 'center',
@@ -612,13 +615,13 @@ export function MaxAgent() {
                   }}
                 >
                   Start Free Audit →
-                </a>
+                </Link>
               )}
 
               {/* Done */}
               {inputPhase === 'done' && (
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(240 8% 35%)', margin: 0, textAlign: 'center' }}>
-                  // We'll be in touch
+                  {"// We'll be in touch"}
                 </p>
               )}
             </div>

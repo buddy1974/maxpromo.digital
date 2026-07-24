@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 export interface AuditResult {
   title?: string
@@ -24,7 +25,18 @@ const grotesk = 'var(--font-inter)'
 const sans = 'var(--font-inter)'
 
 export default function AuditResults({ results, orgType, company, onEstimate }: AuditResultsProps) {
+  const t = useTranslations('automationAudit.results')
   const handlePrint = () => window.print()
+
+  const avgTimeline = results.some((r) => r.timeline)
+    ? results.filter((r) => r.timeline)[0]?.timeline ?? t('statAvgTimelineFallback')
+    : t('statAvgTimelineFallback')
+
+  const stats = [
+    { label: t('statOpportunities'), value: `${results.length}` },
+    { label: t('statAvgTimeline'), value: avgTimeline },
+    { label: t('statImplementation'), value: t('statImplementationValue') },
+  ]
 
   return (
     <div style={{ maxWidth: '880px', margin: '0 auto', padding: '0 16px' }}>
@@ -50,22 +62,21 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
         }}
       >
         <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
-          Automation Audit Report
+          {t('reportLabel')}
         </p>
         <h1 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 4vw, 2.5rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '8px' }}>
-          {company ? `${company} — ` : ''}Your Automation Opportunities
+          {company ? t('titlePrefix', { company }) : ''}{t('title')}
         </h1>
         <p style={{ fontFamily: sans, fontSize: '15px', color: '#666666', marginBottom: '32px' }}>
-          {results.length} opportunities identified{orgType ? ` for ${orgType}` : ''} · Powered by Claude AI
+          {t('subtitle', {
+            count: results.length,
+            orgTypeSuffix: orgType ? t('orgTypeSuffix', { orgType }) : '',
+          })}
         </p>
 
         {/* Stats row */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1px', background: 'rgba(255,255,255,0.06)' }}>
-          {[
-            { label: 'Opportunities', value: `${results.length}` },
-            { label: 'Avg. timeline', value: results.some(r => r.timeline) ? results.filter(r => r.timeline)[0]?.timeline ?? '2–4 weeks' : '2–4 weeks' },
-            { label: 'Implementation', value: 'Custom to your stack' },
-          ].map((stat) => (
+          {stats.map((stat) => (
             <div
               key={stat.label}
               style={{
@@ -105,7 +116,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.2rem, 2.5vw, 1.5rem)', letterSpacing: '-0.04em', color: '#FFFFFF' }}>
-                  {r.title ?? `Opportunity ${i + 1}`}
+                  {r.title ?? t('opportunityFallback', { num: i + 1 })}
                 </h2>
               </div>
 
@@ -122,7 +133,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
                   }}
                 >
                   <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '4px' }}>
-                    Est. ROI
+                    {t('estRoiLabel')}
                   </p>
                   <p style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '28px', color: '#F97316', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
                     {r.roi}
@@ -136,12 +147,12 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '28px' }}>
                 {r.complexity && (
                   <span style={{ fontFamily: mono, fontSize: '11px', color: '#888888', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '4px 12px', letterSpacing: '0.05em' }}>
-                    Complexity: {r.complexity}
+                    {t('complexityLabel', { value: r.complexity })}
                   </span>
                 )}
                 {r.timeline && (
                   <span style={{ fontFamily: mono, fontSize: '11px', color: '#888888', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '4px 12px', letterSpacing: '0.05em' }}>
-                    ⏱ {r.timeline}
+                    {t('timelineLabel', { value: r.timeline })}
                   </span>
                 )}
               </div>
@@ -151,7 +162,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
             <div style={{ display: 'grid', gap: '32px', marginBottom: '28px' }} className="grid-cols-1 lg:grid-cols-2">
               <div>
                 <p style={{ fontFamily: mono, fontSize: '10px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
-                  // the problem
+                  {t('problemLabel')}
                 </p>
                 <p style={{ fontFamily: sans, fontSize: '14px', color: '#888888', lineHeight: 1.8 }}>
                   {r.problem}
@@ -159,7 +170,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
               </div>
               <div>
                 <p style={{ fontFamily: mono, fontSize: '10px', color: 'rgba(249,115,22,0.6)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px' }}>
-                  // the solution
+                  {t('solutionLabel')}
                 </p>
                 <p style={{ fontFamily: sans, fontSize: '14px', color: '#CCCCCC', lineHeight: 1.8 }}>
                   {r.solution}
@@ -170,7 +181,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
             {/* Tools row */}
             <div>
               <p style={{ fontFamily: mono, fontSize: '10px', color: '#444444', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '10px' }}>
-                // tools
+                {t('toolsLabel')}
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {r.tools.map((tool) => (
@@ -207,13 +218,13 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
         }}
       >
         <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
-          Ready to Build?
+          {t('readyToBuildLabel')}
         </p>
         <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#FFFFFF', marginBottom: '12px' }}>
-          Turn these opportunities into live systems
+          {t('ctaTitle')}
         </h2>
         <p style={{ fontFamily: sans, fontSize: '15px', color: '#666666', maxWidth: '440px', margin: '0 auto 32px', lineHeight: 1.7 }}>
-          Book a 30-minute discovery call. We&apos;ll scope the highest-impact automation and give you a fixed-price proposal.
+          {t('ctaBody')}
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
           {onEstimate ? (
@@ -232,7 +243,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
                 boxShadow: '0 4px 20px rgba(249,115,22,0.3)',
               }}
             >
-              Get Cost Estimate →
+              {t('getEstimateCta')}
             </button>
           ) : (
             <Link
@@ -249,7 +260,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
                 boxShadow: '0 4px 20px rgba(249,115,22,0.3)',
               }}
             >
-              Book a Discovery Call →
+              {t('bookCallCta')}
             </Link>
           )}
           <button
@@ -268,7 +279,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
             onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)')}
             onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)')}
           >
-            Download Report (PDF)
+            {t('downloadPdfCta')}
           </button>
           {onEstimate && (
             <Link
@@ -285,7 +296,7 @@ export default function AuditResults({ results, orgType, company, onEstimate }: 
                 letterSpacing: '0.02em',
               }}
             >
-              Book Discovery Call
+              {t('bookDiscoveryCallCta')}
             </Link>
           )}
         </div>

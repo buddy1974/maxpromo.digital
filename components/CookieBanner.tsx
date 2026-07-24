@@ -1,30 +1,59 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { useSyncExternalStore, useCallback } from 'react'
+import { Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
+
+const CONSENT_KEY = 'cookie-consent-accepted'
+const CONSENT_EVENT = 'cookie-consent-change'
+
+// ── Consent as an external store ───────────────────────────────
+// Reading localStorage during render (or via a lazy useState initializer)
+// is unsafe: it is unavailable during SSR and would diverge between the
+// server render and the first client render, causing a hydration mismatch.
+// `useSyncExternalStore` is the purpose-built primitive for client-only
+// external state: it renders the server snapshot during hydration and
+// reconciles to the client snapshot afterwards, so SSR and first paint
+// stay identical while still reflecting real consent state on the client.
+
+function subscribe(callback: () => void): () => void {
+  window.addEventListener(CONSENT_EVENT, callback)
+  window.addEventListener('storage', callback)
+  return () => {
+    window.removeEventListener(CONSENT_EVENT, callback)
+    window.removeEventListener('storage', callback)
+  }
+}
+
+function getSnapshot(): boolean {
+  try {
+    return localStorage.getItem(CONSENT_KEY) === '1'
+  } catch {
+    // localStorage unavailable — treat as accepted so the banner stays hidden
+    return true
+  }
+}
+
+function getServerSnapshot(): boolean {
+  // No localStorage on the server: render as "accepted" (banner hidden) so
+  // the server output matches the first client render.
+  return true
+}
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(false)
+  const t = useTranslations('cookieBanner')
+  const accepted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 
-  useEffect(() => {
+  const accept = useCallback(() => {
     try {
-      const accepted = localStorage.getItem('cookie-consent-accepted')
-      if (!accepted) setVisible(true)
-    } catch {
-      // localStorage unavailable — don't show banner
-    }
-  }, [])
-
-  const accept = () => {
-    try {
-      localStorage.setItem('cookie-consent-accepted', '1')
+      localStorage.setItem(CONSENT_KEY, '1')
     } catch {
       // ignore
     }
-    setVisible(false)
-  }
+    window.dispatchEvent(new Event(CONSENT_EVENT))
+  }, [])
 
-  if (!visible) return null
+  if (accepted) return null
 
   return (
     <div
@@ -58,25 +87,14 @@ export default function CookieBanner() {
             lineHeight: '1.6',
           }}
         >
-          We use no tracking cookies. Essential functions only. Your data is handled per our{' '}
+          {t('text')}{' '}
           <Link
             href="/privacy"
             style={{ color: '#F97316', textDecoration: 'none' }}
           >
-            Privacy Policy
+            {t('privacyLink')}
           </Link>
           .
-        </p>
-        <p
-          style={{
-            fontFamily: 'var(--font-inter)',
-            fontSize: '12px',
-            color: '#666666',
-            margin: '4px 0 0',
-            lineHeight: '1.5',
-          }}
-        >
-          Keine Tracking-Cookies. Nur technisch notwendige Funktionen.
         </p>
       </div>
       <button
@@ -86,16 +104,21 @@ export default function CookieBanner() {
           background: '#F97316',
           color: '#000000',
           border: 'none',
-          padding: '0.4rem 0.9rem',
+          padding: '0.65rem 1.1rem',
+          minWidth: '44px',
+          minHeight: '44px',
           fontFamily: 'var(--font-roboto-mono)',
           fontSize: '11px',
           fontWeight: 700,
           letterSpacing: '0.05em',
           cursor: 'pointer',
           whiteSpace: 'nowrap',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        OK
+        {t('accept')}
       </button>
     </div>
   )

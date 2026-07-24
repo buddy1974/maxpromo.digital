@@ -52,7 +52,14 @@ CREATE TABLE IF NOT EXISTS os_invoices (
   anzahlung          NUMERIC(12, 2) DEFAULT 0,
   anzahlung_date     DATE,
   anzahlung_method   TEXT,
-  restbetrag         NUMERIC(12, 2)
+  restbetrag         NUMERIC(12, 2),
+  -- Document system (0009-payment-currency.sql)
+  payment_method     TEXT NOT NULL DEFAULT 'bank' CHECK (payment_method IN ('bank', 'momo', 'both')),
+  currency           TEXT NOT NULL DEFAULT 'EUR'  CHECK (currency IN ('EUR', 'GBP')),
+  -- Document language (0010-document-language.sql) — independent of the
+  -- OS interface language; controls which language the rendered document
+  -- (labels, totals, §19 UStG clause, email/filename) is generated in.
+  language           TEXT NOT NULL DEFAULT 'de'   CHECK (language IN ('de', 'en'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_os_invoices_client_id ON os_invoices (client_id);
@@ -81,7 +88,12 @@ CREATE TABLE IF NOT EXISTS os_angebote (
   converted_to_invoice  BOOLEAN NOT NULL DEFAULT false,
   -- Stage-3 columns (added in 0001-enrich-angebote.sql)
   included_items        JSONB DEFAULT '[]'::jsonb,
-  payment_terms         TEXT
+  payment_terms         TEXT,
+  -- Document system (0009-payment-currency.sql)
+  payment_method        TEXT NOT NULL DEFAULT 'bank' CHECK (payment_method IN ('bank', 'momo', 'both')),
+  currency              TEXT NOT NULL DEFAULT 'EUR'  CHECK (currency IN ('EUR', 'GBP')),
+  -- Document language (0010-document-language.sql)
+  language              TEXT NOT NULL DEFAULT 'de'   CHECK (language IN ('de', 'en'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_os_angebote_client_id ON os_angebote (client_id);

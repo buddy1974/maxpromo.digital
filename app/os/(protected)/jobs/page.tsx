@@ -1,12 +1,16 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
 const sans    = 'var(--font-inter)'
 
+/** Raw DB stage values — the persisted identity. Display text comes from t.status.jobStage. */
 const STAGES = ['lead', 'discovery', 'proposal', 'in progress', 'review', 'completed', 'invoiced'] as const
 type Stage = typeof STAGES[number]
+
+const PRIORITIES = ['low', 'medium', 'high'] as const
 
 interface Job {
   id: string; title: string; client_name: string; stage: Stage; priority: string
@@ -14,17 +18,12 @@ interface Job {
 }
 
 const PRIORITY_COLOR: Record<string, string> = { high: '#ef4444', medium: '#F97316', low: '#555' }
-const STAGE_LABEL: Record<Stage, string> = {
-  'lead': 'LEAD', 'discovery': 'DISCOVERY', 'proposal': 'PROPOSAL',
-  'in progress': 'IN PROGRESS', 'review': 'REVIEW', 'completed': 'COMPLETED', 'invoiced': 'INVOICED',
-}
-
-function fmtEur(n: number) { return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n) }
 
 interface NewJobForm { title: string; client_name: string; stage: Stage; priority: string; value: string; notes: string }
 const BLANK_FORM: NewJobForm = { title: '', client_name: '', stage: 'lead', priority: 'medium', value: '', notes: '' }
 
 export default function JobsPage() {
+  const { t, intlLocale, fmtDate } = useOsLocale()
   const [jobs,       setJobs]       = useState<Job[]>([])
   const [loading,    setLoading]    = useState(true)
   const [dragId,     setDragId]     = useState<string | null>(null)
@@ -33,6 +32,12 @@ export default function JobsPage() {
   const [form,       setForm]       = useState<NewJobForm>({ ...BLANK_FORM })
   const [saving,     setSaving]     = useState(false)
   const [saveError,  setSaveError]  = useState('')
+
+  const fmtEur = (n: number) =>
+    new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
+
+  const stageLabel    = (s: string) => t.status.jobStage[s] ?? s
+  const priorityLabel = (p: string) => t.status.priority[p] ?? p
 
   useEffect(() => {
     fetch('/api/os/jobs')
@@ -58,16 +63,13 @@ export default function JobsPage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, value: form.value ? Number(form.value) : undefined }),
       })
-      if (!res.ok) {
-        const err = await res.json() as { error?: string }
-        throw new Error(err.error ?? `Server error ${res.status}`)
-      }
+      if (!res.ok) throw new Error(t.jobs.serverError(res.status))
       const job = await res.json() as Job
       setJobs(prev => [job, ...prev])
       setForm({ ...BLANK_FORM })
       setShowNew(false)
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'Failed to save. Please try again.')
+      setSaveError(err instanceof Error ? err.message : t.jobs.saveError)
     } finally { setSaving(false) }
   }
 
@@ -78,11 +80,11 @@ export default function JobsPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexShrink: 0 }}>
         <div>
-          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>Jobs / Kanban</h1>
-          <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>{jobs.length} TOTAL</p>
+          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.jobs.heading}</h1>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>{jobs.length} {t.common.total}</p>
         </div>
         <button onClick={() => setShowNew(true)} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}>
-          + New Job
+          {t.jobs.newJob}
         </button>
       </div>
 
@@ -93,7 +95,7 @@ export default function JobsPage() {
 
             {/* Header */}
             <div style={{ padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>New Job</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.jobs.newJobModal}</p>
               <button onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: 'none', color: '#555', fontSize: '22px', cursor: 'pointer', lineHeight: 1 }}>×</button>
             </div>
 
@@ -101,9 +103,9 @@ export default function JobsPage() {
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {([
-                  { label: 'Title *', key: 'title', type: 'text' },
-                  { label: 'Client Name', key: 'client_name', type: 'text' },
-                  { label: 'Value (€)', key: 'value', type: 'number' },
+                  { label: t.jobs.fieldTitle,      key: 'title',       type: 'text' },
+                  { label: t.jobs.fieldClientName, key: 'client_name', type: 'text' },
+                  { label: t.jobs.fieldValue,      key: 'value',       type: 'number' },
                 ] as const).map(f => (
                   <div key={f.key}>
                     <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
@@ -113,22 +115,20 @@ export default function JobsPage() {
                 ))}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <div>
-                    <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Stage</label>
+                    <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldStage}</label>
                     <select value={form.stage} onChange={e => setForm(f => ({ ...f, stage: e.target.value as Stage }))} style={{ width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.10)', borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', appearance: 'none' }}>
-                      {STAGES.map(s => <option key={s} value={s}>{STAGE_LABEL[s]}</option>)}
+                      {STAGES.map(s => <option key={s} value={s}>{stageLabel(s)}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Priority</label>
+                    <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldPriority}</label>
                     <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value }))} style={{ width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.10)', borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', appearance: 'none' }}>
-                      <option value="low">Low</option>
-                      <option value="medium">Medium</option>
-                      <option value="high">High</option>
+                      {PRIORITIES.map(p => <option key={p} value={p}>{priorityLabel(p)}</option>)}
                     </select>
                   </div>
                 </div>
                 <div>
-                  <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>Notes</label>
+                  <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldNotes}</label>
                   <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={3} style={{ width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.10)', borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
                 </div>
               </div>
@@ -138,9 +138,11 @@ export default function JobsPage() {
             <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.08)', background: '#111111', flexShrink: 0 }}>
               <div style={{ display: 'flex', gap: '10px' }}>
                 <button type="button" onClick={createJob} disabled={saving || !form.title.trim()} style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.title.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.title.trim() ? 0.6 : 1 }}>
-                  {saving ? 'Saving...' : 'Create Job'}
+                  {saving ? t.common.saving : t.jobs.createJob}
                 </button>
-                <button type="button" onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#ccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}>Abbrechen</button>
+                <button type="button" onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#ccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}>
+                  {t.common.cancel}
+                </button>
               </div>
               {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>}
             </div>
@@ -150,7 +152,7 @@ export default function JobsPage() {
 
       {/* Kanban board */}
       {loading ? (
-        <p style={{ fontFamily: mono, fontSize: '11px', color: '#333' }}>Loading...</p>
+        <p style={{ fontFamily: mono, fontSize: '11px', color: '#333' }}>{t.common.loading}</p>
       ) : (
         <div style={{ display: 'flex', gap: '12px', flex: 1, overflowX: 'auto', overflowY: 'hidden', paddingBottom: '16px' }}>
           {STAGES.map(stage => (
@@ -162,7 +164,7 @@ export default function JobsPage() {
             >
               {/* Column header */}
               <div style={{ background: '#111', borderTop: '2px solid #F97316', border: '1px solid rgba(255,255,255,0.06)', padding: '10px 12px', flexShrink: 0 }}>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 2px' }}>{STAGE_LABEL[stage]}</p>
+                <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 2px' }}>{stageLabel(stage)}</p>
                 <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', margin: 0 }}>{jobsByStage(stage).length}</p>
               </div>
 
@@ -188,9 +190,9 @@ export default function JobsPage() {
                     {job.client_name && <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '0 0 6px', letterSpacing: '0.04em' }}>{job.client_name}</p>}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       {job.value && <span style={{ fontFamily: mono, fontSize: '10px', color: '#888' }}>{fmtEur(Number(job.value))}</span>}
-                      <span style={{ fontFamily: mono, fontSize: '9px', color: PRIORITY_COLOR[job.priority] ?? '#555', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{job.priority}</span>
+                      <span style={{ fontFamily: mono, fontSize: '9px', color: PRIORITY_COLOR[job.priority] ?? '#555', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(job.priority)}</span>
                     </div>
-                    {job.due_date && <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0', letterSpacing: '0.06em' }}>{new Date(job.due_date).toLocaleDateString('de-DE')}</p>}
+                    {job.due_date && <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0', letterSpacing: '0.06em' }}>{fmtDate(job.due_date)}</p>}
                   </div>
                 ))}
               </div>
@@ -203,7 +205,7 @@ export default function JobsPage() {
       {selected && (
         <div style={{ position: 'fixed', top: 0, right: 0, width: '360px', height: '100vh', background: '#0D0D0D', borderLeft: '1px solid rgba(255,255,255,0.07)', zIndex: 200, overflowY: 'auto' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>Job Details</p>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.jobs.jobDetails}</p>
             <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
           </div>
           <div style={{ padding: '24px' }}>
@@ -211,33 +213,33 @@ export default function JobsPage() {
             {selected.client_name && <p style={{ fontFamily: mono, fontSize: '11px', color: '#555', margin: '0 0 16px', letterSpacing: '0.06em' }}>{selected.client_name}</p>}
 
             <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: mono, fontSize: '9px', color: '#F97316', background: 'rgba(249,115,22,0.1)', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{selected.stage}</span>
-              <span style={{ fontFamily: mono, fontSize: '9px', color: PRIORITY_COLOR[selected.priority], background: PRIORITY_COLOR[selected.priority] + '20', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{selected.priority}</span>
+              <span style={{ fontFamily: mono, fontSize: '9px', color: '#F97316', background: 'rgba(249,115,22,0.1)', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{stageLabel(selected.stage)}</span>
+              <span style={{ fontFamily: mono, fontSize: '9px', color: PRIORITY_COLOR[selected.priority], background: (PRIORITY_COLOR[selected.priority] ?? '#555') + '20', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(selected.priority)}</span>
               {selected.value && <span style={{ fontFamily: mono, fontSize: '9px', color: '#888', padding: '4px 10px', background: '#11111130', letterSpacing: '0.06em' }}>{fmtEur(Number(selected.value))}</span>}
             </div>
 
             {selected.description && (
               <div style={{ marginBottom: '16px' }}>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>Description</p>
+                <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.jobs.description}</p>
                 <p style={{ fontFamily: sans, fontSize: '13px', color: '#888', margin: 0, lineHeight: 1.6 }}>{selected.description}</p>
               </div>
             )}
 
             {selected.notes && (
               <div>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>Notes</p>
+                <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.jobs.notes}</p>
                 <p style={{ fontFamily: sans, fontSize: '13px', color: '#888', margin: 0, lineHeight: 1.6 }}>{selected.notes}</p>
               </div>
             )}
 
             {/* Move stage buttons */}
             <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '20px' }}>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>Move to stage</p>
+              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.jobs.moveToStage}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {STAGES.filter(s => s !== selected.stage).map(s => (
                   <button key={s} onClick={() => { moveJob(selected.id, s); setSelected(prev => prev ? { ...prev, stage: s } : null) }}
                     style={{ fontFamily: mono, fontSize: '9px', color: '#888', background: '#111', border: '1px solid rgba(255,255,255,0.08)', padding: '6px 10px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                    {STAGE_LABEL[s]}
+                    {stageLabel(s)}
                   </button>
                 ))}
               </div>

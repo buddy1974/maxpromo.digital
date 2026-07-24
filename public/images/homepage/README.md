@@ -23,8 +23,12 @@ url(/images/homepage/hero.jpg) center right / cover no-repeat
 
 ## pain/ — Pain card images
 
-**Path:** `/public/images/homepage/pain/p1.jpg` through `p6.jpg`  
-**Used by:** `components/homepage/PainCards.tsx`  
+**Path:** `/public/images/homepage/pain/p1.png` through `p6.png`  
+**Used by:** `components/homepage/PainCards.tsx` (rendered via `PainCardsClient.tsx` → `PainCardImage`)  
+**Note:** The `pain/` folder does not exist yet. Until real photography is dropped here,
+`PainCardImage` silently falls back to the existing gradient + ghost-glyph + tag design —
+no broken-image icon is shown. File extension **must be `.png`** (the component requests
+`${card.id}.png`, not `.jpg`).  
 **Aspect:** 16:9  
 **Dimensions:** 800×450px minimum (1600×900px recommended)
 

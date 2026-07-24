@@ -1,9 +1,39 @@
+import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import Image from 'next/image'
 import { Reveal } from '@/components/ui/Reveal'
 import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 import { ScreenshotSlot } from '@/components/ui/ScreenshotSlot'
 import { AccessRequestForm } from './AccessRequestForm'
+
+/* ─── METADATA ─── */
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const isDE = locale === 'de'
+  const title = isDE
+    ? 'TaxKontrol | Steuerrücklage & Fristen täglich sichtbar'
+    : 'TaxKontrol | Tax Reserve & Deadlines Visible Every Day'
+  const description = isDE
+    ? 'TaxKontrol hält Steuern, Rücklagen und Fristen täglich sichtbar — ELSTER-fertige Daten, DSGVO-konform, ohne Ihren bestehenden Ablauf zu verändern.'
+    : 'TaxKontrol keeps taxes, reserves and filing deadlines visible daily — ELSTER-ready data, DSGVO compliant, without changing how your business already operates.'
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `https://www.maxpromo.digital/${locale}/products/taxkontrol`,
+      languages: {
+        de: 'https://www.maxpromo.digital/de/products/taxkontrol',
+        en: 'https://www.maxpromo.digital/en/products/taxkontrol',
+      },
+    },
+    openGraph: {
+      title,
+      description,
+      url: `https://www.maxpromo.digital/${locale}/products/taxkontrol`,
+    },
+  }
+}
 
 /* ─── TOKENS ──────────────────────────────────────────────── */
 const NAVY   = '#1E3A5F'
@@ -175,14 +205,6 @@ export default async function TaxKontrolPage({
       'ELSTER-ready export — available when the accountant or submission needs it'),
   ]
 
-  const walkthroughCovers = [
-    t(locale, 'Rücklage-Tracking live demonstriert',             'Reserve tracking demonstrated live'),
-    t(locale, 'Fristenkalender im Betrieb',                      'Deadline calendar in operation'),
-    t(locale, 'Belegscan und Ausgabenerfassung',                 'Receipt scan and expense entry'),
-    t(locale, 'ELSTER-Export für die Einreichung vorbereitet',   'ELSTER export prepared for submission'),
-    t(locale, 'Eingerichtet für Ihren Unternehmenstyp',          'Configured for your business type and filing cycle'),
-  ]
-
   /* ── ConnectedSystems copy ─────────────────────────────── */
   const connectedSystems = locale === 'de'
     ? [
@@ -321,9 +343,9 @@ export default async function TaxKontrolPage({
             <div style={{ maxWidth: '640px' }}>
               <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', color: '#F0F0F0', letterSpacing: '-0.03em', lineHeight: 1.35, marginBottom: '1.5rem' }}>
                 {locale === 'de' ? (
-                  <>März ist da.<br />Rechnungen wurden bezahlt. Das Geschäft sah gut aus.<br />Dann: „Wie viel davon gehört eigentlich mir?"</>
+                  <>März ist da.<br />Rechnungen wurden bezahlt. Das Geschäft sah gut aus.<br />Dann: „Wie viel davon gehört eigentlich mir?&ldquo;</>
                 ) : (
-                  <>March arrives.<br />Invoices were paid. Business looked healthy.<br />Then: "How much of this actually belongs to me?"</>
+                  <>March arrives.<br />Invoices were paid. Business looked healthy.<br />Then: &ldquo;How much of this actually belongs to me?&rdquo;</>
                 )}
               </p>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8, marginBottom: '1.5rem' }}>
@@ -653,7 +675,7 @@ export default async function TaxKontrolPage({
           </div>
         </section>
 
-        <ConnectedSystems systems={connectedSystems} />
+        <ConnectedSystems systems={connectedSystems} locale={locale} />
 
         {/* ── STEUERBERATER FAQ (Phase 4) ── */}
         <section style={{ background: CARD, borderBottom: `1px solid ${BORDER}`, padding: '4rem 2rem' }}>

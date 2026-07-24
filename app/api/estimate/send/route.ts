@@ -37,6 +37,7 @@ interface SendEstimateBody {
 
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'info@maxpromo.digital'
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
+const EUR = '€'
 
 function esc(s: string): string {
   return s
@@ -47,7 +48,7 @@ function esc(s: string): string {
 }
 
 function fmt(n: number): string {
-  return `€${n.toLocaleString('de-DE')}`
+  return `${EUR}${n.toLocaleString('de-DE')}`
 }
 
 function buildEstimateEmailHtml(data: SendEstimateBody, isInternal: boolean): string {
@@ -110,7 +111,7 @@ function buildEstimateEmailHtml(data: SendEstimateBody, isInternal: boolean): st
           Kostenvoranschlag
         </h1>
         <p style="color: #888888; margin: 0; font-size: 12px; font-family: monospace;">
-          ${esc(data.businessName)} · Erstellt: ${today} · Gültig bis: ${validUntilStr}
+          ${esc(data.businessName)} &middot; Erstellt: ${today} &middot; G&uuml;ltig bis: ${validUntilStr}
         </p>
       </div>
 
@@ -182,13 +183,13 @@ function buildEstimateEmailHtml(data: SendEstimateBody, isInternal: boolean): st
       <!-- Legal + terms -->
       <div style="padding: 24px 32px;">
         <p style="font-size: 11px; color: #aaaaaa; margin: 4px 0; font-family: monospace;">
-          Gemäß §19 UStG wird keine Umsatzsteuer berechnet.
+          Gem&auml;&szlig; &sect;19 UStG wird keine Umsatzsteuer berechnet.
         </p>
         <p style="font-size: 11px; color: #aaaaaa; margin: 4px 0; font-family: monospace;">
           Zahlungsbedingungen: 50% Anzahlung bei Auftragserteilung, 50% bei Abnahme.
         </p>
         <p style="font-size: 11px; color: #aaaaaa; margin: 4px 0; font-family: monospace;">
-          Dieses Angebot ist 30 Tage gültig (bis ${validUntilStr}).
+          Dieses Angebot ist 30 Tage g&uuml;ltig (bis ${validUntilStr}).
         </p>
       </div>
 
@@ -198,7 +199,7 @@ function buildEstimateEmailHtml(data: SendEstimateBody, isInternal: boolean): st
           Erstellt von Maxpromo Digital
         </p>
         <p style="color: #444444; font-size: 11px; margin: 0; font-family: monospace;">
-          maxpromo.digital · info@maxpromo.digital · +49 173 3645698
+          maxpromo.digital &middot; info@maxpromo.digital &middot; +49 173 3645698
         </p>
       </div>
     </div>
@@ -206,11 +207,19 @@ function buildEstimateEmailHtml(data: SendEstimateBody, isInternal: boolean): st
 }
 
 export async function POST(request: NextRequest) {
-  const blocked = enforceRateLimit(request, { scope: 'estimate-send', limit: 5, windowMs: 60_000 })
+  const blocked = enforceRateLimit(request, { scope: 'estimate-send', limit: 8, windowMs: 10 * 60_000 })
   if (blocked) return blocked
 
+  const rawBody = await request.text()
+  if (!rawBody || rawBody.trim().length === 0) {
+    return NextResponse.json({ error: 'Request body required.' }, { status: 400 })
+  }
+  if (rawBody.length > 5000) {
+    return NextResponse.json({ error: 'Request body too large.' }, { status: 400 })
+  }
+
   try {
-    const body = (await request.json()) as SendEstimateBody
+    const body = JSON.parse(rawBody) as SendEstimateBody
 
     const { clientName, clientEmail, businessName } = body
 
@@ -219,55 +228,85 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Required fields missing.' }, { status: 400 })
     }
 
+    if (clientName.length > 200 || businessName.length > 200 || clientEmail.length > 254) {
+      return NextResponse.json({ error: 'Field too long.' }, { status: 400 })
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(clientEmail)) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 })
     }
 
-    // Send to client
-    const clientResult = await sendEmail({
-      to: clientEmail.trim(),
-      from: FROM_EMAIL,
-      replyTo: CONTACT_EMAIL,
-      subject: `Ihr Kostenvoranschlag — Maxpromo Digital`,
-      html: buildEstimateEmailHtml(body, false),
-    })
+    // Each channel gets its own try/catch -- one failing must not prevent the
+    // others from being attempted, and the final response must honestly
+    // reflect whether anything was actually delivered/recorded.
 
-    // Send internal copy to info@maxpromo.digital
-    await sendEmail({
-      to: CONTACT_EMAIL,
-      from: FROM_EMAIL,
-      replyTo: clientEmail.trim(),
-      subject: `Neues Angebot: ${businessName.trim()} — Maxpromo Digital`,
-      html: buildEstimateEmailHtml(body, true),
-    })
-
-    if (!clientResult.success) {
-      throw new Error(clientResult.error ?? 'Email delivery failed')
-    }
-
-    // Pipe to OS leads
+    // Persist to OS leads first
+    let dbOk = false
     try {
       const db = getDb()
-      const summary = `Website estimate — ${body.pkg} (€${body.pkgPrice}). Total: €${body.totals.oneTime} one-time.`
+      const summary = `Website estimate - ${body.pkg} (${fmt(body.pkgPrice)}). Total: ${fmt(body.totals.oneTime)} one-time.`
       await db`
         INSERT INTO os_leads (name, email, company, source, summary, status)
         VALUES (${body.clientName}, ${body.clientEmail}, ${body.businessName}, 'estimate_tool', ${summary}, 'new')
         ON CONFLICT DO NOTHING`
-    } catch { /* DB may not be configured — ignore */ }
+      dbOk = true
+    } catch (err) {
+      console.error('[/api/estimate/send] db insert failed:', err) /* DB may not be configured */
+    }
 
-    // Send Telegram notification (non-blocking; fire-and-forget)
-    sendTelegramNotification(
-      buildProductInquiryMessage({
-        systemName: `Website Estimate — ${body.pkg}`,
-        name: body.clientName,
-        company: body.businessName,
-        email: body.clientEmail,
-        phone: body.clientPhone,
-        message: `Package: ${body.pkg} (€${body.pkgPrice}). One-time: €${body.totals.oneTime}. Monthly: €${body.totals.monthly}. City: ${body.city || '—'}`,
-        source: 'estimate_tool',
-      }),
-    ).catch(console.error)
+    // Send to client
+    let clientEmailOk = false
+    try {
+      const clientResult = await sendEmail({
+        to: clientEmail.trim(),
+        from: FROM_EMAIL,
+        replyTo: CONTACT_EMAIL,
+        subject: `Ihr Kostenvoranschlag - Maxpromo Digital`,
+        html: buildEstimateEmailHtml(body, false),
+      })
+      clientEmailOk = clientResult.success
+      if (!clientResult.success) console.error('[/api/estimate/send] client email failed:', clientResult.error)
+    } catch (err) {
+      console.error('[/api/estimate/send] client email threw:', err)
+    }
+
+    // Send internal copy to info@maxpromo.digital -- best-effort, never blocks response
+    try {
+      await sendEmail({
+        to: CONTACT_EMAIL,
+        from: FROM_EMAIL,
+        replyTo: clientEmail.trim(),
+        subject: `Neues Angebot: ${businessName.trim()} - Maxpromo Digital`,
+        html: buildEstimateEmailHtml(body, true),
+      })
+    } catch (err) {
+      console.error('[/api/estimate/send] internal copy email failed:', err)
+    }
+
+    // Send Telegram notification -- own try/catch, never blocks the response
+    try {
+      await sendTelegramNotification(
+        buildProductInquiryMessage({
+          systemName: `Website Estimate - ${body.pkg}`,
+          name: body.clientName,
+          company: body.businessName,
+          email: body.clientEmail,
+          phone: body.clientPhone,
+          message: `Package: ${body.pkg} (${fmt(body.pkgPrice)}). One-time: ${fmt(body.totals.oneTime)}. Monthly: ${fmt(body.totals.monthly)}. City: ${body.city || 'n/a'}`,
+          source: 'estimate_tool',
+        }),
+      )
+    } catch (err) {
+      console.error('[/api/estimate/send] telegram failed:', err)
+    }
+
+    if (!clientEmailOk && !dbOk) {
+      return NextResponse.json(
+        { error: 'Failed to send estimate. Please try again.' },
+        { status: 502 },
+      )
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {

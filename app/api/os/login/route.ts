@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { signSession, buildSessionCookie, SESSION_TTL_SECONDS } from '@/lib/auth'
+import { enforceRateLimit } from '@/lib/rate-limit'
 
 interface LoginBody { password?: string }
 
@@ -9,6 +10,13 @@ interface LoginBody { password?: string }
  * the password to the client). On success, sets a signed httpOnly cookie.
  */
 export async function POST(request: NextRequest) {
+  const blocked = enforceRateLimit(request, {
+    scope: 'os-login',
+    limit: 5,
+    windowMs: 10 * 60_000,
+  })
+  if (blocked) return blocked
+
   const expected = process.env.OS_PASSWORD
   if (!expected) {
     console.error('[/api/os/login] OS_PASSWORD env var is not set')
@@ -38,7 +46,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Incorrect access code' }, { status: 401 })
   }
 
-  // Issue session — sub is hardcoded "marcel" until multi-user lands in Stage 3.
+  // Issue session -- sub is hardcoded "marcel" until multi-user lands in Stage 3.
   const exp = Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS
   const token = await signSession({ sub: 'marcel', exp })
 

@@ -40,7 +40,6 @@ const HOW_STEPS = ['s1', 's2', 's3', 's4'] as const
 export default async function AboutPage() {
   const t       = await getTranslations('about')
   const tValues = await getTranslations('about.values')
-  const tStack  = await getTranslations('about.stack')
   const tWhy    = await getTranslations('about.why')
   const tHow    = await getTranslations('about.how')
 

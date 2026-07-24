@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { sendEmail } from '@/lib/email'
+import { enforceRateLimit } from '@/lib/rate-limit'
 import { sendTelegramNotification, buildNewsletterMessage } from '@/lib/telegram'
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
@@ -24,23 +25,40 @@ function buildWelcomeEmail(name: string): string {
           and case studies from real client projects.
         </p>
         <a href="https://maxpromo.digital" style="display:inline-block;background:#F97316;color:#000;font-family:monospace;font-weight:700;font-size:12px;letter-spacing:0.1em;padding:12px 24px;text-decoration:none;text-transform:uppercase;">
-          Explore our work →
+          Explore our work &rarr;
         </a>
       </div>
       <div style="background:#0A0A0A;padding:16px 32px;">
         <p style="font-family:monospace;font-size:10px;color:#444;margin:0;">
-          Maxpromo Digital · Körnerstr. 8 · 45143 Essen · info@maxpromo.digital
+          Maxpromo Digital &middot; Koernerstr. 8 &middot; 45143 Essen &middot; info@maxpromo.digital
         </p>
       </div>
     </div>`
 }
 
 export async function POST(request: NextRequest) {
+  const blocked = enforceRateLimit(request, { scope: 'newsletter-subscribe', limit: 5, windowMs: 600_000 })
+  if (blocked) return blocked
+
   try {
-    const body = await request.json() as { email: string; name?: string }
+    const body = await request.json() as { email: string; name?: string; website?: string; company_url?: string }
+
+    // Honeypot -- hidden field that only bots fill in. Not currently wired up
+    // in the frontend form (components/NewsletterSignup.tsx has no hidden
+    // field for this), so it's a no-op today, but accepting/rejecting on it
+    // now means the frontend can add the hidden input later with zero
+    // backend changes. Reject silently with a fake-success response so bots
+    // don't learn anything from the response shape.
+    if (body.website?.trim() || body.company_url?.trim()) {
+      return NextResponse.json({ success: true, status: 'subscribed' })
+    }
 
     if (!body.email?.trim()) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 })
+    }
+
+    if (body.email.trim().length > 254) {
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -49,10 +67,10 @@ export async function POST(request: NextRequest) {
     }
 
     const email = body.email.trim().toLowerCase()
-    const name  = body.name?.trim() || null
+    const name  = body.name?.trim().slice(0, 200) || null
     const sql   = getDb()
 
-    // Upsert — return 'already_subscribed' if duplicate
+    // Upsert -- return 'already_subscribed' if duplicate
     const existing = await sql`SELECT id, status FROM os_newsletter WHERE email = ${email}`
 
     if (existing.length > 0) {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { callAI } from '@/lib/ai'
+import { enforceRateLimit } from '@/lib/rate-limit'
 import type { EstimateData } from '@/components/CostEstimate'
 
 interface WebsiteEstimateBody {
@@ -12,36 +13,36 @@ interface WebsiteEstimateBody {
 const SYSTEM_PROMPT = `You are a senior project estimator at Maxpromo Digital, a web development agency in Germany. You create clear, professional website cost estimates (Kostenvoranschlag) for small businesses.
 
 Currency: EUR only.
-VAT notice: "Gemäß §19 UStG wird keine Umsatzsteuer berechnet."
-Target clients: Small businesses — Handwerker, cleaning companies, restaurants, salons, retail, freelancers.
+VAT notice: "Gemaess Paragraph 19 UStG wird keine Umsatzsteuer berechnet."
+Target clients: Small businesses - Handwerker, cleaning companies, restaurants, salons, retail, freelancers.
 
 PRICING (German market):
 
 DEVELOPMENT:
-Landing page (1–3 pages): €800–1,400
-Small website (5–8 pages): €1,500–3,200
-Full website (10–15 pages): €3,500–6,500
+Landing page (1-3 pages): EUR800-1,400
+Small website (5-8 pages): EUR1,500-3,200
+Full website (10-15 pages): EUR3,500-6,500
 
 FEATURES (add-on):
 Contact form: always included
-Photo gallery: €150–300
-Online booking system: €500–1,200
-Google Maps: €100–200
-WhatsApp button: €50–100
-Online shop (basic): €1,200–2,800
-Blog / News: €250–500
-Multilingual (per language): €300–500
-CMS dashboard: €400–900
-Newsletter signup: €150–300
-Logo design: €300–700
+Photo gallery: EUR150-300
+Online booking system: EUR500-1,200
+Google Maps: EUR100-200
+WhatsApp button: EUR50-100
+Online shop (basic): EUR1,200-2,800
+Blog / News: EUR250-500
+Multilingual (per language): EUR300-500
+CMS dashboard: EUR400-900
+Newsletter signup: EUR150-300
+Logo design: EUR300-700
 
 INFRASTRUCTURE:
-Domain (.de or .com): €12–18/year (one-time setup)
-Hosting (Vercel): €10–15/month
+Domain (.de or .com): EUR12-18/year (one-time setup)
+Hosting (Vercel): EUR10-15/month
 SSL: included
 
 MAINTENANCE:
-Monthly maintenance & updates: €60–120/month
+Monthly maintenance & updates: EUR60-120/month
 
 Rules:
 - No automation line items unless explicitly requested
@@ -52,7 +53,7 @@ Rules:
 
 Return ONLY valid JSON with this exact structure (no markdown fences, no extra text):
 {
-  "estimateTitle": "Kostenvoranschlag — {company}",
+  "estimateTitle": "Kostenvoranschlag - {company}",
   "estimateDate": "{today YYYY-MM-DD}",
   "validUntil": "{today + 30 days YYYY-MM-DD}",
   "currency": "EUR",
@@ -85,16 +86,16 @@ Return ONLY valid JSON with this exact structure (no markdown fences, no extra t
     "yearOneMin": 0,
     "yearOneMax": 0
   },
-  "vatNotice": "Gemäß §19 UStG wird keine Umsatzsteuer berechnet.",
+  "vatNotice": "Gemaess Paragraph 19 UStG wird keine Umsatzsteuer berechnet.",
   "paymentTerms": "50% Anzahlung bei Auftragserteilung, 50% bei Abnahme.",
-  "validityNote": "Dieses Angebot ist 30 Tage gültig.",
+  "validityNote": "Dieses Angebot ist 30 Tage gueltig.",
   "scopeNote": "Two sentences about what is included and what affects the final price for this specific client.",
   "estimateScope": "Starter",
   "includedInAll": [
     "Responsive design (mobile/tablet/desktop)",
     "SSL certificate (HTTPS)",
     "Basic SEO setup",
-    "DSGVO-konforme Datenschutzerklärung",
+    "DSGVO-konforme Datenschutzerklaerung",
     "Impressum",
     "Kontaktformular / Contact form",
     "30 Tage Support nach Abschluss"
@@ -102,12 +103,27 @@ Return ONLY valid JSON with this exact structure (no markdown fences, no extra t
 }`
 
 export async function POST(request: NextRequest) {
+  const blocked = enforceRateLimit(request, { scope: 'estimate', limit: 8, windowMs: 10 * 60_000 })
+  if (blocked) return blocked
+
+  const rawBody = await request.text()
+  if (!rawBody || rawBody.trim().length === 0) {
+    return NextResponse.json({ error: 'Request body required.' }, { status: 400 })
+  }
+  if (rawBody.length > 5000) {
+    return NextResponse.json({ error: 'Request body too large.' }, { status: 400 })
+  }
+
   try {
-    const body = (await request.json()) as WebsiteEstimateBody
+    const body = JSON.parse(rawBody) as WebsiteEstimateBody
     const { businessType, pageCount, features, company } = body
 
     if (!businessType) {
       return NextResponse.json({ error: 'Business type required.' }, { status: 400 })
+    }
+
+    if (businessType.length > 200 || (company && company.length > 200)) {
+      return NextResponse.json({ error: 'Field too long.' }, { status: 400 })
     }
 
     const today = new Date()
@@ -157,7 +173,7 @@ function getFallback(
 ): EstimateData {
   const isLanding = pageCount.toLowerCase().includes('landing')
   return {
-    estimateTitle: `Kostenvoranschlag — ${company || 'Ihr Unternehmen'}`,
+    estimateTitle: `Kostenvoranschlag - ${company || 'Ihr Unternehmen'}`,
     estimateDate: today.toISOString().split('T')[0],
     validUntil: validUntil.toISOString().split('T')[0],
     currency: 'EUR',
@@ -169,8 +185,8 @@ function getFallback(
             id: 'website',
             description: isLanding ? 'Landing Page / Einseiter' : 'Business Website / Unternehmenswebsite',
             detail: isLanding
-              ? 'Single page with hero, services, contact form — mobile-ready'
-              : 'Responsive 5–8 page website with contact form, CMS, and DSGVO compliance',
+              ? 'Single page with hero, services, contact form - mobile-ready'
+              : 'Responsive 5-8 page website with contact form, CMS, and DSGVO compliance',
             unit: 'pauschal',
             priceMin: isLanding ? 800 : 1500,
             priceMax: isLanding ? 1400 : 3200,
@@ -213,16 +229,16 @@ function getFallback(
       yearOneMin: isLanding ? 1652 : 2352,
       yearOneMax: isLanding ? 2858 : 4658,
     },
-    vatNotice: 'Gemäß §19 UStG wird keine Umsatzsteuer berechnet.',
+    vatNotice: 'Gemaess Paragraph 19 UStG wird keine Umsatzsteuer berechnet.',
     paymentTerms: '50% Anzahlung bei Auftragserteilung, 50% bei Abnahme.',
-    validityNote: 'Dieses Angebot ist 30 Tage gültig.',
+    validityNote: 'Dieses Angebot ist 30 Tage gueltig.',
     scopeNote: 'The final price depends on the exact content and pages confirmed at kickoff. Additional features or design revisions are scoped separately.',
     estimateScope: isLanding ? 'Starter' : 'Growth',
     includedInAll: [
       'Responsive design (mobile/tablet/desktop)',
       'SSL certificate (HTTPS)',
       'Basic SEO setup',
-      'DSGVO-konforme Datenschutzerklärung',
+      'DSGVO-konforme Datenschutzerklaerung',
       'Impressum',
       'Kontaktformular / Contact form',
       '30 Tage Support nach Abschluss',

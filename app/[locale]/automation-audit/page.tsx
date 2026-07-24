@@ -1,17 +1,31 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
+import { setRequestLocale } from 'next-intl/server'
 import AuditForm from '@/components/AuditForm'
 
-export const metadata: Metadata = {
-  title: 'Free Business Diagnostic',
-  description:
-    'Answer 10 quick questions about how your business actually operates. We identify your real operational bottlenecks — free, no sales pitch.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('automationAudit')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDesc'),
+  }
 }
 
 const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-inter)' } as const
 const sans = { fontFamily: 'var(--font-inter)' } as const
 
-export default function AutomationAuditPage() {
+export default async function AutomationAuditPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
+  const t = await getTranslations('automationAudit')
+  const pills = [t('pill1'), t('pill2'), t('pill3')]
+
   return (
     <main style={{ background: '#0A0A0A', minHeight: '100vh' }}>
       {/* Header */}
@@ -19,7 +33,7 @@ export default function AutomationAuditPage() {
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
           {/* Breadcrumb */}
           <p style={{ ...mono, fontSize: '10px', color: '#444444', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '28px' }}>
-            MAXPROMO.DIGITAL / BUSINESS DIAGNOSTIC
+            {t('breadcrumb')}
           </p>
 
           <h1
@@ -32,7 +46,7 @@ export default function AutomationAuditPage() {
               marginBottom: '16px',
             }}
           >
-            Free Business Diagnostic
+            {t('heroTitle')}
           </h1>
           <p
             style={{
@@ -44,18 +58,12 @@ export default function AutomationAuditPage() {
               marginBottom: '28px',
             }}
           >
-            Tell us how your business actually operates — where time gets lost,
-            where mistakes happen, where you rely on single people. We identify
-            your real operational gaps and where systems can take over.
+            {t('heroSubtitle')}
           </p>
 
           {/* Trust pills */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {[
-              '✓ No AI jargon',
-              '✓ No email spam',
-              '✓ Instant diagnostic feedback',
-            ].map((pill) => (
+            {pills.map((pill) => (
               <span
                 key={pill}
                 style={{

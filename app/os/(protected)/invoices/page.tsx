@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -11,6 +12,7 @@ interface Invoice {
   total: number; status: string; created_at: string; due_date: string; paid_date: string
 }
 
+/** Raw DB status values — the filter identity. Display text comes from t.status.invoice. */
 const STATUS_TABS = ['all', 'draft', 'sent', 'paid', 'overdue']
 const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
   draft:   { text: '#888', bg: '#88888820' },
@@ -19,16 +21,17 @@ const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
   overdue: { text: '#ef4444', bg: '#ef444420' },
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, label }: { status: string; label: string }) {
   const c = STATUS_COLOR[status] ?? { text: '#888', bg: '#88888820' }
   return (
     <span style={{ fontFamily: mono, fontSize: '9px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
-      {status}
+      {label}
     </span>
   )
 }
 
 export default function InvoicesPage() {
+  const { t, fmtEur, fmtDate } = useOsLocale()
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [loading,  setLoading]  = useState(true)
   const [tab,      setTab]      = useState('all')
@@ -49,13 +52,12 @@ export default function InvoicesPage() {
   }
 
   async function deleteInvoice(id: string, num: string) {
-    if (!confirm(`Delete invoice ${num}? This cannot be undone.`)) return
+    if (!confirm(t.invoiceList.deleteConfirm(num))) return
     const res = await fetch(`/api/os/invoices?id=${id}`, { method: 'DELETE' })
     if (res.ok) setInvoices(prev => prev.filter(i => i.id !== id))
   }
 
-  const fmtEur = (n: number) =>
-    new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
+  const tabLabel = (key: string) => key === 'all' ? t.status.filterAll : (t.status.invoice[key] ?? key)
 
   const filtered = tab === 'all' ? invoices : invoices.filter(i => i.status === tab)
   const totals   = {
@@ -63,36 +65,41 @@ export default function InvoicesPage() {
     paid:        invoices.filter(i => i.status === 'paid').reduce((s,i) => s + Number(i.total), 0),
   }
 
+  const columns = [
+    t.invoiceList.colNumber, t.invoiceList.colClient, t.invoiceList.colDate,
+    t.invoiceList.colDue, t.invoiceList.colAmount, t.invoiceList.colStatus, t.invoiceList.colActions,
+  ]
+
   return (
     <div style={{ padding: '32px 40px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>Invoices</h1>
+          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.invoiceList.heading}</h1>
           <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>
-            Outstanding: <span style={{ color: '#F97316' }}>{fmtEur(totals.outstanding)}</span>
-            &nbsp;·&nbsp; Paid: <span style={{ color: '#22c55e' }}>{fmtEur(totals.paid)}</span>
+            {t.invoiceList.outstanding}: <span style={{ color: '#F97316' }}>{fmtEur(totals.outstanding)}</span>
+            &nbsp;·&nbsp; {t.invoiceList.paid}: <span style={{ color: '#22c55e' }}>{fmtEur(totals.paid)}</span>
           </p>
         </div>
         <Link href="/os/invoices/new" style={{ background: '#F97316', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', textTransform: 'uppercase' }}>
-          + New Invoice
+          {t.invoiceList.newInvoice}
         </Link>
       </div>
 
       {/* Status tabs */}
       <div style={{ display: 'flex', gap: '4px', marginBottom: '20px' }}>
-        {STATUS_TABS.map(t => (
+        {STATUS_TABS.map(key => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
+            key={key}
+            onClick={() => setTab(key)}
             style={{
               fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase',
               padding: '7px 14px', border: 'none', cursor: 'pointer',
-              background: tab === t ? '#F97316' : 'transparent',
-              color: tab === t ? '#000' : '#555',
-              borderBottom: tab === t ? 'none' : '1px solid rgba(255,255,255,0.06)',
+              background: tab === key ? '#F97316' : 'transparent',
+              color: tab === key ? '#000' : '#555',
+              borderBottom: tab === key ? 'none' : '1px solid rgba(255,255,255,0.06)',
             }}
           >
-            {t}
+            {tabLabel(key)}
           </button>
         ))}
       </div>
@@ -101,16 +108,16 @@ export default function InvoicesPage() {
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-              {['Number', 'Client', 'Date', 'Due', 'Amount', 'Status', 'Actions'].map(h => (
+              {columns.map(h => (
                 <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: '#333' }}>Loading...</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: '#333' }}>{t.common.loading}</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '13px', color: '#444' }}>No invoices found.</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '13px', color: '#444' }}>{t.invoiceList.empty}</td></tr>
             ) : (
               filtered.map(inv => (
                 <tr key={inv.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
@@ -119,15 +126,17 @@ export default function InvoicesPage() {
                   </td>
                   <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '13px', color: '#FFF' }}>{inv.client_name}</td>
                   <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: '#555' }}>
-                    {new Date(inv.created_at).toLocaleDateString('de-DE')}
+                    {fmtDate(inv.created_at)}
                   </td>
                   <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: inv.status === 'overdue' ? '#ef4444' : '#555' }}>
-                    {inv.due_date ? new Date(inv.due_date).toLocaleDateString('de-DE') : '—'}
+                    {fmtDate(inv.due_date)}
                   </td>
                   <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>
                     {fmtEur(Number(inv.total))}
                   </td>
-                  <td style={{ padding: '12px 16px' }}><StatusBadge status={inv.status} /></td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <StatusBadge status={inv.status} label={t.status.invoice[inv.status] ?? inv.status} />
+                  </td>
                   <td style={{ padding: '12px 16px' }}>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                       <a
@@ -135,21 +144,21 @@ export default function InvoicesPage() {
                         target="_blank"
                         style={{ fontFamily: mono, fontSize: '10px', color: '#888', textDecoration: 'none', letterSpacing: '0.06em' }}
                       >
-                        PDF
+                        {t.invoiceList.pdf}
                       </a>
                       {inv.status !== 'paid' && (
                         <button
                           onClick={() => markPaid(inv.id)}
                           style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                         >
-                          Paid ✓
+                          {t.invoiceList.markPaid}
                         </button>
                       )}
                       <button
                         onClick={() => deleteInvoice(inv.id, inv.invoice_number)}
                         style={{ fontFamily: mono, fontSize: '10px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                       >
-                        Delete
+                        {t.invoiceList.delete}
                       </button>
                     </div>
                   </td>

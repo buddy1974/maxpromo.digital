@@ -2,6 +2,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import type { CurrencyCode, PaymentMethodId, DocumentLanguage } from '@/lib/documents/config'
+import { fmtCurrency } from '@/lib/documents/format'
+import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono = 'var(--font-roboto-mono)'
 const sans = 'var(--font-inter)'
@@ -64,6 +67,9 @@ interface Angebot {
   anzahlung_method?: string | null
   payment_terms?: string | null
   included_items?: string[] | null
+  payment_method?: PaymentMethodId | null
+  currency?: CurrencyCode | null
+  language?: DocumentLanguage | null
 }
 
 const UNITS = ['pauschal', 'Stück', 'Stunden', 'Tage', 'Seiten', 'Monat', 'Lizenz']
@@ -79,10 +85,6 @@ const inp: React.CSSProperties = {
   border: '1px solid rgba(255,255,255,0.08)', color: '#FFF',
   fontFamily: sans, fontSize: '13px', padding: '9px 12px',
   outline: 'none', boxSizing: 'border-box',
-}
-
-function fmtEur(n: number) {
-  return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(n)
 }
 
 function dateInputValue(value: string | null | undefined): string {
@@ -104,6 +106,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 export default function EditAngebotPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
+  const { t, intlLocale } = useOsLocale()
 
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
@@ -130,6 +133,11 @@ export default function EditAngebotPage() {
 
   const [paymentTerms,  setPaymentTerms]  = useState('')
   const [includedItems, setIncludedItems] = useState<string[]>([])
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>('bank')
+  const [currency,      setCurrency]      = useState<CurrencyCode>('EUR')
+  const [language,      setLanguage]      = useState<DocumentLanguage>('de')
+
+  const fmtEur = useCallback((n: number) => fmtCurrency(n, currency), [currency])
 
   // ── AI raw-paste state ────────────────────────────────────────────────
   const [aiOpen,        setAiOpen]        = useState(false)
@@ -178,10 +186,13 @@ export default function EditAngebotPage() {
 
         setPaymentTerms(d.payment_terms ?? '')
         setIncludedItems(Array.isArray(d.included_items) ? d.included_items : [])
+        setPaymentMethod(d.payment_method ?? 'bank')
+        setCurrency(d.currency ?? 'EUR')
+        setLanguage(d.language ?? 'de')
 
         setLoading(false)
       })
-      .catch(() => { setLoadError('Could not load this Angebot.'); setLoading(false) })
+      .catch(() => { setLoadError(t.forms.loadAngebotFailed); setLoading(false) })
   }, [id])
 
   /**
@@ -321,11 +332,16 @@ export default function EditAngebotPage() {
 
     // Build a friendly toast describing what landed.
     const summary: string[] = []
-    if (newItems.length) summary.push(`${newItems.length} line item${newItems.length === 1 ? '' : 's'} ${isReplace ? 'replaced' : 'added'}`)
-    if (d.includedItems?.length) summary.push(`${d.includedItems.length} included item${d.includedItems.length === 1 ? '' : 's'}`)
-    if (d.paymentTerms) summary.push('payment terms')
-    if (d.warnings?.length) summary.push(`${d.warnings.length} warning${d.warnings.length === 1 ? '' : 's'}`)
-    setAiAppliedMsg(summary.length ? `${isReplace ? 'Replaced' : 'Merged'}: ${summary.join(' · ')}` : 'No new data extracted.')
+    if (newItems.length) summary.push(isReplace ? t.forms.aiSummaryItemsReplaced(newItems.length) : t.forms.aiSummaryItemsAdded(newItems.length))
+    if (d.includedItems?.length) summary.push(t.forms.aiSummaryIncluded(d.includedItems.length))
+    if (d.paymentTerms) summary.push(t.forms.aiSummaryPaymentTerms)
+    if (d.warnings?.length) summary.push(t.forms.aiSummaryWarnings(d.warnings.length))
+    const joined = summary.join(' · ')
+    setAiAppliedMsg(
+      summary.length
+        ? (isReplace ? t.forms.aiSummaryReplaced(joined) : t.forms.aiSummaryMerged(joined))
+        : t.forms.aiSummaryNone
+    )
   }
 
   async function aiExtractFromText() {
@@ -336,12 +352,12 @@ export default function EditAngebotPage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kind: 'angebot', text: aiRawText }),
       })
-      if (!res.ok) throw new Error(`Server error ${res.status}`)
+      if (!res.ok) throw new Error(t.forms.serverError(res.status))
       const json = await res.json() as { extracted: AIExtracted }
       applyExtracted(json.extracted, aiMode)
       setAiOpen(false); setAiRawText(''); setAiPreview('')
     } catch (e) {
-      setAiError(e instanceof Error ? e.message : 'Extraction failed')
+      setAiError(e instanceof Error ? e.message : t.forms.aiExtractionFailed)
     } finally {
       setAiLoading(false)
     }
@@ -354,18 +370,18 @@ export default function EditAngebotPage() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ kind: 'angebot', image: b64, mediaType: mime }),
       })
-      if (!res.ok) throw new Error(`Server error ${res.status}`)
+      if (!res.ok) throw new Error(t.forms.serverError(res.status))
       const json = await res.json() as { extracted: AIExtracted }
       applyExtracted(json.extracted, aiMode)
       setAiOpen(false); setAiPreview('')
     } catch (e) {
-      setAiError(e instanceof Error ? e.message : 'Image extraction failed')
+      setAiError(e instanceof Error ? e.message : t.forms.aiImageExtractionFailed)
     } finally {
       setAiLoading(false)
     }
   // applyExtracted closure intentionally re-evaluated each call
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aiMode])
+  }, [aiMode, t])
 
   // Clipboard image paste while modal is open
   useEffect(() => {
@@ -427,7 +443,7 @@ export default function EditAngebotPage() {
 
   async function handleSave() {
     if (!clientName.trim()) {
-      setSaveError('Client name is required.')
+      setSaveError(t.forms.clientNameRequired)
       return
     }
     setSaving(true); setSaveError('')
@@ -450,6 +466,9 @@ export default function EditAngebotPage() {
           anzahlung_method: hasAnzahlung ? anzahlungMethod : undefined,
           payment_terms:    paymentTerms,
           included_items:   includedItems,
+          payment_method:   paymentMethod,
+          currency,
+          language,
         }),
       })
       if (!res.ok) {
@@ -458,7 +477,7 @@ export default function EditAngebotPage() {
       }
       router.push(`/os/angebote/${id}`)
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'Failed to save.')
+      setSaveError(err instanceof Error ? err.message : t.forms.saveFailed)
     } finally {
       setSaving(false)
     }
@@ -466,14 +485,14 @@ export default function EditAngebotPage() {
 
   if (loading) return (
     <div style={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em' }}>Loading...</p>
+      <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em' }}>{t.common.loading}</p>
     </div>
   )
 
   if (loadError) return (
     <div style={{ padding: '40px' }}>
       <p style={{ fontFamily: mono, fontSize: '12px', color: '#ef4444' }}>{loadError}</p>
-      <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', textDecoration: 'none' }}>← Back to Angebote</Link>
+      <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', textDecoration: 'none' }}>{t.angebotDetail.backToAngebote}</Link>
     </div>
   )
 
@@ -489,9 +508,9 @@ export default function EditAngebotPage() {
           <div style={{ background: '#111', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '4px', width: '100%', maxWidth: '560px', padding: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
               <div>
-                <h2 style={{ fontFamily: sans, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>AI — Add data to this Angebot</h2>
+                <h2 style={{ fontFamily: sans, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>{t.forms.aiAngebotAddTitle}</h2>
                 <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '4px 0 0', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  Paste text, drop an image, or Ctrl+V a screenshot
+                  {t.forms.aiModalSub}
                 </p>
               </div>
               <button onClick={() => setAiOpen(false)} style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', lineHeight: 1, cursor: 'pointer' }}>×</button>
@@ -513,14 +532,12 @@ export default function EditAngebotPage() {
                     padding: '8px 10px', cursor: 'pointer', borderRadius: '3px',
                   }}
                 >
-                  {m === 'merge' ? '◐ Merge (default)' : '⊕ Replace all'}
+                  {m === 'merge' ? t.forms.aiModeMerge : t.forms.aiModeReplace}
                 </button>
               ))}
             </div>
             <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '0 0 14px', lineHeight: 1.6 }}>
-              {aiMode === 'merge'
-                ? 'Empty fields get filled. Existing values stay. New line items are appended.'
-                : 'Replaces every field the AI returns. Existing data is overwritten.'}
+              {aiMode === 'merge' ? t.forms.aiModeMergeHint : t.forms.aiModeReplaceHint}
             </p>
 
             {/* Drop zone */}
@@ -538,22 +555,24 @@ export default function EditAngebotPage() {
             >
               {aiLoading && aiPreview ? (
                 <div style={{ textAlign: 'center' }}>
-                  <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '0 0 6px' }}>⟳ Reading your image...</p>
+                  <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '0 0 6px' }}>{t.forms.aiReading}</p>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
                   <img src={aiPreview} alt="" style={{ maxWidth: '100%', maxHeight: '110px', objectFit: 'contain', opacity: 0.5 }} />
                 </div>
               ) : aiPreview ? (
+                // eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs
                 <img src={aiPreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain' }} />
               ) : (
                 <p style={{ fontFamily: mono, fontSize: '11px', color: '#444', margin: 0, lineHeight: 1.7, textAlign: 'center' }}>
-                  📋 Paste image here <strong style={{ color: '#666' }}>Ctrl+V</strong> — or drag &amp; drop a file<br />
-                  <span style={{ fontSize: '10px', opacity: 0.6 }}>Screenshots · Photos · WhatsApp · Email</span>
+                  {t.forms.aiDropZonePrefix} <strong style={{ color: '#666' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
+                  <span style={{ fontSize: '10px', opacity: 0.6 }}>{t.forms.aiDropZoneFormats}</span>
                 </p>
               )}
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>OR PASTE TEXT</span>
+              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteTextShort}</span>
               <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
             </div>
 
@@ -561,7 +580,7 @@ export default function EditAngebotPage() {
               value={aiRawText}
               onChange={e => setAiRawText(e.target.value)}
               rows={5}
-              placeholder={'Paste anything — WhatsApp, email, hand-typed notes, partial brief…\n\nExamples:\n• "Add: Wartung 12 Monate, 30€/Monat"\n• "Anzahlung 500€ am 5.5. erhalten"\n• "Email vergessen: kunde@beispiel.de"'}
+              placeholder={t.forms.aiPlaceholderAddData}
               style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }}
             />
 
@@ -574,7 +593,7 @@ export default function EditAngebotPage() {
                 disabled={aiLoading || !aiRawText.trim()}
                 style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '11px 18px', cursor: aiLoading || !aiRawText.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: aiLoading || !aiRawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
               >
-                {aiLoading && !aiPreview ? 'Extracting...' : `${aiMode === 'merge' ? 'Merge' : 'Replace'} →`}
+                {aiLoading && !aiPreview ? t.forms.aiExtracting : (aiMode === 'merge' ? t.forms.aiMergeButton : t.forms.aiReplaceButton)}
               </button>
               <button
                 type="button"
@@ -582,7 +601,7 @@ export default function EditAngebotPage() {
                 disabled={aiLoading}
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: '2px' }}
               >
-                ▦ Browse File
+                {t.forms.aiBrowseFile}
               </button>
               <button
                 type="button"
@@ -590,7 +609,7 @@ export default function EditAngebotPage() {
                 disabled={aiLoading}
                 style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: '2px', marginLeft: 'auto' }}
               >
-                Cancel
+                {t.common.cancel}
               </button>
             </div>
           </div>
@@ -608,24 +627,24 @@ export default function EditAngebotPage() {
 
       {/* Breadcrumb */}
       <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', marginBottom: '16px', letterSpacing: '0.1em' }}>
-        <Link href="/os/angebote" style={{ color: '#555', textDecoration: 'none' }}>Angebote</Link>
+        <Link href="/os/angebote" style={{ color: '#555', textDecoration: 'none' }}>{t.angebotDetail.breadcrumb}</Link>
         {' / '}
         <Link href={`/os/angebote/${id}`} style={{ color: '#555', textDecoration: 'none' }}>{angebotNumber}</Link>
         {' / '}
-        <span style={{ color: '#FFF' }}>edit</span>
+        <span style={{ color: '#FFF' }}>{t.forms.editBreadcrumb}</span>
       </p>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', gap: '12px', flexWrap: 'wrap' }}>
         <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 700, color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>
-          Edit {angebotNumber}
+          {t.angebotForm.editHeading} {angebotNumber}
         </h1>
         <button
           type="button"
           onClick={() => { setAiOpen(true); setAiError(''); setAiPreview('') }}
           style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', padding: '9px 16px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '4px' }}
-          title="Paste raw notes, an email, or a screenshot — AI fills in the gaps"
+          title={t.forms.aiAddDataTooltip}
         >
-          ◈ AI Add Data
+          {t.angebotForm.aiAddData}
         </button>
       </div>
 
@@ -638,26 +657,48 @@ export default function EditAngebotPage() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-          <Field label="Angebot No"><input value={angebotNumber} disabled style={{ ...inp, opacity: 0.5 }} /></Field>
-          <Field label="Date"><input value={createdAt ? new Date(createdAt).toLocaleDateString('de-DE') : ''} disabled style={{ ...inp, opacity: 0.5 }} /></Field>
-          <Field label="Valid Until"><input type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)} style={inp} /></Field>
+          <Field label={t.angebotForm.fieldAngebotNo}><input value={angebotNumber} disabled style={{ ...inp, opacity: 0.5 }} /></Field>
+          <Field label={t.angebotForm.fieldDate}><input value={createdAt ? new Date(createdAt).toLocaleDateString(intlLocale) : ''} disabled style={{ ...inp, opacity: 0.5 }} /></Field>
+          <Field label={t.angebotForm.fieldValidUntil}><input type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)} style={inp} /></Field>
         </div>
 
-        <Field label="Status">
+        <Field label={t.angebotForm.fieldStatus}>
           <select value={status} onChange={e => setStatus(e.target.value)} style={{ ...inp, appearance: 'none' }}>
-            {STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+            {STATUSES.map(s => <option key={s} value={s}>{t.status.angebot[s] ?? s}</option>)}
           </select>
         </Field>
 
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+          <Field label={t.angebotForm.fieldCurrency}>
+            <select value={currency} onChange={e => setCurrency(e.target.value as CurrencyCode)} style={{ ...inp, appearance: 'none' }}>
+              <option value="EUR">EUR — €</option>
+              <option value="GBP">GBP — £</option>
+            </select>
+          </Field>
+          <Field label={t.angebotForm.fieldPaymentMethod}>
+            <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value as PaymentMethodId)} style={{ ...inp, appearance: 'none' }}>
+              <option value="bank">{t.status.paymentMethod.bank}</option>
+              <option value="momo">{t.status.paymentMethod.momo}</option>
+              <option value="both">{t.status.paymentMethod.both}</option>
+            </select>
+          </Field>
+          <Field label={t.angebotForm.fieldDocumentLanguage}>
+            <select value={language} onChange={e => setLanguage(e.target.value as DocumentLanguage)} style={{ ...inp, appearance: 'none' }}>
+              <option value="de">Deutsch</option>
+              <option value="en">English</option>
+            </select>
+          </Field>
+        </div>
+
         <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)', margin: '4px 0' }} />
 
-        <Field label="Client Name *">
+        <Field label={t.angebotForm.fieldClientName}>
           <input value={clientName} onChange={e => setClientName(e.target.value)} style={inp} />
         </Field>
-        <Field label="Client Email">
-          <input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder="kunde@example.com" style={inp} />
+        <Field label={t.angebotForm.fieldClientEmail}>
+          <input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} placeholder={t.forms.emailPlaceholder} style={inp} />
         </Field>
-        <Field label="Client Address (multi-line OK)">
+        <Field label={t.angebotForm.fieldClientAddress}>
           <textarea value={clientAddress} onChange={e => setClientAddress(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical', lineHeight: 1.6 }} />
         </Field>
 
@@ -665,14 +706,14 @@ export default function EditAngebotPage() {
 
         {/* Line items */}
         <div>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>Line Items</p>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
           {lineItems.map((item, i) => (
             <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px' }}>
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'flex-start' }}>
                 <textarea
                   value={item.description}
                   onChange={e => updateItem(i, 'description', e.target.value)}
-                  placeholder="Beschreibung der Leistung — mehrzeilig erlaubt"
+                  placeholder={t.forms.descriptionPlaceholderEdit}
                   rows={Math.max(1, Math.min(8, item.description.split('\n').length))}
                   style={{ ...inp, flex: 1, resize: 'vertical', lineHeight: 1.5, fontFamily: sans, minHeight: '36px' }}
                 />
@@ -688,7 +729,7 @@ export default function EditAngebotPage() {
                     whiteSpace: 'nowrap', borderRadius: '2px', alignSelf: 'flex-start',
                   }}
                 >
-                  {item.isFixedPrice ? 'Pauschal' : 'Per Unit'}
+                  {item.isFixedPrice ? t.angebotForm.pauschal : t.angebotForm.perUnit}
                 </button>
                 <button
                   type="button"
@@ -700,9 +741,9 @@ export default function EditAngebotPage() {
               </div>
               {item.isFixedPrice ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em' }}>BETRAG</span>
+                  <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em' }}>{t.forms.amountLabel}</span>
                   <input type="number" value={item.total} onChange={e => updateItem(i, 'total', Number(e.target.value))} style={{ ...inp, width: '120px', textAlign: 'right' }} />
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>€</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{currency === 'GBP' ? '£' : '€'}</span>
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '60px 120px 90px 1fr', gap: '6px', alignItems: 'center' }}>
@@ -721,33 +762,35 @@ export default function EditAngebotPage() {
             onClick={() => setLineItems(prev => [...prev, blankItem()])}
             style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', background: 'none', border: '1px dashed rgba(249,115,22,0.3)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}
           >
-            + Add Item
+            {t.angebotForm.addItem}
           </button>
         </div>
 
         {/* Anzahlung + total */}
         <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>Zwischensumme</span>
+            <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>{t.angebotForm.subtotal}</span>
             <span style={{ fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
           </div>
           <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
             <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: '#F97316', width: '14px', height: '14px' }} />
-            <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Anzahlung erhalten</span>
+            <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.angebotForm.depositReceived}</span>
           </label>
           {hasAnzahlung && (
             <>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '10px' }}>
-                <Field label="Anzahlung €"><input type="number" value={anzahlung} onChange={e => setAnzahlung(Number(e.target.value))} style={{ ...inp, textAlign: 'right' }} /></Field>
-                <Field label="Datum"><input type="date" value={anzahlungDate} onChange={e => setAnzahlungDate(e.target.value)} style={inp} /></Field>
-                <Field label="Methode">
+                <Field label={t.angebotForm.depositAmount}><input type="number" value={anzahlung} onChange={e => setAnzahlung(Number(e.target.value))} style={{ ...inp, textAlign: 'right' }} /></Field>
+                <Field label={t.angebotForm.depositDate}><input type="date" value={anzahlungDate} onChange={e => setAnzahlungDate(e.target.value)} style={inp} /></Field>
+                <Field label={t.angebotForm.depositMethod}>
                   <select value={anzahlungMethod} onChange={e => setAnzahlungMethod(e.target.value)} style={{ ...inp, appearance: 'none' }}>
-                    <option>Überweisung</option><option>Bar</option><option>PayPal</option><option>Andere</option>
+                    {(['Überweisung', 'Bar', 'PayPal', 'Andere'] as const).map(m => (
+                      <option key={m} value={m}>{t.status.depositMethod[m] ?? m}</option>
+                    ))}
                   </select>
                 </Field>
               </div>
               <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>Restbetrag</span>
+                <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>{t.angebotForm.remainingBalance}</span>
                 <span style={{ fontFamily: mono, fontSize: '15px', color: '#FFF', fontWeight: 700 }}>{fmtEur(restbet)}</span>
               </div>
             </>
@@ -759,21 +802,21 @@ export default function EditAngebotPage() {
           )}
         </div>
 
-        <Field label="Payment Terms">
-          <input value={paymentTerms} onChange={e => setPaymentTerms(e.target.value)} placeholder="z.B. Zahlung in 2 Raten möglich" style={inp} />
+        <Field label={t.angebotForm.fieldPaymentTerms}>
+          <input value={paymentTerms} onChange={e => setPaymentTerms(e.target.value)} placeholder={t.forms.paymentTermsPlaceholder} style={inp} />
         </Field>
 
-        <Field label="Included (free) items">
+        <Field label={t.angebotForm.fieldIncludedItems}>
           <textarea
             value={includedItems.join('\n')}
             onChange={e => setIncludedItems(e.target.value.split('\n').map(s => s.trim()).filter(Boolean))}
             rows={3}
-            placeholder="One per line — items provided free that aren&rsquo;t billed"
+            placeholder={t.forms.includedPlaceholder}
             style={{ ...inp, resize: 'vertical' }}
           />
         </Field>
 
-        <Field label="Notes"><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} style={{ ...inp, resize: 'vertical' }} /></Field>
+        <Field label={t.angebotForm.fieldNotes}><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} style={{ ...inp, resize: 'vertical' }} /></Field>
 
         {saveError && (
           <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '4px 0 0' }}>⚠ {saveError}</p>
@@ -793,7 +836,7 @@ export default function EditAngebotPage() {
               opacity: saving || !clientName.trim() ? 0.5 : 1,
             }}
           >
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? t.angebotForm.saving : t.angebotForm.saveChanges}
           </button>
           <Link
             href={`/os/angebote/${id}`}
@@ -807,7 +850,7 @@ export default function EditAngebotPage() {
               display: 'inline-block',
             }}
           >
-            Cancel
+            {t.angebotForm.cancel}
           </Link>
         </div>
       </div>
