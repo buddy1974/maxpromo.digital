@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'AGB / Terms & Conditions',
-  description: 'Allgemeine Geschäftsbedingungen der Maxpromo Digital — General Terms and Conditions',
+  description: 'Allgemeine Geschäftsbedingungen der Maxpromo Digital, General Terms and Conditions',
   robots: { index: true, follow: false },
 }
 
@@ -161,7 +161,7 @@ export default function AgbPage() {
           />
           <Paragraph
             de="Gemäß § 19 UStG wird keine Umsatzsteuer berechnet (Kleinunternehmerregelung)."
-            en="VAT exempt per §19 UStG (Kleinunternehmerregelung — small business regulation)."
+            en="VAT exempt per §19 UStG (Kleinunternehmerregelung, small business regulation)."
           />
           <Paragraph
             de="Reise- und Nebenkosten werden nach Aufwand berechnet, sofern nicht anders vereinbart."

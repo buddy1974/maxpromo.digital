@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 /**
- * Internal staff-access page — not a public marketing route. Excluded
+ * Internal staff-access page, not a public marketing route. Excluded
  * from app/sitemap.ts and app/robots.ts already; this adds a page-level
  * noindex as defence in depth in case it's ever linked externally.
  */

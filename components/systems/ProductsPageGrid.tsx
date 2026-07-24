@@ -1,7 +1,7 @@
 /**
  * components/systems/ProductsPageGrid.tsx
  *
- * Adapter bridge — connects the products page adapter to the card rendering system.
+ * Adapter bridge, connects the products page adapter to the card rendering system.
  * Mirrors HomepageSystemsGrid and SystemsPageGrid exactly: accepts adapter output,
  * imports registry internally, delegates all rendering to SystemGrid → SystemCard.
  *
@@ -22,9 +22,9 @@
  *
  * TODO: when SystemCardFeatured accepts ProductsCardData, replace PUBLIC_PRODUCTS
  *       with cards and remove the registry import from this file
- * TODO: future filters  — accept activeCategory prop, filter PUBLIC_PRODUCTS here
- * TODO: future search   — accept searchQuery prop, filter on cards[i].searchTokens
- * TODO: future analytics — fire product_card_viewed impressions using cards data
+ * TODO: future filters , accept activeCategory prop, filter PUBLIC_PRODUCTS here
+ * TODO: future search  , accept searchQuery prop, filter on cards[i].searchTokens
+ * TODO: future analytics, fire product_card_viewed impressions using cards data
  */
 
 import type { ProductsCardData } from '@/lib/registry/adapters'
@@ -38,11 +38,11 @@ import SystemGrid from '@/components/systems/SystemGrid/SystemGrid'
 export interface ProductsPageGridProps {
   /**
    * Locale-resolved card data from products.adapter → getProductsCards(locale).
-   * Order matches PUBLIC_PRODUCTS — both derived from the same registry source.
+   * Order matches PUBLIC_PRODUCTS, both derived from the same registry source.
    * Used for adapter metadata today; will drive rendering in a future pass.
    */
   readonly cards: ReadonlyArray<ProductsCardData>
-  /** Active locale — forwarded to SystemGrid for copy selection. */
+  /** Active locale, forwarded to SystemGrid for copy selection. */
   readonly locale: string
 }
 

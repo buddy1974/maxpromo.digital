@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Datenschutzerklärung / Privacy Policy',
-  description: 'Informationen zum Datenschutz gemäß DSGVO — Data protection information per GDPR',
+  description: 'Informationen zum Datenschutz gemäß DSGVO, Data protection information per GDPR',
   robots: { index: true, follow: false },
 }
 
@@ -108,7 +108,7 @@ export default function PrivacyPage() {
             Name, E-Mail-Adresse, Unternehmen, Nachricht.<br />
             Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragsanbahnung).<br />
             <span style={{ color: '#888888' }}>
-              Legal basis: Art. 6(1)(b) GDPR — pre-contractual measures.
+              Legal basis: Art. 6(1)(b) GDPR, pre-contractual measures.
             </span>
           </p>
 
@@ -128,7 +128,7 @@ export default function PrivacyPage() {
             Gesprächsinhalte werden nicht dauerhaft gespeichert. Sitzungsdaten werden nach Sitzungsende gelöscht.<br />
             Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse).<br />
             <span style={{ color: '#888888' }}>
-              Legal basis: Art. 6(1)(f) GDPR — legitimate interest. Conversation content is session-only and not permanently stored.
+              Legal basis: Art. 6(1)(f) GDPR, legitimate interest. Conversation content is session-only and not permanently stored.
             </span>
           </p>
 
@@ -137,7 +137,7 @@ export default function PrivacyPage() {
             IP-Adresse, Browser-Typ, aufgerufene Seiten, Zeitstempel. Speicherdauer: max. 7 Tage.<br />
             Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.<br />
             <span style={{ color: '#888888' }}>
-              Legal basis: Art. 6(1)(f) GDPR — legitimate interest in operating a secure service. Deleted after 7 days.
+              Legal basis: Art. 6(1)(f) GDPR, legitimate interest in operating a secure service. Deleted after 7 days.
             </span>
           </p>
         </Section>
@@ -160,19 +160,19 @@ export default function PrivacyPage() {
           </p>
           <ul style={{ paddingLeft: '1.25rem' }}>
             <li>
-              <strong style={{ color: '#FFFFFF' }}>Vercel Inc.</strong> (Hosting, USA) —{' '}
+              <strong style={{ color: '#FFFFFF' }}>Vercel Inc.</strong> (Hosting, USA)-{' '}
               <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: '#F97316', textDecoration: 'none' }}>
                 Privacy Policy
               </a>
             </li>
             <li>
-              <strong style={{ color: '#FFFFFF' }}>Resend Inc.</strong> (E-Mail-Versand / Email delivery, USA) —{' '}
+              <strong style={{ color: '#FFFFFF' }}>Resend Inc.</strong> (E-Mail-Versand / Email delivery, USA)-{' '}
               <a href="https://resend.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#F97316', textDecoration: 'none' }}>
                 Privacy Policy
               </a>
             </li>
             <li>
-              <strong style={{ color: '#FFFFFF' }}>Anthropic PBC</strong> (KI-Verarbeitung / AI processing, USA — keine dauerhafte Speicherung / no permanent storage) —{' '}
+              <strong style={{ color: '#FFFFFF' }}>Anthropic PBC</strong> (KI-Verarbeitung / AI processing, USA, keine dauerhafte Speicherung / no permanent storage)-{' '}
               <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: '#F97316', textDecoration: 'none' }}>
                 Privacy Policy
               </a>

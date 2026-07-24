@@ -4,12 +4,12 @@
  * components/ui/Reveal.tsx
  *
  * Scroll-triggered fade-up reveal using IntersectionObserver.
- * Fires once when the element enters the viewport — then disconnects.
+ * Fires once when the element enters the viewport, then disconnects.
  *
  * Styles are applied via JS after mount so:
- *   — SSR renders visible content (no flash of invisible text)
- *   — Graceful degradation with JS disabled
- *   — No CLS (transform doesn't affect layout)
+ *  , SSR renders visible content (no flash of invisible text)
+ *  , Graceful degradation with JS disabled
+ *  , No CLS (transform doesn't affect layout)
  *
  * Respects prefers-reduced-motion.
  */
@@ -22,7 +22,7 @@ export interface RevealProps {
   className?: string
   /** Additional inline styles forwarded to the wrapper div */
   style?: CSSProperties
-  /** Animation delay in ms — use for stagger effects */
+  /** Animation delay in ms, use for stagger effects */
   delay?: number
   /** Direction of the reveal movement */
   direction?: 'up' | 'left'
@@ -44,7 +44,7 @@ export function Reveal({
     const el = ref.current
     if (!el) return
 
-    // Respect reduced-motion preference — skip animation entirely
+    // Respect reduced-motion preference, skip animation entirely
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const initialTransform =

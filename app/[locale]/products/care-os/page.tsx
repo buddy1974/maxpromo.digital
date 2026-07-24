@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ? 'CareOS | Pflegepläne, EMAR & Familienportal verbunden'
     : 'CareOS | Care Plans, EMAR & Family Portal Connected'
   const description = isDE
-    ? 'CareOS verbindet Pflegepläne, Medikamentenakten, Compliance und Familienkommunikation in einem operativen Ablauf — ohne zusätzlichen Prozess für Ihr Team.'
-    : 'CareOS keeps care plans, medication records, compliance and family communication connected in one operational flow — without adding process to your team.'
+    ? 'CareOS verbindet Pflegepläne, Medikamentenakten, Compliance und Familienkommunikation in einem operativen Ablauf, ohne zusätzlichen Prozess für Ihr Team.'
+    : 'CareOS keeps care plans, medication records, compliance and family communication connected in one operational flow, without adding process to your team.'
   return {
     title,
     description,
@@ -76,10 +76,10 @@ export default async function CareOSPage({
               {locale === 'de' ? <>Pflege erbracht. Akte aktualisiert.<br />Familie informiert. Ohne drei separate Systeme.</> : <>Care delivered. Record updated.<br />Family notified. Without three separate systems.</>}
             </h1>
             <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
-              {locale === 'de' ? 'CareOS verbindet Pflegepläne, Medikamentenakten, Compliance und Familienkommunikation in einem operativen Ablauf — ohne Prozesse zu einem ohnehin belasteten Team hinzuzufügen.' : 'CareOS keeps care plans, medication records, compliance and family communication connected in one operational flow — without adding process to an already stretched team.'}
+              {locale === 'de' ? 'CareOS verbindet Pflegepläne, Medikamentenakten, Compliance und Familienkommunikation in einem operativen Ablauf, ohne Prozesse zu einem ohnehin belasteten Team hinzuzufügen.' : 'CareOS keeps care plans, medication records, compliance and family communication connected in one operational flow, without adding process to an already stretched team.'}
             </p>
             <div className="mp-hero-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
-              {(locale === 'de' ? ['Digitale Pflegepläne in Echtzeit aktualisiert', 'EMAR-Medikamentenakten live', 'CQC-Compliance kontinuierlich verfolgt', 'Familienportal — nach jedem Besuch aktualisiert'] : ['Digital care plans updated in real time', 'EMAR medication records live', 'CQC compliance tracked continuously', 'Family portal — updated after every visit']).map(p => (
+              {(locale === 'de' ? ['Digitale Pflegepläne in Echtzeit aktualisiert', 'EMAR-Medikamentenakten live', 'CQC-Compliance kontinuierlich verfolgt', 'Familienportal, nach jedem Besuch aktualisiert'] : ['Digital care plans updated in real time', 'EMAR medication records live', 'CQC compliance tracked continuously', 'Family portal, updated after every visit']).map(p => (
                 <span key={p} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '6px 14px', letterSpacing: '0.04em' }}>→ {p}</span>
               ))}
             </div>
@@ -90,7 +90,7 @@ export default async function CareOSPage({
           <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}>
             <Image
               src={locale === 'de' ? '/images/systems/care-os/card/care-os-de.png' : '/images/systems/care-os/card/care-os-en.png'}
-              alt={locale === 'de' ? 'Pflegekraft dokumentiert einen Pflegebesuch — Akten in Echtzeit aktualisiert' : 'Caregiver documenting a care visit — records updated in real time'}
+              alt={locale === 'de' ? 'Pflegekraft dokumentiert einen Pflegebesuch, Akten in Echtzeit aktualisiert' : 'Caregiver documenting a care visit, records updated in real time'}
               width={760}
               height={400}
               style={{ width: '100%', height: 'auto', display: 'block' }}
@@ -107,15 +107,15 @@ export default async function CareOSPage({
             <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '2.5rem' }}>{locale === 'de' ? 'Dieselben Verwaltungslücken. Jede Schicht.' : 'The same administration gaps. Every shift.'}</h2>
             <div className="co-grid-2">
               {(locale === 'de' ? [
-                { label: 'PAPIER-PFLEGEPLÄNE', text: 'Der Pflegeplan liegt auf Papier vor. Nach dem Besuch aktualisiert — wenn Zeit ist. Die neueste Version ist möglicherweise nicht diejenige, mit der die nächste Pflegekraft ankommt. Pläne weichen von der Realität ab.' },
-                { label: 'SCHICHTENDE-PROTOKOLLIERUNG', text: 'Medikament verabreicht. EMAR am Schichtende aktualisiert — aus dem Gedächtnis. Vorfälle am nächsten Morgen protokolliert. Die Lücke zwischen Verabreichung und Akte schafft Compliance-Risiko.' },
+                { label: 'PAPIER-PFLEGEPLÄNE', text: 'Der Pflegeplan liegt auf Papier vor. Nach dem Besuch aktualisiert, wenn Zeit ist. Die neueste Version ist möglicherweise nicht diejenige, mit der die nächste Pflegekraft ankommt. Pläne weichen von der Realität ab.' },
+                { label: 'SCHICHTENDE-PROTOKOLLIERUNG', text: 'Medikament verabreicht. EMAR am Schichtende aktualisiert, aus dem Gedächtnis. Vorfälle am nächsten Morgen protokolliert. Die Lücke zwischen Verabreichung und Akte schafft Compliance-Risiko.' },
                 { label: 'FAMILIENTELEFONATE', text: 'Familienangehöriger ruft an, um nach dem gestrigen Besuch zu fragen. Die Information befindet sich in einem Ordner oder System, auf das die Person, die den Anruf entgegennimmt, vom Pflegesetting aus nicht zugreifen kann.' },
-                { label: 'COMPLIANCE-ORDNER', text: 'CQC-Inspektion steht bevor. Akten existieren — aber in mehreren Ordnern, Systemen und Formaten. Die Vorbereitung einer Inspektion dauert Tage, die für die Pflege genutzt werden sollten.' },
+                { label: 'COMPLIANCE-ORDNER', text: 'CQC-Inspektion steht bevor. Akten existieren, aber in mehreren Ordnern, Systemen und Formaten. Die Vorbereitung einer Inspektion dauert Tage, die für die Pflege genutzt werden sollten.' },
               ] : [
-                { label: 'PAPER CARE PLANS', text: "Care plan is on paper. Updated after the visit — if there is time. The most recent version may not be the one the next carer arrives with. Plans drift from reality." },
-                { label: 'END-OF-SHIFT LOGGING', text: "Medication administered. EMAR updated at the end of the shift — from memory. Incidents recorded the next morning. The gap between delivery and record creates compliance risk." },
+                { label: 'PAPER CARE PLANS', text: "Care plan is on paper. Updated after the visit, if there is time. The most recent version may not be the one the next carer arrives with. Plans drift from reality." },
+                { label: 'END-OF-SHIFT LOGGING', text: "Medication administered. EMAR updated at the end of the shift, from memory. Incidents recorded the next morning. The gap between delivery and record creates compliance risk." },
                 { label: 'FAMILY PHONE CALLS', text: "Family member calls to ask about yesterday's visit. The information is in a folder or a system that the person answering the phone cannot access from the care setting." },
-                { label: 'COMPLIANCE FOLDERS', text: "CQC inspection approaching. Records exist — but across multiple folders, systems, and formats. Preparing for an inspection takes days that should be spent on care." },
+                { label: 'COMPLIANCE FOLDERS', text: "CQC inspection approaching. Records exist, but across multiple folders, systems, and formats. Preparing for an inspection takes days that should be spent on care." },
               ]).map(item => (
                 <div key={item.label} style={{ background: '#141414', padding: '36px', borderTop: `3px solid ${ACCENT}` }}>
                   <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>{item.label}</p>
@@ -165,12 +165,12 @@ export default async function CareOSPage({
                   {locale === 'de' ? 'CareOS verbindet den Besuch mit der Akte. Die Akte mit der Familie. Die Akte mit der Compliance.' : 'CareOS connects the visit to the record. The record to the family. The record to compliance.'}
                 </h2>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8 }}>
-                  {locale === 'de' ? 'Pflegepläne sind digital und aktuell. Medikamentenakten zum Verabreichungszeitpunkt aktualisiert — nicht am Schichtende. Familienportal zeigt die neueste Besuchszusammenfassung. CQC-Compliance kontinuierlich verfolgt — nicht vor einer Inspektion zusammengestellt.' : 'Care plans are digital and current. Medication records updated at administration time — not at end of shift. Family portal shows the latest visit summary. CQC compliance tracked continuously — not assembled before an inspection.'}
+                  {locale === 'de' ? 'Pflegepläne sind digital und aktuell. Medikamentenakten zum Verabreichungszeitpunkt aktualisiert, nicht am Schichtende. Familienportal zeigt die neueste Besuchszusammenfassung. CQC-Compliance kontinuierlich verfolgt, nicht vor einer Inspektion zusammengestellt.' : 'Care plans are digital and current. Medication records updated at administration time, not at end of shift. Family portal shows the latest visit summary. CQC compliance tracked continuously, not assembled before an inspection.'}
                 </p>
               </div>
               <div style={{ borderLeft: `3px solid ${ACCENT}`, paddingLeft: '2rem' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>{locale === 'de' ? 'WAS VERBUNDEN WIRD' : 'WHAT CONNECTS'}</p>
-                {(locale === 'de' ? ['Pflegeplan — digital, aktuell, für das gesamte Team zugänglich', 'EMAR — zum Medikamentierungszeitpunkt aktualisiert, nicht Schichtende', 'Familienportal — Besuchszusammenfassung nach jeder Pflegeleistung', 'CQC-Compliance — kontinuierlich verfolgt, nicht vor Audits zusammengestellt', 'KI-Assistent — bearbeitet Routineanfragen und ersten Kundenaufnahme'] : ['Care plan — digital, current, accessible to the whole team', 'EMAR — updated at medication time, not end of shift', 'Family portal — visit summary after every care delivery', 'CQC compliance — tracked continuously, not compiled before audits', 'AI assistant — handles routine inquiries and initial client intake']).map(line => (
+                {(locale === 'de' ? ['Pflegeplan, digital, aktuell, für das gesamte Team zugänglich', 'EMAR, zum Medikamentierungszeitpunkt aktualisiert, nicht Schichtende', 'Familienportal, Besuchszusammenfassung nach jeder Pflegeleistung', 'CQC-Compliance, kontinuierlich verfolgt, nicht vor Audits zusammengestellt', 'KI-Assistent, bearbeitet Routineanfragen und ersten Kundenaufnahme'] : ['Care plan, digital, current, accessible to the whole team', 'EMAR, updated at medication time, not end of shift', 'Family portal, visit summary after every care delivery', 'CQC compliance, tracked continuously, not compiled before audits', 'AI assistant, handles routine inquiries and initial client intake']).map(line => (
                   <div key={line} style={{ display: 'flex', gap: '12px', marginBottom: '14px', alignItems: 'flex-start' }}>
                     <span style={{ color: ACCENT, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>→</span>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.65 }}>{line}</p>
@@ -185,18 +185,18 @@ export default async function CareOSPage({
         <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>{locale === 'de' ? 'WIE PFLEGE LÄUFT' : 'HOW CARE MOVES'}</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>{locale === 'de' ? 'Von der ersten Anfrage bis zum dokumentierten Besuch — verbunden.' : 'From new client inquiry to documented visit — connected.'}</h2>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>{locale === 'de' ? 'Von der ersten Anfrage bis zum dokumentierten Besuch, verbunden.' : 'From new client inquiry to documented visit, connected.'}</h2>
             <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
               {(locale === 'de' ? [
                 { num: '01', title: 'Neue Kundenanfrage',     desc: 'KI-Assistent sammelt erste Informationen und erstellt das Kundenprofil. Passende Pflegekraft automatisch basierend auf Verfügbarkeit und Kundenbedürfnissen zugeordnet.' },
                 { num: '02', title: 'Pflegeplan erstellt',    desc: 'Digitaler Pflegeplan erstellt und mit dem gesamten Pflegeteam geteilt. In Echtzeit aktualisiert, wenn sich die Kundensituation ändert.' },
-                { num: '03', title: 'Besuch abgeschlossen',   desc: 'Pflege vor Ort erbracht. Akte sofort aktualisiert — nicht am Schichtende. Medikament verabreicht und zum Verabreichungszeitpunkt im EMAR protokolliert.' },
+                { num: '03', title: 'Besuch abgeschlossen',   desc: 'Pflege vor Ort erbracht. Akte sofort aktualisiert, nicht am Schichtende. Medikament verabreicht und zum Verabreichungszeitpunkt im EMAR protokolliert.' },
                 { num: '04', title: 'Familie benachrichtigt', desc: 'Besuchszusammenfassung automatisch nach jeder Pflegeleistung ans Familienportal gesendet. Familie kann den neuesten Status sehen, ohne das Büro anzurufen.' },
                 { num: '05', title: 'Compliance aufrechterhalten', desc: 'CQC-Compliance kontinuierlich verfolgt. Keine Vorbereitung vor Inspektionen erforderlich. Akten sind aktuell und jederzeit zugänglich.' },
               ] : [
                 { num: '01', title: 'New client inquiry',    desc: 'AI assistant collects initial information and creates the client profile. Suitable carer matched automatically based on availability and client needs.' },
                 { num: '02', title: 'Care plan created',     desc: 'Digital care plan built and shared with the whole care team. Updated in real time as the client situation changes.' },
-                { num: '03', title: 'Visit completed',       desc: 'Care delivered on site. Record updated immediately — not at end of shift. Medication administered and logged in EMAR at the time of administration.' },
+                { num: '03', title: 'Visit completed',       desc: 'Care delivered on site. Record updated immediately, not at end of shift. Medication administered and logged in EMAR at the time of administration.' },
                 { num: '04', title: 'Family notified',       desc: 'Visit summary sent to family portal automatically after every care delivery. Family can see the latest status without calling the office.' },
                 { num: '05', title: 'Compliance maintained', desc: 'CQC compliance tracked continuously. No pre-inspection assembly required. Records are current and accessible whenever they are needed.' },
               ]).map(step => (
@@ -214,7 +214,7 @@ export default async function CareOSPage({
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>{locale === 'de' ? 'DAS SYSTEM IM BETRIEB' : 'THE SYSTEM IN OPERATION'}</p>
               <Image
                 src="/images/systems/care-os/card/care-os-de.png"
-                alt={locale === 'de' ? 'CareOS im Betrieb — Pflegeplan, EMAR-Akten und Familienportal verbunden' : 'CareOS in operation — care plan, EMAR records and family portal connected'}
+                alt={locale === 'de' ? 'CareOS im Betrieb, Pflegeplan, EMAR-Akten und Familienportal verbunden' : 'CareOS in operation, care plan, EMAR records and family portal connected'}
                 width={1200}
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
@@ -234,15 +234,15 @@ export default async function CareOSPage({
               </div>
               {(locale === 'de' ? [
                 { before: 'Papier-Pflegepläne, nachträglich aktualisiert',     after: 'Digitale Pläne, aktuell und für das Team zugänglich' },
-                { before: 'EMAR am Schichtende aus dem Gedächtnis aktualisiert', after: 'EMAR zum Medikamentierungszeitpunkt protokolliert — sofort' },
+                { before: 'EMAR am Schichtende aus dem Gedächtnis aktualisiert', after: 'EMAR zum Medikamentierungszeitpunkt protokolliert, sofort' },
                 { before: 'Familie ruft das Büro für ein Update an',            after: 'Familie sieht den neuesten Besuch über das Portal'      },
-                { before: 'Compliance vor Inspektionen zusammengestellt',       after: 'Compliance kontinuierlich verfolgt — immer aktuell'     },
+                { before: 'Compliance vor Inspektionen zusammengestellt',       after: 'Compliance kontinuierlich verfolgt, immer aktuell'     },
                 { before: 'Vorfallberichte am nächsten Tag geschrieben',        after: 'Vorfälle zum Zeitpunkt ihres Auftretens dokumentiert'   },
               ] : [
                 { before: 'Paper care plans, updated after the fact',    after: 'Digital plans, current and accessible to the team' },
-                { before: 'EMAR updated at end of shift from memory',    after: 'EMAR logged at medication time — immediately'       },
+                { before: 'EMAR updated at end of shift from memory',    after: 'EMAR logged at medication time, immediately'       },
                 { before: 'Family calls the office for an update',       after: 'Family sees the latest visit via the portal'        },
-                { before: 'Compliance assembled before inspections',     after: 'Compliance tracked continuously — always current'   },
+                { before: 'Compliance assembled before inspections',     after: 'Compliance tracked continuously, always current'   },
                 { before: 'Incident reports written the next day',       after: 'Incidents documented at the time they occur'        },
               ]).map((row, i) => (
                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#141414' }}>
@@ -266,20 +266,20 @@ export default async function CareOSPage({
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>{locale === 'de' ? 'SYSTEM SEHEN · WIE ES WEITERGEHT' : 'SEE THE SYSTEM · WHAT HAPPENS NEXT'}</p>
             <div className="co-grid-2">
               <div style={{ background: CARD, padding: '40px', borderTop: `3px solid ${ACCENT}` }}>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '1rem' }}>{locale === 'de' ? 'Ein echter Pflegeablauf — von der Aufnahme bis zur Besuchsakte.' : 'A real care workflow — from intake to visit record.'}</h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8 }}>{locale === 'de' ? 'Der Walkthrough umfasst den vollständigen Pflegeweg — Pflegeplanerstellung, Besuchsprotokollierung, EMAR-Protokollierung, Familienportal und Compliance-Ansicht. Das System im Einsatz für einen echten Betrieb.' : 'The walkthrough covers the full care journey — care plan creation, visit recording, EMAR logging, family portal, and compliance view. The system working for a real supported living operation.'}</p>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '1rem' }}>{locale === 'de' ? 'Ein echter Pflegeablauf, von der Aufnahme bis zur Besuchsakte.' : 'A real care workflow, from intake to visit record.'}</h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8 }}>{locale === 'de' ? 'Der Walkthrough umfasst den vollständigen Pflegeweg, Pflegeplanerstellung, Besuchsprotokollierung, EMAR-Protokollierung, Familienportal und Compliance-Ansicht. Das System im Einsatz für einen echten Betrieb.' : 'The walkthrough covers the full care journey, care plan creation, visit recording, EMAR logging, family portal, and compliance view. The system working for a real supported living operation.'}</p>
               </div>
               <div style={{ background: CARD, padding: '40px' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 20px' }}>{locale === 'de' ? 'WIE ES WEITERGEHT' : 'WHAT HAPPENS NEXT'}</p>
                 {(locale === 'de' ? [
-                  { num: '01', t: 'Kurzes Gespräch',    d: 'Wir erfahren mehr über die Organisation — Teamgröße, Pflegetypen, aktueller Aktenführungsansatz.' },
+                  { num: '01', t: 'Kurzes Gespräch',    d: 'Wir erfahren mehr über die Organisation, Teamgröße, Pflegetypen, aktueller Aktenführungsansatz.' },
                   { num: '02', t: 'Workflow analysiert', d: 'Wir kartieren, wie Besuche, Akten und Compliance derzeit funktionieren, bevor wir etwas konfigurieren.' },
-                  { num: '03', t: 'System konfiguriert', d: 'CareOS für den spezifischen Pflegetyp eingerichtet — Pflegeplanvorlagen, Compliance-Anforderungen, Familienportal.' },
+                  { num: '03', t: 'System konfiguriert', d: 'CareOS für den spezifischen Pflegetyp eingerichtet, Pflegeplanvorlagen, Compliance-Anforderungen, Familienportal.' },
                   { num: '04', t: 'Klein starten',       d: 'Beginnen Sie mit einem Pflegetyp oder Team. Erweitern, wenn das Team mit dem neuen Ablauf vertraut wird.' },
                 ] : [
-                  { num: '01', t: 'Short conversation', d: 'We learn about the organisation — team size, care types, current record-keeping approach.' },
+                  { num: '01', t: 'Short conversation', d: 'We learn about the organisation, team size, care types, current record-keeping approach.' },
                   { num: '02', t: 'Workflow reviewed',  d: 'We map how visits, records and compliance currently work before configuring anything.' },
-                  { num: '03', t: 'System configured',  d: 'CareOS set up for the specific care type — care plan templates, compliance requirements, family portal.' },
+                  { num: '03', t: 'System configured',  d: 'CareOS set up for the specific care type, care plan templates, compliance requirements, family portal.' },
                   { num: '04', t: 'Start small',        d: 'Begin with one care type or team. Expand as the team gets comfortable with the new flow.' },
                 ]).map(item => (
                   <div key={item.num} style={{ marginBottom: '20px' }}>

@@ -1,7 +1,5 @@
 'use client'
 
-import Image from 'next/image'
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from '@/i18n/navigation'
 
@@ -21,29 +19,14 @@ interface PainCardsClientProps {
 }
 
 /**
- * Pain card scene image. No approved photography exists yet for these six
- * cards (see public/images/homepage/README.md). Rather than requesting a
- * path that 404s, this renders nothing when no asset is present — the
- * premium gradient + ghost-glyph + tag fallback already layered in the
- * parent card carries the visual weight, so no broken-image icon is ever
- * shown. Once real photography is dropped at
- * /images/homepage/pain/{id}.png, it is picked up automatically.
+ * No approved photography exists yet for these six cards (see
+ * public/images/homepage/README.md), and the directory has no assets. To
+ * avoid 404 image requests on every homepage load, the card image area is
+ * rendered from the layered gradient + ghost-glyph + brand-radial + tag
+ * treatment below and makes NO network request. When real photography is
+ * available, drop a next/image back into the `pain-card-img` block and
+ * point it at the delivered asset paths.
  */
-function PainCardImage({ id }: { id: string }) {
-  const [failed, setFailed] = useState(false)
-  if (failed) return null
-  return (
-    <Image
-      src={`/images/homepage/pain/${id}.png`}
-      alt=""
-      fill
-      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-      style={{ objectFit: 'cover', objectPosition: 'center top' }}
-      loading="lazy"
-      onError={() => setFailed(true)}
-    />
-  )
-}
 
 export function PainCardsClient({ cards }: PainCardsClientProps) {
   return (
@@ -82,7 +65,7 @@ export function PainCardsClient({ cards }: PainCardsClientProps) {
                 cursor: 'pointer',
               }}
             >
-              {/* Image area — next/image with WebP/AVIF optimisation */}
+              {/* Image area, next/image with WebP/AVIF optimisation */}
               <motion.div
                 className="pain-card-img"
                 whileHover={{ scale: 1.04 }}
@@ -94,7 +77,6 @@ export function PainCardsClient({ cards }: PainCardsClientProps) {
                   overflow: 'hidden',
                 }}
               >
-                <PainCardImage id={card.id} />
                 {/* Dark gradient overlay */}
                 <div
                   aria-hidden="true"

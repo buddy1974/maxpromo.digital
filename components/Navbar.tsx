@@ -128,7 +128,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop links — flat, no dropdowns */}
+          {/* Desktop links, flat, no dropdowns */}
           <div className="hidden md:flex" style={{ gap: '4px', alignItems: 'center', flexWrap: 'nowrap', overflow: 'hidden' }}>
             {NAV_LINKS.map((link) => (
               <Link

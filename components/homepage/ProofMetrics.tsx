@@ -28,7 +28,7 @@ export function ProofMetrics({ metrics }: ProofMetricsProps) {
           transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
           style={{ background: 'hsl(240 12% 7%)', padding: 'clamp(1.25rem, 5vw, 2.5rem)' }}
         >
-          {/* Value — fades in, tiny upward tick, single soft pulse via scale */}
+          {/* Value, fades in, tiny upward tick, single soft pulse via scale */}
           <motion.p
             initial={{ opacity: 0, y: 8, scale: 1.02 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}

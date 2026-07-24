@@ -9,15 +9,15 @@ import CookieBanner from '@/components/CookieBanner'
 import Max from '@/components/max/Max'
 
 /**
- * Locale layout — wraps every public marketing route with the
+ * Locale layout, wraps every public marketing route with the
  * translation provider and the global chrome (Navbar, Footer, Max, CookieBanner).
  * Max widget mounts in both hub and showcase branches.
  *
  * setRequestLocale() enables static rendering for translated content
- * — without it, every page would be dynamic on every request.
+ *, without it, every page would be dynamic on every request.
  *
  * The OS routes (app/os/*) are NOT under this layout and never see
- * the provider — they're internal admin, single-language for now.
+ * the provider, they're internal admin, single-language for now.
  */
 
 export function generateStaticParams() {
@@ -40,8 +40,7 @@ export default async function LocaleLayout({
   // Opt into static rendering for this locale segment.
   setRequestLocale(locale)
 
-  // Showcase product domains own their full visual identity —
-  // suppress Maxpromo chrome (Navbar, Footer, ChatAgent, etc.)
+  // Showcase product domains own their full visual identity-  // suppress Maxpromo chrome (Navbar, Footer, ChatAgent, etc.)
   const h          = await headers()
   const isShowcase = h.get('x-mp-mode') === 'showcase'
 

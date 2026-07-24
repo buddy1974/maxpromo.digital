@@ -1,7 +1,7 @@
 /**
  * components/systems/SystemCard/SystemCardAdmin.tsx
  *
- * Admin card variant — /os/systems registry table row.
+ * Admin card variant, /os/systems registry table row.
  * Surfaces all internal fields including status, maturity, priority_score,
  * featured flag, and action buttons for managing each product.
  *
@@ -9,7 +9,7 @@
  * It is only used inside the protected /os/ routes.
  *
  * Consumer:
- *   app/os/systems/page.tsx — registry management table
+ *   app/os/systems/page.tsx, registry management table
  *   Rendered by SystemCard with variant='admin'
  *
  * TODO: connect /os/systems page consumer
@@ -24,7 +24,7 @@ import type { SystemCardProps } from './SystemCard'
 // PROPS
 // =============================================================================
 
-/** Admin variant props — locale optional, no showBadge/showDomain/showCTA needed. */
+/** Admin variant props, locale optional, no showBadge/showDomain/showCTA needed. */
 export type SystemCardAdminProps = Pick<SystemCardProps, 'product' | 'locale'>
 
 // =============================================================================
@@ -32,7 +32,7 @@ export type SystemCardAdminProps = Pick<SystemCardProps, 'product' | 'locale'>
 // =============================================================================
 
 /**
- * SystemCardAdmin — /os/systems registry row.
+ * SystemCardAdmin, /os/systems registry row.
  *
  * Renders all internal product fields as a management row.
  * Includes action buttons: open system, open landing, open domain, book demo.
@@ -58,20 +58,20 @@ export function SystemCardAdmin({ product }: SystemCardAdminProps) {
         <span data-field="category">{product.category}</span>
       </div>
 
-      {/* ── Classification — internal fields */}
+      {/* ── Classification, internal fields */}
       <div data-field="classification">
-        {/* Status — TODO: replace with inline dropdown (live | demo-ready | beta | internal) */}
+        {/* Status, TODO: replace with inline dropdown (live | demo-ready | beta | internal) */}
         <span data-field="status">{product.status}</span>
 
-        {/* Maturity — TODO: replace with inline dropdown */}
+        {/* Maturity, TODO: replace with inline dropdown */}
         <span data-field="maturity">{product.maturity}</span>
 
-        {/* Priority score — TODO: replace with editable number input */}
+        {/* Priority score, TODO: replace with editable number input */}
         <span data-field="priority-score">
-          {product.priority_score !== null ? product.priority_score : '—'}
+          {product.priority_score !== null ? product.priority_score : '-'}
         </span>
 
-        {/* Featured — TODO: replace with toggle switch (writes to Supabase) */}
+        {/* Featured, TODO: replace with toggle switch (writes to Supabase) */}
         <span data-field="featured">{product.featured ? 'yes' : 'no'}</span>
 
         {/* Track */}
@@ -80,9 +80,9 @@ export function SystemCardAdmin({ product }: SystemCardAdminProps) {
 
       {/* ── Links */}
       <div data-field="links">
-        {/* Demo URL — TODO: add health indicator dot from system_health table */}
+        {/* Demo URL, TODO: add health indicator dot from system_health table */}
         <span data-field="demo-url">
-          {product.demoUrl ?? '—'}
+          {product.demoUrl ?? '-'}
         </span>
       </div>
 
@@ -121,7 +121,7 @@ export function SystemCardAdmin({ product }: SystemCardAdminProps) {
           Open domain →
         </a>
 
-        {/* Book demo — links to contact with pre-filled system slug */}
+        {/* Book demo, links to contact with pre-filled system slug */}
         {product.track !== 'internal' && (
           <a
             href={product.bookDemoUrl}

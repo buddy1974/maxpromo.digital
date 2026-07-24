@@ -548,7 +548,7 @@ export default function CostEstimate({
               marginBottom: '2px',
             }}
           >
-            {/* Section header — collapsible */}
+            {/* Section header, collapsible */}
             <button
               type="button"
               className="no-print"
@@ -778,7 +778,7 @@ export default function CostEstimate({
           {sendState === 'idle' && 'Send Report to My Email →'}
           {sendState === 'sending' && 'Sending...'}
           {sendState === 'sent' && `✓ Sent to ${email}`}
-          {sendState === 'error' && 'Retry — Send Report →'}
+          {sendState === 'error' && 'Retry, Send Report →'}
         </button>
       </div>
 

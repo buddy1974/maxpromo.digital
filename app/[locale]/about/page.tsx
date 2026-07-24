@@ -63,7 +63,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Story — years of real systems work */}
+      {/* Story, years of real systems work */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '3rem' }} className="grid-cols-1 lg:grid-cols-2">
           <div>

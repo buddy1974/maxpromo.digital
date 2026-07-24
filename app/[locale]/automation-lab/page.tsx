@@ -13,8 +13,8 @@ export async function generateMetadata({
   return {
     title: isDE ? 'Operations-Engineering-Referenz' : 'Operations Engineering Reference',
     description: isDE
-      ? 'Achtzehn produktionsreife operative Runtimes — Entscheidungssysteme, Koordinationsmotoren und Kommunikationsabläufe, die wir auf den Betrieb unserer Kunden aufsetzen. Konzipiert, installiert und betrieben von Maxpromo.'
-      : 'Eighteen production-grade operational runtimes — decision systems, coordination engines and communications operations we deploy on top of client operations. Architected, installed, and run by Maxpromo.',
+      ? 'Achtzehn produktionsreife operative Runtimes, Entscheidungssysteme, Koordinationsmotoren und Kommunikationsabläufe, die wir auf den Betrieb unserer Kunden aufsetzen. Konzipiert, installiert und betrieben von Maxpromo.'
+      : 'Eighteen production-grade operational runtimes, decision systems, coordination engines and communications operations we deploy on top of client operations. Architected, installed, and run by Maxpromo.',
   }
 }
 
@@ -40,7 +40,7 @@ interface Category {
  * Old wording ("AI Agents" / "Workflow Automation" / "Content & Social")
  * read as a freelancer's skill stack. The new headings name the kind of
  * work each runtime performs inside the operation: decisions, coordination,
- * communications. Same eighteen runtimes underneath — different surface
+ * communications. Same eighteen runtimes underneath, different surface
  * vocabulary so the page reads as engineering reference, not a feature
  * menu.
  */
@@ -80,8 +80,8 @@ function getCategories(locale: string): Category[] {
         {
           title: t(locale, 'Angebots-Generierungs-Agent', 'Proposal Generation Agent'),
           description: t(locale,
-            'Nimmt ein Kunden-Briefing entgegen und entwirft ein formatiertes Angebot mit Leistungsumfang, Zeitplan und Preisen — bereit zur menschlichen Prüfung und zum Versand.',
-            'Takes a client brief and drafts a formatted proposal including scope, timeline, and pricing — ready for human review and send.'),
+            'Nimmt ein Kunden-Briefing entgegen und entwirft ein formatiertes Angebot mit Leistungsumfang, Zeitplan und Preisen, bereit zur menschlichen Prüfung und zum Versand.',
+            'Takes a client brief and drafts a formatted proposal including scope, timeline, and pricing, ready for human review and send.'),
           tools: ['Claude AI', 'HubSpot', 'Google Docs', 'Make'],
         },
         {
@@ -106,8 +106,8 @@ function getCategories(locale: string): Category[] {
         {
           title: t(locale, 'CRM-Lead-Routing-Automatisierung', 'CRM Lead Routing Automation'),
           description: t(locale,
-            'Leitet eingehende Leads anhand definierter Kriterien an den richtigen Ansprechpartner weiter — mit automatischer Aufgabenerstellung und personalisierter E-Mail-Benachrichtigung.',
-            'Routes inbound leads to the right rep based on criteria — with automatic task creation and personalised email notification.'),
+            'Leitet eingehende Leads anhand definierter Kriterien an den richtigen Ansprechpartner weiter, mit automatischer Aufgabenerstellung und personalisierter E-Mail-Benachrichtigung.',
+            'Routes inbound leads to the right rep based on criteria, with automatic task creation and personalised email notification.'),
           tools: ['HubSpot', 'Salesforce', 'Zapier', 'Slack'],
         },
         {
@@ -120,8 +120,8 @@ function getCategories(locale: string): Category[] {
         {
           title: t(locale, 'Mitarbeiter-Onboarding-Automatisierung', 'Employee Onboarding Automation'),
           description: t(locale,
-            'Löst bei Neueinstellung eine vollständige Onboarding-Sequenz aus — Bereitstellung, Willkommens-E-Mails, Dokumentenanfragen, Schulungszuweisungen, Führungskräfte-Benachrichtigungen.',
-            'Triggers a full onboarding sequence on new hire creation — provisioning, welcome emails, document requests, training assignments, manager notifications.'),
+            'Löst bei Neueinstellung eine vollständige Onboarding-Sequenz aus, Bereitstellung, Willkommens-E-Mails, Dokumentenanfragen, Schulungszuweisungen, Führungskräfte-Benachrichtigungen.',
+            'Triggers a full onboarding sequence on new hire creation, provisioning, welcome emails, document requests, training assignments, manager notifications.'),
           tools: ['BambooHR', 'Slack', 'Google Workspace', 'Make'],
         },
         {
@@ -153,15 +153,15 @@ function getCategories(locale: string): Category[] {
         {
           title: t(locale, 'Blog- und SEO-Content-Automatisierung', 'Blog & SEO Content Automation'),
           description: t(locale,
-            'Recherchiert Keywords, verfasst Langform-Beiträge in Ihrer Markenstimme, optimiert für SEO und veröffentlicht nach Zeitplan — vollständig durchgängig.',
-            'Researches keywords, drafts long-form posts in your brand voice, optimises for SEO, and publishes on schedule — end to end.'),
+            'Recherchiert Keywords, verfasst Langform-Beiträge in Ihrer Markenstimme, optimiert für SEO und veröffentlicht nach Zeitplan, vollständig durchgängig.',
+            'Researches keywords, drafts long-form posts in your brand voice, optimises for SEO, and publishes on schedule, end to end.'),
           tools: ['Claude AI', 'WordPress', 'Airtable', 'Make'],
         },
         {
           title: t(locale, 'E-Mail-Marketing-Automatisierung', 'Email Marketing Automation'),
           description: t(locale,
-            'Verhaltensbasierte E-Mail-Sequenzen, die sich an den Aktionen der Empfänger orientieren. Willkommens-Flows, Nurture-Sequenzen, Reaktivierungskampagnen — personalisiert von Claude.',
-            'Behaviour-triggered email sequences that adapt based on recipient actions. Welcome flows, nurture sequences, re-engagement campaigns — personalised by Claude.'),
+            'Verhaltensbasierte E-Mail-Sequenzen, die sich an den Aktionen der Empfänger orientieren. Willkommens-Flows, Nurture-Sequenzen, Reaktivierungskampagnen, personalisiert von Claude.',
+            'Behaviour-triggered email sequences that adapt based on recipient actions. Welcome flows, nurture sequences, re-engagement campaigns, personalised by Claude.'),
           tools: ['Claude AI', 'Mailchimp', 'HubSpot', 'Make'],
         },
         {
@@ -223,10 +223,10 @@ export default async function AutomationLabPage({
           </h1>
           <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '46rem', margin: '0 auto 2rem', lineHeight: 1.7 }}>
             {t(locale,
-              'Achtzehn produktionsreife Runtimes, die wir auf dem Betrieb unserer Kunden aufsetzen. Jede davon ist ein System, das wir konzipiert, installiert haben und weiterhin betreiben — kein Katalog von Standard-Bausteinen zur Auswahl.',
-              'Eighteen production-grade runtimes we deploy on top of client operations. Each one is a system we have architected, installed, and continue to operate — not a catalogue of off-the-shelf widgets to choose from.')}
+              'Achtzehn produktionsreife Runtimes, die wir auf dem Betrieb unserer Kunden aufsetzen. Jede davon ist ein System, das wir konzipiert, installiert haben und weiterhin betreiben, kein Katalog von Standard-Bausteinen zur Auswahl.',
+              'Eighteen production-grade runtimes we deploy on top of client operations. Each one is a system we have architected, installed, and continue to operate, not a catalogue of off-the-shelf widgets to choose from.')}
           </p>
-          {/* Operational signal bar — names what's in production, not what we're built on */}
+          {/* Operational signal bar, names what's in production, not what we're built on */}
           <div
             className="glass"
             style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '0', borderRadius: '8px', overflow: 'hidden' }}
@@ -302,8 +302,8 @@ export default async function AutomationLabPage({
           </h2>
           <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.7 }}>
             {t(locale,
-              'Jeder Betrieb hat mindestens eine Ebene, die nicht in ein Standardmuster passt. Wir entwickeln maßgeschneiderte Runtimes von Grund auf — installiert, betrieben, wiederherstellbar.',
-              "Every operation has at least one layer that doesn't fit a standard pattern. We architect bespoke runtimes from the ground up — installed, operated, recoverable.")}
+              'Jeder Betrieb hat mindestens eine Ebene, die nicht in ein Standardmuster passt. Wir entwickeln maßgeschneiderte Runtimes von Grund auf, installiert, betrieben, wiederherstellbar.',
+              "Every operation has at least one layer that doesn't fit a standard pattern. We architect bespoke runtimes from the ground up, installed, operated, recoverable.")}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link href="/automation-audit" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>

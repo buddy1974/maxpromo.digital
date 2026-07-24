@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ? 'Alle Systeme | Sieben Betriebssysteme von Maxpromo Digital'
     : 'All Systems | Seven Operating Systems from Maxpromo Digital'
   const description = isDE
-    ? 'Sieben Betriebssysteme, einsatzbereit zur Installation — für Restaurants, Handwerk, Praxen, Pflege, Verlage, Immobilien und Druckereien.'
-    : 'Seven operating systems, configured and installation-ready — for restaurants, trades, medical practices, care, publishing, real estate and print shops.'
+    ? 'Sieben Betriebssysteme, einsatzbereit zur Installation, für Restaurants, Handwerk, Praxen, Pflege, Verlage, Immobilien und Druckereien.'
+    : 'Seven operating systems, configured and installation-ready, for restaurants, trades, medical practices, care, publishing, real estate and print shops.'
   return {
     title,
     description,
@@ -34,10 +34,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 /* ─── FILTER CHROME ─────────────────────────────────────────── */
-// Visual filter chips — wired up in a future task.
-// TODO: future filters  — implement STATUS_FILTERS as server query params
-// TODO: future tags     — wire CATEGORY_CHIPS to category adapter query
-// TODO: future search   — add search input, pass query to getProductsCardsByCategory
+// Visual filter chips, wired up in a future task.
+// TODO: future filters , implement STATUS_FILTERS as server query params
+// TODO: future tags    , wire CATEGORY_CHIPS to category adapter query
+// TODO: future search  , add search input, pass query to getProductsCardsByCategory
 
 const STATUS_LABELS = ['ALL', 'LIVE', 'DEPLOYED'] as const
 const CATEGORY_CHIPS = ['TRADE', 'HOSPITALITY', 'PRINT', 'REAL ESTATE', 'CARE', 'PUBLISHING', 'MEDICAL'] as const
@@ -79,7 +79,7 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      {/* ── FILTER BAR — visual placeholder, wired up in a future task ── */}
+      {/* ── FILTER BAR, visual placeholder, wired up in a future task ── */}
       <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '1.5rem 2rem' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center' }}>
           {/* Status chips */}
@@ -105,7 +105,7 @@ export default async function ProductsPage() {
         </div>
       </section>
 
-      {/* ── SYSTEMS GRID — registry-driven via ProductsPageGrid → SystemGrid → SystemCardFeatured ── */}
+      {/* ── SYSTEMS GRID, registry-driven via ProductsPageGrid → SystemGrid → SystemCardFeatured ── */}
       <section style={{ padding: '4rem 2rem' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <ProductsPageGrid cards={cards} locale={locale} />

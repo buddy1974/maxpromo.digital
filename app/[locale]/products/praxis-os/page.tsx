@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ? 'PraxisOS | Terminbuchung, Laborbefunde & Patientenportal'
     : 'PraxisOS | Online Booking, Lab Results & Patient Portal'
   const description = isDE
-    ? 'Terminbuchungen, Laborbefunde und Patientennachrichten automatisch verwaltet — DSGVO-konforme Akten, Schluss mit der Telefonkette.'
-    : 'Patient bookings, lab results and follow-ups managed automatically — GDPR-compliant records, no more turning communication into a phone chain.'
+    ? 'Terminbuchungen, Laborbefunde und Patientennachrichten automatisch verwaltet, DSGVO-konforme Akten, Schluss mit der Telefonkette.'
+    : 'Patient bookings, lab results and follow-ups managed automatically, GDPR-compliant records, no more turning communication into a phone chain.'
   return {
     title,
     description,
@@ -76,10 +76,10 @@ export default async function PraxisOSPage({
               {locale === 'de' ? <>Schluss mit der Telefonkette<br />für die Patientenkommunikation.</> : <>Stop turning patient communication<br />into a phone chain.</>}
             </h1>
             <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
-              {locale === 'de' ? 'Terminbuchungen, Erinnerungen und Patientennachrichten — automatisch verwaltet. Ihr Personal konzentriert sich auf die Patienten.' : 'PraxisOS keeps patient bookings, lab results, records and follow-ups connected in one practice flow — without changing how the clinical team already works.'}
+              {locale === 'de' ? 'Terminbuchungen, Erinnerungen und Patientennachrichten, automatisch verwaltet. Ihr Personal konzentriert sich auf die Patienten.' : 'PraxisOS keeps patient bookings, lab results, records and follow-ups connected in one practice flow, without changing how the clinical team already works.'}
             </p>
             <div className="mp-hero-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
-              {(locale === 'de' ? ['Patienten buchen online — kein Telefonanruf nötig', 'Laborbefunde direkt im Patientenportal', 'DSGVO-konforme Akten sofort abrufbar', 'Automatische Terminbestätigungen'] : ['Patients book online — no phone required', 'Lab results in patient portal directly', 'GDPR-compliant records retrievable instantly', 'Automated appointment confirmations']).map(p => (
+              {(locale === 'de' ? ['Patienten buchen online, kein Telefonanruf nötig', 'Laborbefunde direkt im Patientenportal', 'DSGVO-konforme Akten sofort abrufbar', 'Automatische Terminbestätigungen'] : ['Patients book online, no phone required', 'Lab results in patient portal directly', 'GDPR-compliant records retrievable instantly', 'Automated appointment confirmations']).map(p => (
                 <span key={p} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F0F0F0', border: `1px solid ${BORDER}`, padding: '6px 14px', letterSpacing: '0.04em' }}>→ {p}</span>
               ))}
             </div>
@@ -90,7 +90,7 @@ export default async function PraxisOSPage({
           <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}>
             <Image
               src={locale === 'de' ? '/images/systems/praxis-os/card/praxis-os-de.png' : '/images/systems/praxis-os/card/praxis-os-en.png'}
-              alt={locale === 'de' ? 'Praxisempfang — Patientenbuchung und Terminverwaltung' : 'Medical practice reception — patient booking and appointment management workflow'}
+              alt={locale === 'de' ? 'Praxisempfang, Patientenbuchung und Terminverwaltung' : 'Medical practice reception, patient booking and appointment management workflow'}
               width={760}
               height={400}
               style={{ width: '100%', height: 'auto', display: 'block' }}
@@ -110,12 +110,12 @@ export default async function PraxisOSPage({
                 { label: 'DER BUCHUNGSANRUF', text: 'Patient ruft an, um zu buchen. Die Rezeption prüft den Kalender. Rückruf zur Bestätigung des freien Slots. Patient ruft zwei Tage vor dem Termin erneut an. Das Telefon klingelt wieder.' },
                 { label: 'DIE LABORBEFUNDE', text: 'Laborbefunde kommen an. Patient ruft nach. Rezeption nimmt eine Nachricht auf. Arzt ist beim Patienten. Arzt ruft zurück wenn verfügbar. Patient hat den Anruf verpasst. Patient ruft erneut an.' },
                 { label: 'DIE DOPPELBUCHUNG', text: 'Zwei Patienten für denselben Slot über verschiedene Kanäle geplant. Am Morgen entdeckt. Ein Termin verschoben. Ein Patient kurzfristig kontaktiert. Ein Termin hinterlässt einen leeren Slot.' },
-                { label: 'DIE DSGVO-ANFRAGE', text: 'Patient fordert Zugang zu seinen Unterlagen. Akten existieren in verschiedenen Systemen — teils digital, teils auf Papier. Zusammenstellen der vollständigen Akte dauert zwei Tage. Frist ist sieben.' },
+                { label: 'DIE DSGVO-ANFRAGE', text: 'Patient fordert Zugang zu seinen Unterlagen. Akten existieren in verschiedenen Systemen, teils digital, teils auf Papier. Zusammenstellen der vollständigen Akte dauert zwei Tage. Frist ist sieben.' },
               ] : [
                 { label: 'THE BOOKING CALL', text: "Patient calls to book. Reception checks the calendar. Calls back to confirm the slot is still available. Patient calls again two days before the appointment to confirm. The phone rings again." },
                 { label: 'THE LAB RESULTS', text: "Lab results arrive. Patient calls to ask. Reception takes a message. Doctor is with a patient. Doctor calls back when available. Patient missed the call. Patient calls again." },
                 { label: 'THE DOUBLE BOOKING', text: "Two patients scheduled for the same slot through different channels. Discovered the morning of. One appointment moved. One patient contacted last minute. One appointment leaves an empty slot." },
-                { label: 'THE GDPR REQUEST', text: "Patient requests access to their records. Records exist across different systems — some digital, some paper. Compiling the complete file takes two days. Deadline is seven." },
+                { label: 'THE GDPR REQUEST', text: "Patient requests access to their records. Records exist across different systems, some digital, some paper. Compiling the complete file takes two days. Deadline is seven." },
               ]).map(item => (
                 <div key={item.label} style={{ background: '#141414', padding: '36px', borderTop: `3px solid ${BLUE}` }}>
                   <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>{item.label}</p>
@@ -165,12 +165,12 @@ export default async function PraxisOSPage({
                   {locale === 'de' ? 'PraxisOS entfernt das Telefon aus der Mitte der Patientenkommunikation.' : 'PraxisOS removes the phone from the middle of patient communication.'}
                 </h2>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8 }}>
-                  {locale === 'de' ? 'Patienten buchen online. Bestätigung kommt automatisch. Laborbefunde hochgeladen und im Patientenportal sichtbar. DSGVO-konforme Akten sofort abrufbar. Das Praxisteam konzentriert sich auf klinische Arbeit — nicht auf Koordinationsanrufe.' : 'Patients book online. Confirmation arrives automatically. Lab results uploaded and visible in the patient portal. GDPR-compliant records retrievable instantly. The practice team focuses on clinical work — not coordination calls.'}
+                  {locale === 'de' ? 'Patienten buchen online. Bestätigung kommt automatisch. Laborbefunde hochgeladen und im Patientenportal sichtbar. DSGVO-konforme Akten sofort abrufbar. Das Praxisteam konzentriert sich auf klinische Arbeit, nicht auf Koordinationsanrufe.' : 'Patients book online. Confirmation arrives automatically. Lab results uploaded and visible in the patient portal. GDPR-compliant records retrievable instantly. The practice team focuses on clinical work, not coordination calls.'}
                 </p>
               </div>
               <div style={{ borderLeft: `3px solid ${BLUE}`, paddingLeft: '2rem' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>{locale === 'de' ? 'WAS SICH VERÄNDERT' : 'WHAT CHANGES'}</p>
-                {(locale === 'de' ? ['Online-Buchung — kein Telefonanruf zur Terminvereinbarung', 'Automatische Bestätigung — Patient sofort benachrichtigt', 'Laborbefunde im Patientenportal — keine Rückrufkette', 'DSGVO-Akten — sofort abrufbar, nicht auf Anfrage zusammengestellt', 'Terminerinnerungen — automatisch, ohne Mitarbeiterbeteiligung'] : ['Online booking — no phone call required to schedule', 'Automatic confirmation — patient notified instantly', 'Lab results in patient portal — no callback chain', 'GDPR records — instantly retrievable, not compiled on request', 'Appointment reminders — automatic, no staff involvement']).map(line => (
+                {(locale === 'de' ? ['Online-Buchung, kein Telefonanruf zur Terminvereinbarung', 'Automatische Bestätigung, Patient sofort benachrichtigt', 'Laborbefunde im Patientenportal, keine Rückrufkette', 'DSGVO-Akten, sofort abrufbar, nicht auf Anfrage zusammengestellt', 'Terminerinnerungen, automatisch, ohne Mitarbeiterbeteiligung'] : ['Online booking, no phone call required to schedule', 'Automatic confirmation, patient notified instantly', 'Lab results in patient portal, no callback chain', 'GDPR records, instantly retrievable, not compiled on request', 'Appointment reminders, automatic, no staff involvement']).map(line => (
                   <div key={line} style={{ display: 'flex', gap: '12px', marginBottom: '14px', alignItems: 'flex-start' }}>
                     <span style={{ color: BLUE, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>→</span>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.65 }}>{line}</p>
@@ -185,7 +185,7 @@ export default async function PraxisOSPage({
         <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>{locale === 'de' ? 'WIE EIN PATIENTENWEG VERLÄUFT' : 'HOW A PATIENT JOURNEY MOVES'}</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>{locale === 'de' ? 'Von der ersten Buchung bis zur Nachsorge — verbunden.' : 'From the first booking to the follow-up — connected.'}</h2>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>{locale === 'de' ? 'Von der ersten Buchung bis zur Nachsorge, verbunden.' : 'From the first booking to the follow-up, connected.'}</h2>
             <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
               {(locale === 'de' ? [
                 { num: '01', title: 'Patient bucht online',     desc: 'Wählt Termintyp und verfügbaren Slot. Bestätigung automatisch gesendet. Kein Empfangspersonal für Standardbuchungen erforderlich.' },
@@ -214,7 +214,7 @@ export default async function PraxisOSPage({
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>{locale === 'de' ? 'DAS SYSTEM IM BETRIEB' : 'THE SYSTEM IN OPERATION'}</p>
               <Image
                 src="/images/systems/praxis-os/card/praxis-os-de.png"
-                alt={locale === 'de' ? 'PraxisOS im Betrieb — Patientenportal, Terminverwaltung und Laborbefunde' : 'PraxisOS in operation — patient portal, appointment management and lab results'}
+                alt={locale === 'de' ? 'PraxisOS im Betrieb, Patientenportal, Terminverwaltung und Laborbefunde' : 'PraxisOS in operation, patient portal, appointment management and lab results'}
                 width={1200}
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
@@ -233,17 +233,17 @@ export default async function PraxisOSPage({
                 <div style={{ padding: '14px 28px' }}><p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>{locale === 'de' ? 'NACHHER' : 'AFTER'}</p></div>
               </div>
               {(locale === 'de' ? [
-                { before: 'Patienten rufen an — Rezeption koordiniert',        after: 'Patienten buchen online — Bestätigung automatisch'    },
-                { before: 'Laborbefunde über Telefonrückrufkette',              after: 'Laborbefunde im Patientenportal — keine Rückrufe'    },
-                { before: 'Doppelbuchungen aus verschiedenen Kanälen',          after: 'Einzelner Kalender — keine Terminierungskonflikte'   },
+                { before: 'Patienten rufen an, Rezeption koordiniert',        after: 'Patienten buchen online, Bestätigung automatisch'    },
+                { before: 'Laborbefunde über Telefonrückrufkette',              after: 'Laborbefunde im Patientenportal, keine Rückrufe'    },
+                { before: 'Doppelbuchungen aus verschiedenen Kanälen',          after: 'Einzelner Kalender, keine Terminierungskonflikte'   },
                 { before: 'DSGVO-Akten auf Anfrage über Tage zusammengestellt', after: 'DSGVO-Akten sofort abrufbar'                        },
-                { before: 'Terminerinnerungen per Telefon',                     after: 'Automatische Erinnerungen — keine Mitarbeiterbeteiligung' },
+                { before: 'Terminerinnerungen per Telefon',                     after: 'Automatische Erinnerungen, keine Mitarbeiterbeteiligung' },
               ] : [
-                { before: 'Patients call to book — reception coordinates', after: 'Patients book online — confirmation automatic'     },
-                { before: 'Lab results via phone callback chain',           after: 'Lab results in patient portal — no callbacks'    },
-                { before: 'Double bookings from multiple channels',         after: 'Single calendar — no scheduling conflicts'       },
+                { before: 'Patients call to book, reception coordinates', after: 'Patients book online, confirmation automatic'     },
+                { before: 'Lab results via phone callback chain',           after: 'Lab results in patient portal, no callbacks'    },
+                { before: 'Double bookings from multiple channels',         after: 'Single calendar, no scheduling conflicts'       },
                 { before: 'GDPR records compiled on request over days',    after: 'GDPR records retrievable instantly'              },
-                { before: 'Appointment reminders made by phone',           after: 'Automatic reminders — no staff involvement'      },
+                { before: 'Appointment reminders made by phone',           after: 'Automatic reminders, no staff involvement'      },
               ]).map((row, i) => (
                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#141414' }}>
                   <div style={{ padding: '18px 28px', borderRight: `1px solid ${BORDER}`, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
@@ -265,20 +265,20 @@ export default async function PraxisOSPage({
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <div className="px-grid-2">
               <div style={{ background: CARD, padding: '40px', borderTop: `3px solid ${BLUE}` }}>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '1rem' }}>{locale === 'de' ? 'Ein echter Praxisablauf — von der Buchung bis zum Patientenportal.' : 'A real practice workflow — from booking to patient portal.'}</h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8 }}>{locale === 'de' ? 'Der Walkthrough umfasst Online-Buchung, Terminverwaltung, Laborbefunde-Upload, Patientenportalzugang und DSGVO-Aktenabfrage. Das vollständige System — keine Feature-Präsentation.' : 'The walkthrough covers online booking, appointment management, lab result upload, patient portal access, and GDPR record retrieval. The full system — not a feature presentation.'}</p>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '1rem' }}>{locale === 'de' ? 'Ein echter Praxisablauf, von der Buchung bis zum Patientenportal.' : 'A real practice workflow, from booking to patient portal.'}</h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8 }}>{locale === 'de' ? 'Der Walkthrough umfasst Online-Buchung, Terminverwaltung, Laborbefunde-Upload, Patientenportalzugang und DSGVO-Aktenabfrage. Das vollständige System, keine Feature-Präsentation.' : 'The walkthrough covers online booking, appointment management, lab result upload, patient portal access, and GDPR record retrieval. The full system, not a feature presentation.'}</p>
               </div>
               <div style={{ background: CARD, padding: '40px' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 20px' }}>{locale === 'de' ? 'WIE ES WEITERGEHT' : 'WHAT HAPPENS NEXT'}</p>
                 {(locale === 'de' ? [
-                  { num: '01', t: 'Kurzes Gespräch',    d: 'Wir erfahren mehr über die Praxis — Fachgebiet, Teamgröße, aktueller Buchungs- und Aktenfluss.' },
+                  { num: '01', t: 'Kurzes Gespräch',    d: 'Wir erfahren mehr über die Praxis, Fachgebiet, Teamgröße, aktueller Buchungs- und Aktenfluss.' },
                   { num: '02', t: 'Workflow analysiert', d: 'Wir kartieren, wie Patienten derzeit durch die Praxis fließen, bevor wir etwas konfigurieren.' },
-                  { num: '03', t: 'System konfiguriert', d: 'PraxisOS für das spezifische Fachgebiet eingerichtet — Buchungstypen, Portalzugang, DSGVO-Einstellungen.' },
+                  { num: '03', t: 'System konfiguriert', d: 'PraxisOS für das spezifische Fachgebiet eingerichtet, Buchungstypen, Portalzugang, DSGVO-Einstellungen.' },
                   { num: '04', t: 'Mit Buchung starten', d: 'Beginnen Sie mit Online-Terminplanung. Portal, Laborbefunde und Akten hinzufügen, wenn das Team vertraut wird.' },
                 ] : [
-                  { num: '01', t: 'Short conversation', d: 'We learn about the practice — specialty, team size, current booking and record flow.' },
+                  { num: '01', t: 'Short conversation', d: 'We learn about the practice, specialty, team size, current booking and record flow.' },
                   { num: '02', t: 'Workflow reviewed',  d: 'We map how patients currently move through the practice before configuring anything.' },
-                  { num: '03', t: 'System configured',  d: 'PraxisOS set up for the specific specialty — booking types, portal access, GDPR settings.' },
+                  { num: '03', t: 'System configured',  d: 'PraxisOS set up for the specific specialty, booking types, portal access, GDPR settings.' },
                   { num: '04', t: 'Start with booking', d: 'Begin with online scheduling. Add portal, lab results and records as the team gets comfortable.' },
                 ]).map(item => (
                   <div key={item.num} style={{ marginBottom: '20px' }}>

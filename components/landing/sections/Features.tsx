@@ -6,9 +6,9 @@ interface FeaturesProps {
 }
 
 /**
- * 4 benefit columns — VG-11: exactly 4, categories = time / quality / revenue / reliability.
+ * 4 benefit columns, VG-11: exactly 4, categories = time / quality / revenue / reliability.
  * First 3 columns derive labels from registry bullets.
- * 4th column (Reliability) is fixed — applies universally to all products.
+ * 4th column (Reliability) is fixed, applies universally to all products.
  * Phase 3: add per-product benefit copy to registry for fuller descriptions.
  */
 export function Features({ bullets, locale }: FeaturesProps) {

@@ -28,14 +28,14 @@ export function MaxMemoryProvider({ children }: { children: React.ReactNode }) {
     // Hydrate from the server on mount if a session cookie exists
     fetch('/api/chat/session')
       .then(async res => {
-        if (res.status === 204) return  // no existing session — start fresh
+        if (res.status === 204) return  // no existing session, start fresh
         const data = await res.json() as { session: ChatSession; messages: ChatMessage[] }
         setSession(data.session)
         setMessages(data.messages)
       })
-      .catch(() => { /* fail open — widget still works, just no history */ })
+      .catch(() => { /* fail open, widget still works, just no history */ })
 
-    // TODO(phase3b): track URL changes, scroll depth, time on page — emit to /api/chat/events
+    // TODO(phase3b): track URL changes, scroll depth, time on page, emit to /api/chat/events
   }, [])
 
   function addMessage(msg: ChatMessage) {

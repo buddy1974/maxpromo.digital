@@ -1,15 +1,15 @@
 /**
  * components/systems/SystemCard/SystemCardFeatured.tsx
  *
- * Featured card variant — premium catalog-style.
+ * Featured card variant, premium catalog-style.
  *
  * Design target: SaaS marketplace / Apple product catalog.
- * NOT a mini landing page — tight, scannable, action-oriented.
+ * NOT a mini landing page, tight, scannable, action-oriented.
  *
  * Layout:
  *   ┌────────────────────────────┐
  *   │ [brand accent 2px]         │
- *   │ [image 5:2 — compact]      │
+ *   │ [image 5:2, compact]      │
  *   │ [LIVE badge if live]       │
  *   ├────────────────────────────┤
  *   │ Product Name               │
@@ -84,7 +84,7 @@ export function SystemCardFeatured({
         aria-hidden="true"
       />
 
-      {/* ── IMAGE — 5:2 compact banner */}
+      {/* ── IMAGE, 5:2 compact banner */}
       <div
         className="relative w-full overflow-hidden flex-shrink-0"
         style={{ aspectRatio: '5 / 2' }}
@@ -107,7 +107,7 @@ export function SystemCardFeatured({
           aria-hidden="true"
         />
 
-        {/* Overlay click tracker — routes to consultation, not external domain */}
+        {/* Overlay click tracker, routes to consultation, not external domain */}
         <TrackableLink
           href={product.bookDemoUrl}
           event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
@@ -143,7 +143,7 @@ export function SystemCardFeatured({
           {headline}
         </p>
 
-        {/* Key outcomes — max 3, guaranteed by BulletTuple */}
+        {/* Key outcomes, max 3, guaranteed by BulletTuple */}
         <ul className="list-none p-0 m-0 flex flex-col gap-1.5">
           {bullets.map((bullet, i) => (
             <li key={i} className="flex items-start gap-2">
@@ -164,7 +164,7 @@ export function SystemCardFeatured({
         {/* ── CTA pair */}
         {showCTA && (
           <div className="flex gap-2 mt-auto pt-3 border-t border-white/[0.06]">
-            {/* Primary — Book Consultation */}
+            {/* Primary, Book Consultation */}
             <TrackableLink
               href={product.bookDemoUrl}
               event={{ type: CTA_PRIMARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: primaryLabel }}
@@ -174,7 +174,7 @@ export function SystemCardFeatured({
               {primaryLabel}
             </TrackableLink>
 
-            {/* Secondary — Book Consultation (routes to /contact?system=...) */}
+            {/* Secondary, Book Consultation (routes to /contact?system=...) */}
             <TrackableLink
               href={product.bookDemoUrl}
               event={{ type: CTA_SECONDARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: secondaryLabel }}

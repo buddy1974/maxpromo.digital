@@ -41,8 +41,8 @@ function getPortfolio(locale: string): PortfolioItem[] {
       client: t(locale, 'B2B-Immobilienagentur · Düsseldorf', 'B2B Real Estate Agency · Düsseldorf'),
       type: t(locale, 'KI-Agent', 'AI Agent'),
       summary: t(locale,
-        'Eingehende Anfragen werden bewertet, weitergeleitet und innerhalb von Minuten beantwortet — im Marcel-Stil, deutscher Tonfall.',
-        'Inbound enquiries are scored, routed, and replied to within minutes — Marcel-style style guide, German tone.'),
+        'Eingehende Anfragen werden bewertet, weitergeleitet und innerhalb von Minuten beantwortet, im Marcel-Stil, deutscher Tonfall.',
+        'Inbound enquiries are scored, routed, and replied to within minutes, Marcel-style style guide, German tone.'),
       metrics: [
         t(locale, '18 Std./Woche gespart', '18h/week saved'),
         t(locale, '3x schnellere Antwortzeit', '3x faster response'),
@@ -67,7 +67,7 @@ function getPortfolio(locale: string): PortfolioItem[] {
       client: t(locale, 'Unabhängige Restaurantgruppe', 'Independent Restaurant Group'),
       type: t(locale, 'KI-Website + Betriebssystem', 'AI Website + OS'),
       summary: t(locale,
-        'Menü-Digitalisierung, Online-Bestellung, Gutschein-Engine, rotierender Social-Content — alles in einer Betreiberkonsole.',
+        'Menü-Digitalisierung, Online-Bestellung, Gutschein-Engine, rotierender Social-Content, alles in einer Betreiberkonsole.',
         'Menu digitisation, online ordering, voucher engine, social-content rotation, all under one operator console.'),
       metrics: [
         t(locale, '+38 % Online-Bestellungen', '+38% online orders'),
@@ -77,7 +77,7 @@ function getPortfolio(locale: string): PortfolioItem[] {
     },
     {
       title: 'Handwerk Rechnungs-AI',
-      client: t(locale, 'Handwerksbetrieb — mehrere Standorte', 'Skilled Trades — Multi-Site'),
+      client: t(locale, 'Handwerksbetrieb, mehrere Standorte', 'Skilled Trades, Multi-Site'),
       type: t(locale, 'Dokumenten-KI', 'Document AI'),
       summary: t(locale,
         'Sprachnotizen und Fotos vom Außendienst → getippte Rechnung auf Deutsch, versandfertig. 90 Sekunden vollständig durchgängig.',
@@ -117,7 +117,7 @@ export default function PortfolioPage() {
       }
       setUnlocked(true)
     } catch {
-      setError(t(locale, 'Netzwerkfehler — bitte erneut versuchen', 'Network error — please try again'))
+      setError(t(locale, 'Netzwerkfehler, bitte erneut versuchen', 'Network error, please try again'))
     } finally {
       setLoading(false)
     }
@@ -135,8 +135,8 @@ export default function PortfolioPage() {
           </h1>
           <p style={{ ...sans, fontSize: '16px', color: '#888888', margin: '0 0 48px', maxWidth: '640px', lineHeight: 1.6 }}>
             {t(locale,
-              'Jedes System unten wurde gebaut und ist im produktiven Einsatz. Kundennamen unter NDA geschwärzt — auf Anfrage stellen wir gerne einen Kontakt her.',
-              'Each system below was built and is in production. Client names redacted under NDA — happy to make an intro on request.')}
+              'Jedes System unten wurde gebaut und ist im produktiven Einsatz. Kundennamen unter NDA geschwärzt, auf Anfrage stellen wir gerne einen Kontakt her.',
+              'Each system below was built and is in production. Client names redacted under NDA, happy to make an intro on request.')}
           </p>
 
           <div style={{ display: 'grid', gap: '16px' }}>

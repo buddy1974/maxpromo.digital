@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const images      = post.featuredImage ? [{ url: post.featuredImage }] : []
 
   return {
-    title:       `${title} — Maxpromo Digital`,
+    title:       `${title}, Maxpromo Digital`,
     description,
     keywords:    post.keywords,
     alternates:  { canonical },
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 // =============================================================================
-// MDX COMPONENT MAP — dark Maxpromo aesthetic
+// MDX COMPONENT MAP, dark Maxpromo aesthetic
 // =============================================================================
 
 const mdxComponents = {
@@ -101,7 +101,7 @@ const mdxComponents = {
     <strong style={{ color: 'hsl(40 30% 96%)', fontWeight: 700 }} {...props} />
   ),
 
-  // Inline article CTA block — placed in MDX above "Continue reading"
+  // Inline article CTA block, placed in MDX above "Continue reading"
   BlogArticleCTA: ({ locale: l = 'en' }: { locale?: string }) => {
     const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '4915901234567'
     const msg = encodeURIComponent(
@@ -144,7 +144,7 @@ const mdxComponents = {
 }
 
 // =============================================================================
-// RELATED SERVICES — static tiles
+// RELATED SERVICES, static tiles
 // =============================================================================
 
 const SERVICES = [
@@ -165,7 +165,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
   const post = getPostBySlug(slug, locale)
   if (!post) notFound()
 
-  // MDX evaluation — server-side, no client bundle
+  // MDX evaluation, server-side, no client bundle
   const { default: MDXContent } = await evaluate(post.content, {
     Fragment,
     jsx:  jsx  as Parameters<typeof evaluate>[1]['jsx'],
@@ -262,7 +262,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         </div>
 
         {/* ─────────────────────────────────────────────── */}
-        {/* 2. INTRO — excerpt + featured image             */}
+        {/* 2. INTRO, excerpt + featured image             */}
         {/* ─────────────────────────────────────────────── */}
         <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 2rem' }}>
 
@@ -307,14 +307,14 @@ export default async function BlogDetailPage({ params }: PageProps) {
         </div>
 
         {/* ─────────────────────────────────────────────── */}
-        {/* 3. ARTICLE BODY — MDX                           */}
+        {/* 3. ARTICLE BODY, MDX                           */}
         {/* ─────────────────────────────────────────────── */}
         <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 2rem', marginBottom: '4rem' }}>
           <MDXContent components={mdxComponents} />
         </div>
 
         {/* ─────────────────────────────────────────────── */}
-        {/* 4. CTA BLOCK — audit                            */}
+        {/* 4. CTA BLOCK, audit                            */}
         {/* ─────────────────────────────────────────────── */}
         <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 2rem', marginBottom: '5rem' }}>
           <div
@@ -355,7 +355,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         </div>
 
         {/* ─────────────────────────────────────────────── */}
-        {/* 5. RELATED SERVICES — 3 service tiles           */}
+        {/* 5. RELATED SERVICES, 3 service tiles           */}
         {/* ─────────────────────────────────────────────── */}
         <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '4rem', paddingBottom: '4rem' }}>
           <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 2rem' }}>
@@ -405,7 +405,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         </section>
 
         {/* ─────────────────────────────────────────────── */}
-        {/* 6. RELATED SYSTEMS — SystemCardCompact grid     */}
+        {/* 6. RELATED SYSTEMS, SystemCardCompact grid     */}
         {/* ─────────────────────────────────────────────── */}
         {relatedSystemProducts.length > 0 && (
           <section style={{ paddingTop: '4rem', paddingBottom: '4rem', borderTop: '1px solid rgba(255,255,255,0.04)' }}>

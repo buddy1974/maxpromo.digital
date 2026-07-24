@@ -20,13 +20,22 @@ interface ServiceRef {
   icon: string
 }
 
+/*
+ * Card → destination mapping. Each card links to the service page whose
+ * topic it actually describes. Two cards have no dedicated page of their
+ * own (c1 legacy modernization, c5 commerce & catalogue) and route to the
+ * closest real page, websites-platforms and workflow-automation
+ * respectively, so the "Learn more" CTA always lands somewhere relevant.
+ * The reviews and customer-inquiries pages have no matching card and are
+ * intentionally not linked from this grid.
+ */
 const SERVICE_REFS: ReadonlyArray<ServiceRef> = [
-  { id: 'c1', href: '/services/websites-platforms', icon: '◰' },
-  { id: 'c2', href: '/services/social-media',       icon: '▤' },
-  { id: 'c3', href: '/services/reviews',             icon: '◇' },
-  { id: 'c4', href: '/services/customer-inquiries',  icon: '⊟' },
-  { id: 'c5', href: '/services/workflow-automation', icon: '→' },
-  { id: 'c6', href: '/services/ai-agents',           icon: '⌗' },
+  { id: 'c1', href: '/services/websites-platforms', icon: '◰' }, // Legacy Website & CMS Modernization
+  { id: 'c2', href: '/services/workflow-automation', icon: '▤' }, // Workflow Automation
+  { id: 'c3', href: '/services/ai-agents',           icon: '◇' }, // AI Business Systems
+  { id: 'c4', href: '/services/websites-platforms',  icon: '⊟' }, // Website Systems (lead capture, booking, portals)
+  { id: 'c5', href: '/services/workflow-automation', icon: '→' }, // Commerce & Catalogue (quote/order automation)
+  { id: 'c6', href: '/services/social-media',        icon: '⌗' }, // Content & Newsletter Systems
 ]
 
 const BOUNDARY_IDS = ['n1', 'n2', 'n3', 'n4', 'n5'] as const

@@ -8,7 +8,7 @@ interface HowItWorksProps {
 const STEP_NUMS = ['01.', '02.', '03.', '04.', '05.'] as const
 
 /**
- * Horizontal 5-step workflow strip. Exactly 5 steps — VG-10.
+ * Horizontal 5-step workflow strip. Exactly 5 steps, VG-10.
  * TypeScript enforces the count via WorkflowTuple.
  * Wraps to 1-column on mobile.
  */

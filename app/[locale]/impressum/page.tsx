@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Impressum / Legal Notice',
-  description: 'Angaben gemäß § 5 DDG — Mandatory information per § 5 DDG',
+  description: 'Angaben gemäß § 5 DDG, Mandatory information per § 5 DDG',
   robots: { index: true, follow: false },
 }
 

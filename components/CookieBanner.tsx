@@ -29,7 +29,7 @@ function getSnapshot(): boolean {
   try {
     return localStorage.getItem(CONSENT_KEY) === '1'
   } catch {
-    // localStorage unavailable — treat as accepted so the banner stays hidden
+    // localStorage unavailable, treat as accepted so the banner stays hidden
     return true
   }
 }

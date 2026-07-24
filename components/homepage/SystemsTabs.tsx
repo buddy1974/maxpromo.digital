@@ -27,7 +27,7 @@ export function SystemsTabs() {
   return (
     <div>
 
-      {/* Tab bar — horizontally scrollable with a right-edge fade hint on mobile */}
+      {/* Tab bar, horizontally scrollable with a right-edge fade hint on mobile */}
       <div style={{ position: 'relative' }}>
         <div
           style={{
@@ -64,7 +64,7 @@ export function SystemsTabs() {
             </button>
           ))}
         </div>
-        {/* Scroll hint — fades out on desktop via md:hidden */}
+        {/* Scroll hint, fades out on desktop via md:hidden */}
         <div
           aria-hidden="true"
           className="md:hidden"

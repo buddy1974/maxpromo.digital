@@ -6,11 +6,11 @@
  * while data or images are loading.
  *
  * Used for:
- *   — Systems page loading state
- *   — /os admin tables while Supabase data resolves
- *   — Analytics cards while events load
- *   — Embedded product lists in landing pages
- *   — Any async context that shows cards before data is ready
+ *  , Systems page loading state
+ *  , /os admin tables while Supabase data resolves
+ *  , Analytics cards while events load
+ *  , Embedded product lists in landing pages
+ *  , Any async context that shows cards before data is ready
  *
  * TODO: add CSS pulse/shimmer animation in the visual implementation pass
  * TODO: connect to Suspense boundaries once consumers are built
@@ -24,7 +24,7 @@ import type { CardVariant } from './SystemCard'
 
 export interface SystemCardSkeletonProps {
   /**
-   * Variant to mimic — determines the skeleton's height and block structure.
+   * Variant to mimic, determines the skeleton's height and block structure.
    * Defaults to 'full'. Match this to the card variant being replaced.
    */
   readonly variant?: CardVariant
@@ -69,7 +69,7 @@ function SkeletonBlock({
 // =============================================================================
 
 /**
- * SystemCardSkeleton — loading placeholder.
+ * SystemCardSkeleton, loading placeholder.
  *
  * Renders an inert, animated (TODO) skeleton matching the target variant shape.
  * Place this inside a Suspense boundary or conditional render while data loads.

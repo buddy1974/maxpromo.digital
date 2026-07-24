@@ -102,7 +102,7 @@ export default async function DataDeletionPage({
     >
       <div style={{ maxWidth: '640px', margin: '0 auto' }}>
 
-        {/* Header — wordmark + divider */}
+        {/* Header, wordmark + divider */}
         <p
           style={{
             fontFamily: mono,
@@ -179,7 +179,7 @@ export default async function DataDeletionPage({
             'Data Controller: Maxpromo Digital · Steuernummer: 111/5339/7597 · Finanzamt: Essen-NordOst')}
         </p>
 
-        {/* Card 1 — How to request */}
+        {/* Card 1, How to request */}
         <Card title={t(locale, 'Antrag stellen', 'Submit a Request')}>
           <div
             style={{
@@ -251,7 +251,7 @@ export default async function DataDeletionPage({
           </p>
         </Card>
 
-        {/* Card 2 — Data we hold */}
+        {/* Card 2, Data we hold */}
         <Card title={t(locale, 'Daten, die wir möglicherweise speichern', 'Data We May Hold')}>
           <ul style={{ padding: 0, margin: 0 }}>
             <BulletItem>
@@ -270,7 +270,7 @@ export default async function DataDeletionPage({
             <BulletItem>
               {t(locale, 'Chat-Gesprächsinhalte', 'Chat conversation content')}{' '}
               <span style={{ color: '#555555', fontSize: '12px' }}>
-                {t(locale, '(nur während der Sitzung — nicht dauerhaft gespeichert)', '(session only — not stored permanently)')}
+                {t(locale, '(nur während der Sitzung, nicht dauerhaft gespeichert)', '(session only, not stored permanently)')}
               </span>
             </BulletItem>
             <BulletItem>
@@ -282,7 +282,7 @@ export default async function DataDeletionPage({
           </ul>
         </Card>
 
-        {/* Card 3 — What happens next */}
+        {/* Card 3, What happens next */}
         <Card title={t(locale, 'Wie es weitergeht', 'What Happens Next')}>
           <ul style={{ padding: 0, margin: 0 }}>
             <BulletItem>{t(locale, 'Wir verifizieren Ihre Identität per E-Mail', 'We verify your identity via email')}</BulletItem>

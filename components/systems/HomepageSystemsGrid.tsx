@@ -1,7 +1,7 @@
 /**
  * components/systems/HomepageSystemsGrid.tsx
  *
- * Adapter bridge — connects the homepage adapter to the card rendering system.
+ * Adapter bridge, connects the homepage adapter to the card rendering system.
  * This is the ONLY file that knows about both HomepageCardData and SystemGrid.
  *
  * Architecture:
@@ -21,7 +21,7 @@
  *
  * Why both cards AND HOMEPAGE_PRODUCTS?
  *   SystemGrid currently requires ProductEntry[]. HomepageCardData[] is the
- *   adapter output — locale-resolved, analytics-ready, and the intended future
+ *   adapter output, locale-resolved, analytics-ready, and the intended future
  *   input once SystemCardCompact is updated to accept HomepageCardData.
  *
  *   Today:  HOMEPAGE_PRODUCTS drives rendering; cards holds adapter metadata
@@ -38,8 +38,8 @@
  *
  * TODO: when SystemCardCompact accepts HomepageCardData, replace HOMEPAGE_PRODUCTS
  *       with cards and remove the registry import from this file
- * TODO: future analytics  — fire system_card_viewed impressions using cards data
- * TODO: future experiments — use cards[i].eventSource for A/B variant routing
+ * TODO: future analytics , fire system_card_viewed impressions using cards data
+ * TODO: future experiments, use cards[i].eventSource for A/B variant routing
  */
 
 import type { HomepageCardData } from '@/lib/registry/adapters'
@@ -53,11 +53,11 @@ import SystemGrid from '@/components/systems/SystemGrid/SystemGrid'
 export interface HomepageSystemsGridProps {
   /**
    * Locale-resolved card data from homepage.adapter → getHomepageCards(locale).
-   * Order matches HOMEPAGE_PRODUCTS — both are derived from the same source.
+   * Order matches HOMEPAGE_PRODUCTS, both are derived from the same source.
    * Used for adapter metadata today; will drive rendering in a future pass.
    */
   readonly cards: ReadonlyArray<HomepageCardData>
-  /** Active locale — forwarded to SystemGrid for copy selection. */
+  /** Active locale, forwarded to SystemGrid for copy selection. */
   readonly locale: string
 }
 
@@ -66,11 +66,11 @@ export interface HomepageSystemsGridProps {
 // =============================================================================
 
 /**
- * HomepageSystemsGrid — adapter-to-SystemGrid bridge.
+ * HomepageSystemsGrid, adapter-to-SystemGrid bridge.
  *
  * Accepts adapter output (HomepageCardData[]) and feeds the existing
  * card rendering system (SystemGrid → SystemCardCompact). No rendering
- * logic lives here — all card markup stays in the SystemCard family.
+ * logic lives here, all card markup stays in the SystemCard family.
  *
  * @example
  * // In app/[locale]/page.tsx:

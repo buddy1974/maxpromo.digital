@@ -6,14 +6,13 @@
  * Injects --brand-accent and --brand-bg CSS custom properties onto a wrapper div.
  * All child section components reference these tokens instead of hardcoding colors.
  *
- * VG-01 — Dark background rule:
+ * VG-01, Dark background rule:
  *   backgroundDark: true  → --brand-bg: #080808  (all products by default)
  *   backgroundDark: false → --brand-bg: #F5F4F0  (clinical/wellness exception)
- *                           Currently only PraxisOS. Do not add exceptions here —
- *                           add backgroundDark: false to the registry entry instead.
+ *                           Currently only PraxisOS. Do not add exceptions here- *                           add backgroundDark: false to the registry entry instead.
  *
- * VG-02 — brandColor is reserved for headline accent, bullet icons, dividers.
- *          Never use var(--brand-accent) for CTA buttons — those are always #F97316 (VG-03).
+ * VG-02, brandColor is reserved for headline accent, bullet icons, dividers.
+ *          Never use var(--brand-accent) for CTA buttons, those are always #F97316 (VG-03).
  */
 
 interface LandingThemeProviderProps {

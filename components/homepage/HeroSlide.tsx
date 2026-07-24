@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react'
 interface HeroSlideProps {
   src: string
   alt: string
-  slideIndex: number   // 1-based — drives Ken Burns variant
+  slideIndex: number   // 1-based, drives Ken Burns variant
   active: boolean
 }
 
@@ -21,7 +21,7 @@ export function HeroSlide({ src, alt, slideIndex, active }: HeroSlideProps) {
   const [imgError, setImgError] = useState(false)
   const imgDivRef = useRef<HTMLDivElement>(null)
 
-  // Restart Ken Burns animation when slide becomes active — no key remount, no flash.
+  // Restart Ken Burns animation when slide becomes active, no key remount, no flash.
   // Removing and re-adding the class with an interleaved reflow is the only
   // reliable way to reset a CSS animation without unmounting the element.
   useEffect(() => {
@@ -49,8 +49,7 @@ export function HeroSlide({ src, alt, slideIndex, active }: HeroSlideProps) {
       {!imgError && (
         <div
           ref={imgDivRef}
-          // Parallax is applied at the bgRef wrapper level in Hero.tsx —
-          // no transform here. inset: -4% provides bleed for Ken Burns.
+          // Parallax is applied at the bgRef wrapper level in Hero.tsx-          // no transform here. inset: -4% provides bleed for Ken Burns.
           style={{ position: 'absolute', inset: '-4%' }}
         >
           <Image
@@ -66,7 +65,7 @@ export function HeroSlide({ src, alt, slideIndex, active }: HeroSlideProps) {
         </div>
       )}
 
-      {/* z-1: gradient — dark left, fades right */}
+      {/* z-1: gradient, dark left, fades right */}
       <div
         style={{
           position: 'absolute',

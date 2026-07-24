@@ -103,16 +103,16 @@ export default async function HomePage() {
       <link rel="preload" as="image" href="/images/homepage/hero-1.png" />
       <main>
 
-      {/* 1 — Hero (LOCKED) */}
+      {/* 1, Hero (LOCKED) */}
       <Hero />
 
-      {/* Pain Slider — rotating problem strip below hero */}
+      {/* Pain Slider, rotating problem strip below hero */}
       <PainSlider />
 
-      {/* 2 — Pain Cards */}
+      {/* 2, Pain Cards */}
       <PainCards />
 
-      {/* 3 — Proof strip */}
+      {/* 3, Proof strip */}
       <section data-section="proof" style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
@@ -141,7 +141,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4a — Legacy modernization */}
+      {/* 4a, Legacy modernization */}
       <section data-section="legacy" style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ maxWidth: '52rem', marginBottom: '3rem' }}>
@@ -181,7 +181,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4 — Systems tabs */}
+      {/* 4, Systems tabs */}
       <section data-section="systems" style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
@@ -203,7 +203,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4b — Max Agent Bureau Gateway */}
+      {/* 4b, Max Agent Bureau Gateway */}
       <section id="agent-bureau" data-section="agent-bureau" style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
 
@@ -212,8 +212,8 @@ export default async function HomePage() {
             <SectionLabel>{'// Max Agent Bureau'}</SectionLabel>
             <SectionTitle>
               {locale === 'de'
-                ? <>Ein KI-Büro, das Arbeit vorbereitet —{' '}<span style={{ color: '#F97316' }}>nicht einfach nur antwortet.</span></>
-                : <>An AI office that prepares work —{' '}<span style={{ color: '#F97316' }}>not just responds to it.</span></>}
+                ? <>Ein KI-Büro, das Arbeit vorbereitet-{' '}<span style={{ color: '#F97316' }}>nicht einfach nur antwortet.</span></>
+                : <>An AI office that prepares work-{' '}<span style={{ color: '#F97316' }}>not just responds to it.</span></>}
             </SectionTitle>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'hsl(40 12% 60%)', lineHeight: 1.8, marginTop: '1rem', maxWidth: '48rem' }}>
               {locale === 'de'
@@ -222,7 +222,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          {/* Workflow infographic — Audit → Diagnose → Agent Team → Review (gate) → Execute → Log */}
+          {/* Workflow infographic, Audit → Diagnose → Agent Team → Review (gate) → Execute → Log */}
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 42%)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {locale === 'de' ? 'Der Ablauf' : 'The workflow'}
           </p>
@@ -275,7 +275,7 @@ export default async function HomePage() {
             })}
           </div>
 
-          {/* Module cards — 5 items in 3-col grid */}
+          {/* Module cards, 5 items in 3-col grid */}
           <div style={{ display: 'grid', gap: '12px', marginBottom: '2.5rem' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {(locale === 'de'
               ? [
@@ -313,7 +313,7 @@ export default async function HomePage() {
             ))}
           </div>
 
-          {/* Trust badge — supervised mode */}
+          {/* Trust badge, supervised mode */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'rgba(249,115,22,0.05)', border: '1px solid rgba(249,115,22,0.18)', borderRadius: '10px', padding: '14px 20px', marginBottom: '2.5rem', maxWidth: '100%' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -326,7 +326,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          {/* CTAs — gated: no external URLs on public homepage */}
+          {/* CTAs, gated: no external URLs on public homepage */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
             <Link
               href="/contact?system=agent-bureau"
@@ -346,7 +346,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5 — Why Maxpromo */}
+      {/* 5, Why Maxpromo */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem', maxWidth: '44rem' }}>
@@ -385,10 +385,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6 — Team trust */}
+      {/* 6, Team trust */}
       <TeamTrust />
 
-      {/* 6a — Philosophy */}
+      {/* 6a, Philosophy */}
       <section data-section="philosophy" style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '4rem' }} className="grid-cols-1 lg:grid-cols-2">
           <div>
@@ -416,7 +416,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 7 — How we work */}
+      {/* 7, How we work */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
@@ -449,10 +449,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 8 — FAQ */}
+      {/* 8, FAQ */}
       <FaqAccordion />
 
-      {/* 9 — Latest insights (only when posts exist) */}
+      {/* 9, Latest insights (only when posts exist) */}
       {latestPosts.length > 0 && (
         <section style={{ background: 'hsl(240 12% 6%)', padding: '6rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
           <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
@@ -506,7 +506,7 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* 10 — Final CTA */}
+      {/* 10, Final CTA */}
       <section style={{ background: 'hsl(240 14% 3%)', padding: '7rem 2rem', position: 'relative', overflow: 'hidden', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div className="grid-bg" style={{ position: 'absolute', inset: 0, opacity: 0.25, pointerEvents: 'none' }} />
         <div style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 1 }}>

@@ -12,8 +12,8 @@ export async function generateMetadata({
     ? 'Discovery-Gespräch | Maxpromo Digital'
     : 'Business Systems Discovery | Maxpromo Digital'
   const description = isDE
-    ? 'Ein kurzes, geführtes Gespräch über Ihre aktuellen Abläufe — bevor wir irgendetwas konfigurieren. Kein Verkaufsdruck, keine Verpflichtung.'
-    : 'A short, guided conversation about how your business actually operates today — before we configure anything. No pressure, no commitment.'
+    ? 'Ein kurzes, geführtes Gespräch über Ihre aktuellen Abläufe, bevor wir irgendetwas konfigurieren. Kein Verkaufsdruck, keine Verpflichtung.'
+    : 'A short, guided conversation about how your business actually operates today, before we configure anything. No pressure, no commitment.'
   return {
     title,
     description,

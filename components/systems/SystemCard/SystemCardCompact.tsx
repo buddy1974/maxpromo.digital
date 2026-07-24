@@ -1,7 +1,7 @@
 /**
  * components/systems/SystemCard/SystemCardCompact.tsx
  *
- * Compact card variant — thumbnail-first, minimal content.
+ * Compact card variant, thumbnail-first, minimal content.
  * Shows: thumbnail image, brand accent strip, product name,
  *        1-line subline, domain, CTA.
  *
@@ -77,7 +77,7 @@ export function SystemCardCompact({
           <div className="absolute inset-0 bg-[hsl(240_14%_4%)]" />
         )}
 
-        {/* Image area click tracker — overlay mode, aria-hidden (headline link provides AT access) */}
+        {/* Image area click tracker, overlay mode, aria-hidden (headline link provides AT access) */}
         <TrackableLink
           href={ctaHref}
           event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
@@ -85,7 +85,7 @@ export function SystemCardCompact({
           overlay
         />
 
-        {/* Brand accent strip — pointer-events-none so overlay link receives clicks */}
+        {/* Brand accent strip, pointer-events-none so overlay link receives clicks */}
         <div
           className="absolute top-0 left-0 right-0 h-[2px] z-10 pointer-events-none"
           style={{ background: product.brandColor }}

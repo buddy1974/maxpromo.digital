@@ -55,7 +55,7 @@ export async function TeamTrust() {
               {t('body')}
             </p>
 
-            {/* Pain list — mono chips inline */}
+            {/* Pain list, mono chips inline */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {(['pain1', 'pain2', 'pain3', 'pain4'] as const).map((k) => (
                 <span

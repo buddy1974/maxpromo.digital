@@ -253,7 +253,7 @@ export default function Footer() {
               style={{ color: 'hsl(240 14% 4%)', fontSize: '10px', textDecoration: 'none', fontFamily: 'var(--font-mono)' }}
               onMouseEnter={(e) => (e.currentTarget.style.color = 'hsl(240 8% 35%)')}
               onMouseLeave={(e) => (e.currentTarget.style.color = 'hsl(240 14% 4%)')}
-              aria-label="Staff portal"
+              aria-label={t('staffPortal')}
             >
               ·
             </Link>

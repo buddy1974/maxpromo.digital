@@ -195,10 +195,10 @@ export default async function SystemsPage() {
         </div>
       </section>
 
-      {/* App cards — registry-driven via SystemsPageGrid → SystemGrid → SystemCardFull */}
+      {/* App cards, registry-driven via SystemsPageGrid → SystemGrid → SystemCardFull */}
       <SystemsPageGrid cards={cards} locale={locale} />
 
-      {/* Operations Lifecycle — premium timeline, below system cards */}
+      {/* Operations Lifecycle, premium timeline, below system cards */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3rem', maxWidth: '44rem' }}>
@@ -245,7 +245,7 @@ export default async function SystemsPage() {
         </div>
       </section>
 
-      {/* Escalation Policy — premium operational rows, below lifecycle */}
+      {/* Escalation Policy, premium operational rows, below lifecycle */}
       <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderTop: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <div style={{ marginBottom: '3rem', maxWidth: '44rem' }}>

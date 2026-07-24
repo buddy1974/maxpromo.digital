@@ -1,7 +1,7 @@
 'use client'
 
-// LiveCard — presentational only. Positioning is owned by Hero.tsx.
-// No parallax props here — Hero.tsx applies transform via cardRef directly on DOM.
+// LiveCard, presentational only. Positioning is owned by Hero.tsx.
+// No parallax props here, Hero.tsx applies transform via cardRef directly on DOM.
 
 interface SlideCard {
   label: string

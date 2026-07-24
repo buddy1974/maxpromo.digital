@@ -15,16 +15,16 @@ import { HeroParticles } from './homepage/HeroParticles'
 /* ─── slide data ─────────────────────────────────────────────── */
 
 const SLIDES = [
-  { src: '/images/homepage/hero-1.png', alt: 'Agency statement — executive workspace' },
-  { src: '/images/homepage/hero-2.png', alt: 'Automation story — field operations in action' },
-  { src: '/images/homepage/hero-3.png', alt: 'Systems story — operations control center' },
-  { src: '/images/homepage/hero-4.png', alt: 'Developer story — engineering studio' },
+  { src: '/images/homepage/hero-1.png', alt: 'Agency statement, executive workspace' },
+  { src: '/images/homepage/hero-2.png', alt: 'Automation story, field operations in action' },
+  { src: '/images/homepage/hero-3.png', alt: 'Systems story, operations control center' },
+  { src: '/images/homepage/hero-4.png', alt: 'Developer story, engineering studio' },
 ] as const
 
 const SLIDE_DURATION = 6500
 
 /*
-  BLOCKER 3 FIX — text always visible.
+  BLOCKER 3 FIX, text always visible.
   Initial state: opacity 1, y offset only. Animation polishes position,
   never reveals content. Text readable on first server paint.
 */
@@ -52,7 +52,7 @@ export default function Hero() {
   const hasTouchRef = useRef(false)
 
   /*
-    BLOCKER 1 FIX — Direct DOM mutation.
+    BLOCKER 1 FIX, Direct DOM mutation.
     bgRef  → wrapper around all HeroSlide elements (parallax ±5px)
     cardRef → wrapper around LiveCard (parallax ±10px)
     No React state updated on every mousemove frame.
@@ -62,7 +62,7 @@ export default function Hero() {
   const cardRef      = useRef<HTMLDivElement>(null)
   const touchStartX  = useRef<number>(0)
 
-  // Detect touch device — disable parallax on touch
+  // Detect touch device, disable parallax on touch
   useEffect(() => {
     hasTouchRef.current = window.matchMedia('(hover: none)').matches
   }, [])
@@ -80,7 +80,7 @@ export default function Hero() {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [resetTimer])
 
-  // BLOCKER 1 FIX — Parallax via RAF + direct DOM transform, no setState
+  // BLOCKER 1 FIX, Parallax via RAF + direct DOM transform, no setState
   useEffect(() => {
     if (hasTouchRef.current) return
     const section = sectionRef.current
@@ -97,7 +97,7 @@ export default function Hero() {
     const tick = () => {
       const x = rawMouse.current.x
       const y = rawMouse.current.y
-      // bg ±5px — mutate DOM directly, no React re-render
+      // bg ±5px, mutate DOM directly, no React re-render
       if (bgRef.current) {
         bgRef.current.style.transform = `translate(${x * 5}px, ${y * 5}px)`
       }
@@ -141,10 +141,10 @@ export default function Hero() {
   return (
     <>
       {/*
-        BLOCKER 2 FIX — responsive layout for content width and live card size.
+        BLOCKER 2 FIX, responsive layout for content width and live card size.
         Content max-width reduces at tablet to prevent collision.
         Live card reduces width and position at tablet.
-        WARNING 2 FIX — landscape mobile: add bottom padding on short viewports.
+        WARNING 2 FIX, landscape mobile: add bottom padding on short viewports.
       */}
       <style>{`
         .hero-content-col { max-width: 48rem; }
@@ -175,7 +175,7 @@ export default function Hero() {
           background: 'hsl(240 14% 4%)',
         }}
       >
-        {/* BLOCKER 1 FIX — bgRef wrapper. Parallax applied here via direct DOM
+        {/* BLOCKER 1 FIX, bgRef wrapper. Parallax applied here via direct DOM
             style mutation. All slide layers translate together. */}
         <div
           ref={bgRef}
@@ -205,7 +205,7 @@ export default function Hero() {
         {/* z3: Particles */}
         <HeroParticles />
 
-        {/* z4: Cinema grain — hero-only, opacity 0.012 */}
+        {/* z4: Cinema grain, hero-only, opacity 0.012 */}
         <div
           aria-hidden="true"
           style={{
@@ -246,7 +246,7 @@ export default function Hero() {
             zIndex: 10,
           }}
         >
-          {/* BLOCKER 2 FIX — responsive class reduces max-width at tablet */}
+          {/* BLOCKER 2 FIX, responsive class reduces max-width at tablet */}
           <div className="hero-content-col">
 
             <motion.p
@@ -327,7 +327,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* BLOCKER 1 + 2 FIX — live card wrapper.
+        {/* BLOCKER 1 + 2 FIX, live card wrapper.
             cardRef receives direct DOM transform (no React state).
             hero-live-card-wrapper class applies tablet responsive overrides. */}
         <div
@@ -346,13 +346,13 @@ export default function Hero() {
           {slides[active] && <LiveCard slide={slides[active]} />}
         </div>
 
-        {/* Mobile live card — controlled; dots drive hero slide */}
+        {/* Mobile live card, controlled; dots drive hero slide */}
         <LiveCardMobile slides={slides} activeSlide={active} onSlideSelect={handleSelect} />
 
         {/* LIVE ticker */}
         <OperationalTicker items={ticker} />
 
-        {/* Slide nav — hidden on mobile (className="hidden md:flex" in component) */}
+        {/* Slide nav, hidden on mobile (className="hidden md:flex" in component) */}
         <HeroSlideNav total={SLIDES.length} active={active} onSelect={handleSelect} />
       </section>
     </>

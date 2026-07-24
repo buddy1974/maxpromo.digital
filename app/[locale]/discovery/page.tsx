@@ -99,8 +99,8 @@ export default function DiscoveryPage() {
           organisation: company.trim() || t(locale, 'Discovery (kein Unternehmen)', 'Discovery (no company)'),
           automation: 'Discovery Call',
           message: enhanced
-            ? `DISCOVERY BRIEF\n\n${brief.trim()}\n\n— AI-STRUCTURED PREVIEW —\n${
-                enhanced.items.map(i => `• ${i.description} — €${i.finalPrice}`).join('\n')
+            ? `DISCOVERY BRIEF\n\n${brief.trim()}\n\nAI-STRUCTURED PREVIEW:\n${
+                enhanced.items.map(i => `• ${i.description}: €${i.finalPrice}`).join('\n')
               }${
                 enhanced.paymentTerms ? `\n\nPayment: ${enhanced.paymentTerms}` : ''
               }${
@@ -130,8 +130,8 @@ export default function DiscoveryPage() {
         </h1>
         <p style={{ ...sans, fontSize: '17px', color: '#888888', lineHeight: 1.6, margin: '0 0 48px', maxWidth: '600px' }}>
           {t(locale,
-            'Fügen Sie Ihr Rohbriefing ein — Notizen, eine weitergeleitete E-Mail, eine Liste, auch unordentliche Stichpunkte. Unser Extraktor macht daraus in Sekunden einen strukturierten Ausgangspunkt. Wir melden uns innerhalb von 24 Stunden mit einem echten Angebot.',
-            "Paste your raw brief — notes, a forwarded email, a list, even messy bullet points. Our extractor turns it into a structured starting point in seconds. We'll follow up with a real proposal within 24h.")}
+            'Fügen Sie Ihr Rohbriefing ein: Notizen, eine weitergeleitete E-Mail, eine Liste, auch unordentliche Stichpunkte. Unser Extraktor macht daraus in Sekunden einen strukturierten Ausgangspunkt. Wir melden uns innerhalb von 24 Stunden mit einem echten Angebot.',
+            "Paste your raw brief: notes, a forwarded email, a list, even messy bullet points. Our extractor turns it into a structured starting point in seconds. We'll follow up with a real proposal within 24 hours.")}
         </p>
 
         {status === 'success' ? (
@@ -140,7 +140,7 @@ export default function DiscoveryPage() {
               {t(locale, '✓ Briefing erhalten', '✓ Brief received')}
             </p>
             <p style={{ ...sans, fontSize: '16px', color: '#FFFFFF', margin: '0 0 8px' }}>
-              {t(locale, 'Danke — wir melden uns innerhalb von 24 Stunden.', 'Thanks — we will reply within 24 hours.')}
+              {t(locale, 'Danke, wir melden uns innerhalb von 24 Stunden.', 'Thanks, we will reply within 24 hours.')}
             </p>
             <p style={{ ...sans, fontSize: '14px', color: '#888888', margin: 0 }}>
               {t(locale, 'In der Zwischenzeit können Sie die', 'In the meantime, take the')}{' '}
@@ -163,8 +163,8 @@ export default function DiscoveryPage() {
               onChange={(v) => { setBrief(v); setEnhanced(null) }}
               rows={9}
               placeholder={t(locale,
-                `Fügen Sie Ihr Briefing ein, z. B.:\n\nAMAKA CITY — VERBESSERUNGSPLAN\nWebsite + Hosting + Domain → 600 €\nBuchungssystem → 100 €\nSocial-Media-Einrichtung + erster Content → 150 €\nFlyer- + Visitenkartendesign → 120 €\nDruck (2.500 Flyer + 1.000 Karten) → 185 €\n\nKostenlos inklusive: Gutscheinsystem, Paketpreise, Einführungsangebote.\n\nZahlung in 2 Raten möglich. Schrittweise ist ok.`,
-                `Paste your brief, e.g.:\n\nAMAKA CITY — IMPROVEMENT PLAN\nWebsite + hosting + domain → 600 €\nBooking system → 100 €\nSocial media setup + first content → 150 €\nFlyer + business card design → 120 €\nPrinting (2,500 flyers + 1,000 cards) → 185 €\n\nIncluded for free: voucher system, package pricing, intro offers.\n\nPayment in 2 parts possible. Step by step OK.`)}
+                `Fügen Sie Ihr Briefing ein, z. B.:\n\nAMAKA CITY: VERBESSERUNGSPLAN\nWebsite + Hosting + Domain → 600 €\nBuchungssystem → 100 €\nSocial-Media-Einrichtung + erster Content → 150 €\nFlyer- + Visitenkartendesign → 120 €\nDruck (2.500 Flyer + 1.000 Karten) → 185 €\n\nKostenlos inklusive: Gutscheinsystem, Paketpreise, Einführungsangebote.\n\nZahlung in 2 Raten möglich. Schrittweise ist ok.`,
+                `Paste your brief, e.g.:\n\nAMAKA CITY: IMPROVEMENT PLAN\nWebsite + hosting + domain → 600 €\nBooking system → 100 €\nSocial media setup + first content → 150 €\nFlyer + business card design → 120 €\nPrinting (2,500 flyers + 1,000 cards) → 185 €\n\nIncluded for free: voucher system, package pricing, intro offers.\n\nPayment in 2 parts possible. Step by step OK.`)}
               context="Discovery brief describing a client project scope and budget for Maxpromo Digital"
               textareaStyle={{ ...inputBase, minHeight: '220px', resize: 'vertical', lineHeight: 1.6, fontFamily: 'var(--font-roboto-mono)', fontSize: '13px' }}
             />

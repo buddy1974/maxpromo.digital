@@ -135,7 +135,7 @@ export default function BeforeAfter() {
               lineHeight: 1.7,
             }}
           >
-            Real operational scenarios — before and after intelligent automation is deployed.
+            Real operational scenarios, before and after intelligent automation is deployed.
           </p>
         </div>
 
@@ -184,7 +184,7 @@ export default function BeforeAfter() {
           }}
           className="flex-col lg:flex-row"
         >
-          {/* LEFT — BEFORE */}
+          {/* LEFT, BEFORE */}
           <div
             style={{
               flex: '0 0 45%',
@@ -252,7 +252,7 @@ export default function BeforeAfter() {
             </div>
           </div>
 
-          {/* CENTRE — Arrow divider */}
+          {/* CENTRE, Arrow divider */}
           <div
             style={{
               flex: '0 0 10%',
@@ -299,7 +299,7 @@ export default function BeforeAfter() {
             />
           </div>
 
-          {/* RIGHT — AFTER */}
+          {/* RIGHT, AFTER */}
           <div
             style={{
               flex: '0 0 45%',

@@ -4,7 +4,7 @@ const SERVICES = [
   {
     title: 'AI Agentic Workflows',
     description:
-      'Intelligent AI agents that handle complex tasks autonomously — from customer support and email triage to lead qualification and document processing.',
+      'Intelligent AI agents that handle complex tasks autonomously, from customer support and email triage to lead qualification and document processing.',
     href: '/services',
     tags: ['Claude AI', 'OpenAI', 'n8n'],
   },

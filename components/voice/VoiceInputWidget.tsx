@@ -12,8 +12,8 @@
  *   → approved text written to parent via onChange()
  *
  * Data preserved:
- *   rawInput    — original SpeechRecognition output, never auto-overwritten
- *   enhancedInput — AI-polished version, shown for comparison
+ *   rawInput   , original SpeechRecognition output, never auto-overwritten
+ *   enhancedInput, AI-polished version, shown for comparison
  *
  * Browser support:
  *   Supported:  Chrome 33+, Edge 79+, Safari 14.1+, Samsung Internet
@@ -146,7 +146,7 @@ function MicButton({
         transition: 'background 120ms ease, border-color 120ms ease, color 120ms ease',
         animation: listening ? 'voicePulse 1.2s ease-in-out infinite' : 'none',
       }}
-      aria-label={listening ? 'Recording — release to stop' : 'Press and hold to record'}
+      aria-label={listening ? 'Recording, release to stop' : 'Press and hold to record'}
       aria-pressed={listening}
     >
       <MicIcon active={listening} />
@@ -247,7 +247,7 @@ export default function VoiceInputWidget({
           onBlur={onBlur}
         />
 
-        {/* Mic button — right of textarea */}
+        {/* Mic button, right of textarea */}
         <div style={{ paddingTop: '4px' }}>
           <MicButton
             listening={voice.phase === 'listening'}
@@ -296,7 +296,7 @@ export default function VoiceInputWidget({
         </div>
       )}
 
-      {/* ── Voice panel — shown after recording stops ── */}
+      {/* ── Voice panel, shown after recording stops ── */}
       {panelOpen && (
         <div
           style={{
@@ -330,10 +330,10 @@ export default function VoiceInputWidget({
             </button>
           </div>
 
-          {/* Raw transcript — editable */}
+          {/* Raw transcript, editable */}
           <div style={{ padding: '14px' }}>
             <p style={{ fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
-              Raw transcript — edit if needed
+              Raw transcript, edit if needed
             </p>
             <textarea
               value={voice.editedRaw}
@@ -350,7 +350,7 @@ export default function VoiceInputWidget({
             />
           </div>
 
-          {/* Enhanced result — shown when available */}
+          {/* Enhanced result, shown when available */}
           {voice.enhancedInput && (
             <div
               style={{
@@ -399,7 +399,7 @@ export default function VoiceInputWidget({
               ✓ Use transcript
             </button>
 
-            {/* Enhance with AI — only shown when no enhanced result yet */}
+            {/* Enhance with AI, only shown when no enhanced result yet */}
             {!voice.enhancedInput && voice.phase !== 'enhancing' && (
               <button
                 type="button"

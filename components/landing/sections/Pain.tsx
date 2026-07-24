@@ -11,7 +11,7 @@ interface PainProps {
 const ICONS = ['⊟', '◇', '⌗'] as const
 
 /**
- * Pain section — 3 cards derived from registry bullets (before-state framing).
+ * Pain section, 3 cards derived from registry bullets (before-state framing).
  * When pain images are provided they fill the card top; icon shown only as fallback.
  */
 export function Pain({ bullets, description, locale, images }: PainProps) {

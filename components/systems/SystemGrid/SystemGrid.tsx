@@ -11,8 +11,8 @@
  *   PUBLIC_PRODUCTS    → variant='featured'
  *
  * Responsive layout is derived automatically from `variant`.
- * Consumers do NOT pass column counts — all responsive rules live in config.ts.
- * To change breakpoints, edit config.ts only — not this file.
+ * Consumers do NOT pass column counts, all responsive rules live in config.ts.
+ * To change breakpoints, edit config.ts only, not this file.
  */
 
 import type { ProductEntry } from '@/lib/registry/types'
@@ -28,7 +28,7 @@ import { RESPONSIVE_GRID_CLASSES } from './config'
 export interface SystemGridProps {
   /**
    * Pre-filtered product array from a registry export group.
-   * Do NOT pass PRODUCTS directly — always pass a filtered group.
+   * Do NOT pass PRODUCTS directly, always pass a filtered group.
    *
    * @example
    * import { HOMEPAGE_PRODUCTS } from '@/lib/registry/products'
@@ -46,7 +46,7 @@ export interface SystemGridProps {
    */
   readonly locale?: string
   /**
-   * Thumbnail image fill mode — forwarded to SystemCardCompact.
+   * Thumbnail image fill mode, forwarded to SystemCardCompact.
    * Only applied when variant='compact'. Ignored by all other variants.
    */
   readonly imageMode?: ImageMode
@@ -61,7 +61,7 @@ export interface SystemGridProps {
    */
   readonly description?: string
   /**
-   * Analytics surface identifier — forwarded to each SystemCard for trackEvent().
+   * Analytics surface identifier, forwarded to each SystemCard for trackEvent().
    * Set by bridge components: 'homepage_compact' | 'systems_featured' | 'products_featured'
    */
   readonly source?: string
@@ -72,7 +72,7 @@ export interface SystemGridProps {
 // =============================================================================
 
 /**
- * SystemGrid — registry-driven product card grid.
+ * SystemGrid, registry-driven product card grid.
  *
  * Pass a registry export group as `products` and choose a `variant`.
  * Responsive column layout is computed automatically from the variant.

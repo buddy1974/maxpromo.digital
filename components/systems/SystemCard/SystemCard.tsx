@@ -23,7 +23,7 @@ import { SystemCardAdmin } from './SystemCardAdmin'
 import { SystemCardTable } from './SystemCardTable'
 
 // =============================================================================
-// SHARED TYPES — imported by all variants
+// SHARED TYPES, imported by all variants
 // =============================================================================
 
 /** All supported card rendering variants. */
@@ -61,12 +61,12 @@ export interface SystemCardProps {
   /** Show the primary and secondary CTA buttons. */
   readonly showCTA?: boolean
   /**
-   * Thumbnail image fill mode — passed to SystemCardCompact.
+   * Thumbnail image fill mode, passed to SystemCardCompact.
    * Only consumed by the compact variant; ignored by full/featured/admin/table.
    */
   readonly imageMode?: ImageMode
   /**
-   * Analytics surface identifier — which page/grid is rendering this card.
+   * Analytics surface identifier, which page/grid is rendering this card.
    * Passed through to sub-components for trackEvent() source field.
    * e.g. 'homepage_compact' | 'systems_featured' | 'products_featured'
    */
@@ -78,7 +78,7 @@ export interface SystemCardProps {
 // =============================================================================
 
 /**
- * SystemCard — variant router.
+ * SystemCard, variant router.
  *
  * Import this component whenever you need a product card.
  * Pass `variant` to select the rendering mode.

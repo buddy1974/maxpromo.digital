@@ -3,11 +3,11 @@
 /**
  * components/systems/ConnectedSystems.tsx
  *
- * Ecosystem connection section — appears above the final CTA on every
+ * Ecosystem connection section, appears above the final CTA on every
  * product page. Shows 3 related systems to signal that Maxpromo is an
  * interconnected platform, not a collection of standalone products.
  *
- * Each page passes its own curated mapping — no automated suggestions.
+ * Each page passes its own curated mapping, no automated suggestions.
  * Copy uses operational language only: no AI hype, no generic phrasing.
  */
 
@@ -21,11 +21,11 @@ import { Reveal } from '@/components/ui/Reveal'
 // =============================================================================
 
 export interface ConnectedSystem {
-  /** Image slug — maps to /images/systems/[slug]/card/[slug]-en.png */
+  /** Image slug, maps to /images/systems/[slug]/card/[slug]-en.png */
   readonly slug: string
   /** Display name shown on the card */
   readonly name: string
-  /** One-line operational description — no AI hype */
+  /** One-line operational description, no AI hype */
   readonly description: string
   /** Internal route (locale-aware) */
   readonly href: string
@@ -33,13 +33,13 @@ export interface ConnectedSystem {
 
 export interface ConnectedSystemsProps {
   readonly systems: ReadonlyArray<ConnectedSystem>
-  /** Optional background override — defaults to dark Maxpromo surface */
+  /** Optional background override, defaults to dark Maxpromo surface */
   readonly background?: string
-  /** Optional border color — defaults to dark border */
+  /** Optional border color, defaults to dark border */
   readonly borderColor?: string
   /**
    * Active locale, passed down from the parent server component
-   * (params.locale) — never resolved client-side. Defaults to 'en'
+   * (params.locale), never resolved client-side. Defaults to 'en'
    * for call sites that have not been updated yet.
    */
   readonly locale?: string

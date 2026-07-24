@@ -1,7 +1,7 @@
 /**
  * components/systems/SystemsPageGrid.tsx
  *
- * Adapter bridge — connects the systems page adapter to the card rendering system.
+ * Adapter bridge, connects the systems page adapter to the card rendering system.
  * Mirrors HomepageSystemsGrid exactly: accepts adapter output, imports registry
  * internally, delegates all rendering to SystemGrid → SystemCard.
  *
@@ -35,11 +35,11 @@ import SystemGrid from '@/components/systems/SystemGrid/SystemGrid'
 export interface SystemsPageGridProps {
   /**
    * Locale-resolved card data from systems.adapter → getSystemsCards(locale).
-   * Order matches SYSTEMS_PAGE_PRODUCTS — both derived from the same source.
+   * Order matches SYSTEMS_PAGE_PRODUCTS, both derived from the same source.
    * Used for adapter metadata today; will drive rendering in a future pass.
    */
   readonly cards: ReadonlyArray<SystemsCardData>
-  /** Active locale — forwarded to SystemGrid for copy selection. */
+  /** Active locale, forwarded to SystemGrid for copy selection. */
   readonly locale: string
 }
 

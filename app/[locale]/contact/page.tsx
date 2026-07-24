@@ -19,62 +19,62 @@ interface SystemContext {
 const SYSTEM_CONTEXT: Record<string, SystemContext> = {
   'agent-bureau': {
     name:     'Max Agent Bureau',
-    eyebrow:  '// Agent Bureau — Beratungsgespräch',
+    eyebrow:  '// Agent Bureau, Beratungsgespräch',
     title:    'Max Agent Bureau kennenlernen',
-    subtitle: 'Sehen Sie, wie ein überwachter KI-Stabschef Ihren Betrieb unterstützt — Nachverfolgungen, Genehmigungen, Prioritäten. Kein Commitment erforderlich.',
+    subtitle: 'Sehen Sie, wie ein überwachter KI-Stabschef Ihren Betrieb unterstützt, Nachverfolgungen, Genehmigungen, Prioritäten. Kein Commitment erforderlich.',
   },
   'restaurant-os': {
     name:     'RestaurantOS',
-    eyebrow:  '// RestaurantOS — Demo-Anfrage',
+    eyebrow:  '// RestaurantOS, Demo-Anfrage',
     title:    'RestaurantOS für Ihr Restaurant',
-    subtitle: 'Zeigen Sie uns Ihren Betrieb. Wir richten eine Demo ein, die Ihrem Restaurant entspricht — QR-Bestellung, Küchenrouting und Abrechnung.',
+    subtitle: 'Zeigen Sie uns Ihren Betrieb. Wir richten eine Demo ein, die Ihrem Restaurant entspricht, QR-Bestellung, Küchenrouting und Abrechnung.',
   },
   'handwerk-os': {
     name:     'HandwerkOS',
-    eyebrow:  '// HandwerkOS — Walkthrough anfragen',
+    eyebrow:  '// HandwerkOS, Walkthrough anfragen',
     title:    'HandwerkOS für Ihren Handwerksbetrieb',
-    subtitle: 'Walkthrough des Live-Systems — Auftragserfassung, Angebote, XRechnung-Export. Konfiguriert für Ihren Betriebstyp.',
+    subtitle: 'Walkthrough des Live-Systems, Auftragserfassung, Angebote, XRechnung-Export. Konfiguriert für Ihren Betriebstyp.',
   },
   'praxis-os': {
     name:     'PraxisOS',
-    eyebrow:  '// PraxisOS — Beratungsgespräch',
+    eyebrow:  '// PraxisOS, Beratungsgespräch',
     title:    'PraxisOS für Ihre Praxis',
-    subtitle: 'Sehen Sie das System in Aktion — Terminverwaltung, Patientenakte, Abrechnung. Wir zeigen Ihnen den Ablauf live.',
+    subtitle: 'Sehen Sie das System in Aktion, Terminverwaltung, Patientenakte, Abrechnung. Wir zeigen Ihnen den Ablauf live.',
   },
   'printshop': {
     name:     'PrintShopOS',
-    eyebrow:  '// PrintShopOS — Demo-Anfrage',
+    eyebrow:  '// PrintShopOS, Demo-Anfrage',
     title:    'PrintShopOS für Ihre Druckerei',
     subtitle: 'Zeigen Sie uns Ihren Auftragsfluss. Wir konfigurieren eine Demo für Ihren spezifischen Druckbetrieb.',
   },
   'care-os': {
     name:     'CareOS',
-    eyebrow:  '// CareOS — Walkthrough anfragen',
+    eyebrow:  '// CareOS, Walkthrough anfragen',
     title:    'CareOS für Ihre Pflegeeinrichtung',
-    subtitle: 'Walkthrough des Live-Systems — Einsatzplanung, Dokumentation, Abrechnung. Konfiguriert für Ihren Pflegebetrieb.',
+    subtitle: 'Walkthrough des Live-Systems, Einsatzplanung, Dokumentation, Abrechnung. Konfiguriert für Ihren Pflegebetrieb.',
   },
   'real-estate-os': {
     name:     'RealEstateOS',
-    eyebrow:  '// RealEstateOS — Beratungsgespräch',
+    eyebrow:  '// RealEstateOS, Beratungsgespräch',
     title:    'RealEstateOS für Ihr Immobilienunternehmen',
-    subtitle: 'Sehen Sie das Verwaltungs- und Automatisierungssystem live — Exposés, Mieter, Abrechnungen.',
+    subtitle: 'Sehen Sie das Verwaltungs- und Automatisierungssystem live, Exposés, Mieter, Abrechnungen.',
   },
   'publishing-os': {
     name:     'PublishingOS',
-    eyebrow:  '// PublishingOS — Demo-Anfrage',
+    eyebrow:  '// PublishingOS, Demo-Anfrage',
     title:    'PublishingOS für Ihren Verlag',
     subtitle: 'Zeigen Sie uns Ihren Redaktionsablauf. Wir konfigurieren das System für Ihren Verlagstyp.',
   },
   'taxkontrol': {
     name:     'TaxKontrol',
-    eyebrow:  '// TaxKontrol — Walkthrough anfragen',
+    eyebrow:  '// TaxKontrol, Walkthrough anfragen',
     title:    'TaxKontrol für Ihr Unternehmen',
-    subtitle: 'Sehen Sie das System live — Steuerrücklage, Fristen, Ausgabenerfassung — konfiguriert für Ihren Unternehmenstyp.',
+    subtitle: 'Sehen Sie das System live, Steuerrücklage, Fristen, Ausgabenerfassung, konfiguriert für Ihren Unternehmenstyp.',
   },
   'drive24': {
     name:     'Drive24',
-    eyebrow:  '// Drive24 — Zugang anfragen',
-    title:    'Drive24 — Fahrervermittlung',
+    eyebrow:  '// Drive24, Zugang anfragen',
+    title:    'Drive24, Fahrervermittlung',
     subtitle: 'Sprechen Sie mit uns über Fahrerzugang oder Partnerschaft.',
   },
 }
@@ -204,7 +204,7 @@ export default function ContactPage() {
 
   return (
     <main style={{ background: 'hsl(240 14% 4%)' }}>
-      {/* Header — adapts dynamically when ?system= is present */}
+      {/* Header, adapts dynamically when ?system= is present */}
       <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>

@@ -7,7 +7,7 @@ import { MaxPanel } from './MaxPanel'
 import { OPEN_MAX_CHAT } from '@/lib/events'
 
 /**
- * Max — unified chat widget. Mounted in both hub and showcase layouts.
+ * Max, unified chat widget. Mounted in both hub and showcase layouts.
  *
  * State split:
  *   MaxMemoryProvider  → data (session, messages, loading)

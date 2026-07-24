@@ -56,7 +56,7 @@ const QUESTIONS: QDef[] = [
   },
   {
     key: 'system',
-    bot: 'How are you currently handling this?\n\nBe honest — most businesses are still using WhatsApp, paper, or spreadsheets.',  // FIX 5
+    bot: 'How are you currently handling this?\n\nBe honest, most businesses are still using WhatsApp, paper, or spreadsheets.',  // FIX 5
     options: [
       { text: 'WhatsApp / paper',  weight: 25 },
       { text: 'Spreadsheets',      weight: 20 },
@@ -149,11 +149,11 @@ export function MaxAgent() {
 
   // ── Start flow ─────────────────────────────────────────────
 
-  // FIX 1: New opening — pain-first, not AI-tool energy
+  // FIX 1: New opening, pain-first, not AI-tool energy
   useEffect(() => {
     if (!open || msgs.length > 0) return
     ;(async () => {
-      await addBot('Hey — quick question.', 550)
+      await addBot('Hey, quick question.', 550)
       await new Promise(res => setTimeout(res, 500))   // FIX 10: inter-message pause
       await addBot('Are you losing customers because nobody replies fast enough?', 850)
       await new Promise(res => setTimeout(res, 500))   // FIX 10
@@ -202,16 +202,16 @@ export function MaxAgent() {
       if (total >= HIGH_SCORE_THRESHOLD) {
         // FIX 6: Replace "Strong match." with diagnosis framing
         await new Promise(res => setTimeout(res, 500))   // FIX 10
-        await addBot('Alright — I see what\'s happening.', 700)
+        await addBot('Alright, I see what\'s happening.', 700)
         await new Promise(res => setTimeout(res, 400))   // FIX 10
         await addBot('You\'re losing time every day on things that should already be automated.\n\nWe\'ve built systems that fix exactly this.', 1000)
-        // FIX 7: Decision step — value proposition + Yes/No
+        // FIX 7: Decision step, value proposition + Yes/No
         await new Promise(res => setTimeout(res, 500))   // FIX 10
         await addBot('If we fix this properly, you could save 5–10 hours per week.\n\nDo you want me to show you what your system would look like?', 1100)
         setInputPhase('decision')
         setLocked(false)
       } else {
-        await addBot("There's still a fit here — but let's confirm it.", 800)
+        await addBot("There's still a fit here, but let's confirm it.", 800)
         await addBot('Our free audit takes 3 minutes and gives you a full picture.', 950)
         setInputPhase('low')
       }
@@ -248,7 +248,7 @@ export function MaxAgent() {
       setLocked(false)
     } else {
       addUser('Not now')
-      await addBot('No problem — you can come back anytime.', 700)
+      await addBot('No problem, you can come back anytime.', 700)
       setInputPhase('done')
       setTimeout(() => handleClose(), 2500)
     }
@@ -287,7 +287,7 @@ export function MaxAgent() {
             locale,
           }),
         })
-      } catch { /* fail silent — UX unaffected */ }
+      } catch { /* fail silent, UX unaffected */ }
 
       const first = (answers.contactName ?? val).split(' ')[0]
       await addBot(`You'll hear from us within a few hours, ${first}.`, 800)
@@ -482,7 +482,7 @@ export function MaxAgent() {
               <div ref={bottomRef} />
             </div>
 
-            {/* ── Bottom — quick replies / decision / input / result ── */}
+            {/* ── Bottom, quick replies / decision / input / result ── */}
             <div style={{
               flexShrink: 0,
               padding: '12px 16px',
@@ -533,7 +533,7 @@ export function MaxAgent() {
                 </p>
               )}
 
-              {/* FIX 7: Decision buttons — Yes / Not now */}
+              {/* FIX 7: Decision buttons, Yes / Not now */}
               {inputPhase === 'decision' && (
                 <div style={{ display: 'flex', gap: '8px' }}>
                   {DECISION_OPTIONS.map((d) => (

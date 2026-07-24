@@ -1,9 +1,9 @@
-// Server component — purely decorative divs, no client boundary needed
+// Server component, purely decorative divs, no client boundary needed
 
 export function AmbientGlow() {
   return (
     <>
-      {/* Warm orange glow — sits behind the headline area (left, center-height) */}
+      {/* Warm orange glow, sits behind the headline area (left, center-height) */}
       <div
         aria-hidden="true"
         style={{
@@ -19,7 +19,7 @@ export function AmbientGlow() {
           zIndex: 2,
         }}
       />
-      {/* Cooler white-tinted glow — lower right, creates depth */}
+      {/* Cooler white-tinted glow, lower right, creates depth */}
       <div
         aria-hidden="true"
         style={{

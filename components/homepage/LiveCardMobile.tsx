@@ -42,7 +42,7 @@ export function LiveCardMobile({ slides, activeSlide, onSlideSelect }: LiveCardM
           boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
         }}
       >
-        {/* Header — label + slide dots */}
+        {/* Header, label + slide dots */}
         <div
           style={{
             padding: '8px 12px',
@@ -65,7 +65,7 @@ export function LiveCardMobile({ slides, activeSlide, onSlideSelect }: LiveCardM
             {slide.label}
           </span>
 
-          {/* Dots — oversized padding for 44px touch target */}
+          {/* Dots, oversized padding for 44px touch target */}
           <div style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
             {slides.map((_, i) => (
               <button
@@ -97,7 +97,7 @@ export function LiveCardMobile({ slides, activeSlide, onSlideSelect }: LiveCardM
           </div>
         </div>
 
-        {/* Content — readable 11px minimum */}
+        {/* Content, readable 11px minimum */}
         <div style={{ padding: '10px 12px 12px', display: 'flex', gap: '12px' }}>
           {slide.items.slice(0, 2).map((item, i) => (
             <div key={i} style={{ flex: 1, minWidth: 0 }}>

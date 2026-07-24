@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ? 'PrintShopOS | Dateiprüfung, Angebote & Auftrags-Routing'
     : 'PrintShopOS | File Validation, Quotes & Job Routing'
   const description = isDE
-    ? 'Automatische Dateiprüfung, Auftrags-Routing und Kundenkommunikation in einem System — Dateiprobleme erkennen, bevor sie zu Nachdrucken werden.'
-    : 'Automatic file validation, job routing and customer updates in one system — catch file issues before they become expensive reprints.'
+    ? 'Automatische Dateiprüfung, Auftrags-Routing und Kundenkommunikation in einem System, Dateiprobleme erkennen, bevor sie zu Nachdrucken werden.'
+    : 'Automatic file validation, job routing and customer updates in one system, catch file issues before they become expensive reprints.'
   return {
     title,
     description,
@@ -85,7 +85,7 @@ export default async function PrintshopPage({
               {locale === 'de' ? 'Dateiprobleme erkennen, bevor sie zu teuren Nachdrucken werden.' : 'Catch file issues before they become expensive reprints.'}
             </h1>
             <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#444444', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
-              {locale === 'de' ? 'Automatische Dateiprüfung, Auftrags-Routing und Kundenkommunikation — alles in einem System.' : 'PrintShopOS keeps quotes, artwork validation and production handovers moving in one workflow — without rebuilding how your print shop already works.'}
+              {locale === 'de' ? 'Automatische Dateiprüfung, Auftrags-Routing und Kundenkommunikation, alles in einem System.' : 'PrintShopOS keeps quotes, artwork validation and production handovers moving in one workflow, without rebuilding how your print shop already works.'}
             </p>
 
             {/* Proof chips */}
@@ -133,7 +133,7 @@ export default async function PrintshopPage({
           <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '8px', border: `2px solid ${INK}` }}>
             <Image
               src={locale === 'de' ? '/images/systems/printshop-os/card/printshop-os-de.png' : '/images/systems/printshop-os/card/printshop-os-en.png'}
-              alt={locale === 'de' ? 'Druckproduktions-Workflow — Artwork wird geprüft und für die Druckmaschine vorbereitet' : 'Print production workflow — artwork being validated and prepared for press'}
+              alt={locale === 'de' ? 'Druckproduktions-Workflow, Artwork wird geprüft und für die Druckmaschine vorbereitet' : 'Print production workflow, artwork being validated and prepared for press'}
               width={760}
               height={400}
               style={{ width: '100%', height: 'auto', display: 'block' }}
@@ -233,7 +233,7 @@ export default async function PrintshopPage({
                   {locale === 'de' ? 'PrintShopOS prüft Dateien, organisiert die Produktion und hält Aufträge in Bewegung, sobald eine Anfrage eingeht.' : 'PrintShopOS validates files, organizes production and keeps orders moving from the moment a request arrives.'}
                 </h2>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8 }}>
-                  {locale === 'de' ? 'Kunden konfigurieren ihre Bestellung und laden Artwork direkt hoch. Das System prüft DPI, Beschnitt, Farben und Abmessungen, bevor die Datei die Druckmaschine erreicht. Fehlerhafte Dateien werden beim Upload abgelehnt — nicht nach dem Druck.' : 'Customers configure their order and upload artwork directly. The system checks DPI, bleed, colours and dimensions before the file reaches the press. Bad files are rejected at the upload step — not after printing.'}
+                  {locale === 'de' ? 'Kunden konfigurieren ihre Bestellung und laden Artwork direkt hoch. Das System prüft DPI, Beschnitt, Farben und Abmessungen, bevor die Datei die Druckmaschine erreicht. Fehlerhafte Dateien werden beim Upload abgelehnt, nicht nach dem Druck.' : 'Customers configure their order and upload artwork directly. The system checks DPI, bleed, colours and dimensions before the file reaches the press. Bad files are rejected at the upload step, not after printing.'}
                 </p>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8, marginTop: '1rem' }}>
                   {locale === 'de' ? 'Jeder Auftrag geht automatisch in eine Produktionswarteschlange. Rechnungen werden bei Zahlung erstellt. Kunden werden ohne Telefonanruf informiert.' : 'Every order enters a production queue automatically. Invoices generated on payment. Customers updated without a phone call.'}
@@ -242,15 +242,15 @@ export default async function PrintshopPage({
               <div style={{ borderLeft: `3px solid ${C}`, paddingLeft: '2rem' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>{locale === 'de' ? 'WAS AUTOMATISCH LÄUFT' : 'WHAT RUNS AUTOMATICALLY'}</p>
                 {(locale === 'de' ? [
-                  { text: 'Dateiprüfung — vor dem Drucklauf, jedes Mal', color: C },
-                  { text: 'Produktionswarteschlange — pro Auftrag aktualisiert, keine manuelle Eingabe', color: M },
-                  { text: 'Rechnungserstellung — bei Zahlungsbestätigung', color: Y },
-                  { text: 'Kundeninformierung — Status ohne Mitarbeiterbeteiligung gesendet', color: ORANGE },
+                  { text: 'Dateiprüfung, vor dem Drucklauf, jedes Mal', color: C },
+                  { text: 'Produktionswarteschlange, pro Auftrag aktualisiert, keine manuelle Eingabe', color: M },
+                  { text: 'Rechnungserstellung, bei Zahlungsbestätigung', color: Y },
+                  { text: 'Kundeninformierung, Status ohne Mitarbeiterbeteiligung gesendet', color: ORANGE },
                 ] : [
-                  { text: 'File validation — before the press run, every time', color: C },
-                  { text: 'Production queue — updated per order, no manual entry', color: M },
-                  { text: 'Invoice generation — on payment confirmation', color: Y },
-                  { text: 'Customer updates — status sent without staff involvement', color: ORANGE },
+                  { text: 'File validation, before the press run, every time', color: C },
+                  { text: 'Production queue, updated per order, no manual entry', color: M },
+                  { text: 'Invoice generation, on payment confirmation', color: Y },
+                  { text: 'Customer updates, status sent without staff involvement', color: ORANGE },
                 ]).map(item => (
                   <div key={item.text} style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'flex-start' }}>
                     <span style={{ color: item.color, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>→</span>
@@ -274,13 +274,13 @@ export default async function PrintshopPage({
             <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `2px solid ${INK}` }}>
               {(locale === 'de' ? [
                 { num: '01', color: C,      title: 'Kunde konfiguriert und bestellt', desc: 'Wählt Produkt, Größe und Menge. Preis berechnet sich in Echtzeit. Keine Angebotsanfrage. Keine E-Mail. Kein Warten.' },
-                { num: '02', color: M,      title: 'Artwork hochgeladen',              desc: 'Kunde lädt die Datei direkt hoch. Das System prüft sofort — Auflösung, Beschnitt, Farbprofil, Abmessungen.' },
+                { num: '02', color: M,      title: 'Artwork hochgeladen',              desc: 'Kunde lädt die Datei direkt hoch. Das System prüft sofort, Auflösung, Beschnitt, Farbprofil, Abmessungen.' },
                 { num: '03', color: Y,      title: 'Datei automatisch geprüft',        desc: 'Probleme werden vor Produktionsbeginn gemeldet. Kunde korrigiert und lädt erneut hoch. Keine Mitarbeiterbeteiligung für Standarddateien.' },
                 { num: '04', color: ORANGE, title: 'Zahlung bestätigt',                desc: 'Auftrag per Stripe bezahlt. Rechnung automatisch erstellt. Kunde erhält Bestätigung. Produktionswarteschlange aktualisiert.' },
                 { num: '05', color: C,      title: 'Produktion bis Lieferung',         desc: 'Auftrag durch Produktionsstufen verfolgt. Kunde an Schlüsselpunkten benachrichtigt. Keine Telefonanrufe für Statusaktualisierungen erforderlich.' },
               ] : [
                 { num: '01', color: C,      title: 'Customer configures and orders', desc: 'Selects product, size and quantity. Price calculates in real time. No quote request. No email. No waiting.' },
-                { num: '02', color: M,      title: 'Artwork uploaded',               desc: 'Customer uploads the file directly. The system checks it immediately — resolution, bleed, colour profile, dimensions.' },
+                { num: '02', color: M,      title: 'Artwork uploaded',               desc: 'Customer uploads the file directly. The system checks it immediately, resolution, bleed, colour profile, dimensions.' },
                 { num: '03', color: Y,      title: 'File validated automatically',   desc: 'Issues flagged before production begins. Customer corrects and re-uploads. No staff involvement needed for standard files.' },
                 { num: '04', color: ORANGE, title: 'Payment confirmed',              desc: 'Order paid via Stripe. Invoice generated automatically. Customer receives confirmation. Production queue updated.' },
                 { num: '05', color: C,      title: 'Production to delivery',         desc: 'Job tracked through production stages. Customer notified at key points. No phone calls required for status updates.' },
@@ -299,7 +299,7 @@ export default async function PrintshopPage({
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888', marginBottom: '1rem' }}>{locale === 'de' ? 'DAS SYSTEM IM BETRIEB' : 'THE SYSTEM IN OPERATION'}</p>
               <Image
                 src="/images/systems/printshop-os/card/printshop-os-de.png"
-                alt={locale === 'de' ? 'PrintShopOS im Betrieb — Dateiprüfung, Produktionswarteschlange und Auftragsverwaltung' : 'PrintShopOS in operation — file validation, production queue and order management'}
+                alt={locale === 'de' ? 'PrintShopOS im Betrieb, Dateiprüfung, Produktionswarteschlange und Auftragsverwaltung' : 'PrintShopOS in operation, file validation, production queue and order management'}
                 width={1200}
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '8px', border: `2px solid ${INK}`, display: 'block' }}
@@ -327,16 +327,16 @@ export default async function PrintshopPage({
                 </div>
               </div>
               {(locale === 'de' ? [
-                { before: 'Angebote per E-Mail — tagelang hin und her',          after: 'Kunde konfiguriert und bezahlt ohne Kontakt' },
-                { before: 'Fehlerhafte Dateien nach dem Drucklauf entdeckt',     after: 'Dateifehler beim Upload erkannt — vor der Produktion' },
+                { before: 'Angebote per E-Mail, tagelang hin und her',          after: 'Kunde konfiguriert und bezahlt ohne Kontakt' },
+                { before: 'Fehlerhafte Dateien nach dem Drucklauf entdeckt',     after: 'Dateifehler beim Upload erkannt, vor der Produktion' },
                 { before: 'Produktion in einer gemeinsamen Tabelle verfolgt',    after: 'Jeder Auftrag automatisch ab Zahlung verfolgt' },
-                { before: 'Rechnungen manuell pro Auftrag erstellt',             after: 'Rechnung bei Zahlung erstellt — automatisch' },
+                { before: 'Rechnungen manuell pro Auftrag erstellt',             after: 'Rechnung bei Zahlung erstellt, automatisch' },
                 { before: 'Kunde ruft für Statusupdate an',                      after: 'Kunde in jeder Produktionsstufe benachrichtigt' },
               ] : [
-                { before: 'Quotes sent by email — days of back-and-forth', after: 'Customer configures and pays without contacting you' },
-                { before: 'Bad files found after the press run',           after: 'File issues caught at upload — before production'   },
+                { before: 'Quotes sent by email, days of back-and-forth', after: 'Customer configures and pays without contacting you' },
+                { before: 'Bad files found after the press run',           after: 'File issues caught at upload, before production'   },
                 { before: 'Production tracked in a shared spreadsheet',   after: 'Every order tracked automatically from payment'     },
-                { before: 'Invoices created manually per job',            after: 'Invoice generated on payment — automatically'       },
+                { before: 'Invoices created manually per job',            after: 'Invoice generated on payment, automatically'       },
                 { before: 'Customer calls for a status update',           after: 'Customer notified at each production stage'         },
               ]).map((row, i) => (
                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
@@ -366,23 +366,23 @@ export default async function PrintshopPage({
                   {locale === 'de' ? 'Ein echter Druckablauf. Von hochgeladenem Artwork bis zum Produktionsabschluss.' : 'A real print workflow. From uploaded artwork to production completion.'}
                 </h3>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#444', lineHeight: 1.8 }}>
-                  {locale === 'de' ? 'Der Walkthrough umfasst eine Live-Session — Kunden-Auftragsablauf, Dateiprüfung in Aktion, Produktionswarteschlangen-Ansicht und Rechnungserstellung. Das System in Aktion, keine Präsentation darüber.' : 'The walkthrough covers a live session — customer order flow, file validation in action, production queue view, and invoice generation. The system running, not a presentation about the system.'}
+                  {locale === 'de' ? 'Der Walkthrough umfasst eine Live-Session, Kunden-Auftragsablauf, Dateiprüfung in Aktion, Produktionswarteschlangen-Ansicht und Rechnungserstellung. Das System in Aktion, keine Präsentation darüber.' : 'The walkthrough covers a live session, customer order flow, file validation in action, production queue view, and invoice generation. The system running, not a presentation about the system.'}
                 </p>
               </div>
               <div className="ink-card" style={{ borderTop: `4px solid ${M}` }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>{locale === 'de' ? 'WAS DER WALKTHROUGH ABDECKT' : 'WHAT THE WALKTHROUGH COVERS'}</p>
                 {(locale === 'de' ? [
-                  'Kunden-Selbstbedienungs-Auftragsablauf — keine E-Mail erforderlich',
-                  'Dateiprüfung — was das System erkennt und wie',
-                  'Produktionswarteschlange — Auftragsverfolgung von Zahlung bis Lieferung',
-                  'Admin-Ansicht — vollständige Auftragsverwaltung und Status',
-                  'Mehrsprachige Plattform — EN / DE / FR in einem System',
+                  'Kunden-Selbstbedienungs-Auftragsablauf, keine E-Mail erforderlich',
+                  'Dateiprüfung, was das System erkennt und wie',
+                  'Produktionswarteschlange, Auftragsverfolgung von Zahlung bis Lieferung',
+                  'Admin-Ansicht, vollständige Auftragsverwaltung und Status',
+                  'Mehrsprachige Plattform, EN / DE / FR in einem System',
                 ] : [
-                  'Customer self-serve order flow — no email required',
-                  'File validation — what the system catches and how',
-                  'Production queue — order tracking from payment to delivery',
-                  'Admin view — full order management and status',
-                  'Multilingual platform — EN / DE / FR in one system',
+                  'Customer self-serve order flow, no email required',
+                  'File validation, what the system catches and how',
+                  'Production queue, order tracking from payment to delivery',
+                  'Admin view, full order management and status',
+                  'Multilingual platform, EN / DE / FR in one system',
                 ]).map(line => (
                   <div key={line} style={{ display: 'flex', gap: '10px', marginBottom: '12px', alignItems: 'flex-start' }}>
                     <span style={{ color: C, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>→</span>
@@ -405,14 +405,14 @@ export default async function PrintshopPage({
             </h2>
             <div className="ps-grid-2" style={{ border: `2px solid ${INK}` }}>
               {(locale === 'de' ? [
-                { num: '01', color: C,      title: 'Kurzes Gespräch',     desc: 'Wir erfahren mehr über die Druckerei — welche Produkte Sie anbieten, wie Aufträge ankommen, wo derzeit die Reibung liegt.' },
+                { num: '01', color: C,      title: 'Kurzes Gespräch',     desc: 'Wir erfahren mehr über die Druckerei, welche Produkte Sie anbieten, wie Aufträge ankommen, wo derzeit die Reibung liegt.' },
                 { num: '02', color: M,      title: 'Katalog analysiert',  desc: 'Wir schauen uns Ihr Produktsortiment an und konfigurieren Preise, Größenoptionen und Upload-Anforderungen rund um Ihr aktuelles Angebot.' },
-                { num: '03', color: Y,      title: 'Workflow konfiguriert', desc: 'PrintShopOS für Ihren Produktionsprozess eingerichtet — Validierungsregeln, Warteschlangenstufen, Kundenkommunikation.' },
+                { num: '03', color: Y,      title: 'Workflow konfiguriert', desc: 'PrintShopOS für Ihren Produktionsprozess eingerichtet, Validierungsregeln, Warteschlangenstufen, Kundenkommunikation.' },
                 { num: '04', color: ORANGE, title: 'Schrittweise starten', desc: 'Beginnen Sie mit einer Produktkategorie. Fügen Sie weitere hinzu, wenn der Ablauf vertraut wird. Kein vollständiger Umstieg am ersten Tag erforderlich.' },
               ] : [
-                { num: '01', color: C,      title: 'Short conversation',    desc: 'We learn about the print shop — what products you offer, how orders arrive, where the friction is currently.' },
+                { num: '01', color: C,      title: 'Short conversation',    desc: 'We learn about the print shop, what products you offer, how orders arrive, where the friction is currently.' },
                 { num: '02', color: M,      title: 'Catalogue reviewed',    desc: 'We look at your product range and configure pricing, sizing options and upload requirements around your current offering.' },
-                { num: '03', color: Y,      title: 'Workflow configured',   desc: 'PrintShopOS is set up for your production process — validation rules, queue stages, customer communication.' },
+                { num: '03', color: Y,      title: 'Workflow configured',   desc: 'PrintShopOS is set up for your production process, validation rules, queue stages, customer communication.' },
                 { num: '04', color: ORANGE, title: 'Launch gradually',      desc: 'Start with one product category. Add more as the workflow becomes familiar. No full switchover required on day one.' },
               ]).map(item => (
                 <div key={item.num} className="ink-card" style={{ borderTop: `4px solid ${item.color}` }}>
@@ -447,8 +447,8 @@ export default async function PrintshopPage({
               {locale === 'de' ? 'Erzählen Sie uns von der Druckerei. Wir führen durch den Live-Workflow und zeigen, wie PrintShopOS zur spezifischen Arbeitsweise Ihrer Druckerei passt.' : 'Tell us about the print shop. We walk through the live workflow and show how PrintShopOS fits the specific way your shop already operates.'}
             </p>
             <div style={{ marginTop: '1.5rem', background: '#FFFFFF', border: `2px solid ${INK}`, padding: '20px 24px', maxWidth: '400px', display: 'inline-block' }}>
-              {(locale === 'de' ? ['Kurzes Gespräch zuerst — kein Commitment.', 'Konfiguriert für Ihren Produktkatalog.', 'Mit einer Kategorie starten. Erweitern wenn bereit.'] : ['Short conversation first — no commitment.', 'Configured to your product catalogue.', 'Start with one category. Expand when ready.']).map(line => (
-                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#444', margin: '4px 0', letterSpacing: '0.05em' }}>— {line}</p>
+              {(locale === 'de' ? ['Kurzes Gespräch zuerst, kein Commitment.', 'Konfiguriert für Ihren Produktkatalog.', 'Mit einer Kategorie starten. Erweitern wenn bereit.'] : ['Short conversation first, no commitment.', 'Configured to your product catalogue.', 'Start with one category. Expand when ready.']).map(line => (
+                <p key={line} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#444', margin: '4px 0', letterSpacing: '0.05em' }}>-{line}</p>
               ))}
             </div>
             <PrintshopContactForm locale={locale} />

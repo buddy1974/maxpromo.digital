@@ -26,7 +26,7 @@ export function BeforeAfter({ bullets, locale }: BeforeAfterProps) {
 
         <div style={{ display: 'grid', gap: '1px', background: 'rgba(128,128,128,0.12)', borderRadius: '12px', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2">
 
-          {/* Before — left */}
+          {/* Before, left */}
           <div style={{ padding: '2.5rem', background: 'var(--brand-bg)' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#ef4444', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
               ✗ {colBefore}
@@ -41,7 +41,7 @@ export function BeforeAfter({ bullets, locale }: BeforeAfterProps) {
             </div>
           </div>
 
-          {/* After — right */}
+          {/* After, right */}
           <div style={{ padding: '2.5rem', background: 'var(--brand-bg)', borderLeft: '2px solid var(--brand-accent)' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-accent)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
               ✓ {colAfter}

@@ -47,7 +47,7 @@ export default async function BlogIndexPage() {
           </p>
         </div>
 
-        {/* Tag filters — only render if posts exist */}
+        {/* Tag filters, only render if posts exist */}
         {tags.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '3rem' }}>
             <span

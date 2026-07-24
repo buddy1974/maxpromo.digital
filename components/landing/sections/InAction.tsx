@@ -9,7 +9,7 @@ interface InActionProps {
 }
 
 /**
- * Visual proof section — split layout.
+ * Visual proof section, split layout.
  * Left: product card image (the system in action).
  * Right: 3 short observations derived from the first 3 workflow step labels.
  * Phase 3: replace with a real system screenshot / screen recording.

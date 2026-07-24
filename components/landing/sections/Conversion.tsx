@@ -7,11 +7,11 @@ interface ConversionProps {
 }
 
 /**
- * Final conversion section — always rendered (both showcase and bridge mode).
+ * Final conversion section, always rendered (both showcase and bridge mode).
  * Bridge mode: secondary CTA links directly to the product domain.
  * Showcase mode: secondary CTA links to the live demo or system URL.
  *
- * TODO Phase 3: Max chat handles the contact form — see MaxAgent component.
+ * TODO Phase 3: Max chat handles the contact form, see MaxAgent component.
  */
 export function Conversion({ bookDemoUrl, domain, ctaPrimary, locale, bridge }: ConversionProps) {
   const isDE    = locale === 'de'
@@ -59,7 +59,7 @@ export function Conversion({ bookDemoUrl, domain, ctaPrimary, locale, bridge }: 
           )}
         </div>
 
-        {/* TODO Phase 3: Max chat handles the contact form — see MaxAgent component */}
+        {/* TODO Phase 3: Max chat handles the contact form, see MaxAgent component */}
       </div>
     </section>
   )

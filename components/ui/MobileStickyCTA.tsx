@@ -10,7 +10,7 @@ type SectionId = 'hero' | 'pain' | 'proof' | 'systems'
 
 const COPY: Record<SectionId, { en: string; de: string }> = {
   hero:    { en: 'Get Free Audit',       de: 'Kostenloser Geschäfts-Check' },
-  pain:    { en: 'Fix This — Free Check', de: 'Problem lösen — Kostenlos'  },
+  pain:    { en: 'Fix This, Free Check', de: 'Problem lösen, Kostenlos'  },
   proof:   { en: 'Get These Results',    de: 'Diese Ergebnisse sehen'      },
   systems: { en: 'View This System',     de: 'System ansehen'              },
 }
@@ -35,7 +35,7 @@ export function MobileStickyCTA() {
     const footer  = document.querySelector<Element>('footer')
     const allSecs = document.querySelectorAll<Element>('[data-section]')
 
-    // Non-homepage fallback — no hero marker, use scroll threshold
+    // Non-homepage fallback, no hero marker, use scroll threshold
     if (!hero) {
       const check = () => setVisible(window.scrollY > 300)
       window.addEventListener('scroll', check, { passive: true })

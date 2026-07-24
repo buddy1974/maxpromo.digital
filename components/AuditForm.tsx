@@ -1,11 +1,11 @@
 'use client'
 
 /**
- * AuditForm.tsx — Universal Business Diagnostic
+ * AuditForm.tsx, Universal Business Diagnostic
  *
  * Architecture: pain-first, product-agnostic.
  * Sections, options, and scoring live in lib/audit-diagnostic.ts (structure,
- * ids, and category→option mapping — locale-independent).
+ * ids, and category→option mapping, locale-independent).
  * Display copy (headlines, subheadlines, options, category labels) is
  * localized via the `automationAudit` namespace in messages/*.json,
  * looked up by section id / category id. This component is responsible
@@ -156,7 +156,7 @@ function LoadingScreen() {
   const [msgIndex, setMsgIndex] = useState(0)
   const [progress, setProgress] = useState(0)
 
-  // One-time effect — safe here because component only mounts once
+  // One-time effect, safe here because component only mounts once
   useEffect(() => {
     const msgInterval = setInterval(() => {
       setMsgIndex((i) => Math.min(i + 1, loadingMessages.length - 1))
@@ -558,7 +558,7 @@ export default function AuditForm() {
   // Options are pulled from messages/*.json (automationAudit.sections.<id>)
   // rather than lib/audit-diagnostic.ts, so display copy is localized while
   // the scoring keys (option strings used in OPTION_SCORES) stay locale-
-  // independent — the English option strings remain the canonical scoring
+  // independent, the English option strings remain the canonical scoring
   // keys, and the translated labels shown to the user map 1:1 by array index.
   const sectionOptionKeys = currentSection?.options ?? []
   const translatedOptions = currentSection
@@ -616,13 +616,13 @@ export default function AuditForm() {
       detectedCategories: categories,
     }
 
-    // Fire API call non-blocking — lead saved + email sent in background
+    // Fire API call non-blocking, lead saved + email sent in background
     fetch('/api/diagnostic', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     }).catch(() => {
-      // Silent fail — diagnostic display is client-computed, not API-dependent
+      // Silent fail, diagnostic display is client-computed, not API-dependent
     })
 
     // Brief analytical pause for UX before showing results

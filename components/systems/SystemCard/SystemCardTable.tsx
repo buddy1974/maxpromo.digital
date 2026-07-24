@@ -1,7 +1,7 @@
 /**
  * components/systems/SystemCard/SystemCardTable.tsx
  *
- * Table row variant — future tabular product listing.
+ * Table row variant, future tabular product listing.
  * The most condensed variant: one row per product with just enough information
  * to identify and link to it.
  *
@@ -9,7 +9,7 @@
  * partner dashboards, and any context where dense display is preferred.
  *
  * Consumer:
- *   Not yet assigned — future use only.
+ *   Not yet assigned, future use only.
  *   Rendered by SystemCard with variant='table'
  *
  * TODO: design table variant layout
@@ -22,7 +22,7 @@ import type { SystemCardProps } from './SystemCard'
 // PROPS
 // =============================================================================
 
-/** Table variant props — minimal set. */
+/** Table variant props, minimal set. */
 export type SystemCardTableProps = Pick<SystemCardProps, 'product' | 'locale'>
 
 // =============================================================================
@@ -30,10 +30,10 @@ export type SystemCardTableProps = Pick<SystemCardProps, 'product' | 'locale'>
 // =============================================================================
 
 /**
- * SystemCardTable — condensed table-row card.
+ * SystemCardTable, condensed table-row card.
  *
  * One row per product. Minimal content: name, category, domain, status, CTA.
- * Full design not yet specified — shell only.
+ * Full design not yet specified, shell only.
  *
  * @example
  * <SystemCard product={p} variant="table" />
@@ -53,7 +53,7 @@ export function SystemCardTable({ product, locale = 'de' }: SystemCardTableProps
       style={{ display: 'flex', alignItems: 'center' }}
     >
       {/*
-        ── SHELL — layout not yet designed.
+        ── SHELL, layout not yet designed.
         TODO: design table row layout:
           [brand-dot] [name] [category] [domain] [status] [CTA →]
         TODO: assign to a specific page and grid context.

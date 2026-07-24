@@ -14,7 +14,7 @@ interface HeroWorldProps {
 
 /**
  * Hero section for showcase product domains.
- * Splits headline on first ". " — first part primary, second part in --brand-accent (VG-04).
+ * Splits headline on first ". ", first part primary, second part in --brand-accent (VG-04).
  * CTA primary: always #F97316 (VG-03). Secondary: ghost.
  */
 export function HeroWorld({
@@ -72,7 +72,7 @@ export function HeroWorld({
           </div>
         </div>
 
-        {/* Card image — desktop only */}
+        {/* Card image, desktop only */}
         <div
           className="hidden lg:block"
           style={{ position: 'relative', height: '420px', borderRadius: '16px', overflow: 'hidden', background: 'rgba(128,128,128,0.06)' }}

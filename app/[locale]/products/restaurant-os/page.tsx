@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ? 'RestaurantOS | QR-Bestellung, Küchenrouting & Zahlung'
     : 'RestaurantOS | QR Ordering, Kitchen Routing & Payment'
   const description = isDE
-    ? 'QR-Bestellung, Küchenrouting und Zahlung in einem System. Keine App für Gäste, kein Tablet für das Personal — installiert auf Ihrer eigenen Domain.'
-    : 'QR ordering, kitchen routing and payment in one system. No app for guests, no tablet for staff — installed on your own domain.'
+    ? 'QR-Bestellung, Küchenrouting und Zahlung in einem System. Keine App für Gäste, kein Tablet für das Personal, installiert auf Ihrer eigenen Domain.'
+    : 'QR ordering, kitchen routing and payment in one system. No app for guests, no tablet for staff, installed on your own domain.'
   return {
     title,
     description,
@@ -56,7 +56,7 @@ export default async function RestaurantOSPage({
 
         {/* Description */}
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#888888', lineHeight: 1.75, marginBottom: '1.5rem' }}>
-          {locale === 'de' ? 'QR-Bestellung, Küchenrouting und Zahlung — alles in einem System. Keine App für Gäste. Kein Tablet für das Personal. Installiert auf Ihrer Domain.' : 'QR ordering, kitchen routing and payment — all in one system. No app for guests. No tablet for staff. Installed on your domain.'}
+          {locale === 'de' ? 'QR-Bestellung, Küchenrouting und Zahlung, alles in einem System. Keine App für Gäste. Kein Tablet für das Personal. Installiert auf Ihrer Domain.' : 'QR ordering, kitchen routing and payment, all in one system. No app for guests. No tablet for staff. Installed on your domain.'}
         </p>
 
         {/* Benefits */}
@@ -64,12 +64,12 @@ export default async function RestaurantOSPage({
           {(locale === 'de' ? [
             'Vollständige QR-Speisekarte mit Tischbestellung',
             'Echtzeit-Küchenrouting',
-            'Integrierte Zahlung — keine Drittanbieter-Kasse',
+            'Integrierte Zahlung, keine Drittanbieter-Kasse',
             'Auf Ihrer eigenen Domain installiert',
           ] : [
             'Full QR menu with table ordering',
             'Real-time kitchen routing',
-            'Integrated payment — no third-party POS',
+            'Integrated payment, no third-party POS',
             'Installed on your own domain',
           ]).map((item) => (
             <li key={item} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#666', letterSpacing: '0.04em', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>

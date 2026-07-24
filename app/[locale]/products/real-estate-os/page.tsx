@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ? 'RealEstateOS | Deal-Analyse, Investor-CRM & Pipeline'
     : 'RealEstateOS | Deal Analysis, Investor CRM & Pipeline'
   const description = isDE
-    ? 'KI-Deal-Analyse mit Score und ROI, Investor-CRM mit Lead-Scoring und Pipeline-Tracking — verbunden in einer operativen Ansicht.'
-    : 'AI deal analysis with score and ROI, investor CRM with lead scoring, and pipeline tracking — connected in one operational view.'
+    ? 'KI-Deal-Analyse mit Score und ROI, Investor-CRM mit Lead-Scoring und Pipeline-Tracking, verbunden in einer operativen Ansicht.'
+    : 'AI deal analysis with score and ROI, investor CRM with lead scoring, and pipeline tracking, connected in one operational view.'
   return {
     title,
     description,
@@ -76,7 +76,7 @@ export default async function RealEstateOSPage({
               {locale === 'de' ? <>Eine Immobilienchance kommt an.<br />Das Entscheidungsfenster ist 48 Stunden.<br />Alles liegt noch in Tabellen.</> : <>A property opportunity arrives.<br />The decision window is 48 hours.<br />Everything still lives in spreadsheets.</>}
             </h1>
             <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
-              {locale === 'de' ? 'RealEstateOS hält Deal-Analyse, Investorenbeziehungen und Kampagnenaktivität in einer operativen Ansicht verbunden — ohne die Art zu ersetzen, wie Ihr Team bereits Chancen bewertet.' : 'RealEstateOS keeps deal analysis, investor relationships and campaign activity connected in one operational view — without replacing the way your team already evaluates opportunities.'}
+              {locale === 'de' ? 'RealEstateOS hält Deal-Analyse, Investorenbeziehungen und Kampagnenaktivität in einer operativen Ansicht verbunden, ohne die Art zu ersetzen, wie Ihr Team bereits Chancen bewertet.' : 'RealEstateOS keeps deal analysis, investor relationships and campaign activity connected in one operational view, without replacing the way your team already evaluates opportunities.'}
             </p>
             <div className="mp-hero-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
               {(locale === 'de' ? ['KI-Deal-Analyse mit Score und ROI', 'Investor-CRM mit Lead-Scoring', 'Pipeline von Chance bis Entscheidung', 'Kampagnenstudio mit KI-Betreffzeilen'] : ['AI deal analysis with score and ROI', 'Investor CRM with lead scoring', 'Pipeline from opportunity to decision', 'Campaign studio with AI subject lines']).map(p => (
@@ -90,7 +90,7 @@ export default async function RealEstateOSPage({
           <div className="mp-img-wrap mp-hero-2" style={{ borderRadius: '16px', border: '1px solid #1A1A1A', boxShadow: '0 8px 32px -8px rgba(0,0,0,0.6)' }}>
             <Image
               src={locale === 'de' ? '/images/systems/real-estate-os/card/real-estate-os-de.png' : '/images/systems/real-estate-os/card/real-estate-os-en.png'}
-              alt={locale === 'de' ? 'Immobilienanalyst prüft einen Deal — Investitionsanalyse am Schreibtisch' : 'Property analyst reviewing a deal — investment analysis at the desk'}
+              alt={locale === 'de' ? 'Immobilienanalyst prüft einen Deal, Investitionsanalyse am Schreibtisch' : 'Property analyst reviewing a deal, investment analysis at the desk'}
               width={760}
               height={400}
               style={{ width: '100%', height: 'auto', display: 'block' }}
@@ -108,14 +108,14 @@ export default async function RealEstateOSPage({
             <div className="re-grid-2">
               {(locale === 'de' ? [
                 { label: 'DIE TABELLENANALYSE', text: 'Immobilie kommt an. Analyse beginnt in Excel. Vergleichsdaten manuell eingegeben. ROI in einer Formel berechnet, die vor zwei Jahren erstellt wurde und seitdem nicht überprüft wurde.' },
-                { label: 'DER VERLORENE INVESTOR', text: 'Investor zeigte Interesse an einem früheren Deal. Nachverfolgung war irgendwo notiert — ein E-Mail-Thread, eine Zelle in einer Tabelle, ein Klebezettel. Die nächste relevante Immobilie geht auf den Markt. Sie werden nicht rechtzeitig kontaktiert.' },
+                { label: 'DER VERLORENE INVESTOR', text: 'Investor zeigte Interesse an einem früheren Deal. Nachverfolgung war irgendwo notiert, ein E-Mail-Thread, eine Zelle in einer Tabelle, ein Klebezettel. Die nächste relevante Immobilie geht auf den Markt. Sie werden nicht rechtzeitig kontaktiert.' },
                 { label: 'DER E-MAIL-THREAD', text: 'Deal-Entscheidung findet über vierzehn Antwort-Allen-E-Mails statt. Drei Personen haben verschiedene Versionen der Analyse. Die finale Zahl im Gebot kam aus einer E-Mail vom Donnerstag, die zwei Personen nie geöffnet haben.' },
-                { label: 'DIE KAMPAGNE', text: 'Investorenkampagne gestartet. Betreffzeile schnell geschrieben. Öffnungsrate nicht verfolgt. Antwortrate nicht verfolgt. Welche Investoren mit welchen Immobilien interagiert haben — unbekannt.' },
+                { label: 'DIE KAMPAGNE', text: 'Investorenkampagne gestartet. Betreffzeile schnell geschrieben. Öffnungsrate nicht verfolgt. Antwortrate nicht verfolgt. Welche Investoren mit welchen Immobilien interagiert haben, unbekannt.' },
               ] : [
                 { label: 'THE SPREADSHEET ANALYSIS', text: "Property arrives. Analysis starts in Excel. Comparable data entered manually. ROI calculated in a formula that was built two years ago and has not been checked since." },
-                { label: 'THE LOST INVESTOR', text: "Investor showed interest in a previous deal. Follow-up was noted somewhere — an email thread, a cell in a spreadsheet, a sticky note. The next relevant property goes to market. They are not contacted in time." },
+                { label: 'THE LOST INVESTOR', text: "Investor showed interest in a previous deal. Follow-up was noted somewhere, an email thread, a cell in a spreadsheet, a sticky note. The next relevant property goes to market. They are not contacted in time." },
                 { label: 'THE EMAIL THREAD', text: "Deal decision happens across fourteen reply-all emails. Three people have different versions of the analysis. The final number used in the bid came from an email sent on Thursday that two people never opened." },
-                { label: 'THE CAMPAIGN', text: "Investor campaign launched. Subject line written quickly. Open rate not tracked. Reply rate not tracked. Which investors engaged with which properties — unknown." },
+                { label: 'THE CAMPAIGN', text: "Investor campaign launched. Subject line written quickly. Open rate not tracked. Reply rate not tracked. Which investors engaged with which properties, unknown." },
               ]).map(item => (
                 <div key={item.label} style={{ background: '#141414', padding: '36px', borderTop: `3px solid ${AMBER}` }}>
                   <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>{item.label}</p>
@@ -165,12 +165,12 @@ export default async function RealEstateOSPage({
                   {locale === 'de' ? 'Immobilie kommt an. KI-Analyse in Minuten geliefert. Investor automatisch zugeordnet.' : 'Property arrives. AI analysis delivered in minutes. Investor matched automatically.'}
                 </h2>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: '#666666', lineHeight: 1.8 }}>
-                  {locale === 'de' ? 'Deal geht ins System. KI erstellt Score, ROI-Projektion und Vergleichsanalyse. Relevante Investoren aus dem CRM zugeordnet. Nachverfolgung automatisch geplant. Kampagnenstudio übernimmt die Kontaktaufnahme — mit KI-generierten Betreffzeilen und verfolgten Ergebnissen.' : 'Deal enters the system. AI produces the score, ROI projection and comparable analysis. Relevant investors matched from the CRM. Follow-up scheduled automatically. Campaign studio handles the outreach — with AI-generated subject lines and tracked results.'}
+                  {locale === 'de' ? 'Deal geht ins System. KI erstellt Score, ROI-Projektion und Vergleichsanalyse. Relevante Investoren aus dem CRM zugeordnet. Nachverfolgung automatisch geplant. Kampagnenstudio übernimmt die Kontaktaufnahme, mit KI-generierten Betreffzeilen und verfolgten Ergebnissen.' : 'Deal enters the system. AI produces the score, ROI projection and comparable analysis. Relevant investors matched from the CRM. Follow-up scheduled automatically. Campaign studio handles the outreach, with AI-generated subject lines and tracked results.'}
                 </p>
               </div>
               <div style={{ borderLeft: `3px solid ${AMBER}`, paddingLeft: '2rem' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>{locale === 'de' ? 'WAS DAS SYSTEM MACHT' : 'WHAT THE SYSTEM DOES'}</p>
-                {(locale === 'de' ? ['KI-Deal-Analyse — Score, ROI, Vergleichsdaten in Minuten', 'Investor-CRM — Lead-Scoring, Interessenshistorie, automatisches Matching', 'Pipeline-Ansicht — jeder Deal von Immobilie bis Entscheidung', 'Kampagnenstudio — KI-Betreffzeilen, Öffnungsraten-Tracking, Antwort-Tracking', 'Nachverfolgungsautomatisierung — kein Investor zwischen Deals verpasst'] : ['AI deal analysis — score, ROI, comparable data in minutes', 'Investor CRM — lead scoring, interest history, automatic matching', 'Pipeline view — every deal from property to decision', 'Campaign studio — AI subject lines, open rate tracking, reply tracking', 'Follow-up automation — no investor missed between deals']).map(line => (
+                {(locale === 'de' ? ['KI-Deal-Analyse, Score, ROI, Vergleichsdaten in Minuten', 'Investor-CRM, Lead-Scoring, Interessenshistorie, automatisches Matching', 'Pipeline-Ansicht, jeder Deal von Immobilie bis Entscheidung', 'Kampagnenstudio, KI-Betreffzeilen, Öffnungsraten-Tracking, Antwort-Tracking', 'Nachverfolgungsautomatisierung, kein Investor zwischen Deals verpasst'] : ['AI deal analysis, score, ROI, comparable data in minutes', 'Investor CRM, lead scoring, interest history, automatic matching', 'Pipeline view, every deal from property to decision', 'Campaign studio, AI subject lines, open rate tracking, reply tracking', 'Follow-up automation, no investor missed between deals']).map(line => (
                   <div key={line} style={{ display: 'flex', gap: '12px', marginBottom: '14px', alignItems: 'flex-start' }}>
                     <span style={{ color: AMBER, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', paddingTop: '2px', fontWeight: 700 }}>→</span>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: '#666666', margin: 0, lineHeight: 1.65 }}>{line}</p>
@@ -185,16 +185,16 @@ export default async function RealEstateOSPage({
         <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: '5rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>{locale === 'de' ? 'WIE EIN DEAL LÄUFT' : 'HOW A DEAL MOVES'}</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>{locale === 'de' ? 'Von der Immobilie bis zur Entscheidung — ohne die E-Mail-Kette.' : 'From property to decision — without the email chain.'}</h2>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '3rem' }}>{locale === 'de' ? 'Von der Immobilie bis zur Entscheidung, ohne die E-Mail-Kette.' : 'From property to decision, without the email chain.'}</h2>
             <Reveal style={{ display: 'flex', flexDirection: 'column', borderTop: `1px solid ${BORDER}` }}>
               {(locale === 'de' ? [
-                { num: '01', title: 'Immobilie geht ins System', desc: 'Details eingegeben. KI-Analyse beginnt sofort — Vergleichstransaktionen, ROI-Projektion, Deal-Score. Keine manuelle Tabelle erforderlich.' },
+                { num: '01', title: 'Immobilie geht ins System', desc: 'Details eingegeben. KI-Analyse beginnt sofort, Vergleichstransaktionen, ROI-Projektion, Deal-Score. Keine manuelle Tabelle erforderlich.' },
                 { num: '02', title: 'Analyse geliefert',          desc: 'Score, ROI-Bereich und Schlüsselrisikofaktoren in Minuten geliefert. Entscheidungsreife Informationen in einer Ansicht, nicht über vierzehn E-Mails.' },
                 { num: '03', title: 'Investoren zugeordnet',       desc: 'System identifiziert relevante Investoren aus dem CRM basierend auf historischem Interesse, Investitionsprofil und Deal-Kriterien.' },
                 { num: '04', title: 'Kampagne gesendet',           desc: 'Kampagne geht an zugeordnete Investoren. Betreffzeile KI-generiert. Öffnungsrate und Antwortrate pro Kampagne verfolgt.' },
                 { num: '05', title: 'Entscheidung getroffen',      desc: 'Gebot oder Pass im System protokolliert. Deal-Ergebnis verfolgt. Investoreninteresse für die nächste relevante Immobilie aktualisiert.' },
               ] : [
-                { num: '01', title: 'Property enters the system', desc: 'Details added. AI analysis begins immediately — comparable transactions, ROI projection, deal score. No manual spreadsheet required.' },
+                { num: '01', title: 'Property enters the system', desc: 'Details added. AI analysis begins immediately, comparable transactions, ROI projection, deal score. No manual spreadsheet required.' },
                 { num: '02', title: 'Analysis delivered',          desc: 'Score, ROI range and key risk factors delivered in minutes. Decision-ready information in one view, not across fourteen emails.' },
                 { num: '03', title: 'Investors matched',           desc: 'System identifies relevant investors from the CRM based on historical interest, investment profile and deal criteria.' },
                 { num: '04', title: 'Campaign sent',               desc: 'Campaign goes to matched investors. Subject line AI-generated. Open rate and reply rate tracked per campaign.' },
@@ -214,7 +214,7 @@ export default async function RealEstateOSPage({
               <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#444', marginBottom: '1rem' }}>{locale === 'de' ? 'DAS SYSTEM IM BETRIEB' : 'THE SYSTEM IN OPERATION'}</p>
               <Image
                 src="/images/systems/real-estate-os/card/real-estate-os-de.png"
-                alt={locale === 'de' ? 'RealEstateOS im Betrieb — KI-Deal-Analyse, Investor-CRM und Pipeline-Ansicht' : 'RealEstateOS in operation — AI deal analysis, investor CRM and pipeline view'}
+                alt={locale === 'de' ? 'RealEstateOS im Betrieb, KI-Deal-Analyse, Investor-CRM und Pipeline-Ansicht' : 'RealEstateOS in operation, AI deal analysis, investor CRM and pipeline view'}
                 width={1200}
                 height={630}
                 style={{ width: '100%', height: 'auto', borderRadius: '12px', border: '1px solid #1A1A1A', display: 'block' }}
@@ -234,15 +234,15 @@ export default async function RealEstateOSPage({
               </div>
               {(locale === 'de' ? [
                 { before: 'Deal-Analyse manuell in Excel erstellt',           after: 'KI-Analyse in Minuten geliefert'                    },
-                { before: 'Investoreninteresse in E-Mail-Threads verfolgt',   after: 'Investor-CRM — Interesse und Historie in einer Ansicht' },
+                { before: 'Investoreninteresse in E-Mail-Threads verfolgt',   after: 'Investor-CRM, Interesse und Historie in einer Ansicht' },
                 { before: 'Kampagnen-Betreffzeilen schnell geschrieben',       after: 'KI-generierte Betreffzeilen, Öffnungsraten verfolgt'  },
-                { before: 'Nachverfolgung aus dem Gedächtnis zwischen Deals',  after: 'Automatische Nachverfolgung — kein Investor verpasst' },
+                { before: 'Nachverfolgung aus dem Gedächtnis zwischen Deals',  after: 'Automatische Nachverfolgung, kein Investor verpasst' },
                 { before: 'Deal-Pipeline nur für Deal-Lead sichtbar',          after: 'Pipeline-Ansicht teamweit geteilt'                   },
               ] : [
                 { before: 'Deal analysis built in Excel manually',       after: 'AI analysis delivered in minutes'               },
-                { before: 'Investor interest tracked in email threads',  after: 'Investor CRM — interest and history in one view' },
+                { before: 'Investor interest tracked in email threads',  after: 'Investor CRM, interest and history in one view' },
                 { before: 'Campaign subject lines written quickly',      after: 'AI-generated subject lines, open rates tracked'  },
-                { before: 'Follow-up from memory between deals',         after: 'Automatic follow-up — no investor missed'        },
+                { before: 'Follow-up from memory between deals',         after: 'Automatic follow-up, no investor missed'        },
                 { before: 'Deal pipeline visible only to deal lead',     after: 'Pipeline view shared across the team'            },
               ]).map((row, i) => (
                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: '#141414' }}>
@@ -265,20 +265,20 @@ export default async function RealEstateOSPage({
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <div className="re-grid-2">
               <div style={{ background: CARD, padding: '40px', borderTop: `3px solid ${AMBER}` }}>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '1rem' }}>{locale === 'de' ? 'Ein echter Immobilienablauf — von der Deal-Eingabe bis zur Investorenkampagne.' : 'A real property workflow — from deal entry to investor campaign.'}</h3>
+                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '20px', color: '#F0F0F0', letterSpacing: '-0.02em', marginBottom: '1rem' }}>{locale === 'de' ? 'Ein echter Immobilienablauf, von der Deal-Eingabe bis zur Investorenkampagne.' : 'A real property workflow, from deal entry to investor campaign.'}</h3>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', lineHeight: 1.8 }}>{locale === 'de' ? 'Der Walkthrough umfasst KI-Deal-Analyse, Investor-CRM-Navigation, Pipeline-Ansicht, Kampagnenstudio und Nachverfolgungsautomatisierung. Das System im Einsatz für einen echten Immobilienbetrieb.' : 'The walkthrough covers AI deal analysis, investor CRM navigation, pipeline view, campaign studio and follow-up automation. The system working for a real property operation.'}</p>
               </div>
               <div style={{ background: CARD, padding: '40px' }}>
                 <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '0 0 20px' }}>{locale === 'de' ? 'WIE ES WEITERGEHT' : 'WHAT HAPPENS NEXT'}</p>
                 {(locale === 'de' ? [
-                  { num: '01', t: 'Kurzes Gespräch',       d: 'Wir erfahren mehr über das Unternehmen — Deal-Volumen, Investorenbasis, aktueller Analyse- und Outreach-Prozess.' },
+                  { num: '01', t: 'Kurzes Gespräch',       d: 'Wir erfahren mehr über das Unternehmen, Deal-Volumen, Investorenbasis, aktueller Analyse- und Outreach-Prozess.' },
                   { num: '02', t: 'Workflow analysiert',    d: 'Wir kartieren, wie Deals derzeit von der Immobilie bis zur Entscheidung fließen, bevor wir etwas konfigurieren.' },
-                  { num: '03', t: 'System konfiguriert',    d: 'RealEstateOS für den spezifischen Betrieb eingerichtet — Deal-Scoring-Kriterien, Investor-CRM-Import, Kampagnenvorlagen.' },
+                  { num: '03', t: 'System konfiguriert',    d: 'RealEstateOS für den spezifischen Betrieb eingerichtet, Deal-Scoring-Kriterien, Investor-CRM-Import, Kampagnenvorlagen.' },
                   { num: '04', t: 'Mit einem Zyklus starten', d: 'Beginnen Sie mit der Deal-Analyse. Investor-Matching und Kampagnen hinzufügen, wenn das Team Vertrauen ins System aufgebaut hat.' },
                 ] : [
-                  { num: '01', t: 'Short conversation',   d: 'We learn about the business — deal volume, investor base, current analysis and outreach process.' },
+                  { num: '01', t: 'Short conversation',   d: 'We learn about the business, deal volume, investor base, current analysis and outreach process.' },
                   { num: '02', t: 'Workflow reviewed',    d: 'We map how deals currently move from property to decision before configuring anything.' },
-                  { num: '03', t: 'System configured',    d: 'RealEstateOS set up for the specific operation — deal scoring criteria, investor CRM import, campaign templates.' },
+                  { num: '03', t: 'System configured',    d: 'RealEstateOS set up for the specific operation, deal scoring criteria, investor CRM import, campaign templates.' },
                   { num: '04', t: 'Start with one cycle', d: 'Begin with deal analysis. Add investor matching and campaigns as the team builds confidence in the system.' },
                 ]).map(item => (
                   <div key={item.num} style={{ marginBottom: '20px' }}>

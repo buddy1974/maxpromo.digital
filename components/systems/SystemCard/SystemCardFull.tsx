@@ -1,7 +1,7 @@
 /**
  * components/systems/SystemCard/SystemCardFull.tsx
  *
- * Full card variant — systems page and products index.
+ * Full card variant, systems page and products index.
  * Shows: thumbnail (card size), status badge (if live + showBadge),
  *        category label, product name, subline, 3 bullets,
  *        domain footer (if showDomain), primary + secondary CTA (if showCTA).
@@ -10,8 +10,8 @@
  * master card design reference in /public/images/systems/[slug]/card/.
  *
  * Consumer:
- *   app/[locale]/systems/page.tsx  — PUBLIC_PRODUCTS grid, variant='full'
- *   app/[locale]/products/page.tsx — products index, variant='full'
+ *   app/[locale]/systems/page.tsx , PUBLIC_PRODUCTS grid, variant='full'
+ *   app/[locale]/products/page.tsx, products index, variant='full'
  *   Rendered by SystemCard with variant='full'
  *
  * TODO: connect registry consumers
@@ -36,7 +36,7 @@ export type SystemCardFullProps = Pick<
 // =============================================================================
 
 /**
- * SystemCardFull — full-detail product card.
+ * SystemCardFull, full-detail product card.
  *
  * The canonical public-facing card. Includes thumbnail, bullets,
  * domain, and CTA pair. Used on the systems page and products index.
@@ -98,7 +98,7 @@ export function SystemCardFull({
       {/*
         ── THUMBNAIL
         Design reference: /public/images/systems/[slug]/card/[slug]-[locale].png
-        Layout variant (A/B/C) determines scene position — applied via CSS class in
+        Layout variant (A/B/C) determines scene position, applied via CSS class in
         the visual implementation pass.
 
         TODO: replace with next/image
@@ -117,7 +117,7 @@ export function SystemCardFull({
         }}
         aria-hidden="true"
       >
-        {/* Brand color accent bar — governance VG-02 */}
+        {/* Brand color accent bar, governance VG-02 */}
         <div
           data-section="brand-accent"
           style={{
@@ -135,7 +135,7 @@ export function SystemCardFull({
         data-section="body"
         style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
       >
-        {/* Status badge — only when showBadge and product is LIVE */}
+        {/* Status badge, only when showBadge and product is LIVE */}
         {showBadge && product.status === 'live' && (
           <span
             data-field="status-badge"
@@ -162,7 +162,7 @@ export function SystemCardFull({
           {subline}
         </p>
 
-        {/* Bullets — BulletTuple guarantees exactly 3 (VG-09) */}
+        {/* Bullets, BulletTuple guarantees exactly 3 (VG-09) */}
         <ul data-field="bullets" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
           {bullets.map((bullet, i) => (
             <li key={i} data-bullet-index={i}>
@@ -172,14 +172,14 @@ export function SystemCardFull({
           ))}
         </ul>
 
-        {/* Domain footer — governance VG-12 */}
+        {/* Domain footer, governance VG-12 */}
         {showDomain && (
           <a
             href={product.systemUrl}
             target="_blank"
             rel="noopener noreferrer"
             data-field="domain"
-            aria-label={`${product.name} — ${product.domain}`}
+            aria-label={`${product.name}, ${product.domain}`}
           >
             {/* TODO: style as small monospace grey text */}
             {product.domain}

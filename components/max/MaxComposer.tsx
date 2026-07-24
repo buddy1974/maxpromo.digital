@@ -18,7 +18,7 @@ export function MaxComposer() {
       taRef.current.style.height = 'auto'
     }
 
-    // Optimistic user bubble (no id from DB yet — use negative timestamp as temp key)
+    // Optimistic user bubble (no id from DB yet, use negative timestamp as temp key)
     const optimistic: ChatMessage = {
       id:        -Date.now(),
       sessionId: '',
@@ -51,7 +51,7 @@ export function MaxComposer() {
         addMessage(reply)
       }
     } catch {
-      // Silent — user can retry
+      // Silent, user can retry
     } finally {
       setLoading(false)
     }

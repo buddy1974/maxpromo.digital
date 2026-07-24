@@ -73,7 +73,7 @@ export function PainSlider() {
           <span style={{ color: 'hsl(40 30% 96%)' }}>
             {t(`${key}Pain`)}
           </span>
-          <span style={{ color: 'hsl(40 12% 40%)' }}>—</span>
+          <span style={{ color: 'hsl(40 12% 40%)' }}>-</span>
           <span style={{ color: '#F97316' }}>
             {t(`${key}Fix`)}
           </span>

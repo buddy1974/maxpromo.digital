@@ -57,7 +57,7 @@ export function HeroSlideNav({ total, active, onSelect }: HeroSlideNavProps) {
             {String(i + 1).padStart(2, '0')}
           </span>
 
-          {/* Progress bar — only on active */}
+          {/* Progress bar, only on active */}
           <div
             style={{
               width: '20px',

@@ -8,10 +8,10 @@ import type { CSSProperties } from 'react'
  * Renders a screenshot with optional caption/subcaption.
  *
  * Behaviour:
- *   — When `src` is provided: renders next/image with aspect-ratio container.
+ *  , When `src` is provided: renders next/image with aspect-ratio container.
  *     No layout shift. Scales cleanly on all breakpoints.
- *   — When `src` is null/undefined: renders nothing.
- *     The section layout collapses cleanly — no empty boxes or dashed placeholders.
+ *  , When `src` is null/undefined: renders nothing.
+ *     The section layout collapses cleanly, no empty boxes or dashed placeholders.
  *
  * To add a screenshot later: pass the path as `src`.
  * The component handles everything else.
@@ -29,17 +29,17 @@ import type { CSSProperties } from 'react'
 export interface ScreenshotSlotProps {
   /** Path to image in /public. Pass null/undefined to render nothing. */
   src?: string | null
-  /** Image alt text — required for accessibility */
+  /** Image alt text, required for accessibility */
   alt: string
-  /** Intrinsic width of the screenshot (px) — used for aspect-ratio */
+  /** Intrinsic width of the screenshot (px), used for aspect-ratio */
   width: number
-  /** Intrinsic height of the screenshot (px) — used for aspect-ratio */
+  /** Intrinsic height of the screenshot (px), used for aspect-ratio */
   height: number
   /** Short label shown above subcaption in mono font */
   caption?: string
   /** Supporting sentence shown below caption in body font */
   subcaption?: string
-  /** LCP candidate — pass true for above-the-fold screenshots */
+  /** LCP candidate, pass true for above-the-fold screenshots */
   priority?: boolean
   /** Optional outer wrapper style overrides */
   style?: CSSProperties
@@ -61,7 +61,7 @@ export function ScreenshotSlot({
 
   return (
     <div style={style}>
-      {/* Aspect-ratio wrapper prevents CLS — height is determined by ratio, not image load */}
+      {/* Aspect-ratio wrapper prevents CLS, height is determined by ratio, not image load */}
       <div
         style={{
           position:     'relative',
@@ -83,7 +83,7 @@ export function ScreenshotSlot({
         />
       </div>
 
-      {/* Caption block — only rendered if at least one string is provided */}
+      {/* Caption block, only rendered if at least one string is provided */}
       {(caption || subcaption) && (
         <div style={{ marginTop: '14px', paddingLeft: '2px' }}>
           {caption && (
