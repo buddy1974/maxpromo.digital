@@ -10,11 +10,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const isDE = locale === 'de'
   const title = isDE
-    ? 'Max Agent Bureau | Ein Büro, das Arbeit vorbereitet'
-    : 'Max Agent Bureau | An Office That Prepares Work'
+    ? 'Max Agent Bureau | Intelligente KI-Agenten, sichere Prozesse'
+    : 'Max Agent Bureau | Intelligent AI Agents, Secure Processes'
   const description = isDE
-    ? 'Ein überwachtes Team aus KI-Agenten, das Kundenanfragen, Follow-ups, Freigaben und Berichte übernimmt, jede kritische Aktion bleibt freigabepflichtig.'
-    : 'A supervised team of AI agents that handles customer enquiries, follow-ups, approvals and reporting, every critical action still requires human sign-off.'
+    ? 'Ein Team aus KI-Agenten übernimmt Kundenanfragen, Follow-ups, Freigaben und Berichte, jede wichtige Aktion läuft vorher über Sie.'
+    : 'A team of AI agents handles customer enquiries, follow-ups, approvals and reporting, every important action still goes through you first.'
   return {
     title,
     description,
@@ -136,12 +136,12 @@ export default async function AgentBureauPage({
                 {isDE ? 'MAX AGENT BUREAU · KI-BÜRO' : 'MAX AGENT BUREAU · AI OFFICE'}
               </p>
               <h1 className="mp-hero-2" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '1.5rem', maxWidth: '760px' }}>
-                {isDE ? <>Ein Büro,<br />das Arbeit vorbereitet.</> : <>An office that<br />prepares work.</>}
+                {isDE ? <>Intelligente KI-Agenten.<br />Sichere Prozesse.</> : <>Intelligent AI agents.<br />Secure processes.</>}
               </h1>
               <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '580px', lineHeight: 1.8, marginBottom: '2.5rem' }}>
                 {isDE
-                  ? 'Ein überwachtes Team aus KI-Agenten, das Kundenanfragen, Follow-ups, Freigaben und Berichte für ein Unternehmen übernimmt, jede kritische Aktion bleibt freigabepflichtig.'
-                  : 'A supervised team of AI agents that handles customer enquiries, follow-ups, approvals and reporting for one business, every critical action still requires a human sign-off.'}
+                  ? 'Ein Team aus KI-Agenten übernimmt Kundenanfragen, Follow-ups, Freigaben und Berichte für Ihr Unternehmen, jede wichtige Aktion läuft vorher über Sie.'
+                  : 'A team of AI agents handles customer enquiries, follow-ups, approvals and reporting for your business, every important action still goes through you first.'}
               </p>
               <div className="mp-hero-4" style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '2.5rem' }}>
                 {(isDE
@@ -355,7 +355,7 @@ export default async function AgentBureauPage({
         <section style={{ background: BG, padding: '6rem 2rem' }}>
           <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: ORANGE, marginBottom: '1rem' }}>{isDE ? 'DEMO ANFRAGEN' : 'REQUEST A DEMO'}</p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>{isDE ? 'Sehen Sie, wie Agent Bureau für Ihr Unternehmen vorbereitet.' : 'See how Agent Bureau prepares work for your business.'}</h2>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '1rem' }}>{isDE ? 'Sehen Sie Agent Bureau live, für Ihr Unternehmen.' : 'See how Agent Bureau prepares work for your business.'}</h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', lineHeight: 1.8, maxWidth: '520px', marginBottom: '2.5rem' }}>
               {isDE
                 ? 'Wir zeigen das Live-System, Anfragenbearbeitung, Follow-ups, Freigabeprozess und Protokollierung, konfiguriert für Ihre bestehenden Abläufe.'
@@ -370,7 +370,7 @@ export default async function AgentBureauPage({
                 >{isDE ? 'Demo anfragen →' : 'Request demo →'}</Link>
             </div>
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#444', letterSpacing: '0.08em', margin: '20px 0 0' }}>
-              {isDE ? '// Kein Commitment · Antwort innerhalb von 24 Stunden' : '// No commitment · Reply within 24 hours'}
+              {isDE ? '// Unverbindlich · Antwort innerhalb von 24 Stunden' : '// No commitment · Reply within 24 hours'}
             </p>
           </div>
         </section>

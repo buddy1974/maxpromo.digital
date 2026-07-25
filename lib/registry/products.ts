@@ -61,16 +61,16 @@ const AGENT_BUREAU = {
 
   // ── Content
   headline: {
-    en: 'An office that prepares work.',
-    de: 'Ein Büro, das Arbeit vorbereitet.',
+    en: 'Intelligent AI agents. Secure processes.',
+    de: 'Intelligente KI-Agenten. Sichere Prozesse.',
   },
   subline: {
     en: 'We automate the busywork. You approve the decisions.',
     de: 'Wir automatisieren die Routinearbeit. Sie geben die Entscheidungen frei.',
   },
   description: {
-    en: 'A supervised team of AI agents that handles customer enquiries, follow-ups, approvals and reporting for one business — every critical action still requires a human sign-off.',
-    de: 'Ein überwachtes Team aus KI-Agenten, das Kundenanfragen, Follow-ups, Freigaben und Berichte für ein Unternehmen übernimmt — jede kritische Aktion bleibt freigabepflichtig.',
+    en: 'A team of AI agents handles customer enquiries, follow-ups, approvals and reporting for your business — every important action still goes through you first.',
+    de: 'Ein Team aus KI-Agenten übernimmt Kundenanfragen, Follow-ups, Freigaben und Berichte für Ihr Unternehmen — jede wichtige Aktion läuft vorher über Sie.',
   },
   bullets: {
     en: ['Still triaging every enquiry by hand?', 'Still chasing your own follow-ups?', 'Still writing the same report every week?'],
