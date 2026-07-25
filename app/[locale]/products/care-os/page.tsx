@@ -294,9 +294,9 @@ export default async function CareOSPage({
         </section>
 
         <ConnectedSystems systems={[
-          { slug: 'praxis-os',  name: 'PraxisOS',   description: locale === 'de' ? 'Abstimmung von Patienten- und Pflegeabläufen.' : 'Patient and care workflow alignment.',    href: '/products/praxis-os'  },
-          { slug: 'taxkontrol', name: 'TaxKontrol', description: locale === 'de' ? 'Operative Finanzen im Blick.' : 'Keep operational finances visible.',      href: '/products/taxkontrol' },
-          { slug: 'handwerk-os', name: 'HandwerkOS', description: locale === 'de' ? 'Inspiration für Feldteam-Prozesse.' : 'Field-team process inspiration.',        href: '/products/handwerk-os'},
+          { slug: 'praxis-os',  name: 'PraxisOS',   description: locale === 'de' ? 'Abstimmung von Patienten- und Pflegeabläufen.' : 'Patient and care workflow alignment.',    href: '/systems/praxis-os'  },
+          { slug: 'taxkontrol', name: 'TaxKontrol', description: locale === 'de' ? 'Operative Finanzen im Blick.' : 'Keep operational finances visible.',      href: '/systems/taxkontrol' },
+          { slug: 'handwerk-os', name: 'HandwerkOS', description: locale === 'de' ? 'Inspiration für Feldteam-Prozesse.' : 'Field-team process inspiration.',        href: '/systems/handwerk-os'},
         ]} locale={locale} />
 
         {/* 9. CTA */}

@@ -13,14 +13,131 @@
  *   — Copy marked TODO must be replaced before a landing page goes live.
  *
  * Consumers (do not modify this file to serve them — import PRODUCTS instead):
- *   app/[locale]/page.tsx             — homepage featured grid
- *   app/[locale]/systems/page.tsx     — systems page full grid
- *   app/[locale]/products/page.tsx    — products index
- *   app/[locale]/products/[slug]/page.tsx — dynamic product page
- *   app/os/systems/page.tsx           — admin registry view
+ *   app/[locale]/page.tsx               — homepage featured grid
+ *   app/[locale]/systems/page.tsx       — systems page full grid (SYSTEMS_PAGE_PRODUCTS)
+ *   app/[locale]/systems/<slug>/page.tsx — dedicated system landing page (one static
+ *                                          route per system as of 2026-07-25; there is
+ *                                          no dynamic [slug] route)
+ *   app/[locale]/products/page.tsx      — legacy products index (care-os, real-estate-os only)
+ *   app/[locale]/products/<slug>/page.tsx — legacy static product pages (care-os, real-estate-os)
+ *   app/os/systems/page.tsx             — admin registry view
  */
 
 import type { ProductEntry } from './types'
+
+// =============================================================================
+// 0. MAX AGENT BUREAU
+// =============================================================================
+// Added 2026-07-25. Horizontal AI-agent operations layer — not a vertical
+// business system, so it sits outside the priority_score ordering below and
+// is placed first in PRODUCTS / SYSTEMS_PAGE_PRODUCTS by explicit position,
+// not by score. No dedicated demo environment yet — demoUrl is the same as
+// systemUrl. No card screenshot exists (no public/ assets in the source
+// repo) — media.card points to a diagram-style card generated for this
+// launch, not a product screenshot.
+
+const AGENT_BUREAU = {
+  // ── Identity
+  slug:        'agent-bureau',
+  name:        'Max Agent Bureau',
+  domainBrand: 'MAX AGENT BUREAU',
+  domain:      'agents.maxpromo.digital',
+  category:    'business-system',
+  owner:       'maxpromo',
+  track:       'commercial',
+
+  // ── Classification
+  status:         'demo-ready',
+  maturity:       'pilot',
+  priority_score: 88,
+  featured:       true,
+  visibility:     'public',
+
+  // ── Market
+  market:         ['de', 'global'],
+  marketPriority: 1,
+  locales:        ['de', 'en'],
+  industry:       'operations',
+
+  // ── Content
+  headline: {
+    en: 'An office that prepares work.',
+    de: 'Ein Büro, das Arbeit vorbereitet.',
+  },
+  subline: {
+    en: 'We automate the busywork. You approve the decisions.',
+    de: 'Wir automatisieren die Routinearbeit. Sie geben die Entscheidungen frei.',
+  },
+  description: {
+    en: 'A supervised team of AI agents that handles customer enquiries, follow-ups, approvals and reporting for one business — every critical action still requires a human sign-off.',
+    de: 'Ein überwachtes Team aus KI-Agenten, das Kundenanfragen, Follow-ups, Freigaben und Berichte für ein Unternehmen übernimmt — jede kritische Aktion bleibt freigabepflichtig.',
+  },
+  bullets: {
+    en: ['Still triaging every enquiry by hand?', 'Still chasing your own follow-ups?', 'Still writing the same report every week?'],
+    de: ['Noch immer jede Anfrage von Hand sortieren?', 'Noch immer Ihre eigenen Follow-ups nachjagen?', 'Noch immer denselben Bericht jede Woche schreiben?'],
+  },
+  workflow: {
+    en: [
+      { label: 'Audit & Diagnose', description: 'Agents scan the business workflows currently running by email, WhatsApp, spreadsheets and manual steps, then rank the bottlenecks by time cost.' },
+      { label: 'Agent Team',       description: 'Tasks are assigned to specialised agents — enquiry handling, follow-ups, document prep, reporting.' },
+      { label: 'Review',           description: 'Every critical action is queued for human approval before it goes out. No autonomous execution.' },
+      { label: 'Execute',          description: 'Approved actions run — replies sent, records updated, tasks dispatched.' },
+      { label: 'Log',              description: 'Everything is logged: what ran, who approved it, and when.' },
+    ],
+    de: [
+      { label: 'Audit & Diagnose', description: 'Agenten scannen die aktuell laufenden Abläufe, per E-Mail, WhatsApp, Tabellen und manuellen Schritten, und priorisieren die Engpässe nach Zeitaufwand.' },
+      { label: 'Agent Team',       description: 'Aufgaben werden spezialisierten Agenten zugewiesen — Anfragenbearbeitung, Follow-ups, Dokumentenvorbereitung, Berichte.' },
+      { label: 'Review',           description: 'Jede kritische Aktion wird zur Freigabe vorgelegt, bevor sie ausgeführt wird. Keine autonome Ausführung.' },
+      { label: 'Execute',          description: 'Freigegebene Aktionen laufen, Antworten werden versendet, Datensätze aktualisiert, Aufgaben verteilt.' },
+      { label: 'Log',              description: 'Alles wird protokolliert: was lief, wer freigegeben hat und wann.' },
+    ],
+  },
+
+  // ── FAQ (pre-sales objections — these are the silently held doubts, not support questions)
+  faq: {
+    de: [
+      { question: 'Handeln die Agenten selbstständig?', answer: 'Nein. Jede kritische Aktion, E-Mail-Versand, Angebot, Rechnung, Kundenantwort, bleibt freigabepflichtig. Agenten bereiten vor, ein Mensch entscheidet.' },
+      { question: 'Ersetzt das mein Team?',              answer: 'Nein. Es übernimmt die repetitive Vorbereitung, damit Ihr Team sich auf Entscheidungen und Kundenbeziehungen konzentrieren kann.' },
+      { question: 'Kann ich sehen, was die Agenten tun?', answer: 'Ja. Jede Aktion wird protokolliert, mit Zeitstempel, Freigeber und Ergebnis.' },
+      { question: 'Für welche Aufgaben ist das gebaut?',  answer: 'Kundenanfragen, E-Mail-Triage, Follow-ups, Terminkoordination, Dokumentenvorbereitung, Berichte und interne Benachrichtigungen.' },
+    ],
+    en: [
+      { question: 'Do the agents act on their own?', answer: 'No. Every critical action, sending an email, a quote, an invoice, a customer reply, requires human approval first. Agents prepare, a person decides.' },
+      { question: 'Does this replace my team?',       answer: 'No. It takes over repetitive preparation work so your team can focus on decisions and customer relationships.' },
+      { question: 'Can I see what the agents are doing?', answer: 'Yes. Every action is logged, with a timestamp, who approved it, and the outcome.' },
+      { question: 'What tasks is this built for?',   answer: 'Customer enquiry handling, email triage, follow-ups, appointment coordination, document preparation, reporting and internal notifications.' },
+    ],
+  },
+
+  // ── Media
+  media: {
+    card: {
+      en: 'images/systems/agent-bureau/card/agent-bureau-en.png',
+      de: 'images/systems/agent-bureau/card/agent-bureau-de.png',
+    },
+  },
+  brandColor:     '#F97316',
+  layoutVariant:  'B',
+  backgroundDark: true,
+
+  // ── Links
+  demoUrl:     'https://agents.maxpromo.digital',
+  landingUrl:  '/systems/agent-bureau',
+  systemUrl:   'https://agents.maxpromo.digital',
+  bookDemoUrl: '/contact?system=agent-bureau',
+  contactSlug: 'agent-bureau',
+  hasDemoLogin: false,
+
+  // ── CTA
+  ctaType: 'standard',
+
+  // ── Analytics
+  eventSource:     'agent-bureau',
+  trackingEnabled: true,
+
+  // ── Future
+  revenueModel: 'installation',
+} satisfies ProductEntry
 
 // =============================================================================
 // 1. RESTAURANT OS
@@ -125,7 +242,6 @@ const RESTAURANT_OS = {
   media: {
     card: {
       en: 'images/systems/restaurant-os/card/restaurant-os-en.png',
-      de: 'images/systems/restaurant-os/card/restaurant-os-de.png',
     },
     pain: [
       'images/systems/restaurant-os/pain/p1.png',
@@ -139,7 +255,7 @@ const RESTAURANT_OS = {
 
   // ── Links
   demoUrl:    'https://demo.restaurant-os.de',
-  landingUrl: '/products/restaurant-os',
+  landingUrl: '/systems/restaurant-os',
   systemUrl:  'https://www.restaurant-os.de',
   bookDemoUrl: '/contact?system=restaurant-os',
   contactSlug: 'restaurant-os',
@@ -230,7 +346,7 @@ const HANDWERK_OS = {
 
   // ── Links
   demoUrl:     'https://handwerkos.vercel.app',
-  landingUrl:  '/products/handwerk-os',
+  landingUrl:  '/systems/handwerk-os',
   systemUrl:   'https://superhandwerk.de',
   bookDemoUrl: '/contact?system=handwerk-os',
   contactSlug: 'handwerk-os',
@@ -326,7 +442,7 @@ const PRAXIS_OS = {
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL
-  landingUrl:  '/products/praxis-os',
+  landingUrl:  '/systems/praxis-os',
   systemUrl:   'https://super-praxis.de',
   bookDemoUrl: '/contact?system=praxis-os',
   contactSlug: 'praxis-os',
@@ -346,6 +462,10 @@ const PRAXIS_OS = {
 // =============================================================================
 // 4. PRINTSHOP OS
 // =============================================================================
+// FIX 2026-07-25: slug/landingUrl previously pointed to /products/printshop-os,
+// a route that did not exist — the actual page lived at /products/printshop.
+// Route moved to /systems/printshop-os to match this corrected slug so the
+// route segment, registry slug and landingUrl are finally consistent.
 
 const PRINTSHOP_OS = {
   // ── Identity
@@ -417,10 +537,10 @@ const PRINTSHOP_OS = {
 
   // ── Links
   demoUrl:     'https://printshop.maxpromo.digital',
-  landingUrl:  '/products/printshop-os',
+  landingUrl:  '/systems/printshop-os',
   systemUrl:   'https://smartprintshop.de',
-  bookDemoUrl: '/contact?system=printshop',
-  contactSlug: 'printshop', // Locked: slug=printshop-os (route) ≠ contactSlug=printshop (form field)
+  bookDemoUrl: '/contact?system=printshop-os',
+  contactSlug: 'printshop-os', // Aligned 2026-07-25 with slug/route — was 'printshop', now consistent everywhere
   hasDemoLogin: true,
   demoCredentials: {
     url:      'https://printshop.maxpromo.digital',
@@ -685,7 +805,7 @@ const PUBLISHING_OS = {
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL
-  landingUrl:  '/products/publishing-os',
+  landingUrl:  '/systems/publishing-os',
   systemUrl:   'https://publishers24.org',
   bookDemoUrl: '/contact?system=publishing-os',
   contactSlug: 'publishing-os',
@@ -778,7 +898,7 @@ const TAXKONTROL = {
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL — app not yet in public app stores
-  landingUrl:  '/products/taxkontrol',
+  landingUrl:  '/systems/taxkontrol',
   systemUrl:   'https://taxkontrol.de',
   bookDemoUrl: '/contact?system=taxkontrol',
   contactSlug: 'taxkontrol',
@@ -979,6 +1099,7 @@ export const PRODUCTS: ReadonlyArray<ProductEntry> = [
   TAXKONTROL,      // priority_score: 95
   RESTAURANT_OS,   // priority_score: 92
   PRINTSHOP_OS,    // priority_score: 90
+  AGENT_BUREAU,    // priority_score: 88
   HANDWERK_OS,     // priority_score: 85
   CARE_OS,         // priority_score: 80
   PRAXIS_OS,       // priority_score: 78
@@ -1019,7 +1140,7 @@ export const HOMEPAGE_PRODUCTS: ReadonlyArray<ProductEntry> = [
  *   — Maxpromo OS (visibility: 'internal') — surfaces only via INTERNAL_PRODUCTS
  *
  * Consumer: app/[locale]/systems/page.tsx, app/[locale]/products/page.tsx
- * Count: 8
+ * Count: 9
  */
 export const PUBLIC_PRODUCTS: ReadonlyArray<ProductEntry> =
   PRODUCTS.filter(p => p.visibility === 'public')
@@ -1040,7 +1161,7 @@ export const PROTECTED_PRODUCTS: ReadonlyArray<ProductEntry> =
  * All commercial-track products.
  * Excludes Drive24 (founder) and Maxpromo OS (internal).
  * Consumer: /os/analytics lead pipeline, priority-weighted dashboards
- * Count: 8
+ * Count: 9
  */
 export const COMMERCIAL_PRODUCTS: ReadonlyArray<ProductEntry> =
   PRODUCTS.filter(p => p.track === 'commercial')
@@ -1066,7 +1187,7 @@ export const INTERNAL_PRODUCTS: ReadonlyArray<ProductEntry> =
  * Products with featured: true — for editorial/dashboard use.
  * DO NOT use for the homepage grid. Homepage uses HOMEPAGE_PRODUCTS (hard-coded order).
  * Use this for: CMS preview, featured badge logic, OS analytics highlighting.
- * Count: 6
+ * Count: 7
  */
 export const FEATURED_PRODUCTS: ReadonlyArray<ProductEntry> =
   PRODUCTS.filter(p => p.featured && p.track === 'commercial')
@@ -1082,9 +1203,10 @@ export const FEATURED_PRODUCTS: ReadonlyArray<ProductEntry> =
  * Maxpromo OS is EXCLUDED (internal track).
  *
  * Consumer: app/[locale]/systems/page.tsx (SystemsPageGrid bridge → SystemGrid)
- * Count: 8
+ * Count: 9
  */
 export const SYSTEMS_PAGE_PRODUCTS: ReadonlyArray<ProductEntry> = [
+  AGENT_BUREAU,
   TAXKONTROL,
   RESTAURANT_OS,
   PRINTSHOP_OS,

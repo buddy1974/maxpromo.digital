@@ -20,7 +20,9 @@ export async function sendTelegramNotification(
   const chatId = process.env.TELEGRAM_CHAT_ID
 
   if (!botToken || !chatId) {
-    console.log('[Telegram] Not configured. Message:\n', message)
+    console.warn(
+      '[Telegram] notification skipped: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is not configured',
+    )
     return { sent: false, error: 'not_configured' }
   }
 
@@ -135,6 +137,8 @@ export interface ContactNotificationData {
   company: string
   email: string
   phone?: string
+  preferredContactMethod?: string
+  painPoints?: string[]
   message?: string
 }
 
@@ -146,6 +150,8 @@ export function buildContactMessage(d: ContactNotificationData): string {
     `<b>Company:</b> ${e(d.company)}`,
     `<b>Email:</b> ${emailLink(d.email)}`,
     d.phone?.trim() ? `<b>Phone:</b> ${phoneLink(d.phone)}` : null,
+    d.preferredContactMethod ? `<b>Preferred contact:</b> ${e(d.preferredContactMethod)}` : null,
+    d.painPoints?.length ? `<b>Help requested:</b> ${e(d.painPoints.join(', '))}` : null,
     '',
     '<b>Message:</b>',
     `  ${e(d.message?.slice(0, 600))}`,
@@ -163,6 +169,8 @@ export interface ProductInquiryNotificationData {
   company: string
   email: string
   phone?: string
+  preferredContactMethod?: string
+  painPoints?: string[]
   message?: string
   source: string
 }
@@ -177,6 +185,8 @@ export function buildProductInquiryMessage(d: ProductInquiryNotificationData): s
     `<b>Company:</b> ${e(d.company)}`,
     `<b>Email:</b> ${emailLink(d.email)}`,
     d.phone?.trim() ? `<b>Phone:</b> ${phoneLink(d.phone)}` : null,
+    d.preferredContactMethod ? `<b>Preferred contact:</b> ${e(d.preferredContactMethod)}` : null,
+    d.painPoints?.length ? `<b>Help requested:</b> ${e(d.painPoints.join(', '))}` : null,
     '',
     d.message ? '<b>Details:</b>' : null,
     d.message ? `  ${e(d.message.slice(0, 500))}` : null,

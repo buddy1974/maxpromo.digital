@@ -3,12 +3,12 @@ import { PainCardsClient } from './PainCardsClient'
 import type { PainCardData } from './PainCardsClient'
 
 const PAIN_REFS = [
-  { id: 'p1', icon: '⊟', href: '/services/customer-inquiries',  imgBg: 'radial-gradient(circle at 20% 30%, rgba(249,115,22,0.12) 0%, transparent 60%)' },
-  { id: 'p2', icon: '◇', href: '/services/workflow-automation', imgBg: 'radial-gradient(circle at 80% 20%, rgba(249,115,22,0.09) 0%, transparent 60%)' },
-  { id: 'p3', icon: '⌗', href: '/services/ai-agents',          imgBg: 'radial-gradient(circle at 50% 80%, rgba(249,115,22,0.10) 0%, transparent 60%)' },
-  { id: 'p4', icon: '◰', href: '/services/workflow-automation', imgBg: 'radial-gradient(circle at 10% 70%, rgba(249,115,22,0.08) 0%, transparent 60%)' },
-  { id: 'p5', icon: '▤', href: '/services/reviews',             imgBg: 'radial-gradient(circle at 90% 60%, rgba(249,115,22,0.11) 0%, transparent 60%)' },
-  { id: 'p6', icon: '→', href: '/services/websites-platforms',  imgBg: 'radial-gradient(circle at 30% 10%, rgba(249,115,22,0.09) 0%, transparent 60%)' },
+  { id: 'p1', icon: '⊟', href: '/services/customer-inquiries',  imgBg: "url('/images/services/kundenanfragen.png') center / cover no-repeat" },
+  { id: 'p2', icon: '◇', href: '/services/workflow-automation', imgBg: "url('/images/services/rechnungen.png') center / cover no-repeat" },
+  { id: 'p3', icon: '⌗', href: '/services/ai-agents',           imgBg: "url('/images/services/kommunikation.png') center / cover no-repeat" },
+  { id: 'p4', icon: '◰', href: '/services/workflow-automation', imgBg: "url('/images/services/field-operation.png') center / cover no-repeat" },
+  { id: 'p5', icon: '▤', href: '/services/reviews',             imgBg: "url('/images/services/reviews.png') center / cover no-repeat" },
+  { id: 'p6', icon: '→', href: '/services/workflow-automation', imgBg: "url('/images/services/Tools.png') center / cover no-repeat" },
 ] as const
 
 export async function PainCards() {

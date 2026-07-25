@@ -7,7 +7,6 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 import type { MessageParam } from '@anthropic-ai/sdk/resources/messages'
-import { env } from '@/lib/env'
 import type { ChatSession, ChatMessage } from './types'
 
 // Lazy singleton — instantiated on first call, not at import time.
@@ -15,7 +14,7 @@ let _client: Anthropic | null = null
 
 function getClient(): Anthropic {
   if (!_client) {
-    const key = env.ANTHROPIC_API_KEY
+    const key = process.env.ANTHROPIC_API_KEY?.trim()
     if (!key) throw new Error('[claude] ANTHROPIC_API_KEY is not set')
     _client = new Anthropic({ apiKey: key })
   }
@@ -62,14 +61,12 @@ function buildSystemPrompt(session: ChatSession): string {
 export async function runMaxTurn({
   session,
   recentMessages,
-  userMessage,
 }: {
   session:        ChatSession
   recentMessages: ChatMessage[]
-  userMessage:    string
 }): Promise<string> {
   const client = getClient()
-  const model  = env.ANTHROPIC_MODEL ?? DEFAULT_MODEL
+  const model  = process.env.ANTHROPIC_MODEL?.trim() || DEFAULT_MODEL
 
   // Build alternating user/assistant history (Claude API requirement)
   const history: MessageParam[] = []
@@ -82,9 +79,6 @@ export async function runMaxTurn({
     history.push({ role: msg.role, content: msg.content })
     lastRole = msg.role
   }
-
-  // Append current user turn (the one we're about to reply to)
-  history.push({ role: 'user', content: userMessage })
 
   const response = await client.messages.create({
     model,

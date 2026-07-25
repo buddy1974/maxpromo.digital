@@ -5,22 +5,24 @@ import { Link } from '@/i18n/navigation'
 
 type InternalLinkKey =
   | 'about' | 'services' | 'systems' | 'contact' | 'blog'
-  | 'automationAudit' | 'impressum' | 'privacy' | 'agb'
+  | 'impressum' | 'privacy' | 'agb'
 
-type ExternalLinkKey =
-  | 'restaurantOs' | 'printshopOs' | 'taxkontrol' | 'praxisOs' | 'handwerkOs' | 'publishingOs'
-  | 'agentBureau'
-
-type SystemLinkKey = ExternalLinkKey  // kept for label lookups; these are now internal routes
+/**
+ * System pages now live at /systems/<slug> inside maxpromo.digital, each with
+ * its own Primary (external product domain) / Secondary (/contact?system=<slug>)
+ * CTA pair. The footer links to the dedicated system page, not directly to the
+ * contact form or the external domain, matching Navbar and the systems index.
+ */
+type SystemLinkKey =
+  | 'agentBureau' | 'restaurantOs' | 'printshopOs' | 'taxkontrol' | 'praxisOs' | 'handwerkOs' | 'publishingOs'
 
 type ServiceLinkKey =
   | 'legacyModernization' | 'workflowAutomation' | 'aiSystems' | 'websiteSystems' | 'contentNewsletter'
 
 interface InternalLink { key: InternalLinkKey | SystemLinkKey; href: string; external?: false }
-interface ExternalLink { key: ExternalLinkKey; href: string; external: true }
 interface ServiceLink  { key: ServiceLinkKey;  href: string; external?: false }
 
-type AnyLink = InternalLink | ExternalLink | ServiceLink
+type AnyLink = InternalLink | ServiceLink
 
 interface Column {
   titleKey: 'colCompany' | 'colSystems' | 'colServices' | 'colLegal'
@@ -41,25 +43,27 @@ const COLUMNS: Column[] = [
   {
     titleKey: 'colSystems',
     links: [
-      // Gated: all system links route to consultation request, not directly to app/demo environments.
-      // Internal access continues via direct URL per product-gating rules.
-      { key: 'agentBureau',   href: '/contact?system=agent-bureau' },
-      { key: 'restaurantOs',  href: '/contact?system=restaurant-os' },
-      { key: 'printshopOs',   href: '/contact?system=printshop' },
-      { key: 'taxkontrol',    href: '/contact?system=taxkontrol' },
-      { key: 'praxisOs',      href: '/contact?system=praxis-os' },
-      { key: 'handwerkOs',    href: '/contact?system=handwerk-os' },
-      { key: 'publishingOs',  href: '/contact?system=publishing-os' },
+      // Each system has its own dedicated page at /systems/<slug>. That page carries
+      // the Primary (external product domain) / Secondary (/contact?system=<slug>) CTA
+      // pair. The old gated behaviour, routing every footer link straight to /contact,
+      // is retired as of 2026-07-25.
+      { key: 'agentBureau',   href: '/systems/agent-bureau' },
+      { key: 'restaurantOs',  href: '/systems/restaurant-os' },
+      { key: 'printshopOs',   href: '/systems/printshop-os' },
+      { key: 'taxkontrol',    href: '/systems/taxkontrol' },
+      { key: 'praxisOs',      href: '/systems/praxis-os' },
+      { key: 'handwerkOs',    href: '/systems/handwerk-os' },
+      { key: 'publishingOs',  href: '/systems/publishing-os' },
     ],
   },
   {
     titleKey: 'colServices',
     links: [
-      { key: 'legacyModernization', href: '/services' },
+      { key: 'legacyModernization', href: '/services/websites-platforms' },
       { key: 'workflowAutomation',  href: '/services/workflow-automation' },
       { key: 'aiSystems',           href: '/services/ai-agents' },
-      { key: 'websiteSystems',      href: '/services/websites-platforms' },
-      { key: 'contentNewsletter',   href: '/services' },
+      { key: 'websiteSystems',      href: '/services/customer-inquiries' },
+      { key: 'contentNewsletter',   href: '/services/social-media' },
     ],
   },
   {
@@ -106,7 +110,7 @@ export default function Footer() {
           </div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <Link
-              href="/automation-audit"
+              href="/contact"
               className="shine"
               style={{
                 fontFamily: 'var(--font-mono)',
@@ -121,21 +125,6 @@ export default function Footer() {
               }}
             >
               {t('ctaPrimary')}
-            </Link>
-            <Link
-              href="/contact"
-              className="glass"
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '13px',
-                color: 'hsl(40 30% 96%)',
-                padding: '12px 24px',
-                textDecoration: 'none',
-                display: 'inline-block',
-                borderRadius: '8px',
-              }}
-            >
-              {t('ctaSecondary')}
             </Link>
           </div>
         </div>

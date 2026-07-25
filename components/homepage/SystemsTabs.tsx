@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useTranslations, useLocale } from 'next-intl'
 import Image from 'next/image'
+import { Link } from '@/i18n/navigation'
 import { SYSTEMS_PAGE_PRODUCTS } from '@/lib/registry/products'
 
 export function SystemsTabs() {
@@ -19,7 +20,7 @@ export function SystemsTabs() {
     imgSrc: locale === 'de' && p.media.card.de
       ? `/${p.media.card.de}`
       : `/${p.media.card.en}`,
-    href: p.bookDemoUrl, // MVP hardening: routes to consultation, not external system
+    href: p.landingUrl, // dedicated /systems/<slug> page — carries its own Primary(external)/Secondary(contact) CTA pair
   }))
 
   const current = systems[active]
@@ -108,7 +109,7 @@ export function SystemsTabs() {
           >
             {current.headline}
           </h3>
-          <a
+          <Link
             href={current.href}
             style={{
               fontFamily: 'var(--font-mono)',
@@ -123,7 +124,7 @@ export function SystemsTabs() {
             }}
           >
             {t('viewSystem')}
-          </a>
+          </Link>
         </div>
 
         {/* Image */}

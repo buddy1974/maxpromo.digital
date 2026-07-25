@@ -170,7 +170,7 @@ export default function ROICalculator() {
 
             <div>
               <Link
-                href="/automation-audit"
+                href="/contact"
                 style={{
                   display: 'block',
                   fontFamily: 'var(--font-roboto-mono)',

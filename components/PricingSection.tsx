@@ -12,8 +12,8 @@ interface PlanRef {
 }
 
 const PLAN_REFS: PlanRef[] = [
-  { id: 'plan1', href: '/estimate',   featured: false, featureKeys: ['F1','F2','F3','F4','F5'] },
-  { id: 'plan2', href: '/discovery',  featured: true,  featureKeys: ['F1','F2','F3','F4','F5','F6'] },
+  { id: 'plan1', href: '/contact',   featured: false, featureKeys: ['F1','F2','F3','F4','F5'] },
+  { id: 'plan2', href: '/contact',  featured: true,  featureKeys: ['F1','F2','F3','F4','F5','F6'] },
   { id: 'plan3', href: '/contact',    featured: false, featureKeys: ['F1','F2','F3','F4','F5','F6'] },
 ]
 

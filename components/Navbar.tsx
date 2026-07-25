@@ -155,7 +155,7 @@ export default function Navbar() {
           <div className="hidden md:flex" style={{ flexShrink: 0, alignItems: 'center', gap: '10px' }}>
             <LocaleSwitcher />
             <Link
-              href="/automation-audit"
+              href="/contact"
               className="shine"
               style={{
                 fontFamily: 'var(--font-mono)',
@@ -315,7 +315,7 @@ export default function Navbar() {
             }}
           >
             <Link
-              href="/automation-audit"
+              href="/contact"
               onClick={() => setMenuOpen(false)}
               style={{
                 fontFamily: 'var(--font-mono)',
@@ -346,4 +346,4 @@ export default function Navbar() {
       `}</style>
     </>
   )
-}
+}/*xxxxxxxxxxxxxx*/

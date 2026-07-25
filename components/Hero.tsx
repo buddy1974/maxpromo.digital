@@ -41,6 +41,7 @@ const fadeUp = {
 
 export default function Hero() {
   const t      = useTranslations('hero')
+  const tAgent = useTranslations('home.agentBureau')
   const slides = t.raw('slides') as Array<{ label: string; items: string[]; meta: string[] }>
   const ticker = t.raw('ticker') as string[]
 
@@ -279,7 +280,7 @@ export default function Hero() {
               style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginBottom: '1.75rem' }}
             >
               <Link
-                href="/automation-audit"
+                href="/contact"
                 className="shine"
                 style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '16px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px', boxShadow: '0 0 40px rgba(249,115,22,0.3)' }}
               >
@@ -296,7 +297,7 @@ export default function Hero() {
                 href="/contact?system=agent-bureau"
                 style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#F97316', padding: '16px 24px', textDecoration: 'none', display: 'inline-block', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '10px', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}
               >
-                Agent Bureau anfragen →
+                {tAgent('primaryCta')}
               </Link>
             </motion.div>
 

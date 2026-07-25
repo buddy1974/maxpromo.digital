@@ -261,12 +261,12 @@ export default async function DataDeletionPage({
               </span>
             </BulletItem>
             <BulletItem>
-              {t(locale, 'Antworten aus der Automatisierungs-Analyse', 'Automation audit responses')}{' '}
+              {t(locale, 'Antworten aus dem Kontaktformular', 'Contact form responses')}{' '}
               <span style={{ color: '#555555', fontSize: '12px' }}>
                 {t(locale, '(bereitgestellte Unternehmensinformationen)', '(business information provided)')}
               </span>
             </BulletItem>
-            <BulletItem>{t(locale, 'Übermittlungen über den Discovery-Assistenten', 'Discovery wizard submissions')}</BulletItem>
+            <BulletItem>{t(locale, 'Demo-Anfragen über die System-Kontaktseiten', 'System demo request submissions')}</BulletItem>
             <BulletItem>
               {t(locale, 'Chat-Gesprächsinhalte', 'Chat conversation content')}{' '}
               <span style={{ color: '#555555', fontSize: '12px' }}>
@@ -329,4 +329,4 @@ export default async function DataDeletionPage({
       </div>
     </main>
   )
-}
+}/*xxxxxxxxx*/

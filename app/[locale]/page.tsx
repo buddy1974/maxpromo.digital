@@ -326,20 +326,23 @@ export default async function HomePage() {
             </p>
           </div>
 
-          {/* CTAs, gated: no external URLs on public homepage */}
+          {/* CTAs, Primary: external product domain. Secondary: /contact?system=agent-bureau.
+              Matches the CTA pattern used on every dedicated /systems/<slug> page. */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
-            <Link
-              href="/contact?system=agent-bureau"
+            <a
+              href="https://agents.maxpromo.digital"
+              target="_blank"
+              rel="noopener noreferrer"
               className="shine"
               style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#080808', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '8px', whiteSpace: 'nowrap' }}
             >
-              {locale === 'de' ? 'Beratungsgespräch anfragen →' : 'Request Agent Bureau Consultation →'}
-            </Link>
+              {locale === 'de' ? 'System ansehen →' : 'View system →'}
+            </a>
             <Link
-              href="/automation-audit"
+              href="/contact?system=agent-bureau"
               style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '8px', border: '1px solid hsl(40 30% 96% / 0.18)', whiteSpace: 'nowrap', letterSpacing: '0.04em' }}
             >
-              {locale === 'de' ? 'Business-Systeme Audit starten' : 'Start Business Systems Audit'}
+              {locale === 'de' ? 'Demo anfragen →' : 'Request demo →'}
             </Link>
           </div>
 
@@ -529,7 +532,7 @@ export default async function HomePage() {
             {t('finalCtaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginBottom: '1.25rem' }}>
-            <Link href="/automation-audit" className="shine" style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '16px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px', boxShadow: '0 0 40px rgba(249,115,22,0.3)' }}>
+            <Link href="/contact" className="shine" style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '16px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px', boxShadow: '0 0 40px rgba(249,115,22,0.3)' }}>
               {t('finalCtaPrimary')}
             </Link>
             <Link href="/contact" className="glass" style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '16px 32px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
@@ -545,4 +548,4 @@ export default async function HomePage() {
       </main>
     </>
   )
-}
+}/*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/

@@ -327,7 +327,7 @@ export default async function SystemsPage() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link
-              href="/discovery"
+              href="/contact"
               className="shine"
               style={{
                 ...mono,
@@ -345,7 +345,7 @@ export default async function SystemsPage() {
               {t('ctaPrimary')}
             </Link>
             <Link
-              href="/estimate"
+              href="/contact"
               className="glass"
               style={{
                 ...sans,
@@ -369,4 +369,4 @@ export default async function SystemsPage() {
 
     </main>
   )
-}
+}//x

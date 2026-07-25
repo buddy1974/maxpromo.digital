@@ -9,13 +9,13 @@ import { OPEN_MAX_CHAT } from '@/lib/events'
 type SectionId = 'hero' | 'pain' | 'proof' | 'systems'
 
 const COPY: Record<SectionId, { en: string; de: string }> = {
-  hero:    { en: 'Get Free Audit',       de: 'Kostenloser Geschäfts-Check' },
+  hero:    { en: 'Contact us',           de: 'Kontakt aufnehmen' },
   pain:    { en: 'Fix This, Free Check', de: 'Problem lösen, Kostenlos'  },
   proof:   { en: 'Get These Results',    de: 'Diese Ergebnisse sehen'      },
   systems: { en: 'View This System',     de: 'System ansehen'              },
 }
 
-const DEFAULT = { en: 'Get Free Audit', de: 'Kostenloser Geschäfts-Check' }
+const DEFAULT = { en: 'Contact us', de: 'Kontakt aufnehmen' }
 
 function label(section: SectionId | null, locale: string): string {
   if (!section) return locale === 'de' ? DEFAULT.de : DEFAULT.en

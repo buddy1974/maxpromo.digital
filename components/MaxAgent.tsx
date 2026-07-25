@@ -212,7 +212,7 @@ export function MaxAgent() {
         setLocked(false)
       } else {
         await addBot("There's still a fit here, but let's confirm it.", 800)
-        await addBot('Our free audit takes 3 minutes and gives you a full picture.', 950)
+        await addBot('Contact us and tell us briefly what you need help with.', 950)
         setInputPhase('low')
       }
     }
@@ -604,7 +604,7 @@ export function MaxAgent() {
               {/* Low-score CTA */}
               {inputPhase === 'low' && (
                 <Link
-                  href="/automation-audit"
+                  href="/contact"
                   style={{
                     display: 'block', textAlign: 'center',
                     background: '#F97316', borderRadius: '10px',
@@ -614,7 +614,7 @@ export function MaxAgent() {
                     textDecoration: 'none',
                   }}
                 >
-                  Start Free Audit →
+                  Contact us →
                 </Link>
               )}
 
@@ -630,4 +630,4 @@ export function MaxAgent() {
       </AnimatePresence>
     </>
   )
-}
+}/*xxxxxxxxxxxxxxxx*/

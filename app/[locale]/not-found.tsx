@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation'
 /**
  * Localized 404 for the public site. Renders inside app/[locale]/layout, so
  * it inherits the locale segment. Uses the same inline locale pattern as the
- * funnel tool pages (/discovery, /estimate) rather than the message catalog,
+ * funnel tool pages (/contact, /contact) rather than the message catalog,
  * to stay self-contained and avoid a hard dependency during error rendering.
  */
 export default function LocaleNotFound() {

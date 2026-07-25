@@ -306,8 +306,8 @@ export default async function AutomationLabPage({
               "Every operation has at least one layer that doesn't fit a standard pattern. We architect bespoke runtimes from the ground up, installed, operated, recoverable.")}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <Link href="/automation-audit" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
-              {t(locale, 'Meinen Betrieb kartieren →', 'Map my operation →')}
+            <Link href="/contact" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+              {t(locale, 'Kontakt aufnehmen →', 'Contact us →')}
             </Link>
             <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
               {t(locale, 'Mit einem Architekten sprechen', 'Talk to an architect')}
@@ -317,4 +317,4 @@ export default async function AutomationLabPage({
       </section>
     </main>
   )
-}
+}/*xxxxxxxxxxxxxxxxxx*/

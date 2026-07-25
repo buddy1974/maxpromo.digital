@@ -38,6 +38,9 @@ export function MaxComposer() {
         body:    JSON.stringify({ content }),
       })
       const data = await res.json() as { reply?: string; error?: string }
+      if (!res.ok || !data.reply) {
+        throw new Error(data.error ?? 'chat_unavailable')
+      }
       if (data.reply) {
         const reply: ChatMessage = {
           id:        -Date.now() - 1,
@@ -51,7 +54,19 @@ export function MaxComposer() {
         addMessage(reply)
       }
     } catch {
-      // Silent, user can retry
+      const lang = document.documentElement.lang || 'de'
+      const errorReply: ChatMessage = {
+        id:        -Date.now() - 2,
+        sessionId: '',
+        role:      'assistant',
+        content:   lang === 'de'
+          ? 'Max ist gerade nicht erreichbar. Bitte versuchen Sie es gleich erneut.'
+          : 'Max is temporarily unavailable. Please try again in a moment.',
+        channel:   'web',
+        createdAt: new Date(),
+        metadata:  { error: true },
+      }
+      addMessage(errorReply)
     } finally {
       setLoading(false)
     }

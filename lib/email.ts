@@ -21,9 +21,11 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
   const apiKey = process.env.RESEND_API_KEY
 
   if (!apiKey) {
-    console.log('[email] RESEND_API_KEY not set. Email would have been sent:')
-    console.log('[email] To:', payload.to)
-    console.log('[email] Subject:', payload.subject)
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[email] delivery unavailable: RESEND_API_KEY is not configured')
+      return { success: false, error: 'email_not_configured' }
+    }
+    console.log('[email] RESEND_API_KEY not set; using development mock delivery')
     return { success: true, id: 'dev-mock' }
   }
 
@@ -56,9 +58,11 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
 export function buildContactEmailHtml(fields: {
   name: string
   email: string
-  organisation: string
+  company: string
+  phone?: string
+  preferredContactMethod: string
+  painPoints: string[]
   message: string
-  automation?: string
   /** Product slug from ?system= param — e.g. 'restaurant-os', 'taxkontrol' */
   system?: string
 }): string {
@@ -73,10 +77,17 @@ export function buildContactEmailHtml(fields: {
       </tr>`
     : ''
 
-  const automationRow = fields.automation
+  const phoneRow = fields.phone
     ? `<tr>
-        <td style="padding: 8px 0; font-weight: bold; color: #666666; width: 160px; vertical-align: top;">Automation Interest:</td>
-        <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.automation)}</td>
+        <td style="padding: 8px 0; font-weight: bold; color: #666666;">Phone:</td>
+        <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.phone)}</td>
+      </tr>`
+    : ''
+
+  const painPointsRow = fields.painPoints.length
+    ? `<tr>
+        <td style="padding: 8px 0; font-weight: bold; color: #666666; vertical-align: top;">Help requested:</td>
+        <td style="padding: 8px 0; color: #111111;">${fields.painPoints.map(escapeHtml).join('<br>')}</td>
       </tr>`
     : ''
 
@@ -109,9 +120,14 @@ export function buildContactEmailHtml(fields: {
           </tr>
           <tr>
             <td style="padding: 8px 0; font-weight: bold; color: #666666;">Organisation:</td>
-            <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.organisation)}</td>
+            <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.company)}</td>
           </tr>
-          ${automationRow}
+          ${phoneRow}
+          <tr>
+            <td style="padding: 8px 0; font-weight: bold; color: #666666;">Preferred contact:</td>
+            <td style="padding: 8px 0; color: #111111;">${escapeHtml(fields.preferredContactMethod)}</td>
+          </tr>
+          ${painPointsRow}
         </table>
         <div style="margin-top: 20px; border-top: 1px solid #eeeeee; padding-top: 20px;">
           <p style="font-weight: bold; color: #666666; margin-bottom: 10px;">Message:</p>

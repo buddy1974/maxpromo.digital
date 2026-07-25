@@ -103,6 +103,12 @@ export type ProductIndustry =
   | 'education'
   | 'legal'
   | 'infrastructure'
+  /**
+   * Cross-industry business operations (AI agent staffing / process automation).
+   * Added 2026-07-25 for Max Agent Bureau — a horizontal product that serves
+   * every vertical rather than one, so none of the existing verticals fit.
+   */
+  | 'operations'
 
 /**
  * Visual card and landing page layout variant.
@@ -482,7 +488,7 @@ export interface ProductEntry {
 
   /**
    * URL for the primary booking CTA on the product card.
-   * Typically '/contact?system=[contactSlug]' or '/automation-audit'.
+   * Typically '/contact?system=[contactSlug]' or '/contact'.
    */
   readonly bookDemoUrl: string
 

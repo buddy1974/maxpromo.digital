@@ -163,7 +163,7 @@ export default function PortfolioPage() {
 
           <div style={{ marginTop: '48px', textAlign: 'center' }}>
             <Link
-              href="/discovery"
+              href="/contact"
               style={{
                 ...mono, fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase',
                 background: '#F97316', color: '#000', border: 'none', borderRadius: '2px',
@@ -218,4 +218,4 @@ export default function PortfolioPage() {
       </form>
     </main>
   )
-}
+}//

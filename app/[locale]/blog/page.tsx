@@ -130,7 +130,7 @@ export default async function BlogIndexPage() {
             </div>
             <div style={{ marginTop: '3rem', textAlign: 'center' }}>
               <Link
-                href="/automation-audit"
+                href="/contact"
                 style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#000', padding: '12px 22px', textDecoration: 'none', display: 'inline-block' }}
               >
                 {t('bottomCtaPrimary')}
@@ -227,4 +227,4 @@ export default async function BlogIndexPage() {
       </div>
     </main>
   )
-}
+}/*xxxxx*/

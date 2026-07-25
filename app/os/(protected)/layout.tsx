@@ -47,8 +47,6 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
 
   const EXT_LINKS = [
     { icon: '🌐', label: t.sidebar.linkWebsite,          href: 'https://maxpromo.digital', external: true },
-    { icon: '🔍', label: t.sidebar.linkAutomationAudit,  href: '/automation-audit',         external: false },
-    { icon: '💰', label: t.sidebar.linkEstimateTool,     href: '/estimate',                 external: false },
   ]
 
   const QUICK_PROMPTS = [t.ai.prompt1, t.ai.prompt2, t.ai.prompt3, t.ai.prompt4]
@@ -488,4 +486,4 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
       />
     </div>
   )
-}
+}/*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/

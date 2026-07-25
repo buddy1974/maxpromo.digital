@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getOrCreateSession, appendMessage, loadRecentMessages } from '@/lib/chat/memory'
 import { runMaxTurn } from '@/lib/chat/claude'
 import { enforceRateLimit } from '@/lib/rate-limit'
+import Anthropic from '@anthropic-ai/sdk'
 
 const COOKIE        = 'mp_chat_sid'
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30  // 30 days
@@ -28,6 +29,9 @@ export async function POST(req: NextRequest) {
   if (!content) {
     return NextResponse.json({ error: 'content is required' }, { status: 400 })
   }
+  if (content.length > 4000) {
+    return NextResponse.json({ error: 'content_too_long' }, { status: 400 })
+  }
 
   const isNewSession = !req.cookies.get(COOKIE)?.value
   const sid          = req.cookies.get(COOKIE)?.value ?? generateSessionId()
@@ -36,12 +40,17 @@ export async function POST(req: NextRequest) {
   const slug   = req.headers.get('x-mp-slug') || null
   const locale = req.headers.get('x-mp-default-locale') ?? 'de'
 
+  let stage: 'session' | 'persist_user' | 'provider' | 'persist_reply' = 'session'
+
   try {
     const session        = await getOrCreateSession(sid, { host, productSlug: slug, locale })
+    stage = 'persist_user'
     await appendMessage(session.id, 'user', content)
 
+    stage = 'provider'
     const recentMessages = await loadRecentMessages(session.id, 20)
-    const reply          = await runMaxTurn({ session, recentMessages, userMessage: content })
+    const reply          = await runMaxTurn({ session, recentMessages })
+    stage = 'persist_reply'
     await appendMessage(session.id, 'assistant', reply)
 
     // TODO(phase3b): if reply contains qualification trigger → handover to Telegram
@@ -58,7 +67,17 @@ export async function POST(req: NextRequest) {
 
     return res
   } catch (err) {
-    console.error('[chat/message POST]', err)
-    return NextResponse.json({ error: 'internal_error' }, { status: 500 })
+    if (err instanceof Anthropic.APIError) {
+      console.error('[chat/message POST] provider failure', {
+        status: err.status,
+        type: err.name,
+      })
+      return NextResponse.json({ error: 'chat_unavailable' }, { status: 503 })
+    }
+    const reason = err instanceof Error && err.message.includes('is not set')
+      ? 'configuration'
+      : 'internal'
+    console.error('[chat/message POST] failed', { reason, stage })
+    return NextResponse.json({ error: 'chat_unavailable' }, { status: 503 })
   }
 }

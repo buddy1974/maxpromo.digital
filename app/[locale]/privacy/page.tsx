@@ -112,14 +112,14 @@ export default function PrivacyPage() {
             </span>
           </p>
 
-          <p style={{ fontWeight: 500, color: '#FFFFFF' }}>Automation-Audit-Formular / Free Automation Audit</p>
+          <p style={{ fontWeight: 500, color: '#FFFFFF' }}>Kontaktformular / Contact form</p>
           <p>
             Name, E-Mail-Adresse, Unternehmen, Branche, Mitarbeiterzahl, Umsatzbereich, Herausforderungen.<br />
             Diese Daten werden ausschließlich zur Erstellung Ihres persönlichen Audit-Berichts verwendet
             und nicht an Dritte verkauft oder weitergegeben.<br />
             Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO.<br />
             <span style={{ color: '#888888' }}>
-              Legal basis: Art. 6(1)(b) GDPR. Data used solely to generate your audit report. Never sold or shared beyond service providers listed below.
+              Legal basis: Art. 6(1)(b) GDPR. Data is used solely to respond to your enquiry. Never sold or shared beyond service providers listed below.
             </span>
           </p>
 
@@ -145,7 +145,7 @@ export default function PrivacyPage() {
         <Section label="3 · Zweck der Verarbeitung / Purpose of Processing">
           <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
             <li>Beantwortung von Anfragen / Responding to enquiries</li>
-            <li>Bereitstellung von Automation-Audit-Berichten / Delivering audit reports</li>
+            <li>Bearbeitung von Kontaktanfragen / Responding to contact enquiries</li>
             <li>Verbesserung unserer Dienstleistungen / Improving our services</li>
             <li>Einhaltung gesetzlicher Anforderungen / Legal compliance</li>
           </ul>
@@ -191,7 +191,7 @@ export default function PrivacyPage() {
           <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
             <li>
               Kontakt- und Audit-Anfragen: 3 Jahre (handelsrechtliche Aufbewahrungspflicht § 257 HGB)<br />
-              <span style={{ color: '#888888', fontSize: '13px' }}>Contact and audit enquiries: 3 years (commercial law requirement §257 HGB)</span>
+              <span style={{ color: '#888888', fontSize: '13px' }}>Contact enquiries: 3 years (commercial law requirement §257 HGB)</span>
             </li>
             <li>
               Server-Logs: 7 Tage / Server logs: 7 days
@@ -278,4 +278,4 @@ export default function PrivacyPage() {
       </div>
     </main>
   )
-}
+}/*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/

@@ -215,7 +215,7 @@ export default async function WebsitesPlatformsPage() {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
             <Link
-              href="/automation-audit"
+              href="/contact"
               className="shine"
               style={{
                 fontFamily: 'var(--font-mono)',
@@ -252,4 +252,4 @@ export default async function WebsitesPlatformsPage() {
 
     </main>
   )
-}
+}/*xxxxx*/

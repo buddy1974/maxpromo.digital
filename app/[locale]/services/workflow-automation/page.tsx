@@ -49,7 +49,7 @@ export default async function WorkflowAutomationPage() {
       <div style={{ background: 'hsl(240 14% 4%)', padding: '0 2rem 3rem' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
           <ServiceImage
-            src="/images/services/workflow/hero.jpg"
+            src="/images/services/Tools.png"
             alt="Workflow automation dashboard showing connected tools"
             placeholder="// image: tool dashboard · data flow · office operator"
           />
@@ -191,7 +191,7 @@ export default async function WorkflowAutomationPage() {
             {t('ctaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <Link href="/automation-audit" className="shine" style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+            <Link href="/contact" className="shine" style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
               {t('ctaPrimary')}
             </Link>
             <Link href="/contact" className="glass" style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>

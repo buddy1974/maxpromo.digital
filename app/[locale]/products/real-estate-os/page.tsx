@@ -293,9 +293,9 @@ export default async function RealEstateOSPage({
         </section>
 
         <ConnectedSystems systems={[
-          { slug: 'taxkontrol',   name: 'TaxKontrol',   description: locale === 'de' ? 'Finanzielle Übersicht.' : 'Financial visibility.',              href: '/products/taxkontrol'   },
-          { slug: 'publishing-os', name: 'PublishingOS', description: locale === 'de' ? 'Operative Pipeline-Struktur.' : 'Operational pipeline structure.',    href: '/products/publishing-os'},
-          { slug: 'handwerk-os',  name: 'HandwerkOS',   description: locale === 'de' ? 'Inspiration für Projektabläufe.' : 'Project flow inspiration.',          href: '/products/handwerk-os'  },
+          { slug: 'taxkontrol',   name: 'TaxKontrol',   description: locale === 'de' ? 'Finanzielle Übersicht.' : 'Financial visibility.',              href: '/systems/taxkontrol'   },
+          { slug: 'publishing-os', name: 'PublishingOS', description: locale === 'de' ? 'Operative Pipeline-Struktur.' : 'Operational pipeline structure.',    href: '/systems/publishing-os'},
+          { slug: 'handwerk-os',  name: 'HandwerkOS',   description: locale === 'de' ? 'Inspiration für Projektabläufe.' : 'Project flow inspiration.',          href: '/systems/handwerk-os'  },
         ]} locale={locale} />
 
         {/* 9. CTA */}
