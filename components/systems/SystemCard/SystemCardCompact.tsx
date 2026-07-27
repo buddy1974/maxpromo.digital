@@ -13,7 +13,7 @@
 
 import Image from 'next/image'
 import type { SystemCardProps, ImageMode } from './SystemCard'
-import { resolveCompactCTALabel, resolveCompactAriaLabel } from './helpers/cta'
+import { resolveCompactCTALabel, resolveCompactAriaLabel, resolveSystemHref } from './helpers/cta'
 import { resolveThumbSrc, resolveImageStyle } from './helpers/image'
 import { TrackableLink } from '@/components/systems/interactions/TrackableLink'
 import { CTA_PRIMARY_CLICKED, CARD_CLICKED } from '@/lib/analytics/events'
@@ -46,7 +46,10 @@ export function SystemCardCompact({
     ? product.subline.de
     : product.subline.en
 
-  const ctaHref                       = product.landingUrl
+  // Was already pointing at the dedicated page (correct destination), but
+  // TrackableLink renders a raw <a> — not locale-aware — so the bare
+  // registry path needs explicit locale-prefixing (routing audit 2026-07-25).
+  const ctaHref                       = resolveSystemHref(product.landingUrl, locale)
   const thumbSrc                      = resolveThumbSrc(product, locale)
   const { objectFit, objectPosition } = resolveImageStyle(imageMode)
   const ctaLabel                      = resolveCompactCTALabel(locale)

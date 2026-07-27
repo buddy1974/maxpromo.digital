@@ -24,6 +24,7 @@ export {
   resolvePrimaryLabel,
   resolveSecondaryLabel,
   resolvePrimaryHref,
+  resolveDemoAccessLabel,
 } from './cta'
 
 // workflow.ts is a placeholder — nothing to export yet

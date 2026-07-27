@@ -33,9 +33,13 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataR
   { path: '/systems/praxis-os',            priority: 0.7, changeFrequency: 'monthly' },
   { path: '/systems/printshop-os',         priority: 0.7, changeFrequency: 'monthly' },
   { path: '/systems/publishing-os',        priority: 0.7, changeFrequency: 'monthly' },
+  // care-os and real-estate-os moved from /products/<slug> to /systems/<slug>
+  // 2026-07-26 (LANDINGENGINE CONSOLIDATION) — legacy /products/<slug> paths
+  // now permanently redirect (next.config.ts) and are intentionally not
+  // listed here, matching the other six systems above.
+  { path: '/systems/care-os',              priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/systems/real-estate-os',       priority: 0.7, changeFrequency: 'monthly' },
   { path: '/products',                     priority: 0.8, changeFrequency: 'monthly' },
-  { path: '/products/real-estate-os',      priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/products/care-os',             priority: 0.7, changeFrequency: 'monthly' },
   { path: '/pricing',                      priority: 0.6, changeFrequency: 'monthly' },
   { path: '/case-studies',                 priority: 0.6, changeFrequency: 'monthly' },
   { path: '/ai-websites',                  priority: 0.6, changeFrequency: 'monthly' },

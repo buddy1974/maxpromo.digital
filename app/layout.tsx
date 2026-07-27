@@ -63,17 +63,16 @@ export const metadata: Metadata = {
       'Essen-based business systems and automation company. We modernize legacy websites, connect workflows and install AI-powered operational systems.',
     type: 'website',
     url: SITE_URL,
-    // TODO: replace with a dedicated 1200×630 social-preview asset once
-    // produced — logo.png is used as an interim fallback so shared links
-    // never render blank, per the image-repair discipline for this repo.
-    images: [{ url: '/logo.png', width: 512, height: 512, alt: 'Maxpromo Digital' }],
+    // Dedicated 1200×630 social-preview asset (public/images/seo/) — used as
+    // the site-wide fallback whenever a page doesn't set its own OG image.
+    images: [{ url: '/images/seo/maxpromo-digital-og.png', width: 1200, height: 630, alt: 'Maxpromo Digital' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Maxpromo Digital | AI Business Systems & Automation Infrastructure',
     description:
       'Essen-based business systems and automation company. We modernize legacy websites, connect workflows and install AI-powered operational systems.',
-    images: ['/logo.png'],
+    images: ['/images/seo/maxpromo-digital-og.png'],
   },
 }
 

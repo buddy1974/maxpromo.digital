@@ -44,6 +44,38 @@ export default async function LocaleLayout({
   const h          = await headers()
   const isShowcase = h.get('x-mp-mode') === 'showcase'
 
+  // Site-wide Organization + WebSite JSON-LD, Maxpromo hub only, never on
+  // white-labeled showcase product domains. Address/contact are taken
+  // verbatim from the publicly-displayed Impressum, no invented profiles.
+  const organizationJsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type':    'Organization',
+      name:       'Maxpromo Digital',
+      url:        'https://www.maxpromo.digital',
+      logo:       'https://www.maxpromo.digital/logo.png',
+      address: {
+        '@type':          'PostalAddress',
+        streetAddress:    'Körnerstr. 8',
+        postalCode:       '45143',
+        addressLocality:  'Essen',
+        addressCountry:   'DE',
+      },
+      contactPoint: {
+        '@type':    'ContactPoint',
+        telephone:  '+49 173 3645698',
+        email:      'info@maxpromo.digital',
+        contactType: 'customer service',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type':    'WebSite',
+      name:       'Maxpromo Digital',
+      url:        'https://www.maxpromo.digital',
+    },
+  ]
+
   return (
     <NextIntlClientProvider>
       {isShowcase ? (
@@ -53,6 +85,10 @@ export default async function LocaleLayout({
         </>
       ) : (
         <>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          />
           <Navbar />
           {children}
           <Footer />

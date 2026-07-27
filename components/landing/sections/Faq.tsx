@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { FaqItem } from '@/lib/registry/types'
+import { EYEBROW_STYLE, SECTION_PADDING, INTERACTIVE_LINK_CLASSES } from '@/components/landing/showcaseTokens'
 
 interface FaqProps {
   faq:    ReadonlyArray<FaqItem> | null
@@ -12,6 +13,13 @@ interface FaqProps {
  * Accordion FAQ. Only renders when faq data is non-empty.
  * Registry FaqItem[] is populated per-product in Phase 3.
  * Client component for accordion state (no server-side alternative).
+ *
+ * Visual-polish pass 2026-07-25: tokens from showcaseTokens.ts. Added
+ * explicit focus-visible styling to the accordion trigger — a plain
+ * `background: none; border: none` button relies entirely on the
+ * browser's default outline, which is inconsistent across browsers and
+ * easy to lose against a dark background. Now gets the same branded
+ * focus ring as every other interactive element on the page.
  */
 export function Faq({ faq, locale }: FaqProps) {
   const [open, setOpen] = useState<number | null>(null)
@@ -22,9 +30,9 @@ export function Faq({ faq, locale }: FaqProps) {
   const eyebrow = isDE ? '// Häufige Fragen' : '// Common questions'
 
   return (
-    <section style={{ padding: '5rem 2rem', borderTop: '1px solid rgba(128,128,128,0.10)' }}>
+    <section style={{ padding: SECTION_PADDING.relaxed, borderTop: '1px solid rgba(128,128,128,0.10)' }}>
       <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-accent)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '2.5rem' }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: '2.5rem' }}>
           {eyebrow}
         </p>
 
@@ -36,7 +44,8 @@ export function Faq({ faq, locale }: FaqProps) {
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
-                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1.25rem 0', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                  className={`${INTERACTIVE_LINK_CLASSES} rounded-sm`}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1.25rem 4px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
                 >
                   <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '16px', color: isOpen ? 'var(--brand-fg)' : 'var(--brand-muted)', letterSpacing: '-0.01em', lineHeight: 1.4, transition: 'color 200ms ease' }}>
                     {item.question}
@@ -46,7 +55,7 @@ export function Faq({ faq, locale }: FaqProps) {
                   </span>
                 </button>
                 {isOpen && (
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--brand-muted)', lineHeight: 1.8, paddingBottom: '1.25rem', margin: 0 }}>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--brand-muted)', lineHeight: 1.8, padding: '0 4px 1.25rem', margin: 0 }}>
                     {item.answer}
                   </p>
                 )}

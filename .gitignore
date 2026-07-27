@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# retired scratch artifact — cannot be deleted from the connected device
+# bridge (no filesystem-delete permission there); excluded from the git
+# baseline instead so it never enters a commit. See the LandingEngine
+# consolidation report, 2026-07-26.
+_to_delete/

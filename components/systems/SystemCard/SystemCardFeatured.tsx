@@ -27,7 +27,7 @@
 
 import Image from 'next/image'
 import type { SystemCardProps } from './SystemCard'
-import { resolvePrimaryLabel, resolveSecondaryLabel } from './helpers/cta'
+import { resolvePrimaryLabel, resolveSecondaryLabel, resolveSystemHref } from './helpers/cta'
 import { TrackableLink } from '@/components/systems/interactions/TrackableLink'
 import { CTA_PRIMARY_CLICKED, CTA_SECONDARY_CLICKED, CARD_CLICKED } from '@/lib/analytics/events'
 import { resolveCardSrc } from './helpers/image'
@@ -68,6 +68,12 @@ export function SystemCardFeatured({
   const primaryLabel  = resolvePrimaryLabel(product, locale)
   const secondaryLabel = resolveSecondaryLabel(product, locale)
   const eventSource   = source ?? product.eventSource
+  // Routing correction 2026-07-25: hub cards (systems overview, products
+  // overview) are entry points, not the dedicated page — every link on this
+  // card must land on the dedicated /systems/[slug] (or /products/[slug])
+  // page first. bookDemoUrl (/contact?system=...) is reserved for that
+  // dedicated page's own secondary CTA, never for a hub-card click target.
+  const systemHref    = resolveSystemHref(product.landingUrl, locale)
 
   return (
     <article
@@ -107,9 +113,9 @@ export function SystemCardFeatured({
           aria-hidden="true"
         />
 
-        {/* Overlay click tracker, routes to consultation, not external domain */}
+        {/* Overlay click tracker, routes to the dedicated system page, not contact */}
         <TrackableLink
-          href={product.bookDemoUrl}
+          href={systemHref}
           event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
           className="absolute inset-0 z-[1]"
           overlay
@@ -130,7 +136,7 @@ export function SystemCardFeatured({
         {/* Product name */}
         <h3 className="m-0 text-[17px] font-bold leading-tight tracking-tight text-[hsl(40_30%_96%)]">
           <TrackableLink
-            href={product.bookDemoUrl}
+            href={systemHref}
             event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
             className="text-inherit no-underline hover:text-[#F97316] transition-colors duration-150"
           >
@@ -164,9 +170,9 @@ export function SystemCardFeatured({
         {/* ── CTA pair */}
         {showCTA && (
           <div className="flex gap-2 mt-auto pt-3 border-t border-white/[0.06]">
-            {/* Primary, Book Consultation */}
+            {/* Primary, View system (routes to the dedicated system page) */}
             <TrackableLink
-              href={product.bookDemoUrl}
+              href={systemHref}
               event={{ type: CTA_PRIMARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: primaryLabel }}
               aria-label={primaryLabel}
               className="flex-1 text-center font-mono text-[10px] font-bold uppercase tracking-widest bg-[#F97316] text-[#080808] px-3 py-2.5 hover:bg-[#EA6A00] transition-colors leading-none"
@@ -174,11 +180,11 @@ export function SystemCardFeatured({
               {primaryLabel}
             </TrackableLink>
 
-            {/* Secondary, Book Consultation (routes to /contact?system=...) */}
+            {/* Secondary, Learn more (same dedicated page — that page carries
+                its own Primary(external)/Secondary(contact) CTA pair) */}
             <TrackableLink
-              href={product.bookDemoUrl}
+              href={systemHref}
               event={{ type: CTA_SECONDARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: secondaryLabel }}
-              rel="noopener noreferrer"
               aria-label={secondaryLabel}
               className="flex-1 text-center font-mono text-[10px] uppercase tracking-widest border border-white/20 text-[hsl(40_30%_96%)] px-3 py-2.5 hover:border-white/40 transition-colors leading-none"
             >

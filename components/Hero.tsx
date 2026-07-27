@@ -293,8 +293,11 @@ export default function Hero() {
               >
                 {t('ctaSecondary')} →
               </Link>
+              {/* Routing correction 2026-07-25: was a direct /contact?system= link,
+                  bypassing the dedicated Agent Bureau page. Now routes there first;
+                  that page carries its own external/contact CTA pair. */}
               <Link
-                href="/contact?system=agent-bureau"
+                href="/systems/agent-bureau"
                 style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: '#F97316', padding: '16px 24px', textDecoration: 'none', display: 'inline-block', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '10px', letterSpacing: '0.06em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}
               >
                 {tAgent('primaryCta')}

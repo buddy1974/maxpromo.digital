@@ -1,39 +1,69 @@
+import type { FinalCtaData } from '@/lib/registry/adapters/landing.adapter'
+import { EYEBROW_STYLE, HEADING_SIZE, SECTION_PADDING, BUTTON_PRIMARY, BUTTON_SECONDARY, INTERACTIVE_PRIMARY_CLASSES, INTERACTIVE_SECONDARY_CLASSES, externalLinkProps } from '@/components/landing/showcaseTokens'
+
 interface ConversionProps {
+  name:         string
   bookDemoUrl:  string
   domain:       string
   ctaPrimary:   string
   locale:       string
   bridge:       boolean
+  finalCta:     FinalCtaData | null
 }
 
 /**
- * Final conversion section, always rendered (both showcase and bridge mode).
- * Bridge mode: secondary CTA links directly to the product domain.
- * Showcase mode: secondary CTA links to the live demo or system URL.
+ * Final conversion section — the strongest point on the page by design.
  *
- * TODO Phase 3: Max chat handles the contact form, see MaxAgent component.
+ * V2 correction 2026-07-25 (Marcel): copy is now driven by the registry's
+ * `finalCta` fields when a product has been migrated to V2 — HandwerkOS
+ * is the pilot. Falls back to generic, name-safe copy for the 5 showcase
+ * products not yet migrated (Phase D backlog).
+ *
+ * CTA-duplication correction, 2026-07-25: `showcaseSecondary` requires
+ * `secondaryUrl !== primaryUrl` — guards against a future product
+ * migration accidentally repeating HandwerkOS's original same-URL bug.
+ * Bridge mode keeps its own, unrelated secondary link out to the
+ * product's own domain (correct there — the visitor hasn't reached the
+ * product site yet; wrong on the showcase domain itself).
+ *
+ * Visual-polish pass 2026-07-25 (Marcel — "make the final CTA the
+ * strongest point on the page"): section padding increased to
+ * SECTION_PADDING.cta (7rem, the single largest padding value on the
+ * page — deliberately, this section should feel like arriving somewhere,
+ * not just another block). Heading now uses HEADING_SIZE.cta (the
+ * second-largest type on the page, after the hero) instead of a
+ * one-off clamp(). Both CTA buttons get explicit hover/active/focus
+ * feedback via the shared interactive tokens, previously absent.
  */
-export function Conversion({ bookDemoUrl, domain, ctaPrimary, locale, bridge }: ConversionProps) {
+export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, bridge, finalCta }: ConversionProps) {
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// Bereit?' : '// Ready?'
-  const heading = isDE
-    ? 'Sehen Sie es in Ihrem Betrieb.'
-    : 'See it in your business.'
-  const sub     = isDE
-    ? 'Erkunden Sie RestaurantOS mit einem Workflow, der Ihrem Restaurant entspricht.'
-    : 'Explore RestaurantOS using a workflow closer to your restaurant.'
+  const eyebrow = finalCta?.eyebrow || (isDE ? '// Bereit?' : '// Ready?')
+  const heading = finalCta?.heading || (isDE ? 'Sehen Sie es in Ihrem Betrieb.' : 'See it in your business.')
+  const sub     = finalCta?.description || (isDE
+    ? `Erkunden Sie ${name} mit einem Workflow, der Ihrem Betrieb entspricht.`
+    : `Explore ${name} using a workflow close to your business.`)
 
-  const secondaryLabel = isDE
+  const primaryLabel = finalCta?.primaryLabel || ctaPrimary
+  const primaryHref  = finalCta?.primaryUrl || bookDemoUrl
+
+  const bridgeSecondaryLabel = isDE
     ? `System ansehen bei ${domain} →`
     : `See full system at ${domain} →`
 
+  const showcaseSecondary = !bridge
+    && finalCta?.secondaryLabel
+    && finalCta?.secondaryUrl
+    && finalCta.secondaryUrl !== primaryHref
+    ? { label: finalCta.secondaryLabel, href: finalCta.secondaryUrl }
+    : null
+
   return (
-    <section style={{ padding: '7rem 2rem', borderTop: '1px solid rgba(128,128,128,0.10)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ maxWidth: '560px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-accent)', letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+    <section style={{ padding: SECTION_PADDING.cta, borderTop: '1px solid rgba(128,128,128,0.10)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: '1rem' }}>
           {eyebrow}
         </p>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4.5vw, 3rem)', letterSpacing: '-0.04em', lineHeight: 1.15, marginBottom: '1rem', color: 'var(--brand-fg)' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.cta, letterSpacing: '-0.04em', lineHeight: 1.15, marginBottom: '1rem', color: 'var(--brand-fg)' }}>
           {heading}
         </h2>
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--brand-muted)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
@@ -42,24 +72,37 @@ export function Conversion({ bookDemoUrl, domain, ctaPrimary, locale, bridge }: 
 
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
-            href={bookDemoUrl}
-            style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '14px', letterSpacing: '0.04em', color: '#080808', background: '#F97316', padding: '16px 32px', borderRadius: '10px', textDecoration: 'none', display: 'inline-block', boxShadow: '0 0 36px rgba(249,115,22,0.3)' }}
+            href={primaryHref}
+            className={INTERACTIVE_PRIMARY_CLASSES}
+            style={{ ...BUTTON_PRIMARY, boxShadow: '0 0 36px rgba(249,115,22,0.3)' }}
+            {...externalLinkProps(primaryHref)}
           >
-            {ctaPrimary}
+            {primaryLabel}
           </a>
+
           {bridge && (
             <a
               href={`https://${domain}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--brand-fg)', padding: '16px 28px', borderRadius: '10px', border: '1px solid rgba(128,128,128,0.25)', textDecoration: 'none', display: 'inline-block' }}
+              className={INTERACTIVE_SECONDARY_CLASSES}
+              style={BUTTON_SECONDARY}
             >
-              {secondaryLabel}
+              {bridgeSecondaryLabel}
+            </a>
+          )}
+
+          {showcaseSecondary && (
+            <a
+              href={showcaseSecondary.href}
+              className={INTERACTIVE_SECONDARY_CLASSES}
+              style={BUTTON_SECONDARY}
+              {...externalLinkProps(showcaseSecondary.href)}
+            >
+              {showcaseSecondary.label}
             </a>
           )}
         </div>
-
-        {/* TODO Phase 3: Max chat handles the contact form, see MaxAgent component */}
       </div>
     </section>
   )

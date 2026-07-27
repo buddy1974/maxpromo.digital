@@ -32,22 +32,37 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params
   const post = getPostBySlug(slug, locale) ?? getPostBySlug(slug, locale === 'de' ? 'en' : 'de')
-  if (!post) return { title: 'Not found' }
+  if (!post) return { title: 'Not found', robots: { index: false, follow: false } }
 
   const title       = post.metaTitle ?? post.title
   const description = post.metaDescription ?? post.excerpt
-  const canonical   = `https://maxpromo.digital/${locale}/blog/${post.slug}`
-  const images      = post.featuredImage ? [{ url: post.featuredImage }] : []
+  // Absolute https://www. canonical — a bare-domain canonical here previously
+  // caused a canonical→308→canonical redirect ping-pong when Facebook's
+  // crawler scraped article URLs (confirmed via Sharing Debugger).
+  const canonical   = `https://www.maxpromo.digital/${locale}/blog/${post.slug}`
+  const images      = post.featuredImage ? [{ url: post.featuredImage, alt: title }] : []
+
+  // Only advertise a language alternate when a published post with the same
+  // slug genuinely exists in the other locale — never link to a 404.
+  const otherLocale    = locale === 'de' ? 'en' : 'de'
+  const hasOtherLocale = getPostBySlug(post.slug, otherLocale) !== null
+  const languages = hasOtherLocale
+    ? {
+        [locale]:      canonical,
+        [otherLocale]: `https://www.maxpromo.digital/${otherLocale}/blog/${post.slug}`,
+      }
+    : undefined
 
   return {
-    title:       `${title}, Maxpromo Digital`,
+    title,
     description,
     keywords:    post.keywords,
-    alternates:  { canonical },
+    alternates:  { canonical, ...(languages ? { languages } : {}) },
     openGraph: {
       type:          'article',
       title,
       description,
+      url:           canonical,
       images,
       publishedTime: post.publishedAt,
       authors:       [post.author ?? 'Maxpromo Digital'],
@@ -181,16 +196,24 @@ export default async function BlogDetailPage({ params }: PageProps) {
   })()
 
   // JSON-LD
+  const articleUrl = `https://www.maxpromo.digital/${locale}/blog/${post.slug}`
   const jsonLd = {
     '@context':        'https://schema.org',
     '@type':           'Article',
     headline:          post.title,
     description:       post.metaDescription ?? post.excerpt,
     datePublished:     post.publishedAt,
+    inLanguage:        locale,
     author:            { '@type': 'Organization', name: post.author ?? 'Maxpromo Digital' },
-    publisher:         { '@type': 'Organization', name: 'Maxpromo Digital', url: 'https://maxpromo.digital' },
-    url:               `https://maxpromo.digital/${locale}/blog/${post.slug}`,
-    ...(post.featuredImage ? { image: post.featuredImage } : {}),
+    publisher:         {
+      '@type': 'Organization',
+      name:    'Maxpromo Digital',
+      url:     'https://www.maxpromo.digital',
+      logo:    { '@type': 'ImageObject', url: 'https://www.maxpromo.digital/logo.png' },
+    },
+    url:               articleUrl,
+    mainEntityOfPage:  { '@type': 'WebPage', '@id': articleUrl },
+    ...(post.featuredImage ? { image: `https://www.maxpromo.digital${post.featuredImage}` } : {}),
     ...(post.keywords?.length ? { keywords: post.keywords.join(', ') } : {}),
   }
 
