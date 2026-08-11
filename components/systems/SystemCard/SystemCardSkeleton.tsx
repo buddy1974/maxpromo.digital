@@ -57,7 +57,7 @@ function SkeletonBlock({
         width,
         height,
         borderRadius,
-        background: 'hsl(240 12% 10%)',
+        background: 'var(--color-border)',
         // TODO: add shimmer animation: background linear-gradient sweep
       }}
     />

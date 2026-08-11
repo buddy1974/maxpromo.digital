@@ -21,18 +21,18 @@ export default function PricingSection() {
   const t = useTranslations('pricingSection')
 
   return (
-    <section style={{ padding: '6rem 2rem', background: 'hsl(240 12% 6%)' }}>
-      <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+    <section style={{ padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem', background: 'var(--color-bg-section)' }}>
+      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ marginBottom: '3.5rem', textAlign: 'center' }}>
           <p
             style={{
               fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              color: 'hsl(28 100% 58%)',
-              letterSpacing: '0.2em',
+              fontSize: '13px',
+              color: 'var(--color-primary)',
+              letterSpacing: '0.15em',
               textTransform: 'uppercase',
-              marginBottom: '12px',
+              marginBottom: '14px',
             }}
           >
             {t('eyebrow')}
@@ -41,22 +41,22 @@ export default function PricingSection() {
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
-              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-              letterSpacing: '-0.04em',
-              color: 'hsl(40 30% 96%)',
+              fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
+              letterSpacing: '-0.02em',
+              color: 'var(--color-text-primary)',
               marginBottom: '1rem',
             }}
           >
             {t('title')}
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '520px', margin: '0 auto', lineHeight: 1.7 }}>
             {t('subtitle')}
           </p>
         </div>
 
         {/* Pricing grid */}
         <div
-          style={{ display: 'grid', gap: '1rem', alignItems: 'start' }}
+          style={{ display: 'grid', gap: '1.25rem', alignItems: 'start' }}
           className="grid-cols-1 lg:grid-cols-3"
         >
           {PLAN_REFS.map((plan, i) => (
@@ -68,31 +68,29 @@ export default function PricingSection() {
               transition={{ delay: i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 position: 'relative',
-                background: plan.featured
-                  ? 'linear-gradient(135deg, hsl(28 100% 58% / 0.1), hsl(240 12% 7%) 60%)'
-                  : 'hsl(240 12% 7%)',
+                background: 'var(--color-bg)',
                 border: plan.featured
-                  ? '1px solid hsl(28 100% 58% / 0.4)'
-                  : '1px solid hsl(40 30% 96% / 0.06)',
-                borderRadius: '16px',
+                  ? '2px solid var(--color-primary)'
+                  : '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-card)',
                 padding: '2.5rem',
-                boxShadow: plan.featured ? 'var(--glow-primary)' : 'none',
+                boxShadow: plan.featured ? 'var(--shadow-elevated)' : 'var(--shadow-card)',
               }}
             >
               {plan.featured && (
                 <span
                   style={{
                     position: 'absolute',
-                    top: '-12px',
+                    top: '-13px',
                     left: '50%',
                     transform: 'translateX(-50%)',
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '10px',
+                    fontSize: '11px',
                     fontWeight: 700,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.15em',
-                    color: 'hsl(240 14% 4%)',
-                    background: 'hsl(28 100% 58%)',
+                    letterSpacing: '0.1em',
+                    color: '#FFFFFF',
+                    background: 'var(--color-primary)',
                     padding: '4px 12px',
                     borderRadius: '20px',
                     whiteSpace: 'nowrap',
@@ -105,8 +103,8 @@ export default function PricingSection() {
               <p
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  color: 'hsl(28 100% 58%)',
+                  fontSize: '13px',
+                  color: 'var(--color-primary)',
                   letterSpacing: '0.15em',
                   textTransform: 'uppercase',
                   marginBottom: '12px',
@@ -117,20 +115,20 @@ export default function PricingSection() {
               <p
                 style={{
                   fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
+                  fontWeight: 800,
                   fontSize: '48px',
-                  letterSpacing: '-0.04em',
-                  color: 'hsl(40 30% 96%)',
+                  letterSpacing: '-0.02em',
+                  color: 'var(--color-text-primary)',
                   lineHeight: 1,
-                  marginBottom: '4px',
+                  marginBottom: '6px',
                 }}
               >
                 {t(`${plan.id}Price`)}
               </p>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)', marginBottom: '1.5rem' }}>
+              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
                 {t(`${plan.id}Period`)}
               </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.65, marginBottom: '2rem' }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-secondary)', lineHeight: 1.65, marginBottom: '2rem' }}>
                 {t(`${plan.id}Desc`)}
               </p>
 
@@ -143,8 +141,8 @@ export default function PricingSection() {
                       alignItems: 'flex-start',
                       gap: '10px',
                       fontFamily: 'var(--font-body)',
-                      fontSize: '14px',
-                      color: 'hsl(40 30% 96%)',
+                      fontSize: '15px',
+                      color: 'var(--color-text-primary)',
                     }}
                   >
                     <span
@@ -152,8 +150,8 @@ export default function PricingSection() {
                         width: '18px',
                         height: '18px',
                         borderRadius: '50%',
-                        background: plan.featured ? 'hsl(28 100% 58%)' : 'hsl(240 10% 16%)',
-                        color: plan.featured ? 'hsl(240 14% 4%)' : 'hsl(28 100% 58%)',
+                        background: plan.featured ? 'var(--color-primary)' : 'var(--color-bg-section)',
+                        color: plan.featured ? '#FFFFFF' : 'var(--color-primary)',
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -171,23 +169,8 @@ export default function PricingSection() {
 
               <Link
                 href={plan.href}
-                className={plan.featured ? 'shine' : ''}
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 700,
-                  fontSize: '13px',
-                  color: plan.featured ? 'hsl(240 14% 4%)' : 'hsl(40 30% 96%)',
-                  background: plan.featured ? 'hsl(28 100% 58%)' : 'transparent',
-                  border: plan.featured ? 'none' : '1px solid hsl(40 30% 96% / 0.12)',
-                  padding: '12px 24px',
-                  textDecoration: 'none',
-                  display: 'block',
-                  textAlign: 'center',
-                  borderRadius: '10px',
-                  transition: 'opacity 150ms ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.85')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+                className={plan.featured ? 'btn btn-primary' : 'btn btn-secondary'}
+                style={{ display: 'block', textAlign: 'center' }}
               >
                 {t(`${plan.id}Cta`)} →
               </Link>
@@ -195,7 +178,7 @@ export default function PricingSection() {
           ))}
         </div>
 
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(240 8% 35%)', textAlign: 'center', marginTop: '2.5rem', letterSpacing: '0.05em' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '2.5rem', letterSpacing: '0.05em' }}>
           {t('footnote')}
         </p>
       </div>

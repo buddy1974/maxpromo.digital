@@ -46,13 +46,14 @@ const CATEGORY_CHIPS = ['TRADE', 'HOSPITALITY', 'PRINT', 'REAL ESTATE', 'CARE', 
 
 const chipBase: React.CSSProperties = {
   fontFamily: 'var(--font-mono)',
-  fontSize: '10px',
+  fontSize: '11px',
   textTransform: 'uppercase',
-  letterSpacing: '0.1em',
+  letterSpacing: '0.08em',
   padding: '6px 14px',
-  border: '1px solid #1A1A1A',
-  background: 'transparent',
-  color: '#666666',
+  borderRadius: '6px',
+  border: '1px solid var(--color-border)',
+  background: 'var(--color-bg)',
+  color: 'var(--color-text-secondary)',
 }
 
 /* ─── PAGE ────────────────────────────────────────────────── */
@@ -62,26 +63,26 @@ export default async function ProductsPage() {
   const cards  = getProductsCards(locale)
 
   return (
-    <main style={{ background: '#080808' }}>
+    <main style={{ background: 'var(--color-bg)' }}>
 
       {/* ── HERO ── */}
-      <section style={{ padding: '5rem 2rem', borderBottom: '1px solid #1A1A1A' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1.5rem' }}>
+      <section style={{ padding: 'clamp(4.5rem, 8vw, 6.5rem) 2rem clamp(3rem, 6vw, 4rem)', borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--color-primary)', marginBottom: '1.5rem' }}>
             ALL SYSTEMS
           </p>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.04em', color: '#F0F0F0', lineHeight: 1.1, marginBottom: '0', whiteSpace: 'pre-line' }}>
+          <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', lineHeight: 1.1, marginBottom: '0', whiteSpace: 'pre-line' }}>
             {'Seven operating systems.\nBuilt to install and run.'}
           </h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: '#666666', maxWidth: '560px', marginTop: '1rem', lineHeight: 1.8 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '560px', marginTop: '1rem', lineHeight: 1.75 }}>
             Each system is configured and installation-ready. Designed to replace spreadsheets, paper records, and disconnected tools.
           </p>
         </div>
       </section>
 
       {/* ── FILTER BAR, visual placeholder, wired up in a future task ── */}
-      <section style={{ background: '#0F0F0F', borderBottom: '1px solid #1A1A1A', padding: '1.5rem 2rem' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center' }}>
+      <section style={{ background: 'var(--color-bg-section)', borderBottom: '1px solid var(--color-border)', padding: '1.5rem 2rem' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center' }}>
           {/* Status chips */}
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {STATUS_LABELS.map((label) => (
@@ -92,7 +93,7 @@ export default async function ProductsPage() {
           </div>
 
           {/* Visual separator */}
-          <div style={{ width: '1px', height: '20px', background: '#1A1A1A', flexShrink: 0 }} />
+          <div style={{ width: '1px', height: '20px', background: 'var(--color-border)', flexShrink: 0 }} />
 
           {/* Category chips */}
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -106,28 +107,25 @@ export default async function ProductsPage() {
       </section>
 
       {/* ── SYSTEMS GRID, registry-driven via ProductsPageGrid → SystemGrid → SystemCardFeatured ── */}
-      <section style={{ padding: '4rem 2rem' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+      <section style={{ padding: 'clamp(4.5rem, 8vw, 6.5rem) 2rem' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <ProductsPageGrid cards={cards} locale={locale} />
         </div>
       </section>
 
       {/* ── BOTTOM CTA ── */}
-      <section style={{ background: '#0F0F0F', borderTop: '1px solid #1A1A1A', padding: '5rem 2rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
+      <section style={{ background: 'var(--color-bg-section)', borderTop: '1px solid var(--color-border)', padding: 'clamp(4.5rem, 8vw, 6.5rem) 2rem', textAlign: 'center' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--color-primary)', marginBottom: '1rem' }}>
             CUSTOM SYSTEMS
           </p>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: '#F0F0F0', margin: 0 }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', margin: 0 }}>
             Need something that isn&apos;t listed?
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: '#666666', maxWidth: '500px', margin: '1rem auto 2rem', lineHeight: 1.8 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', maxWidth: '500px', margin: '1rem auto 2rem', lineHeight: 1.75 }}>
             Every system above started as a custom brief. If your business has a specific operational problem, we build the system that solves it.
           </p>
-          <Link
-            href="/contact"
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700, background: '#F97316', color: '#080808', padding: '16px 32px', textDecoration: 'none', display: 'inline-block' }}
-          >
+          <Link href="/contact" className="btn btn-primary">
             DISCUSS YOUR SYSTEM →
           </Link>
         </div>

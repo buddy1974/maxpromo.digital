@@ -93,7 +93,16 @@ export function SystemCardFull({
       data-variant="full"
       data-category={product.category}
       data-layout={product.layoutVariant}
-      style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}
+      style={{
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'var(--color-bg)',
+        border: '1px solid var(--color-border)',
+        borderRadius: 'var(--radius-card)',
+        boxShadow: 'var(--shadow-card)',
+        overflow: 'hidden',
+      }}
     >
       {/*
         ── THUMBNAIL
@@ -111,9 +120,10 @@ export function SystemCardFull({
         style={{
           width: '100%',
           aspectRatio: '19 / 10',
-          background: product.backgroundDark ? 'hsl(240 14% 4%)' : 'hsl(0 0% 97%)',
+          background: 'var(--color-bg-section)',
           position: 'relative',
           overflow: 'hidden',
+          flexShrink: 0,
         }}
         aria-hidden="true"
       >
@@ -133,40 +143,49 @@ export function SystemCardFull({
       {/* ── BODY */}
       <div
         data-section="body"
-        style={{ flex: 1, display: 'flex', flexDirection: 'column' }}
+        style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '10px', padding: '1.5rem 1.5rem 1.75rem' }}
       >
         {/* Status badge, only when showBadge and product is LIVE */}
         {showBadge && product.status === 'live' && (
           <span
             data-field="status-badge"
             aria-label="Live"
+            style={{
+              alignSelf: 'flex-start',
+              fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700,
+              color: 'var(--color-primary)', letterSpacing: '0.08em', textTransform: 'uppercase',
+              background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)',
+              borderRadius: '4px', padding: '3px 8px',
+            }}
           >
-            {/* TODO: style as orange LIVE badge */}
             LIVE
           </span>
         )}
 
         {/* Category label */}
-        <span data-field="category">
+        <span
+          data-field="category"
+          style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.08em', textTransform: 'uppercase' }}
+        >
           {/* TODO: translate category label via next-intl */}
           {product.category}
         </span>
 
         {/* Product name */}
-        <h3 data-field="name" style={{ margin: 0 }}>
+        <h3 data-field="name" style={{ margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', lineHeight: 1.25 }}>
           {product.name}
         </h3>
 
         {/* Subline */}
-        <p data-field="subline" style={{ margin: 0 }}>
+        <p data-field="subline" style={{ margin: 0, fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.6 }}>
           {subline}
         </p>
 
         {/* Bullets, BulletTuple guarantees exactly 3 (VG-09) */}
-        <ul data-field="bullets" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        <ul data-field="bullets" style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {bullets.map((bullet, i) => (
-            <li key={i} data-bullet-index={i}>
-              {/* TODO: style bullet icon with product.brandColor */}
+            <li key={i} data-bullet-index={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
+              <span aria-hidden="true" style={{ color: product.brandColor, fontFamily: 'var(--font-mono)', fontSize: '11px', fontWeight: 700, flexShrink: 0, marginTop: '2px' }}>✓</span>
               {bullet}
             </li>
           ))}
@@ -180,29 +199,31 @@ export function SystemCardFull({
             rel="noopener noreferrer"
             data-field="domain"
             aria-label={`${product.name}, ${product.domain}`}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.04em', textDecoration: 'none', marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid var(--color-border)' }}
           >
-            {/* TODO: style as small monospace grey text */}
             {product.domain}
           </a>
         )}
 
         {/* CTA pair */}
         {showCTA && (
-          <div data-field="cta-group">
+          <div data-field="cta-group" style={{ display: 'flex', gap: '8px', paddingTop: showDomain ? '4px' : '10px', ...(showDomain ? {} : { marginTop: 'auto', borderTop: '1px solid var(--color-border)' }) }}>
             <a
               href={product.bookDemoUrl}
               data-field="cta-primary"
               data-event-source={product.eventSource}
+              className="btn btn-primary"
+              style={{ flex: 1, fontSize: '14px', padding: '10px 16px' }}
             >
-              {/* TODO: style as #F97316 orange button (governance VG-03) */}
               {primaryLabel}
             </a>
             <a
               href={product.bookDemoUrl}
               data-field="cta-secondary"
               data-event-source={product.eventSource}
+              className="btn btn-secondary"
+              style={{ flex: 1, fontSize: '14px', padding: '10px 16px' }}
             >
-              {/* TODO: style as ghost/border button */}
               {secondaryLabel}
             </a>
           </div>

@@ -107,21 +107,21 @@ export default function SystemGrid({
       data-component="system-grid"
       data-variant={variant}
       style={{
-        padding: '4rem 2rem',
-        background: 'hsl(240 12% 6%)',
+        padding: 'clamp(3.5rem, 6vw, 6rem) 2rem',
+        background: 'var(--color-bg)',
       }}
     >
 
       {/* ── Optional section header */}
       {(title || description) && (
-        <header data-section="grid-header" style={{ maxWidth: '80rem', margin: '0 auto 2.5rem' }}>
+        <header data-section="grid-header" style={{ maxWidth: 'var(--container-width)', margin: '0 auto 2.5rem' }}>
           {title && (
-            <h2 data-field="title">
+            <h2 data-field="title" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', margin: 0 }}>
               {title}
             </h2>
           )}
           {description && (
-            <p data-field="description">
+            <p data-field="description" style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-secondary)', lineHeight: 1.7, marginTop: '10px' }}>
               {description}
             </p>
           )}
@@ -134,8 +134,8 @@ export default function SystemGrid({
         className={gridClass}
         style={{
           display: 'grid',
-          gap: '1.25rem',
-          maxWidth: '80rem',
+          gap: '1.5rem',
+          maxWidth: 'var(--container-width)',
           margin: '0 auto',
         }}
       >

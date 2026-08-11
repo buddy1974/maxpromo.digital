@@ -32,8 +32,9 @@ export function ServiceImage({
         position: 'relative',
         aspectRatio,
         overflow: 'hidden',
-        background: 'hsl(240 12% 7%)',
-        border: '1px solid hsl(40 30% 96% / 0.06)',
+        borderRadius: 'var(--radius-card)',
+        background: 'var(--color-bg-section)',
+        border: '1px solid var(--color-border)',
       }}
     >
       {!failed ? (
@@ -64,7 +65,7 @@ export function ServiceImage({
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '28px',
-              color: 'rgba(249,115,22,0.15)',
+              color: 'rgba(249,115,22,0.3)',
             }}
           >
             ◰
@@ -73,7 +74,7 @@ export function ServiceImage({
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '10px',
-              color: 'hsl(240 8% 30%)',
+              color: 'var(--color-text-secondary)',
               letterSpacing: '0.12em',
               textTransform: 'uppercase',
               margin: 0,

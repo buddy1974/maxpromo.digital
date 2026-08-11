@@ -35,9 +35,11 @@ const TIER_REFS: ReadonlyArray<TierRef> = [
 
 const FAQ_IDS = ['q1', 'q2', 'q3', 'q4'] as const
 
-const mono    = { fontFamily: 'var(--font-roboto-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans    = { fontFamily: 'var(--font-inter)' } as const
+const mono    = { fontFamily: 'var(--font-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-heading)' } as const
+const sans    = { fontFamily: 'var(--font-body)' } as const
+
+const SECTION_PADDING = 'clamp(4.5rem, 8vw, 8.75rem) 2rem'
 
 export default async function PricingPage() {
   const t      = await getTranslations('pricing')
@@ -45,38 +47,36 @@ export default async function PricingPage() {
   const tFaq   = await getTranslations('pricing.faq')
 
   return (
-    <main style={{ background: 'hsl(240 14% 4%)' }}>
+    <main style={{ background: 'var(--color-bg)' }}>
       {/* Header */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('eyebrow')}
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+          <h1 style={{ ...grotesk, fontWeight: 800, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
             {t('title')}
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '19px', color: 'var(--color-text-secondary)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.75 }}>
             {t('subtitle')}
           </p>
         </div>
       </section>
 
       {/* Tiers */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gap: '16px', alignItems: 'start' }} className="grid-cols-1 lg:grid-cols-3">
+      <section style={{ background: 'var(--color-bg-section)', padding: 'clamp(3.5rem, 6vw, 6rem) 2rem', borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gap: '20px', alignItems: 'start' }} className="grid-cols-1 lg:grid-cols-3">
             {TIER_REFS.map((tier) => (
               <div
                 key={tier.id}
                 style={{
-                  background: tier.featured
-                    ? 'linear-gradient(135deg, hsl(28 100% 58% / 0.1), hsl(240 12% 7%) 60%)'
-                    : 'hsl(240 12% 7%)',
+                  background: tier.featured ? 'rgba(249,115,22,0.03)' : 'var(--color-bg)',
                   border: tier.featured
-                    ? '1px solid hsl(28 100% 58% / 0.4)'
-                    : '1px solid hsl(40 30% 96% / 0.08)',
-                  boxShadow: tier.featured ? 'var(--glow-primary)' : 'none',
-                  borderRadius: '16px',
+                    ? '2px solid rgba(249,115,22,0.35)'
+                    : '1px solid var(--color-border)',
+                  boxShadow: 'var(--shadow-card)',
+                  borderRadius: 'var(--radius-card)',
                   padding: '40px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -86,15 +86,15 @@ export default async function PricingPage() {
                 {tier.hasTag && (
                   <span style={{
                     ...mono,
-                    fontSize: '10px',
+                    fontSize: '11px',
                     fontWeight: 700,
-                    color: 'hsl(240 14% 4%)',
-                    background: '#F97316',
+                    color: '#FFFFFF',
+                    background: 'var(--color-primary)',
                     padding: '4px 12px',
-                    letterSpacing: '0.12em',
+                    letterSpacing: '0.1em',
                     textTransform: 'uppercase',
                     position: 'absolute',
-                    top: '-12px',
+                    top: '-13px',
                     left: '50%',
                     transform: 'translateX(-50%)',
                     borderRadius: '20px',
@@ -103,23 +103,23 @@ export default async function PricingPage() {
                     ✦ {tTiers(`${tier.id}Tag`)}
                   </span>
                 )}
-                <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', marginTop: tier.hasTag ? '12px' : '0' }}>
+                <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px', marginTop: tier.hasTag ? '12px' : '0' }}>
                   {tTiers(`${tier.id}Name`)}
                 </p>
-                <p style={{ ...grotesk, fontWeight: 700, fontSize: '42px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: '4px' }}>
+                <p style={{ ...grotesk, fontWeight: 800, fontSize: '48px', color: 'var(--color-text-primary)', letterSpacing: '-0.02em', lineHeight: 1, marginBottom: '6px' }}>
                   {tTiers(`${tier.id}Price`)}
                 </p>
-                <p style={{ ...mono, fontSize: '12px', color: 'hsl(40 12% 65%)', marginBottom: '20px', letterSpacing: '0.05em' }}>
+                <p style={{ ...mono, fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px', letterSpacing: '0.03em' }}>
                   {tTiers(`${tier.id}Period`)}
                 </p>
-                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, marginBottom: '28px' }}>
+                <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, marginBottom: '28px' }}>
                   {tTiers(`${tier.id}Desc`)}
                 </p>
-                <div style={{ borderTop: '1px solid hsl(40 30% 96% / 0.08)', paddingTop: '24px', marginBottom: '32px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '24px', marginBottom: '32px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                   {tier.includesKeys.map((ik) => (
-                    <div key={ik} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 0', borderBottom: '1px solid hsl(40 30% 96% / 0.05)' }}>
-                      <span style={{ color: '#F97316', flexShrink: 0, ...mono, fontSize: '13px' }}>✓</span>
-                      <span style={{ ...sans, fontSize: '14px', color: 'hsl(40 30% 96% / 0.8)', lineHeight: 1.5 }}>
+                    <div key={ik} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
+                      <span style={{ color: 'var(--color-primary)', flexShrink: 0, ...mono, fontSize: '14px' }}>✓</span>
+                      <span style={{ ...sans, fontSize: '15px', color: 'var(--color-text-primary)', lineHeight: 1.5 }}>
                         {tTiers(`${tier.id}${ik}`)}
                       </span>
                     </div>
@@ -127,40 +127,26 @@ export default async function PricingPage() {
                 </div>
                 <Link
                   href={tier.href}
-                  className={tier.featured ? 'shine' : ''}
-                  style={{
-                    ...mono,
-                    fontWeight: 700,
-                    fontSize: '14px',
-                    color: tier.featured ? 'hsl(240 14% 4%)' : 'hsl(40 30% 96%)',
-                    background: tier.featured ? '#F97316' : 'transparent',
-                    border: tier.featured ? 'none' : '1px solid hsl(40 30% 96% / 0.12)',
-                    boxShadow: tier.featured ? '0 4px 20px rgba(249,115,22,0.4)' : 'none',
-                    padding: '14px 24px',
-                    textDecoration: 'none',
-                    display: 'block',
-                    textAlign: 'center',
-                    borderRadius: '10px',
-                  }}
+                  className={tier.featured ? 'btn btn-primary' : 'btn btn-secondary'}
                 >
                   {tTiers(`${tier.id}Cta`)} →
                 </Link>
               </div>
             ))}
           </div>
-          <p style={{ ...mono, fontSize: '11px', color: 'hsl(40 12% 65%)', textAlign: 'center', marginTop: '24px', letterSpacing: '0.05em' }}>
+          <p style={{ ...mono, fontSize: '12px', color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '24px', letterSpacing: '0.05em' }}>
             {t('footnote')}
           </p>
         </div>
       </section>
 
       {/* FAQ */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('faqEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '3rem' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.1rem, 4vw, 3.1rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '3rem' }}>
             {t('faqTitle')}
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
@@ -168,15 +154,15 @@ export default async function PricingPage() {
               <div
                 key={qid}
                 style={{
-                  borderTop: '1px solid hsl(40 30% 96% / 0.07)',
+                  borderTop: '1px solid var(--color-border)',
                   padding: '2rem 0',
-                  borderBottom: i === FAQ_IDS.length - 1 ? '1px solid hsl(40 30% 96% / 0.07)' : 'none',
+                  borderBottom: i === FAQ_IDS.length - 1 ? '1px solid var(--color-border)' : 'none',
                 }}
               >
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '12px' }}>
+                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '19px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '12px' }}>
                   {tFaq(qid)}
                 </h3>
-                <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.8 }}>
+                <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.75 }}>
                   {tFaq(`a${qid.substring(1)}`)}
                 </p>
               </div>
@@ -186,26 +172,26 @@ export default async function PricingPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
+      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.1rem, 4vw, 3.1rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
             {t('ctaTitle')}
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.75 }}>
             {t('ctaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <Link href="/contact" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+            <Link href="/contact" className="btn btn-primary">
               {t('ctaPrimary')}
             </Link>
-            <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+            <Link href="/contact" className="btn btn-secondary">
               {t('ctaSecondary')}
             </Link>
           </div>
-          <p style={{ ...mono, fontSize: '11px', color: 'hsl(240 8% 35%)', marginTop: '20px', letterSpacing: '0.05em' }}>
+          <p style={{ ...mono, fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '20px', letterSpacing: '0.05em' }}>
             {t('ctaFootnote')}
           </p>
         </div>

@@ -14,6 +14,8 @@ const mono    = { fontFamily: 'var(--font-mono)' } as const
 const grotesk = { fontFamily: 'var(--font-heading)' } as const
 const sans    = { fontFamily: 'var(--font-body)' } as const
 
+const SECTION_PADDING = 'clamp(4.5rem, 8vw, 8.75rem) 2rem'
+
 interface StackRow {
   id: 'r1' | 'r2' | 'r3'
   tools: ReadonlyArray<string>
@@ -46,40 +48,40 @@ export default async function AboutPage() {
   const todayList = t.raw('todayList') as string[]
 
   return (
-    <main style={{ background: 'hsl(240 14% 4%)' }}>
+    <main style={{ background: 'var(--color-bg)' }}>
 
       {/* Hero */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('eyebrow')}
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px', maxWidth: '44rem' }}>
+          <h1 style={{ ...grotesk, fontWeight: 800, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px', maxWidth: '44rem' }}>
             {t('title')}
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '44rem', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '19px', color: 'var(--color-text-secondary)', maxWidth: '44rem', lineHeight: 1.75 }}>
             {t('intro')}
           </p>
         </div>
       </section>
 
       {/* Story, years of real systems work */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '3rem' }} className="grid-cols-1 lg:grid-cols-2">
+      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', display: 'grid', gap: '3rem' }} className="grid-cols-1 lg:grid-cols-2">
           <div>
-            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('storyEyebrow')}
             </p>
-            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.85rem, 3vw, 2.5rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
               {t('storyTitle')}
             </h2>
-            <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.85 }}>
+            <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
               {t('storyBody')}
             </p>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignContent: 'flex-start', paddingTop: '2.5rem' }}>
             {['Joomla', 'WordPress', 'Drupal', 'TYPO3', 'phpMyAdmin', 'MySQL', 'WAMP', 'XAMPP', '.htaccess', 'PHP', 'Hostinger', 'GoDaddy', 'A2 Hosting', 'CI/CD', 'Git', 'Next.js', 'Supabase', 'n8n', 'Claude AI'].map((tag) => (
-              <span key={tag} style={{ ...mono, fontSize: '11px', color: 'hsl(40 30% 96% / 0.4)', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', padding: '4px 12px', letterSpacing: '0.04em', borderRadius: '4px' }}>
+              <span key={tag} style={{ ...mono, fontSize: '12px', color: 'var(--color-text-secondary)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', padding: '5px 12px', letterSpacing: '0.03em', borderRadius: '6px' }}>
                 {tag}
               </span>
             ))}
@@ -88,34 +90,34 @@ export default async function AboutPage() {
       </section>
 
       {/* Transformation */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('transformEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.85rem, 3vw, 2.5rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
             {t('transformTitle')}
           </h2>
-          <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.85 }}>
+          <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
             {t('transformBody')}
           </p>
         </div>
       </section>
 
       {/* Today */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('todayEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '2.5rem' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.85rem, 3vw, 2.5rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '2.5rem' }}>
             {t('todayTitle')}
           </h2>
-          <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+          <div style={{ display: 'grid', gap: '16px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
             {todayList.map((item, i) => (
-              <div key={i} style={{ background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '10px', padding: '18px 20px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                <span style={{ color: '#F97316', flexShrink: 0, ...mono, fontSize: '12px' }}>→</span>
-                <p style={{ ...sans, fontSize: '13px', color: 'hsl(40 12% 65%)', lineHeight: 1.6, margin: 0 }}>
+              <div key={i} className="card" style={{ padding: '20px 22px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <span style={{ color: 'var(--color-primary)', flexShrink: 0, ...mono, fontSize: '13px' }}>→</span>
+                <p style={{ ...sans, fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.6, margin: 0 }}>
                   {item}
                 </p>
               </div>
@@ -125,56 +127,50 @@ export default async function AboutPage() {
       </section>
 
       {/* Why / pain points */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+      <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3.5rem' }}>
-            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('whyEyebrow')}
             </p>
-            <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', lineHeight: 1.8, marginBottom: '8px' }}>
+            <p style={{ ...sans, fontSize: '19px', color: 'var(--color-text-secondary)', lineHeight: 1.75, marginBottom: '8px' }}>
               {t('whyLead')}
             </p>
           </div>
-          <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div style={{ display: 'grid', gap: '16px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {WHY_KEYS.map((key) => (
-              <div
-                key={key}
-                style={{ background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '10px', padding: '24px 28px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}
-              >
-                <span style={{ color: '#F97316', flexShrink: 0, ...mono, fontSize: '14px', paddingTop: '2px' }}>✕</span>
-                <p style={{ ...sans, fontSize: '15px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0 }}>
+              <div key={key} className="card" style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <span style={{ color: 'var(--color-primary)', flexShrink: 0, ...mono, fontSize: '15px', paddingTop: '2px' }}>✕</span>
+                <p style={{ ...sans, fontSize: '16px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0 }}>
                   {tWhy(key)}
                 </p>
               </div>
             ))}
           </div>
-          <p style={{ ...mono, fontSize: '14px', color: '#F97316', marginTop: '2rem', letterSpacing: '0.04em' }}>
+          <p style={{ ...mono, fontSize: '15px', color: 'var(--color-primary)', marginTop: '2rem', letterSpacing: '0.03em' }}>
             → {t('whyClosing')}
           </p>
         </div>
       </section>
 
       {/* How we work */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3.5rem' }}>
-            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('howEyebrow')}
             </p>
           </div>
-          <div style={{ display: 'grid', gap: '1px', background: 'hsl(40 30% 96% / 0.06)' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {HOW_STEPS.map((step, idx) => (
-              <div
-                key={step}
-                style={{ background: 'hsl(240 12% 6%)', padding: '36px 32px', position: 'relative', overflow: 'hidden' }}
-              >
-                <span style={{ ...mono, fontSize: '48px', fontWeight: 700, color: 'rgba(249,115,22,0.08)', position: 'absolute', top: '16px', right: '24px', lineHeight: 1 }}>
+              <div key={step} style={{ background: 'var(--color-bg)', padding: '36px 32px', position: 'relative', overflow: 'hidden' }}>
+                <span style={{ ...mono, fontSize: '48px', fontWeight: 700, color: 'rgba(249,115,22,0.10)', position: 'absolute', top: '16px', right: '24px', lineHeight: 1 }}>
                   {String(idx + 1).padStart(2, '0')}
                 </span>
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '16px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.03em', marginBottom: '10px', position: 'relative' }}>
+                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '10px', position: 'relative' }}>
                   {tHow(`${step}Title`)}
                 </h3>
-                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, position: 'relative', margin: 0 }}>
+                <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.75, position: 'relative', margin: 0 }}>
                   {tHow(`${step}Desc`)}
                 </p>
               </div>
@@ -184,40 +180,35 @@ export default async function AboutPage() {
       </section>
 
       {/* Who we work with */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '4rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'center' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', flexShrink: 0 }}>
+      <section style={{ background: 'var(--color-bg)', padding: '4.5rem 2rem', borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '24px', alignItems: 'center' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', flexShrink: 0 }}>
             {t('forEyebrow')}
           </p>
-          <p style={{ ...sans, fontSize: '16px', color: 'hsl(40 12% 65%)', lineHeight: 1.8, margin: 0 }}>
+          <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.8, margin: 0 }}>
             {t('forList')}
           </p>
         </div>
       </section>
 
       {/* Principles */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
-        <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
+        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3.5rem' }}>
-            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('principleEyebrow')}
             </p>
-            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)' }}>
+            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.1rem, 3.5vw, 2.85rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)' }}>
               {t('principleTitle')}
             </h2>
           </div>
-          <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <div style={{ display: 'grid', gap: '16px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {VALUE_REFS.map((v) => (
-              <div
-                key={v.num}
-                className="dark-card"
-                style={{ background: 'hsl(240 12% 7%)', border: '1px solid hsl(40 30% 96% / 0.07)', borderRadius: '12px', padding: '28px', position: 'relative', overflow: 'hidden' }}
-              >
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.5) 50%, transparent 100%)', pointerEvents: 'none' }} />
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '15px', color: '#F97316', letterSpacing: '-0.02em', marginBottom: '8px' }}>
+              <div key={v.num} className="card">
+                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '17px', color: 'var(--color-primary)', letterSpacing: '-0.01em', marginBottom: '8px' }}>
                   {tValues(`${v.id}Title`)}
                 </h3>
-                <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, margin: 0 }}>
+                <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
                   {tValues(`${v.id}Desc`)}
                 </p>
               </div>
@@ -227,19 +218,19 @@ export default async function AboutPage() {
       </section>
 
       {/* Tech stack */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '3rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section style={{ background: 'var(--color-bg)', padding: '3.5rem 2rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+          <p style={{ ...mono, fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px' }}>
             {t('stackEyebrow')}
           </p>
-          <p style={{ ...sans, fontSize: '14px', color: 'hsl(40 12% 65%)', marginBottom: '1.5rem', lineHeight: 1.7 }}>
+          <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', marginBottom: '1.5rem', lineHeight: 1.7 }}>
             {t('stackTitle')}
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {STACK_ROWS.map((row) => (
               <div key={row.id} style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {row.tools.map((tool) => (
-                  <span key={tool} style={{ ...mono, fontSize: '11px', color: 'hsl(40 30% 96% / 0.4)', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '4px 12px', letterSpacing: '0.04em', borderRadius: '4px' }}>
+                  <span key={tool} style={{ ...mono, fontSize: '12px', color: 'var(--color-text-secondary)', background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', padding: '5px 12px', letterSpacing: '0.03em', borderRadius: '6px' }}>
                     {tool}
                   </span>
                 ))}
@@ -250,22 +241,22 @@ export default async function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
+      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.1rem, 4vw, 3.1rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
             {t('ctaTitle')}
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
+          <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.75 }}>
             {t('ctaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <Link href="/contact" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+            <Link href="/contact" className="btn btn-primary">
               {t('ctaPrimary')}
             </Link>
-            <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+            <Link href="/contact" className="btn btn-secondary">
               {t('ctaSecondary')}
             </Link>
           </div>
@@ -273,4 +264,4 @@ export default async function AboutPage() {
       </section>
     </main>
   )
-}/*xxxxx*/
+}

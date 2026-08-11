@@ -60,7 +60,7 @@ export function SystemCardCompact({
       data-slug={product.slug}
       data-variant="compact"
       data-image-mode={imageMode}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-white/[0.06] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5)] bg-[hsl(240_12%_7%)] transition-shadow duration-300 hover:shadow-[0_8px_40px_-8px_rgba(0,0,0,0.7)]"
+      className="group relative flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] shadow-[var(--shadow-card)] bg-[var(--color-bg)] transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
     >
       {/* ── THUMBNAIL */}
       <div
@@ -77,7 +77,7 @@ export function SystemCardCompact({
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="absolute inset-0 bg-[hsl(240_14%_4%)]" />
+          <div className="absolute inset-0 bg-[var(--color-bg-section)]" />
         )}
 
         {/* Image area click tracker, overlay mode, aria-hidden (headline link provides AT access) */}
@@ -97,8 +97,8 @@ export function SystemCardCompact({
       </div>
 
       {/* ── BODY */}
-      <div className="flex flex-col flex-1 px-5 pt-4 pb-5 gap-2">
-        <h3 className="m-0 text-[1rem] font-bold leading-tight tracking-tight text-[hsl(40_30%_96%)]">
+      <div className="flex flex-col flex-1 px-5 pt-5 pb-5 gap-2">
+        <h3 className="m-0 text-[17px] font-bold leading-tight tracking-tight text-[var(--color-text-primary)]">
           <TrackableLink
             href={ctaHref}
             event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
@@ -107,13 +107,13 @@ export function SystemCardCompact({
             {product.name}
           </TrackableLink>
         </h3>
-        <p className="m-0 text-[13px] leading-relaxed text-[hsl(40_12%_65%)] line-clamp-2 font-mono">
+        <p className="m-0 text-[14px] leading-relaxed text-[var(--color-text-secondary)] line-clamp-2 font-mono">
           {subline}
         </p>
 
         {/* Footer row */}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/[0.06]">
-          <span className="font-mono text-[10px] text-[hsl(240_8%_35%)] tracking-wider uppercase">
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-[var(--color-border)]">
+          <span className="font-mono text-[11px] text-[var(--color-text-secondary)] tracking-wider uppercase">
             {product.domain}
           </span>
           {showCTA && (
@@ -128,7 +128,7 @@ export function SystemCardCompact({
               }}
               aria-label={resolveCompactAriaLabel(product.name, locale)}
               data-event-source={eventSource}
-              className="font-mono text-[11px] text-[#F97316] tracking-widest uppercase hover:opacity-70 transition-opacity"
+              className="font-mono text-[12px] text-[var(--color-primary)] tracking-widest uppercase hover:opacity-70 transition-opacity"
             >
               {ctaLabel}
             </TrackableLink>
