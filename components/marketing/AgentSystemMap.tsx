@@ -40,7 +40,7 @@ export function AgentSystemMap() {
   return (
     <div className="mt-8">
       {/* Desktop: radial system map */}
-      <div className="hidden rounded-2xl border border-zinc-200 bg-surface-subtle p-4 md:block">
+      <div className="hidden rounded-lg border border-zinc-200 bg-surface-subtle p-4 md:block">
         <svg viewBox="0 0 960 500" className="h-auto w-full" role="img" aria-label="Chief of Staff koordiniert neun spezialisierte Agenten">
           {/* spokes */}
           {nodes.map((n, i) => (
@@ -76,7 +76,7 @@ export function AgentSystemMap() {
       </div>
 
       {/* Mobile: compact hub statement */}
-      <div className="rounded-2xl border border-accent/30 bg-accent-soft p-5 text-center md:hidden">
+      <div className="rounded-lg border border-accent/30 bg-accent-soft p-5 text-center md:hidden">
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent font-mono text-xl text-white">
           ◆
         </span>

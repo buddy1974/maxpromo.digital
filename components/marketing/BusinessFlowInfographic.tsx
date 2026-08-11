@@ -52,7 +52,7 @@ export function BusinessFlowInfographic() {
         </h2>
 
         {/* Desktop: horizontal flow */}
-        <div className="mt-8 hidden overflow-x-auto rounded-2xl border border-zinc-200 bg-surface-subtle p-4 md:block md:p-6">
+        <div className="mt-8 hidden overflow-x-auto rounded-lg border border-zinc-200 bg-surface-subtle p-4 md:block md:p-6">
           <svg
             viewBox="0 0 960 195"
             className="h-auto w-full min-w-[720px]"
@@ -123,7 +123,7 @@ export function BusinessFlowInfographic() {
         </div>
 
         {/* Mobile: vertical flow */}
-        <div className="mt-8 overflow-hidden rounded-2xl border border-zinc-200 bg-surface-subtle p-4 md:hidden">
+        <div className="mt-8 overflow-hidden rounded-lg border border-zinc-200 bg-surface-subtle p-4 md:hidden">
           <svg viewBox={`0 0 480 ${mHeight}`} className="h-auto w-full" role="img" aria-label="Prozess-Pipeline vertikal">
             {/* spine */}
             <line x1={MX} y1={MTOP} x2={MX} y2={MTOP + (FLOW.length - 1) * MGAP}

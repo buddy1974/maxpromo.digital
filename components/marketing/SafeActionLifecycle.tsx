@@ -37,7 +37,7 @@ export function SafeActionLifecycle() {
           KI bereitet vor. Der Mensch entscheidet.
         </h2>
 
-        <div className="mt-8 overflow-x-auto rounded-2xl border border-zinc-200 bg-surface-subtle p-4 md:p-6">
+        <div className="mt-8 overflow-x-auto rounded-lg border border-zinc-200 bg-surface-subtle p-4 md:p-6">
           <svg
             viewBox="0 0 960 220"
             className="h-auto w-full min-w-[720px]"
