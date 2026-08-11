@@ -83,15 +83,14 @@ export default function Footer() {
   return (
     <footer
       style={{
-        background: 'hsl(240 12% 6%)',
-        borderTop: '1px solid hsl(40 30% 96% / 0.06)',
+        background: 'var(--color-footer-bg)',
       }}
     >
       {/* CTA strip */}
-      <div style={{ borderBottom: '1px solid hsl(40 30% 96% / 0.06)', padding: '3rem 2rem' }}>
+      <div style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', padding: '3.5rem 2rem' }}>
         <div
           style={{
-            maxWidth: '80rem',
+            maxWidth: 'var(--container-width)',
             margin: '0 auto',
             display: 'flex',
             alignItems: 'center',
@@ -101,29 +100,15 @@ export default function Footer() {
           }}
         >
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(28 100% 58%)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '10px' }}>
               {t('ctaEyebrow')}
             </p>
-            <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '28px', color: 'hsl(40 30% 96%)', letterSpacing: '-0.04em', margin: 0 }}>
+            <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: '#FFFFFF', letterSpacing: '-0.02em', margin: 0 }}>
               {t('ctaHeadline')}
             </h3>
           </div>
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <Link
-              href="/contact"
-              className="shine"
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 700,
-                fontSize: '13px',
-                color: 'hsl(240 14% 4%)',
-                background: 'hsl(28 100% 58%)',
-                padding: '12px 24px',
-                textDecoration: 'none',
-                display: 'inline-block',
-                borderRadius: '8px',
-              }}
-            >
+            <Link href="/contact" className="btn btn-primary">
               {t('ctaPrimary')}
             </Link>
           </div>
@@ -131,23 +116,23 @@ export default function Footer() {
       </div>
 
       {/* Main footer */}
-      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '3.5rem 2rem' }}>
+      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', padding: '4.5rem 2rem' }}>
         <style>{`
           .footer-cols-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 2rem;
+            gap: 2.5rem;
           }
           @media (min-width: 640px) {
             .footer-cols-grid {
               grid-template-columns: repeat(2, 1fr);
-              gap: 2.5rem;
+              gap: 3rem;
             }
           }
           @media (min-width: 1024px) {
             .footer-cols-grid {
               grid-template-columns: repeat(4, 1fr);
-              gap: 2rem;
+              gap: 2.5rem;
               align-items: start;
             }
           }
@@ -172,17 +157,16 @@ export default function Footer() {
             <div key={col.titleKey}>
               <p
                 style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '10px',
-                  color: 'hsl(28 100% 58%)',
-                  letterSpacing: '0.2em',
-                  marginBottom: '16px',
-                  textTransform: 'uppercase',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  color: '#FFFFFF',
+                  marginBottom: '18px',
                 }}
               >
                 {t(col.titleKey)}
               </p>
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 {col.links.map((link) => (
                   <li key={link.key}>
                     {link.external ? (
@@ -209,39 +193,35 @@ export default function Footer() {
         {/* Bottom strip */}
         <div
           style={{
-            marginTop: '3rem',
-            paddingTop: '1.5rem',
-            borderTop: '1px solid hsl(40 30% 96% / 0.06)',
+            marginTop: '3.5rem',
+            paddingTop: '2rem',
+            borderTop: '1px solid rgba(255,255,255,0.08)',
           }}
           className="footer-bottom"
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <span
-              className="status-pulse"
-              style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'hsl(28 100% 58%)', display: 'inline-block', flexShrink: 0 }}
-            />
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(40 12% 65%)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--color-footer-text)' }}>
               {t('copyright')}
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'rgba(214,216,219,0.55)' }}>
               {t('tagline')}
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '18px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'rgba(214,216,219,0.55)' }}>
               {t('address')}
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'rgba(214,216,219,0.55)' }}>
               {t('tax')}
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'rgba(214,216,219,0.55)' }}>
               {t('taxClause')}
             </span>
             <Link
               href="/portfolio"
-              style={{ color: 'hsl(240 14% 4%)', fontSize: '10px', textDecoration: 'none', fontFamily: 'var(--font-mono)' }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = 'hsl(240 8% 35%)')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = 'hsl(240 14% 4%)')}
+              style={{ color: 'var(--color-footer-bg)', fontSize: '10px', textDecoration: 'none', fontFamily: 'var(--font-mono)' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(214,216,219,0.3)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-footer-bg)')}
               aria-label={t('staffPortal')}
             >
               ·

@@ -1,63 +1,62 @@
 @import "tailwindcss";
 
-/* ─── MAXPROMO 2026 — Plasma + Obsidian design system ─── */
+/* ─── MAXPROMO — Visual Facelift v2.1 design system ───
+   Source of truth: design/visual-facelift-v2.1.md
+   Replaces the deprecated "Plasma + Obsidian" dark/gradient system.
+   Footer stays a deliberate dark surface (#161A1D); everything else is light. */
 
 :root {
-  /* Surfaces */
-  --void:      hsl(240 14% 4%);
-  --surface:   hsl(240 12% 7%);
-  --surface-2: hsl(240 10% 12%);
-  --border:    hsl(240 10% 16%);
-  --card:      hsl(240 12% 7%);
+  /* Color */
+  --color-bg:             #FFFFFF;
+  --color-bg-section:     #F8F9FA;
+  --color-border:         #E4E4E7;
+  --color-text-primary:   #18181B;
+  --color-text-secondary: #52525B;
+  --color-primary:        #F97316;
+  --color-primary-hover:  #EA580C;
+  --color-footer-bg:      #161A1D;
+  --color-footer-text:    #D6D8DB;
 
-  /* Text */
-  --text-primary: hsl(40 30% 96%);
-  --text-muted:   hsl(40 12% 65%);
-  --text-dim:     hsl(240 8% 35%);
+  /* Typography scale (desktop targets per spec; components clamp for mobile) */
+  --text-hero:          5.25rem; /* 84px, weight 800 */
+  --text-section-title: 3.5rem;  /* 56px, weight 700 */
+  --text-card-title:    1.875rem;/* 30px, weight 600 */
+  --text-body:          1.25rem; /* 20px */
+  --text-nav:           1.125rem;/* 18px */
+  --text-button:        1.125rem;/* 18px */
 
-  /* Brand — plasma amber */
-  --accent:       hsl(28 100% 58%);
-  --accent-hover: hsl(28 100% 50%);
-  --hot:          hsl(0 84% 60%);
+  /* Layout */
+  --container-width: 1500px;
+  --space-section:   140px;
+  --space-card:      40px;
+  --radius-card:     8px;
 
-  /* Gradients */
-  --gradient-plasma: linear-gradient(135deg, hsl(28 100% 58%), hsl(8 100% 60%) 50%, hsl(330 100% 62%));
-  --gradient-aurora: linear-gradient(120deg, hsl(75 100% 60% / 0.9), hsl(180 100% 55% / 0.8), hsl(265 100% 70% / 0.9));
-  --gradient-mesh:
-    radial-gradient(at 20% 10%, hsl(28 100% 58% / 0.18) 0, transparent 50%),
-    radial-gradient(at 80% 0%,  hsl(330 100% 62% / 0.10) 0, transparent 50%),
-    radial-gradient(at 0%  80%, hsl(265 100% 70% / 0.08) 0, transparent 50%),
-    radial-gradient(at 90% 90%, hsl(75  100% 60% / 0.07) 0, transparent 50%);
-  --gradient-radial: radial-gradient(ellipse at top, hsl(28 100% 58% / 0.18), transparent 60%);
+  /* Shadows — subtle only, never glow */
+  --shadow-card:     0 1px 2px rgba(24,24,27,0.04), 0 1px 1px rgba(24,24,27,0.03);
+  --shadow-elevated: 0 4px 16px rgba(24,24,27,0.08);
 
-  /* Glows */
-  --glow-primary: 0 0 60px hsl(28 100% 58% / 0.35), 0 0 120px hsl(28 100% 58% / 0.15);
-  --shadow-elev:  0 30px 80px -20px hsl(0 0% 0% / 0.6), 0 0 0 1px hsl(40 30% 96% / 0.04);
-
-  /* Fonts */
+  /* Fonts (families unchanged by the facelift, sizes/weights are) */
   --font-heading: var(--font-space-grotesk), sans-serif;
   --font-body:    var(--font-inter), system-ui, sans-serif;
   --font-mono:    var(--font-roboto-mono), monospace;
 
-  /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --color-background:    var(--void);
-  --color-foreground:    var(--text-primary);
-  --color-void:          var(--void);
-  --color-surface:       var(--surface);
-  --color-surface-2:     var(--surface-2);
-  --color-card:          var(--card);
-  --color-border:        var(--border);
-  --color-accent:        var(--accent);
-  --color-muted:         var(--text-muted);
-  --color-text-primary:  var(--text-primary);
-  --color-text-muted:    var(--text-muted);
-  --font-sans:           var(--font-inter);
-  --font-mono:           var(--font-roboto-mono);
-  --font-display:        var(--font-space-grotesk);
+  --color-background:      var(--color-bg);
+  --color-foreground:      var(--color-text-primary);
+  --color-bg-section:      var(--color-bg-section);
+  --color-border:          var(--color-border);
+  --color-primary:         var(--color-primary);
+  --color-primary-hover:   var(--color-primary-hover);
+  --color-text-primary:    var(--color-text-primary);
+  --color-text-secondary:  var(--color-text-secondary);
+  --color-footer-bg:       var(--color-footer-bg);
+  --color-footer-text:     var(--color-footer-text);
+  --font-sans:             var(--font-inter);
+  --font-mono:             var(--font-roboto-mono);
+  --font-display:          var(--font-space-grotesk);
 }
 
 /* ─── Reset ─── */
@@ -70,19 +69,18 @@ html {
 }
 
 body {
-  background: var(--void);
-  background-image: var(--gradient-mesh);
-  background-attachment: fixed;
-  color: var(--text-primary);
+  background: var(--color-bg);
+  color: var(--color-text-primary);
   font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.8;
+  font-size: 20px;
+  line-height: 1.7;
   -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
 }
 
 code, pre, .mono {
@@ -90,71 +88,111 @@ code, pre, .mono {
 }
 
 ::selection {
-  background: var(--accent);
-  color: hsl(240 14% 4%);
+  background: var(--color-primary);
+  color: #FFFFFF;
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* ─── Glass surfaces ─── */
-.glass {
-  background: hsl(240 12% 8% / 0.6);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid hsl(40 30% 96% / 0.06);
+/* ─── Buttons ───
+   Foundation classes for later phases; Navbar/Footer already use these. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: var(--text-button);
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 14px 28px;
+  border-radius: var(--radius-card);
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+.btn-secondary {
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+.btn-secondary:hover {
+  border-color: var(--color-text-secondary);
 }
 
-.glass-strong {
-  background: hsl(240 12% 7% / 0.85);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid hsl(40 30% 96% / 0.08);
+/* ─── Cards ───
+   White surface, 1px border, subtle shadow only. No gradients, no glow. */
+.card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-card);
 }
 
-/* ─── Grid backgrounds ─── */
+/* ─── Forms ─── */
+.input, .textarea, .select {
+  width: 100%;
+  background: var(--color-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: border-color 150ms ease;
+}
+.input:focus, .textarea:focus, .select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+.label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+
+/* ─── Legacy surfaces, repointed to the new light system ───
+   These classes are still referenced by components not yet migrated
+   page-by-page (later phases). Redefined here instead of deleted so
+   every consumer inherits the new system without a page-by-page edit.
+   Glass/blur/glow effects are removed outright — the spec forbids them. */
+.glass, .glass-strong {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
 .grid-bg {
-  background-image:
-    linear-gradient(hsl(40 30% 96% / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(40 30% 96% / 0.04) 1px, transparent 1px);
-  background-size: 56px 56px;
+  background-image: none;
 }
 
-/* ─── Text gradient utilities ─── */
-.text-gradient-plasma {
-  background: var(--gradient-plasma);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.text-gradient-plasma, .text-gradient-aurora {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: var(--color-text-primary);
 }
 
-.text-gradient-aurora {
-  background: var(--gradient-aurora);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* ─── Shine button effect ─── */
+/* Sweep-on-hover removed; class kept as a harmless wrapper for callers. */
 .shine {
   position: relative;
   overflow: hidden;
 }
-.shine::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(110deg, transparent 35%, hsl(0 0% 100% / 0.18) 50%, transparent 65%);
-  transform: translateX(-100%);
-  transition: transform 0.9s var(--ease-out-expo);
-}
-.shine:hover::after {
-  transform: translateX(100%);
-}
 
-/* ─── Border gradient ─── */
 .border-gradient {
   position: relative;
   isolation: isolate;
@@ -165,7 +203,7 @@ code, pre, .mono {
   inset: 0;
   padding: 1px;
   border-radius: inherit;
-  background: linear-gradient(135deg, hsl(28 100% 58% / 0.5), hsl(75 100% 60% / 0.2), transparent 70%);
+  background: var(--color-border);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -173,17 +211,16 @@ code, pre, .mono {
   pointer-events: none;
 }
 
-/* ─── Glow utilities ─── */
 .glow-primary {
-  box-shadow: var(--glow-primary);
+  box-shadow: none;
 }
 
-/* ─── System card CTA ─── */
+/* ─── System card CTA (already on-brand orange, kept) ─── */
 .sys-cta {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 600;
-  color: hsl(28 100% 58%);
+  color: var(--color-primary);
   text-decoration: none;
   letter-spacing: 0.05em;
   border: 1px solid rgba(249,115,22,0.25);
@@ -199,15 +236,14 @@ code, pre, .mono {
   border-color: rgba(249,115,22,0.5);
 }
 
-/* ─── System card ghost CTA ─── */
 .sys-cta-ghost {
   font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
-  color: hsl(40 12% 65%);
+  color: var(--color-text-secondary);
   text-decoration: none;
   letter-spacing: 0.05em;
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid var(--color-border);
   background: transparent;
   padding: 7px 14px;
   border-radius: 6px;
@@ -215,11 +251,11 @@ code, pre, .mono {
   display: inline-block;
 }
 .sys-cta-ghost:hover {
-  color: hsl(40 30% 96%);
-  border-color: rgba(255,255,255,0.25);
+  color: var(--color-text-primary);
+  border-color: var(--color-text-secondary);
 }
 
-/* ─── Cursor blink ─── */
+/* ─── Cursor blink (functional, not decorative) ─── */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
@@ -228,7 +264,7 @@ code, pre, .mono {
   animation: blink 0.8s step-end infinite;
 }
 
-/* ─── Status dot pulse ─── */
+/* ─── Status dot pulse (functional live-status indicator) ─── */
 @keyframes status-pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.1; }
@@ -237,7 +273,7 @@ code, pre, .mono {
   animation: status-pulse 1.5s ease-in-out infinite;
 }
 
-/* ─── Marquee ─── */
+/* ─── Marquee (logo/testimonial ticker — structural) ─── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
@@ -246,41 +282,103 @@ code, pre, .mono {
   animation: marquee 38s linear infinite;
 }
 
-/* ─── Float ─── */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-12px); }
+/* ─── Legacy surface/hover classes, repointed to light tokens ─── */
+.service-card {
+  transition: transform 200ms ease, border-color 200ms ease;
 }
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-/* ─── Pulse glow ─── */
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 hsl(28 100% 58% / 0.5); }
-  50%       { box-shadow: 0 0 40px 6px hsl(28 100% 58% / 0); }
-}
-.animate-pulse-glow {
-  animation: pulse-glow 2.4s ease-in-out infinite;
+.service-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-primary) !important;
 }
 
-/* ─── Aurora ─── */
-@keyframes aurora {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.dark-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  transition: all 0.25s ease;
 }
-.animate-aurora {
-  background-size: 200% 200%;
-  animation: aurora 14s ease infinite;
+.dark-card:hover {
+  background: var(--color-bg-section) !important;
+  border-color: rgba(249,115,22,0.3) !important;
+  transform: translateY(-2px);
 }
 
-/* ─── Fade/slide animations ─── */
+.process-step {
+  transition: all 0.2s ease;
+}
+.process-step:hover {
+  background: var(--color-bg-section) !important;
+  border-color: rgba(249,115,22,0.2) !important;
+}
+
+.industry-card {
+  transition: all 0.2s ease;
+}
+.industry-card:hover {
+  background: var(--color-bg-section) !important;
+  border-color: rgba(249,115,22,0.2) !important;
+  transform: translateY(-2px);
+}
+
+/* ─── Nav / footer links ─── */
+.nav-link {
+  color: var(--color-text-secondary);
+  transition: color 150ms ease;
+}
+.nav-link:hover {
+  color: var(--color-text-primary);
+}
+.footer-link {
+  color: var(--color-footer-text);
+  transition: color 150ms ease;
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 15px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.footer-link:hover {
+  color: var(--color-primary);
+}
+
+/* ─── Audit chips ─── */
+.audit-chip {
+  cursor: pointer;
+  transition: all 150ms ease;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+.audit-chip:hover {
+  border-color: rgba(249,115,22,0.4);
+  color: var(--color-text-primary);
+}
+.audit-chip.selected {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(249,115,22,0.08);
+}
+
+/* ─── Result cards ─── */
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+.result-card {
+  border-left: 3px solid var(--color-primary);
+  animation: slideUp 0.4s ease both;
+}
 
+/* ─── Audit loading pulse (functional) ─── */
+@keyframes auditPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.18); opacity: 0.75; }
+}
+.audit-pulse {
+  animation: auditPulse 1.2s ease-in-out infinite;
+}
+
+/* ─── Chat widget (untouched pending its own phase; ring uses on-brand orange) ─── */
 @keyframes fadeInLine {
   from { opacity: 0; transform: translateX(-6px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -290,95 +388,6 @@ code, pre, .mono {
   animation: fadeInLine 0.25s ease forwards;
 }
 
-/* ─── Service / dark cards (hover) ─── */
-.service-card {
-  transition: transform 200ms ease, border-color 200ms ease;
-}
-.service-card:hover {
-  transform: translateY(-3px);
-  border-color: hsl(28 100% 58% / 0.4) !important;
-}
-
-.dark-card {
-  transition: all 0.25s ease;
-}
-.dark-card:hover {
-  background: hsl(240 10% 12%) !important;
-  border-color: hsl(28 100% 58% / 0.2) !important;
-  transform: translateY(-2px);
-}
-
-/* ─── Process / industry cards ─── */
-.process-step {
-  transition: all 0.2s ease;
-}
-.process-step:hover {
-  background: hsl(240 10% 10%) !important;
-  border-color: hsl(28 100% 58% / 0.15) !important;
-}
-
-.industry-card {
-  transition: all 0.2s ease;
-}
-.industry-card:hover {
-  background: hsl(240 10% 12%) !important;
-  border-color: hsl(28 100% 58% / 0.15) !important;
-  transform: translateY(-2px);
-}
-
-/* ─── Nav / footer links ─── */
-.nav-link {
-  color: var(--text-muted);
-  transition: color 150ms ease;
-}
-.nav-link:hover {
-  color: var(--text-primary);
-}
-.footer-link {
-  color: var(--text-muted);
-  transition: color 150ms ease;
-  text-decoration: none;
-  font-family: var(--font-body);
-  font-size: 15px;
-}
-.footer-link:hover {
-  color: var(--text-primary);
-}
-
-/* ─── Audit chips ─── */
-.audit-chip {
-  cursor: pointer;
-  transition: all 150ms ease;
-  background: var(--card);
-  border: 1px solid hsl(40 30% 96% / 0.1);
-  color: var(--text-muted);
-}
-.audit-chip:hover {
-  border-color: hsl(28 100% 58% / 0.4);
-  color: var(--text-primary);
-}
-.audit-chip.selected {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: hsl(28 100% 58% / 0.08);
-}
-
-/* ─── Result cards ─── */
-.result-card {
-  border-left: 3px solid var(--accent);
-  animation: slideUp 0.4s ease both;
-}
-
-/* ─── Audit loading pulse ─── */
-@keyframes auditPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%       { transform: scale(1.18); opacity: 0.75; }
-}
-.audit-pulse {
-  animation: auditPulse 1.2s ease-in-out infinite;
-}
-
-/* ─── Chat widget ─── */
 @keyframes chatPulseRing {
   0%   { box-shadow: 0 0 0 0 hsl(28 100% 58% / 0.4), 0 8px 32px hsl(28 100% 58% / 0.25); }
   70%  { box-shadow: 0 0 0 18px hsl(28 100% 58% / 0), 0 8px 32px hsl(28 100% 58% / 0.25); }
@@ -403,7 +412,7 @@ code, pre, .mono {
 .typing-dot {
   width: 6px;
   height: 6px;
-  background: var(--accent);
+  background: var(--color-primary);
   border-radius: 50%;
   animation: typingDot 1s ease-in-out infinite;
   display: inline-block;
@@ -413,7 +422,7 @@ code, pre, .mono {
 
 .chat-scroll::-webkit-scrollbar       { width: 4px; }
 .chat-scroll::-webkit-scrollbar-track { background: transparent; }
-.chat-scroll::-webkit-scrollbar-thumb { background: hsl(28 100% 58% / 0.25); }
+.chat-scroll::-webkit-scrollbar-thumb { background: rgba(249,115,22,0.25); }
 
 /* ─── Range sliders (ROI Calculator) ─── */
 input[type='range'] {
@@ -424,29 +433,29 @@ input[type='range'] {
 }
 input[type='range']::-webkit-slider-runnable-track {
   height: 3px;
-  background: hsl(40 30% 96% / 0.1);
+  background: var(--color-border);
 }
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid var(--void);
-  box-shadow: 0 0 0 3px hsl(28 100% 58% / 0.25);
+  background: var(--color-primary);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.25);
   margin-top: -8px;
 }
 input[type='range']::-moz-range-track {
   height: 3px;
-  background: hsl(40 30% 96% / 0.1);
+  background: var(--color-border);
 }
 input[type='range']::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid var(--void);
-  box-shadow: 0 0 0 3px hsl(28 100% 58% / 0.25);
+  background: var(--color-primary);
+  border: 2px solid var(--color-bg);
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.25);
 }
 
 /* ─── Systems grid ─── */
@@ -454,7 +463,7 @@ input[type='range']::-moz-range-thumb {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1px;
-  background: var(--border);
+  background: var(--color-border);
 }
 @media (max-width: 768px) {
   .systems-grid { grid-template-columns: 1fr; }
@@ -475,13 +484,15 @@ input[type='range']::-moz-range-thumb {
 
 /* ─── Global mobile ─── */
 @media (max-width: 768px) {
-  h1 { font-size: clamp(2rem, 8vw, 3rem) !important; }
+  h1 { font-size: clamp(2.25rem, 8vw, 3.25rem) !important; }
   section { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
   .systems-grid { grid-template-columns: 1fr !important; }
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   OS LAYOUT SYSTEM
+   OS LAYOUT SYSTEM — out of scope for Phase 1 (Phase 6: Dashboards).
+   Left untouched; its own hardcoded dark palette is unaffected by the
+   :root token changes above.
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
 /* Sidebar */
@@ -667,7 +678,7 @@ button.os-nav-item {
   .cs-grid { grid-template-columns: 1fr; }
 }
 
-/* ─── MAXPROMO MOTION SYSTEM ────────────────────────────── */
+/* ─── MAXPROMO MOTION SYSTEM — homepage-specific, Phase 2 territory ────── */
 
 /* Keyframes */
 @keyframes mp-fade-up {
@@ -700,7 +711,7 @@ button.os-nav-item {
 }
 .mp-card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.8);
+  box-shadow: var(--shadow-elevated);
 }
 
 /* Reduce motion — honour system preference */
@@ -719,7 +730,7 @@ button.os-nav-item {
   }
 }
 
-/* ─── HERO SYSTEM — Ken Burns (4 directional variants) ─── */
+/* ─── HERO SYSTEM — Ken Burns (4 directional variants) — Phase 2 territory ─── */
 
 @keyframes ken-burns-1 {
   from { transform: scale(1)    translate(0, 0);       }
@@ -774,7 +785,7 @@ button.os-nav-item {
 .pain-card-img { transition: transform 500ms var(--ease-out-expo); }
 .pain-card:hover .pain-card-img { transform: scale(1.04); }
 .pain-card { transition: box-shadow 300ms ease; }
-.pain-card:hover { box-shadow: 0 0 40px rgba(249,115,22,0.07); }
+.pain-card:hover { box-shadow: var(--shadow-elevated); }
 
 /* ─── MOBILE UX SYSTEM ──────────────────────────────── */
 
@@ -784,11 +795,4 @@ button.os-nav-item {
   button:active {
     opacity: 0.72;
   }
-}
-
-/* Footer link tap target — ensure minimum height */
-.footer-link {
-  min-height: 44px;
-  display: flex;
-  align-items: center;
 }

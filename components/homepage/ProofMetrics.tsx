@@ -16,7 +16,7 @@ interface ProofMetricsProps {
 export function ProofMetrics({ metrics }: ProofMetricsProps) {
   return (
     <div
-      style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '16px', overflow: 'hidden' }}
+      style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden', border: '1px solid var(--color-border)' }}
       className="grid-cols-1 sm:grid-cols-3"
     >
       {metrics.map((m, i) => (
@@ -26,7 +26,7 @@ export function ProofMetrics({ metrics }: ProofMetricsProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-40px' }}
           transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-          style={{ background: 'hsl(240 12% 7%)', padding: 'clamp(1.25rem, 5vw, 2.5rem)' }}
+          style={{ background: 'var(--color-bg)', padding: 'clamp(1.5rem, 5vw, 2.75rem)' }}
         >
           {/* Value, fades in, tiny upward tick, single soft pulse via scale */}
           <motion.p
@@ -37,19 +37,19 @@ export function ProofMetrics({ metrics }: ProofMetricsProps) {
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              letterSpacing: '-0.04em',
-              color: '#F97316',
+              fontSize: 'clamp(2.25rem, 4vw, 3.25rem)',
+              letterSpacing: '-0.02em',
+              color: 'var(--color-primary)',
               lineHeight: 1,
               marginBottom: '12px',
             }}
           >
             {m.value}
           </motion.p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'hsl(40 30% 96%)', lineHeight: 1.5, marginBottom: '10px' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-primary)', lineHeight: 1.5, marginBottom: '10px' }}>
             {m.label}
           </p>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(40 12% 50%)', letterSpacing: '0.05em' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.04em' }}>
             {m.source}
           </p>
         </motion.div>

@@ -48,8 +48,8 @@ const initialForm: FormData = {
   system: '',
 }
 
-const inputClassName =
-  'w-full border border-white/10 bg-white/[0.04] px-4 py-3.5 text-[15px] text-white outline-none transition focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/10'
+const SECTION_PADDING = 'clamp(4.5rem, 8vw, 8.75rem) 2rem'
+const heroTitleStyle = { fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.02em' } as const
 
 export default function ContactPage() {
   const t = useTranslations('contact')
@@ -116,18 +116,18 @@ export default function ContactPage() {
 
   if (status === 'success') {
     return (
-      <main className="min-h-[70vh] bg-[#0A0A0A] px-8 py-24">
-        <div className="mx-auto max-w-xl border border-white/10 bg-[#0F0F0F] p-12 text-center">
-          <p className="mb-4 text-5xl text-orange-500">✓</p>
-          <h1 className="mb-3 font-heading text-3xl font-bold text-white">{t('successTitle')}</h1>
-          <p className="mb-8 text-white/60">{t('successDesc')}</p>
+      <main className="min-h-[70vh] bg-[var(--color-bg)]" style={{ padding: SECTION_PADDING }}>
+        <div className="mx-auto max-w-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-12 text-center rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
+          <p className="mb-4 text-5xl text-[var(--color-primary)]">✓</p>
+          <h1 className="mb-3 font-heading text-3xl font-bold text-[var(--color-text-primary)]">{t('successTitle')}</h1>
+          <p className="mb-8 text-[var(--color-text-secondary)]">{t('successDesc')}</p>
           <button
             type="button"
             onClick={() => {
               setForm({ ...initialForm, system: form.system })
               setStatus('idle')
             }}
-            className="font-mono text-sm text-orange-500"
+            className="font-mono text-sm text-[var(--color-primary)]"
           >
             {t('successAnother')}
           </button>
@@ -137,42 +137,42 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="bg-[#0A0A0A]">
-      <section className="border-b border-white/[0.06] px-8 py-20 text-center">
+    <main className="bg-[var(--color-bg)]">
+      <section className="border-b border-[var(--color-border)] text-center bg-[var(--color-bg)]" style={{ padding: SECTION_PADDING }}>
         {contextSystem ? (
           <>
             {/* Small contextual banner only, no product bullets, workflow or screenshots here.
                 Full product content lives on the dedicated /systems/<slug> page. */}
-            <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-orange-500">
+            <p className="mb-3 font-mono text-[13px] uppercase tracking-[0.15em] text-[var(--color-primary)]">
               {t(`systems.${contextSystem}.eyebrow`)}
             </p>
-            <h1 className="mb-5 font-heading text-4xl font-bold tracking-[-0.04em] text-white md:text-6xl">
+            <h1 className="mb-5 font-heading font-extrabold text-[var(--color-text-primary)]" style={heroTitleStyle}>
               {t(`systems.${contextSystem}.title`)}
             </h1>
-            <p className="mx-auto max-w-2xl text-[17px] leading-7 text-white/60">
+            <p className="mx-auto max-w-2xl text-[17px] leading-7 text-[var(--color-text-secondary)]">
               {t(`systems.${contextSystem}.subtitle`)}
             </p>
           </>
         ) : (
           <>
-            <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.2em] text-orange-500">
+            <p className="mb-3 font-mono text-[13px] uppercase tracking-[0.15em] text-[var(--color-primary)]">
               {t('eyebrow')}
             </p>
-            <h1 className="mb-5 font-heading text-4xl font-bold tracking-[-0.04em] text-white md:text-6xl">
+            <h1 className="mb-5 font-heading font-extrabold text-[var(--color-text-primary)]" style={heroTitleStyle}>
               {t('title')}
             </h1>
-            <p className="mx-auto max-w-2xl text-[17px] leading-7 text-white/60">{t('subtitle')}</p>
+            <p className="mx-auto max-w-2xl text-[17px] leading-7 text-[var(--color-text-secondary)]">{t('subtitle')}</p>
           </>
         )}
       </section>
 
-      <section className="bg-[#0D0D0D] px-8 py-16">
+      <section className="bg-[var(--color-bg-section)]" style={{ padding: SECTION_PADDING }}>
         <form
           onSubmit={handleSubmit}
-          className="mx-auto flex max-w-2xl flex-col gap-6 border border-white/10 bg-[#0F0F0F] p-6 md:p-12"
+          className="mx-auto flex max-w-2xl flex-col gap-6 border border-[var(--color-border)] bg-[var(--color-bg)] p-6 md:p-12 rounded-[var(--radius-card)] shadow-[var(--shadow-card)]"
         >
           {status === 'error' && (
-            <p className="border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">
+            <p className="border border-red-300 bg-red-50 p-3 text-sm text-red-600 rounded-[var(--radius-card)]">
               {errorMessage}
             </p>
           )}
@@ -183,7 +183,7 @@ export default function ContactPage() {
                 required
                 value={form.name}
                 onChange={(event) => update('name', event.target.value)}
-                className={inputClassName}
+                className="input"
                 autoComplete="name"
               />
             </Field>
@@ -192,7 +192,7 @@ export default function ContactPage() {
                 required
                 value={form.company}
                 onChange={(event) => update('company', event.target.value)}
-                className={inputClassName}
+                className="input"
                 autoComplete="organization"
               />
             </Field>
@@ -205,7 +205,7 @@ export default function ContactPage() {
                 type="email"
                 value={form.email}
                 onChange={(event) => update('email', event.target.value)}
-                className={inputClassName}
+                className="input"
                 autoComplete="email"
               />
             </Field>
@@ -214,7 +214,7 @@ export default function ContactPage() {
                 type="tel"
                 value={form.phone}
                 onChange={(event) => update('phone', event.target.value)}
-                className={inputClassName}
+                className="input"
                 autoComplete="tel"
               />
             </Field>
@@ -226,7 +226,7 @@ export default function ContactPage() {
               onChange={(event) =>
                 update('preferredContactMethod', event.target.value as PreferredContactMethod)
               }
-              className={inputClassName}
+              className="select"
             >
               <option value="email">{t('contactMethodEmail')}</option>
               <option value="phone">{t('contactMethodPhone')}</option>
@@ -235,21 +235,21 @@ export default function ContactPage() {
           </Field>
 
           <fieldset>
-            <legend className="mb-1 font-heading text-xl font-bold text-white">
+            <legend className="mb-1 font-heading text-xl font-bold text-[var(--color-text-primary)]">
               {t('painPointsTitle')}
             </legend>
-            <p className="mb-4 text-sm text-white/50">{t('painPointsOptional')}</p>
+            <p className="mb-4 text-sm text-[var(--color-text-secondary)]">{t('painPointsOptional')}</p>
             <div className="grid gap-3 sm:grid-cols-2">
               {CONTACT_PAIN_POINTS.map((painPoint) => (
                 <label
                   key={painPoint}
-                  className="flex cursor-pointer items-start gap-3 text-sm text-white/70"
+                  className="flex cursor-pointer items-start gap-3 text-sm text-[var(--color-text-secondary)]"
                 >
                   <input
                     type="checkbox"
                     checked={form.painPoints.includes(painPoint)}
                     onChange={() => togglePainPoint(painPoint)}
-                    className="mt-0.5 accent-orange-500"
+                    className="mt-0.5 accent-[var(--color-primary)]"
                   />
                   {t(`painPoints.${painPoint}`)}
                 </label>
@@ -266,10 +266,11 @@ export default function ContactPage() {
               context="Contact message"
               textareaStyle={{
                 width: '100%',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid var(--color-border)',
+                background: 'var(--color-bg)',
+                borderRadius: 'var(--radius-card)',
                 padding: '14px 16px',
-                color: '#FFFFFF',
+                color: 'var(--color-text-primary)',
               }}
             />
           </Field>
@@ -277,11 +278,11 @@ export default function ContactPage() {
           <button
             type="submit"
             disabled={!isValid || status === 'loading'}
-            className="bg-orange-500 px-7 py-4 font-mono text-[15px] font-bold text-black disabled:cursor-not-allowed disabled:opacity-40"
+            className="btn btn-primary disabled:cursor-not-allowed disabled:opacity-40"
           >
             {status === 'loading' ? t('formCtaSending') : t('formCta')}
           </button>
-          <p className="text-center font-mono text-[11px] text-white/30">{t('formPrivacy')}</p>
+          <p className="text-center font-mono text-[12px] text-[var(--color-text-secondary)]">{t('formPrivacy')}</p>
         </form>
       </section>
     </main>
@@ -299,8 +300,8 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-white/50">
-        {label} {required && <span className="text-orange-500">*</span>}
+      <span className="mb-2 block font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--color-text-secondary)]">
+        {label} {required && <span className="text-[var(--color-primary)]">*</span>}
       </span>
       {children}
     </label>

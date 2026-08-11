@@ -23,40 +23,27 @@ export default function AutomationCard({ title, description, tools, locale }: Au
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: hovered ? '#161616' : '#0F0F0F',
-        border: `1px solid ${hovered ? 'rgba(249,115,22,0.2)' : 'rgba(255,255,255,0.07)'}`,
-        borderRadius: '2px',
+        background: hovered ? 'var(--color-bg-section)' : 'var(--color-bg)',
+        border: `1px solid ${hovered ? 'rgba(249,115,22,0.3)' : 'var(--color-border)'}`,
+        borderRadius: 'var(--radius-card)',
         padding: '32px',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
         overflow: 'hidden',
         transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
-        boxShadow: hovered ? '0 8px 32px rgba(0,0,0,0.5)' : 'none',
+        boxShadow: hovered ? 'var(--shadow-elevated)' : 'var(--shadow-card)',
         transition: 'all 0.25s ease',
         cursor: 'default',
       }}
     >
-      {/* Top accent line */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent 0%, rgba(249,115,22,0.5) 50%, transparent 100%)',
-          pointerEvents: 'none',
-        }}
-      />
-
       <h3
         style={{
-          fontFamily: 'var(--font-inter)',
+          fontFamily: 'var(--font-heading)',
           fontWeight: 700,
-          fontSize: '16px',
-          color: '#FFFFFF',
-          letterSpacing: '-0.02em',
+          fontSize: '18px',
+          color: 'var(--color-text-primary)',
+          letterSpacing: '-0.01em',
           marginBottom: '10px',
         }}
       >
@@ -64,9 +51,9 @@ export default function AutomationCard({ title, description, tools, locale }: Au
       </h3>
       <p
         style={{
-          fontFamily: 'var(--font-inter)',
-          fontSize: '13px',
-          color: '#888888',
+          fontFamily: 'var(--font-body)',
+          fontSize: '15px',
+          color: 'var(--color-text-secondary)',
           lineHeight: 1.7,
           flex: 1,
           marginBottom: '20px',
@@ -80,12 +67,12 @@ export default function AutomationCard({ title, description, tools, locale }: Au
             key={tool}
             style={{
               background: 'rgba(249,115,22,0.08)',
-              color: '#F97316',
+              color: 'var(--color-primary)',
               border: '1px solid rgba(249,115,22,0.2)',
-              fontFamily: 'var(--font-roboto-mono)',
-              fontSize: '10px',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '11px',
               padding: '3px 10px',
-              borderRadius: '2px',
+              borderRadius: '5px',
             }}
           >
             {tool}
@@ -95,9 +82,9 @@ export default function AutomationCard({ title, description, tools, locale }: Au
       <Link
         href={`/contact?automation=${encodeURIComponent(title)}`}
         style={{
-          fontFamily: 'var(--font-roboto-mono)',
-          fontSize: '11px',
-          color: '#F97316',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '12px',
+          color: 'var(--color-primary)',
           textDecoration: 'none',
           letterSpacing: '0.08em',
           alignSelf: 'flex-start',

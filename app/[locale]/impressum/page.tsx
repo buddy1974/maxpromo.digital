@@ -10,18 +10,19 @@ function Section({ label, children }: { label: string; children: React.ReactNode
   return (
     <div
       style={{
-        background: '#111111',
-        borderLeft: '3px solid #F97316',
-        padding: '1.5rem 2rem',
-        marginBottom: '1.25rem',
+        background: 'var(--color-bg-section)',
+        borderLeft: '3px solid var(--color-primary)',
+        borderRadius: 'var(--radius-card)',
+        padding: '1.75rem 2.25rem',
+        marginBottom: '1.5rem',
       }}
     >
       <p
         style={{
-          fontFamily: 'var(--font-roboto-mono)',
-          fontSize: '10px',
-          color: '#F97316',
-          letterSpacing: '0.2em',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '12px',
+          color: 'var(--color-primary)',
+          letterSpacing: '0.15em',
           textTransform: 'uppercase',
           marginBottom: '12px',
         }}
@@ -30,10 +31,10 @@ function Section({ label, children }: { label: string; children: React.ReactNode
       </p>
       <div
         style={{
-          color: '#CCCCCC',
+          color: 'var(--color-text-primary)',
           lineHeight: '1.8',
-          fontFamily: 'var(--font-inter)',
-          fontSize: '15px',
+          fontFamily: 'var(--font-body)',
+          fontSize: '16px',
         }}
       >
         {children}
@@ -44,15 +45,15 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 
 export default function ImpressumPage() {
   return (
-    <main style={{ background: '#0A0A0A', minHeight: '100vh', paddingTop: '6rem', paddingBottom: '6rem' }}>
+    <main style={{ background: 'var(--color-bg)', minHeight: '100vh', paddingTop: '7rem', paddingBottom: '7rem' }}>
       <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 1.5rem' }}>
 
         <p
           style={{
-            fontFamily: 'var(--font-roboto-mono)',
-            fontSize: '11px',
-            color: '#F97316',
-            letterSpacing: '0.2em',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '13px',
+            color: 'var(--color-primary)',
+            letterSpacing: '0.15em',
             textTransform: 'uppercase',
             marginBottom: '12px',
           }}
@@ -61,10 +62,10 @@ export default function ImpressumPage() {
         </p>
         <h1
           style={{
-            fontFamily: 'var(--font-inter)',
+            fontFamily: 'var(--font-body)',
             fontSize: 'clamp(2rem, 5vw, 3rem)',
             fontWeight: 700,
-            color: '#FFFFFF',
+            color: 'var(--color-text-primary)',
             marginBottom: '8px',
             lineHeight: 1.1,
           }}
@@ -73,9 +74,9 @@ export default function ImpressumPage() {
         </h1>
         <p
           style={{
-            fontFamily: 'var(--font-inter)',
-            fontSize: '15px',
-            color: '#888888',
+            fontFamily: 'var(--font-body)',
+            fontSize: '16px',
+            color: 'var(--color-text-secondary)',
             marginBottom: '3rem',
           }}
         >
@@ -93,16 +94,16 @@ export default function ImpressumPage() {
 
         <Section label="Kontakt / Contact">
           <p style={{ margin: 0 }}>
-            Telefon: <a href="tel:+491733645698" style={{ color: '#F97316', textDecoration: 'none' }}>+49 173 3645698</a><br />
-            E-Mail: <a href="mailto:info@maxpromo.digital" style={{ color: '#F97316', textDecoration: 'none' }}>info@maxpromo.digital</a><br />
-            Web: <a href="https://maxpromo.digital" style={{ color: '#F97316', textDecoration: 'none' }}>https://maxpromo.digital</a>
+            Telefon: <a href="tel:+491733645698" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>+49 173 3645698</a><br />
+            E-Mail: <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>info@maxpromo.digital</a><br />
+            Web: <a href="https://maxpromo.digital" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>https://maxpromo.digital</a>
           </p>
         </Section>
 
         <Section label="Beruf / Profession">
           <p style={{ margin: 0 }}>
             Softwareentwickler und IT-Berater<br />
-            <span style={{ color: '#888888' }}>Software Developer and IT Consultant</span>
+            <span style={{ color: 'var(--color-text-secondary)' }}>Software Developer and IT Consultant</span>
           </p>
         </Section>
 
@@ -111,7 +112,7 @@ export default function ImpressumPage() {
             Steuernummer: 111/5339/7597<br />
             Finanzamt: Essen-NordOst<br /><br />
             Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.<br />
-            <span style={{ color: '#888888' }}>VAT exempt per § 19 UStG (Kleinunternehmerregelung).</span>
+            <span style={{ color: 'var(--color-text-secondary)' }}>VAT exempt per § 19 UStG (Kleinunternehmerregelung).</span>
           </p>
         </Section>
 
@@ -130,7 +131,7 @@ export default function ImpressumPage() {
               href="https://ec.europa.eu/consumers/odr"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: '#F97316', textDecoration: 'none' }}
+              style={{ color: 'var(--color-primary)', textDecoration: 'none' }}
             >
               https://ec.europa.eu/consumers/odr
             </a>
@@ -139,13 +140,13 @@ export default function ImpressumPage() {
             Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
             Verbraucherschlichtungsstelle teilzunehmen.
           </p>
-          <p style={{ color: '#888888', marginBottom: 0 }}>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: 0 }}>
             The European Commission provides a platform for online dispute resolution:{' '}
             <a
               href="https://ec.europa.eu/consumers/odr"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: '#F97316', textDecoration: 'none' }}
+              style={{ color: 'var(--color-primary)', textDecoration: 'none' }}
             >
               https://ec.europa.eu/consumers/odr
             </a>
@@ -162,7 +163,7 @@ export default function ImpressumPage() {
             Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde
             Informationen zu überwachen.
           </p>
-          <p style={{ color: '#888888', marginBottom: 0 }}>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: 0 }}>
             As a service provider, we are responsible for our own content on these pages in accordance
             with general laws per § 7 Abs. 1 DDG. However, we are not obligated to monitor transmitted
             or stored third-party information per §§ 8–10 DDG.
@@ -176,7 +177,7 @@ export default function ImpressumPage() {
             der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen
             Zustimmung des jeweiligen Autors bzw. Erstellers.
           </p>
-          <p style={{ color: '#888888', marginBottom: 0 }}>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: 0 }}>
             The content and works created by the site operators on these pages are subject to German
             copyright law. Reproduction, processing, distribution and any form of commercialisation
             beyond the limits of copyright require the written consent of the respective author or
@@ -186,9 +187,9 @@ export default function ImpressumPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-roboto-mono)',
+            fontFamily: 'var(--font-mono)',
             fontSize: '11px',
-            color: '#444444',
+            color: 'var(--color-text-secondary)',
             marginTop: '3rem',
             textAlign: 'center',
           }}

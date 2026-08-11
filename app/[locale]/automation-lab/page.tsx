@@ -211,36 +211,35 @@ export default async function AutomationLabPage({
   ]
 
   return (
-    <main style={{ background: 'hsl(240 14% 4%)' }}>
+    <main style={{ background: 'var(--color-bg)' }}>
       {/* Header */}
-      <section style={{ background: 'hsl(240 14% 4%)', padding: '5rem 2rem', borderBottom: '1px solid hsl(40 30% 96% / 0.06)' }}>
+      <section style={{ background: 'var(--color-bg)', padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t(locale, '// Referenz-Bibliothek', '// Reference Library')}
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
             {t(locale, 'Operations-Engineering-Referenz', 'Operations Engineering Reference')}
           </h1>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', maxWidth: '46rem', margin: '0 auto 2rem', lineHeight: 1.7 }}>
+          <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '46rem', margin: '0 auto 2rem', lineHeight: 1.7 }}>
             {t(locale,
               'Achtzehn produktionsreife Runtimes, die wir auf dem Betrieb unserer Kunden aufsetzen. Jede davon ist ein System, das wir konzipiert, installiert haben und weiterhin betreiben, kein Katalog von Standard-Bausteinen zur Auswahl.',
               'Eighteen production-grade runtimes we deploy on top of client operations. Each one is a system we have architected, installed, and continue to operate, not a catalogue of off-the-shelf widgets to choose from.')}
           </p>
           {/* Operational signal bar, names what's in production, not what we're built on */}
           <div
-            className="glass"
-            style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '0', borderRadius: '8px', overflow: 'hidden' }}
+            style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '0', borderRadius: 'var(--radius-card)', overflow: 'hidden', border: '1px solid var(--color-border)', background: 'var(--color-bg-section)' }}
           >
             {statLabels.map((stat, i, arr) => (
               <span
                 key={stat}
                 style={{
                   ...mono,
-                  fontSize: '11px',
-                  color: 'hsl(40 12% 65%)',
-                  letterSpacing: '0.08em',
+                  fontSize: '12px',
+                  color: 'var(--color-text-secondary)',
+                  letterSpacing: '0.06em',
                   padding: '10px 20px',
-                  borderRight: i < arr.length - 1 ? '1px solid hsl(40 30% 96% / 0.06)' : 'none',
+                  borderRight: i < arr.length - 1 ? '1px solid var(--color-border)' : 'none',
                 }}
               >
                 {stat}
@@ -255,32 +254,32 @@ export default async function AutomationLabPage({
         <section
           key={cat.heading}
           style={{
-            background: catIdx % 2 === 0 ? 'hsl(240 12% 6%)' : 'hsl(240 14% 4%)',
-            padding: '4rem 2rem',
-            borderBottom: '1px solid hsl(40 30% 96% / 0.06)',
+            background: catIdx % 2 === 0 ? 'var(--color-bg-section)' : 'var(--color-bg)',
+            padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem',
+            borderBottom: '1px solid var(--color-border)',
           }}
         >
-          <div style={{ maxWidth: '90rem', margin: '0 auto' }}>
-            <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '8px' }}>
+          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>
               {`// ${cat.heading}`}
             </p>
             <h2
               style={{
                 ...grotesk,
                 fontWeight: 700,
-                fontSize: '28px',
-                color: 'hsl(40 30% 96%)',
-                letterSpacing: '-0.03em',
+                fontSize: '30px',
+                color: 'var(--color-text-primary)',
+                letterSpacing: '-0.01em',
                 marginBottom: '2rem',
                 paddingBottom: '16px',
-                borderBottom: '2px solid #F97316',
+                borderBottom: '2px solid var(--color-primary)',
                 display: 'inline-block',
               }}
             >
               {cat.heading}
             </h2>
             <div
-              style={{ display: 'grid', gap: '12px' }}
+              style={{ display: 'grid', gap: '16px' }}
               className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
             >
               {cat.automations.map((a) => (
@@ -292,24 +291,24 @@ export default async function AutomationLabPage({
       ))}
 
       {/* CTA */}
-      <section style={{ background: 'hsl(240 12% 6%)', padding: '5rem 2rem' }}>
+      <section style={{ background: 'var(--color-bg-section)', padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t(locale, '// Eine individuelle Ebene entwickeln', '// Architect a custom layer')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', marginBottom: '20px' }}>
+          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
             {t(locale, 'Brauchen Sie eine Runtime, die nicht in der Referenz steht?', "Need a runtime that isn't in the reference?")}
           </h2>
-          <p style={{ ...sans, fontSize: '17px', color: 'hsl(40 12% 65%)', marginBottom: '2.5rem', lineHeight: 1.7 }}>
+          <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.7 }}>
             {t(locale,
               'Jeder Betrieb hat mindestens eine Ebene, die nicht in ein Standardmuster passt. Wir entwickeln maßgeschneiderte Runtimes von Grund auf, installiert, betrieben, wiederherstellbar.',
               "Every operation has at least one layer that doesn't fit a standard pattern. We architect bespoke runtimes from the ground up, installed, operated, recoverable.")}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <Link href="/contact" className="shine" style={{ ...mono, fontWeight: 700, fontSize: '15px', color: 'hsl(240 14% 4%)', background: '#F97316', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+            <Link href="/contact" className="btn btn-primary">
               {t(locale, 'Kontakt aufnehmen →', 'Contact us →')}
             </Link>
-            <Link href="/contact" className="glass" style={{ ...sans, fontWeight: 500, fontSize: '15px', color: 'hsl(40 30% 96%)', padding: '14px 28px', textDecoration: 'none', display: 'inline-block', borderRadius: '10px' }}>
+            <Link href="/contact" className="btn btn-secondary">
               {t(locale, 'Mit einem Architekten sprechen', 'Talk to an architect')}
             </Link>
           </div>
@@ -317,4 +316,4 @@ export default async function AutomationLabPage({
       </section>
     </main>
   )
-}/*xxxxxxxxxxxxxxxxxx*/
+}

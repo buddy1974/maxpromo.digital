@@ -20,12 +20,12 @@ export default async function BlogIndexPage() {
   const placeholders = t.raw('placeholders') as Array<{ tag: string; title: string; excerpt: string; readTime: string }>
 
   return (
-    <main style={{ background: '#0A0A0A', minHeight: '100vh', paddingTop: '120px', paddingBottom: '6rem' }}>
-      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '0 2rem' }}>
+    <main style={{ background: 'var(--color-bg)', minHeight: '100vh', paddingTop: 'clamp(4rem, 8vw, 6rem)', paddingBottom: 'clamp(4.5rem, 8vw, 8.75rem)' }}>
+      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', padding: '0 2rem' }}>
 
         {/* Header */}
         <div style={{ marginBottom: '4rem', maxWidth: '640px' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('indexEyebrow')}
           </p>
           <h1
@@ -33,16 +33,16 @@ export default async function BlogIndexPage() {
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
               fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-              letterSpacing: '-0.04em',
-              color: 'hsl(40 30% 96%)',
+              letterSpacing: '-0.02em',
+              color: 'var(--color-text-primary)',
               lineHeight: 1.1,
               marginBottom: '1rem',
             }}
           >
             {t('indexTitle')}{' '}
-            <span style={{ color: '#F97316' }}>{t('indexTitleAccent')}</span>
+            <span style={{ color: 'var(--color-primary)' }}>{t('indexTitleAccent')}</span>
           </h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'hsl(40 12% 65%)', lineHeight: 1.75, margin: 0 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
             {t('indexLede')}
           </p>
         </div>
@@ -53,12 +53,13 @@ export default async function BlogIndexPage() {
             <span
               style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: '11px',
-                color: '#F97316',
-                background: 'rgba(249,115,22,0.1)',
+                fontSize: '12px',
+                color: 'var(--color-primary)',
+                background: 'rgba(249,115,22,0.08)',
                 border: '1px solid rgba(249,115,22,0.25)',
-                padding: '5px 14px',
-                letterSpacing: '0.05em',
+                padding: '6px 14px',
+                borderRadius: '6px',
+                letterSpacing: '0.04em',
               }}
             >
               {t('filterAll')}
@@ -68,12 +69,13 @@ export default async function BlogIndexPage() {
                 key={tag}
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  color: 'hsl(40 12% 65%)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  background: 'rgba(255,255,255,0.03)',
-                  padding: '5px 14px',
-                  letterSpacing: '0.05em',
+                  fontSize: '12px',
+                  color: 'var(--color-text-secondary)',
+                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-bg)',
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  letterSpacing: '0.04em',
                   cursor: 'pointer',
                 }}
               >
@@ -86,7 +88,7 @@ export default async function BlogIndexPage() {
         {/* Article grid or placeholder cards */}
         {posts.length === 0 ? (
           <>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(240 8% 35%)', letterSpacing: '0.1em', marginBottom: '2rem' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.08em', marginBottom: '2rem' }}>
               {t('emptyTitle')}
             </p>
             <div
@@ -94,33 +96,22 @@ export default async function BlogIndexPage() {
               className="grid-cols-1 md:grid-cols-2"
             >
               {placeholders.map((card, i) => (
-                <article
-                  key={i}
-                  style={{
-                    background: 'hsl(240 12% 7%)',
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    borderRadius: '2px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    opacity: 0.75,
-                  }}
-                >
+                <article key={i} className="card" style={{ display: 'flex', flexDirection: 'column', opacity: 0.7, padding: 0 }}>
                   <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
                       {card.tag}
                     </span>
-                    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.125rem', letterSpacing: '-0.02em', color: 'hsl(40 30% 96%)', lineHeight: 1.35, margin: 0 }}>
+                    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', lineHeight: 1.35, margin: 0 }}>
                       {card.title}
                     </h2>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
                       {card.excerpt}
                     </p>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 'auto' }}>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)', letterSpacing: '0.05em' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--color-border)', marginTop: 'auto' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
                         {card.readTime}
                       </span>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'hsl(240 8% 35%)', letterSpacing: '0.05em' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
                         {t('readArticle')}
                       </span>
                     </div>
@@ -129,10 +120,7 @@ export default async function BlogIndexPage() {
               ))}
             </div>
             <div style={{ marginTop: '3rem', textAlign: 'center' }}>
-              <Link
-                href="/contact"
-                style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase', background: '#F97316', color: '#000', padding: '12px 22px', textDecoration: 'none', display: 'inline-block' }}
-              >
+              <Link href="/contact" className="btn btn-primary">
                 {t('bottomCtaPrimary')}
               </Link>
             </div>
@@ -148,22 +136,10 @@ export default async function BlogIndexPage() {
                 href={`/blog/${post.slug}`}
                 style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}
               >
-                <article
-                  style={{
-                    background: 'hsl(240 12% 7%)',
-                    border: '1px solid rgba(255,255,255,0.06)',
-                    borderRadius: '2px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flex: 1,
-                    transition: 'border-color 200ms ease',
-                  }}
-                  className="blog-card"
-                >
+                <article className="card mp-card-hover" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', padding: 0 }}>
                   {/* Featured image */}
                   {post.featuredImage && (
-                    <div style={{ position: 'relative', aspectRatio: '16/9', overflow: 'hidden' }}>
+                    <div className="mp-img-wrap" style={{ position: 'relative', aspectRatio: '16/9' }}>
                       <Image
                         src={post.featuredImage}
                         alt={post.title}
@@ -183,8 +159,8 @@ export default async function BlogIndexPage() {
                             key={tag}
                             style={{
                               fontFamily: 'var(--font-mono)',
-                              fontSize: '10px',
-                              color: '#F97316',
+                              fontSize: '11px',
+                              color: 'var(--color-primary)',
                               background: 'rgba(249,115,22,0.08)',
                               border: '1px solid rgba(249,115,22,0.15)',
                               padding: '2px 8px',
@@ -199,21 +175,21 @@ export default async function BlogIndexPage() {
                     )}
 
                     {/* Title */}
-                    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.125rem', letterSpacing: '-0.02em', color: 'hsl(40 30% 96%)', lineHeight: 1.35, margin: 0 }}>
+                    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', lineHeight: 1.35, margin: 0 }}>
                       {post.title}
                     </h2>
 
                     {/* Excerpt */}
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'hsl(40 12% 65%)', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
                       {post.excerpt}
                     </p>
 
                     {/* Footer row */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: 'auto' }}>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(240 8% 35%)', letterSpacing: '0.05em' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--color-border)', marginTop: 'auto' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
                         {post.publishedAt}
                       </span>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.05em' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.05em' }}>
                         {t('readArticle')}
                       </span>
                     </div>
@@ -227,4 +203,4 @@ export default async function BlogIndexPage() {
       </div>
     </main>
   )
-}/*xxxxx*/
+}

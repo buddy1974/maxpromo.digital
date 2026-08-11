@@ -80,7 +80,7 @@ export function SystemCardFeatured({
       data-slug={product.slug}
       data-variant="featured"
       data-category={product.category}
-      className="group relative flex flex-col overflow-hidden rounded-xl border border-white/[0.06] bg-[hsl(240_12%_7%)] transition-shadow duration-300 hover:shadow-[0_8px_32px_-4px_rgba(0,0,0,0.6)]"
+      className="group relative flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-bg)] shadow-[var(--shadow-card)] transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
     >
 
       {/* ── BRAND ACCENT BAR */}
@@ -104,14 +104,8 @@ export function SystemCardFeatured({
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="absolute inset-0 bg-[hsl(240_14%_5%)]" />
+          <div className="absolute inset-0 bg-[var(--color-bg-section)]" />
         )}
-
-        {/* Bottom gradient */}
-        <div
-          className="absolute inset-0 bg-gradient-to-t from-[hsl(240_12%_7%)] via-transparent to-transparent opacity-50 pointer-events-none"
-          aria-hidden="true"
-        />
 
         {/* Overlay click tracker, routes to the dedicated system page, not contact */}
         <TrackableLink
@@ -123,29 +117,29 @@ export function SystemCardFeatured({
 
         {/* Live badge */}
         {showBadge && product.status === 'live' && (
-          <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-sm border border-[#F97316]/20 z-10 pointer-events-none">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#F97316] animate-pulse" aria-hidden="true" />
-            <span className="font-mono text-[9px] text-[#F97316] tracking-widest uppercase font-bold">Live</span>
+          <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--color-bg)] border border-[var(--color-primary)]/25 z-10 pointer-events-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-primary)]" aria-hidden="true" />
+            <span className="font-mono text-[10px] text-[var(--color-primary)] tracking-widest uppercase font-bold">Live</span>
           </div>
         )}
       </div>
 
       {/* ── BODY */}
-      <div className="flex flex-col flex-1 px-5 pt-4 pb-5 gap-3">
+      <div className="flex flex-col flex-1 px-5 pt-5 pb-5 gap-3">
 
         {/* Product name */}
-        <h3 className="m-0 text-[17px] font-bold leading-tight tracking-tight text-[hsl(40_30%_96%)]">
+        <h3 className="m-0 text-[18px] font-bold leading-tight tracking-tight text-[var(--color-text-primary)]">
           <TrackableLink
             href={systemHref}
             event={{ type: CARD_CLICKED, slug: product.slug, source: eventSource, locale }}
-            className="text-inherit no-underline hover:text-[#F97316] transition-colors duration-150"
+            className="text-inherit no-underline hover:text-[var(--color-primary)] transition-colors duration-150"
           >
             {product.name}
           </TrackableLink>
         </h3>
 
         {/* Tagline */}
-        <p className="m-0 font-mono text-[12px] text-[hsl(40_12%_55%)] leading-snug">
+        <p className="m-0 font-mono text-[13px] text-[var(--color-text-secondary)] leading-snug">
           {headline}
         </p>
 
@@ -154,13 +148,13 @@ export function SystemCardFeatured({
           {bullets.map((bullet, i) => (
             <li key={i} className="flex items-start gap-2">
               <span
-                className="font-mono text-[10px] font-bold mt-0.5 flex-shrink-0 leading-none"
+                className="font-mono text-[11px] font-bold mt-0.5 flex-shrink-0 leading-none"
                 style={{ color: product.brandColor }}
                 aria-hidden="true"
               >
                 ✓
               </span>
-              <span className="font-sans text-[12px] text-[hsl(40_12%_60%)] leading-snug">
+              <span className="font-sans text-[13px] text-[var(--color-text-secondary)] leading-snug">
                 {bullet}
               </span>
             </li>
@@ -169,13 +163,13 @@ export function SystemCardFeatured({
 
         {/* ── CTA pair */}
         {showCTA && (
-          <div className="flex gap-2 mt-auto pt-3 border-t border-white/[0.06]">
+          <div className="flex gap-2 mt-auto pt-3 border-t border-[var(--color-border)]">
             {/* Primary, View system (routes to the dedicated system page) */}
             <TrackableLink
               href={systemHref}
               event={{ type: CTA_PRIMARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: primaryLabel }}
               aria-label={primaryLabel}
-              className="flex-1 text-center font-mono text-[10px] font-bold uppercase tracking-widest bg-[#F97316] text-[#080808] px-3 py-2.5 hover:bg-[#EA6A00] transition-colors leading-none"
+              className="flex-1 text-center font-mono text-[11px] font-bold uppercase tracking-widest bg-[var(--color-primary)] text-white rounded-[6px] px-3 py-2.5 hover:bg-[var(--color-primary-hover)] transition-colors leading-none"
             >
               {primaryLabel}
             </TrackableLink>
@@ -186,7 +180,7 @@ export function SystemCardFeatured({
               href={systemHref}
               event={{ type: CTA_SECONDARY_CLICKED, slug: product.slug, source: eventSource, locale, ctaLabel: secondaryLabel }}
               aria-label={secondaryLabel}
-              className="flex-1 text-center font-mono text-[10px] uppercase tracking-widest border border-white/20 text-[hsl(40_30%_96%)] px-3 py-2.5 hover:border-white/40 transition-colors leading-none"
+              className="flex-1 text-center font-mono text-[11px] uppercase tracking-widest border border-[var(--color-border)] rounded-[6px] text-[var(--color-text-primary)] px-3 py-2.5 hover:border-[var(--color-text-secondary)] transition-colors leading-none"
             >
               {secondaryLabel}
             </TrackableLink>

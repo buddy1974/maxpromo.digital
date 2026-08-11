@@ -4,17 +4,17 @@ import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
-const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-inter)' } as const
-const sans = { fontFamily: 'var(--font-inter)' } as const
+const mono = { fontFamily: 'var(--font-mono)' } as const
+const grotesk = { fontFamily: 'var(--font-heading)' } as const
+const sans = { fontFamily: 'var(--font-body)' } as const
 
 const inputBase: React.CSSProperties = {
   ...sans,
-  fontSize: '15px',
-  color: '#FFFFFF',
-  background: 'rgba(255,255,255,0.04)',
-  border: '1px solid rgba(255,255,255,0.1)',
-  borderRadius: '2px',
+  fontSize: '16px',
+  color: 'var(--color-text-primary)',
+  background: 'var(--color-bg)',
+  border: '1px solid var(--color-border)',
+  borderRadius: 'var(--radius-card)',
   padding: '14px 16px',
   width: '100%',
   outline: 'none',
@@ -125,15 +125,15 @@ export default function PortfolioPage() {
 
   if (unlocked) {
     return (
-      <main style={{ background: '#0A0A0A', minHeight: '100vh', padding: '120px 24px 80px' }}>
+      <main style={{ background: 'var(--color-bg)', minHeight: '100vh', padding: 'clamp(5rem, 10vw, 8.75rem) 24px clamp(4.5rem, 8vw, 6.25rem)' }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>
             {t(locale, '// Portfolio &middot; Vertraulich', '// Portfolio &middot; Confidential')}
           </p>
-          <h1 style={{ ...grotesk, fontSize: 'clamp(32px, 5vw, 48px)', color: '#FFFFFF', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 16px' }}>
+          <h1 style={{ ...grotesk, fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', color: 'var(--color-text-primary)', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 16px' }}>
             {t(locale, 'Ausgewählte Arbeiten.', 'Selected work.')}
           </h1>
-          <p style={{ ...sans, fontSize: '16px', color: '#888888', margin: '0 0 48px', maxWidth: '640px', lineHeight: 1.6 }}>
+          <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', margin: '0 0 48px', maxWidth: '640px', lineHeight: 1.7 }}>
             {t(locale,
               'Jedes System unten wurde gebaut und ist im produktiven Einsatz. Kundennamen unter NDA geschwärzt, auf Anfrage stellen wir gerne einen Kontakt her.',
               'Each system below was built and is in production. Client names redacted under NDA, happy to make an intro on request.')}
@@ -141,18 +141,18 @@ export default function PortfolioPage() {
 
           <div style={{ display: 'grid', gap: '16px' }}>
             {PORTFOLIO.map((item, i) => (
-              <article key={i} style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '2px', padding: '24px 28px' }}>
+              <article key={i} className="card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', gap: '20px', flexWrap: 'wrap' }}>
                   <div>
-                    <p style={{ ...mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 6px' }}>{item.type}</p>
-                    <h2 style={{ ...grotesk, fontSize: '20px', color: '#FFFFFF', fontWeight: 700, margin: '0 0 4px' }}>{item.title}</h2>
-                    <p style={{ ...sans, fontSize: '13px', color: '#666', margin: 0 }}>{item.client}</p>
+                    <p style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 6px' }}>{item.type}</p>
+                    <h2 style={{ ...grotesk, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', fontWeight: 700, margin: '0 0 4px' }}>{item.title}</h2>
+                    <p style={{ ...sans, fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0 }}>{item.client}</p>
                   </div>
                 </div>
-                <p style={{ ...sans, fontSize: '15px', color: '#CCC', margin: '0 0 16px', lineHeight: 1.6 }}>{item.summary}</p>
+                <p style={{ ...sans, fontSize: '16px', color: 'var(--color-text-secondary)', margin: '0 0 16px', lineHeight: 1.65 }}>{item.summary}</p>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {item.metrics.map(m => (
-                    <span key={m} style={{ ...mono, fontSize: '11px', color: '#F97316', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', borderRadius: '2px', letterSpacing: '0.04em' }}>
+                    <span key={m} style={{ ...mono, fontSize: '12px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', borderRadius: '6px', letterSpacing: '0.03em' }}>
                       {m}
                     </span>
                   ))}
@@ -162,14 +162,7 @@ export default function PortfolioPage() {
           </div>
 
           <div style={{ marginTop: '48px', textAlign: 'center' }}>
-            <Link
-              href="/contact"
-              style={{
-                ...mono, fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase',
-                background: '#F97316', color: '#000', border: 'none', borderRadius: '2px',
-                padding: '14px 22px', textDecoration: 'none', display: 'inline-block',
-              }}
-            >
+            <Link href="/contact" className="btn btn-primary">
               {t(locale, 'Ihr Projekt besprechen →', 'Discuss your build →')}
             </Link>
           </div>
@@ -179,17 +172,17 @@ export default function PortfolioPage() {
   }
 
   return (
-    <main style={{ background: '#0A0A0A', minHeight: '100vh', padding: '140px 24px 100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <main style={{ background: 'var(--color-bg)', minHeight: '100vh', padding: 'clamp(5rem, 10vw, 8.75rem) 24px clamp(4.5rem, 8vw, 6.25rem)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <form onSubmit={submit} style={{ width: '100%', maxWidth: '420px' }}>
-        <p style={{ ...mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px', textAlign: 'center' }}>
+        <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px', textAlign: 'center' }}>
           {t(locale, '// Portfolio &middot; Zugang erforderlich', '// Portfolio &middot; Access Required')}
         </p>
-        <h1 style={{ ...grotesk, fontSize: '32px', color: '#FFFFFF', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 14px', textAlign: 'center' }}>
+        <h1 style={{ ...grotesk, fontSize: '32px', color: 'var(--color-text-primary)', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 14px', textAlign: 'center' }}>
           {t(locale, 'Vertraulich.', 'Confidential.')}
         </h1>
-        <p style={{ ...sans, fontSize: '14px', color: '#888888', margin: '0 0 32px', textAlign: 'center', lineHeight: 1.5 }}>
+        <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', margin: '0 0 32px', textAlign: 'center', lineHeight: 1.6 }}>
           {t(locale, 'Kundenprojekte unterliegen einer NDA. Wenn wir Ihnen einen Zugangscode mitgeteilt haben, geben Sie ihn unten ein. Andernfalls', 'Client work is under NDA. If we’ve shared an access code with you, enter it below. Otherwise,')}{' '}
-          <Link href="/contact" style={{ color: '#F97316' }}>{t(locale, 'kontaktieren Sie uns', 'reach out')}</Link>.
+          <Link href="/contact" style={{ color: 'var(--color-primary)' }}>{t(locale, 'kontaktieren Sie uns', 'reach out')}</Link>.
         </p>
 
         <input
@@ -201,16 +194,16 @@ export default function PortfolioPage() {
           style={inputBase}
         />
         {error && (
-          <p style={{ ...mono, fontSize: '12px', color: '#ef4444', margin: '12px 0 0' }}>⚠ {error}</p>
+          <p style={{ ...mono, fontSize: '13px', color: '#DC2626', margin: '12px 0 0' }}>⚠ {error}</p>
         )}
         <button
           type="submit"
           disabled={loading || !password}
+          className="btn btn-primary"
           style={{
-            ...mono, fontWeight: 700, fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase',
-            background: '#F97316', color: '#000', border: 'none', borderRadius: '2px',
-            padding: '14px 22px', cursor: loading || !password ? 'not-allowed' : 'pointer',
-            opacity: loading || !password ? 0.5 : 1, marginTop: '16px', width: '100%',
+            marginTop: '16px', width: '100%',
+            cursor: loading || !password ? 'not-allowed' : 'pointer',
+            opacity: loading || !password ? 0.5 : 1,
           }}
         >
           {loading ? t(locale, 'Wird geprüft…', 'Verifying…') : t(locale, 'Portfolio freischalten →', 'Unlock portfolio →')}
@@ -218,4 +211,4 @@ export default function PortfolioPage() {
       </form>
     </main>
   )
-}//
+}

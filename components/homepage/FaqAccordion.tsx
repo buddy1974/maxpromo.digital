@@ -16,14 +16,14 @@ export function FaqAccordion() {
   return (
     <section
       style={{
-        background: 'hsl(240 14% 4%)',
-        padding: '6rem 2rem',
-        borderTop: '1px solid hsl(40 30% 96% / 0.06)',
+        background: 'var(--color-bg)',
+        padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem',
+        borderTop: '1px solid var(--color-border)',
       }}
     >
       <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
 
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '2.5rem' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '2.5rem' }}>
           {t('eyebrow')}
         </p>
 
@@ -34,7 +34,7 @@ export function FaqAccordion() {
               <div
                 key={i}
                 style={{
-                  borderTop: '1px solid hsl(40 30% 96% / 0.07)',
+                  borderTop: '1px solid var(--color-border)',
                 }}
               >
                 <button
@@ -46,7 +46,7 @@ export function FaqAccordion() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     gap: '1rem',
-                    padding: '1.25rem 0',
+                    padding: '1.5rem 0',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
@@ -57,8 +57,8 @@ export function FaqAccordion() {
                     style={{
                       fontFamily: 'var(--font-heading)',
                       fontWeight: 600,
-                      fontSize: '16px',
-                      color: isOpen ? 'hsl(40 30% 96%)' : 'hsl(40 12% 70%)',
+                      fontSize: '18px',
+                      color: isOpen ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
                       letterSpacing: '-0.01em',
                       lineHeight: 1.4,
                       transition: 'color 200ms ease',
@@ -69,8 +69,8 @@ export function FaqAccordion() {
                   <span
                     style={{
                       fontFamily: 'var(--font-mono)',
-                      fontSize: '16px',
-                      color: isOpen ? '#F97316' : 'hsl(40 12% 40%)',
+                      fontSize: '18px',
+                      color: isOpen ? 'var(--color-primary)' : 'var(--color-text-secondary)',
                       flexShrink: 0,
                       transition: 'transform 200ms ease, color 200ms ease',
                       display: 'inline-block',
@@ -85,10 +85,10 @@ export function FaqAccordion() {
                   <p
                     style={{
                       fontFamily: 'var(--font-body)',
-                      fontSize: '15px',
-                      color: 'hsl(40 12% 60%)',
+                      fontSize: '16px',
+                      color: 'var(--color-text-secondary)',
                       lineHeight: 1.8,
-                      paddingBottom: '1.25rem',
+                      paddingBottom: '1.5rem',
                       margin: 0,
                     }}
                   >
@@ -100,7 +100,7 @@ export function FaqAccordion() {
           })}
 
           {/* Final border */}
-          <div style={{ borderTop: '1px solid hsl(40 30% 96% / 0.07)' }} />
+          <div style={{ borderTop: '1px solid var(--color-border)' }} />
         </div>
 
       </div>
