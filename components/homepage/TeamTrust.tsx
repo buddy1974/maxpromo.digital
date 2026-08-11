@@ -8,12 +8,12 @@ export async function TeamTrust() {
   return (
     <section
       style={{
-        background: 'hsl(240 12% 6%)',
-        padding: '6rem 2rem',
-        borderTop: '1px solid hsl(40 30% 96% / 0.06)',
+        background: 'var(--color-bg-section)',
+        padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem',
+        borderTop: '1px solid var(--color-border)',
       }}
     >
-      <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
 
         {/* Header */}
         <div
@@ -22,32 +22,32 @@ export async function TeamTrust() {
         >
           {/* Left: eyebrow + title */}
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('eyebrow')}
             </p>
             <h2
               style={{
                 fontFamily: 'var(--font-heading)',
                 fontWeight: 700,
-                fontSize: 'clamp(2rem, 4vw, 3rem)',
-                letterSpacing: '-0.04em',
-                color: 'hsl(40 30% 96%)',
+                fontSize: 'clamp(2.25rem, 4vw, 3.25rem)',
+                letterSpacing: '-0.02em',
+                color: 'var(--color-text-primary)',
                 lineHeight: 1.1,
                 marginBottom: 0,
               }}
             >
               {t('title')}{' '}
-              <span style={{ color: '#F97316' }}>{t('titleAccent')}</span>
+              <span style={{ color: 'var(--color-primary)' }}>{t('titleAccent')}</span>
             </h2>
           </div>
 
           {/* Right: body + pain list + closing */}
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '1rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '1.1rem' }}>
             <p
               style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '17px',
-                color: 'hsl(40 30% 96%)',
+                fontSize: '18px',
+                color: 'var(--color-text-primary)',
                 lineHeight: 1.7,
                 margin: 0,
               }}
@@ -62,12 +62,13 @@ export async function TeamTrust() {
                   key={k}
                   style={{
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '12px',
-                    color: 'hsl(40 12% 55%)',
-                    background: 'hsl(240 12% 8%)',
-                    border: '1px solid hsl(40 30% 96% / 0.07)',
-                    padding: '4px 12px',
-                    letterSpacing: '0.03em',
+                    fontSize: '13px',
+                    color: 'var(--color-text-secondary)',
+                    background: 'var(--color-bg)',
+                    border: '1px solid var(--color-border)',
+                    padding: '5px 12px',
+                    borderRadius: '6px',
+                    letterSpacing: '0.02em',
                   }}
                 >
                   {t(k)}
@@ -78,8 +79,8 @@ export async function TeamTrust() {
             <p
               style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '15px',
-                color: 'hsl(40 12% 65%)',
+                fontSize: '16px',
+                color: 'var(--color-text-secondary)',
                 lineHeight: 1.7,
                 margin: 0,
                 fontStyle: 'italic',
@@ -92,26 +93,26 @@ export async function TeamTrust() {
 
         {/* Three pillars */}
         <div
-          style={{ display: 'grid', gap: '1px', background: 'hsl(240 10% 16%)', borderRadius: '12px', overflow: 'hidden' }}
+          style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden', border: '1px solid var(--color-border)' }}
           className="grid-cols-1 sm:grid-cols-3"
         >
           {LABELS.map((id) => (
             <div
               key={id}
               style={{
-                background: 'hsl(240 14% 4%)',
-                padding: '2rem 2.5rem',
+                background: 'var(--color-bg)',
+                padding: '2.25rem 2.5rem',
               }}
             >
               <p
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
+                  fontSize: '12px',
                   fontWeight: 700,
-                  color: '#F97316',
-                  letterSpacing: '0.12em',
+                  color: 'var(--color-primary)',
+                  letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  marginBottom: '8px',
+                  marginBottom: '10px',
                 }}
               >
                 {t(`${id}Label`)}
@@ -119,8 +120,8 @@ export async function TeamTrust() {
               <p
                 style={{
                   fontFamily: 'var(--font-body)',
-                  fontSize: '14px',
-                  color: 'hsl(40 12% 60%)',
+                  fontSize: '15px',
+                  color: 'var(--color-text-secondary)',
                   lineHeight: 1.7,
                   margin: 0,
                 }}
@@ -135,9 +136,9 @@ export async function TeamTrust() {
         <p
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '10px',
-            color: 'hsl(240 8% 32%)',
-            letterSpacing: '0.06em',
+            fontSize: '11px',
+            color: 'var(--color-text-secondary)',
+            letterSpacing: '0.05em',
             marginTop: '1.25rem',
             textAlign: 'right',
           }}

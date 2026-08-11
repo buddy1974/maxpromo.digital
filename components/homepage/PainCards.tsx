@@ -29,20 +29,20 @@ export async function PainCards() {
     <section
       data-section="pain"
       style={{
-        background: 'hsl(240 14% 4%)',
-        padding: '6rem 2rem',
-        borderTop: '1px solid hsl(40 30% 96% / 0.06)',
+        background: 'var(--color-bg)',
+        padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem',
+        borderTop: '1px solid var(--color-border)',
       }}
     >
-      <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
 
         <div style={{ marginBottom: '3rem', maxWidth: '44rem' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('eyebrow')}
           </p>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 4vw, 3rem)', letterSpacing: '-0.04em', color: 'hsl(40 30% 96%)', lineHeight: 1.1 }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', lineHeight: 1.1 }}>
             {t('title')}{' '}
-            <span style={{ color: '#F97316' }}>{t('titleAccent')}</span>
+            <span style={{ color: 'var(--color-primary)' }}>{t('titleAccent')}</span>
           </h2>
         </div>
 

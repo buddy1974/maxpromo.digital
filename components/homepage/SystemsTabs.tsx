@@ -34,8 +34,8 @@ export function SystemsTabs() {
           style={{
             display: 'flex',
             overflowX: 'auto',
-            gap: '2px',
-            borderBottom: '1px solid hsl(40 30% 96% / 0.08)',
+            gap: '4px',
+            borderBottom: '1px solid var(--color-border)',
             scrollbarWidth: 'none',
             WebkitOverflowScrolling: 'touch',
           } as React.CSSProperties}
@@ -45,16 +45,15 @@ export function SystemsTabs() {
               key={sys.slug}
               onClick={() => setActive(i)}
               style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '11px',
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
+                fontFamily: 'var(--font-body)',
+                fontSize: '15px',
+                fontWeight: 500,
                 whiteSpace: 'nowrap',
-                padding: '14px 16px',
+                padding: '14px 18px',
                 border: 'none',
-                borderBottom: i === active ? '2px solid #F97316' : '2px solid transparent',
+                borderBottom: i === active ? '2px solid var(--color-primary)' : '2px solid transparent',
                 background: 'none',
-                color: i === active ? '#F97316' : 'hsl(40 12% 50%)',
+                color: i === active ? 'var(--color-primary)' : 'var(--color-text-secondary)',
                 cursor: 'pointer',
                 transition: 'color 150ms ease',
                 flexShrink: 0,
@@ -75,7 +74,7 @@ export function SystemsTabs() {
             top: 0,
             bottom: 0,
             width: '48px',
-            background: 'linear-gradient(to right, transparent, hsl(240 14% 4%))',
+            background: 'linear-gradient(to right, transparent, var(--color-bg))',
             pointerEvents: 'none',
           }}
         />
@@ -93,36 +92,23 @@ export function SystemsTabs() {
       >
         {/* Copy */}
         <div style={{ order: 1 }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'hsl(40 12% 50%)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
             {current.name}
           </p>
           <h3
             style={{
               fontFamily: 'var(--font-heading)',
               fontWeight: 700,
-              fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
-              letterSpacing: '-0.04em',
-              color: 'hsl(40 30% 96%)',
+              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+              letterSpacing: '-0.02em',
+              color: 'var(--color-text-primary)',
               lineHeight: 1.2,
               marginBottom: '1.5rem',
             }}
           >
             {current.headline}
           </h3>
-          <Link
-            href={current.href}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontWeight: 700,
-              fontSize: '13px',
-              color: 'hsl(240 14% 4%)',
-              background: '#F97316',
-              padding: '11px 22px',
-              textDecoration: 'none',
-              display: 'inline-block',
-              letterSpacing: '0.05em',
-            }}
-          >
+          <Link href={current.href} className="btn btn-primary">
             {t('viewSystem')}
           </Link>
         </div>
@@ -133,8 +119,9 @@ export function SystemsTabs() {
             position: 'relative',
             aspectRatio: '8 / 5',
             overflow: 'hidden',
-            borderRadius: '8px',
-            background: 'hsl(240 12% 5%)',
+            borderRadius: 'var(--radius-card)',
+            background: 'var(--color-bg-section)',
+            border: '1px solid var(--color-border)',
             order: 2,
           }}
         >

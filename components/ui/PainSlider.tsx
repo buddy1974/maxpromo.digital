@@ -26,10 +26,10 @@ export function PainSlider() {
   return (
     <div
       style={{
-        background: 'hsl(240 14% 3%)',
-        borderTop: '1px solid hsl(40 30% 96% / 0.05)',
-        borderBottom: '1px solid hsl(40 30% 96% / 0.05)',
-        padding: '20px 2rem',
+        background: 'var(--color-bg-section)',
+        borderTop: '1px solid var(--color-border)',
+        borderBottom: '1px solid var(--color-border)',
+        padding: '22px 2rem',
       }}
     >
       <div
@@ -46,8 +46,8 @@ export function PainSlider() {
         <span
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '10px',
-            color: 'hsl(40 12% 40%)',
+            fontSize: '11px',
+            color: 'var(--color-text-secondary)',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
             flexShrink: 0,
@@ -60,7 +60,7 @@ export function PainSlider() {
         <span
           style={{
             fontFamily: 'var(--font-mono)',
-            fontSize: '13px',
+            fontSize: '14px',
             opacity: visible ? 1 : 0,
             transition: 'opacity 220ms ease',
             display: 'flex',
@@ -70,11 +70,11 @@ export function PainSlider() {
             flex: 1,
           }}
         >
-          <span style={{ color: 'hsl(40 30% 96%)' }}>
+          <span style={{ color: 'var(--color-text-primary)' }}>
             {t(`${key}Pain`)}
           </span>
-          <span style={{ color: 'hsl(40 12% 40%)' }}>-</span>
-          <span style={{ color: '#F97316' }}>
+          <span style={{ color: 'var(--color-text-secondary)' }}>-</span>
+          <span style={{ color: 'var(--color-primary)' }}>
             {t(`${key}Fix`)}
           </span>
         </span>
@@ -90,7 +90,7 @@ export function PainSlider() {
                 width: i === active ? '18px' : '5px',
                 height: '5px',
                 borderRadius: '3px',
-                background: i === active ? '#F97316' : 'hsl(40 30% 96% / 0.15)',
+                background: i === active ? 'var(--color-primary)' : 'var(--color-border)',
                 border: 'none',
                 padding: 0,
                 cursor: 'pointer',
