@@ -3,12 +3,12 @@ import { PainCardsClient } from './PainCardsClient'
 import type { PainCardData } from './PainCardsClient'
 
 const PAIN_REFS = [
-  { id: 'p1', icon: '⊟', href: '/services/customer-inquiries',  imgBg: "url('/images/services/kundenanfragen.png') center / cover no-repeat" },
-  { id: 'p2', icon: '◇', href: '/services/workflow-automation', imgBg: "url('/images/services/rechnungen.png') center / cover no-repeat" },
-  { id: 'p3', icon: '⌗', href: '/services/ai-agents',           imgBg: "url('/images/services/kommunikation.png') center / cover no-repeat" },
-  { id: 'p4', icon: '◰', href: '/services/workflow-automation', imgBg: "url('/images/services/field-operation.png') center / cover no-repeat" },
-  { id: 'p5', icon: '▤', href: '/services/reviews',             imgBg: "url('/images/services/reviews.png') center / cover no-repeat" },
-  { id: 'p6', icon: '→', href: '/services/workflow-automation', imgBg: "url('/images/services/Tools.png') center / cover no-repeat" },
+  { id: 'p1', icon: '⊟', href: '/services/customer-inquiries' },
+  { id: 'p2', icon: '◇', href: '/services/workflow-automation' },
+  { id: 'p3', icon: '⌗', href: '/services/ai-agents' },
+  { id: 'p4', icon: '◰', href: '/services/workflow-automation' },
+  { id: 'p5', icon: '▤', href: '/services/reviews' },
+  { id: 'p6', icon: '→', href: '/services/workflow-automation' },
 ] as const
 
 export async function PainCards() {
@@ -18,7 +18,6 @@ export async function PainCards() {
     id:    ref.id,
     icon:  ref.icon,
     href:  ref.href,
-    imgBg: ref.imgBg,
     tag:   t(`${ref.id}Tag`),
     title: t(`${ref.id}Title`),
     desc:  t(`${ref.id}Desc`),

@@ -120,7 +120,6 @@ export default async function HomePage() {
 
   return (
     <>
-      <link rel="preload" as="image" href="/images/homepage/hero-1.png" />
       <main>
 
       {/* 1, Hero (LOCKED) */}

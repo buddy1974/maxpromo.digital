@@ -7,7 +7,6 @@ export interface PainCardData {
   id: string
   icon: string
   href: string
-  imgBg: string
   tag: string
   title: string
   desc: string
@@ -19,10 +18,12 @@ interface PainCardsClientProps {
 }
 
 /**
- * Each card's `imgBg` (set in PainCards.tsx) is a real screenshot under
- * public/images/services/. It paints via the "Brand radial" div below; the
- * ghost-glyph icon sits underneath it as a zero-cost fallback if a given
- * card's image is ever missing.
+ * Visual-facelift v2.1: dropped the stock-photo composite (generic stressed
+ * office worker + floating app icons) that used to fill these cards — per
+ * design/visual-facelift-v2.1.md, that's exactly the "generic business
+ * meetings / generic office workers" imagery the spec asks to remove, and
+ * it didn't explain anything specific. Each card now leads with its icon
+ * only.
  */
 
 export function PainCardsClient({ cards }: PainCardsClientProps) {
@@ -63,37 +64,27 @@ export function PainCardsClient({ cards }: PainCardsClientProps) {
                 cursor: 'pointer',
               }}
             >
-              {/* Image area, next/image with WebP/AVIF optimisation */}
-              <motion.div
-                className="pain-card-img"
-                whileHover={{ scale: 1.04 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                style={{
-                  position: 'relative',
-                  aspectRatio: '16 / 9',
-                  backgroundColor: 'var(--color-bg-section)',
-                  overflow: 'hidden',
-                }}
-              >
-                {/* Fallback ghost glyph */}
+              {/* Icon + tag header */}
+              <div style={{ padding: '1.75rem 1.75rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
                 <span
                   aria-hidden="true"
-                  style={{ fontFamily: 'var(--font-mono)', fontSize: '80px', color: 'rgba(249,115,22,0.10)', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', userSelect: 'none', pointerEvents: 'none', zIndex: 0 }}
+                  style={{
+                    width: '48px', height: '48px', borderRadius: 'var(--radius-card)',
+                    background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.18)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: 'var(--font-mono)', fontSize: '22px', color: 'var(--color-primary)',
+                    flexShrink: 0,
+                  }}
                 >
                   {card.icon}
                 </span>
-                {/* Brand radial */}
-                <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: card.imgBg, zIndex: 0, pointerEvents: 'none' }} />
-                {/* Top strip */}
-                <div aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'var(--color-primary)', zIndex: 2 }} />
-                {/* Tag */}
-                <span style={{ position: 'absolute', zIndex: 3, top: '14px', left: '14px', fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.10)', border: '1px solid rgba(249,115,22,0.2)', padding: '3px 10px', borderRadius: '4px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.10)', border: '1px solid rgba(249,115,22,0.2)', padding: '3px 10px', borderRadius: '4px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                   {card.tag}
                 </span>
-              </motion.div>
+              </div>
 
               {/* Text content */}
-              <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
+              <div style={{ padding: '1.25rem 1.75rem 1.75rem', display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
                 <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', lineHeight: 1.25, margin: 0 }}>
                   {card.title}
                 </h3>
