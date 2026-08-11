@@ -4,11 +4,12 @@ import { BriefingPanel } from "@/components/dashboard/BriefingPanel";
 import { ApprovalCard } from "@/components/dashboard/ApprovalCard";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { EmptyState } from "@/components/dashboard/EmptyState";
+import { MetricCard } from "@/components/dashboard/MetricCard";
 import { getDashboardData } from "@/lib/db/queries/dashboard";
 import { getCurrentUser } from "@/lib/auth/session";
 import type { AgentProposal } from "@/types/agent";
 import type { ActivityLog } from "@/types/activity";
-import type { DailyBriefing } from "@/types/dashboard";
+import type { DailyBriefing, DashboardMetric } from "@/types/dashboard";
 
 // DB-backed (session workspace). force-dynamic so the build never queries Neon.
 export const dynamic = "force-dynamic";
@@ -51,11 +52,11 @@ export default async function DashboardOverviewPage() {
     ],
   };
 
-  const metrics = [
-    { label: "Offene Freigaben", value: pending.length },
-    { label: "Aktive Agenten", value: activeAgents.length },
-    { label: "Wartende Kunden", value: data.waiting.length },
-    { label: "Audit-Findings", value: data.audit.findings.length },
+  const metrics: DashboardMetric[] = [
+    { id: "m1", label: "Offene Freigaben", value: String(pending.length) },
+    { id: "m2", label: "Aktive Agenten", value: String(activeAgents.length) },
+    { id: "m3", label: "Wartende Kunden", value: String(data.waiting.length) },
+    { id: "m4", label: "Audit-Findings", value: String(data.audit.findings.length) },
   ];
 
   const proposalsForCards: AgentProposal[] = pending.slice(0, 4).map((p) => ({
@@ -89,10 +90,7 @@ export default async function DashboardOverviewPage() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {metrics.map((m) => (
-            <div key={m.label} className="rounded-xl border border-line bg-ink-850 p-5">
-              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-500">{m.label}</p>
-              <p className="mt-2 text-3xl font-semibold tracking-tight text-zinc-50">{m.value}</p>
-            </div>
+            <MetricCard key={m.label} metric={m} />
           ))}
         </div>
 
@@ -110,11 +108,11 @@ export default async function DashboardOverviewPage() {
 
         <div className="grid gap-8 lg:grid-cols-2">
           <Section title="Aktive Agenten">
-            <ul className="divide-y divide-line rounded-xl border border-line bg-ink-850">
+            <ul className="divide-y divide-zinc-200 rounded-lg border border-zinc-200 bg-white shadow-sm">
               {activeAgents.map((a) => (
                 <li key={a.id} className="flex items-center justify-between px-4 py-3">
                   <div>
-                    <p className="text-sm text-zinc-200">{a.name}</p>
+                    <p className="text-sm text-zinc-900">{a.name}</p>
                     <p className="text-xs text-zinc-500">{a.role}</p>
                   </div>
                   <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-accent">{a.status}</span>
@@ -125,10 +123,10 @@ export default async function DashboardOverviewPage() {
 
           <Section title="Wartende Kunden">
             {urgent.length ? (
-              <ul className="divide-y divide-line rounded-xl border border-line bg-ink-850">
+              <ul className="divide-y divide-zinc-200 rounded-lg border border-zinc-200 bg-white shadow-sm">
                 {urgent.map((w) => (
                   <li key={w.id} className="px-4 py-3">
-                    <p className="text-sm text-zinc-200">{w.customerName}</p>
+                    <p className="text-sm text-zinc-900">{w.customerName}</p>
                     <p className="text-xs text-zinc-500">{w.company ?? "—"} · wartet {w.waitingFor}</p>
                   </li>
                 ))}
@@ -140,7 +138,7 @@ export default async function DashboardOverviewPage() {
         </div>
 
         <Section title="Letzte Aktivität">
-          <div className="rounded-xl border border-line bg-ink-850 px-4">
+          <div className="rounded-lg border border-zinc-200 bg-white px-4 shadow-sm">
             <ActivityFeed items={activity} />
           </div>
         </Section>
@@ -153,7 +151,7 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
   return (
     <section>
       <div className="mb-3">
-        <h2 className="text-base font-semibold text-zinc-100">{title}</h2>
+        <h2 className="text-base font-semibold text-zinc-900">{title}</h2>
         {hint && <p className="text-xs text-zinc-500">{hint}</p>}
       </div>
       {children}

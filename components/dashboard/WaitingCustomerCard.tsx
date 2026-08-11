@@ -2,9 +2,9 @@ import type { WaitingRoomItem } from "@/types/waiting-room";
 
 const URGENCY_STYLE = {
   low: "text-zinc-500",
-  medium: "text-amber-400",
-  high: "text-orange-400",
-  urgent: "text-red-400",
+  medium: "text-amber-600",
+  high: "text-orange-600",
+  urgent: "text-red-600",
 } as const;
 
 const CHANNEL_LABEL = {
@@ -17,10 +17,10 @@ const CHANNEL_LABEL = {
 
 export function WaitingCustomerCard({ item }: { item: WaitingRoomItem }) {
   return (
-    <div className="rounded-xl border border-line bg-ink-850 p-5">
+    <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="font-semibold text-zinc-100">{item.customerName}</h3>
+          <h3 className="font-semibold text-zinc-900">{item.customerName}</h3>
           <p className="text-xs text-zinc-500">
             {item.company ?? "—"} · {CHANNEL_LABEL[item.channel]}
           </p>
@@ -29,16 +29,16 @@ export function WaitingCustomerCard({ item }: { item: WaitingRoomItem }) {
           wartet {item.waitingFor}
         </span>
       </div>
-      <p className="mt-2 text-sm text-zinc-400">{item.reason}</p>
-      <div className="mt-3 rounded-lg border border-line bg-ink-900 p-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+      <p className="mt-2 text-sm text-zinc-600">{item.reason}</p>
+      <div className="mt-3 rounded-lg border border-zinc-200 bg-surface-subtle p-3">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
           Vorbereitete nächste Aktion (nicht gesendet)
         </p>
-        <p className="mt-1 text-sm text-zinc-300">{item.suggestedAction}</p>
+        <p className="mt-1 text-sm text-zinc-700">{item.suggestedAction}</p>
       </div>
       <div className="mt-3 flex items-center justify-between text-xs text-zinc-500">
         <span>{item.assignedAgent}</span>
-        <span className="font-mono uppercase tracking-[0.12em] text-accent">
+        <span className="rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-600">
           {item.approvalStatus === "pending" ? "Approval Required" : item.approvalStatus}
         </span>
       </div>

@@ -2,8 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * v2.1 visual facelift — design foundation (docs/visual-facelift-v2.1.md).
+ * Full supersession of the dark-premium system (ADR-002). Marketing,
+ * dashboard, and auth surfaces all target the light system now.
+ */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html {
@@ -11,21 +16,50 @@ html {
 }
 
 body {
-  @apply bg-ink-950 text-zinc-300 antialiased;
+  @apply bg-surface text-zinc-900 antialiased;
 }
 
-/* Subtle premium grid/glow backdrop used behind the hero. */
+/*
+ * Section wash used behind the hero / CTA sections. Was a radial orange
+ * glow + grid-line texture (a "vibe-coded" decorative effect v2.1 §15
+ * explicitly calls out to remove). Replaced with the flat §3 section
+ * background — no gradients, no glow.
+ */
 .bg-grid {
-  background-image:
-    radial-gradient(60% 50% at 50% 0%, rgba(255, 106, 26, 0.08), transparent 70%),
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 56px 56px, 56px 56px;
+  background-color: theme("colors.surface.subtle");
+  background-image: none;
 }
 
-/* Monospace `//` section label used throughout (maxpromo.digital motif). */
+/* Monospace `//` section label used throughout (maxpromo.digital motif).
+   Styling only — copy/usage review happens in Phase 7 (Content Review). */
 .eyebrow {
   @apply font-mono text-xs uppercase tracking-[0.18em] text-accent;
+}
+
+@layer components {
+  /* v2.1 §8 cards: white, 8px radius, 1px border, subtle shadow only. */
+  .card {
+    @apply rounded-lg border border-zinc-200 bg-white p-10 shadow-sm;
+  }
+
+  /* v2.1 buttons: 18px, orange primary, no gradients/glow. */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-lg px-6 py-3 text-[18px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-white hover:bg-accent-hover;
+  }
+  .btn-secondary {
+    @apply btn border border-zinc-200 bg-white text-zinc-900 hover:border-zinc-300 hover:bg-zinc-50;
+  }
+
+  /* v2.1 §7 (forms weren't spec'd in detail — bordered, no glow, matches cards). */
+  .field-label {
+    @apply text-sm font-medium text-zinc-600;
+  }
+  .field-input {
+    @apply rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-zinc-900 outline-none transition-colors placeholder:text-zinc-400 focus:border-accent focus:ring-1 focus:ring-accent/30;
+  }
 }
 
 /* Respect reduced-motion for the ticker + reveal animations. */

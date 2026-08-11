@@ -6,7 +6,7 @@
  * Client island: handles the login form submission.
  * Calls signIn("credentials") from next-auth/react.
  *
- * Design: dark premium, Maxpromo brand colours.
+ * Design: v2.1 light system, Maxpromo accent orange.
  * Language: German UI (target market is German SMEs).
  * No public signup — accounts are provisioned by Maxpromo.
  */
@@ -49,13 +49,8 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {/* E-Mail */}
-      <div className="flex flex-col gap-1.5">
-        <label
-          htmlFor="email"
-          className="font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-500"
-        >
-          E-Mail-Adresse
-        </label>
+      <label className="flex flex-col gap-1.5">
+        <span className="field-label">E-Mail-Adresse</span>
         <input
           id="email"
           type="email"
@@ -63,27 +58,15 @@ export default function LoginForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="
-            rounded-md border border-line bg-ink-900 px-3.5 py-2.5
-            text-sm text-zinc-200 placeholder-zinc-600
-            outline-none ring-0
-            transition-colors
-            focus:border-accent focus:bg-ink-850
-            disabled:opacity-50
-          "
+          className="field-input"
           placeholder="name@unternehmen.de"
           disabled={isPending}
         />
-      </div>
+      </label>
 
       {/* Passwort */}
-      <div className="flex flex-col gap-1.5">
-        <label
-          htmlFor="password"
-          className="font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-500"
-        >
-          Passwort
-        </label>
+      <label className="flex flex-col gap-1.5">
+        <span className="field-label">Passwort</span>
         <input
           id="password"
           type="password"
@@ -91,41 +74,24 @@ export default function LoginForm() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="
-            rounded-md border border-line bg-ink-900 px-3.5 py-2.5
-            text-sm text-zinc-200 placeholder-zinc-600
-            outline-none ring-0
-            transition-colors
-            focus:border-accent focus:bg-ink-850
-            disabled:opacity-50
-          "
+          className="field-input"
           placeholder="••••••••"
           disabled={isPending}
         />
-      </div>
+      </label>
 
       {/* Error message */}
       {error && (
-        <p className="rounded-md border border-red-900/40 bg-red-950/30 px-3.5 py-2.5 text-sm text-red-400">
+        <p className="rounded-md border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
           {error}
         </p>
       )}
 
       {/* Submit */}
-      <button
-        type="submit"
-        disabled={isPending}
-        className="
-          mt-1 flex items-center justify-center gap-2
-          rounded-md bg-accent px-4 py-2.5
-          text-sm font-medium text-white
-          transition-colors hover:bg-accent-hover
-          disabled:cursor-not-allowed disabled:opacity-50
-        "
-      >
+      <button type="submit" disabled={isPending} className="btn-primary mt-1">
         {isPending ? (
           <>
-            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
             Anmelden…
           </>
         ) : (
@@ -134,7 +100,7 @@ export default function LoginForm() {
       </button>
 
       {/* No public signup notice */}
-      <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+      <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-400">
         Kein Konto? Zugang wird von Maxpromo bereitgestellt.
       </p>
     </form>

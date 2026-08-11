@@ -93,19 +93,19 @@ function Icon({ name }: { name: IconKey }) {
 export function Integrations() {
   const loop = [...TOOLS, ...TOOLS];
   return (
-    <section className="border-b border-line">
-      <div className="mx-auto max-w-content px-6 py-16">
-        <p className="eyebrow">// Verbindet, was Sie schon nutzen</p>
-        <h2 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-zinc-100 md:text-3xl">
+    <section className="border-b border-zinc-200">
+      <div className="mx-auto max-w-content px-6 py-20 md:py-28">
+        <p className="eyebrow">{"// Verbindet, was Sie schon nutzen"}</p>
+        <h2 className="mt-4 max-w-2xl text-section-title text-zinc-900">
           Kein Herausreißen. Wir verbinden Ihre vorhandenen Werkzeuge.
         </h2>
       </div>
-      <div className="relative overflow-hidden border-y border-line bg-ink-900 py-5">
+      <div className="relative overflow-hidden border-y border-zinc-200 bg-surface-subtle py-5">
         <div className="animate-ticker flex w-max gap-3 px-3">
           {loop.map((t, i) => (
             <span
               key={i}
-              className="flex shrink-0 items-center gap-2 rounded-md border border-line bg-ink-850 px-3.5 py-2 text-sm text-zinc-400 transition-colors duration-200 hover:border-accent/60 hover:text-accent hover:shadow-[0_0_14px_-3px_rgba(255,106,26,0.55)]"
+              className="flex shrink-0 items-center gap-2 rounded-md border border-zinc-200 bg-white px-3.5 py-2 text-sm text-zinc-600 transition-colors hover:border-accent/50 hover:text-accent"
             >
               <Icon name={t.icon} />
               <span className="font-mono">{t.name}</span>

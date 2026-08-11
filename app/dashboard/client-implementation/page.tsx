@@ -9,8 +9,8 @@ const HANDOVER_LABEL = {
 
 const PRIORITY_STYLE = {
   low: "text-zinc-500",
-  medium: "text-amber-400",
-  high: "text-orange-400",
+  medium: "text-amber-600",
+  high: "text-red-600",
 } as const;
 
 // Supports manual/concierge delivery — value delivered by hand before full
@@ -19,11 +19,11 @@ export default function ClientImplementationPage() {
   return (
     <DashboardShell title="Client Implementation">
       <div className="space-y-6">
-        <div className="rounded-xl border border-line bg-ink-850 p-5">
+        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
             Concierge / Manuelle Lieferung
           </p>
-          <p className="mt-2 text-sm text-zinc-300">
+          <p className="mt-2 text-sm text-zinc-700">
             Maxpromo liefert Wert zunächst manuell, während die Plattform wächst.
             Diese Seite hält Beobachtungen, vorgeschlagene Workflows und den
             Installations-Fortschritt pro Kunde fest.
@@ -31,10 +31,10 @@ export default function ClientImplementationPage() {
         </div>
 
         {MOCK_CLIENT_IMPLEMENTATIONS.map((c) => (
-          <div key={c.id} className="rounded-xl border border-line bg-ink-850 p-6">
+          <div key={c.id} className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="text-lg font-semibold text-zinc-100">{c.clientName}</h3>
+                <h3 className="text-lg font-semibold text-zinc-900">{c.clientName}</h3>
                 <p className="text-xs text-zinc-500">{c.industry}</p>
               </div>
               <div className="text-right">
@@ -56,11 +56,11 @@ export default function ClientImplementationPage() {
               <Block label="Nächste Schritte" items={c.nextSteps} />
             </div>
 
-            <div className="mt-4 rounded-lg border border-line bg-ink-900 p-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+            <div className="mt-4 rounded-lg border border-zinc-200 bg-surface-subtle p-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
                 Manuelle Service-Notiz
               </p>
-              <p className="mt-1 text-sm text-zinc-300">{c.manualServiceNotes}</p>
+              <p className="mt-1 text-sm text-zinc-700">{c.manualServiceNotes}</p>
             </div>
 
             <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-zinc-500">
@@ -76,10 +76,10 @@ export default function ClientImplementationPage() {
 function Block({ label, items, mono }: { label: string; items: string[]; mono?: boolean }) {
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">{label}</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">{label}</p>
       <ul className="mt-1 space-y-1">
         {items.map((it, i) => (
-          <li key={i} className={`text-sm ${mono ? "font-mono text-xs text-zinc-400" : "text-zinc-300"}`}>
+          <li key={i} className={`text-sm ${mono ? "font-mono text-xs text-zinc-600" : "text-zinc-700"}`}>
             {mono ? it : `• ${it}`}
           </li>
         ))}

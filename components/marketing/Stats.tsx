@@ -8,26 +8,26 @@ const STATS = [
 
 export function Stats() {
   return (
-    <section className="border-b border-line bg-ink-900">
-      <div className="mx-auto max-w-content px-6 py-16">
+    <section className="border-b border-zinc-200 bg-surface-subtle">
+      <div className="mx-auto max-w-content px-6 py-20">
         <div className="grid gap-8 sm:grid-cols-3">
           {STATS.map((s) => (
             <div key={s.label}>
               <div className="text-3xl font-semibold tracking-tight text-accent md:text-4xl">
                 {s.value}
               </div>
-              <div className="mt-2 text-sm text-zinc-400">{s.label}</div>
+              <div className="mt-2 text-sm text-zinc-600">{s.label}</div>
             </div>
           ))}
         </div>
-        <p className="mt-8 font-mono text-xs text-zinc-600">
-          // Belastbare Ergebnis-Zahlen stammen aus echten, installierten
-          Maxpromo-Systemen —{" "}
+        <p className="mt-8 font-mono text-xs text-zinc-500">
+          {"// Belastbare Ergebnis-Zahlen stammen aus echten, installierten Maxpromo-Systemen"}{" "}
+          —{" "}
           <a
             href="https://www.maxpromo.digital/de/case-studies"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-zinc-400 underline underline-offset-2 hover:text-accent"
+            className="text-zinc-600 underline underline-offset-2 hover:text-accent"
           >
             Fallstudien ansehen
           </a>

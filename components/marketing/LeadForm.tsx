@@ -84,12 +84,12 @@ export function LeadForm() {
 
   if (status === "success") {
     return (
-      <div className="rounded-xl border border-accent/40 bg-accent-soft p-8 text-center">
+      <div className="rounded-lg border border-accent/40 bg-accent-soft p-8 text-center">
         <div className="font-mono text-2xl text-accent">✓</div>
-        <h3 className="mt-3 text-xl font-semibold text-zinc-50">
+        <h3 className="mt-3 text-xl font-semibold text-zinc-900">
           Anfrage erhalten.
         </h3>
-        <p className="mt-2 text-zinc-400">
+        <p className="mt-2 text-zinc-600">
           Wir melden uns zu Ihrem kostenlosen Geschäfts-Check. 30 Minuten,
           unverbindlich.
         </p>
@@ -113,11 +113,11 @@ export function LeadForm() {
       </div>
 
       <label className="grid gap-1.5">
-        <span className="text-sm text-zinc-400">Worum geht es? (optional)</span>
+        <span className="field-label">Worum geht es? (optional)</span>
         <textarea
           name="message"
           rows={3}
-          className="rounded-md border border-line bg-ink-850 px-3 py-2.5 text-zinc-100 outline-none transition-colors placeholder:text-zinc-600 focus:border-accent"
+          className="field-input"
           placeholder="Kurz Ihr Betrieb und Ihre größte manuelle Baustelle …"
         />
       </label>
@@ -131,7 +131,7 @@ export function LeadForm() {
       </div>
 
       {status === "error" && error && (
-        <p className="text-sm text-red-400" role="alert">
+        <p className="text-sm text-red-600" role="alert">
           {error}
         </p>
       )}
@@ -139,17 +139,17 @@ export function LeadForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="mt-1 inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-base font-semibold text-ink-950 transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+        className="btn-primary mt-1"
       >
         {status === "submitting"
           ? "Wird gesendet …"
           : "Kostenlosen Geschäfts-Check anfragen"}
       </button>
 
-      <p className="text-xs text-zinc-600">
+      <p className="text-xs text-zinc-500">
         Mit dem Absenden stimmen Sie der Kontaktaufnahme zu. Ihre Daten werden
         ausschließlich zur Bearbeitung Ihrer Anfrage verwendet. Details:{" "}
-        <a href="/datenschutz" className="underline underline-offset-2 hover:text-zinc-400">
+        <a href="/datenschutz" className="underline underline-offset-2 hover:text-zinc-700">
           Datenschutz
         </a>
         .
@@ -173,13 +173,13 @@ function Field({
 }) {
   return (
     <label className="grid gap-1.5">
-      <span className="text-sm text-zinc-400">{label}</span>
+      <span className="field-label">{label}</span>
       <input
         name={name}
         type={type}
         required={required}
         autoComplete={autoComplete}
-        className="rounded-md border border-line bg-ink-850 px-3 py-2.5 text-zinc-100 outline-none transition-colors placeholder:text-zinc-600 focus:border-accent"
+        className="field-input"
       />
     </label>
   );

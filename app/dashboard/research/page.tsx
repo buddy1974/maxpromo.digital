@@ -11,11 +11,11 @@ export default function ResearchPage() {
   return (
     <DashboardShell title="Research">
       <div className="space-y-4">
-        <div className="rounded-xl border border-line bg-ink-850 p-5">
+        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
             Research Agent · Supervised
           </p>
-          <p className="mt-2 text-sm text-zinc-300">
+          <p className="mt-2 text-sm text-zinc-700">
             Recherche-Ergebnisse und Markt-Signale. Der Research-Agent fasst
             zusammen — er veröffentlicht nichts ohne Freigabe.
           </p>
@@ -23,10 +23,10 @@ export default function ResearchPage() {
 
         {research.length ? (
           research.map((m) => (
-            <div key={m.id} className="rounded-xl border border-line bg-ink-850 p-5">
-              <h3 className="font-semibold text-zinc-100">{m.title}</h3>
-              <p className="mt-1 text-sm text-zinc-400">{m.summary}</p>
-              <p className="mt-2 font-mono text-[11px] text-zinc-600">
+            <div key={m.id} className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+              <h3 className="font-semibold text-zinc-900">{m.title}</h3>
+              <p className="mt-1 text-sm text-zinc-600">{m.summary}</p>
+              <p className="mt-2 font-mono text-[11px] text-zinc-400">
                 {m.createdAt.slice(0, 10)} · {m.source}
               </p>
             </div>

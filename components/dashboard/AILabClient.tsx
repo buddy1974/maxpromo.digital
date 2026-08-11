@@ -55,23 +55,23 @@ export function AILabClient() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border border-accent/30 bg-accent-soft p-5">
+      <div className="rounded-lg border border-accent/30 bg-accent-soft p-5">
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
           AI Lab — Draft Mode
         </p>
-        <p className="mt-2 text-sm text-zinc-300">
+        <p className="mt-2 text-sm text-zinc-700">
           Das AI Lab erstellt ausschließlich Entwürfe. Nichts wird gesendet,
           ausgeführt oder angewendet — ohne menschliche Freigabe.
         </p>
       </div>
 
-      <div className="rounded-xl border border-line bg-ink-850 p-5">
+      <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
         <label className="grid gap-1.5">
-          <span className="text-sm text-zinc-400">Aufgabe</span>
+          <span className="text-sm text-zinc-600">Aufgabe</span>
           <select
             value={task}
             onChange={(e) => setTask(e.target.value as AIGenerationTask)}
-            className="rounded-md border border-line bg-ink-900 px-3 py-2.5 text-zinc-100 outline-none focus:border-accent"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-zinc-900 outline-none focus:border-accent"
           >
             {TASKS.map((t) => (
               <option key={t.value} value={t.value}>
@@ -82,13 +82,13 @@ export function AILabClient() {
         </label>
 
         <label className="mt-4 grid gap-1.5">
-          <span className="text-sm text-zinc-400">Eingabe</span>
+          <span className="text-sm text-zinc-600">Eingabe</span>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             rows={5}
             maxLength={8000}
-            className="rounded-md border border-line bg-ink-900 px-3 py-2.5 text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-accent"
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-accent"
             placeholder="Kontext / Quelltext, aus dem ein Entwurf erstellt werden soll …"
           />
         </label>
@@ -97,42 +97,42 @@ export function AILabClient() {
           type="button"
           onClick={generate}
           disabled={state === "loading"}
-          className="mt-4 rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-ink-950 transition-colors hover:bg-accent-hover disabled:opacity-60"
+          className="mt-4 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
           {state === "loading" ? "Generiere …" : "Entwurf generieren"}
         </button>
 
         {state === "not_configured" && (
-          <p className="mt-3 text-sm text-amber-400">
+          <p className="mt-3 text-sm text-amber-600">
             AI-Provider ist noch nicht konfiguriert. Fügen Sie <code>OPENAI_API_KEY</code> in
             Vercel hinzu, um die Generierung zu aktivieren.
           </p>
         )}
         {state === "error" && errorMsg && (
-          <p className="mt-3 text-sm text-red-400">{errorMsg}</p>
+          <p className="mt-3 text-sm text-red-600">{errorMsg}</p>
         )}
       </div>
 
       {state === "done" && result && (
-        <div className="rounded-xl border border-line bg-ink-850 p-6">
+        <div className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
           <div className="flex items-start justify-between gap-3">
-            <h3 className="text-lg font-semibold text-zinc-100">{result.title}</h3>
+            <h3 className="text-lg font-semibold text-zinc-900">{result.title}</h3>
             <RiskBadge level={result.riskLevel} />
           </div>
-          <p className="mt-2 text-sm text-zinc-400">{result.summary}</p>
+          <p className="mt-2 text-sm text-zinc-600">{result.summary}</p>
 
-          <div className="mt-4 rounded-lg border border-line bg-ink-900 p-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+          <div className="mt-4 rounded-lg border border-zinc-200 bg-surface-subtle p-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
               Entwurf (nicht gesendet)
             </p>
-            <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-200">{result.draft}</p>
+            <p className="mt-2 whitespace-pre-wrap text-sm text-zinc-800">{result.draft}</p>
           </div>
 
-          <div className="mt-4 border-t border-line pt-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+          <div className="mt-4 border-t border-zinc-200 pt-3">
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
               Empfohlene nächste Aktion
             </p>
-            <p className="mt-1 text-sm text-zinc-300">{result.recommendedNextAction}</p>
+            <p className="mt-1 text-sm text-zinc-700">{result.recommendedNextAction}</p>
           </div>
 
           <p className="mt-3 text-xs text-zinc-500">{result.safetyNote}</p>
@@ -141,7 +141,7 @@ export function AILabClient() {
             type="button"
             disabled
             title="Kommt als Nächstes — Vorschlag in die Approval-Queue schreiben"
-            className="mt-4 cursor-not-allowed rounded-md border border-line px-4 py-2 text-sm font-medium text-zinc-400 opacity-60"
+            className="mt-4 cursor-not-allowed rounded-lg border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-500 opacity-60"
           >
             Create proposal (Coming next)
           </button>

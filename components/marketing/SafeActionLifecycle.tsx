@@ -4,13 +4,13 @@
 // Desktop: horizontal flow. Mobile: horizontally scrollable (min-w).
 
 const C = {
-  node:   "#121216",
-  line:   "#2a2a33",
-  ring:   "#26262e",
-  text:   "#e4e4e7",
-  dim:    "#71717a",
-  accent: "#ff6a1a",
-  ink:    "#08080a",
+  node:   "#FFFFFF",
+  line:   "#E4E4E7",
+  ring:   "#D4D4D8",
+  text:   "#18181B",
+  dim:    "#71717A",
+  accent: "#F97316",
+  ink:    "#FFFFFF",
 };
 
 type Step = { label: string[]; glyph: string; gate?: boolean; gated?: boolean };
@@ -30,14 +30,14 @@ const R  = 38;
 
 export function SafeActionLifecycle() {
   return (
-    <section id="ablauf" className="border-b border-line">
-      <div className="mx-auto max-w-content px-6 py-16">
-        <p className="eyebrow">// Sichere Aktions-Kette</p>
-        <h2 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-zinc-100 md:text-3xl">
+    <section id="ablauf" className="border-b border-zinc-200">
+      <div className="mx-auto max-w-content px-6 py-20 md:py-28">
+        <p className="eyebrow">{"// Sichere Aktions-Kette"}</p>
+        <h2 className="mt-4 max-w-2xl text-section-title text-zinc-900">
           KI bereitet vor. Der Mensch entscheidet.
         </h2>
 
-        <div className="mt-8 overflow-x-auto rounded-2xl border border-line bg-ink-850/50 p-4 md:p-6">
+        <div className="mt-8 overflow-x-auto rounded-2xl border border-zinc-200 bg-surface-subtle p-4 md:p-6">
           <svg
             viewBox="0 0 960 220"
             className="h-auto w-full min-w-[720px]"
@@ -51,10 +51,6 @@ export function SafeActionLifecycle() {
               <marker id="arA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 z" fill={C.accent} />
               </marker>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
             </defs>
 
             {/* connector lines */}
@@ -81,7 +77,7 @@ export function SafeActionLifecycle() {
               strokeDasharray="4 3"
               strokeOpacity="0.5"
             />
-            <text x={(XS[3] + XS[4]) / 2} y={CY + R + 50} textAnchor="middle" fontSize="9" fontFamily="monospace" fill={C.accent} opacity="0.55">
+            <text x={(XS[3] + XS[4]) / 2} y={CY + R + 50} textAnchor="middle" fontSize="9" fontFamily="monospace" fill={C.accent} opacity="0.7">
               NUR NACH FREIGABE
             </text>
 
@@ -90,9 +86,9 @@ export function SafeActionLifecycle() {
               const x = XS[i];
               return (
                 <g key={i}>
-                  {/* outer glow ring on gate */}
+                  {/* emphasis ring on the approval gate — flat outline, no blur/glow */}
                   {s.gate && (
-                    <circle cx={x} cy={CY} r={R + 9} fill="none" stroke={C.accent} strokeOpacity="0.2" strokeWidth="2" filter="url(#glow)" />
+                    <circle cx={x} cy={CY} r={R + 9} fill="none" stroke={C.accent} strokeOpacity="0.25" strokeWidth="2" />
                   )}
                   {/* step counter */}
                   <text x={x} y={CY - R - 12} textAnchor="middle" fontSize="10" fontFamily="monospace" fill={C.dim}>
@@ -128,7 +124,7 @@ export function SafeActionLifecycle() {
 
         <div className="mt-5 flex items-center gap-2 rounded-lg border border-accent/30 bg-accent-soft px-4 py-2.5">
           <span className="font-mono text-accent">✓</span>
-          <p className="text-sm text-zinc-300">
+          <p className="text-sm text-zinc-700">
             KI bereitet vor. Der Mensch entscheidet.{" "}
             <span className="text-accent">Jede Aktion wird protokolliert.</span>
           </p>

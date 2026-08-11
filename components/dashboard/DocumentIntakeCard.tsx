@@ -16,20 +16,20 @@ const TYPE_LABEL: Record<DocumentIntakeItem["type"], string> = {
 
 export function DocumentIntakeCard({ item }: { item: DocumentIntakeItem }) {
   return (
-    <div className="rounded-xl border border-line bg-ink-850 p-5">
+    <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-500">
             {TYPE_LABEL[item.type]} · {item.source}
           </p>
-          <h3 className="mt-1 font-semibold text-zinc-100">{item.title}</h3>
+          <h3 className="mt-1 font-semibold text-zinc-900">{item.title}</h3>
         </div>
         <DocumentRiskBadge level={item.riskLevel} />
       </div>
-      <p className="mt-2 text-sm text-zinc-400">{item.summary}</p>
+      <p className="mt-2 text-sm text-zinc-600">{item.summary}</p>
 
       <div className="mt-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-600">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
           Erforderliche Aktion
         </p>
         <div className="mt-1">
@@ -45,7 +45,7 @@ export function DocumentIntakeCard({ item }: { item: DocumentIntakeItem }) {
 
       <div className="mt-3 flex items-center justify-between text-xs text-zinc-500">
         <span>{item.assignedAgent}</span>
-        <span className="font-mono uppercase tracking-[0.12em] text-accent">
+        <span className="rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-600">
           {item.approvalStatus === "pending" ? "Approval Required" : item.approvalStatus}
         </span>
       </div>

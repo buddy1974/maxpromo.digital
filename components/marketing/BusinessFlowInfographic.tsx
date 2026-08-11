@@ -4,13 +4,13 @@
 // Orange pivot = "Owner genehmigt". Minimal text. No cards/paragraphs.
 
 const C = {
-  node:   "#121216",
-  ring:   "#26262e",
-  line:   "#2a2a33",
-  text:   "#e4e4e7",
-  dim:    "#a1a1aa",
-  accent: "#ff6a1a",
-  ink:    "#08080a",
+  node:   "#FFFFFF",
+  ring:   "#D4D4D8",
+  line:   "#E4E4E7",
+  text:   "#18181B",
+  dim:    "#71717A",
+  accent: "#F97316",
+  ink:    "#FFFFFF",
 };
 
 type Stage = {
@@ -44,15 +44,15 @@ export function BusinessFlowInfographic() {
   const mHeight = MTOP + (FLOW.length - 1) * MGAP + 52;
 
   return (
-    <section className="border-b border-line">
-      <div className="mx-auto max-w-content px-6 py-16">
-        <p className="eyebrow">// Vom Problem zum System</p>
-        <h2 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-zinc-100 md:text-3xl">
+    <section className="border-b border-zinc-200">
+      <div className="mx-auto max-w-content px-6 py-20 md:py-28">
+        <p className="eyebrow">{"// Vom Problem zum System"}</p>
+        <h2 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
           Vorschläge statt Blind-Automation. Der Owner bleibt in Kontrolle.
         </h2>
 
         {/* Desktop: horizontal flow */}
-        <div className="mt-8 hidden overflow-x-auto rounded-2xl border border-line bg-ink-850/50 p-4 md:block md:p-6">
+        <div className="mt-8 hidden overflow-x-auto rounded-2xl border border-zinc-200 bg-surface-subtle p-4 md:block md:p-6">
           <svg
             viewBox="0 0 960 195"
             className="h-auto w-full min-w-[720px]"
@@ -66,10 +66,6 @@ export function BusinessFlowInfographic() {
               <marker id="bfarA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
                 <path d="M0,0 L10,5 L0,10 z" fill={C.accent} />
               </marker>
-              <filter id="bglow">
-                <feGaussianBlur stdDeviation="3" result="blur" />
-                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
             </defs>
 
             {/* connectors */}
@@ -92,7 +88,7 @@ export function BusinessFlowInfographic() {
               return (
                 <g key={i}>
                   {s.accent && (
-                    <circle cx={x} cy={DCY} r={DR + 9} fill="none" stroke={C.accent} strokeOpacity="0.2" strokeWidth="2" filter="url(#bglow)" />
+                    <circle cx={x} cy={DCY} r={DR + 9} fill="none" stroke={C.accent} strokeOpacity="0.25" strokeWidth="2" />
                   )}
                   {s.final && (
                     <circle cx={x} cy={DCY} r={DR + 5} fill="none" stroke={C.text} strokeOpacity="0.12" strokeWidth="1.5" />
@@ -127,7 +123,7 @@ export function BusinessFlowInfographic() {
         </div>
 
         {/* Mobile: vertical flow */}
-        <div className="mt-8 overflow-hidden rounded-2xl border border-line bg-ink-850/50 p-4 md:hidden">
+        <div className="mt-8 overflow-hidden rounded-2xl border border-zinc-200 bg-surface-subtle p-4 md:hidden">
           <svg viewBox={`0 0 480 ${mHeight}`} className="h-auto w-full" role="img" aria-label="Prozess-Pipeline vertikal">
             {/* spine */}
             <line x1={MX} y1={MTOP} x2={MX} y2={MTOP + (FLOW.length - 1) * MGAP}
@@ -140,7 +136,7 @@ export function BusinessFlowInfographic() {
                   {i < FLOW.length - 1 && (
                     <text x={MX} y={cy + MGAP / 2 + 4} textAnchor="middle" fontSize="11" fill={C.line}>▼</text>
                   )}
-                  {s.accent && <circle cx={MX} cy={cy} r={MR + 6} fill="none" stroke={C.accent} strokeOpacity="0.25" strokeWidth="1.5" />}
+                  {s.accent && <circle cx={MX} cy={cy} r={MR + 6} fill="none" stroke={C.accent} strokeOpacity="0.3" strokeWidth="1.5" />}
                   <circle cx={MX} cy={cy} r={MR}
                     fill={s.accent ? C.accent : C.node}
                     stroke={s.accent ? C.accent : C.ring}

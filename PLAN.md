@@ -223,6 +223,13 @@ Sprint 1 ships **before** the platform, on purpose — it's the cheapest real-wo
 
 ## 7. Recommended First Sprint — "Max Agent Bureau" Landing Page
 
+> ⚠️ **Superseded 2026-08-11.** The "HYBRID (locked)" dark-premium/orange visual
+> aesthetic below (Product Owner, 2026-05-29) was fully replaced by the v2.1
+> light system (`docs/visual-facelift-v2.1.md`, ADR-002 in `decision-log.md`,
+> full supersession approved and implemented). Section list, CTA, lead routing,
+> and backend decisions in this sprint plan are still accurate — only the
+> **visual aesthetic** paragraphs below are historical, kept for record.
+
 **Objective:** A deployed, **public**, legally-compliant offer page — shareable on social and ready for paid promotion — that captures inbound leads via a booking/contact CTA and tracks campaign attribution. No waitlist. Your validation + presell asset.
 
 **Design logic — HYBRID (locked).** Definition per Product Owner:
@@ -269,7 +276,7 @@ Sprint 1 ships **before** the platform, on purpose — it's the cheapest real-wo
 No code will be written until you give the go-ahead to start Sprint 1.
 
 ### Decisions locked (Product Owner, 2026-05-29)
-- **Landing aesthetic:** **HYBRID (locked).** Maxpromo Digital visual system as anchor — dark premium, orange accent, `// comment` labels, live agent status-ticker, system-installation positioning, business owner in control, agents as a supervised layer. See §7 for full definition.
+- **Landing aesthetic:** ~~HYBRID (locked). Maxpromo Digital visual system as anchor — dark premium, orange accent, `// comment` labels, live agent status-ticker, system-installation positioning, business owner in control, agents as a supervised layer. See §7 for full definition.~~ **Superseded 2026-08-11** — see `docs/visual-facelift-v2.1.md` and ADR-002 in `decision-log.md`. Current aesthetic: white-background light system, single orange accent, same `// comment` labels / status-ticker / supervised-layer positioning retained, dark premium background removed.
 - **Repo:** **Same repo** — landing under `app/(marketing)`, product under `app/(app)`, shared design system.
 - **MVP scope:** **Visibility-first, no autonomous actions.** Confirmed. Agents are invoked, not self-running; all outbound actions are human-approved proposals.
 - **Go-to-market:** **No waitlist.** Public offer page from day one — shareable on social, ready for paid promotion.

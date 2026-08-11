@@ -16,11 +16,11 @@ export default function AIGovernancePage() {
   return (
     <DashboardShell title="AI Governance">
       <div className="space-y-8">
-        <div className="rounded-xl border border-line bg-ink-850 p-5">
+        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
             Shadow-AI unter Kontrolle
           </p>
-          <p className="mt-2 text-sm text-zinc-300">
+          <p className="mt-2 text-sm text-zinc-700">
             Eine Einschätzung der KI-Nutzung im Betrieb: freigegebene Tools, Risikobereiche,
             Policy-Status und Datensensibilität. Dies ist eine Bewertungs- und
             Richtlinienübersicht — kein automatischer Scan von Mitarbeiter-Tools.
@@ -28,13 +28,13 @@ export default function AIGovernancePage() {
         </div>
 
         <section>
-          <h3 className="mb-3 text-base font-semibold text-zinc-100">Tool-Register</h3>
+          <h3 className="mb-3 text-base font-semibold text-zinc-900">Tool-Register</h3>
           <AIToolRegister tools={MOCK_AI_TOOLS} />
         </section>
 
         <section className="grid gap-6 lg:grid-cols-2">
           <div>
-            <h3 className="mb-3 text-base font-semibold text-zinc-100">Risikobereiche</h3>
+            <h3 className="mb-3 text-base font-semibold text-zinc-900">Risikobereiche</h3>
             <div className="grid gap-4">
               {MOCK_GOVERNANCE_RISKS.map((r) => (
                 <GovernanceRiskCard key={r.id} risk={r} />
@@ -47,7 +47,7 @@ export default function AIGovernancePage() {
         </section>
 
         <section>
-          <h3 className="mb-3 text-base font-semibold text-zinc-100">Datensensibilität</h3>
+          <h3 className="mb-3 text-base font-semibold text-zinc-900">Datensensibilität</h3>
           <DataSensitivityMatrix rows={MOCK_DATA_SENSITIVITY} />
         </section>
       </div>

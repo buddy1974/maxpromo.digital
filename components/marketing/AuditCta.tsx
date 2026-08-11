@@ -3,19 +3,19 @@ import { LeadForm } from "./LeadForm";
 // The primary conversion section. Two columns: the offer + the form.
 export function AuditCta() {
   return (
-    <section id="audit" className="bg-grid border-b border-line">
+    <section id="audit" className="bg-grid border-b border-zinc-200">
       <div className="mx-auto grid max-w-content gap-12 px-6 py-20 md:grid-cols-2 md:py-28">
         <div>
-          <p className="eyebrow">// Bereit?</p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-50 md:text-4xl">
+          <p className="eyebrow">{"// Bereit?"}</p>
+          <h2 className="mt-4 text-section-title text-zinc-900">
             Sehen Sie, was Ihr Betrieb aufhören kann, manuell zu tun.
           </h2>
-          <p className="mt-5 max-w-md text-lg text-zinc-400">
+          <p className="mt-5 max-w-md text-lg text-zinc-600">
             30 Minuten. Unverbindlich. Wir analysieren, wo Zeit, Kunden und
             Übersicht verloren gehen — und wo ein überwachtes KI-Team Sie
             entlastet.
           </p>
-          <ul className="mt-8 space-y-3 text-zinc-300">
+          <ul className="mt-8 space-y-3 text-zinc-700">
             {[
               "Klares Bild vor jeder Verpflichtung",
               "Kein Technik-Chaos — wir starten bei Ihrem Alltag",
@@ -29,7 +29,7 @@ export function AuditCta() {
           </ul>
         </div>
 
-        <div className="rounded-2xl border border-line bg-ink-900 p-6 md:p-8">
+        <div className="card">
           <LeadForm />
         </div>
       </div>

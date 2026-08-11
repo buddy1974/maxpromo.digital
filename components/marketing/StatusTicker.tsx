@@ -15,8 +15,8 @@ const EVENTS = [
 export function StatusTicker() {
   const loop = [...EVENTS, ...EVENTS];
   return (
-    <div className="overflow-hidden rounded-lg border border-line bg-ink-900">
-      <div className="flex items-center justify-between border-b border-line px-4 py-2">
+    <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-2">
         <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
           System-Status
         </span>
@@ -26,7 +26,7 @@ export function StatusTicker() {
         </span>
       </div>
       <div className="relative whitespace-nowrap py-2.5">
-        <div className="animate-ticker inline-flex gap-8 px-4 font-mono text-xs text-zinc-400">
+        <div className="animate-ticker inline-flex gap-8 px-4 font-mono text-xs text-zinc-600">
           {loop.map((e, i) => (
             <span key={i} className="shrink-0">
               {e}

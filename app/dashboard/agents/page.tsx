@@ -10,11 +10,11 @@ export default function AgentsPage() {
   return (
     <DashboardShell title="Agenten">
       <div className="space-y-6">
-        <div className="rounded-xl border border-line bg-ink-850 p-5">
+        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
             Agent Bureau · {AGENTS.length} Agenten
           </p>
-          <p className="mt-2 text-sm text-zinc-300">
+          <p className="mt-2 text-sm text-zinc-700">
             Ein Chief of Staff koordiniert ein überwachtes Team. Jeder Agent
             beobachtet einen Bereich, bereitet vor und legt Aktionen zur Freigabe
             vor — keine unkontrollierte Ausführung.

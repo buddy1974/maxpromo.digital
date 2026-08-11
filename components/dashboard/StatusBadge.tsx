@@ -1,12 +1,12 @@
 import type { AgentStatus } from "@/types/agent";
 
 const STYLES: Record<AgentStatus, string> = {
-  active: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+  active: "border-emerald-200 bg-emerald-50 text-emerald-700",
   proposing: "border-accent/40 bg-accent-soft text-accent",
-  idle: "border-line bg-ink-850 text-zinc-400",
-  paused: "border-amber-500/30 bg-amber-500/10 text-amber-400",
-  error: "border-red-500/30 bg-red-500/10 text-red-400",
-  offline: "border-line bg-ink-850 text-zinc-600",
+  idle: "border-zinc-200 bg-zinc-50 text-zinc-500",
+  paused: "border-amber-200 bg-amber-50 text-amber-700",
+  error: "border-red-200 bg-red-50 text-red-700",
+  offline: "border-zinc-200 bg-zinc-50 text-zinc-400",
 };
 
 const LABELS: Record<AgentStatus, string> = {

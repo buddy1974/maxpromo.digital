@@ -9,11 +9,11 @@ export default function LeadsPage() {
   return (
     <DashboardShell title="Leads">
       {leads.length ? (
-        <ul className="divide-y divide-line rounded-xl border border-line bg-ink-850">
+        <ul className="divide-y divide-zinc-200 rounded-lg border border-zinc-200 bg-white shadow-sm">
           {leads.map((c) => (
             <li key={c.id} className="flex items-center justify-between px-4 py-3">
               <div>
-                <p className="text-sm text-zinc-200">{c.name}</p>
+                <p className="text-sm text-zinc-900">{c.name}</p>
                 <p className="text-xs text-zinc-500">{c.companyName ?? "—"} · {c.role ?? ""}</p>
               </div>
               <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-zinc-500">

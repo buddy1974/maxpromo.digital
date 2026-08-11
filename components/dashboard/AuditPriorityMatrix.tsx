@@ -16,9 +16,9 @@ export function AuditPriorityMatrix({ findings }: { findings: AuditFinding[] }) 
     return findings.filter((f) => f.priority === p && f.impactArea === i).length;
   }
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-ink-850">
+    <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm">
       <table className="w-full text-center text-sm">
-        <thead className="border-b border-line text-zinc-500">
+        <thead className="border-b border-zinc-200 text-zinc-500">
           <tr>
             <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.12em]">
               Priorität \ Wirkung
@@ -30,16 +30,16 @@ export function AuditPriorityMatrix({ findings }: { findings: AuditFinding[] }) 
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-line">
+        <tbody className="divide-y divide-zinc-200">
           {PRIORITIES.map((p) => (
             <tr key={p}>
-              <td className="px-3 py-2 text-left font-mono text-[11px] uppercase tracking-[0.12em] text-zinc-400">
+              <td className="px-3 py-2 text-left font-mono text-[11px] uppercase tracking-[0.12em] text-zinc-600">
                 {p}
               </td>
               {IMPACTS.map((i) => {
                 const n = count(p, i);
                 return (
-                  <td key={i} className={`px-3 py-2 ${n ? "text-accent" : "text-zinc-700"}`}>
+                  <td key={i} className={`px-3 py-2 ${n ? "text-accent" : "text-zinc-300"}`}>
                     {n || "·"}
                   </td>
                 );

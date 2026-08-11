@@ -3,13 +3,13 @@
 // Radial map on md+, compact hub statement on mobile.
 
 const C = {
-  node: "#121216",
-  ring: "#26262e",
-  spoke: "#2a2a33",
-  text: "#e4e4e7",
-  dim: "#a1a1aa",
-  accent: "#ff6a1a",
-  ink: "#08080a",
+  node: "#FFFFFF",
+  ring: "#E4E4E7",
+  spoke: "#E4E4E7",
+  text: "#18181B",
+  dim: "#71717A",
+  accent: "#F97316",
+  ink: "#FFFFFF",
 };
 
 const SPECIALISTS = [
@@ -40,7 +40,7 @@ export function AgentSystemMap() {
   return (
     <div className="mt-8">
       {/* Desktop: radial system map */}
-      <div className="hidden rounded-2xl border border-line bg-ink-850/50 p-4 md:block">
+      <div className="hidden rounded-2xl border border-zinc-200 bg-surface-subtle p-4 md:block">
         <svg viewBox="0 0 960 500" className="h-auto w-full" role="img" aria-label="Chief of Staff koordiniert neun spezialisierte Agenten">
           {/* spokes */}
           {nodes.map((n, i) => (
@@ -77,11 +77,11 @@ export function AgentSystemMap() {
 
       {/* Mobile: compact hub statement */}
       <div className="rounded-2xl border border-accent/30 bg-accent-soft p-5 text-center md:hidden">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent font-mono text-xl text-ink-950">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent font-mono text-xl text-white">
           ◆
         </span>
-        <p className="mt-3 font-semibold text-zinc-50">Chief of Staff</p>
-        <p className="mt-1 text-sm text-zinc-300">
+        <p className="mt-3 font-semibold text-zinc-900">Chief of Staff</p>
+        <p className="mt-1 text-sm text-zinc-600">
           koordiniert 9 spezialisierte Agenten — jede Aktion nach außen über
           menschliche Freigabe.
         </p>

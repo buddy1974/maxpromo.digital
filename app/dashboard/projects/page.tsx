@@ -11,9 +11,9 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
 };
 
 const HEALTH_STYLE: Record<ProjectHealth, string> = {
-  on_track: "text-emerald-400",
-  at_risk: "text-amber-400",
-  off_track: "text-red-400",
+  on_track: "text-emerald-600",
+  at_risk: "text-amber-600",
+  off_track: "text-red-600",
 };
 
 const HEALTH_LABEL: Record<ProjectHealth, string> = {
@@ -27,9 +27,9 @@ export default function ProjectsPage() {
     <DashboardShell title="Projekte">
       <div className="grid gap-4 lg:grid-cols-2">
         {MOCK_PROJECTS.map((p) => (
-          <div key={p.id} className="rounded-xl border border-line bg-ink-850 p-5">
+          <div key={p.id} className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
             <div className="flex items-start justify-between gap-3">
-              <h3 className="font-semibold text-zinc-100">{p.name}</h3>
+              <h3 className="font-semibold text-zinc-900">{p.name}</h3>
               <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${HEALTH_STYLE[p.health]}`}>
                 {HEALTH_LABEL[p.health]}
               </span>
@@ -39,7 +39,7 @@ export default function ProjectsPage() {
               {p.dueDate ? ` · fällig ${p.dueDate}` : ""}
             </p>
             <div className="mt-4">
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-ink-700">
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
                 <div
                   className="h-full rounded-full bg-accent"
                   style={{ width: `${p.progress}%` }}

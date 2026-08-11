@@ -36,10 +36,10 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden w-60 shrink-0 flex-col border-r border-line bg-ink-950 md:flex">
-      <div className="flex h-16 items-center gap-2.5 border-b border-line px-5">
+    <aside className="hidden w-60 shrink-0 flex-col border-r border-zinc-200 bg-white md:flex">
+      <div className="flex h-16 items-center gap-2.5 border-b border-zinc-200 px-5">
         <span className="h-2.5 w-2.5 rounded-full bg-accent" />
-        <span className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-zinc-100">
+        <span className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-zinc-900">
           Max Agent
         </span>
       </div>
@@ -52,7 +52,7 @@ export function Sidebar() {
           return (
             <div key={item.href}>
               {item.group && (
-                <p className="px-3 pb-1 pt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-600">
+                <p className="px-3 pb-1 pt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-400">
                   {item.group}
                 </p>
               )}
@@ -61,7 +61,7 @@ export function Sidebar() {
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
                   active
                     ? "bg-accent-soft text-accent"
-                    : "text-zinc-400 hover:bg-ink-850 hover:text-zinc-100"
+                    : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
                 }`}
               >
                 <span className="w-4 text-center font-mono">{item.glyph}</span>
@@ -71,13 +71,13 @@ export function Sidebar() {
           );
         })}
       </nav>
-      <div className="border-t border-line p-4 flex flex-col gap-3">
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-600">
+      <div className="border-t border-zinc-200 p-4 flex flex-col gap-3">
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-zinc-400">
           Supervised Mode
         </span>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-zinc-500 transition-colors hover:bg-ink-850 hover:text-zinc-300 w-full"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-zinc-500 transition-colors hover:bg-zinc-50 hover:text-zinc-900 w-full"
         >
           <span className="w-4 text-center font-mono">⏻</span>
           Abmelden

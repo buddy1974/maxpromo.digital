@@ -1,10 +1,10 @@
 import type { AgentRiskLevel } from "@/types/agent";
 
 const STYLES: Record<AgentRiskLevel, string> = {
-  low: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-  medium: "border-amber-500/30 bg-amber-500/10 text-amber-400",
-  high: "border-orange-500/30 bg-orange-500/10 text-orange-400",
-  critical: "border-red-500/30 bg-red-500/10 text-red-400",
+  low: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  medium: "border-amber-200 bg-amber-50 text-amber-700",
+  high: "border-orange-200 bg-orange-50 text-orange-700",
+  critical: "border-red-200 bg-red-50 text-red-700",
 };
 
 const LABELS: Record<AgentRiskLevel, string> = {

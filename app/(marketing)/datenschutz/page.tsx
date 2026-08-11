@@ -19,11 +19,11 @@ export default function DatenschutzPage() {
       >
         ← Zurück
       </Link>
-      <h1 className="mt-6 text-3xl font-semibold tracking-tight text-zinc-50">
+      <h1 className="mt-6 text-3xl font-semibold tracking-tight text-zinc-900">
         Datenschutzerklärung
       </h1>
 
-      <div className="mt-8 space-y-7 text-zinc-400">
+      <div className="mt-8 space-y-7 text-zinc-600">
         <Section title="1. Verantwortlicher">
           <p>
             {BUSINESS.legalName} ({BUSINESS.brand}), {BUSINESS.street},{" "}
@@ -77,9 +77,8 @@ export default function DatenschutzPage() {
           </p>
         </Section>
 
-        <p className="font-mono text-xs text-zinc-600">
-          // Stand: Basisfassung. Vor Skalierung von bezahltem Traffic
-          rechtlich prüfen lassen.
+        <p className="font-mono text-xs text-zinc-500">
+          {"// Stand: Basisfassung. Vor Skalierung von bezahltem Traffic rechtlich prüfen lassen."}
         </p>
       </div>
     </main>

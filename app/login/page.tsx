@@ -2,7 +2,7 @@
  * app/login/page.tsx
  *
  * Login page — server component wrapper.
- * German UI, dark premium Maxpromo design.
+ * German UI, v2.1 light system (docs/visual-facelift-v2.1.md).
  * No public signup. Accounts are provisioned by Maxpromo.
  *
  * If already authenticated, redirect to dashboard.
@@ -25,20 +25,14 @@ export default async function LoginPage() {
   if (session) redirect("/dashboard");
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-ink-950 px-4">
-      {/* Subtle ambient glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 bg-gradient-to-b from-accent-soft via-transparent to-transparent opacity-50"
-      />
-
-      <div className="relative z-10 w-full max-w-sm">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-surface-subtle px-4">
+      <div className="w-full max-w-sm">
         {/* Brand mark */}
         <div className="mb-8 flex flex-col items-center gap-2">
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent">
-            // maxpromo digital
+            {"// maxpromo digital"}
           </span>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-100">
+          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
             Max Agent
           </h1>
           <p className="text-sm text-zinc-500">
@@ -47,12 +41,12 @@ export default async function LoginPage() {
         </div>
 
         {/* Login card */}
-        <div className="rounded-xl border border-line bg-ink-900 p-6 shadow-xl shadow-black/40">
+        <div className="card p-6">
           <LoginForm />
         </div>
 
         {/* Footer */}
-        <p className="mt-6 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-700">
+        <p className="mt-6 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-400">
           Maxpromo Digital · Essen · §19 UStG
         </p>
       </div>

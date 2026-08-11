@@ -4,11 +4,16 @@ import { AgentBureau } from "@/components/marketing/AgentBureau";
 import { SafeActionLifecycle } from "@/components/marketing/SafeActionLifecycle";
 import { Integrations } from "@/components/marketing/Integrations";
 import { BeforeAfter } from "@/components/marketing/BeforeAfter";
-import { BusinessFlowInfographic } from "@/components/marketing/BusinessFlowInfographic";
 import { Pillars } from "@/components/marketing/Pillars";
 import { Stats } from "@/components/marketing/Stats";
 import { AuditCta } from "@/components/marketing/AuditCta";
 import { Footer } from "@/components/marketing/Footer";
+
+// BusinessFlowInfographic is intentionally not rendered here: it told the same
+// observe -> prepare -> approve -> execute -> log story as SafeActionLifecycle
+// one section later, just relabelled. Enterprise-polish pass (2026-08-11) cut
+// the duplicate rather than let a visitor read the same idea twice. Component
+// kept in the codebase in case it's wanted for a different context later.
 
 export default function LandingPage() {
   return (
@@ -21,8 +26,6 @@ export default function LandingPage() {
         <SafeActionLifecycle />
         <Integrations />
         <BeforeAfter />
-        {/* Problem → prepared proposal → owner approval → log → organised business. */}
-        <BusinessFlowInfographic />
         <Pillars />
         <Stats />
         <AuditCta />

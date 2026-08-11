@@ -53,18 +53,18 @@ export default async function DocumentsPage() {
   return (
     <DashboardShell title="Document Intake Desk">
       <div className="space-y-8">
-        <div className="rounded-xl border border-line bg-ink-850 p-5">
+        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
             Aus Dokument-Chaos wird strukturierte Aktion
           </p>
-          <p className="mt-2 text-sm text-zinc-300">
+          <p className="mt-2 text-sm text-zinc-700">
             Zusammengefasst, mit Frist und nächster Aktion. Vorbereitet, nicht ausgeführt.
           </p>
         </div>
 
         {actionable.length > 0 && (
           <section>
-            <h3 className="mb-3 text-base font-semibold text-zinc-100">Aktion erforderlich</h3>
+            <h3 className="mb-3 text-base font-semibold text-zinc-900">Aktion erforderlich</h3>
             <div className="grid gap-4 lg:grid-cols-2">
               {actionable.map((d) => (
                 <DocumentIntakeCard key={d.id} item={d} />
@@ -75,7 +75,7 @@ export default async function DocumentsPage() {
 
         {rest.length > 0 && (
           <section>
-            <h3 className="mb-3 text-base font-semibold text-zinc-100">Erledigt / geprüft</h3>
+            <h3 className="mb-3 text-base font-semibold text-zinc-900">Erledigt / geprüft</h3>
             <div className="grid gap-4 lg:grid-cols-2">
               {rest.map((d) => (
                 <DocumentIntakeCard key={d.id} item={d} />
