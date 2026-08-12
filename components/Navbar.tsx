@@ -19,13 +19,15 @@ const NAV_LINKS = [
 
 const navLinkBase: React.CSSProperties = {
   fontFamily: 'var(--font-body)',
-  fontSize: '16px',
-  fontWeight: 500,
+  fontSize: 'var(--text-nav)',
+  fontWeight: 600,
+  lineHeight: 1,
   textDecoration: 'none',
-  color: 'var(--color-text-secondary)',
-  padding: '8px 4px',
+  color: '#FFFFFF',
+  padding: '10px 6px',
   transition: 'color 0.15s ease',
-  display: 'inline-block',
+  display: 'inline-flex',
+  alignItems: 'center',
   whiteSpace: 'nowrap' as const,
 }
 
@@ -53,10 +55,10 @@ export default function Navbar() {
           top: 0,
           zIndex: 50,
           width: '100%',
-          background: 'var(--color-bg)',
-          borderBottom: '1px solid var(--color-border)',
-          boxShadow: scrolled ? 'var(--shadow-card)' : 'none',
-          transition: 'box-shadow 200ms ease',
+          background: 'var(--color-footer-bg)',
+          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
+          boxShadow: scrolled ? 'var(--shadow-elevated)' : 'none',
+          transition: 'border-color 200ms ease, box-shadow 200ms ease',
         }}
       >
         <div
@@ -66,9 +68,9 @@ export default function Navbar() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: '90px',
+            height: '96px',
             padding: '0 2rem',
-            gap: '1.5rem',
+            gap: '2rem',
           }}
         >
           {/* Logo */}
@@ -80,15 +82,17 @@ export default function Navbar() {
               gap: '10px',
               textDecoration: 'none',
               flexShrink: 0,
+              marginRight: '1rem',
             }}
           >
             <span
               style={{
                 fontFamily: 'var(--font-heading)',
-                fontSize: '20px',
+                fontSize: '24px',
                 fontWeight: 700,
-                color: 'var(--color-text-primary)',
-                letterSpacing: '-0.02em',
+                color: '#FFFFFF',
+                letterSpacing: '-0.01em',
+                lineHeight: 1,
               }}
             >
               Maxpromo
@@ -97,26 +101,31 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop links */}
-          <div className="hidden md:flex" style={{ gap: '28px', alignItems: 'center', flexWrap: 'nowrap' }}>
+          <div className="hidden md:flex" style={{ gap: '40px', alignItems: 'center', flexWrap: 'nowrap' }}>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 style={navLinkBase}
-                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-text-primary)' }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-primary)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = '#FFFFFF' }}
               >
                 {t(link.key)}
               </Link>
             ))}
           </div>
 
-          {/* Desktop CTA + locale switcher */}
-          <div className="hidden md:flex" style={{ flexShrink: 0, alignItems: 'center', gap: '16px' }}>
-            <LocaleSwitcher />
-            <Link href="/contact" className="btn btn-primary">
-              {t('ctaAudit')} →
-            </Link>
+          {/* Desktop actions — locale + CTA grouped as one cluster, set off
+              from the links by a divider so the CTA reads as part of the
+              bar rather than a button floating at the edge. */}
+          <div className="hidden md:flex" style={{ flexShrink: 0, alignItems: 'center', gap: '24px' }}>
+            <span aria-hidden="true" style={{ width: '1px', height: '28px', background: 'rgba(255,255,255,0.08)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <LocaleSwitcher variant="dark" />
+              <Link href="/contact" className="btn btn-primary">
+                {t('ctaAudit')} →
+              </Link>
+            </div>
           </div>
 
           {/* Mobile hamburger */}
@@ -127,7 +136,7 @@ export default function Navbar() {
             style={{
               background: 'none',
               border: 'none',
-              color: 'var(--color-text-primary)',
+              color: '#FFFFFF',
               cursor: 'pointer',
               padding: 0,
               width: '44px',
@@ -152,7 +161,7 @@ export default function Navbar() {
             position: 'fixed',
             inset: 0,
             zIndex: 100,
-            background: 'var(--color-bg)',
+            background: 'var(--color-footer-bg)',
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -164,8 +173,8 @@ export default function Navbar() {
               justifyContent: 'space-between',
               alignItems: 'center',
               padding: '0 1.5rem',
-              height: '90px',
-              borderBottom: '1px solid var(--color-border)',
+              height: '96px',
+              borderBottom: '1px solid rgba(255,255,255,0.08)',
               flexShrink: 0,
             }}
           >
@@ -174,7 +183,7 @@ export default function Navbar() {
                 fontFamily: 'var(--font-heading)',
                 fontSize: '18px',
                 fontWeight: 700,
-                color: 'var(--color-text-primary)',
+                color: '#FFFFFF',
               }}
             >
               Maxpromo <span style={{ color: 'var(--color-primary)' }}>Digital</span>
@@ -185,7 +194,7 @@ export default function Navbar() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: 'var(--color-text-primary)',
+                color: '#FFFFFF',
                 fontSize: '24px',
                 cursor: 'pointer',
                 width: '44px',
@@ -202,7 +211,7 @@ export default function Navbar() {
           {/* Scrollable nav items */}
           <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', padding: '1.5rem', gap: '4px' }}>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
-              <LocaleSwitcher />
+              <LocaleSwitcher variant="dark" />
             </div>
             {NAV_LINKS.map((link) => (
               <Link
@@ -213,11 +222,11 @@ export default function Navbar() {
                   fontFamily: 'var(--font-body)',
                   fontWeight: 600,
                   fontSize: '20px',
-                  color: 'var(--color-text-primary)',
+                  color: '#FFFFFF',
                   textDecoration: 'none',
                   padding: '18px 4px',
                   display: 'block',
-                  borderBottom: '1px solid var(--color-border)',
+                  borderBottom: '1px solid rgba(255,255,255,0.08)',
                 }}
               >
                 {t(link.key)}
@@ -229,7 +238,7 @@ export default function Navbar() {
           <div
             style={{
               padding: '1.5rem',
-              borderTop: '1px solid var(--color-border)',
+              borderTop: '1px solid rgba(255,255,255,0.08)',
               display: 'flex',
               justifyContent: 'center',
               flexShrink: 0,
