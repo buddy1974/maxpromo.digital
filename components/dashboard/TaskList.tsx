@@ -17,7 +17,7 @@ const PRIORITY_COLOR: Record<TaskPriority, string> = {
 
 export function TaskList({ tasks }: { tasks: Task[] }) {
   return (
-    <ul className="divide-y divide-zinc-200 rounded-xl border border-hairline bg-surface">
+    <ul className="divide-y divide-hairline rounded-xl border border-hairline bg-surface">
       {tasks.map((t) => (
         <li key={t.id} className="flex items-center gap-3 px-4 py-3">
           <span

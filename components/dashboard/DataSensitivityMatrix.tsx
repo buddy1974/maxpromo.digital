@@ -25,7 +25,7 @@ export function DataSensitivityMatrix({ rows }: { rows: DataSensitivityRow[] }) 
             <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Erlaubte Tools</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-200">
+        <tbody className="divide-y divide-hairline">
           {rows.map((r) => (
             <tr key={r.id} className="text-ink-secondary">
               <td className="px-4 py-3">{r.dataType}</td>

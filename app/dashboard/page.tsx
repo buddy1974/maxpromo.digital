@@ -108,7 +108,7 @@ export default async function DashboardOverviewPage() {
 
         <div className="grid gap-8 lg:grid-cols-2">
           <Section title="Aktive Agenten">
-            <ul className="divide-y divide-zinc-200 rounded-lg border border-hairline bg-surface shadow-sm">
+            <ul className="divide-y divide-hairline rounded-lg border border-hairline bg-surface shadow-sm">
               {activeAgents.map((a) => (
                 <li key={a.id} className="flex items-center justify-between px-4 py-3">
                   <div>
@@ -123,7 +123,7 @@ export default async function DashboardOverviewPage() {
 
           <Section title="Wartende Kunden">
             {urgent.length ? (
-              <ul className="divide-y divide-zinc-200 rounded-lg border border-hairline bg-surface shadow-sm">
+              <ul className="divide-y divide-hairline rounded-lg border border-hairline bg-surface shadow-sm">
                 {urgent.map((w) => (
                   <li key={w.id} className="px-4 py-3">
                     <p className="text-sm text-ink">{w.customerName}</p>

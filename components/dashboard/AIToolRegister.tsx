@@ -24,7 +24,7 @@ export function AIToolRegister({ tools }: { tools: AIToolRegisterItem[] }) {
             <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Hinweis</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-200">
+        <tbody className="divide-y divide-hairline">
           {tools.map((t) => (
             <tr key={t.id} className="text-ink-secondary">
               <td className="px-4 py-3 font-medium text-ink">{t.name}</td>

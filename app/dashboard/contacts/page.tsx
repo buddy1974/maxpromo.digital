@@ -14,7 +14,7 @@ export default function ContactsPage() {
               <th className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em]">Nächstes Follow-up</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-200">
+          <tbody className="divide-y divide-hairline">
             {MOCK_CONTACTS.map((c) => (
               <tr key={c.id} className="text-ink-secondary">
                 <td className="px-4 py-3">{c.name}</td>

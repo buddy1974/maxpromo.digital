@@ -3,14 +3,32 @@
 // a dependency arc — cannot happen without the orange approval step.
 // Desktop: horizontal flow. Mobile: horizontally scrollable (min-w).
 
+import { token } from "@/design/tokens";
+
+/**
+ * Diagram palette. SVG presentation attributes cannot resolve CSS custom
+ * properties reliably across browsers when the SVG is inlined and re-themed,
+ * so the values are read from the token module instead of restated. This is
+ * the same pair-of-outputs approach the documents and emails use.
+ */
+const V = {
+  surface: token.surface,
+  hairline: token.border,
+  hairlineStrong: token.borderStrong,
+  ink: token.text,
+  inkMuted: token.textMuted,
+  accent: token.primary,
+  onAccent: token.onPrimary,
+};
+
 const C = {
-  node:   "#FFFFFF",
-  line:   "#E4E4E7",
-  ring:   "#D4D4D8",
-  text:   "#18181B",
-  dim:    "#71717A",
-  accent: "#F97316",
-  ink:    "#FFFFFF",
+  node:   V.surface,
+  line:   V.hairline,
+  ring:   V.hairlineStrong,
+  text:   V.ink,
+  dim:    V.inkMuted,
+  accent: V.accent,
+  ink:    V.surface,
 };
 
 type Step = { label: string[]; glyph: string; gate?: boolean; gated?: boolean };

@@ -30,7 +30,7 @@ export function AuditPriorityMatrix({ findings }: { findings: AuditFinding[] }) 
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-200">
+        <tbody className="divide-y divide-hairline">
           {PRIORITIES.map((p) => (
             <tr key={p}>
               <td className="px-3 py-2 text-left font-mono text-[11px] uppercase tracking-[0.12em] text-ink-secondary">

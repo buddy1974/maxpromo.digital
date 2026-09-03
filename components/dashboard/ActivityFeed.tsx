@@ -14,7 +14,7 @@ function timeLabel(iso: string): string {
 
 export function ActivityFeed({ items }: { items: ActivityLog[] }) {
   return (
-    <ul className="divide-y divide-zinc-200">
+    <ul className="divide-y divide-hairline">
       {items.map((a) => (
         <li key={a.id} className="flex gap-3 py-3">
           <span className={`mt-0.5 font-mono text-sm ${ACTOR_COLOR[a.actor]}`}>

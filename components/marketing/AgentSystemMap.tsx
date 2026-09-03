@@ -2,14 +2,32 @@
 // specialist agents connected as spokes. Pure SVG — no faces/avatars/images.
 // Radial map on md+, compact hub statement on mobile.
 
+import { token } from "@/design/tokens";
+
+/**
+ * Diagram palette. SVG presentation attributes cannot resolve CSS custom
+ * properties reliably across browsers when the SVG is inlined and re-themed,
+ * so the values are read from the token module instead of restated. This is
+ * the same pair-of-outputs approach the documents and emails use.
+ */
+const V = {
+  surface: token.surface,
+  hairline: token.border,
+  hairlineStrong: token.borderStrong,
+  ink: token.text,
+  inkMuted: token.textMuted,
+  accent: token.primary,
+  onAccent: token.onPrimary,
+};
+
 const C = {
-  node: "#FFFFFF",
-  ring: "#E4E4E7",
-  spoke: "#E4E4E7",
-  text: "#18181B",
-  dim: "#71717A",
-  accent: "#F97316",
-  ink: "#FFFFFF",
+  node: V.surface,
+  ring: V.hairline,
+  spoke: V.hairline,
+  text: V.ink,
+  dim: V.inkMuted,
+  accent: V.accent,
+  ink: V.onAccent,
 };
 
 const SPECIALISTS = [

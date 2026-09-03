@@ -9,7 +9,7 @@ export default function LeadsPage() {
   return (
     <DashboardShell title="Leads">
       {leads.length ? (
-        <ul className="divide-y divide-zinc-200 rounded-lg border border-hairline bg-surface shadow-sm">
+        <ul className="divide-y divide-hairline rounded-lg border border-hairline bg-surface shadow-sm">
           {leads.map((c) => (
             <li key={c.id} className="flex items-center justify-between px-4 py-3">
               <div>
