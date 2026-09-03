@@ -621,3 +621,531 @@ button.os-nav-item {
   transition: border-color var(--duration-fast) var(--ease);
 }
 .pain-cell:hover .pain-cell-cta { border-color: var(--brand-text); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   SITE CHROME — navigation
+   The bar sits on the inverted surface. Links take the inverted text tokens,
+   never literal white and never the accent: the accent's only job in the
+   chrome is the primary action.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--brand-surface-inverted);
+  border-bottom: 1px solid var(--brand-border-inverted);
+}
+
+.site-nav-inner {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--section-x);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.site-nav-logo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--brand-text-inverted);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.site-nav-logo-dim { color: var(--brand-text-inverted-secondary); }
+
+.site-nav-links {
+  display: none;
+  align-items: center;
+  gap: var(--space-6);
+  margin-right: auto;
+}
+.site-nav-link {
+  font-size: var(--text-small);
+  font-weight: 500;
+  color: var(--brand-text-inverted-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease);
+}
+.site-nav-link:hover { color: var(--brand-text-inverted); }
+
+.site-nav-actions {
+  display: none;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.btn-sm {
+  padding: 9px 16px;
+  font-size: var(--text-micro);
+}
+
+/* Burger */
+.site-nav-burger {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid var(--brand-border-inverted);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.site-nav-burger span {
+  display: block;
+  height: 1.5px;
+  background: var(--brand-text-inverted);
+  border-radius: 2px;
+}
+
+@media (min-width: 900px) {
+  .site-nav-links,
+  .site-nav-actions { display: flex; }
+  .site-nav-burger  { display: none; }
+}
+
+/* Mobile sheet */
+.site-nav-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--brand-surface-inverted);
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--section-x) var(--space-8);
+  overflow-y: auto;
+}
+.site-nav-sheet-head {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--brand-border-inverted);
+  margin-bottom: var(--space-6);
+}
+.site-nav-close {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid var(--brand-border-inverted);
+  border-radius: var(--radius-md);
+  color: var(--brand-text-inverted);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+}
+.site-nav-sheet-links { display: flex; flex-direction: column; }
+.site-nav-sheet-link {
+  padding: var(--space-4) 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand-text-inverted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--brand-border-inverted);
+}
+.site-nav-sheet-foot {
+  margin-top: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   TABLES
+   Reference tables, not styled data grids: hairline rules, no zebra striping,
+   no rounded container, no shadow. Numeric columns are tabular so figures line
+   up down the column.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.table-wrap { overflow-x: auto; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-small);
+}
+.table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-secondary);
+  border-bottom: 1px solid var(--brand-border-strong);
+  white-space: nowrap;
+}
+.table td {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--brand-border);
+  vertical-align: top;
+  line-height: var(--leading-ui);
+}
+.table tr:last-child td { border-bottom: 0; }
+.table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FORMS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.field { display: flex; flex-direction: column; gap: var(--space-2); }
+.field-row {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) { .field-row { grid-template-columns: 1fr 1fr; } }
+
+.hint {
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+}
+.error {
+  font-size: var(--text-micro);
+  color: var(--semantic-danger);
+}
+.input[aria-invalid='true'],
+.textarea[aria-invalid='true'] { border-color: var(--semantic-danger); }
+
+.input::placeholder,
+.textarea::placeholder { color: var(--brand-text-muted); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   DEFINITION LIST — the documentation pattern for stating facts in pairs.
+   Used for specs, scope statements and "what you get" blocks in place of the
+   tick-list-with-icons pattern.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.spec {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--brand-border);
+}
+.spec > div {
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: 1fr;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--brand-border);
+}
+@media (min-width: 720px) {
+  .spec > div { grid-template-columns: minmax(0, 14rem) 1fr; gap: var(--space-6); }
+}
+.spec dt {
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--brand-text);
+}
+.spec dd {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   SITE CHROME — footer
+   Reads like the colophon of a technical document: plain link columns, one
+   rule, then the legal line. No display heading, no marketing block.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.site-footer {
+  background: var(--brand-surface-inverted);
+  color: var(--brand-text-inverted-secondary);
+  padding-block: var(--section-y) var(--space-8);
+  margin-top: var(--space-16);
+}
+
+.site-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+@media (min-width: 640px) { .site-footer-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) {
+  .site-footer-grid {
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    gap: var(--space-10);
+  }
+}
+
+.site-footer-brand {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--brand-text-inverted);
+}
+.site-footer-desc {
+  margin: 0 0 var(--space-5);
+  max-width: 30ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+.site-footer-address {
+  margin: 0 0 var(--space-3);
+  font-style: normal;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+
+.site-footer-coltitle {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-inverted);
+}
+.site-footer-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.site-footer-link {
+  font-size: var(--text-small);
+  color: var(--brand-text-inverted-secondary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease);
+}
+.site-footer-link:hover { color: var(--brand-text-inverted); }
+
+.site-footer-legal {
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--brand-border-inverted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.site-footer-legal p {
+  margin: 0;
+  font-size: var(--text-micro);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-muted);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   EDITORIAL PATTERNS
+   The page shapes the Solutions and Industries sections are built from. All
+   typographic: no icons, no cards, no tinted tiles.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Opening paragraph under an h1. Larger than body, never as large as a heading. */
+.lede {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--brand-text-secondary);
+  max-width: 44rem;
+}
+
+/* Label column beside content. The documentation two-column, where the left
+   column names the section and the right column carries it. */
+.prose-two-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+@media (min-width: 900px) {
+  .prose-two-col {
+    grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+    gap: var(--space-10);
+  }
+}
+
+/* Numbered method. The number is a reference mark, not a decorated badge. */
+.step-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--brand-border);
+}
+.step-list li {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--space-4);
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--brand-border);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.step-list-num {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+  padding-top: 0.45em;
+}
+
+/* Outcomes. A rule per item rather than a tick icon per item — the claim
+   carries itself, and a green tick beside every line is the SaaS pattern. */
+.outcome-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.outcome-list li {
+  padding: var(--space-4) 0 var(--space-4) var(--space-5);
+  border-left: 2px solid var(--brand-border-strong);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.outcome-list li + li { margin-top: var(--space-3); }
+
+/* Industries index: a reference list, not a card grid. */
+.industry-list {
+  border-top: 1px solid var(--brand-border);
+}
+.industry-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--brand-border);
+  text-decoration: none;
+  transition: opacity var(--duration-base) var(--ease);
+}
+@media (min-width: 900px) {
+  .industry-row {
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+}
+.industry-row:hover { opacity: 0.62; }
+.industry-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+.industry-row-summary {
+  margin: 0;
+  max-width: 52ch;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.industry-row-cta {
+  font-size: var(--text-small);
+  color: var(--brand-text);
+  border-bottom: 1px solid var(--brand-border-strong);
+  padding-bottom: 2px;
+}
+
+/* Lateral navigation between sibling pages. */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border: 1px solid var(--brand-border-strong);
+  border-radius: var(--radius-md);
+  font-size: var(--text-small);
+  color: var(--brand-text-secondary);
+  text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+.chip:hover {
+  border-color: var(--brand-text);
+  color: var(--brand-text);
+}
+
+/* Homepage route grid — the two doors into the site (sector, or problem). */
+.route-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+}
+@media (min-width: 720px) { .route-grid { grid-template-columns: 1fr 1fr; } }
+
+.route-cell {
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-surface);
+  padding: var(--space-8);
+  text-decoration: none;
+  transition: background-color var(--duration-base) var(--ease);
+}
+.route-cell:hover { background: var(--brand-surface-subtle); }
+.route-cell-label {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+}
+.route-cell-desc {
+  margin: 0 0 var(--space-5);
+  flex: 1;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.route-cell-cta {
+  font-size: var(--text-small);
+  color: var(--brand-text);
+  border-bottom: 1px solid var(--brand-border-strong);
+  padding-bottom: 2px;
+  align-self: flex-start;
+}
+
+/* Plain link list — recent articles, related pages. Rows, not cards. */
+.link-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--brand-border); }
+.link-list-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--brand-border);
+  text-decoration: none;
+}
+.link-list-title {
+  font-size: var(--text-body);
+  color: var(--brand-text);
+  line-height: var(--leading-ui);
+}
+.link-list-item:hover .link-list-title { color: var(--brand-primary-text); }
+.link-list-meta {
+  flex-shrink: 0;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+}

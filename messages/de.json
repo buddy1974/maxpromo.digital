@@ -1,15 +1,18 @@
 {
   "nav": {
-    "services": "Leistungen",
-    "systems": "Branchen-Systeme",
     "reference": "Referenz",
     "pricing": "Preise",
-    "blog": "Blog",
     "about": "Über uns",
     "contact": "Kontakt",
-    "ctaAudit": "Kontakt aufnehmen",
+    "ctaAudit": "Gespräch vereinbaren",
     "menuOpen": "Menü öffnen",
-    "menuClose": "Menü schließen"
+    "menuClose": "Menü schließen",
+    "solutions": "Leistungen",
+    "industries": "Branchen",
+    "resources": "Ressourcen",
+    "primaryLabel": "Hauptnavigation",
+    "openMenu": "Navigation öffnen",
+    "closeMenu": "Navigation schließen"
   },
   "localeSwitcher": {
     "label": "Sprache",
@@ -71,47 +74,23 @@
     "ocFootnote": "Nichts verlässt den Betrieb ohne Freigabe."
   },
   "footer": {
-    "ctaEyebrow": "Läuft Ihr Betrieb noch auf manueller Arbeit?",
-    "ctaHeadline": "Kontakt aufnehmen.",
-    "ctaPrimary": "Kontakt aufnehmen",
-    "ctaSecondary": "Mit Maxpromo sprechen",
     "colCompany": "Unternehmen",
-    "colSystems": "Installierte Systeme",
-    "colServices": "Leistungen",
     "colLegal": "Rechtliches",
-    "links": {
-      "about": "Über uns",
-      "services": "Leistungen",
-      "systems": "Alle Systeme",
-      "caseStudies": "Fallstudien",
-      "contact": "Kontakt",
-      "automationAudit": "Kontakt",
-      "blog": "Blog",
-      "automationLab": "Referenz-Bibliothek",
-      "impressum": "Impressum",
-      "privacy": "Datenschutz",
-      "agb": "AGB",
-      "dataDeletion": "Datenlöschung",
-      "restaurantOs": "RestaurantOS",
-      "printshopOs": "PrintShopOS",
-      "taxkontrol": "TaxKontrol",
-      "praxisOs": "PraxisOS",
-      "handwerkOs": "HandwerkOS",
-      "publishingOs": "PublishingOS",
-      "agentBureau": "Max Agent Bureau",
-      "legacyModernization": "Legacy-Modernisierung",
-      "workflowAutomation": "Workflow-Automatisierung",
-      "aiSystems": "KI-Business-Systeme",
-      "websiteSystems": "Website-Systeme",
-      "contentNewsletter": "Content & Newsletter"
-    },
-    "copyright": "© 2026 MAXPROMO DIGITAL",
-    "tagline": "· Business-Systeme & Automatisierung · Essen, Deutschland",
-    "operationalSignal": "Immer erreichbar",
-    "tax": "St.-Nr. 111/5339/7597 · FA Essen-NordOst",
-    "address": "Körnerstr. 8 · 45143 Essen · Deutschland",
-    "taxClause": "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.",
-    "staffPortal": "Mitarbeiterportal"
+    "descriptor": "Eine Software-Beratung aus Essen. Wir entwerfen und bauen die Systeme, auf denen Betriebe laufen, und pflegen sie danach weiter.",
+    "colResources": "Ressourcen",
+    "about": "Über uns",
+    "solutions": "Leistungen",
+    "industries": "Branchen",
+    "contact": "Kontakt",
+    "resources": "Übersicht",
+    "blog": "Fachbeiträge",
+    "caseStudies": "Fallstudien",
+    "pricing": "Preise",
+    "impressum": "Impressum",
+    "privacy": "Datenschutz",
+    "agb": "AGB",
+    "taxNumber": "Steuernummer",
+    "taxOffice": "Finanzamt"
   },
   "home": {
     "marquee": [
@@ -385,14 +364,6 @@
       "pt3Desc": "Portale, Dashboards, Branchen-Systeme, interne Tools, gebaut für Ihren Betrieb.",
       "pt3Items": "Portale · Dashboards · Branchen-Systeme · Interne Tools"
     },
-    "systemsTabs": {
-      "eyebrow": "Was wir bauen",
-      "title": "Betriebssysteme,",
-      "titleAccent": "die heute laufen.",
-      "subtitle": "Erkunden Sie die Systeme, die wir für verschiedene Betriebsprobleme installieren.",
-      "viewAll": "Alle Systeme ansehen",
-      "viewSystem": "Beratung anfragen →"
-    },
     "teamTrust": {
       "eyebrow": "Das Maxpromo-Team",
       "title": "Gebaut von Betreibern.",
@@ -502,7 +473,20 @@
       "secondaryCta": "Kontakt aufnehmen"
     },
     "metaTitle": "Maxpromo Digital — Business-Systeme aus Essen",
-    "metaDesc": "Eine Software-Beratung aus Essen. Wir ersetzen Tabellen, manuelle Schritte und getrennte Werkzeuge durch Systeme, auf denen ein Betrieb wirklich laufen kann."
+    "metaDesc": "Eine Software-Beratung aus Essen. Wir ersetzen Tabellen, manuelle Schritte und getrennte Werkzeuge durch Systeme, auf denen ein Betrieb wirklich laufen kann.",
+    "routes": {
+      "eyebrow": "Wo anfangen",
+      "title": "Zwei Wege hinein.",
+      "lede": "Die meisten kommen mit einer von zwei Gewissheiten: der Branche, in der sie arbeiten, oder dem Problem, das Zeit kostet. Beides ist ein guter Anfang.",
+      "industriesLabel": "Nach Branche",
+      "industriesTitle": "Sie kennen Ihre Branche",
+      "industriesDesc": "Sechs Sektoren, für die wir gebaut haben — mit dem Problem so beschrieben, wie es im Betrieb tatsächlich klingt, und dem, was wir dagegen tun.",
+      "industriesCta": "Branchen ansehen",
+      "solutionsLabel": "Nach Problem",
+      "solutionsTitle": "Sie wissen, was nicht läuft",
+      "solutionsDesc": "Anfragen bleiben liegen, Rechnungen gehen zu spät raus, Aufträge stehen in Nachrichten. Vom Problem aus zurück zum System.",
+      "solutionsCta": "Leistungen ansehen"
+    }
   },
   "proof": {
     "eyebrow": "03, ERGEBNISSE",

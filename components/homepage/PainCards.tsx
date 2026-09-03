@@ -21,12 +21,12 @@ import { Link } from '@/i18n/navigation'
  */
 
 const PAIN_REFS = [
-  { id: 'p1', href: '/services/customer-inquiries' },
-  { id: 'p2', href: '/services/workflow-automation' },
-  { id: 'p3', href: '/services/ai-agents' },
-  { id: 'p4', href: '/services/workflow-automation' },
-  { id: 'p5', href: '/services/reviews' },
-  { id: 'p6', href: '/services/workflow-automation' },
+  { id: 'p1', href: '/solutions/customer-inquiries' },
+  { id: 'p2', href: '/solutions/workflow-automation' },
+  { id: 'p3', href: '/solutions/ai-agents' },
+  { id: 'p4', href: '/solutions/workflow-automation' },
+  { id: 'p5', href: '/solutions/reviews' },
+  { id: 'p6', href: '/solutions/workflow-automation' },
 ] as const
 
 export async function PainCards() {

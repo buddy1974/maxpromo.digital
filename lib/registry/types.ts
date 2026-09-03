@@ -620,8 +620,11 @@ export interface ProductEntry {
 
   /**
    * Internal product page path on maxpromo.digital — the canonical
-   * LandingEngine bridge route, e.g. '/systems/handwerk-os'. As of the
-   * 2026-07-26 LandingEngine consolidation this is '/systems/[slug]' for
+   * Hub route for this product, when it has one. Empty for protected products:
+   * as of the v5.0 information-architecture move the operating systems have no
+   * public page on maxpromo.digital and are reached only via their own
+   * domains. Historically this was the LandingEngine bridge route,
+   * '/systems/[slug]', for
    * every public product; legacy '/products/[slug]' paths (care-os,
    * real-estate-os) are permanent redirects to their /systems/[slug]
    * equivalent, not this field's value. Stored explicitly for type-safe

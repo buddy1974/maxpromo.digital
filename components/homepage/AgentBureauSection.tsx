@@ -273,10 +273,10 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 not the dedicated page — both CTAs now route to /systems/agent-bureau
                 first. That page carries its own external product / contact CTA pair. */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '1.5rem' }}>
-              <Link href="/systems/agent-bureau" className="btn btn-primary">
+              <Link href="/agent-bureau" className="btn btn-primary">
                 {isDE ? 'System ansehen →' : 'View system →'}
               </Link>
-              <Link href="/systems/agent-bureau" className="btn btn-secondary">
+              <Link href="/agent-bureau" className="btn btn-secondary">
                 {isDE ? 'Mehr erfahren →' : 'Learn more →'}
               </Link>
             </div>

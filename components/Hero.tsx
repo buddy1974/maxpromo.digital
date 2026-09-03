@@ -70,7 +70,7 @@ export default async function Hero() {
               <Link href="/contact" className="btn btn-primary">
                 {t('ctaPrimary')}
               </Link>
-              <Link href="/systems" className="btn btn-secondary">
+              <Link href="/solutions" className="btn btn-secondary">
                 {t('ctaSecondary')}
               </Link>
             </div>

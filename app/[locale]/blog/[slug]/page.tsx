@@ -6,8 +6,6 @@ import Image from 'next/image'
 import { evaluate } from '@mdx-js/mdx'
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime'
 import { getPostBySlug, getPublishedPosts } from '@/lib/blog/posts'
-import { PUBLIC_PRODUCTS } from '@/lib/registry/products'
-import { SystemCardCompact } from '@/components/systems/SystemCard/SystemCardCompact'
 
 // =============================================================================
 // STATIC PARAMS
@@ -160,9 +158,9 @@ const mdxComponents = {
 // =============================================================================
 
 const SERVICES = [
-  { key: 'svc1', href: '/services/workflow-automation' },
-  { key: 'svc2', href: '/services/websites-platforms' },
-  { key: 'svc3', href: '/services/ai-agents' },
+  { key: 'svc1', href: '/solutions/workflow-automation' },
+  { key: 'svc2', href: '/solutions/websites-platforms' },
+  { key: 'svc3', href: '/solutions/ai-agents' },
 ] as const
 
 // =============================================================================
@@ -184,13 +182,6 @@ export default async function BlogDetailPage({ params }: PageProps) {
     jsxs: jsxs as Parameters<typeof evaluate>[1]['jsxs'],
   })
 
-  // Related systems: relatedSystem first, then fill from PUBLIC_PRODUCTS
-  const relatedSystemProducts = (() => {
-    if (!post.relatedSystem) return [...PUBLIC_PRODUCTS].slice(0, 3)
-    const primary = PUBLIC_PRODUCTS.find(p => p.slug === post.relatedSystem)
-    const others  = PUBLIC_PRODUCTS.filter(p => p.slug !== post.relatedSystem).slice(0, 2)
-    return primary ? [primary, ...others] : [...PUBLIC_PRODUCTS].slice(0, 3)
-  })()
 
   // JSON-LD
   const articleUrl = `https://www.maxpromo.digital/${locale}/blog/${post.slug}`
@@ -404,37 +395,6 @@ export default async function BlogDetailPage({ params }: PageProps) {
             </div>
           </div>
         </section>
-
-        {/* ─────────────────────────────────────────────── */}
-        {/* 6. RELATED SYSTEMS, SystemCardCompact grid     */}
-        {/* ─────────────────────────────────────────────── */}
-        {relatedSystemProducts.length > 0 && (
-          <section style={{ paddingTop: '4rem', paddingBottom: '4rem', borderTop: '1px solid var(--color-border)' }}>
-            <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', padding: '0 2rem' }}>
-              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px', marginTop: 0 }}>
-                {t('relatedSystemsEyebrow')}
-              </p>
-              <h2 style={{ marginBottom: '2.5rem', marginTop: 0 }}>
-                {t('relatedSystemsTitle')}
-              </h2>
-              <div
-                style={{ display: 'grid', gap: '1.25rem' }}
-                className="grid-cols-1 md:grid-cols-3"
-              >
-                {relatedSystemProducts.map(product => (
-                  <SystemCardCompact
-                    key={product.slug}
-                    product={product}
-                    locale={locale}
-                    showCTA
-                    imageMode="cover"
-                    source="blog-article"
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* ─────────────────────────────────────────────── */}
         {/* 7. WHATSAPP CTA                                 */}

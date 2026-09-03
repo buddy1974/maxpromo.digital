@@ -30,12 +30,12 @@ interface ServiceRef {
  * intentionally not linked from this grid.
  */
 const SERVICE_REFS: ReadonlyArray<ServiceRef> = [
-  { id: 'c1', href: '/services/websites-platforms', icon: '◰' }, // Legacy Website & CMS Modernization
-  { id: 'c2', href: '/services/workflow-automation', icon: '▤' }, // Workflow Automation
-  { id: 'c3', href: '/services/ai-agents',           icon: '◇' }, // AI Business Systems
-  { id: 'c4', href: '/services/customer-inquiries',  icon: '⊟' }, // Website Systems (lead capture, booking, portals)
-  { id: 'c5', href: '/services/reviews',             icon: '→' }, // Commerce & Catalogue (quote/order automation)
-  { id: 'c6', href: '/services/social-media',        icon: '⌗' }, // Content & Newsletter Systems
+  { id: 'c1', href: '/solutions/websites-platforms', icon: '◰' }, // Legacy Website & CMS Modernization
+  { id: 'c2', href: '/solutions/workflow-automation', icon: '▤' }, // Workflow Automation
+  { id: 'c3', href: '/solutions/ai-agents',           icon: '◇' }, // AI Business Systems
+  { id: 'c4', href: '/solutions/customer-inquiries',  icon: '⊟' }, // Website Systems (lead capture, booking, portals)
+  { id: 'c5', href: '/solutions/reviews',             icon: '→' }, // Commerce & Catalogue (quote/order automation)
+  { id: 'c6', href: '/solutions/social-media',        icon: '⌗' }, // Content & Newsletter Systems
 ]
 
 const BOUNDARY_IDS = ['n1', 'n2', 'n3', 'n4', 'n5'] as const

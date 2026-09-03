@@ -10,7 +10,6 @@ import Image from 'next/image'
 import { getLatestPosts } from '@/lib/blog/posts'
 import { PainSlider } from '@/components/ui/PainSlider'
 import { PainCards } from '@/components/homepage/PainCards'
-import { SystemsTabs } from '@/components/homepage/SystemsTabs'
 import { ProofMetrics } from '@/components/homepage/ProofMetrics'
 import type { ProofMetric } from '@/components/homepage/ProofMetrics'
 import { TeamTrust } from '@/components/homepage/TeamTrust'
@@ -105,7 +104,7 @@ export default async function HomePage() {
   const tProcess     = await getTranslations('home.process')
   const tWhyUs       = await getTranslations('home.whyUs')
   const tProof       = await getTranslations('home.proof')
-  const tSystemsTabs = await getTranslations('home.systemsTabs')
+  const tRoutes = await getTranslations('home.routes')
   const tLegacy      = await getTranslations('home.legacy')
   const tPhilosophy  = await getTranslations('home.philosophy')
   const tBlog        = await getTranslations('blog')
@@ -196,25 +195,36 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4, Systems tabs */}
-      <section data-section="systems" style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-            <div>
-              <SectionLabel>{tSystemsTabs('eyebrow')}</SectionLabel>
-              <SectionTitle>
-                {tSystemsTabs('title')}{' '}
-                <span style={{ color: 'var(--brand-text-secondary)' }}>{tSystemsTabs('titleAccent')}</span>
-              </SectionTitle>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-secondary)', marginTop: '10px', lineHeight: 1.7 }}>
-                {tSystemsTabs('subtitle')}
-              </p>
-            </div>
-            <Link href="/systems" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
-              {tSystemsTabs('viewAll')} →
+      {/* 4. Where we work — the two ways into the site. Replaces the former
+          systems showcase: the operating systems are protected products
+          marketed on their own domains, not a public section of the
+          consultancy site. A visitor arrives knowing either their sector or
+          their problem, so those are the two doors offered. */}
+      <section data-section="routes" className="section" style={{ background: 'var(--brand-background)', borderTop: '1px solid var(--brand-border)' }}>
+        <div className="container">
+          <div style={{ maxWidth: '44rem', marginBottom: 'var(--space-8)' }}>
+            <SectionLabel>{tRoutes('eyebrow')}</SectionLabel>
+            <SectionTitle>{tRoutes('title')}</SectionTitle>
+            <p style={{ margin: 'var(--space-4) 0 0', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
+              {tRoutes('lede')}
+            </p>
+          </div>
+
+          <div className="route-grid">
+            <Link href="/industries" className="route-cell">
+              <p className="route-cell-label">{tRoutes('industriesLabel')}</p>
+              <h3 className="h-card" style={{ margin: '0 0 var(--space-3)' }}>{tRoutes('industriesTitle')}</h3>
+              <p className="route-cell-desc">{tRoutes('industriesDesc')}</p>
+              <span className="route-cell-cta">{tRoutes('industriesCta')} &rarr;</span>
+            </Link>
+
+            <Link href="/solutions" className="route-cell">
+              <p className="route-cell-label">{tRoutes('solutionsLabel')}</p>
+              <h3 className="h-card" style={{ margin: '0 0 var(--space-3)' }}>{tRoutes('solutionsTitle')}</h3>
+              <p className="route-cell-desc">{tRoutes('solutionsDesc')}</p>
+              <span className="route-cell-cta">{tRoutes('solutionsCta')} &rarr;</span>
             </Link>
           </div>
-          <SystemsTabs />
         </div>
       </section>
 

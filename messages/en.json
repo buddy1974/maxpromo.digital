@@ -1,15 +1,18 @@
 {
   "nav": {
-    "services": "Services",
-    "systems": "Systems",
     "reference": "Reference",
     "pricing": "Pricing",
-    "blog": "Blog",
     "about": "About",
     "contact": "Contact",
-    "ctaAudit": "Contact us",
+    "ctaAudit": "Start a conversation",
     "menuOpen": "Open menu",
-    "menuClose": "Close menu"
+    "menuClose": "Close menu",
+    "solutions": "Solutions",
+    "industries": "Industries",
+    "resources": "Resources",
+    "primaryLabel": "Primary navigation",
+    "openMenu": "Open navigation",
+    "closeMenu": "Close navigation"
   },
   "localeSwitcher": {
     "label": "Language",
@@ -71,47 +74,23 @@
     "ocFootnote": "Nothing leaves the business without approval."
   },
   "footer": {
-    "ctaEyebrow": "Is your business still running on manual work?",
-    "ctaHeadline": "Contact us.",
-    "ctaPrimary": "Contact us",
-    "ctaSecondary": "Talk to Maxpromo",
     "colCompany": "Company",
-    "colSystems": "Installed Systems",
-    "colServices": "Services",
     "colLegal": "Legal",
-    "links": {
-      "about": "About",
-      "services": "Services",
-      "systems": "All Systems",
-      "caseStudies": "Case Studies",
-      "contact": "Contact",
-      "automationAudit": "Contact",
-      "blog": "Blog",
-      "automationLab": "Reference Library",
-      "impressum": "Imprint",
-      "privacy": "Privacy",
-      "agb": "Terms",
-      "dataDeletion": "Data Deletion",
-      "restaurantOs": "RestaurantOS",
-      "printshopOs": "PrintShopOS",
-      "taxkontrol": "TaxKontrol",
-      "praxisOs": "PraxisOS",
-      "handwerkOs": "HandwerkOS",
-      "publishingOs": "PublishingOS",
-      "agentBureau": "Max Agent Bureau",
-      "legacyModernization": "Legacy Modernization",
-      "workflowAutomation": "Workflow Automation",
-      "aiSystems": "AI Business Systems",
-      "websiteSystems": "Website Systems",
-      "contentNewsletter": "Content & Newsletter"
-    },
-    "copyright": "© 2026 MAXPROMO DIGITAL",
-    "tagline": "· Business systems & automation · Essen, Germany",
-    "operationalSignal": "Always available",
-    "tax": "Tax No. 111/5339/7597 · FA Essen-NordOst",
-    "address": "Körnerstr. 8 · 45143 Essen · Germany",
-    "taxClause": "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.",
-    "staffPortal": "Staff portal"
+    "descriptor": "A software consultancy in Essen. We design and build the systems companies run on, and maintain them afterwards.",
+    "colResources": "Resources",
+    "about": "About",
+    "solutions": "Solutions",
+    "industries": "Industries",
+    "contact": "Contact",
+    "resources": "Overview",
+    "blog": "Written work",
+    "caseStudies": "Case studies",
+    "pricing": "Pricing",
+    "impressum": "Impressum",
+    "privacy": "Privacy",
+    "agb": "Terms",
+    "taxNumber": "Tax number",
+    "taxOffice": "Tax office"
   },
   "home": {
     "marquee": [
@@ -385,14 +364,6 @@
       "pt3Desc": "Portals, dashboards, industry-specific platforms, internal tools, built for your operation.",
       "pt3Items": "Portals · Dashboards · Industry Systems · Internal Tools"
     },
-    "systemsTabs": {
-      "eyebrow": "What we build",
-      "title": "Business systems",
-      "titleAccent": "running today.",
-      "subtitle": "Explore the systems we install for different business problems.",
-      "viewAll": "See all systems",
-      "viewSystem": "Book consultation →"
-    },
     "teamTrust": {
       "eyebrow": "The Maxpromo team",
       "title": "Built by operators.",
@@ -502,7 +473,20 @@
       "secondaryCta": "Contact us"
     },
     "metaTitle": "Maxpromo Digital — Business Systems, Built in Essen",
-    "metaDesc": "A software consultancy in Essen. We replace spreadsheets, manual steps and disconnected tools with systems a business can actually run on."
+    "metaDesc": "A software consultancy in Essen. We replace spreadsheets, manual steps and disconnected tools with systems a business can actually run on.",
+    "routes": {
+      "eyebrow": "Where to start",
+      "title": "Two ways in.",
+      "lede": "Most people arrive knowing one of two things: the sector they operate in, or the problem that is costing them time. Either is a good place to begin.",
+      "industriesLabel": "By sector",
+      "industriesTitle": "You know your industry",
+      "industriesDesc": "Six sectors we have built for, each with the problem stated the way an operator would state it, and what we do about it.",
+      "industriesCta": "See industries",
+      "solutionsLabel": "By problem",
+      "solutionsTitle": "You know what is broken",
+      "solutionsDesc": "Enquiries going unanswered, invoices going out late, work tracked in messages. Start from the problem and work back to the system.",
+      "solutionsCta": "See what we do"
+    }
   },
   "proof": {
     "eyebrow": "03, RESULTS",

@@ -16,38 +16,43 @@ const LOCALES = ['de', 'en'] as const
  * utility page are intentionally excluded — see app/robots.ts.
  */
 const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }> = [
-  { path: '',                              priority: 1.0, changeFrequency: 'weekly' },
-  { path: '/about',                        priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/services',                     priority: 0.8, changeFrequency: 'monthly' },
-  { path: '/services/customer-inquiries',  priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/services/workflow-automation', priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/services/ai-agents',           priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/services/reviews',             priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/services/social-media',        priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/services/websites-platforms',  priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/systems',                      priority: 0.8, changeFrequency: 'monthly' },
-  { path: '/systems/agent-bureau',         priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/systems/restaurant-os',        priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/systems/taxkontrol',           priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/systems/handwerk-os',          priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/systems/praxis-os',            priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/systems/printshop-os',         priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/systems/publishing-os',        priority: 0.7, changeFrequency: 'monthly' },
-  // care-os and real-estate-os moved from /products/<slug> to /systems/<slug>
-  // 2026-07-26 (LANDINGENGINE CONSOLIDATION) — legacy /products/<slug> paths
-  // now permanently redirect (next.config.ts) and are intentionally not
-  // listed here, matching the other six systems above.
-  { path: '/systems/care-os',              priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/systems/real-estate-os',       priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/products',                     priority: 0.8, changeFrequency: 'monthly' },
-  { path: '/pricing',                      priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/case-studies',                 priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/ai-websites',                  priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/automation-lab',               priority: 0.5, changeFrequency: 'monthly' },
-  { path: '/contact',                      priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/blog',                         priority: 0.6, changeFrequency: 'weekly' },
-  { path: '/impressum',                    priority: 0.3, changeFrequency: 'yearly' },
-  { path: '/privacy',                      priority: 0.3, changeFrequency: 'yearly' },
+  { path: '',                                priority: 1.0, changeFrequency: 'weekly'  },
+
+  // Solutions — one page per business problem.
+  { path: '/solutions',                      priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/solutions/customer-inquiries',   priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/solutions/workflow-automation',  priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/solutions/ai-agents',            priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/solutions/reviews',              priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/solutions/social-media',         priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/solutions/websites-platforms',   priority: 0.7, changeFrequency: 'monthly' },
+
+  // Industries — one page per sector.
+  { path: '/industries',                     priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/industries/healthcare',          priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/industries/construction',        priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/industries/property',            priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/industries/hospitality',         priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/industries/publishing',          priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/industries/professional-services', priority: 0.7, changeFrequency: 'monthly' },
+
+  // Resources.
+  { path: '/resources',                      priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/blog',                           priority: 0.6, changeFrequency: 'weekly'  },
+  { path: '/case-studies',                   priority: 0.6, changeFrequency: 'monthly' },
+  { path: '/pricing',                        priority: 0.6, changeFrequency: 'monthly' },
+
+  // Agent Bureau is the one product marketed publicly from the hub. The
+  // operating systems are protected products and are deliberately absent:
+  // they are marketed on their own domains, which carry their own sitemaps.
+  { path: '/agent-bureau',                   priority: 0.8, changeFrequency: 'monthly' },
+
+  { path: '/about',                          priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/contact',                        priority: 0.6, changeFrequency: 'monthly' },
+  { path: '/ai-websites',                    priority: 0.5, changeFrequency: 'monthly' },
+  { path: '/automation-lab',                 priority: 0.5, changeFrequency: 'monthly' },
+  { path: '/impressum',                      priority: 0.3, changeFrequency: 'yearly'  },
+  { path: '/privacy',                        priority: 0.3, changeFrequency: 'yearly'  },
   { path: '/agb',                          priority: 0.3, changeFrequency: 'yearly' },
 ]
 

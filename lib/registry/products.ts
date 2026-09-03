@@ -127,7 +127,7 @@ const AGENT_BUREAU = {
 
   // ── Links
   demoUrl:     'https://agents.maxpromo.digital',
-  landingUrl:  '/systems/agent-bureau',
+  landingUrl:  '/agent-bureau',
   systemUrl:   'https://agents.maxpromo.digital',
   bookDemoUrl: '/contact?system=agent-bureau',
   contactSlug: 'agent-bureau',
@@ -381,7 +381,7 @@ const RESTAURANT_OS = {
 
   // ── Links
   demoUrl:    'https://demo.restaurant-os.de',
-  landingUrl: '/systems/restaurant-os',
+  landingUrl: '',
   systemUrl:  'https://www.restaurant-os.de',
   bookDemoUrl: '/contact?system=restaurant-os',
   contactSlug: 'restaurant-os',
@@ -591,7 +591,7 @@ const HANDWERK_OS = {
 
   // ── Links
   demoUrl:     'https://handwerkos.vercel.app',
-  landingUrl:  '/systems/handwerk-os',
+  landingUrl:  '',
   systemUrl:   'https://superhandwerk.de',
   bookDemoUrl: '/contact?system=handwerk-os',
   contactSlug: 'handwerk-os',
@@ -859,7 +859,7 @@ const PRAXIS_OS = {
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL
-  landingUrl:  '/systems/praxis-os',
+  landingUrl:  '',
   systemUrl:   'https://super-praxis.de',
   bookDemoUrl: '/contact?system=praxis-os',
   contactSlug: 'praxis-os',
@@ -1109,7 +1109,7 @@ const PRINTSHOP_OS = {
 
   // ── Links
   demoUrl:     'https://printshop.maxpromo.digital',
-  landingUrl:  '/systems/printshop-os',
+  landingUrl:  '',
   systemUrl:   'https://smartprintshop.de',
   bookDemoUrl: '/contact?system=printshop-os',
   contactSlug: 'printshop-os', // Aligned 2026-07-25 with slug/route — was 'printshop', now consistent everywhere
@@ -1347,7 +1347,7 @@ const CARE_OS = {
   // landingUrl moved 2026-07-26 (LANDINGENGINE CONSOLIDATION): the old
   // /products/care-os hand-authored page is retired; /products/care-os
   // now permanently redirects here (next.config.ts).
-  landingUrl:  '/systems/care-os',
+  landingUrl:  '',
   systemUrl:   'https://pflege-care24.de',
   bookDemoUrl: '/contact?system=care-os',
   contactSlug: 'care-os',
@@ -1589,7 +1589,7 @@ const REAL_ESTATE_OS = {
   // landingUrl moved 2026-07-26: the old /products/real-estate-os
   // hand-authored page is retired; /products/real-estate-os now
   // permanently redirects here (next.config.ts).
-  landingUrl:  '/systems/real-estate-os',
+  landingUrl:  '',
   systemUrl:   'https://easy-immo24.de',
   bookDemoUrl: '/contact?system=real-estate-os',
   contactSlug: 'real-estate-os',
@@ -1793,7 +1793,7 @@ const PUBLISHING_OS = {
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL
-  landingUrl:  '/systems/publishing-os',
+  landingUrl:  '',
   systemUrl:   'https://publishers24.org',
   bookDemoUrl: '/contact?system=publishing-os',
   contactSlug: 'publishing-os',
@@ -2033,7 +2033,7 @@ const TAXKONTROL = {
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL — app not yet in public app stores
-  landingUrl:  '/systems/taxkontrol',
+  landingUrl:  '',
   systemUrl:   'https://taxkontrol.de',
   bookDemoUrl: '/contact?system=taxkontrol',
   contactSlug: 'taxkontrol',

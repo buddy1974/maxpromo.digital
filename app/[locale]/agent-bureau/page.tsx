@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { Reveal } from '@/components/ui/Reveal'
-import { ConnectedSystems } from '@/components/systems/ConnectedSystems'
 
 /* ─── METADATA ─── */
 
@@ -330,12 +329,6 @@ export default async function AgentBureauPage({
             </div>
           </div>
         </section>
-
-        <ConnectedSystems systems={[
-          { slug: 'taxkontrol',    name: 'TaxKontrol',    description: isDE ? 'Finanzielle Übersicht, täglich sichtbar.' : 'Financial visibility, visible every day.', href: '/systems/taxkontrol' },
-          { slug: 'handwerk-os',   name: 'HandwerkOS',    description: isDE ? 'Aufträge und Rechnungen automatisiert.' : 'Jobs and invoices automated.', href: '/systems/handwerk-os' },
-          { slug: 'restaurant-os', name: 'RestaurantOS',  description: isDE ? 'Bestellungen und Service automatisiert.' : 'Orders and service automated.', href: '/systems/restaurant-os' },
-        ]} locale={locale} />
 
         {/* 6. FAQ */}
         <section style={{ background: SECTION, borderBottom: `1px solid ${BORDER}`, padding: SECTION_PADDING }}>
