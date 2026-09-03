@@ -8,7 +8,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const mono    = { fontFamily: 'var(--font-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-heading)' } as const
 const sans    = { fontFamily: 'var(--font-body)' } as const
 
 interface CaseStudyRef {
@@ -44,10 +43,10 @@ export default async function CaseStudiesPage() {
       {/* Header */}
       <section style={{ background: 'var(--color-bg)', padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('eyebrow')}
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h1 style={{ marginBottom: '20px' }}>
             {t('heroTitle')}
           </h1>
           <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.8 }}>
@@ -77,11 +76,11 @@ export default async function CaseStudiesPage() {
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '2rem' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <span style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.25)', padding: '4px 12px', letterSpacing: '0.05em', borderRadius: '4px' }}>
+                    <span style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.25)', padding: '4px 12px', letterSpacing: '0.05em', borderRadius: '4px' }}>
                       {t(`${cs.id}Tag`)}
                     </span>
                   </div>
-                  <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', maxWidth: '36rem' }}>
+                  <h2 style={{ maxWidth: '36rem' }}>
                     {t(`${cs.id}Headline`)}
                   </h2>
                 </div>
@@ -94,7 +93,7 @@ export default async function CaseStudiesPage() {
 
               <div style={{ display: 'grid', gap: '3rem', marginBottom: '2rem' }} className="grid-cols-1 lg:grid-cols-2">
                 <div>
-                  <p style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
                     {t('challengeLabel')}
                   </p>
                   <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
@@ -102,7 +101,7 @@ export default async function CaseStudiesPage() {
                   </p>
                 </div>
                 <div>
-                  <p style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
                     {t('solutionLabel')}
                   </p>
                   <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.8 }}>
@@ -112,13 +111,13 @@ export default async function CaseStudiesPage() {
               </div>
 
               <div style={{ background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', padding: '24px', marginBottom: '20px' }}>
-                <p style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
+                <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
                   {t('resultsLabel')}
                 </p>
                 <div style={{ display: 'grid', gap: '10px' }} className="grid-cols-1 sm:grid-cols-2">
                   {cs.resultKeys.map((rk) => (
                     <div key={rk} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                      <span style={{ color: 'var(--color-primary)', flexShrink: 0, ...mono, fontSize: '13px' }}>✓</span>
+                      <span style={{ color: 'var(--brand-text-secondary)', flexShrink: 0, ...mono, fontSize: '13px' }}>✓</span>
                       <span style={{ ...sans, fontSize: '15px', color: 'var(--color-text-primary)', lineHeight: 1.6 }}>
                         {t(`${cs.id}${rk}`)}
                       </span>
@@ -129,7 +128,7 @@ export default async function CaseStudiesPage() {
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {cs.tools.map((tool) => (
-                  <span key={tool} style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '3px 10px', letterSpacing: '0.05em', borderRadius: '4px' }}>
+                  <span key={tool} style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '3px 10px', letterSpacing: '0.05em', borderRadius: '4px' }}>
                     {tool}
                   </span>
                 ))}
@@ -142,10 +141,10 @@ export default async function CaseStudiesPage() {
       {/* CTA */}
       <section style={{ background: 'var(--color-bg)', padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h2 style={{ marginBottom: '20px' }}>
             {t('ctaTitle')}
           </h2>
           <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.8 }}>

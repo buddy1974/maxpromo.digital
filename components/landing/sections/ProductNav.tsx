@@ -59,7 +59,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
           href="#top"
           className={INTERACTIVE_LINK_CLASSES}
           style={{
-            fontFamily: 'var(--font-mono)',
+            fontFamily: 'var(--brand-font-sans)',
             fontWeight: 700,
             fontSize: '13px',
             letterSpacing: '0.14em',

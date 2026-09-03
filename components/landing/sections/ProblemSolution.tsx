@@ -36,7 +36,7 @@ interface ProblemSolutionProps {
  */
 export function ProblemSolution({ problemStatement, description, domainBrand, painImages, locale }: ProblemSolutionProps) {
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// Die Ausgangslage' : '// Where things stand today'
+  const eyebrow = isDE ? 'Die Ausgangslage' : 'Where things stand today'
 
   return (
     <section data-section="problem-solution" style={{ padding: SECTION_PADDING.relaxed, borderTop: SECTION_DIVIDER }}>

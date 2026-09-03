@@ -25,22 +25,12 @@ export default async function BlogIndexPage() {
 
         {/* Header */}
         <div style={{ marginBottom: '4rem', maxWidth: '640px' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('indexEyebrow')}
           </p>
-          <h1
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-              letterSpacing: '-0.02em',
-              color: 'var(--color-text-primary)',
-              lineHeight: 1.1,
-              marginBottom: '1rem',
-            }}
-          >
+          <h1 style={{ marginBottom: '1rem' }}>
             {t('indexTitle')}{' '}
-            <span style={{ color: 'var(--color-primary)' }}>{t('indexTitleAccent')}</span>
+            <span>{t('indexTitleAccent')}</span>
           </h1>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
             {t('indexLede')}
@@ -54,7 +44,7 @@ export default async function BlogIndexPage() {
               style={{
                 fontFamily: 'var(--font-mono)',
                 fontSize: '12px',
-                color: 'var(--color-primary)',
+                color: 'var(--brand-text-secondary)',
                 background: 'rgba(249,115,22,0.08)',
                 border: '1px solid rgba(249,115,22,0.25)',
                 padding: '6px 14px',
@@ -98,10 +88,10 @@ export default async function BlogIndexPage() {
               {placeholders.map((card, i) => (
                 <article key={i} className="card" style={{ display: 'flex', flexDirection: 'column', opacity: 0.7, padding: 0 }}>
                   <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
+                    <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
                       {card.tag}
                     </span>
-                    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', lineHeight: 1.35, margin: 0 }}>
+                    <h2 className="h-card" style={{ margin: 0 }}>
                       {card.title}
                     </h2>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
@@ -158,9 +148,9 @@ export default async function BlogIndexPage() {
                           <span
                             key={tag}
                             style={{
-                              fontFamily: 'var(--font-mono)',
+                              fontFamily: 'var(--brand-font-sans)',
                               fontSize: '11px',
-                              color: 'var(--color-primary)',
+                              color: 'var(--brand-text-secondary)',
                               background: 'rgba(249,115,22,0.08)',
                               border: '1px solid rgba(249,115,22,0.15)',
                               padding: '2px 8px',
@@ -175,7 +165,7 @@ export default async function BlogIndexPage() {
                     )}
 
                     {/* Title */}
-                    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', lineHeight: 1.35, margin: 0 }}>
+                    <h2 className="h-card" style={{ margin: 0 }}>
                       {post.title}
                     </h2>
 
@@ -189,7 +179,7 @@ export default async function BlogIndexPage() {
                       <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
                         {post.publishedAt}
                       </span>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.05em' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                         {t('readArticle')}
                       </span>
                     </div>

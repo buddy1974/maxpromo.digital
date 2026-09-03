@@ -45,7 +45,7 @@ export function PainSlider() {
         {/* Fixed label */}
         <span
           style={{
-            fontFamily: 'var(--font-mono)',
+            fontFamily: 'var(--brand-font-sans)',
             fontSize: '11px',
             color: 'var(--color-text-secondary)',
             letterSpacing: '0.15em',
@@ -74,7 +74,7 @@ export function PainSlider() {
             {t(`${key}Pain`)}
           </span>
           <span style={{ color: 'var(--color-text-secondary)' }}>-</span>
-          <span style={{ color: 'var(--color-primary)' }}>
+          <span style={{ color: 'var(--brand-text-secondary)' }}>
             {t(`${key}Fix`)}
           </span>
         </span>

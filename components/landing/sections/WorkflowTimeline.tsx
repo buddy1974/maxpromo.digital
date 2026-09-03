@@ -1,5 +1,5 @@
 import type { WorkflowTuple } from '@/lib/registry/types'
-import { EYEBROW_STYLE, HEADING_SIZE, RADIUS, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
+import { EYEBROW_STYLE, RADIUS, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
 
 interface WorkflowTimelineProps {
   workflow: WorkflowTuple
@@ -24,7 +24,7 @@ const STEP_NUMS = ['01', '02', '03', '04', '05'] as const
  */
 export function WorkflowTimeline({ workflow, locale }: WorkflowTimelineProps) {
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// So funktioniert es' : '// How it works'
+  const eyebrow = isDE ? 'So funktioniert es' : 'How it works'
   const heading = isDE ? 'Fünf Schritte. Dann läuft es.' : 'Five steps. Then it runs.'
 
   return (
@@ -33,7 +33,7 @@ export function WorkflowTimeline({ workflow, locale }: WorkflowTimelineProps) {
         <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
           {eyebrow}
         </p>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.section, letterSpacing: '-0.03em', marginBottom: '2.5rem', lineHeight: 1.15 }}>
+        <h2 style={{ marginBottom: '2.5rem' }}>
           {heading}
         </h2>
 
@@ -46,7 +46,7 @@ export function WorkflowTimeline({ workflow, locale }: WorkflowTimelineProps) {
               <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '2rem', lineHeight: 1, color: 'var(--brand-accent)', marginBottom: '0.6rem', opacity: 0.9 }}>
                 {STEP_NUMS[i]}
               </p>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '15px', letterSpacing: '-0.02em', color: 'var(--brand-fg)', marginBottom: '0.5rem', lineHeight: 1.3 }}>
+              <h3 className="h-card" style={{ color: 'var(--brand-fg)', marginBottom: '0.5rem' }}>
                 {step.label}
               </h3>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--brand-muted)', lineHeight: 1.6, margin: 0 }}>

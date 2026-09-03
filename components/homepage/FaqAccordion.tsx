@@ -23,7 +23,7 @@ export function FaqAccordion() {
     >
       <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
 
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '2.5rem' }}>
+        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '2.5rem' }}>
           {t('eyebrow')}
         </p>
 

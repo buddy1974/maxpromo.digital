@@ -255,13 +255,13 @@ export function AgentBureauSection({ locale }: { locale: string }) {
 
           {/* LEFT — headline, copy, CTAs, trust note */}
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>
-              {'// Max Agent Bureau'}
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+              {'Max Agent Bureau'}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', lineHeight: 1.15, color: 'var(--color-text-primary)', marginBottom: '1.25rem', maxWidth: '30rem' }}>
+            <h2 style={{ marginBottom: '1.25rem', maxWidth: '30rem' }}>
               {isDE
-                ? <>Ein KI-Team, das Arbeit <span style={{ color: ORANGE }}>vorbereitet, koordiniert und ausführt.</span></>
-                : <>An AI team that <span style={{ color: ORANGE }}>prepares, coordinates and executes work.</span></>}
+                ? <>Ein KI-Team, das Arbeit <span>vorbereitet, koordiniert und ausführt.</span></>
+                : <>An AI team that <span>prepares, coordinates and executes work.</span></>}
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.7, marginBottom: '2rem', maxWidth: '30rem' }}>
               {isDE
@@ -330,7 +330,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
         </div>
 
         {/* ─────────────────────────────────────────── WORKFLOW, compact connected strip */}
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
           {isDE ? 'Der Ablauf' : 'The workflow'}
         </p>
         <div className="hab-workflow" style={{ marginBottom: '3rem' }}>
@@ -371,7 +371,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 display: 'flex', flexDirection: 'column', gap: '18px',
               }}
             >
-              <h3 style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: group.featured ? ORANGE : 'var(--color-text-secondary)', letterSpacing: '0.08em', textTransform: 'uppercase', margin: 0 }}>
+              <h3 className="h-card" style={{ color: 'var(--color-text-secondary)', textTransform: 'uppercase', margin: 0 }}>
                 {group.title}
               </h3>
               {group.items.map((item) => (

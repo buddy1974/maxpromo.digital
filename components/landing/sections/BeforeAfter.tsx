@@ -27,7 +27,7 @@ interface BeforeAfterProps {
  */
 export function BeforeAfter({ bullets, problemStatement, lastStep, locale }: BeforeAfterProps) {
   const isDE      = locale === 'de'
-  const eyebrow   = isDE ? '// Vorher vs. nachher'   : '// Before vs. after'
+  const eyebrow   = isDE ? 'Vorher vs. nachher'   : 'Before vs. after'
   const colBefore = isDE ? 'Ohne System'              : 'Without the system'
   const colAfter  = isDE ? 'Mit dem System'           : 'With the system'
 
@@ -42,7 +42,7 @@ export function BeforeAfter({ bullets, problemStatement, lastStep, locale }: Bef
 
           {/* Before, left */}
           <div style={{ padding: '2.5rem', background: 'var(--brand-bg)' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#ef4444', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: '#ef4444', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
               ✗ {colBefore}
             </p>
             {problemStatement ? (
@@ -63,7 +63,7 @@ export function BeforeAfter({ bullets, problemStatement, lastStep, locale }: Bef
 
           {/* After, right */}
           <div style={{ padding: '2.5rem', background: 'var(--brand-bg)', borderLeft: '2px solid var(--brand-accent)' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-accent)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-accent)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
               ✓ {colAfter}
             </p>
             <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '16px', color: 'var(--brand-fg)', margin: '0 0 8px', lineHeight: 1.4 }}>

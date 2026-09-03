@@ -22,94 +22,56 @@
     "accept": "OK"
   },
   "hero": {
-    "statusOperational": "ESSEN · BUSINESS SYSTEMS",
-    "statusAgents": "Legacy modernization",
-    "statusUptime": "Runs while you sleep",
-    "headline1": "We install systems",
-    "headlineAccent": "that run businesses.",
-    "headline2": "",
-    "sub": "Maxpromo Digital is an Essen-based automation and AI systems company. We modernize old websites, connect workflows, build operational dashboards and install business systems that reduce manual work.",
-    "ctaPrimary": "Contact us",
-    "ctaSecondary": "Explore Installed Systems",
-    "urgency": "// 15+ years across CMS platforms, hosting, databases, migrations and production systems",
-    "stat1Label": "Systems live",
-    "stat2Label": "Calls caught after-hours",
-    "stat3Label": "Faster customer replies",
-    "stat4Label": "Hours back, every week",
-    "panelTitle": "YOUR BUSINESS · LIVE",
-    "panelStatusLive": "LIVE",
-    "panelLastEvent": "// latest",
-    "panelUptime": "running",
-    "eyebrow": "ESSEN · BUSINESS SYSTEMS & AUTOMATION",
-    "ticker": [
-      "● New audit request, Essen",
-      "◆ Restaurant OS active",
-      "⊟ AI agent online, responding",
-      "→ Invoice generated, Maxpromo OS",
-      "◆ Workflow completed, 3.2s",
-      "⊟ New lead captured",
-      "● CRM synced, 14 records",
-      "◆ Automation complete",
-      "→ Review collected, Google",
-      "● Maxpromo Digital LIVE"
+    "eyebrow": "ESSEN · BUSINESS SYSTEMS",
+    "headline": "We design and build the systems a company runs on.",
+    "sub": "A software consultancy in Essen. We map how a business actually works, then build the systems that carry it — connecting the tools already in use, removing the manual steps, and maintaining the result afterwards.",
+    "ctaPrimary": "Start a conversation",
+    "ctaSecondary": "See the systems",
+    "urgency": "Fifteen years across CMS platforms, hosting, databases, migrations and production systems.",
+    "ocTitle": "Operations Center",
+    "ocModules": [
+      "Business Systems",
+      "Projects",
+      "Workflows",
+      "Automation Health",
+      "Documents",
+      "Reports",
+      "Notifications",
+      "Insights",
+      "Operations"
     ],
-    "slides": [
+    "ocSystems": [
       {
-        "label": "SYSTEM STATUS",
-        "items": [
-          "+14 leads today",
-          "AI active",
-          "Revenue pipeline live"
-        ],
-        "meta": [
-          "+2 ↑",
-          "responding",
-          "● live"
-        ]
+        "name": "RestaurantOS",
+        "detail": "running · 3 locations",
+        "state": "running"
       },
       {
-        "label": "TODAY",
-        "items": [
-          "37 tasks automated",
-          "11h saved",
-          "Zero missed calls"
-        ],
-        "meta": [
-          "+5 this hour",
-          "████████░░",
-          "✓"
-        ]
+        "name": "HandwerkOS",
+        "detail": "running · 12 users",
+        "state": "running"
       },
       {
-        "label": "BUSINESS OS",
-        "items": [
-          "CRM synced",
-          "Appointments booked",
-          "Invoices active"
-        ],
-        "meta": [
-          "14 records",
-          "✓ confirmed",
-          "3 pending"
-        ]
+        "name": "Invoicing",
+        "detail": "2 awaiting approval",
+        "state": "attention"
       },
       {
-        "label": "BUILD PIPELINE",
-        "items": [
-          "Claude connected",
-          "18 workflows live",
-          "Deploy successful"
-        ],
-        "meta": [
-          "● online",
-          "running",
-          "✓ 2m ago"
-        ]
+        "name": "Review requests",
+        "detail": "next run 08:00",
+        "state": "scheduled"
       }
-    ]
+    ],
+    "ocQueueLabel": "Waiting on you",
+    "ocQueue": [
+      "Quote #2481 — drafted, ready to send",
+      "Supplier reply — drafted",
+      "Monthly report — ready"
+    ],
+    "ocFootnote": "Nothing leaves the business without approval."
   },
   "footer": {
-    "ctaEyebrow": "// Is your business still running on manual work?",
+    "ctaEyebrow": "Is your business still running on manual work?",
     "ctaHeadline": "Contact us.",
     "ctaPrimary": "Contact us",
     "ctaSecondary": "Talk to Maxpromo",
@@ -174,7 +136,7 @@
       "REGULAR POSTS",
       "NO MISSED ENQUIRIES"
     ],
-    "layersEyebrow": "// What we fix",
+    "layersEyebrow": "What we fix",
     "layersTitle1": "Six operational gaps.",
     "layersTitleAccent": "All closed.",
     "layersLede": "These are the pressures that eat evenings and weekends. We build the system that handles each one, on top of the tools you already use.",
@@ -200,13 +162,13 @@
       "l6Desc": "Counts wrong, reorders too late, cash tied up on shelves. Our system tracks stock automatically, reorders when you're running low, and reconciles with your books. No spreadsheets.",
       "l6Tags": "Live stock · Auto-reorder · No spreadsheets"
     },
-    "scenariosEyebrow": "// 02, WHERE THESE SYSTEMS LIVE",
+    "scenariosEyebrow": "02, WHERE THESE SYSTEMS LIVE",
     "scenariosTitle1": "Real operations.",
     "scenariosTitleAccent": "Real bottlenecks.",
     "scenariosLede": "Four moments from inside operations we've walked into. Pain → bottleneck → system installed → measurable outcome. No composites, no hypotheticals.",
-    "scenariosBottleneckLabel": "// Bottleneck",
-    "scenariosSystemLabel": "// System installed",
-    "scenariosResultLabel": "// Result",
+    "scenariosBottleneckLabel": "Bottleneck",
+    "scenariosSystemLabel": "System installed",
+    "scenariosResultLabel": "Result",
     "scenarios": {
       "s1Industry": "Restaurant",
       "s1Time": "Friday · 22:47",
@@ -241,7 +203,7 @@
       "s4Result": "CQC prep · 8 days → 30 minutes",
       "s4ResultDetail": "senior carers stay on the floor"
     },
-    "systemsEyebrow": "// 04, OUR SYSTEMS",
+    "systemsEyebrow": "04, OUR SYSTEMS",
     "systemsTitle1": "Production systems.",
     "systemsTitleAccent": "Live businesses.",
     "systemsLede": "Every system below is built, deployed, and running for real clients. Not prototypes. Not demos.",
@@ -272,10 +234,10 @@
       "statusLive": "LIVE",
       "statusDeployed": "DEPLOYED"
     },
-    "processEyebrow": "// HOW IT WORKS",
+    "processEyebrow": "HOW IT WORKS",
     "processTitle": "From idea to operational",
     "process": {
-      "processEyebrow": "// From first call to live system",
+      "processEyebrow": "From first call to live system",
       "processTitle": "Five steps. Then it runs.",
       "p1Num": "01",
       "p1Time": "30 min",
@@ -316,15 +278,15 @@
       "auditCta": "Contact us →",
       "windowTitle": "audit, zsh"
     },
-    "finalCtaEyebrow": "// Ready?",
+    "finalCtaEyebrow": "Ready?",
     "finalCtaTitle": "See what your business could stop doing manually.",
     "finalCtaDesc": "30 minutes. No pressure.",
     "finalCtaPrimary": "Contact us",
     "finalCtaSecondary": "Talk to Maxpromo",
-    "finalCtaFootnote": "// No commitment · No pressure · 30 minutes",
-    "builtOnEyebrow": "// built on",
+    "finalCtaFootnote": "No commitment · No pressure · 30 minutes",
+    "builtOnEyebrow": "built on",
     "benefits": {
-      "eyebrow": "// What changes",
+      "eyebrow": "What changes",
       "title": "Your business.",
       "titleAccent": "Running better.",
       "b1Title": "Every customer enquiry, caught.",
@@ -337,7 +299,7 @@
       "b4Desc": "Repetitive manual steps removed. Your team does what it is actually needed for."
     },
     "whyUs": {
-      "eyebrow": "// Why Maxpromo",
+      "eyebrow": "Why Maxpromo",
       "title": "What makes this",
       "titleAccent": "different.",
       "w1Title": "Clear start, no tech chaos",
@@ -350,7 +312,7 @@
       "w4Desc": "We build it. We go live with you. Then we stay, maintaining, adjusting, improving. Ongoing, not a one-off."
     },
     "proof": {
-      "eyebrow": "// From live systems",
+      "eyebrow": "From live systems",
       "title": "Systems we install.",
       "p1Value": "78%",
       "p1Label": "reduction in manual processing time",
@@ -361,7 +323,7 @@
       "p3Value": "3 days → 4h",
       "p3Label": "invoice cycle compressed",
       "p3Source": "Logistics · 8 weeks",
-      "note": "// Results from live production systems. Client details withheld under NDA.",
+      "note": "Results from live production systems. Client details withheld under NDA.",
       "viewAll": "See all case studies →",
       "subtitle": "Examples of operational outcomes our systems are designed to improve. Built from real operational use cases, not generic templates."
     },
@@ -381,7 +343,7 @@
       "i6Fix": "Tracked and reordered automatically."
     },
     "painCards": {
-      "eyebrow": "// Sound familiar?",
+      "eyebrow": "Sound familiar?",
       "title": "Six things that cost your business",
       "titleAccent": "time, customers and clarity.",
       "p1Tag": "Customer Enquiries",
@@ -410,7 +372,7 @@
       "p6Cta": "Our solution"
     },
     "projectTypes": {
-      "eyebrow": "// Who we work with",
+      "eyebrow": "Who we work with",
       "title": "From local business",
       "titleAccent": "to full platform.",
       "pt1Title": "Local businesses",
@@ -424,7 +386,7 @@
       "pt3Items": "Portals · Dashboards · Industry Systems · Internal Tools"
     },
     "systemsTabs": {
-      "eyebrow": "// What we build",
+      "eyebrow": "What we build",
       "title": "Business systems",
       "titleAccent": "running today.",
       "subtitle": "Explore the systems we install for different business problems.",
@@ -432,7 +394,7 @@
       "viewSystem": "Book consultation →"
     },
     "teamTrust": {
-      "eyebrow": "// The Maxpromo team",
+      "eyebrow": "The Maxpromo team",
       "title": "Built by operators.",
       "titleAccent": "Not just developers.",
       "body": "We build systems around real work.",
@@ -450,7 +412,7 @@
       "footer": "Installed for businesses across industries and markets."
     },
     "faq": {
-      "eyebrow": "// Common questions",
+      "eyebrow": "Common questions",
       "items": [
         {
           "q": "How long does installation take?",
@@ -475,7 +437,7 @@
       ]
     },
     "legacy": {
-      "eyebrow": "// Legacy modernization",
+      "eyebrow": "Legacy modernization",
       "title": "Still stuck with an old Joomla, WordPress or legacy website?",
       "subtitle": "Your website may still be online, but if updates are painful, content takes too long, your shop does not sell, your emails are manual, or your systems do not talk to each other, your business is carrying hidden operational debt.",
       "c1Title": "Old CMS, slow updates",
@@ -497,7 +459,7 @@
       "cta": "Modernize My System"
     },
     "philosophy": {
-      "eyebrow": "// How Maxpromo thinks",
+      "eyebrow": "How Maxpromo thinks",
       "title": "Systems are not invented from theory.",
       "body": "Most Maxpromo systems start from years of observing how real businesses work.\n\nRestaurants. Print shops. Publishers. Clinics. Local businesses. Legacy websites. Service teams.\n\nWe study the pain, the manual steps, the hidden bottlenecks and the workarounds people already use. Then we turn that reality into an installed system.",
       "step1": "Observe the workflow",
@@ -508,7 +470,7 @@
       "closing": "AI accelerates implementation. Experience guides decisions."
     },
     "agentBureau": {
-      "sectionLabel": "// Max Agent Bureau",
+      "sectionLabel": "Max Agent Bureau",
       "titleMain": "An AI office that prepares work,",
       "titleAccent": "not just responds to it.",
       "subtitle": "Agent Bureau audits workflows, gathers information, prepares decisions, and submits critical actions for human approval.",
@@ -539,11 +501,11 @@
       "primaryCta": "View Agent Bureau →",
       "secondaryCta": "Contact us"
     },
-    "metaTitle": "Maxpromo Digital, AI Systems for German Businesses",
-    "metaDesc": "We install AI systems into German SMEs, replacing spreadsheets, manual workflows, and disconnected tools with operational infrastructure."
+    "metaTitle": "Maxpromo Digital — Business Systems, Built in Essen",
+    "metaDesc": "A software consultancy in Essen. We replace spreadsheets, manual steps and disconnected tools with systems a business can actually run on."
   },
   "proof": {
-    "eyebrow": "// 03, RESULTS",
+    "eyebrow": "03, RESULTS",
     "title": "Numbers from live systems",
     "stat1Value": "78%",
     "stat1Desc": "reduction in manual processing time",
@@ -560,33 +522,33 @@
     "quote2": "I was sceptical. We had tried Make and Zapier before and nothing stuck. MAXPROMO built something that actually understood our business logic.",
     "quote2Author": "Founder",
     "quote2Detail": "UK care management platform",
-    "footnote": "// Names withheld under NDA. The systems are live."
+    "footnote": "Names withheld under NDA. The systems are live."
   },
   "roi": {
     "eyebrow": "ROI Calculator",
     "title": "See what automation saves you",
     "subtitle": "Real numbers. No fluff. Based on your actual team.",
-    "yourTeam": "// your team",
+    "yourTeam": "your team",
     "staffLabel": "Staff handling manual tasks",
     "staffSuffix": "people",
     "hoursLabel": "Hours per week on manual work",
     "hoursSuffix": "hrs/wk",
     "rateLabel": "Average hourly cost per employee",
-    "yourSavings": "// your savings",
+    "yourSavings": "your savings",
     "savingsHours": "Hours saved per week",
     "savingsMonthly": "Monthly cost saved",
     "savingsAnnual": "Annual ROI",
     "payback": "Typical payback period",
     "paybackValue": "60–90 days",
     "cta": "Contact us →",
-    "footnote": "// Free business check · No commitment"
+    "footnote": "Free business check · No commitment"
   },
   "pricingSection": {
-    "eyebrow": "// 05, OUR PLANS",
+    "eyebrow": "05, OUR PLANS",
     "title": "Simple monthly plans.",
     "subtitle": "No long-term lock-in. Cancel anytime.",
     "mostChosen": "✦ Most chosen",
-    "footnote": "// All plans monthly · Cancel anytime · Gemäß §19 UStG keine Umsatzsteuer",
+    "footnote": "All plans monthly · Cancel anytime · Gemäß §19 UStG keine Umsatzsteuer",
     "plan1Name": "Starter Care",
     "plan1Price": "149 €",
     "plan1Period": "/ month",
@@ -621,7 +583,7 @@
     "plan3F6": "WhatsApp support"
   },
   "faq": {
-    "eyebrow": "// 06, FAQ",
+    "eyebrow": "06, FAQ",
     "title": "Common questions",
     "q1": "How long does it take to build and deploy an automation?",
     "a1": "Most single automations go live in 7-14 days. Complex multi-system builds take 3-6 weeks. We work in clear phases: scope, build, test, launch. You always know where we are.",
@@ -649,16 +611,16 @@
   "services": {
     "metaTitle": "Services | Legacy Modernization, Workflow Automation & AI Business Systems",
     "metaDesc": "Maxpromo Digital installs business systems that modernize legacy websites, automate workflows and connect operational infrastructure for companies.",
-    "eyebrow": "// Services · What We Install",
+    "eyebrow": "Services · What We Install",
     "title1": "Six service lines.",
     "titleAccent": "One operational partner.",
     "subtitle": "Maxpromo installs systems that modernize legacy infrastructure, automate workflows, and connect business operations. Each service line solves a specific operational problem, not a generic package.",
     "layerLabel": "SERVICE",
-    "painLabel": "// what's frustrating",
-    "systemLabel": "// what we do",
-    "resultLabel": "// what changes",
-    "componentsLabel": "// what's included",
-    "shipsInLabel": "// in use now",
+    "painLabel": "what's frustrating",
+    "systemLabel": "what we do",
+    "resultLabel": "what changes",
+    "componentsLabel": "what's included",
+    "shipsInLabel": "in use now",
     "seeLiveLink": "See our systems →",
     "layers": {
       "l1Name": "Client Intake Systems",
@@ -722,7 +684,7 @@
       "l6C4": "Exception alerts",
       "l6C5": "Operational health dashboard"
     },
-    "boundaryEyebrow": "// Scope · Boundaries",
+    "boundaryEyebrow": "Scope · Boundaries",
     "boundaryTitle": "What we deliberately don't do.",
     "boundaryDesc": "Saying yes to everything is how agencies become forgettable. These are the things we turn down, every time, on purpose.",
     "boundary": {
@@ -737,7 +699,7 @@
       "n5No": "\"Migrate everything to AI\" engagements",
       "n5Why": "Most operational pain isn't solved by AI. It's solved by removing handovers, defining ownership, and installing the missing layer."
     },
-    "lifecycleEyebrow": "// Delivery Lifecycle",
+    "lifecycleEyebrow": "Delivery Lifecycle",
     "lifecycleTitle": "How a layer goes from missing to monitored.",
     "lifecycle": {
       "s1Title": "Discovery & Operational Mapping",
@@ -794,11 +756,11 @@
     "eyebrow": "Case Studies",
     "heroTitle": "Real results, real operations",
     "heroDesc": "Every number here comes from a live deployment. No demos, no projections, actual outcomes.",
-    "ndaNote": "// Results are from live production systems. Client details withheld under NDA.",
+    "ndaNote": "Results are from live production systems. Client details withheld under NDA.",
     "deliveredIn": "Delivered in",
-    "challengeLabel": "// the challenge",
-    "solutionLabel": "// the solution",
-    "resultsLabel": "// results",
+    "challengeLabel": "the challenge",
+    "solutionLabel": "the solution",
+    "resultsLabel": "results",
     "ctaEyebrow": "Your turn",
     "ctaTitle": "Results like these are possible for your business",
     "ctaDesc": "Tell us what you need help with. We will respond within one business day.",
@@ -970,7 +932,7 @@
   "systems": {
     "metaTitle": "Installed Business Systems | Maxpromo Digital",
     "metaDesc": "Configurable business operating systems derived from real deployments, for restaurants, trades, clinics, care providers, publishers, print shops, and property companies.",
-    "eyebrow": "// LIVE IN PRODUCTION",
+    "eyebrow": "LIVE IN PRODUCTION",
     "title": "Industry Operating Systems We Install",
     "subtitle": "These systems started as real deployments. Now they form the foundation of configurable business operating systems for restaurants, trades, clinics, care providers, publishers, print shops, and property companies.",
     "beforeAfterTitle": "From manual operations to installed systems.",
@@ -978,10 +940,10 @@
     "after": "After",
     "beforeItems": "Spreadsheets · WhatsApp · Paper records · Manual chasing · Disconnected tools",
     "afterItems": "AI agents · Automated workflows · Live dashboards · Centralised records · One operating system",
-    "archEyebrow": "// ARCHITECTURE",
+    "archEyebrow": "ARCHITECTURE",
     "archTitle": "How a system is composed",
     "archDesc": "Every operational runtime we install sits on the same four-layer stack, sources at the bottom, outcomes at the top, the control plane in between.",
-    "archFlow": "// Flow: SOURCES → INTAKE → ORCHESTRATION → OUTCOME, every request traced end to end",
+    "archFlow": "Flow: SOURCES → INTAKE → ORCHESTRATION → OUTCOME, every request traced end to end",
     "archLayerLabel": "LAYER",
     "architecture": {
       "a1Name": "OUTCOME",
@@ -1014,7 +976,7 @@
       "a4I5": "Walk-ins",
       "a4I6": "CRM events"
     },
-    "lifecycleEyebrow": "// LIFECYCLE",
+    "lifecycleEyebrow": "LIFECYCLE",
     "lifecycleTitle": "How a request passes through",
     "lifecycleDesc": "Five stages, named the way an operations team names them. Each stage produces audit signal, nothing happens silently.",
     "lifecycle": {
@@ -1029,7 +991,7 @@
       "s5Name": "Audit",
       "s5Desc": "Outcome logged. Tamper-proof history. Drift signal recorded."
     },
-    "escalationEyebrow": "// ESCALATION POLICY",
+    "escalationEyebrow": "ESCALATION POLICY",
     "escalationTitle": "When the system steps back",
     "escalationDesc": "A governed system names its boundaries out loud. These are the moments where the runtime deliberately stops, surfaces context, and hands control to a named human.",
     "escTrigger": "Trigger",
@@ -1113,13 +1075,13 @@
       "requestCta": "Request Similar System →",
       "viewLive": "View Live →"
     },
-    "ctaEyebrow": "// BUILD YOURS",
+    "ctaEyebrow": "BUILD YOURS",
     "ctaTitleLine1": "Want a system like this",
     "ctaTitleLine2": "built for your business?",
     "ctaDesc": "Every system above was built from scratch. Yours is next.",
     "ctaPrimary": "Start Discovery →",
     "ctaSecondary": "Get Instant Estimate →",
-    "ctaFootnote": "// Average delivery: 14 days · 3 onboarding slots open this month"
+    "ctaFootnote": "Average delivery: 14 days · 3 onboarding slots open this month"
   },
   "about": {
     "metaTitle": "About Maxpromo | Built Before AI Became Fashion",
@@ -1127,13 +1089,13 @@
     "eyebrow": "About Maxpromo",
     "title": "Built before AI became fashion.",
     "intro": "Maxpromo Digital is an Essen-based business systems and automation company. Long before AI agents became mainstream, we were already working inside CMS platforms, hosting environments, databases, migrations and production systems. The technical depth came first. The AI layer came later.",
-    "storyEyebrow": "// Where the experience comes from",
+    "storyEyebrow": "Where the experience comes from",
     "storyTitle": "Years of real systems work.",
     "storyBody": "From Joomla and WordPress to Drupal and TYPO3. From shared hosting to WAMP environments, phpMyAdmin, SQL imports, .htaccess, PHP version management and production recovery. Maxpromo has worked across the full lifecycle of digital systems, including a complete migration of a Joomla website originally built around 2014 into a modern CI/CD deployment pipeline. That is legacy system transformation, not a website project.",
-    "transformEyebrow": "// From legacy websites to operational systems",
+    "transformEyebrow": "From legacy websites to operational systems",
     "transformTitle": "Most businesses do not need another website.",
     "transformBody": "They need old systems modernized, manual work removed, and workflows connected. Joomla installations that nobody wants to touch. WordPress sites that take a developer to update. Catalogue shops with no stock logic. Email lists sitting unused in Excel. Manual processes disguised as digital ones. That is the gap we close.",
-    "todayEyebrow": "// Today",
+    "todayEyebrow": "Today",
     "todayTitle": "Today we install AI-powered business systems.",
     "todayList": [
       "Workflow automation",
@@ -1163,7 +1125,7 @@
       "v6Title": "We stay responsible",
       "v6Desc": "The system goes live, and we stay on it. Support, adjustments, continuity."
     },
-    "whyEyebrow": "// Hidden operational debt",
+    "whyEyebrow": "Hidden operational debt",
     "whyLead": "Most businesses are carrying hidden operational debt. Old websites nobody wants to touch, manual workflows disguised as digital ones, email lists sitting unused, tools that do not connect. Every missed follow-up, late invoice, and disconnected workflow is a quiet cost adding up.",
     "whyClosing": "That is the gap we close.",
     "howEyebrow": "How we work",
@@ -1190,9 +1152,9 @@
     "stackEyebrow": "Infrastructure",
     "stackTitle": "Modern, proven tools, kept in the background so you never have to think about them.",
     "stack": {
-      "r1Label": "// AI & AUTOMATION",
-      "r2Label": "// INFRASTRUCTURE",
-      "r3Label": "// INTEGRATIONS"
+      "r1Label": "AI & AUTOMATION",
+      "r2Label": "INFRASTRUCTURE",
+      "r3Label": "INTEGRATIONS"
     },
     "ctaEyebrow": "Ready to start?",
     "ctaTitle": "Talk to us.",
@@ -1206,7 +1168,7 @@
     "eyebrow": "Pricing",
     "title": "Simple monthly plans for small businesses",
     "subtitle": "No long-term lock-in. No hidden fees. Contact us and we will recommend the right plan for you.",
-    "footnote": "// Gemäß §19 UStG wird keine Umsatzsteuer berechnet. · Business system installation from €999 · Custom projects priced after business check.",
+    "footnote": "Gemäß §19 UStG wird keine Umsatzsteuer berechnet. · Business system installation from €999 · Custom projects priced after business check.",
     "tiers": {
       "t1Name": "Digital Starter Care",
       "t1Price": "149 €",
@@ -1264,10 +1226,10 @@
     "ctaDesc": "Tell us what you need. We will explain what we recommend before any cost or commitment.",
     "ctaPrimary": "Contact us",
     "ctaSecondary": "Contact us",
-    "ctaFootnote": "// Free business check · No commitment · Gemäß §19 UStG keine Umsatzsteuer"
+    "ctaFootnote": "Free business check · No commitment · Gemäß §19 UStG keine Umsatzsteuer"
   },
   "contact": {
-    "eyebrow": "// Talk to us",
+    "eyebrow": "Talk to us",
     "title": "Contact us",
     "subtitle": "Tell us briefly what you need help with. We will reply within one business day.",
     "cardChatTitle": "Chat with Max",
@@ -1308,10 +1270,10 @@
       "other": "Other"
     },
     "formRequired": "*",
-    "formAutomationLabel": "// Enquiring about:",
+    "formAutomationLabel": "Enquiring about:",
     "formCta": "Send Message →",
     "formCtaSending": "Sending...",
-    "formPrivacy": "// Your information is never shared with third parties.",
+    "formPrivacy": "Your information is never shared with third parties.",
     "successTitle": "Message sent.",
     "successDesc": "We will reply within one business day.",
     "successDirect": "If you don't hear from us, email us directly at",
@@ -1321,52 +1283,52 @@
     "systemLabel": "System:",
     "systems": {
       "agent-bureau": {
-        "eyebrow": "// Agent Bureau, Consultation Request",
+        "eyebrow": "Agent Bureau, Consultation Request",
         "title": "Meet Max Agent Bureau",
         "subtitle": "See how our AI agents support your operations, follow-ups, approvals, priorities. No commitment required."
       },
       "restaurant-os": {
-        "eyebrow": "// RestaurantOS, Demo Request",
+        "eyebrow": "RestaurantOS, Demo Request",
         "title": "RestaurantOS for your restaurant",
         "subtitle": "Show us your operation. We’ll set up a demo that matches your restaurant, QR ordering, kitchen routing, and billing."
       },
       "handwerk-os": {
-        "eyebrow": "// HandwerkOS, Request Walkthrough",
+        "eyebrow": "HandwerkOS, Request Walkthrough",
         "title": "HandwerkOS for your trade business",
         "subtitle": "Walkthrough of the live system, job capture, quotes, XRechnung export. Configured for your business type."
       },
       "praxis-os": {
-        "eyebrow": "// PraxisOS, Consultation Request",
+        "eyebrow": "PraxisOS, Consultation Request",
         "title": "PraxisOS for your practice",
         "subtitle": "See the system in action, appointment management, patient records, billing. We’ll walk you through the workflow live."
       },
       "printshop-os": {
-        "eyebrow": "// PrintShopOS, Demo Request",
+        "eyebrow": "PrintShopOS, Demo Request",
         "title": "PrintShopOS for your print shop",
         "subtitle": "Show us your job flow. We configure a demo for your specific print operation."
       },
       "care-os": {
-        "eyebrow": "// CareOS, Request Walkthrough",
+        "eyebrow": "CareOS, Request Walkthrough",
         "title": "CareOS for your care facility",
         "subtitle": "Walkthrough of the live system, scheduling, documentation, billing. Configured for your care operation."
       },
       "real-estate-os": {
-        "eyebrow": "// RealEstateOS, Consultation Request",
+        "eyebrow": "RealEstateOS, Consultation Request",
         "title": "RealEstateOS for your real estate business",
         "subtitle": "See the management and automation system live, listings, tenants, billing."
       },
       "publishing-os": {
-        "eyebrow": "// PublishingOS, Demo Request",
+        "eyebrow": "PublishingOS, Demo Request",
         "title": "PublishingOS for your publishing house",
         "subtitle": "Show us your editorial workflow. We configure the system for your publishing type."
       },
       "taxkontrol": {
-        "eyebrow": "// TaxKontrol, Request Walkthrough",
+        "eyebrow": "TaxKontrol, Request Walkthrough",
         "title": "TaxKontrol for your business",
         "subtitle": "See the system live, tax reserves, deadlines, expense tracking, configured for your business type."
       },
       "drive24": {
-        "eyebrow": "// Drive24, Request Access",
+        "eyebrow": "Drive24, Request Access",
         "title": "Drive24, Driver Placement",
         "subtitle": "Talk to us about driver access or partnership."
       }
@@ -1416,7 +1378,7 @@
     "homepageLede": "Real observations on automation, AI systems, and what actually works for business owners.",
     "homepageViewAll": "View all articles →",
     "readArticle": "Read article →",
-    "indexEyebrow": "// Insights",
+    "indexEyebrow": "Insights",
     "indexTitle": "Insights",
     "indexTitleAccent": "from the field.",
     "indexLede": "How we think about automation, legacy systems, AI agents, and the systems we build, written for the people running real businesses.",
@@ -1460,7 +1422,7 @@
     "relatedTitle": "Related system",
     "relatedCta": "See the system →",
     "relatedPostsTitle": "Related articles",
-    "bottomCtaEyebrow": "// Ready to install a system?",
+    "bottomCtaEyebrow": "Ready to install a system?",
     "bottomCtaTitle": "Talk to us.",
     "bottomCtaPrimary": "Contact us →",
     "bottomCtaSecondary": "Talk to us →",
@@ -1468,7 +1430,7 @@
     "authorBy": "By",
     "ctaBlockTitle": "Still running an old system?",
     "ctaBlockBody": "Tell us what you need help with. No commitment.",
-    "relatedServicesEyebrow": "// Related services",
+    "relatedServicesEyebrow": "Related services",
     "relatedServicesTitle": "Services we install",
     "svc1Title": "Workflow Automation",
     "svc1Desc": "Connect your tools and eliminate repeated manual steps.",
@@ -1479,9 +1441,9 @@
     "svc3Title": "AI Agents",
     "svc3Desc": "AI agents that handle inquiries, booking and follow-up, 24/7.",
     "svc3Cta": "See service →",
-    "relatedSystemsEyebrow": "// Installed systems",
+    "relatedSystemsEyebrow": "Installed systems",
     "relatedSystemsTitle": "Systems we built",
-    "whatsappEyebrow": "// Quick question?",
+    "whatsappEyebrow": "Quick question?",
     "whatsappTitle": "Chat with us on WhatsApp.",
     "whatsappCta": "Start conversation →",
     "whatsappMsg": "Hi, I read your article and have a question about my business."
@@ -1707,7 +1669,7 @@
       "Calculating intelligence opportunities...",
       "Preparing your diagnostic report..."
     ],
-    "loadingCaption": "// operational intelligence engine",
+    "loadingCaption": "operational intelligence engine",
     "sections": {
       "stress": {
         "headline": "What slows your business down every week?",
@@ -1888,7 +1850,7 @@
     "fieldEmailPlaceholder": "jane@company.com",
     "fieldPhoneLabel": "Phone",
     "fieldPhonePlaceholder": "+49 151 ...",
-    "contactFootnote": "// No spam. Your data is used only to deliver and discuss your diagnostic.",
+    "contactFootnote": "No spam. Your data is used only to deliver and discuss your diagnostic.",
     "backButton": "← Back",
     "continueButton": "Continue →",
     "submitButton": "Submit Diagnostic →",
@@ -1897,9 +1859,9 @@
     "receivedTitle": "{name}, Operational Intelligence Report",
     "receivedFallbackName": "your business",
     "receivedSummary": "Based on your responses, we have identified {count} potential improvement area{plural}. A consultant will review your diagnostic and be in touch within 24 hours.",
-    "opportunitiesLabel": "// Opportunities detected",
+    "opportunitiesLabel": "Opportunities detected",
     "discussTitle": "Want to discuss your results?",
-    "discussCaption": "// A consultant will contact you within 24 hours",
+    "discussCaption": "A consultant will contact you within 24 hours",
     "talkToUsCta": "Talk to us now →",
     "categories": {
       "workflow-automation": {
@@ -1954,9 +1916,9 @@
       "estRoiLabel": "Est. ROI",
       "complexityLabel": "Complexity: {value}",
       "timelineLabel": "⏱ {value}",
-      "problemLabel": "// the problem",
-      "solutionLabel": "// the solution",
-      "toolsLabel": "// tools",
+      "problemLabel": "the problem",
+      "solutionLabel": "the solution",
+      "toolsLabel": "tools",
       "readyToBuildLabel": "Ready to Build?",
       "ctaTitle": "Turn these opportunities into live systems",
       "ctaBody": "Book a 30-minute discovery call. We'll scope the highest-impact automation and give you a fixed-price proposal.",

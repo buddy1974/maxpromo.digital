@@ -191,7 +191,6 @@ function getCategories(locale: string): Category[] {
 }
 
 const mono = { fontFamily: 'var(--font-roboto-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-inter)' } as const
 const sans = { fontFamily: 'var(--font-inter)' } as const
 
 export default async function AutomationLabPage({
@@ -215,10 +214,10 @@ export default async function AutomationLabPage({
       {/* Header */}
       <section style={{ background: 'var(--color-bg)', padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
-            {t(locale, '// Referenz-Bibliothek', '// Reference Library')}
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+            {t(locale, 'Referenz-Bibliothek', 'Reference Library')}
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h1 style={{ marginBottom: '20px' }}>
             {t(locale, 'Operations-Engineering-Referenz', 'Operations Engineering Reference')}
           </h1>
           <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '46rem', margin: '0 auto 2rem', lineHeight: 1.7 }}>
@@ -260,22 +259,10 @@ export default async function AutomationLabPage({
           }}
         >
           <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-            <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>
               {`// ${cat.heading}`}
             </p>
-            <h2
-              style={{
-                ...grotesk,
-                fontWeight: 700,
-                fontSize: '30px',
-                color: 'var(--color-text-primary)',
-                letterSpacing: '-0.01em',
-                marginBottom: '2rem',
-                paddingBottom: '16px',
-                borderBottom: '2px solid var(--color-primary)',
-                display: 'inline-block',
-              }}
-            >
+            <h2 style={{ marginBottom: '2rem', paddingBottom: '16px', borderBottom: '2px solid var(--color-primary)', display: 'inline-block' }}>
               {cat.heading}
             </h2>
             <div
@@ -293,10 +280,10 @@ export default async function AutomationLabPage({
       {/* CTA */}
       <section style={{ background: 'var(--color-bg-section)', padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
-            {t(locale, '// Eine individuelle Ebene entwickeln', '// Architect a custom layer')}
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+            {t(locale, 'Eine individuelle Ebene entwickeln', 'Architect a custom layer')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h2 style={{ marginBottom: '20px' }}>
             {t(locale, 'Brauchen Sie eine Runtime, die nicht in der Referenz steht?', "Need a runtime that isn't in the reference?")}
           </h2>
           <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.7 }}>

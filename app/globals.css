@@ -1,419 +1,378 @@
 @import "tailwindcss";
+@import "../design/tokens/brand.css";
 
-/* ─── MAXPROMO — Visual Facelift v2.1 design system ───
-   Source of truth: design/visual-facelift-v2.1.md
-   Replaces the deprecated "Plasma + Obsidian" dark/gradient system.
-   Footer stays a deliberate dark surface (#161A1D); everything else is light. */
+/* =============================================================================
+   MAXPROMO — application stylesheet
+   =============================================================================
+   All design values come from design/tokens/brand.css. This file contains only
+   the reset, base element styling, and the small set of component classes that
+   are genuinely shared. It defines no colours, sizes or spacing of its own.
 
+   Batch B3 of the v4.0 platform transformation. Replaces the v2.1 stylesheet,
+   which carried 26 raw hex values, 12 rules hardcoding rgba(249,115,22,…), and
+   22 CSS classes with zero remaining consumers.
+   ========================================================================== */
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   B3 TRANSITIONAL — DELETE THIS BLOCK IN B9
+
+   Tokenisation deliberately lands before the brand change, so that every sweep
+   batch (B4–B8) can be verified by the ABSENCE of visual change — the cheapest
+   possible QA question. This block holds the accent at the retiring orange so
+   nothing shifts while the sweeps run. B9 deletes it, and the entire platform
+   changes to Brand Lime in one reviewable, revertible commit.
+   ───────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Color */
-  --color-bg:             #FFFFFF;
-  --color-bg-section:     #F8F9FA;
-  --color-border:         #E4E4E7;
-  --color-text-primary:   #18181B;
-  --color-text-secondary: #52525B;
-  --color-primary:        #F97316;
-  --color-primary-hover:  #EA580C;
-  --color-footer-bg:      #161A1D;
-  --color-footer-text:    #D6D8DB;
+  --brand-primary:       #F97316;
+  --brand-primary-hover: #FB8B3D;
+  --brand-primary-dark:  #EA580C;
+  --brand-primary-text:  #C2410C;
+  --brand-primary-soft:  #FFF7ED;
+  --brand-on-primary:    #FFFFFF;
+  --brand-focus:         #EA580C;
+}
+/* ───────────────────────────── END TRANSITIONAL ──────────────────────────── */
 
-  /* Typography scale (desktop targets per spec; components clamp for mobile) */
-  --text-hero:          5.25rem; /* 84px, weight 800 */
-  --text-section-title: 3.5rem;  /* 56px, weight 700 */
-  --text-card-title:    1.875rem;/* 30px, weight 600 */
-  --text-body:          1.25rem; /* 20px */
-  --text-nav:           1.125rem;/* 18px */
-  --text-button:        1.125rem;/* 18px */
 
-  /* Layout */
-  --container-width: 1500px;
-  --space-section:   140px;
-  --space-card:      40px;
-  --radius-card:     8px;
+/* ─────────────────────────────────────────────────────────────────────────────
+   LEGACY ALIASES
 
-  /* Shadows — subtle only, never glow */
-  --shadow-card:     0 1px 2px rgba(24,24,27,0.04), 0 1px 1px rgba(24,24,27,0.03);
-  --shadow-elevated: 0 4px 16px rgba(24,24,27,0.08);
+   ~1100 call sites still reference the v2.1 --color-* names. Rather than a
+   1100-line find-and-replace, they are repointed here so every consumer
+   inherits the new system immediately. Call sites migrate to --brand-* names
+   opportunistically as each file is touched; this block shrinks over time.
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --color-bg:             var(--brand-background);
+  --color-bg-section:     var(--brand-surface-subtle);
+  --color-border:         var(--brand-border);
+  --color-text-primary:   var(--brand-text);
+  --color-text-secondary: var(--brand-text-secondary);
+  --color-primary:        var(--brand-primary);
+  --color-primary-hover:  var(--brand-primary-hover);
+  --color-footer-bg:      var(--brand-surface-inverted);
+  --color-footer-text:    var(--brand-text-inverted-secondary);
 
-  /* Fonts (families unchanged by the facelift, sizes/weights are) */
-  --font-heading: var(--font-space-grotesk), sans-serif;
-  --font-body:    var(--font-inter), system-ui, sans-serif;
-  --font-mono:    var(--font-roboto-mono), monospace;
+  --font-heading: var(--brand-font-heading);
+  --font-body:    var(--brand-font-body);
+  --font-mono:    var(--brand-font-mono);
 
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --text-hero:          var(--text-h1);
+  --text-section-title: var(--text-h2);
+  --text-card-title:    var(--text-h3);
+  --text-nav:           var(--text-small);
+  --text-button:        var(--text-small);
+
+  --container-width: var(--container);
+  --space-section:   var(--section-y);
+  --space-card:      var(--space-6);
+  --radius-card:     var(--radius-lg);
+
+  --shadow-card:     var(--shadow-sm);
+  --shadow-elevated: var(--shadow-lg);
+
+  --ease-out-expo: var(--ease);
 }
 
 @theme inline {
-  --color-background:      var(--color-bg);
-  --color-foreground:      var(--color-text-primary);
-  --color-bg-section:      var(--color-bg-section);
-  --color-border:          var(--color-border);
-  --color-primary:         var(--color-primary);
-  --color-primary-hover:   var(--color-primary-hover);
-  --color-text-primary:    var(--color-text-primary);
-  --color-text-secondary:  var(--color-text-secondary);
-  --color-footer-bg:       var(--color-footer-bg);
-  --color-footer-text:     var(--color-footer-text);
-  --font-sans:             var(--font-inter);
-  --font-mono:             var(--font-roboto-mono);
-  --font-display:          var(--font-space-grotesk);
+  --color-background:     var(--brand-background);
+  --color-foreground:     var(--brand-text);
+  --color-bg-section:     var(--brand-surface-subtle);
+  --color-border:         var(--brand-border);
+  --color-primary:        var(--brand-primary);
+  --color-primary-hover:  var(--brand-primary-hover);
+  --color-text-primary:   var(--brand-text);
+  --color-text-secondary: var(--brand-text-secondary);
+  --color-footer-bg:      var(--brand-surface-inverted);
+  --color-footer-text:    var(--brand-text-inverted-secondary);
+  --font-sans:            var(--brand-font-sans);
+  --font-mono:            var(--brand-font-mono);
+  --font-display:         var(--brand-font-heading);
 }
 
-/* ─── Reset ─── */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
 
-html {
-  scroll-behavior: smooth;
-}
+/* ─── Reset ───────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  font-family: var(--font-body);
-  font-size: 20px;
-  line-height: 1.7;
+  background: var(--brand-background);
+  color: var(--brand-text);
+  font-family: var(--brand-font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* One family. Hierarchy comes from weight and size, not typeface. */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  letter-spacing: -0.02em;
-  color: var(--color-text-primary);
+  font-family: var(--brand-font-heading);
+  color: var(--brand-text);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
 }
 
-code, pre, .mono {
-  font-family: var(--font-mono);
+h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); }
+h2 { font-size: var(--text-h2); font-weight: var(--weight-subhead); line-height: var(--leading-snug); }
+h3 { font-size: var(--text-h3); font-weight: var(--weight-subhead); line-height: var(--leading-heading); }
+h4 { font-size: var(--text-h4); font-weight: var(--weight-subhead); line-height: var(--leading-heading); letter-spacing: 0; }
+
+/* Headings inside cards and grid tiles. The section scale is too loud at card
+   size — a 3-up grid of 32px headings reads as a pricing page, not a document.
+   Applied from the size each heading actually carried before the scale landed. */
+.h-card {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  letter-spacing: 0;
 }
+
+p { text-wrap: pretty; }
+
+/* Mono is for code, data and document reference numbers. Not for labels. */
+code, pre, .mono { font-family: var(--brand-font-mono); }
 
 ::selection {
-  background: var(--color-primary);
-  color: #FFFFFF;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--brand-focus);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
-/* ─── Buttons ───
-   Foundation classes for later phases; Navbar/Footer already use these. */
+
+/* ─── Links ───────────────────────────────────────────────────────────────────
+   Black with an underline, not accent-coloured. The accent appears on hover
+   only. This is the documentation convention every reference company uses, and
+   it is the single largest reduction in accent surface across the platform.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.link {
+  color: var(--brand-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--brand-border-strong);
+  transition: color var(--duration-fast) var(--ease),
+              text-decoration-color var(--duration-fast) var(--ease);
+}
+.link:hover {
+  color: var(--brand-primary-text);
+  text-decoration-color: currentColor;
+}
+
+/* Navigational links inside chrome — no underline, no accent. */
+.nav-link {
+  color: var(--brand-text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease);
+}
+.nav-link:hover { color: var(--brand-text); }
+
+.footer-link {
+  color: var(--brand-text-inverted-secondary);
+  text-decoration: none;
+  font-size: var(--text-small);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  transition: color var(--duration-fast) var(--ease);
+}
+.footer-link:hover { color: var(--brand-text-inverted); }
+
+
+/* ─── Section label ───────────────────────────────────────────────────────────
+   Replaces the `// eyebrow` motif. Uppercase sans, secondary grey — never
+   mono, never accent-coloured. Section labels were the single most frequent
+   accent appearance on every page.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.section-label {
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--brand-text-secondary);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  margin: 0 0 var(--space-3);
+}
+
+
+/* ─── Buttons ─────────────────────────────────────────────────────────────── */
+
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  font-family: var(--font-body);
-  font-size: var(--text-button);
-  font-weight: 600;
+  gap: var(--space-2);
+  font-family: var(--brand-font-body);
+  font-size: var(--text-small);
+  font-weight: var(--weight-subhead);
   line-height: 1.2;
-  padding: 14px 28px;
-  border-radius: var(--radius-card);
+  padding: 13px 24px;
+  border-radius: var(--radius-md);
   text-decoration: none;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
   white-space: nowrap;
+  transition: background-color var(--duration-base) var(--ease),
+              border-color var(--duration-base) var(--ease),
+              color var(--duration-base) var(--ease);
 }
+
+/* The one place brand lime is a fill. Text on it is --brand-on-primary. */
 .btn-primary {
-  background: var(--color-primary);
-  color: #FFFFFF;
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
 }
-.btn-primary:hover {
-  background: var(--color-primary-hover);
-}
+.btn-primary:hover { background: var(--brand-primary-hover); }
+
 .btn-secondary {
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  border-color: var(--color-border);
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border-color: var(--brand-border-strong);
 }
-.btn-secondary:hover {
-  border-color: var(--color-text-secondary);
-}
+.btn-secondary:hover { border-color: var(--brand-text); }
 
-/* ─── Cards ───
-   White surface, 1px border, subtle shadow only. No gradients, no glow. */
+.btn-ghost {
+  background: transparent;
+  color: var(--brand-text-secondary);
+  padding-left: 0;
+  padding-right: 0;
+}
+.btn-ghost:hover { color: var(--brand-text); }
+
+
+/* ─── Surfaces ────────────────────────────────────────────────────────────── */
+
 .card {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
-  padding: var(--space-card);
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
 }
 
-/* ─── Forms ─── */
+.rule {
+  border: 0;
+  border-top: 1px solid var(--brand-border);
+  margin: 0;
+}
+
+
+/* ─── Forms ───────────────────────────────────────────────────────────────── */
+
 .input, .textarea, .select {
   width: 100%;
-  background: var(--color-bg);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-card);
-  padding: 12px 16px;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  transition: border-color 150ms ease;
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border: 1px solid var(--brand-border-strong);
+  border-radius: var(--radius-md);
+  padding: 11px 14px;
+  font-family: var(--brand-font-body);
+  font-size: var(--text-small);
+  transition: border-color var(--duration-fast) var(--ease);
 }
 .input:focus, .textarea:focus, .select:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--brand-text);
 }
 .label {
   display: block;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  margin-bottom: 6px;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--brand-text-secondary);
+  margin-bottom: var(--space-2);
 }
 
-/* ─── Legacy surfaces, repointed to the new light system ───
-   These classes are still referenced by components not yet migrated
-   page-by-page (later phases). Redefined here instead of deleted so
-   every consumer inherits the new system without a page-by-page edit.
-   Glass/blur/glow effects are removed outright — the spec forbids them. */
-.glass, .glass-strong {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+
+/* ─── Layout helpers ──────────────────────────────────────────────────────── */
+
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--section-x);
+}
+.container-narrow {
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--section-x);
 }
 
-.grid-bg {
-  background-image: none;
-}
+/* Exactly three section rhythms. Anything else fails review. */
+.section          { padding-block: var(--section-y); }
+.section-compact  { padding-block: var(--section-y-compact); }
+.section-feature  { padding-block: var(--section-y-feature); }
 
-.text-gradient-plasma, .text-gradient-aurora {
-  background: none;
-  -webkit-background-clip: initial;
-  background-clip: initial;
-  color: var(--color-text-primary);
+.cs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
 }
+@media (max-width: 768px) { .cs-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .cs-grid { grid-template-columns: 1fr; } }
 
-/* Sweep-on-hover removed; class kept as a harmless wrapper for callers. */
-.shine {
-  position: relative;
-  overflow: hidden;
-}
 
-.border-gradient {
-  position: relative;
-  isolation: isolate;
-}
-.border-gradient::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 1px;
-  border-radius: inherit;
-  background: var(--color-border);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ─── Motion ──────────────────────────────────────────────────────────────────
+   Functional only. Entrance cascade, image and card micro-interactions. The
+   decorative Ken Burns, glow-pulse, marquee and terminal animations from the
+   pre-facelift system had no remaining consumers and are gone.
+   ───────────────────────────────────────────────────────────────────────── */
 
-.glow-primary {
-  box-shadow: none;
-}
-
-/* ─── System card CTA (already on-brand orange, kept) ─── */
-.sys-cta {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-primary);
-  text-decoration: none;
-  letter-spacing: 0.05em;
-  border: 1px solid rgba(249,115,22,0.25);
-  background: rgba(249,115,22,0.06);
-  padding: 7px 14px;
-  border-radius: 6px;
-  transition: background 0.2s ease, border-color 0.2s ease;
-  display: inline-block;
-  align-self: flex-start;
-}
-.sys-cta:hover {
-  background: rgba(249,115,22,0.15);
-  border-color: rgba(249,115,22,0.5);
-}
-
-.sys-cta-ghost {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  letter-spacing: 0.05em;
-  border: 1px solid var(--color-border);
-  background: transparent;
-  padding: 7px 14px;
-  border-radius: 6px;
-  transition: color 0.2s ease, border-color 0.2s ease;
-  display: inline-block;
-}
-.sys-cta-ghost:hover {
-  color: var(--color-text-primary);
-  border-color: var(--color-text-secondary);
-}
-
-/* ─── Cursor blink (functional, not decorative) ─── */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-.cursor-blink {
-  animation: blink 0.8s step-end infinite;
-}
-
-/* ─── Status dot pulse (functional live-status indicator) ─── */
-@keyframes status-pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.1; }
-}
-.status-pulse {
-  animation: status-pulse 1.5s ease-in-out infinite;
-}
-
-/* ─── Marquee (logo/testimonial ticker — structural) ─── */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.animate-marquee {
-  animation: marquee 38s linear infinite;
-}
-
-/* ─── Legacy surface/hover classes, repointed to light tokens ─── */
-.service-card {
-  transition: transform 200ms ease, border-color 200ms ease;
-}
-.service-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--color-primary) !important;
-}
-
-.dark-card {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  transition: all 0.25s ease;
-}
-.dark-card:hover {
-  background: var(--color-bg-section) !important;
-  border-color: rgba(249,115,22,0.3) !important;
-  transform: translateY(-2px);
-}
-
-.process-step {
-  transition: all 0.2s ease;
-}
-.process-step:hover {
-  background: var(--color-bg-section) !important;
-  border-color: rgba(249,115,22,0.2) !important;
-}
-
-.industry-card {
-  transition: all 0.2s ease;
-}
-.industry-card:hover {
-  background: var(--color-bg-section) !important;
-  border-color: rgba(249,115,22,0.2) !important;
-  transform: translateY(-2px);
-}
-
-/* ─── Nav / footer links ─── */
-.nav-link {
-  color: var(--color-text-secondary);
-  transition: color 150ms ease;
-}
-.nav-link:hover {
-  color: var(--color-text-primary);
-}
-.footer-link {
-  color: var(--color-footer-text);
-  transition: color 150ms ease;
-  text-decoration: none;
-  font-family: var(--font-body);
-  font-size: 15px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-}
-.footer-link:hover {
-  color: var(--color-primary);
-}
-
-/* ─── Audit chips ─── */
-.audit-chip {
-  cursor: pointer;
-  transition: all 150ms ease;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-}
-.audit-chip:hover {
-  border-color: rgba(249,115,22,0.4);
-  color: var(--color-text-primary);
-}
-.audit-chip.selected {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  background: rgba(249,115,22,0.08);
-}
-
-/* ─── Result cards ─── */
-@keyframes slideUp {
+@keyframes mp-fade-up {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.result-card {
-  border-left: 3px solid var(--color-primary);
-  animation: slideUp 0.4s ease both;
-}
 
-/* ─── Audit loading pulse (functional) ─── */
-@keyframes auditPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50%       { transform: scale(1.18); opacity: 0.75; }
-}
-.audit-pulse {
-  animation: auditPulse 1.2s ease-in-out infinite;
-}
+.mp-hero-1 { animation: mp-fade-up 0.5s var(--ease) 0ms   both; }
+.mp-hero-2 { animation: mp-fade-up 0.5s var(--ease) 80ms  both; }
+.mp-hero-3 { animation: mp-fade-up 0.5s var(--ease) 160ms both; }
+.mp-hero-4 { animation: mp-fade-up 0.5s var(--ease) 240ms both; }
+.mp-hero-5 { animation: mp-fade-up 0.5s var(--ease) 320ms both; }
 
-/* ─── Chat widget (untouched pending its own phase; ring uses on-brand orange) ─── */
-@keyframes fadeInLine {
-  from { opacity: 0; transform: translateX(-6px); }
-  to   { opacity: 1; transform: translateX(0); }
+.mp-img-wrap { overflow: hidden; }
+.mp-img-wrap img {
+  display: block;
+  transition: transform 500ms var(--ease);
 }
-.terminal-line {
-  opacity: 0;
-  animation: fadeInLine 0.25s ease forwards;
-}
+.mp-img-wrap:hover img { transform: scale(1.02); }
 
-@keyframes chatPulseRing {
-  0%   { box-shadow: 0 0 0 0 hsl(28 100% 58% / 0.4), 0 8px 32px hsl(28 100% 58% / 0.25); }
-  70%  { box-shadow: 0 0 0 18px hsl(28 100% 58% / 0), 0 8px 32px hsl(28 100% 58% / 0.25); }
-  100% { box-shadow: 0 0 0 0 hsl(28 100% 58% / 0), 0 8px 32px hsl(28 100% 58% / 0.25); }
+.mp-card-hover {
+  transition: border-color var(--duration-base) var(--ease);
 }
-.chat-pulse-ring {
-  animation: chatPulseRing 2s ease-out infinite;
-}
+.mp-card-hover:hover { border-color: var(--brand-border-strong); }
 
-@keyframes chatSlideUp {
-  from { opacity: 0; transform: translateY(24px) scale(0.94); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+.service-card {
+  transition: border-color var(--duration-base) var(--ease);
 }
-.chat-window-enter {
-  animation: chatSlideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
+.service-card:hover { border-color: var(--brand-border-strong); }
 
+.pain-card-img { transition: transform 500ms var(--ease); }
+.pain-card:hover .pain-card-img { transform: scale(1.03); }
+
+/* Live-status indicator — functional, not decorative. */
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.25; }
+}
+.status-pulse { animation: status-pulse 2s ease-in-out infinite; }
+
+/* Chat widget typing indicator. */
 @keyframes typingDot {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30%            { transform: translateY(-5px); opacity: 1; }
+  30%           { transform: translateY(-4px); opacity: 1; }
 }
 .typing-dot {
   width: 6px;
   height: 6px;
-  background: var(--color-primary);
-  border-radius: 50%;
+  background: var(--brand-text-muted);
+  border-radius: var(--radius-full);
   animation: typingDot 1s ease-in-out infinite;
   display: inline-block;
 }
@@ -422,80 +381,36 @@ code, pre, .mono {
 
 .chat-scroll::-webkit-scrollbar       { width: 4px; }
 .chat-scroll::-webkit-scrollbar-track { background: transparent; }
-.chat-scroll::-webkit-scrollbar-thumb { background: rgba(249,115,22,0.25); }
+.chat-scroll::-webkit-scrollbar-thumb { background: var(--brand-border-strong); }
 
-/* ─── Range sliders (ROI Calculator) ─── */
-input[type='range'] {
-  -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
-  cursor: pointer;
-}
-input[type='range']::-webkit-slider-runnable-track {
-  height: 3px;
-  background: var(--color-border);
-}
-input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  border: 2px solid var(--color-bg);
-  box-shadow: 0 0 0 3px rgba(249,115,22,0.25);
-  margin-top: -8px;
-}
-input[type='range']::-moz-range-track {
-  height: 3px;
-  background: var(--color-border);
-}
-input[type='range']::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  border: 2px solid var(--color-bg);
-  box-shadow: 0 0 0 3px rgba(249,115,22,0.25);
-}
-
-/* ─── Systems grid ─── */
-.systems-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--color-border);
-}
-@media (max-width: 768px) {
-  .systems-grid { grid-template-columns: 1fr; }
-}
-
-/* ─── Scrollbar ─── */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* ─── Mobile chat ─── */
-@media (max-width: 480px) {
-  .chat-window-enter {
-    width: calc(100vw - 32px) !important;
-    right: 16px !important;
-    height: min(70vh, 500px) !important;
+@media (prefers-reduced-motion: reduce) {
+  .mp-hero-1, .mp-hero-2, .mp-hero-3, .mp-hero-4, .mp-hero-5 {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
+  .mp-img-wrap:hover img,
+  .pain-card:hover .pain-card-img { transform: none; }
+  .status-pulse, .typing-dot { animation: none; }
 }
 
-/* ─── Global mobile ─── */
+/* Touch feedback on devices without hover. */
+@media (hover: none) {
+  a:active, button:active { opacity: 0.72; }
+}
+
 @media (max-width: 768px) {
-  h1 { font-size: clamp(2.25rem, 8vw, 3.25rem) !important; }
-  section { padding-left: 1.25rem !important; padding-right: 1.25rem !important; }
-  .systems-grid { grid-template-columns: 1fr !important; }
+  section { padding-inline: var(--section-x); }
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   OS LAYOUT SYSTEM — out of scope for Phase 1 (Phase 6: Dashboards).
-   Left untouched; its own hardcoded dark palette is unaffected by the
-   :root token changes above.
-   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
-/* Sidebar */
+/* ═════════════════════════════════════════════════════════════════════════════
+   OS LAYOUT SYSTEM
+   Migrates to the token system in batch B5, together with the /os pages. Its
+   hardcoded dark palette is deliberately untouched here so that B3 produces no
+   visual change anywhere.
+   ══════════════════════════════════════════════════════════════════════════ */
+
 .os-sidebar {
   width: 260px;
   position: fixed;
@@ -510,7 +425,6 @@ input[type='range']::-moz-range-thumb {
   overflow: hidden;
 }
 
-/* Main content */
 .os-main {
   margin-left: 260px;
   height: 100vh;
@@ -518,7 +432,6 @@ input[type='range']::-moz-range-thumb {
   background: #0A0A0A;
 }
 
-/* Hamburger button (hidden on desktop) */
 .os-hamburger {
   display: none;
   position: fixed;
@@ -545,7 +458,6 @@ input[type='range']::-moz-range-thumb {
   border-radius: 2px;
 }
 
-/* Mobile backdrop */
 .os-backdrop {
   display: none;
   position: fixed;
@@ -554,11 +466,10 @@ input[type='range']::-moz-range-thumb {
   z-index: 400;
 }
 
-/* Section labels */
 .os-section-label {
   display: block;
   padding: 16px 20px 8px;
-  font-family: var(--font-roboto-mono), monospace;
+  font-family: var(--brand-font-mono);
   font-size: 9px;
   color: #444444;
   letter-spacing: 0.15em;
@@ -566,7 +477,6 @@ input[type='range']::-moz-range-thumb {
   margin: 0;
 }
 
-/* Nav items — shared between Link, a, and button */
 .os-nav-item {
   display: flex;
   align-items: center;
@@ -582,36 +492,23 @@ input[type='range']::-moz-range-thumb {
   transition: background 0.15s ease;
   cursor: pointer;
 }
-.os-nav-item:hover {
-  background: rgba(255,255,255,0.05);
-}
-.os-nav-item:hover .os-nav-icon {
-  color: #F97316 !important;
-}
-.os-nav-item:hover .os-nav-label {
-  color: #ffffff !important;
-}
+.os-nav-item:hover { background: rgba(255,255,255,0.05); }
+.os-nav-item:hover .os-nav-icon  { color: #F97316 !important; }
+.os-nav-item:hover .os-nav-label { color: #ffffff !important; }
 .os-nav-item.active {
   background: rgba(249,115,22,0.1);
   border-left-color: #F97316;
   padding-left: 14px;
 }
-.os-nav-item.active .os-nav-icon {
-  color: #F97316 !important;
-}
-.os-nav-item.active .os-nav-label {
-  color: #ffffff !important;
-  font-weight: 600;
-}
+.os-nav-item.active .os-nav-icon  { color: #F97316 !important; }
+.os-nav-item.active .os-nav-label { color: #ffffff !important; font-weight: 600; }
 
-/* Reset button-specific border sides so only border-left applies */
 button.os-nav-item {
   border-top: none;
   border-right: none;
   border-bottom: none;
 }
 
-/* Icon and label inside nav items */
 .os-nav-icon {
   font-size: 15px;
   width: 20px;
@@ -621,7 +518,7 @@ button.os-nav-item {
   transition: color 0.15s ease;
 }
 .os-nav-label {
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--brand-font-sans);
   font-size: 14px;
   font-weight: 500;
   color: #999999;
@@ -629,14 +526,13 @@ button.os-nav-item {
   white-space: nowrap;
 }
 
-/* Logout button */
 .os-logout-btn {
   width: 100%;
   padding: 8px 12px;
   background: transparent;
   border: 1px solid rgba(255,255,255,0.08);
   color: #666666;
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--brand-font-sans);
   font-size: 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -649,7 +545,6 @@ button.os-nav-item {
   color: #F97316;
 }
 
-/* ─── Mobile overrides ─── */
 @media (max-width: 768px) {
   .os-hamburger { display: flex; }
   .os-sidebar {
@@ -665,134 +560,84 @@ button.os-nav-item {
   .os-nav-label { font-size: 15px; }
 }
 
-/* ─── CONNECTED SYSTEMS GRID ────────────────────────────── */
-.cs-grid {
+
+/* ─── Hero ────────────────────────────────────────────────────────────────────
+   Copy and Operations Center share one grid and one baseline. Below 1024px the
+   panel moves under the copy rather than shrinking into illegibility.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: center;
+  }
+}
+
+/* Operations Center: the module rail is meaningful context on a wide screen
+   and noise on a phone, so it collapses rather than compressing. */
+@media (max-width: 560px) {
+  .oc-body { grid-template-columns: 1fr !important; }
+  .oc-rail { display: none !important; }
+}
+
+
+/* ─── Problem grid (homepage) ─────────────────────────────────────────────────
+   A hairline reference grid, not a card deck: the 1px gaps let the border
+   colour show through as separators, so there are no card boxes, no shadows
+   and no tinted icon tiles. Hover moves the whole cell to the subtle surface
+   rather than lighting up a border.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.pain-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
 }
-@media (max-width: 768px) {
-  .cs-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 900px) { .pain-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .pain-grid { grid-template-columns: 1fr; } }
+
+.pain-cell {
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-surface);
+  padding: var(--space-6);
+  text-decoration: none;
+  transition: background-color var(--duration-base) var(--ease);
 }
-@media (max-width: 480px) {
-  .cs-grid { grid-template-columns: 1fr; }
+.pain-cell:hover { background: var(--brand-surface-subtle); }
+
+.pain-cell-label {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
 }
 
-/* ─── MAXPROMO MOTION SYSTEM — homepage-specific, Phase 2 territory ────── */
-
-/* Keyframes */
-@keyframes mp-fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+.pain-cell-desc {
+  margin: 0 0 var(--space-5);
+  flex: 1;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
 }
 
-/* Hero cascade — fires on page load, above the fold */
-.mp-hero-1 { animation: mp-fade-up 0.55s var(--ease-out-expo) 0ms   both; }
-.mp-hero-2 { animation: mp-fade-up 0.55s var(--ease-out-expo) 100ms both; }
-.mp-hero-3 { animation: mp-fade-up 0.55s var(--ease-out-expo) 200ms both; }
-.mp-hero-4 { animation: mp-fade-up 0.55s var(--ease-out-expo) 310ms both; }
-.mp-hero-5 { animation: mp-fade-up 0.55s var(--ease-out-expo) 420ms both; }
-
-/* Image hover — container must have overflow:hidden */
-.mp-img-wrap {
-  overflow: hidden;
+.pain-cell-cta {
+  font-size: var(--text-small);
+  color: var(--brand-text);
+  border-bottom: 1px solid var(--brand-border-strong);
+  padding-bottom: 2px;
+  align-self: flex-start;
+  transition: border-color var(--duration-fast) var(--ease);
 }
-.mp-img-wrap img {
-  transition: transform 600ms var(--ease-out-expo);
-  display: block;
-}
-.mp-img-wrap:hover img {
-  transform: scale(1.03);
-}
-
-/* Card micro-elevation */
-.mp-card-hover {
-  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
-}
-.mp-card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-elevated);
-}
-
-/* Reduce motion — honour system preference */
-@media (prefers-reduced-motion: reduce) {
-  .mp-hero-1, .mp-hero-2, .mp-hero-3, .mp-hero-4, .mp-hero-5 {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-  .mp-img-wrap:hover img {
-    transform: none;
-  }
-  .mp-card-hover:hover {
-    transform: none;
-    box-shadow: none;
-  }
-}
-
-/* ─── HERO SYSTEM — Ken Burns (4 directional variants) — Phase 2 territory ─── */
-
-@keyframes ken-burns-1 {
-  from { transform: scale(1)    translate(0, 0);       }
-  to   { transform: scale(1.06) translate(-1.5%, -0.8%); }
-}
-@keyframes ken-burns-2 {
-  from { transform: scale(1)    translate(0, 0);      }
-  to   { transform: scale(1.06) translate(1.5%, -0.5%); }
-}
-@keyframes ken-burns-3 {
-  from { transform: scale(1)    translate(-1.5%, 0);  }
-  to   { transform: scale(1.06) translate(0, -1%);    }
-}
-@keyframes ken-burns-4 {
-  from { transform: scale(1.02) translate(0, -0.8%);  }
-  to   { transform: scale(1.06) translate(1%, 0);     }
-}
-
-.hero-ken-burns-1 { animation: ken-burns-1 8s ease-in-out both; }
-.hero-ken-burns-2 { animation: ken-burns-2 8s ease-in-out both; }
-.hero-ken-burns-3 { animation: ken-burns-3 8s ease-in-out both; }
-.hero-ken-burns-4 { animation: ken-burns-4 8s ease-in-out both; }
-
-/* Slide progress bar fill */
-@keyframes progress-fill {
-  from { width: 0%; }
-  to   { width: 100%; }
-}
-.hero-progress-bar {
-  animation: progress-fill 6.5s linear both;
-}
-
-/* Live card pulse dot */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1);   }
-  50%       { opacity: 0.4; transform: scale(0.75); }
-}
-.pulse-dot-1 { animation: pulse-dot 2s ease-in-out infinite; }
-.pulse-dot-2 { animation: pulse-dot 2s ease-in-out 0.4s infinite; }
-.pulse-dot-3 { animation: pulse-dot 2s ease-in-out 0.8s infinite; }
-
-/* Ticker scroll */
-@keyframes ticker-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.hero-ticker-track {
-  animation: ticker-scroll 45s linear infinite;
-}
-
-/* Pain card hover — CSS for server-component fallback */
-.pain-card-img { transition: transform 500ms var(--ease-out-expo); }
-.pain-card:hover .pain-card-img { transform: scale(1.04); }
-.pain-card { transition: box-shadow 300ms ease; }
-.pain-card:hover { box-shadow: var(--shadow-elevated); }
-
-/* ─── MOBILE UX SYSTEM ──────────────────────────────── */
-
-/* Touch feedback — visible press state on devices without hover */
-@media (hover: none) {
-  a:active,
-  button:active {
-    opacity: 0.72;
-  }
-}
+.pain-cell:hover .pain-cell-cta { border-color: var(--brand-text); }

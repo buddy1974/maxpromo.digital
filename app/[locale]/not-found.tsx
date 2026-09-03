@@ -36,19 +36,9 @@ export default function LocaleNotFound() {
           margin: '0 0 16px',
         }}
       >
-        {'// 404'}
+        {'404'}
       </p>
-      <h1
-        style={{
-          fontFamily: 'var(--font-inter)',
-          fontSize: 'clamp(28px, 5vw, 42px)',
-          color: '#FFFFFF',
-          fontWeight: 700,
-          letterSpacing: '-0.02em',
-          margin: '0 0 12px',
-          lineHeight: 1.1,
-        }}
-      >
+      <h1 style={{ color: '#FFFFFF', margin: '0 0 12px' }}>
         {de ? 'Diese Seite gibt es nicht.' : 'This page does not exist.'}
       </h1>
       <p

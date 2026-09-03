@@ -1,52 +1,60 @@
 import { getTranslations } from 'next-intl/server'
-import { PainCardsClient } from './PainCardsClient'
-import type { PainCardData } from './PainCardsClient'
+import { Link } from '@/i18n/navigation'
+
+/**
+ * components/homepage/PainCards.tsx
+ *
+ * Rebuilt in v4.0 batch B3.
+ *
+ * Was six bordered cards, each with a 48px tinted icon tile, an accent-tinted
+ * category pill, a drop shadow, and a framer-motion entrance — the SaaS
+ * feature-grid pattern in full. Three of the four decorations v4.0 retires
+ * (oversized icons, marketing pills, heavy shadows) were in this one component.
+ *
+ * Now a hairline grid: no card boxes, no icons, no pills, no shadows. The
+ * separators come from the grid gap showing the border colour through, which is
+ * how a reference table looks rather than how a pricing page looks. Category,
+ * problem, consequence, route to the answer — read in that order.
+ *
+ * Also dropped the client component wrapper: hover is one CSS rule, so this is
+ * now server-rendered with no JavaScript.
+ */
 
 const PAIN_REFS = [
-  { id: 'p1', icon: '⊟', href: '/services/customer-inquiries' },
-  { id: 'p2', icon: '◇', href: '/services/workflow-automation' },
-  { id: 'p3', icon: '⌗', href: '/services/ai-agents' },
-  { id: 'p4', icon: '◰', href: '/services/workflow-automation' },
-  { id: 'p5', icon: '▤', href: '/services/reviews' },
-  { id: 'p6', icon: '→', href: '/services/workflow-automation' },
+  { id: 'p1', href: '/services/customer-inquiries' },
+  { id: 'p2', href: '/services/workflow-automation' },
+  { id: 'p3', href: '/services/ai-agents' },
+  { id: 'p4', href: '/services/workflow-automation' },
+  { id: 'p5', href: '/services/reviews' },
+  { id: 'p6', href: '/services/workflow-automation' },
 ] as const
 
 export async function PainCards() {
   const t = await getTranslations('home.painCards')
 
-  const cards: PainCardData[] = PAIN_REFS.map((ref) => ({
-    id:    ref.id,
-    icon:  ref.icon,
-    href:  ref.href,
-    tag:   t(`${ref.id}Tag`),
-    title: t(`${ref.id}Title`),
-    desc:  t(`${ref.id}Desc`),
-    cta:   t(`${ref.id}Cta`),
-  }))
-
   return (
-    <section
-      data-section="pain"
-      style={{
-        background: 'var(--color-bg)',
-        padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem',
-        borderTop: '1px solid var(--color-border)',
-      }}
-    >
-      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+    <section data-section="pain" className="section" style={{ background: 'var(--brand-background)', borderTop: '1px solid var(--brand-border)' }}>
+      <div className="container">
 
-        <div style={{ marginBottom: '3rem', maxWidth: '44rem' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
-            {t('eyebrow')}
-          </p>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', lineHeight: 1.1 }}>
-            {t('title')}{' '}
-            <span style={{ color: 'var(--color-primary)' }}>{t('titleAccent')}</span>
+        <div style={{ marginBottom: 'var(--space-8)', maxWidth: '44rem' }}>
+          <p className="section-label">{t('eyebrow')}</p>
+          <h2 style={{ margin: 0 }}>
+            {t('title')} {t('titleAccent')}
           </h2>
         </div>
 
-        {/* Client component owns all hover interactions + scroll entry animations */}
-        <PainCardsClient cards={cards} />
+        <div className="pain-grid">
+          {PAIN_REFS.map((ref) => (
+            <Link key={ref.id} href={ref.href} className="pain-cell">
+              <p className="pain-cell-label">{t(`${ref.id}Tag`)}</p>
+              <h3 className="h-card" style={{ margin: '0 0 var(--space-3)' }}>
+                {t(`${ref.id}Title`)}
+              </h3>
+              <p className="pain-cell-desc">{t(`${ref.id}Desc`)}</p>
+              <span className="pain-cell-cta">{t(`${ref.id}Cta`)} →</span>
+            </Link>
+          ))}
+        </div>
 
       </div>
     </section>

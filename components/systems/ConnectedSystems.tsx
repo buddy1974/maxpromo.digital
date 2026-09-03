@@ -94,10 +94,10 @@ export function ConnectedSystems({
       <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
 
         {/* Header */}
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
+        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
           {copy.eyebrow}
         </p>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 3vw, 2rem)', letterSpacing: '-0.04em', color: '#F0F0F0', marginBottom: '0.5rem' }}>
+        <h2 style={{ color: '#F0F0F0', marginBottom: '0.5rem' }}>
           {copy.title}
         </h2>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: '#666666', maxWidth: '520px', lineHeight: 1.75, marginBottom: '2.5rem' }}>
@@ -136,13 +136,13 @@ export function ConnectedSystems({
 
                 {/* Body */}
                 <div style={{ padding: '18px 22px', flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '16px', color: '#F0F0F0', letterSpacing: '-0.02em', margin: 0 }}>
+                  <h3 className="h-card" style={{ color: '#F0F0F0', margin: 0 }}>
                     {system.name}
                   </h3>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#666666', margin: 0, lineHeight: 1.6, flex: 1 }}>
                     {system.description}
                   </p>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: '#F97316', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: '6px' }}>
+                  <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '10px', color: '#F97316', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: '6px' }}>
                     {copy.cta}
                   </span>
                 </div>

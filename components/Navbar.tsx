@@ -96,7 +96,7 @@ export default function Navbar() {
               }}
             >
               Maxpromo
-              <span style={{ color: 'var(--color-primary)' }}> Digital</span>
+              <span style={{ color: 'var(--brand-text-secondary)' }}> Digital</span>
             </span>
           </Link>
 
@@ -186,7 +186,7 @@ export default function Navbar() {
                 color: '#FFFFFF',
               }}
             >
-              Maxpromo <span style={{ color: 'var(--color-primary)' }}>Digital</span>
+              Maxpromo <span style={{ color: 'var(--brand-text-secondary)' }}>Digital</span>
             </span>
             <button
               onClick={() => setMenuOpen(false)}

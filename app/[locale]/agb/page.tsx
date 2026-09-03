@@ -33,9 +33,9 @@ function Section({ para, label, children }: { para: string; label: string; child
     >
       <p
         style={{
-          fontFamily: 'var(--font-mono)',
+          fontFamily: 'var(--brand-font-sans)',
           fontSize: '12px',
-          color: 'var(--color-primary)',
+          color: 'var(--brand-text-secondary)',
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
           marginBottom: '4px',
@@ -75,9 +75,9 @@ export default function AgbPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
+            fontFamily: 'var(--brand-font-sans)',
             fontSize: '13px',
-            color: 'var(--color-primary)',
+            color: 'var(--brand-text-secondary)',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
             marginBottom: '12px',
@@ -85,16 +85,7 @@ export default function AgbPage() {
         >
           Rechtliches / Legal
         </p>
-        <h1
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
-            fontWeight: 700,
-            color: 'var(--color-text-primary)',
-            marginBottom: '8px',
-            lineHeight: 1.1,
-          }}
-        >
+        <h1 style={{ marginBottom: '8px' }}>
           Allgemeine Geschäftsbedingungen
           <span style={{ display: 'block', fontSize: '0.55em', color: 'var(--color-text-secondary)', fontWeight: 400, marginTop: '4px' }}>
             General Terms &amp; Conditions

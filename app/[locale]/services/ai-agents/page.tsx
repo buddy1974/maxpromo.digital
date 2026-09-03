@@ -26,12 +26,12 @@ export default async function AIAgentsPage() {
       {/* Hero */}
       <section style={{ padding: 'clamp(4rem, 8vw, 7rem) 2rem 3.5rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('eyebrow')}
           </p>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px', lineHeight: 1.1 }}>
+          <h1 style={{ marginBottom: '20px' }}>
             {t('title')}{' '}
-            <span style={{ color: 'var(--color-primary)' }}>{t('titleAccent')}</span>
+            <span>{t('titleAccent')}</span>
           </h1>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '44rem', lineHeight: 1.75, marginBottom: '2rem' }}>
             {t('intro')}
@@ -39,7 +39,7 @@ export default async function AIAgentsPage() {
           <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', paddingTop: '1.5rem', borderTop: '1px solid var(--color-border)' }}>
             {(['signal1', 'signal2', 'signal3'] as const).map((k) => (
               <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ color: 'var(--color-primary)', fontFamily: 'var(--font-mono)', fontSize: '14px' }}>✓</span>
+                <span style={{ color: 'var(--brand-text-secondary)', fontFamily: 'var(--font-mono)', fontSize: '14px' }}>✓</span>
                 <span style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)' }}>{t(k)}</span>
               </div>
             ))}
@@ -53,7 +53,7 @@ export default async function AIAgentsPage() {
           <ServiceImage
             src="/images/services/agents/hero.jpg"
             alt="AI agent conversation interface with routing and response timeline"
-            placeholder="// image: conversation UI · response timeline · monitoring"
+            placeholder="image: conversation UI · response timeline · monitoring"
           />
         </div>
       </div>
@@ -62,20 +62,20 @@ export default async function AIAgentsPage() {
       <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ maxWidth: '44rem', marginBottom: '3rem' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('approachEyebrow')}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', lineHeight: 1.2 }}>
+            <h2>
               {t('approachTitle')}
             </h2>
           </div>
           <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {APPROACH_KEYS.map((k, i) => (
               <div key={k} style={{ background: 'var(--color-bg)', padding: '2.5rem 2rem' }}>
-                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '48px', lineHeight: 1, marginBottom: '1rem', color: 'var(--color-primary)' }}>
+                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '48px', lineHeight: 1, marginBottom: '1rem', color: 'var(--brand-text-secondary)' }}>
                   {String(i + 1).padStart(2, '0')}
                 </p>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '10px' }}>
+                <h3 className="h-card" style={{ marginBottom: '10px' }}>
                   {t(`${k}Title`)}
                 </h3>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
@@ -91,18 +91,18 @@ export default async function AIAgentsPage() {
       <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('useCasesEyebrow')}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', maxWidth: '36rem' }}>
+            <h2 style={{ maxWidth: '36rem' }}>
               {t('useCasesTitle')}
             </h2>
           </div>
           <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {UC_KEYS.map((k, i) => (
               <div key={k} style={{ background: 'var(--color-bg)', padding: '2.5rem' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: 'var(--color-primary)', display: 'block', marginBottom: '16px' }}>{UC_ICONS[i]}</span>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '10px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '22px', color: 'var(--brand-text-secondary)', display: 'block', marginBottom: '16px' }}>{UC_ICONS[i]}</span>
+                <h3 className="h-card" style={{ marginBottom: '10px' }}>
                   {t(`${k}Title`)}
                 </h3>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
@@ -118,20 +118,20 @@ export default async function AIAgentsPage() {
       <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3rem' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('howEyebrow')}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)' }}>
+            <h2>
               {t('howTitle')}
             </h2>
           </div>
           <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {HOW_STEPS.map((k, i) => (
               <div key={k} style={{ background: 'var(--color-bg)', padding: '2.5rem 2rem' }}>
-                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '56px', lineHeight: 1, marginBottom: '1.25rem', color: 'var(--color-primary)' }}>
+                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '56px', lineHeight: 1, marginBottom: '1.25rem', color: 'var(--brand-text-secondary)' }}>
                   {String(i + 1).padStart(2, '0')}
                 </p>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '10px' }}>
+                <h3 className="h-card" style={{ marginBottom: '10px' }}>
                   {t(`${k}Title`)}
                 </h3>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
@@ -146,7 +146,7 @@ export default async function AIAgentsPage() {
       {/* What it is NOT */}
       <section style={{ background: 'var(--color-bg)', padding: 'clamp(3.5rem, 6vw, 5rem) 2rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
             {t('notThisEyebrow')}
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -163,12 +163,12 @@ export default async function AIAgentsPage() {
       {/* Proof: before vs after */}
       <section style={{ background: 'var(--color-bg)', padding: 'clamp(3.5rem, 6vw, 5rem) 2rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '64rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '2rem', textAlign: 'center' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '2rem', textAlign: 'center' }}>
             {t('proofEyebrow')}
           </p>
           <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 md:grid-cols-2">
             <div style={{ background: 'var(--color-bg-section)', padding: '2rem 2.5rem' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1rem' }}>{t('proofBeforeLabel')}</p>
+              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1rem' }}>{t('proofBeforeLabel')}</p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {proofBefore.map((item, i) => (
                   <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)' }}>
@@ -178,11 +178,11 @@ export default async function AIAgentsPage() {
               </ul>
             </div>
             <div style={{ background: 'var(--color-bg)', padding: '2rem 2.5rem' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1rem' }}>{t('proofAfterLabel')}</p>
+              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1rem' }}>{t('proofAfterLabel')}</p>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {proofAfter.map((item, i) => (
                   <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-primary)' }}>
-                    <span style={{ color: 'var(--color-primary)', flexShrink: 0, fontFamily: 'var(--font-mono)' }}>✓</span>{item}
+                    <span style={{ color: 'var(--brand-text-secondary)', flexShrink: 0, fontFamily: 'var(--font-mono)' }}>✓</span>{item}
                   </li>
                 ))}
               </ul>
@@ -194,7 +194,7 @@ export default async function AIAgentsPage() {
       {/* Result */}
       <div style={{ background: 'var(--color-bg-section)', padding: '3rem 2rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', flexShrink: 0 }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', flexShrink: 0 }}>
             {t('resultEyebrow')}
           </p>
           <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', margin: 0 }}>
@@ -206,10 +206,10 @@ export default async function AIAgentsPage() {
       {/* CTA */}
       <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}
           </p>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h2 style={{ marginBottom: '20px' }}>
             {t('ctaTitle')}
           </h2>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.75 }}>

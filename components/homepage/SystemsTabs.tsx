@@ -92,20 +92,10 @@ export function SystemsTabs() {
       >
         {/* Copy */}
         <div style={{ order: 1 }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>
             {current.name}
           </p>
-          <h3
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
-              letterSpacing: '-0.02em',
-              color: 'var(--color-text-primary)',
-              lineHeight: 1.2,
-              marginBottom: '1.5rem',
-            }}
-          >
+          <h3 style={{ marginBottom: '1.5rem' }}>
             {current.headline}
           </h3>
           <Link href={current.href} className="btn btn-primary">

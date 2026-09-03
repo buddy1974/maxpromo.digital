@@ -27,17 +27,17 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   // prefix itself, producing a doubled "... | Maxpromo Digital | Maxpromo
   // Digital" <title> tag.
   const title = isDE
-    ? 'KI-Business-Systeme aus Essen'
-    : 'AI Business Systems Built in Essen'
+    ? 'Business-Systeme aus Essen'
+    : 'Business Systems, Built in Essen'
   const description = isDE
-    ? 'Wir modernisieren veraltete Websites, automatisieren Workflows und installieren KI-gestützte Betriebssysteme für Restaurants, Handwerk, Praxen und mehr.'
-    : 'We modernize legacy websites, automate workflows, and install AI-powered operating systems for restaurants, trades, medical practices and more.'
+    ? 'Eine Software-Beratung aus Essen. Wir modernisieren veraltete Websites, verbinden Abläufe und bauen Betriebssysteme für Restaurants, Handwerk, Praxen und mehr.'
+    : 'A software consultancy in Essen. We modernise legacy websites, connect workflows and build the operating systems that restaurants, trades and practices run on.'
   // og:title / twitter:title are shown as-is by social crawlers (no template
   // applied), og:site_name already carries the brand there, but keeping the
   // full framing here matches the page's prior social-facing copy.
   const ogTitle = isDE
-    ? 'Maxpromo Digital | KI-Business-Systeme aus Essen'
-    : 'Maxpromo Digital | AI Business Systems Built in Essen'
+    ? 'Maxpromo Digital — Business-Systeme aus Essen'
+    : 'Maxpromo Digital — Business Systems, Built in Essen'
   return {
     title,
     description,
@@ -65,17 +65,17 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 /* ─── HELPERS ─── */
 
+/* The section label and heading now come from the shared primitive; these two
+   thin wrappers keep the existing call sites readable while the page's own
+   structure is reworked in the information-architecture batch (B16). */
+
 function SectionLabel({ children }: { children: string }) {
-  return (
-    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
-      {children}
-    </p>
-  )
+  return <p className="section-label">{children}</p>
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', lineHeight: 1.1, marginBottom: 0 }}>
+    <h2 style={{ margin: 0 }}>
       {children}
     </h2>
   )
@@ -139,7 +139,7 @@ export default async function HomePage() {
               <SectionLabel>{tProof('eyebrow')}</SectionLabel>
               <SectionTitle>{tProof('title')}</SectionTitle>
             </div>
-            <Link href="/case-studies" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
+            <Link href="/case-studies" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
               {tProof('viewAll')}
             </Link>
           </div>
@@ -173,13 +173,13 @@ export default async function HomePage() {
           <div style={{ display: 'grid', gap: '16px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {(['c1', 'c2', 'c3', 'c4', 'c5'] as const).map((id) => (
               <div key={id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', margin: 0 }}>
+                <h3 className="h-card" style={{ margin: 0 }}>
                   {tLegacy(`${id}Title`)}
                 </h3>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0 }}>
                   {tLegacy(`${id}Pain`)}
                 </p>
-                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', lineHeight: 1.6, margin: 0, paddingTop: '10px', borderTop: '1px solid var(--color-border)' }}>
+                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', lineHeight: 1.6, margin: 0, paddingTop: '10px', borderTop: '1px solid var(--color-border)' }}>
                   → {tLegacy(`${id}System`)}
                 </p>
               </div>
@@ -204,13 +204,13 @@ export default async function HomePage() {
               <SectionLabel>{tSystemsTabs('eyebrow')}</SectionLabel>
               <SectionTitle>
                 {tSystemsTabs('title')}{' '}
-                <span style={{ color: 'var(--color-primary)' }}>{tSystemsTabs('titleAccent')}</span>
+                <span style={{ color: 'var(--brand-text-secondary)' }}>{tSystemsTabs('titleAccent')}</span>
               </SectionTitle>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-secondary)', marginTop: '10px', lineHeight: 1.7 }}>
                 {tSystemsTabs('subtitle')}
               </p>
             </div>
-            <Link href="/systems" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
+            <Link href="/systems" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
               {tSystemsTabs('viewAll')} →
             </Link>
           </div>
@@ -230,15 +230,15 @@ export default async function HomePage() {
             <SectionLabel>{tWhyUs('eyebrow')}</SectionLabel>
             <SectionTitle>
               {tWhyUs('title')}{' '}
-              <span style={{ color: 'var(--color-primary)' }}>{tWhyUs('titleAccent')}</span>
+              <span style={{ color: 'var(--brand-text-secondary)' }}>{tWhyUs('titleAccent')}</span>
             </SectionTitle>
           </div>
           <div style={{ display: 'grid', gap: '16px' }} className="grid-cols-1 sm:grid-cols-2">
             {WHY_REFS.map((id) => (
               <div key={id} className="card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                <span style={{ color: 'var(--color-primary)', fontFamily: 'var(--font-mono)', fontSize: '18px', flexShrink: 0, paddingTop: '2px' }}>✓</span>
+                <span style={{ color: 'var(--brand-text-secondary)', fontFamily: 'var(--font-mono)', fontSize: '18px', flexShrink: 0, paddingTop: '2px' }}>✓</span>
                 <div>
-                  <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '8px' }}>
+                  <h3 className="h-card" style={{ marginBottom: '8px' }}>
                     {tWhyUs(`${id}Title`)}
                   </h3>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
@@ -263,14 +263,14 @@ export default async function HomePage() {
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.85, marginTop: '1.5rem', whiteSpace: 'pre-line' }}>
               {tPhilosophy('body')}
             </p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--color-primary)', marginTop: '2rem', letterSpacing: '0.03em' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--brand-text-secondary)', marginTop: '2rem', letterSpacing: '0.03em' }}>
               → {tPhilosophy('closing')}
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
             {(['step1', 'step2', 'step3', 'step4', 'step5'] as const).map((s, i) => (
               <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', padding: '18px 24px' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em' }}>
@@ -292,20 +292,20 @@ export default async function HomePage() {
           <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
             {PROCESS_REFS.map((id, i) => (
               <div key={id} style={{ background: 'var(--color-bg)', padding: '2rem 1.75rem', position: 'relative' }}>
-                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '48px', lineHeight: 1, marginBottom: '0.75rem', color: 'var(--color-primary)' }}>
+                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '48px', lineHeight: 1, marginBottom: '0.75rem', color: 'var(--brand-text-secondary)' }}>
                   {tProcess(`${id}Num`)}
                 </p>
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', padding: '2px 7px', display: 'inline-block', marginBottom: '10px', letterSpacing: '0.05em' }}>
                   {tProcess(`${id}Time`)}
                 </span>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '8px', lineHeight: 1.3 }}>
+                <h3 className="h-card" style={{ marginBottom: '8px' }}>
                   {tProcess(`${id}Title`)}
                 </h3>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0 }}>
                   {tProcess(`${id}Desc`)}
                 </p>
                 {i < PROCESS_REFS.length - 1 && (
-                  <span className="hidden lg:block" style={{ position: 'absolute', right: '-8px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-primary)', fontSize: '14px', zIndex: 1 }}>
+                  <span className="hidden lg:block" style={{ position: 'absolute', right: '-8px', top: '50%', transform: 'translateY(-50%)', color: 'var(--brand-text-secondary)', fontSize: '14px', zIndex: 1 }}>
                     →
                   </span>
                 )}
@@ -327,10 +327,10 @@ export default async function HomePage() {
                 <SectionLabel>{tBlog('homepageEyebrow')}</SectionLabel>
                 <SectionTitle>
                   {tBlog('homepageTitle')}{' '}
-                  <span style={{ color: 'var(--color-primary)' }}>{tBlog('homepageTitleAccent')}</span>
+                  <span style={{ color: 'var(--brand-text-secondary)' }}>{tBlog('homepageTitleAccent')}</span>
                 </SectionTitle>
               </div>
-              <Link href="/blog" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
+              <Link href="/blog" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
                 {tBlog('homepageViewAll')} →
               </Link>
             </div>
@@ -347,13 +347,13 @@ export default async function HomePage() {
                       {post.tags.length > 0 && (
                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                           {post.tags.map((tag) => (
-                            <span key={tag} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                            <span key={tag} style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                               {tag}
                             </span>
                           ))}
                         </div>
                       )}
-                      <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', lineHeight: 1.35, margin: 0 }}>
+                      <h3 className="h-card" style={{ margin: 0 }}>
                         {post.title}
                       </h3>
                       <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
@@ -361,7 +361,7 @@ export default async function HomePage() {
                       </p>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--color-border)', marginTop: 'auto' }}>
                         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>{post.publishedAt}</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.05em' }}>{tBlog('readArticle')}</span>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>{tBlog('readArticle')}</span>
                       </div>
                     </div>
                   </article>
@@ -376,18 +376,7 @@ export default async function HomePage() {
       <section style={{ background: 'var(--color-bg-section)', padding: 'clamp(5rem, 10vw, 9.5rem) 2rem', borderTop: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center' }}>
           <SectionLabel>{t('finalCtaEyebrow')}</SectionLabel>
-          <h2
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(2.25rem, 5vw, 3.25rem)',
-              letterSpacing: '-0.02em',
-              color: 'var(--color-text-primary)',
-              marginBottom: '1rem',
-              marginTop: '0.5rem',
-              lineHeight: 1.15,
-            }}
-          >
+          <h2 style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>
             {t('finalCtaTitle')}
           </h2>
           <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>

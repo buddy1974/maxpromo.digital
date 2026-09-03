@@ -1,5 +1,5 @@
 import type { FinalCtaData } from '@/lib/registry/adapters/landing.adapter'
-import { EYEBROW_STYLE, HEADING_SIZE, SECTION_PADDING, BUTTON_PRIMARY, BUTTON_SECONDARY, INTERACTIVE_PRIMARY_CLASSES, INTERACTIVE_SECONDARY_CLASSES, externalLinkProps } from '@/components/landing/showcaseTokens'
+import { EYEBROW_STYLE, SECTION_PADDING, BUTTON_PRIMARY, BUTTON_SECONDARY, INTERACTIVE_PRIMARY_CLASSES, INTERACTIVE_SECONDARY_CLASSES, externalLinkProps } from '@/components/landing/showcaseTokens'
 
 interface ConversionProps {
   name:         string
@@ -37,7 +37,7 @@ interface ConversionProps {
  */
 export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, bridge, finalCta }: ConversionProps) {
   const isDE    = locale === 'de'
-  const eyebrow = finalCta?.eyebrow || (isDE ? '// Bereit?' : '// Ready?')
+  const eyebrow = finalCta?.eyebrow || (isDE ? 'Bereit?' : 'Ready?')
   const heading = finalCta?.heading || (isDE ? 'Sehen Sie es in Ihrem Betrieb.' : 'See it in your business.')
   const sub     = finalCta?.description || (isDE
     ? `Erkunden Sie ${name} mit einem Workflow, der Ihrem Betrieb entspricht.`
@@ -63,7 +63,7 @@ export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, brid
         <p style={{ ...EYEBROW_STYLE, marginBottom: '1rem' }}>
           {eyebrow}
         </p>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.cta, letterSpacing: '-0.04em', lineHeight: 1.15, marginBottom: '1rem', color: 'var(--brand-fg)' }}>
+        <h2 style={{ marginBottom: '1rem', color: 'var(--brand-fg)' }}>
           {heading}
         </h2>
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--brand-muted)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>

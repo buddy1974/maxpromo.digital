@@ -83,10 +83,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const mdxComponents = {
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.75rem', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginTop: '2.5rem', marginBottom: '0.75rem', lineHeight: 1.25 }} {...props} />
+    <h2 style={{ marginTop: '2.5rem', marginBottom: '0.75rem' }} {...props} />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '1.25rem', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', marginTop: '2rem', marginBottom: '0.5rem', lineHeight: 1.3 }} {...props} />
+    <h3 className="h-card" style={{ marginTop: '2rem', marginBottom: '0.5rem' }} {...props} />
   ),
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', lineHeight: 1.75, marginBottom: '1.25rem', marginTop: 0 }} {...props} />
@@ -110,7 +110,7 @@ const mdxComponents = {
     <pre style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', padding: '1.25rem', overflow: 'auto', marginBottom: '1.5rem' }} {...props} />
   ),
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a style={{ color: 'var(--color-primary)', textDecoration: 'none' }} {...props} />
+    <a style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }} {...props} />
   ),
   strong: (props: React.HTMLAttributes<HTMLElement>) => (
     <strong style={{ color: 'var(--color-text-primary)', fontWeight: 700 }} {...props} />
@@ -126,10 +126,10 @@ const mdxComponents = {
     )
     return (
       <div style={{ background: 'var(--color-bg-section)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: 'var(--radius-card)', padding: '2rem', margin: '2.5rem 0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
+        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
           {l === 'de' ? 'Kontakt' : 'Contact'}
         </p>
-        <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.25rem, 3vw, 1.625rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', margin: 0, lineHeight: 1.2 }}>
+        <h3 style={{ margin: 0 }}>
           {l === 'de' ? 'Noch eine alte Website im Einsatz?' : 'Still running an old website?'}
         </h3>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.65, margin: 0 }}>
@@ -241,24 +241,13 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
           {/* Category eyebrow */}
           {(post.category ?? post.tags[0]) && (
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px', marginTop: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px', marginTop: 0 }}>
               {post.category ?? post.tags[0]}
             </p>
           )}
 
           {/* H1 */}
-          <h1
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 700,
-              fontSize: 'clamp(2.5rem, 5vw, 3.75rem)',
-              letterSpacing: '-0.02em',
-              color: 'var(--color-text-primary)',
-              lineHeight: 1.1,
-              marginBottom: '1.5rem',
-              marginTop: 0,
-            }}
-          >
+          <h1 style={{ marginBottom: '1.5rem', marginTop: 0 }}>
             {post.title}
           </h1>
 
@@ -347,10 +336,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
               alignItems: 'flex-start',
             }}
           >
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
               {t('bottomCtaEyebrow')}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 4vw, 2rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', margin: 0, lineHeight: 1.2 }}>
+            <h2 style={{ margin: 0 }}>
               {t('ctaBlockTitle')}
             </h2>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.65, margin: 0 }}>
@@ -372,10 +361,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {/* ─────────────────────────────────────────────── */}
         <section style={{ borderTop: '1px solid var(--color-border)', paddingTop: '4rem', paddingBottom: '4rem' }}>
           <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', padding: '0 2rem' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px', marginTop: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px', marginTop: 0 }}>
               {t('relatedServicesEyebrow')}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 4vw, 2rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '2.5rem', marginTop: 0 }}>
+            <h2 style={{ marginBottom: '2.5rem', marginTop: 0 }}>
               {t('relatedServicesTitle')}
             </h2>
             <div
@@ -400,13 +389,13 @@ export default async function BlogDetailPage({ params }: PageProps) {
                       borderTop: '2px solid transparent',
                     }}
                   >
-                    <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '17px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', margin: 0 }}>
+                    <h3 className="h-card" style={{ margin: 0 }}>
                       {t(`${key}Title` as Parameters<typeof t>[0])}
                     </h3>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.65, margin: 0, flex: 1 }}>
                       {t(`${key}Desc` as Parameters<typeof t>[0])}
                     </p>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.05em', marginTop: 'auto' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em', marginTop: 'auto' }}>
                       {t(`${key}Cta` as Parameters<typeof t>[0])}
                     </span>
                   </div>
@@ -422,10 +411,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {relatedSystemProducts.length > 0 && (
           <section style={{ paddingTop: '4rem', paddingBottom: '4rem', borderTop: '1px solid var(--color-border)' }}>
             <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', padding: '0 2rem' }}>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px', marginTop: 0 }}>
+              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px', marginTop: 0 }}>
                 {t('relatedSystemsEyebrow')}
               </p>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 4vw, 2rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '2.5rem', marginTop: 0 }}>
+              <h2 style={{ marginBottom: '2.5rem', marginTop: 0 }}>
                 {t('relatedSystemsTitle')}
               </h2>
               <div
@@ -452,10 +441,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {/* ─────────────────────────────────────────────── */}
         <section style={{ background: 'var(--color-bg-section)', borderTop: '1px solid var(--color-border)', padding: '4rem 2rem' }}>
           <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px', marginTop: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px', marginTop: 0 }}>
               {t('whatsappEyebrow')}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(1.5rem, 4vw, 2.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '1.75rem', marginTop: 0 }}>
+            <h2 style={{ marginBottom: '1.75rem', marginTop: 0 }}>
               {t('whatsappTitle')}
             </h2>
             <a

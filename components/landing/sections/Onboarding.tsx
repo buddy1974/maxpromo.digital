@@ -1,4 +1,4 @@
-import { EYEBROW_STYLE, HEADING_SIZE, RADIUS, SECTION_PADDING, SECTION_DIVIDER, CARD_BORDER, INTERACTIVE_LINK_CLASSES } from '@/components/landing/showcaseTokens'
+import { EYEBROW_STYLE, RADIUS, SECTION_PADDING, SECTION_DIVIDER, CARD_BORDER, INTERACTIVE_LINK_CLASSES } from '@/components/landing/showcaseTokens'
 
 interface OnboardingProps {
   locale:      string
@@ -27,7 +27,7 @@ interface OnboardingProps {
  */
 export function Onboarding({ locale, contactHref }: OnboardingProps) {
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// So geht es los' : '// How it starts'
+  const eyebrow = isDE ? 'So geht es los' : 'How it starts'
   const heading = isDE ? 'Drei Schritte bis live.' : 'Three steps to live.'
 
   const steps = isDE
@@ -48,7 +48,7 @@ export function Onboarding({ locale, contactHref }: OnboardingProps) {
         <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
           {eyebrow}
         </p>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.compact, letterSpacing: '-0.03em', marginBottom: '2rem', lineHeight: 1.2 }}>
+        <h2 style={{ marginBottom: '2rem' }}>
           {heading}
         </h2>
 

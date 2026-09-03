@@ -51,10 +51,10 @@ export default async function PricingPage() {
       {/* Header */}
       <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('eyebrow')}
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 800, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h1 style={{ marginBottom: '20px' }}>
             {t('title')}
           </h1>
           <p style={{ ...sans, fontSize: '19px', color: 'var(--color-text-secondary)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.75 }}>
@@ -103,7 +103,7 @@ export default async function PricingPage() {
                     ✦ {tTiers(`${tier.id}Tag`)}
                   </span>
                 )}
-                <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px', marginTop: tier.hasTag ? '12px' : '0' }}>
+                <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px', marginTop: tier.hasTag ? '12px' : '0' }}>
                   {tTiers(`${tier.id}Name`)}
                 </p>
                 <p style={{ ...grotesk, fontWeight: 800, fontSize: '48px', color: 'var(--color-text-primary)', letterSpacing: '-0.02em', lineHeight: 1, marginBottom: '6px' }}>
@@ -118,7 +118,7 @@ export default async function PricingPage() {
                 <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '24px', marginBottom: '32px', display: 'flex', flexDirection: 'column', flex: 1 }}>
                   {tier.includesKeys.map((ik) => (
                     <div key={ik} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
-                      <span style={{ color: 'var(--color-primary)', flexShrink: 0, ...mono, fontSize: '14px' }}>✓</span>
+                      <span style={{ color: 'var(--brand-text-secondary)', flexShrink: 0, ...mono, fontSize: '14px' }}>✓</span>
                       <span style={{ ...sans, fontSize: '15px', color: 'var(--color-text-primary)', lineHeight: 1.5 }}>
                         {tTiers(`${tier.id}${ik}`)}
                       </span>
@@ -143,10 +143,10 @@ export default async function PricingPage() {
       {/* FAQ */}
       <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('faqEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.1rem, 4vw, 3.1rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '3rem' }}>
+          <h2 style={{ marginBottom: '3rem' }}>
             {t('faqTitle')}
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
@@ -159,7 +159,7 @@ export default async function PricingPage() {
                   borderBottom: i === FAQ_IDS.length - 1 ? '1px solid var(--color-border)' : 'none',
                 }}
               >
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '19px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '12px' }}>
+                <h3 className="h-card" style={{ marginBottom: '12px' }}>
                   {tFaq(qid)}
                 </h3>
                 <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.75 }}>
@@ -174,10 +174,10 @@ export default async function PricingPage() {
       {/* CTA */}
       <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.1rem, 4vw, 3.1rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h2 style={{ marginBottom: '20px' }}>
             {t('ctaTitle')}
           </h2>
           <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.75 }}>

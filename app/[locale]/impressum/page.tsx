@@ -19,9 +19,9 @@ function Section({ label, children }: { label: string; children: React.ReactNode
     >
       <p
         style={{
-          fontFamily: 'var(--font-mono)',
+          fontFamily: 'var(--brand-font-sans)',
           fontSize: '12px',
-          color: 'var(--color-primary)',
+          color: 'var(--brand-text-secondary)',
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
           marginBottom: '12px',
@@ -50,9 +50,9 @@ export default function ImpressumPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
+            fontFamily: 'var(--brand-font-sans)',
             fontSize: '13px',
-            color: 'var(--color-primary)',
+            color: 'var(--brand-text-secondary)',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
             marginBottom: '12px',
@@ -60,16 +60,7 @@ export default function ImpressumPage() {
         >
           Rechtliches / Legal
         </p>
-        <h1
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
-            fontWeight: 700,
-            color: 'var(--color-text-primary)',
-            marginBottom: '8px',
-            lineHeight: 1.1,
-          }}
-        >
+        <h1 style={{ marginBottom: '8px' }}>
           Impressum
         </h1>
         <p
@@ -94,9 +85,9 @@ export default function ImpressumPage() {
 
         <Section label="Kontakt / Contact">
           <p style={{ margin: 0 }}>
-            Telefon: <a href="tel:+491733645698" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>+49 173 3645698</a><br />
-            E-Mail: <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>info@maxpromo.digital</a><br />
-            Web: <a href="https://maxpromo.digital" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>https://maxpromo.digital</a>
+            Telefon: <a href="tel:+491733645698" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>+49 173 3645698</a><br />
+            E-Mail: <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>info@maxpromo.digital</a><br />
+            Web: <a href="https://maxpromo.digital" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>https://maxpromo.digital</a>
           </p>
         </Section>
 
@@ -131,7 +122,7 @@ export default function ImpressumPage() {
               href="https://ec.europa.eu/consumers/odr"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: 'var(--color-primary)', textDecoration: 'none' }}
+              style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}
             >
               https://ec.europa.eu/consumers/odr
             </a>
@@ -146,7 +137,7 @@ export default function ImpressumPage() {
               href="https://ec.europa.eu/consumers/odr"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: 'var(--color-primary)', textDecoration: 'none' }}
+              style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}
             >
               https://ec.europa.eu/consumers/odr
             </a>

@@ -116,7 +116,7 @@ export default function SystemGrid({
       {(title || description) && (
         <header data-section="grid-header" style={{ maxWidth: 'var(--container-width)', margin: '0 auto 2.5rem' }}>
           {title && (
-            <h2 data-field="title" style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', margin: 0 }}>
+            <h2 data-field="title" style={{ margin: 0 }}>
               {title}
             </h2>
           )}

@@ -113,16 +113,7 @@ export default function BeforeAfter() {
           >
             Before &amp; After
           </p>
-          <h2
-            style={{
-              fontFamily: grotesk,
-              fontWeight: 700,
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              letterSpacing: '-0.04em',
-              color: '#FFFFFF',
-              marginBottom: '16px',
-            }}
-          >
+          <h2 style={{ color: '#FFFFFF', marginBottom: '16px' }}>
             What changes when you automate
           </h2>
           <p

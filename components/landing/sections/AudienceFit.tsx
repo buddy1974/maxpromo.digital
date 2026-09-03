@@ -25,7 +25,7 @@ export function AudienceFit({ targetAudience, problemStatement, locale }: Audien
   if (!targetAudience) return null
 
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// Für wen' : '// Who it’s for'
+  const eyebrow = isDE ? 'Für wen' : 'Who it’s for'
 
   return (
     <section style={{ padding: SECTION_PADDING.base, borderTop: SECTION_DIVIDER }}>

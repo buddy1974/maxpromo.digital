@@ -22,22 +22,9 @@ export async function TeamTrust() {
         >
           {/* Left: eyebrow + title */}
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
-              {t('eyebrow')}
-            </p>
-            <h2
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: 'clamp(2.25rem, 4vw, 3.25rem)',
-                letterSpacing: '-0.02em',
-                color: 'var(--color-text-primary)',
-                lineHeight: 1.1,
-                marginBottom: 0,
-              }}
-            >
-              {t('title')}{' '}
-              <span style={{ color: 'var(--color-primary)' }}>{t('titleAccent')}</span>
+            <p className="section-label">{t('eyebrow')}</p>
+            <h2 style={{ margin: 0 }}>
+              {t('title')} {t('titleAccent')}
             </h2>
           </div>
 
@@ -106,10 +93,10 @@ export async function TeamTrust() {
             >
               <p
                 style={{
-                  fontFamily: 'var(--font-mono)',
+                  fontFamily: 'var(--brand-font-sans)',
                   fontSize: '12px',
                   fontWeight: 700,
-                  color: 'var(--color-primary)',
+                  color: 'var(--brand-text-secondary)',
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
                   marginBottom: '10px',

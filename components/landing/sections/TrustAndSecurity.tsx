@@ -1,4 +1,4 @@
-import { EYEBROW_STYLE, HEADING_SIZE, RADIUS, SECTION_PADDING, SECTION_DIVIDER, CARD_BORDER } from '@/components/landing/showcaseTokens'
+import { EYEBROW_STYLE, RADIUS, SECTION_PADDING, SECTION_DIVIDER, CARD_BORDER } from '@/components/landing/showcaseTokens'
 
 interface TrustAndSecurityProps {
   complianceNote: string | null
@@ -42,7 +42,7 @@ interface TrustAndSecurityProps {
  */
 export function TrustAndSecurity({ complianceNote, locale }: TrustAndSecurityProps) {
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// Sicherheit & Vertrauen' : '// Security & trust'
+  const eyebrow = isDE ? 'Sicherheit & Vertrauen' : 'Security & trust'
   const heading = isDE ? 'Gebaut für Ihr Unternehmen.' : 'Built for your business.'
 
   const points = isDE
@@ -55,7 +55,7 @@ export function TrustAndSecurity({ complianceNote, locale }: TrustAndSecurityPro
         <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
           {eyebrow}
         </p>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.compact, letterSpacing: '-0.03em', marginBottom: '2rem', lineHeight: 1.2 }}>
+        <h2 style={{ marginBottom: '2rem' }}>
           {heading}
         </h2>
 

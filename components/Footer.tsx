@@ -100,10 +100,10 @@ export default function Footer() {
           }}
         >
           <div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '10px' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '10px' }}>
               {t('ctaEyebrow')}
             </p>
-            <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '32px', color: '#FFFFFF', letterSpacing: '-0.02em', margin: 0 }}>
+            <h3 style={{ color: '#FFFFFF', margin: 0 }}>
               {t('ctaHeadline')}
             </h3>
           </div>

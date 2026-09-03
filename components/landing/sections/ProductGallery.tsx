@@ -1,6 +1,6 @@
 import { ScreenshotSlot } from '@/components/ui/ScreenshotSlot'
 import type { SeeInActionTab } from '@/lib/registry/types'
-import { EYEBROW_STYLE, HEADING_SIZE, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
+import { EYEBROW_STYLE, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
 
 interface ProductGalleryProps {
   seeInAction: ReadonlyArray<SeeInActionTab> | null
@@ -40,7 +40,7 @@ export function ProductGallery({ seeInAction, locale }: ProductGalleryProps) {
   if (captured.length === 0) return null
 
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// Das System in Aktion' : '// The system in action'
+  const eyebrow = isDE ? 'Das System in Aktion' : 'The system in action'
   const heading = isDE ? 'So sieht es aus.' : 'Here’s what it looks like.'
 
   return (
@@ -49,7 +49,7 @@ export function ProductGallery({ seeInAction, locale }: ProductGalleryProps) {
         <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
           {eyebrow}
         </p>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.section, letterSpacing: '-0.03em', marginBottom: '2.5rem', lineHeight: 1.15 }}>
+        <h2 style={{ marginBottom: '2.5rem' }}>
           {heading}
         </h2>
 

@@ -68,10 +68,10 @@ export default async function ProductsPage() {
       {/* ── HERO ── */}
       <section style={{ padding: 'clamp(4.5rem, 8vw, 6.5rem) 2rem clamp(3rem, 6vw, 4rem)', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--color-primary)', marginBottom: '1.5rem' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--brand-text-secondary)', marginBottom: '1.5rem' }}>
             ALL SYSTEMS
           </p>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', lineHeight: 1.1, marginBottom: '0', whiteSpace: 'pre-line' }}>
+          <h1 style={{ marginBottom: '0', whiteSpace: 'pre-line' }}>
             {'Seven operating systems.\nBuilt to install and run.'}
           </h1>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '560px', marginTop: '1rem', lineHeight: 1.75 }}>
@@ -116,10 +116,10 @@ export default async function ProductsPage() {
       {/* ── BOTTOM CTA ── */}
       <section style={{ background: 'var(--color-bg-section)', borderTop: '1px solid var(--color-border)', padding: 'clamp(4.5rem, 8vw, 6.5rem) 2rem', textAlign: 'center' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--color-primary)', marginBottom: '1rem' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--brand-text-secondary)', marginBottom: '1rem' }}>
             CUSTOM SYSTEMS
           </p>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', margin: 0 }}>
+          <h2 style={{ margin: 0 }}>
             Need something that isn&apos;t listed?
           </h2>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', maxWidth: '500px', margin: '1rem auto 2rem', lineHeight: 1.75 }}>

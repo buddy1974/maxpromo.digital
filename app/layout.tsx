@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Grotesk, Inter, Roboto_Mono } from 'next/font/google'
+import { Inter, Roboto_Mono } from 'next/font/google'
 import { getLocale } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
 import './globals.css'
@@ -16,20 +16,27 @@ import './globals.css'
  * see the right language for the document.
  */
 
-const spaceGrotesk = Space_Grotesk({
-  variable: '--font-space-grotesk',
-  subsets: ['latin'],
-})
-
+/**
+ * One neutral grotesque for headings and body; hierarchy comes from weight and
+ * size, not from a second typeface. Space Grotesk was retired in v4.0 batch B3
+ * — a geometric display face reads as a 2022-24 startup landing page, which is
+ * the exact impression this programme exists to remove. Every reference company
+ * named in the brief (Stripe, Linear, GitHub, Atlassian, Notion, Vercel,
+ * Basecamp, Thoughtworks) uses a neutral grotesque this way.
+ *
+ * To reverse: restore the Space_Grotesk import here and repoint
+ * --brand-font-heading in design/tokens/brand.css. Nothing else depends on it.
+ */
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
 })
 
+/** Code, data tables and document reference numbers only — not a label face. */
 const robotoMono = Roboto_Mono({
   variable: '--font-roboto-mono',
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
+  weight: ['400', '500'],
 })
 
 const SITE_URL = 'https://www.maxpromo.digital'
@@ -38,29 +45,28 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: 'Maxpromo Digital',
   title: {
-    default: 'Maxpromo Digital | AI Business Systems & Automation Infrastructure',
+    default: 'Maxpromo Digital — Business Systems Consultancy',
     template: '%s | Maxpromo Digital',
   },
   description:
-    'Maxpromo Digital is an Essen-based business systems and automation company. We modernize legacy websites, automate workflows and install AI-powered operational systems for companies.',
+    'Maxpromo Digital is a software consultancy in Essen. We design and build the systems companies run on: replacing manual steps, connecting the tools already in use, and maintaining the result.',
   keywords: [
     'Business Systems',
-    'AI Automation',
-    'Legacy Modernization',
+    'Software Consultancy',
     'Workflow Automation',
+    'Legacy Modernization',
     'Essen',
     'Joomla Modernization',
     'CMS Migration',
-    'AI Business Systems',
-    'Restaurant OS',
-    'PrintShop OS',
-    'Operational Platforms',
+    'Operations Software',
+    'RestaurantOS',
+    'PrintShopOS',
   ],
   openGraph: {
     siteName: 'Maxpromo Digital',
-    title: 'Maxpromo Digital | AI Business Systems & Automation Infrastructure',
+    title: 'Maxpromo Digital — Business Systems Consultancy',
     description:
-      'Essen-based business systems and automation company. We modernize legacy websites, connect workflows and install AI-powered operational systems.',
+      'A software consultancy in Essen. We design and build the systems companies run on, and maintain them afterwards.',
     type: 'website',
     url: SITE_URL,
     // Dedicated 1200×630 social-preview asset (public/images/seo/) — used as
@@ -69,9 +75,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Maxpromo Digital | AI Business Systems & Automation Infrastructure',
+    title: 'Maxpromo Digital — Business Systems Consultancy',
     description:
-      'Essen-based business systems and automation company. We modernize legacy websites, connect workflows and install AI-powered operational systems.',
+      'A software consultancy in Essen. We design and build the systems companies run on, and maintain them afterwards.',
     images: ['/images/seo/maxpromo-digital-og.png'],
   },
 }
@@ -93,7 +99,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang={locale}>
       <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${robotoMono.variable} antialiased`}
+        className={`${inter.variable} ${robotoMono.variable} antialiased`}
       >
         {children}
       </body>

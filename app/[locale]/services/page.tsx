@@ -60,12 +60,12 @@ export default async function ServicesPage() {
       {/* Page header */}
       <section style={{ padding: 'clamp(4rem, 8vw, 7rem) 2rem 3.5rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('eyebrow')}
           </p>
-          <h1 style={{ ...grotesk, fontWeight: 800, fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px', lineHeight: 1.1 }}>
+          <h1 style={{ marginBottom: '20px' }}>
             {t('title1')}<br />
-            <span style={{ color: 'var(--color-primary)' }}>{t('titleAccent')}</span>
+            <span>{t('titleAccent')}</span>
           </h1>
           <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.7 }}>
             {t('subtitle')}
@@ -93,22 +93,22 @@ export default async function ServicesPage() {
                     flex: 1,
                   }}
                 >
-                  <span style={{ ...mono, fontSize: '26px', color: 'var(--color-primary)', display: 'block', marginBottom: '20px' }}>
+                  <span style={{ ...mono, fontSize: '26px', color: 'var(--brand-text-secondary)', display: 'block', marginBottom: '20px' }}>
                     {svc.icon}
                   </span>
 
                   <header style={{ marginBottom: '16px' }}>
-                    <h2 style={{ ...grotesk, fontWeight: 700, fontSize: '22px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', lineHeight: 1.2, marginBottom: '8px' }}>
+                    <h2 style={{ marginBottom: '8px' }}>
                       {tCards(`${svc.id}Title`)}
                     </h2>
-                    <p style={{ ...sans, fontSize: '15px', color: 'var(--color-primary)', lineHeight: 1.6, fontStyle: 'italic', margin: 0 }}>
+                    <p style={{ ...sans, fontSize: '15px', color: 'var(--brand-text-secondary)', lineHeight: 1.6, fontStyle: 'italic', margin: 0 }}>
                       {tCards(`${svc.id}Lede`)}
                     </p>
                   </header>
 
                   <div style={{ display: 'grid', gap: '14px', marginBottom: '24px' }} className="grid-cols-1 sm:grid-cols-3">
                     <div>
-                      <p style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px' }}>
                         {t('painLabel')}
                       </p>
                       <p style={{ ...sans, fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.65, margin: 0 }}>
@@ -116,7 +116,7 @@ export default async function ServicesPage() {
                       </p>
                     </div>
                     <div>
-                      <p style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px' }}>
                         {t('systemLabel')}
                       </p>
                       <p style={{ ...sans, fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.65, margin: 0 }}>
@@ -124,17 +124,17 @@ export default async function ServicesPage() {
                       </p>
                     </div>
                     <div>
-                      <p style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px' }}>
+                      <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px' }}>
                         {t('resultLabel')}
                       </p>
-                      <p style={{ ...sans, fontSize: '14px', color: 'var(--color-primary)', lineHeight: 1.65, fontWeight: 600, margin: 0 }}>
+                      <p style={{ ...sans, fontSize: '14px', color: 'var(--brand-text-secondary)', lineHeight: 1.65, fontWeight: 600, margin: 0 }}>
                         {tCards(`${svc.id}Result`)}
                       </p>
                     </div>
                   </div>
 
                   <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid var(--color-border)' }}>
-                    <span style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.05em' }}>
+                    <span style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                       {tCards('ctaCard')}
                     </span>
                   </div>
@@ -148,10 +148,10 @@ export default async function ServicesPage() {
       {/* What we don't do */}
       <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('boundaryEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '24px' }}>
+          <h2 style={{ marginBottom: '24px' }}>
             {t('boundaryTitle')}
           </h2>
           <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.7, marginBottom: '32px' }}>
@@ -185,20 +185,20 @@ export default async function ServicesPage() {
       <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ maxWidth: '40rem', marginBottom: '3rem' }}>
-            <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('lifecycleEyebrow')}
             </p>
-            <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)' }}>
+            <h2>
               {t('lifecycleTitle')}
             </h2>
           </div>
           <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {LIFECYCLE_REFS.map((s) => (
               <div key={s.step} style={{ background: 'var(--color-bg)', padding: '32px' }}>
-                <p style={{ ...grotesk, fontWeight: 700, fontSize: '48px', color: 'var(--color-primary)', letterSpacing: '-0.02em', marginBottom: '12px', lineHeight: 1 }}>
+                <p style={{ ...grotesk, fontWeight: 700, fontSize: '48px', color: 'var(--brand-text-secondary)', letterSpacing: '-0.02em', marginBottom: '12px', lineHeight: 1 }}>
                   {s.step}
                 </p>
-                <h3 style={{ ...grotesk, fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '10px', lineHeight: 1.3 }}>
+                <h3 className="h-card" style={{ marginBottom: '10px' }}>
                   {tLife(`${s.id}Title`)}
                 </h3>
                 <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0 }}>
@@ -213,10 +213,10 @@ export default async function ServicesPage() {
       {/* CTA */}
       <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}
           </p>
-          <h2 style={{ ...grotesk, fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h2 style={{ marginBottom: '20px' }}>
             {t('ctaTitle')}
           </h2>
           <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.7 }}>

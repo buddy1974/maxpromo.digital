@@ -27,7 +27,7 @@ export function Faq({ faq, locale }: FaqProps) {
   if (!faq || faq.length === 0) return null
 
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// Häufige Fragen' : '// Common questions'
+  const eyebrow = isDE ? 'Häufige Fragen' : 'Common questions'
 
   return (
     <section style={{ padding: SECTION_PADDING.relaxed, borderTop: '1px solid rgba(128,128,128,0.10)' }}>

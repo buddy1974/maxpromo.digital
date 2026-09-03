@@ -1,5 +1,5 @@
 import type { BulletTuple } from '@/lib/registry/types'
-import { EYEBROW_STYLE, HEADING_SIZE, RADIUS, SECTION_PADDING, SECTION_DIVIDER, CARD_BORDER } from '@/components/landing/showcaseTokens'
+import { EYEBROW_STYLE, RADIUS, SECTION_PADDING, SECTION_DIVIDER, CARD_BORDER } from '@/components/landing/showcaseTokens'
 
 interface FeatureArchitectureProps {
   bullets: BulletTuple
@@ -38,7 +38,7 @@ interface FeatureArchitectureProps {
  */
 export function FeatureArchitecture({ bullets, featureBenefits, locale }: FeatureArchitectureProps) {
   const isDE    = locale === 'de'
-  const eyebrow = isDE ? '// Warum es funktioniert' : '// Why it works'
+  const eyebrow = isDE ? 'Warum es funktioniert' : 'Why it works'
   const heading = isDE ? 'Drei Vorteile. Sofort.' : 'Three benefits. From day one.'
 
   const resolvedBullets = featureBenefits ?? bullets
@@ -55,7 +55,7 @@ export function FeatureArchitecture({ bullets, featureBenefits, locale }: Featur
         <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
           {eyebrow}
         </p>
-        <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.section, letterSpacing: '-0.03em', marginBottom: '2.5rem', lineHeight: 1.15 }}>
+        <h2 style={{ marginBottom: '2.5rem' }}>
           {heading}
         </h2>
 
@@ -65,7 +65,7 @@ export function FeatureArchitecture({ bullets, featureBenefits, locale }: Featur
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', color: 'var(--brand-accent)', display: 'block', marginBottom: '1rem' }}>
                 {col.icon}
               </span>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--brand-accent)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '8px' }}>
+              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '10px', color: 'var(--brand-accent)', letterSpacing: '0.14em', textTransform: 'uppercase', marginBottom: '8px' }}>
                 {col.cat}
               </p>
               <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '16px', lineHeight: 1.35, margin: 0, color: 'var(--brand-fg)' }}>

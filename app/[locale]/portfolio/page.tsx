@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
 const mono = { fontFamily: 'var(--font-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-heading)' } as const
 const sans = { fontFamily: 'var(--font-body)' } as const
 
 const inputBase: React.CSSProperties = {
@@ -127,10 +126,10 @@ export default function PortfolioPage() {
     return (
       <main style={{ background: 'var(--color-bg)', minHeight: '100vh', padding: 'clamp(5rem, 10vw, 8.75rem) 24px clamp(4.5rem, 8vw, 6.25rem)' }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>
-            {t(locale, '// Portfolio &middot; Vertraulich', '// Portfolio &middot; Confidential')}
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px' }}>
+            {t(locale, 'Portfolio &middot; Vertraulich', 'Portfolio &middot; Confidential')}
           </p>
-          <h1 style={{ ...grotesk, fontSize: 'clamp(2.25rem, 5vw, 3.25rem)', color: 'var(--color-text-primary)', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 16px' }}>
+          <h1 style={{ margin: '0 0 16px' }}>
             {t(locale, 'Ausgewählte Arbeiten.', 'Selected work.')}
           </h1>
           <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', margin: '0 0 48px', maxWidth: '640px', lineHeight: 1.7 }}>
@@ -144,15 +143,15 @@ export default function PortfolioPage() {
               <article key={i} className="card">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', gap: '20px', flexWrap: 'wrap' }}>
                   <div>
-                    <p style={{ ...mono, fontSize: '11px', color: 'var(--color-primary)', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 6px' }}>{item.type}</p>
-                    <h2 style={{ ...grotesk, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', fontWeight: 700, margin: '0 0 4px' }}>{item.title}</h2>
+                    <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 6px' }}>{item.type}</p>
+                    <h2 className="h-card" style={{ margin: '0 0 4px' }}>{item.title}</h2>
                     <p style={{ ...sans, fontSize: '14px', color: 'var(--color-text-secondary)', margin: 0 }}>{item.client}</p>
                   </div>
                 </div>
                 <p style={{ ...sans, fontSize: '16px', color: 'var(--color-text-secondary)', margin: '0 0 16px', lineHeight: 1.65 }}>{item.summary}</p>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {item.metrics.map(m => (
-                    <span key={m} style={{ ...mono, fontSize: '12px', color: 'var(--color-primary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', borderRadius: '6px', letterSpacing: '0.03em' }}>
+                    <span key={m} style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', borderRadius: '6px', letterSpacing: '0.03em' }}>
                       {m}
                     </span>
                   ))}
@@ -174,15 +173,15 @@ export default function PortfolioPage() {
   return (
     <main style={{ background: 'var(--color-bg)', minHeight: '100vh', padding: 'clamp(5rem, 10vw, 8.75rem) 24px clamp(4.5rem, 8vw, 6.25rem)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <form onSubmit={submit} style={{ width: '100%', maxWidth: '420px' }}>
-        <p style={{ ...mono, fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px', textAlign: 'center' }}>
-          {t(locale, '// Portfolio &middot; Zugang erforderlich', '// Portfolio &middot; Access Required')}
+        <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 16px', textAlign: 'center' }}>
+          {t(locale, 'Portfolio &middot; Zugang erforderlich', 'Portfolio &middot; Access Required')}
         </p>
-        <h1 style={{ ...grotesk, fontSize: '32px', color: 'var(--color-text-primary)', fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 14px', textAlign: 'center' }}>
+        <h1 style={{ margin: '0 0 14px', textAlign: 'center' }}>
           {t(locale, 'Vertraulich.', 'Confidential.')}
         </h1>
         <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', margin: '0 0 32px', textAlign: 'center', lineHeight: 1.6 }}>
           {t(locale, 'Kundenprojekte unterliegen einer NDA. Wenn wir Ihnen einen Zugangscode mitgeteilt haben, geben Sie ihn unten ein. Andernfalls', 'Client work is under NDA. If we’ve shared an access code with you, enter it below. Otherwise,')}{' '}
-          <Link href="/contact" style={{ color: 'var(--color-primary)' }}>{t(locale, 'kontaktieren Sie uns', 'reach out')}</Link>.
+          <Link href="/contact" style={{ color: 'var(--brand-text-secondary)' }}>{t(locale, 'kontaktieren Sie uns', 'reach out')}</Link>.
         </p>
 
         <input

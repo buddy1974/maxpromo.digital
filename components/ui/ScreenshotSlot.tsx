@@ -88,7 +88,7 @@ export function ScreenshotSlot({
         <div style={{ marginTop: '14px', paddingLeft: '2px' }}>
           {caption && (
             <p style={{
-              fontFamily:    'var(--font-mono)',
+              fontFamily:    'var(--brand-font-sans)',
               fontSize:      '11px',
               color:         '#F0F0F0',
               textTransform: 'uppercase',

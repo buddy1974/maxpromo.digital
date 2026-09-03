@@ -68,17 +68,7 @@ export default function NewsletterSignup() {
           {t('eyebrow')}
         </p>
 
-        <h2
-          style={{
-            fontFamily: 'var(--font-inter)',
-            fontWeight: 700,
-            fontSize: 'clamp(1.6rem, 4vw, 2.2rem)',
-            color: '#FFFFFF',
-            letterSpacing: '-0.03em',
-            margin: '0 0 12px',
-            lineHeight: 1.2,
-          }}
-        >
+        <h2 style={{ color: '#FFFFFF', margin: '0 0 12px' }}>
           {t('title')}
         </h2>
 

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type { BulletTuple } from '@/lib/registry/types'
 import {
-  EYEBROW_STYLE, HEADING_SIZE, RADIUS,
+  EYEBROW_STYLE, RADIUS,
   BUTTON_PRIMARY, BUTTON_SECONDARY,
   INTERACTIVE_PRIMARY_CLASSES, INTERACTIVE_SECONDARY_CLASSES,
   externalLinkProps,
@@ -92,9 +92,9 @@ export function ProductHero({
             {domainBrand}
           </p>
 
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.display, letterSpacing: '-0.04em', lineHeight: 1.05, margin: 0 }}>
+          <h1 style={{ margin: 0 }}>
             <span style={{ display: 'block' }}>{line1}</span>
-            {line2 && <span style={{ display: 'block', color: 'var(--brand-accent)' }}>{line2}</span>}
+            {line2 && <span style={{ display: 'block' }}>{line2}</span>}
           </h1>
 
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--brand-muted)', lineHeight: 1.7, maxWidth: '34rem', margin: 0 }}>

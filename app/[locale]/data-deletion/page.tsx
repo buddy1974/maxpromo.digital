@@ -42,7 +42,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
         style={{
           fontFamily: mono,
           fontSize: '12px',
-          color: 'var(--color-primary)',
+          color: 'var(--brand-text-secondary)',
           letterSpacing: '0.15em',
           textTransform: 'uppercase' as const,
           margin: '0 0 16px',
@@ -74,7 +74,7 @@ function BulletItem({ children }: { children: React.ReactNode }) {
           position: 'absolute' as const,
           left: 0,
           top: '9px',
-          color: 'var(--color-primary)',
+          color: 'var(--brand-text-secondary)',
           fontSize: '10px',
         }}
       >
@@ -108,7 +108,7 @@ export default async function DataDeletionPage({
           style={{
             fontFamily: mono,
             fontSize: '12px',
-            color: 'var(--color-primary)',
+            color: 'var(--brand-text-secondary)',
             letterSpacing: '0.2em',
             textTransform: 'uppercase' as const,
             margin: '0 0 12px',
@@ -126,16 +126,7 @@ export default async function DataDeletionPage({
         />
 
         {/* Title */}
-        <h1
-          style={{
-            fontFamily: grotesk,
-            fontWeight: 700,
-            fontSize: 'clamp(1.875rem, 4vw, 2.75rem)',
-            color: 'var(--color-text-primary)',
-            letterSpacing: '-0.02em',
-            margin: '0 0 10px',
-          }}
-        >
+        <h1 style={{ margin: '0 0 10px' }}>
           {t(locale, 'Antrag auf Datenlöschung', 'Data Deletion Request')}
         </h1>
         <p
@@ -207,7 +198,7 @@ export default async function DataDeletionPage({
               style={{
                 fontFamily: mono,
                 fontSize: '14px',
-                color: 'var(--color-primary)',
+                color: 'var(--brand-text-secondary)',
                 textDecoration: 'none',
                 display: 'block',
                 marginBottom: '14px',
@@ -321,7 +312,7 @@ export default async function DataDeletionPage({
           style={{
             fontFamily: mono,
             fontSize: '12px',
-            color: 'var(--color-primary)',
+            color: 'var(--brand-text-secondary)',
             textDecoration: 'none',
             letterSpacing: '0.06em',
           }}

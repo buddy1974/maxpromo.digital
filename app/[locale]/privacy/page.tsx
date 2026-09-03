@@ -20,9 +20,9 @@ function Section({ label, id, children }: { label: string; id?: string; children
     >
       <p
         style={{
-          fontFamily: 'var(--font-mono)',
+          fontFamily: 'var(--brand-font-sans)',
           fontSize: '12px',
-          color: 'var(--color-primary)',
+          color: 'var(--brand-text-secondary)',
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
           marginBottom: '12px',
@@ -51,9 +51,9 @@ export default function PrivacyPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
+            fontFamily: 'var(--brand-font-sans)',
             fontSize: '13px',
-            color: 'var(--color-primary)',
+            color: 'var(--brand-text-secondary)',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
             marginBottom: '12px',
@@ -61,16 +61,7 @@ export default function PrivacyPage() {
         >
           Rechtliches / Legal
         </p>
-        <h1
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 'clamp(2rem, 5vw, 3rem)',
-            fontWeight: 700,
-            color: 'var(--color-text-primary)',
-            marginBottom: '8px',
-            lineHeight: 1.1,
-          }}
-        >
+        <h1 style={{ marginBottom: '8px' }}>
           Datenschutzerklärung
           <span style={{ display: 'block', fontSize: '0.55em', color: 'var(--color-text-secondary)', fontWeight: 400, marginTop: '4px' }}>
             Privacy Policy
@@ -91,10 +82,10 @@ export default function PrivacyPage() {
           <p style={{ marginTop: 0 }}>
             Marcel Tabit Akwe<br />
             Körnerstr. 8, 45143 Essen, Deutschland<br />
-            <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
+            <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
               info@maxpromo.digital
             </a>{' '}·{' '}
-            <a href="tel:+491733645698" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
+            <a href="tel:+491733645698" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
               +49 173 3645698
             </a>
           </p>
@@ -162,19 +153,19 @@ export default function PrivacyPage() {
           <ul style={{ paddingLeft: '1.25rem' }}>
             <li>
               <strong style={{ color: 'var(--color-text-primary)' }}>Vercel Inc.</strong> (Hosting, USA)-{' '}
-              <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
+              <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
                 Privacy Policy
               </a>
             </li>
             <li>
               <strong style={{ color: 'var(--color-text-primary)' }}>Resend Inc.</strong> (E-Mail-Versand / Email delivery, USA)-{' '}
-              <a href="https://resend.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
+              <a href="https://resend.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
                 Privacy Policy
               </a>
             </li>
             <li>
               <strong style={{ color: 'var(--color-text-primary)' }}>Anthropic PBC</strong> (KI-Verarbeitung / AI processing, USA, keine dauerhafte Speicherung / no permanent storage)-{' '}
-              <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
+              <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
                 Privacy Policy
               </a>
             </li>
@@ -218,7 +209,7 @@ export default function PrivacyPage() {
           </ul>
           <p style={{ marginBottom: 0 }}>
             Zur Ausübung Ihrer Rechte wenden Sie sich an:{' '}
-            <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
+            <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
               info@maxpromo.digital
             </a>
           </p>
@@ -234,7 +225,7 @@ export default function PrivacyPage() {
             </strong><br />
             Postfach 20 04 44<br />
             40102 Düsseldorf<br />
-            <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
+            <a href="https://www.ldi.nrw.de" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
               https://www.ldi.nrw.de
             </a>
           </p>

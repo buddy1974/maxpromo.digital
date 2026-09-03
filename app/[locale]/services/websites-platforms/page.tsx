@@ -68,22 +68,12 @@ export default async function WebsitesPlatformsPage() {
       {/* Hero */}
       <section style={{ background: 'var(--color-bg)', padding: 'clamp(4rem, 8vw, 7rem) 2rem 3.5rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('eyebrow')}
           </p>
-          <h1
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontWeight: 800,
-              fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-              letterSpacing: '-0.02em',
-              color: 'var(--color-text-primary)',
-              marginBottom: '20px',
-              lineHeight: 1.1,
-            }}
-          >
+          <h1 style={{ marginBottom: '20px' }}>
             {t('title')}{' '}
-            <span style={{ color: 'var(--color-primary)' }}>{t('titleAccent')}</span>
+            <span>{t('titleAccent')}</span>
           </h1>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', maxWidth: '44rem', lineHeight: 1.75, marginBottom: '2rem' }}>
             {t('intro')}
@@ -93,7 +83,7 @@ export default async function WebsitesPlatformsPage() {
           <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', paddingTop: '1.5rem', borderTop: '1px solid var(--color-border)' }}>
             {(['signal1', 'signal2', 'signal3'] as const).map((k) => (
               <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ color: 'var(--color-primary)', fontFamily: 'var(--font-mono)', fontSize: '14px' }}>✓</span>
+                <span style={{ color: 'var(--brand-text-secondary)', fontFamily: 'var(--font-mono)', fontSize: '14px' }}>✓</span>
                 <span style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)' }}>
                   {t(k)}
                 </span>
@@ -107,10 +97,10 @@ export default async function WebsitesPlatformsPage() {
       <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ maxWidth: '44rem', marginBottom: '3rem' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('painEyebrow')}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', lineHeight: 1.2 }}>
+            <h2>
               {t('painTitle')}
             </h2>
           </div>
@@ -128,7 +118,7 @@ export default async function WebsitesPlatformsPage() {
                   gap: '12px',
                 }}
               >
-                <span style={{ color: 'var(--color-primary)', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '14px', paddingTop: '2px' }}>✕</span>
+                <span style={{ color: 'var(--brand-text-secondary)', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '14px', paddingTop: '2px' }}>✕</span>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0 }}>
                   {t(k)}
                 </p>
@@ -142,10 +132,10 @@ export default async function WebsitesPlatformsPage() {
       <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
               {t('capEyebrow')}
             </p>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', maxWidth: '36rem' }}>
+            <h2 style={{ maxWidth: '36rem' }}>
               {t('capTitle')}
             </h2>
           </div>
@@ -158,10 +148,10 @@ export default async function WebsitesPlatformsPage() {
                 key={cap.id}
                 style={{ background: 'var(--color-bg)', padding: '2.5rem' }}
               >
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', color: 'var(--color-primary)', display: 'block', marginBottom: '20px' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '24px', color: 'var(--brand-text-secondary)', display: 'block', marginBottom: '20px' }}>
                   {cap.icon}
                 </span>
-                <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '18px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', marginBottom: '10px' }}>
+                <h3 className="h-card" style={{ marginBottom: '10px' }}>
                   {t(cap.titleKey)}
                 </h3>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
@@ -176,7 +166,7 @@ export default async function WebsitesPlatformsPage() {
       {/* Industries */}
       <section style={{ background: 'var(--color-bg-section)', padding: 'clamp(3.5rem, 6vw, 5rem) 2rem', borderBottom: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', flexShrink: 0 }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', flexShrink: 0 }}>
             {t('industriesLabel')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -204,10 +194,10 @@ export default async function WebsitesPlatformsPage() {
       {/* CTA */}
       <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--color-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
             {t('ctaEyebrow')}
           </p>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: 'clamp(2.25rem, 4vw, 3.25rem)', letterSpacing: '-0.02em', color: 'var(--color-text-primary)', marginBottom: '20px' }}>
+          <h2 style={{ marginBottom: '20px' }}>
             {t('ctaTitle')}
           </h2>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.75 }}>

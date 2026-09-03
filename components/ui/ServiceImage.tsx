@@ -72,7 +72,7 @@ export function ServiceImage({
           </span>
           <p
             style={{
-              fontFamily: 'var(--font-mono)',
+              fontFamily: 'var(--brand-font-sans)',
               fontSize: '10px',
               color: 'var(--color-text-secondary)',
               letterSpacing: '0.12em',

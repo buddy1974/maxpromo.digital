@@ -37,16 +37,7 @@ export default function AutomationCard({ title, description, tools, locale }: Au
         cursor: 'default',
       }}
     >
-      <h3
-        style={{
-          fontFamily: 'var(--font-heading)',
-          fontWeight: 700,
-          fontSize: '18px',
-          color: 'var(--color-text-primary)',
-          letterSpacing: '-0.01em',
-          marginBottom: '10px',
-        }}
-      >
+      <h3 className="h-card" style={{ marginBottom: '10px' }}>
         {title}
       </h3>
       <p
@@ -67,7 +58,7 @@ export default function AutomationCard({ title, description, tools, locale }: Au
             key={tool}
             style={{
               background: 'rgba(249,115,22,0.08)',
-              color: 'var(--color-primary)',
+              color: 'var(--brand-text-secondary)',
               border: '1px solid rgba(249,115,22,0.2)',
               fontFamily: 'var(--font-mono)',
               fontSize: '11px',
@@ -84,7 +75,7 @@ export default function AutomationCard({ title, description, tools, locale }: Au
         style={{
           fontFamily: 'var(--font-mono)',
           fontSize: '12px',
-          color: 'var(--color-primary)',
+          color: 'var(--brand-text-secondary)',
           textDecoration: 'none',
           letterSpacing: '0.08em',
           alignSelf: 'flex-start',

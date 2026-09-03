@@ -152,8 +152,8 @@ export function SystemCardFull({
             aria-label="Live"
             style={{
               alignSelf: 'flex-start',
-              fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700,
-              color: 'var(--color-primary)', letterSpacing: '0.08em', textTransform: 'uppercase',
+              fontFamily: 'var(--brand-font-sans)', fontSize: '10px', fontWeight: 700,
+              color: 'var(--brand-text-secondary)', letterSpacing: '0.08em', textTransform: 'uppercase',
               background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)',
               borderRadius: '4px', padding: '3px 8px',
             }}
@@ -165,14 +165,14 @@ export function SystemCardFull({
         {/* Category label */}
         <span
           data-field="category"
-          style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.08em', textTransform: 'uppercase' }}
+          style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.08em', textTransform: 'uppercase' }}
         >
           {/* TODO: translate category label via next-intl */}
           {product.category}
         </span>
 
         {/* Product name */}
-        <h3 data-field="name" style={{ margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '19px', letterSpacing: '-0.01em', color: 'var(--color-text-primary)', lineHeight: 1.25 }}>
+        <h3 className="h-card" data-field="name" style={{ margin: 0 }}>
           {product.name}
         </h3>
 

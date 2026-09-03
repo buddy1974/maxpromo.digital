@@ -39,7 +39,7 @@ export function ProofMetrics({ metrics }: ProofMetricsProps) {
               fontWeight: 700,
               fontSize: 'clamp(2.25rem, 4vw, 3.25rem)',
               letterSpacing: '-0.02em',
-              color: 'var(--color-primary)',
+              color: 'var(--brand-text-secondary)',
               lineHeight: 1,
               marginBottom: '12px',
             }}
