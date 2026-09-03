@@ -1,3 +1,0 @@
-module.exports=[13147,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(60048);a.n(d("[project]/projects/maxpromo.digital/node_modules/next/dist/client/components/builtin/global-error.js <module evaluation>"))},55488,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(60048);a.n(d("[project]/projects/maxpromo.digital/node_modules/next/dist/client/components/builtin/global-error.js"))},15130,a=>{"use strict";a.i(13147);var b=a.i(55488);a.n(b)}];
-
-//# sourceMappingURL=f4f74_next_dist_client_components_builtin_global-error_0a21bc3c.js.map
