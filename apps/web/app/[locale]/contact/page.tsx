@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import VoiceInputWidget from '@/components/voice/VoiceInputWidget'
 import {
@@ -53,14 +54,18 @@ const heroTitleStyle = { fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing:
 
 export default function ContactPage() {
   const t = useTranslations('contact')
-  const [form, setForm] = useState<FormData>(initialForm)
+  // ?system= preselects the enquiry subject. Read with useSearchParams rather
+  // than in an effect: the value is known on the first render, so seeding
+  // initial state directly avoids the extra render pass the effect caused.
+  const searchParams = useSearchParams()
+  const presetSystem = searchParams.get('system') ?? ''
+
+  const [form, setForm] = useState<FormData>(() =>
+    presetSystem ? { ...initialForm, system: presetSystem } : initialForm,
+  )
   const [status, setStatus] = useState<Status>('idle')
   const [errorMessage, setErrorMessage] = useState('')
 
-  useEffect(() => {
-    const system = new URLSearchParams(window.location.search).get('system')
-    if (system) setForm((current) => ({ ...current, system }))
-  }, [])
 
   // Only render the contextual banner for a recognised system slug, an
   // unknown or malformed ?system= value silently falls back to the

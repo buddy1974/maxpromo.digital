@@ -3,7 +3,7 @@
 // Mobile: vertical spine with connected nodes.
 // Orange pivot = "Owner genehmigt". Minimal text. No cards/paragraphs.
 
-import { token } from "@/design/tokens";
+import { token } from "@maxpromo/design-tokens";
 
 /**
  * Diagram palette. SVG presentation attributes cannot resolve CSS custom

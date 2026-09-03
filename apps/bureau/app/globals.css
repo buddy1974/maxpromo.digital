@@ -1,12 +1,12 @@
 @import "tailwindcss";
-@import "../design/tokens/brand.css";
+@import "@maxpromo/design-tokens/brand.css";
 
 /* =============================================================================
    AGENT BUREAU — application stylesheet
    =============================================================================
    Agent Bureau inherits the Maxpromo platform design system. Every colour,
    type size, space and radius below resolves to a token from
-   design/tokens/brand.css. This file adds nothing of its own.
+   @maxpromo/design-tokens. This file adds nothing of its own.
 
    v5.0 Sprint 7. Replaces the Tailwind v3 setup, in which this repository
    carried an independent implementation of the same design brief:
@@ -17,12 +17,8 @@
    (#EA580C), and the container was 1500px against the website's own 1500px
    with a 1280px variant in the showcase engine.
 
-   NOTE ON design/tokens/
-   This directory is currently a synchronised copy of the same directory in
-   maxpromo.digital. It is duplicated only until the monorepo consolidation
-   replaces both copies with packages/tokens. Do not edit it here — edit it in
-   maxpromo.digital and re-copy, or the two will drift exactly the way the
-   Tailwind configs did.
+   The synchronised-copy note that stood here is gone: as of Track B there is
+   one token package, imported by name, and no copy to keep in step.
    ========================================================================== */
 
 /* Tailwind v4 is CSS-first: the theme lives here rather than in a JS config.

@@ -158,6 +158,50 @@ export default function NewAngebotPage() {
   }, [])
 
   // Clipboard paste
+  function applyExtracted(d: AIExtracted) {
+    if (d.clientName)  setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
+    if (d.clientEmail) setClientEmail(d.clientEmail)
+    if (d.clientAddress) setClientStreet(d.clientAddress)
+    if (d.clientCity)    setClientCity(d.clientCity)
+    if (d.clientPostcode) setClientPostcode(d.clientPostcode)
+    // Build a notes blob that captures payment terms + included items + extractor remarks
+    const noteParts: string[] = []
+    if (d.notes?.trim()) noteParts.push(d.notes.trim())
+    if (d.paymentTerms?.trim()) noteParts.push(`Zahlungsbedingungen: ${d.paymentTerms.trim()}`)
+    if (noteParts.length) setNotes(noteParts.join('\n\n'))
+    if (d.validUntil || d.dueDate) setValidUntil(d.validUntil || d.dueDate)
+    if (d.lineItems?.length) {
+      setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice, aiConfidence: li.confidence, category: li.category })))
+    }
+    if (d.anzahlung > 0) {
+      setHasAnzahlung(true); setAnzahlung(d.anzahlung)
+      if (d.anzahlungDate) setAnzahlungDate(d.anzahlungDate)
+      if (d.anzahlungMethod) setAnzahlungMethod(d.anzahlungMethod)
+    }
+    setIncludedItems(d.includedItems ?? [])
+    setPaymentTerms(d.paymentTerms ?? '')
+    setAiWarnings(d.warnings ?? [])
+    setOverallConfidence(d.overallConfidence ?? 'medium')
+    setExtractionNotes(d.extractionNotes ?? '')
+    setAiEnhanced(true)
+  }
+
+  const triggerImageExtract = useCallback(async (b64: string, mime: string) => {
+    setAiLoading(true); setAiError('')
+    try {
+      const res = await fetch('/api/os/ai/enhance', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'angebot', image: b64, mediaType: mime }),
+      })
+      if (!res.ok) throw new Error(t.forms.aiScanFailed)
+      const json = await res.json() as { extracted: AIExtracted }
+      applyExtracted(json.extracted)
+      setAiModalOpen(false); setPastePreview('')
+    } catch {
+      setAiError(t.forms.aiImageReadFailed)
+    } finally { setAiLoading(false) }
+  }, [t])
+
   useEffect(() => {
     if (!aiModalOpen) return
     function onPaste(e: ClipboardEvent) {
@@ -183,23 +227,7 @@ export default function NewAngebotPage() {
     }
     window.addEventListener('paste', onPaste)
     return () => window.removeEventListener('paste', onPaste)
-  }, [aiModalOpen]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  const triggerImageExtract = useCallback(async (b64: string, mime: string) => {
-    setAiLoading(true); setAiError('')
-    try {
-      const res = await fetch('/api/os/ai/enhance', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'angebot', image: b64, mediaType: mime }),
-      })
-      if (!res.ok) throw new Error(t.forms.aiScanFailed)
-      const json = await res.json() as { extracted: AIExtracted }
-      applyExtracted(json.extracted)
-      setAiModalOpen(false); setPastePreview('')
-    } catch {
-      setAiError(t.forms.aiImageReadFailed)
-    } finally { setAiLoading(false) }
-  }, [])
+  }, [aiModalOpen, triggerImageExtract])
 
   function handleDragOver(e: React.DragEvent) { e.preventDefault(); setIsDragOver(true) }
   function handleDragLeave() { setIsDragOver(false) }
@@ -248,33 +276,6 @@ export default function NewAngebotPage() {
     finally { setAiLoading(false) }
   }
 
-  function applyExtracted(d: AIExtracted) {
-    if (d.clientName)  setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
-    if (d.clientEmail) setClientEmail(d.clientEmail)
-    if (d.clientAddress) setClientStreet(d.clientAddress)
-    if (d.clientCity)    setClientCity(d.clientCity)
-    if (d.clientPostcode) setClientPostcode(d.clientPostcode)
-    // Build a notes blob that captures payment terms + included items + extractor remarks
-    const noteParts: string[] = []
-    if (d.notes?.trim()) noteParts.push(d.notes.trim())
-    if (d.paymentTerms?.trim()) noteParts.push(`Zahlungsbedingungen: ${d.paymentTerms.trim()}`)
-    if (noteParts.length) setNotes(noteParts.join('\n\n'))
-    if (d.validUntil || d.dueDate) setValidUntil(d.validUntil || d.dueDate)
-    if (d.lineItems?.length) {
-      setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice, aiConfidence: li.confidence, category: li.category })))
-    }
-    if (d.anzahlung > 0) {
-      setHasAnzahlung(true); setAnzahlung(d.anzahlung)
-      if (d.anzahlungDate) setAnzahlungDate(d.anzahlungDate)
-      if (d.anzahlungMethod) setAnzahlungMethod(d.anzahlungMethod)
-    }
-    setIncludedItems(d.includedItems ?? [])
-    setPaymentTerms(d.paymentTerms ?? '')
-    setAiWarnings(d.warnings ?? [])
-    setOverallConfidence(d.overallConfidence ?? 'medium')
-    setExtractionNotes(d.extractionNotes ?? '')
-    setAiEnhanced(true)
-  }
 
   /**
    * Keep unit_price ↔ total in sync so the document never displays

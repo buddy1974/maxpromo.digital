@@ -3,7 +3,7 @@
 // a dependency arc — cannot happen without the orange approval step.
 // Desktop: horizontal flow. Mobile: horizontally scrollable (min-w).
 
-import { token } from "@/design/tokens";
+import { token } from "@maxpromo/design-tokens";
 
 /**
  * Diagram palette. SVG presentation attributes cannot resolve CSS custom

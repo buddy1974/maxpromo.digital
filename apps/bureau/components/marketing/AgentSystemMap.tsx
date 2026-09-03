@@ -2,7 +2,7 @@
 // specialist agents connected as spokes. Pure SVG — no faces/avatars/images.
 // Radial map on md+, compact hub statement on mobile.
 
-import { token } from "@/design/tokens";
+import { token } from "@maxpromo/design-tokens";
 
 /**
  * Diagram palette. SVG presentation attributes cannot resolve CSS custom

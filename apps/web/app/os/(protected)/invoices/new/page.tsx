@@ -165,6 +165,26 @@ export default function NewInvoicePage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const triggerImageExtract = useCallback(async (b64: string, mime: string) => {
+    setAiLoading(true)
+    setAiError('')
+    try {
+      const res = await fetch('/api/os/ai/enhance', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: 'rechnung', image: b64, mediaType: mime }),
+      })
+      if (!res.ok) throw new Error(t.forms.aiScanFailed)
+      const json = await res.json() as { extracted: AIExtracted }
+      applyExtracted(json.extracted)
+      setAiModalOpen(false)
+      setPastePreview('')
+    } catch {
+      setAiError(t.forms.aiImageReadFailed)
+    } finally {
+      setAiLoading(false)
+    }
+  }, [t])
+
   useEffect(() => {
     fetch('/api/os/invoices?next=true').then(r => r.json()).then(d => setInvoiceNumber((d as { number: string }).number)).catch(() => {})
     fetch('/api/os/clients').then(r => r.json()).then(d => setClients(Array.isArray(d) ? d : [])).catch(() => {})
@@ -196,28 +216,39 @@ export default function NewInvoicePage() {
     }
     window.addEventListener('paste', onPaste)
     return () => window.removeEventListener('paste', onPaste)
-  }, [aiModalOpen]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [aiModalOpen, triggerImageExtract])
 
   // ── Image extraction (shared by paste, drop, file scan) ──────────────────
-  const triggerImageExtract = useCallback(async (b64: string, mime: string) => {
-    setAiLoading(true)
-    setAiError('')
-    try {
-      const res = await fetch('/api/os/ai/enhance', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'rechnung', image: b64, mediaType: mime }),
-      })
-      if (!res.ok) throw new Error(t.forms.aiScanFailed)
-      const json = await res.json() as { extracted: AIExtracted }
-      applyExtracted(json.extracted)
-      setAiModalOpen(false)
-      setPastePreview('')
-    } catch {
-      setAiError(t.forms.aiImageReadFailed)
-    } finally {
-      setAiLoading(false)
+  function applyExtracted(d: AIExtracted) {
+    if (d.clientName) setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
+    if (d.clientEmail) setClientEmails([d.clientEmail])
+    if (d.clientAddress) setClientStreet(d.clientAddress)
+    if (d.clientCity)    setClientCity(d.clientCity)
+    if (d.clientPostcode) setClientPostcode(d.clientPostcode)
+    if (d.notes) setNotes(d.notes)
+    if (d.dueDate) setDueDate(d.dueDate)
+    if (d.lineItems?.length) {
+      setLineItems(d.lineItems.map(li => ({
+        description: li.description,
+        qty: li.quantity,
+        unit: li.unit || 'pauschal',
+        unit_price: li.unitPrice,
+        total: li.finalPrice,
+        isFixedPrice: li.isFixedPrice,
+        aiConfidence: li.confidence,
+      })))
     }
-  }, [t]) // eslint-disable-line react-hooks/exhaustive-deps -- applyExtracted is a stable in-render closure over setState only
+    if (d.anzahlung > 0) {
+      setHasAnzahlung(true)
+      setAnzahlung(d.anzahlung)
+      if (d.anzahlungDate)   setAnzahlungDate(d.anzahlungDate)
+      if (d.anzahlungMethod) setAnzahlungMethod(d.anzahlungMethod)
+    }
+    setOverallConfidence(d.overallConfidence ?? 'medium')
+    setExtractionNotes(d.extractionNotes ?? '')
+    setAiEnhanced(true)
+  }
+
 
   // ── Drag & drop ──────────────────────────────────────────────────────────
   function handleDragOver(e: React.DragEvent) { e.preventDefault(); setIsDragOver(true) }
@@ -275,35 +306,6 @@ export default function NewInvoicePage() {
   }
 
   // ── Apply extracted data + confidence signals ─────────────────────────────
-  function applyExtracted(d: AIExtracted) {
-    if (d.clientName) setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
-    if (d.clientEmail) setClientEmails([d.clientEmail])
-    if (d.clientAddress) setClientStreet(d.clientAddress)
-    if (d.clientCity)    setClientCity(d.clientCity)
-    if (d.clientPostcode) setClientPostcode(d.clientPostcode)
-    if (d.notes) setNotes(d.notes)
-    if (d.dueDate) setDueDate(d.dueDate)
-    if (d.lineItems?.length) {
-      setLineItems(d.lineItems.map(li => ({
-        description: li.description,
-        qty: li.quantity,
-        unit: li.unit || 'pauschal',
-        unit_price: li.unitPrice,
-        total: li.finalPrice,
-        isFixedPrice: li.isFixedPrice,
-        aiConfidence: li.confidence,
-      })))
-    }
-    if (d.anzahlung > 0) {
-      setHasAnzahlung(true)
-      setAnzahlung(d.anzahlung)
-      if (d.anzahlungDate)   setAnzahlungDate(d.anzahlungDate)
-      if (d.anzahlungMethod) setAnzahlungMethod(d.anzahlungMethod)
-    }
-    setOverallConfidence(d.overallConfidence ?? 'medium')
-    setExtractionNotes(d.extractionNotes ?? '')
-    setAiEnhanced(true)
-  }
 
   function updateItem(i: number, field: keyof LineItem, value: string | number | boolean) {
     setLineItems(prev => {

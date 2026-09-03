@@ -23,7 +23,7 @@
  *   Samsung Internet — supported
  */
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useSyncExternalStore } from 'react'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -89,7 +89,22 @@ function createRecognition(lang: string): SpeechRecognitionInstance | null {
 // ── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useVoiceInput(lang = 'de-DE'): VoiceInputState & VoiceInputActions {
-  const [supported, setSupported] = useState(false)
+  /**
+   * Speech-recognition support is a browser capability, not component state.
+   * Reading it in an effect and calling setState caused an extra render on
+   * every mount and is what react-hooks/set-state-in-effect flags. It never
+   * changes for the life of the page, so an empty subscribe is correct, and
+   * the server snapshot is false because there is no SpeechRecognition during
+   * SSR.
+   */
+  const supported = useSyncExternalStore(
+    () => () => {},
+    () =>
+      typeof window !== 'undefined' &&
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      Boolean((window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition),
+    () => false,
+  )
   const [phase, setPhase] = useState<VoicePhase>('idle')
   const [rawInput, setRawInput] = useState('')
   const [editedRaw, setEditedRaw] = useState('')
@@ -100,12 +115,6 @@ export function useVoiceInput(lang = 'de-DE'): VoiceInputState & VoiceInputActio
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
   const finalTranscriptRef = useRef('')
 
-  // Detect support once on mount
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const SR = (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition
-    setSupported(!!SR)
-  }, [])
 
   const startListening = useCallback(() => {
     if (!supported) return
@@ -189,6 +198,18 @@ export function useVoiceInput(lang = 'de-DE'): VoiceInputState & VoiceInputActio
     }
   }, [editedRaw])
 
+  // Declared above its callers: as a function declaration below them it was
+  // recreated each render while the callbacks held the first render closure.
+  function reset() {
+    setPhase('idle')
+    setRawInput('')
+    setEditedRaw('')
+    setEnhancedInput(null)
+    setError(null)
+    setInterimTranscript('')
+    finalTranscriptRef.current = ''
+  }
+
   const approveRaw = useCallback((onChange: (v: string) => void) => {
     onChange(editedRaw)
     reset()
@@ -207,15 +228,6 @@ export function useVoiceInput(lang = 'de-DE'): VoiceInputState & VoiceInputActio
     reset()
   }, [])
 
-  function reset() {
-    setPhase('idle')
-    setRawInput('')
-    setEditedRaw('')
-    setEnhancedInput(null)
-    setError(null)
-    setInterimTranscript('')
-    finalTranscriptRef.current = ''
-  }
 
   return {
     supported,
