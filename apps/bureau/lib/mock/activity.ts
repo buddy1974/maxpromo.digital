@@ -1,0 +1,62 @@
+import type { ActivityLog } from "@/types/activity";
+
+export const MOCK_ACTIVITY: ActivityLog[] = [
+  {
+    id: "a-5001",
+    timestamp: "2026-05-29T07:55:00Z",
+    actor: "agent",
+    actorName: "Chief of Staff",
+    action: "Tagesbriefing erstellt",
+    detail: "8 Punkte priorisiert, 3 Freigaben offen.",
+  },
+  {
+    id: "a-5002",
+    timestamp: "2026-05-29T07:40:00Z",
+    actor: "agent",
+    actorName: "Lead Agent",
+    action: "Lead qualifiziert",
+    target: "Trattoria Bella Essen",
+    detail: "Score 82 — Vorschlag zur Freigabe vorgelegt.",
+  },
+  {
+    id: "a-5003",
+    timestamp: "2026-05-29T06:50:00Z",
+    actor: "agent",
+    actorName: "Follow-Up Agent",
+    action: "Stille Threads erkannt",
+    detail: "5 Kontakte ohne Antwort — Wiedervorlage vorbereitet.",
+  },
+  {
+    id: "a-5004",
+    timestamp: "2026-05-29T06:30:00Z",
+    actor: "agent",
+    actorName: "CRM Agent",
+    action: "Follow-ups vorbereitet",
+    detail: "3 überfällige Nachfassaktionen, Freigabe erforderlich.",
+  },
+  {
+    id: "a-5005",
+    timestamp: "2026-05-28T17:10:00Z",
+    actor: "user",
+    actorName: "Marcel",
+    action: "Projekt aktualisiert",
+    target: "RestaurantOS — Einführung",
+    detail: "Fortschritt auf 62% gesetzt.",
+  },
+  {
+    id: "a-5006",
+    timestamp: "2026-05-28T16:20:00Z",
+    actor: "agent",
+    actorName: "Research Agent",
+    action: "Markt-Scan abgeschlossen",
+    detail: "Wettbewerbs-Brief zusammengefasst.",
+  },
+  {
+    id: "a-5007",
+    timestamp: "2026-05-28T09:05:00Z",
+    actor: "system",
+    actorName: "System",
+    action: "Audit-Anfrage eingegangen",
+    detail: "Neue Anfrage über das öffentliche Formular.",
+  },
+];
