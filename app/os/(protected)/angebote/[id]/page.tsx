@@ -20,11 +20,11 @@ interface Angebot {
 }
 
 const STATUS_COLOR: Record<string, { text: string; bg: string; border: string }> = {
-  draft:    { text: '#888',    bg: 'rgba(136,136,136,0.1)',  border: '#333' },
-  sent:     { text: '#60a5fa', bg: 'rgba(59,130,246,0.1)',   border: 'rgba(59,130,246,0.3)' },
-  accepted: { text: '#4ade80', bg: 'rgba(34,197,94,0.1)',    border: 'rgba(34,197,94,0.3)' },
-  rejected: { text: '#f87171', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
-  expired:  { text: '#f87171', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
+  draft:    { text: 'var(--brand-text-secondary)',    bg: 'rgba(136,136,136,0.1)',  border: 'var(--brand-text-secondary)' },
+  sent:     { text: 'var(--semantic-info)', bg: 'rgba(59,130,246,0.1)',   border: 'rgba(59,130,246,0.3)' },
+  accepted: { text: 'var(--semantic-success)', bg: 'rgba(34,197,94,0.1)',    border: 'rgba(34,197,94,0.3)' },
+  rejected: { text: 'var(--semantic-danger)', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
+  expired:  { text: 'var(--semantic-danger)', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -158,14 +158,14 @@ export default function AngebotDetailPage() {
 
   if (loading) return (
     <div style={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.2em' }}>{t.common.loading}</p>
+      <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em' }}>{t.common.loading}</p>
     </div>
   )
 
   if (error || !angebot) return (
     <div style={{ padding: '40px' }}>
-      <p style={{ fontFamily: mono, fontSize: '12px', color: '#ef4444' }}>{t.angebotDetail.notFound}</p>
-      <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', textDecoration: 'none' }}>{t.angebotDetail.backToAngebote}</Link>
+      <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-danger)' }}>{t.angebotDetail.notFound}</p>
+      <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', textDecoration: 'none' }}>{t.angebotDetail.backToAngebote}</Link>
     </div>
   )
 
@@ -182,29 +182,29 @@ export default function AngebotDetailPage() {
   return (
     <div style={{ padding: '32px 40px', maxWidth: '860px' }}>
       {/* Breadcrumb */}
-      <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', marginBottom: '24px', letterSpacing: '0.1em' }}>
-        <Link href="/os/angebote" style={{ color: '#555', textDecoration: 'none' }}>{t.angebotDetail.breadcrumb}</Link>
+      <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', marginBottom: '24px', letterSpacing: '0.1em' }}>
+        <Link href="/os/angebote" style={{ color: 'var(--brand-text-muted)', textDecoration: 'none' }}>{t.angebotDetail.breadcrumb}</Link>
         {' / '}
-        <span style={{ color: '#FFF' }}>{angebot.angebot_number}</span>
+        <span style={{ color: 'var(--brand-text)' }}>{angebot.angebot_number}</span>
       </p>
 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px', gap: '16px', flexWrap: 'wrap' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-            <h1 style={{ fontFamily: sans, fontSize: '26px', fontWeight: 700, color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontFamily: sans, fontSize: '26px', fontWeight: 700, color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>
               {angebot.angebot_number}
             </h1>
             <span style={{ fontFamily: mono, fontSize: '10px', color: sc.text, background: sc.bg, border: `1px solid ${sc.border}`, padding: '3px 10px', letterSpacing: '0.12em', textTransform: 'uppercase', borderRadius: '3px' }}>
               {t.status.angebot[angebot.status] ?? angebot.status}
             </span>
             {angebot.converted_to_invoice && (
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', border: '1px solid rgba(255,255,255,0.1)', padding: '3px 10px', letterSpacing: '0.12em', textTransform: 'uppercase', borderRadius: '3px' }}>
+              <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', border: '1px solid var(--brand-border)', padding: '3px 10px', letterSpacing: '0.12em', textTransform: 'uppercase', borderRadius: '3px' }}>
                 {t.angebotDetail.convertedBadge}
               </span>
             )}
           </div>
-          <p style={{ fontFamily: sans, fontSize: '15px', color: '#888', margin: 0 }}>{angebot.client_name}</p>
+          <p style={{ fontFamily: sans, fontSize: '15px', color: 'var(--brand-text-secondary)', margin: 0 }}>{angebot.client_name}</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
           <select
@@ -213,7 +213,7 @@ export default function AngebotDetailPage() {
             onChange={e => changeLanguage(e.target.value as DocumentLanguage)}
             title={t.angebotDetail.documentLanguageTitle}
             aria-label={t.angebotDetail.documentLanguageTitle}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#ccc', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', padding: '9px 12px', cursor: changingLanguage ? 'wait' : 'pointer', opacity: changingLanguage ? 0.6 : 1, appearance: 'none' }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--brand-text)', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '9px 12px', cursor: changingLanguage ? 'wait' : 'pointer', opacity: changingLanguage ? 0.6 : 1, appearance: 'none' }}
           >
             {/* Endonyms — a document language is named in its own language in
                 both OS locales, so this select does NOT follow the OS UI. */}
@@ -222,28 +222,28 @@ export default function AngebotDetailPage() {
           </select>
           <Link
             href={`/os/angebote/${angebot.id}/edit`}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#ccc', background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', padding: '9px 16px', textDecoration: 'none', display: 'inline-block' }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--brand-text)', background: 'transparent', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '9px 16px', textDecoration: 'none', display: 'inline-block' }}
           >
             {t.angebotDetail.edit}
           </Link>
           <a
             href={`/os/angebote/${angebot.id}/print`}
             target="_blank"
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#ccc', background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', padding: '9px 16px', textDecoration: 'none', display: 'inline-block' }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--brand-text)', background: 'transparent', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '9px 16px', textDecoration: 'none', display: 'inline-block' }}
           >
             {t.angebotDetail.pdf}
           </a>
           <button
             onClick={openSendModal}
             disabled={sending}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#000', background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', padding: '9px 16px', cursor: sending ? 'wait' : 'pointer', opacity: sending ? 0.5 : 1, fontWeight: 700 }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--brand-text)', background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', padding: '9px 16px', cursor: sending ? 'wait' : 'pointer', opacity: sending ? 0.5 : 1, fontWeight: 700 }}
           >
             {sending ? t.angebotDetail.sendingButton : t.angebotDetail.sendToClient}
           </button>
           <button
             onClick={deleteAngebot}
             disabled={deleting}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '4px', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-danger)', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '4px', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
           >
             {t.angebotDetail.delete}
           </button>
@@ -253,7 +253,7 @@ export default function AngebotDetailPage() {
       {/* Persistent banners (shown on the page after the modal closes) */}
       {sendSuccess && (
         <div style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
-          <p style={{ fontFamily: mono, fontSize: '11px', color: '#4ade80', margin: 0 }}>✓ {sendSuccess}</p>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0 }}>✓ {sendSuccess}</p>
         </div>
       )}
 
@@ -264,33 +264,33 @@ export default function AngebotDetailPage() {
         <div
           onClick={e => e.target === e.currentTarget && setSendModalOpen(false)}
           style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.78)',
+            position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             zIndex: 200, padding: '24px',
           }}
         >
           <div
             style={{
-              background: '#111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)',
+              background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)',
               borderRadius: '4px', width: '100%', maxWidth: '460px', padding: '28px',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <h2 style={{ fontFamily: sans, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>
+              <h2 style={{ fontFamily: sans, fontWeight: 700, fontSize: '18px', color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>
                 {t.angebotDetail.sendModalTitle(angebot.angebot_number)}
               </h2>
               <button
                 onClick={() => setSendModalOpen(false)}
-                style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', lineHeight: 1, cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '20px', lineHeight: 1, cursor: 'pointer' }}
               >
                 ×
               </button>
             </div>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '0 0 22px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '0 0 22px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
               {t.angebotDetail.sendModalSub}
             </p>
 
-            <label style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.12em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+            <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
               {t.angebotDetail.clientEmail}
             </label>
             <input
@@ -305,10 +305,10 @@ export default function AngebotDetailPage() {
               placeholder={t.angebotDetail.emailPlaceholder}
               style={{
                 width: '100%',
-                background: '#0A0A0A',
-                border: '1px solid rgba(255,255,255,0.12)',
+                background: 'var(--brand-background)',
+                border: '1px solid var(--brand-border)',
                 borderRadius: '4px',
-                color: '#FFF',
+                color: 'var(--brand-text)',
                 fontFamily: sans,
                 fontSize: '14px',
                 padding: '10px 12px',
@@ -318,7 +318,7 @@ export default function AngebotDetailPage() {
               }}
             />
 
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '0 0 16px', letterSpacing: '0.04em' }}>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '0 0 16px', letterSpacing: '0.04em' }}>
               {angebot.client_email && angebot.client_email !== emailInput.trim()
                 ? t.angebotDetail.willOverwrite(angebot.client_email)
                 : !angebot.client_email
@@ -333,14 +333,14 @@ export default function AngebotDetailPage() {
                 onChange={e => setBccMarcel(e.target.checked)}
                 style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }}
               />
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.08em' }}>
+              <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.08em' }}>
                 {t.angebotDetail.bccMarcel}
               </span>
             </label>
 
             {sendError && (
               <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: '8px 12px', marginBottom: '14px', borderRadius: '3px' }}>
-                <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: 0 }}>⚠ {sendError}</p>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}>▲ {sendError}</p>
               </div>
             )}
 
@@ -350,8 +350,8 @@ export default function AngebotDetailPage() {
                 disabled={sending}
                 style={{
                   fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em',
-                  color: '#888', background: 'transparent',
-                  border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px',
+                  color: 'var(--brand-text-secondary)', background: 'transparent',
+                  border: '1px solid var(--brand-border)', borderRadius: '4px',
                   padding: '10px 16px', cursor: sending ? 'wait' : 'pointer',
                 }}
               >
@@ -362,7 +362,7 @@ export default function AngebotDetailPage() {
                 disabled={sending || !emailInput.trim()}
                 style={{
                   fontFamily: mono, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em',
-                  color: '#000', background: 'var(--brand-primary)', border: 'none', borderRadius: '4px',
+                  color: 'var(--brand-text)', background: 'var(--brand-primary)', border: 'none', borderRadius: '4px',
                   padding: '10px 18px',
                   cursor: sending || !emailInput.trim() ? 'not-allowed' : 'pointer',
                   opacity: sending || !emailInput.trim() ? 0.5 : 1,
@@ -381,52 +381,52 @@ export default function AngebotDetailPage() {
           { label: t.angebotDetail.metaDate,       value: fmtDate(angebot.created_at) },
           { label: t.angebotDetail.metaValidUntil, value: fmtDate(angebot.valid_until) },
         ].map(m => (
-          <div key={m.label} style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', padding: '16px 20px' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{m.label}</p>
-            <p style={{ fontFamily: mono, fontSize: '14px', color: '#FFF', margin: 0 }}>{m.value}</p>
+          <div key={m.label} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '16px 20px' }}>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{m.label}</p>
+            <p style={{ fontFamily: mono, fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{m.value}</p>
           </div>
         ))}
       </div>
 
       {/* Client */}
-      <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
-        <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.angebotDetail.client}</p>
-        <p style={{ fontFamily: sans, fontSize: '15px', fontWeight: 600, color: '#FFF', margin: '0 0 4px' }}>{angebot.client_name}</p>
-        {angebot.client_email && <p style={{ fontFamily: mono, fontSize: '12px', color: '#888', margin: '0 0 3px' }}>{angebot.client_email}</p>}
-        {angebot.client_address && <p style={{ fontFamily: sans, fontSize: '13px', color: '#666', margin: 0, whiteSpace: 'pre-line' }}>{angebot.client_address}</p>}
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
+        <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.angebotDetail.client}</p>
+        <p style={{ fontFamily: sans, fontSize: '15px', fontWeight: 600, color: 'var(--brand-text)', margin: '0 0 4px' }}>{angebot.client_name}</p>
+        {angebot.client_email && <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)', margin: '0 0 3px' }}>{angebot.client_email}</p>}
+        {angebot.client_address && <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)', margin: 0, whiteSpace: 'pre-line' }}>{angebot.client_address}</p>}
       </div>
 
       {/* Line items */}
-      <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', overflow: 'hidden', marginBottom: '20px' }}>
-        <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: '#0D0D0D' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>{t.angebotDetail.lineItems}</p>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', overflow: 'hidden', marginBottom: '20px' }}>
+        <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--brand-border)', background: 'var(--brand-surface)' }}>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>{t.angebotDetail.lineItems}</p>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ background: '#0D0D0D', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <tr style={{ background: 'var(--brand-surface)', borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map((h, ci) => (
-                <th key={h} style={{ padding: '10px 16px', textAlign: ci === 0 ? 'center' : ci === 1 ? 'left' : 'right', fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '10px 16px', textAlign: ci === 0 ? 'center' : ci === 1 ? 'left' : 'right', fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {items.length === 0 ? (
-              <tr><td colSpan={5} style={{ padding: '16px', fontFamily: sans, fontSize: '13px', color: '#444', textAlign: 'center' }}>{t.angebotDetail.noLineItems}</td></tr>
+              <tr><td colSpan={5} style={{ padding: '16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)', textAlign: 'center' }}>{t.angebotDetail.noLineItems}</td></tr>
             ) : items.map((item, i) => {
               const qty = item.isFixedPrice ? 1 : Number(item.qty || 1)
               const total = Number(item.total) || 0
               return (
-                <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                  <td style={{ padding: '10px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)', verticalAlign: 'top' }}>{String(i + 1).padStart(2, '0')}</td>
-                  <td style={{ padding: '10px 16px', fontFamily: sans, fontSize: '14px', color: '#FFF', whiteSpace: 'pre-wrap', verticalAlign: 'top', lineHeight: 1.5 }}>
+                <tr key={i} style={{ borderBottom: '1px solid var(--brand-border)' }}>
+                  <td style={{ padding: '10px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)', verticalAlign: 'top' }}>{String(i + 1).padStart(2, '0')}</td>
+                  <td style={{ padding: '10px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)', whiteSpace: 'pre-wrap', verticalAlign: 'top', lineHeight: 1.5 }}>
                     {item.description}
                     {!item.isFixedPrice && item.unit && item.qty > 1 && (
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#555', marginLeft: '8px' }}>({item.qty} {item.unit})</span>
+                      <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)', marginLeft: '8px' }}>({item.qty} {item.unit})</span>
                     )}
                   </td>
-                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: '#888', verticalAlign: 'top' }}>{qty}</td>
-                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: '#888', verticalAlign: 'top' }}>{fmtUnitPrice(total, qty)}</td>
-                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700, verticalAlign: 'top' }}>{fmtEur(total)}</td>
+                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)', verticalAlign: 'top' }}>{qty}</td>
+                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)', verticalAlign: 'top' }}>{fmtUnitPrice(total, qty)}</td>
+                  <td style={{ padding: '10px 16px', textAlign: 'right', fontFamily: mono, fontSize: '13px', color: 'var(--brand-text)', fontWeight: 700, verticalAlign: 'top' }}>{fmtEur(total)}</td>
                 </tr>
               )
             })}
@@ -439,24 +439,24 @@ export default function AngebotDetailPage() {
             {hasAnz ? (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{t.angebotDetail.subtotal}</span>
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{fmtEur(Number(angebot.subtotal || angebot.total))}</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{t.angebotDetail.subtotal}</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{fmtEur(Number(angebot.subtotal || angebot.total))}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>
                     {t.angebotDetail.deposit} ({angebot.anzahlung_method || t.angebotDetail.depositDefaultMethod})
                   </span>
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>−{fmtEur(Number(angebot.anzahlung))}</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>−{fmtEur(Number(angebot.anzahlung))}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
-                  <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: '#FFF' }}>{t.angebotDetail.remainingBalance}</span>
-                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary)' }}>{fmtEur(restbet)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--brand-border)', paddingTop: '10px' }}>
+                  <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: 'var(--brand-text)' }}>{t.angebotDetail.remainingBalance}</span>
+                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary-text)' }}>{fmtEur(restbet)}</span>
                 </div>
               </>
             ) : (
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: '#FFF' }}>{t.angebotDetail.grandTotal}</span>
-                <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary)' }}>{fmtEur(Number(angebot.total))}</span>
+                <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: 'var(--brand-text)' }}>{t.angebotDetail.grandTotal}</span>
+                <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary-text)' }}>{fmtEur(Number(angebot.total))}</span>
               </div>
             )}
           </div>
@@ -465,11 +465,11 @@ export default function AngebotDetailPage() {
 
       {/* Included items (free) */}
       {Array.isArray(angebot.included_items) && angebot.included_items.length > 0 && (
-        <div style={{ background: '#0D0D0D', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid #22c55e', borderRadius: '4px', padding: '14px 20px', marginBottom: '20px' }}>
-          <p style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.angebotDetail.includedItems}</p>
+        <div style={{ background: 'var(--brand-surface)', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid var(--semantic-success)', borderRadius: '4px', padding: '14px 20px', marginBottom: '20px' }}>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-success)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.angebotDetail.includedItems}</p>
           <ul style={{ margin: 0, paddingLeft: '18px' }}>
             {angebot.included_items.map((it, i) => (
-              <li key={i} style={{ fontFamily: sans, fontSize: '13px', color: '#CCC', lineHeight: 1.6 }}>{it}</li>
+              <li key={i} style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text)', lineHeight: 1.6 }}>{it}</li>
             ))}
           </ul>
         </div>
@@ -477,22 +477,22 @@ export default function AngebotDetailPage() {
 
       {/* Payment terms */}
       {angebot.payment_terms && (
-        <div style={{ background: '#0D0D0D', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', borderLeft: '3px solid var(--brand-primary)', borderRadius: '4px', padding: '14px 20px', marginBottom: '20px' }}>
-          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 6px' }}>{t.angebotDetail.paymentTerms}</p>
-          <p style={{ fontFamily: sans, fontSize: '13px', color: '#CCC', margin: 0, lineHeight: 1.6 }}>{angebot.payment_terms}</p>
+        <div style={{ background: 'var(--brand-surface)', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', borderLeft: '3px solid var(--brand-primary)', borderRadius: '4px', padding: '14px 20px', marginBottom: '20px' }}>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 6px' }}>{t.angebotDetail.paymentTerms}</p>
+          <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text)', margin: 0, lineHeight: 1.6 }}>{angebot.payment_terms}</p>
         </div>
       )}
 
       {/* Notes */}
       {angebot.notes && (
-        <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.angebotDetail.notes}</p>
-          <p style={{ fontFamily: sans, fontSize: '14px', color: '#888', margin: 0, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{angebot.notes}</p>
+        <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.angebotDetail.notes}</p>
+          <p style={{ fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{angebot.notes}</p>
         </div>
       )}
 
       {/* §19 UStG — Kleinunternehmer status. Never charge VAT. */}
-      <p style={{ fontFamily: mono, fontSize: '10px', color: '#333', marginTop: '16px' }}>
+      <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', marginTop: '16px' }}>
         {t.angebotDetail.legalFooter}
       </p>
     </div>

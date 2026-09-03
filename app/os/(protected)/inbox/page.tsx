@@ -23,11 +23,11 @@ interface LogEntry {
 }
 
 const TYPE_COLOR: Record<LogType, string> = {
-  invoice_sent:  '#22c55e',
-  angebot_sent:  '#3b82f6',
+  invoice_sent:  'var(--semantic-success)',
+  angebot_sent:  'var(--semantic-info)',
   lead_enquiry:  'var(--brand-primary)',
-  newsletter:    '#a855f7',
-  other:         '#555',
+  newsletter:    'var(--semantic-info)',
+  other:         'var(--brand-text-muted)',
 }
 
 interface Lead { id: string; name: string; email: string; source: string; created_at: string; company: string }
@@ -89,46 +89,46 @@ export default function InboxPage() {
   return (
     <div style={{ padding: '32px 40px' }}>
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.inbox.heading}</h1>
-        <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>
+        <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.inbox.heading}</h1>
+        <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>
           {t.inbox.subtitle} &nbsp;·&nbsp; {log.length} {t.inbox.entries}
         </p>
       </div>
 
       <div style={{ background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '12px 18px', marginBottom: '24px' }}>
-        <p style={{ fontFamily: mono, fontSize: '10px', color: '#888', margin: 0, letterSpacing: '0.06em', lineHeight: 1.6 }}>
+        <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.06em', lineHeight: 1.6 }}>
           {t.inbox.note1}<br />
-          {t.inbox.note2} <code style={{ color: 'var(--brand-primary)' }}>/api/os/inbox</code>
+          {t.inbox.note2} <code style={{ color: 'var(--brand-primary-text)' }}>/api/os/inbox</code>
         </p>
       </div>
 
-      <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: '#333' }}>{t.common.loading}</td></tr>
+              <tr><td colSpan={5} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
             ) : log.length === 0 ? (
-              <tr><td colSpan={5} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '13px', color: '#444' }}>{t.inbox.empty}</td></tr>
+              <tr><td colSpan={5} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)' }}>{t.inbox.empty}</td></tr>
             ) : (
               log.map(entry => (
-                <tr key={entry.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                  <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: '11px', color: '#555', whiteSpace: 'nowrap' }}>
+                <tr key={entry.id} style={{ borderBottom: '1px solid var(--brand-border)' }}>
+                  <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)', whiteSpace: 'nowrap' }}>
                     {fmtDate(entry.date)}<br />
-                    <span style={{ fontSize: '10px', color: '#333' }}>
+                    <span style={{ fontSize: '10px', color: 'var(--brand-text-secondary)' }}>
                       {new Date(entry.date).toLocaleTimeString(intlLocale, { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </td>
-                  <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: '11px', color: '#888', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {entry.from}
                   </td>
-                  <td style={{ padding: '11px 16px', fontFamily: sans, fontSize: '13px', color: '#FFF' }}>
+                  <td style={{ padding: '11px 16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text)' }}>
                     {entry.subject}
                   </td>
                   <td style={{ padding: '11px 16px' }}>
@@ -137,7 +137,7 @@ export default function InboxPage() {
                     </span>
                   </td>
                   <td style={{ padding: '11px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: entry.status === 'sent' ? '#22c55e' : '#888', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    <span style={{ fontFamily: mono, fontSize: '9px', color: entry.status === 'sent' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                       {statusLabel[entry.status]}
                     </span>
                   </td>

@@ -81,8 +81,8 @@ const blankItem = (): LineItem => ({
 })
 
 const inp: React.CSSProperties = {
-  width: '100%', background: '#0A0A0A',
-  border: '1px solid rgba(255,255,255,0.08)', color: '#FFF',
+  width: '100%', background: 'var(--brand-background)',
+  border: '1px solid var(--brand-border)', color: 'var(--brand-text)',
   fontFamily: sans, fontSize: '13px', padding: '9px 12px',
   outline: 'none', boxSizing: 'border-box',
 }
@@ -97,7 +97,7 @@ function dateInputValue(value: string | null | undefined): string {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
+      <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
       {children}
     </div>
   )
@@ -485,14 +485,14 @@ export default function EditAngebotPage() {
 
   if (loading) return (
     <div style={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.2em' }}>{t.common.loading}</p>
+      <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em' }}>{t.common.loading}</p>
     </div>
   )
 
   if (loadError) return (
     <div style={{ padding: '40px' }}>
-      <p style={{ fontFamily: mono, fontSize: '12px', color: '#ef4444' }}>{loadError}</p>
-      <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', textDecoration: 'none' }}>{t.angebotDetail.backToAngebote}</Link>
+      <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-danger)' }}>{loadError}</p>
+      <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', textDecoration: 'none' }}>{t.angebotDetail.backToAngebote}</Link>
     </div>
   )
 
@@ -503,17 +503,17 @@ export default function EditAngebotPage() {
       {aiOpen && (
         <div
           onClick={e => e.target === e.currentTarget && setAiOpen(false)}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}
+          style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}
         >
-          <div style={{ background: '#111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', borderRadius: '4px', width: '100%', maxWidth: '560px', padding: '24px' }}>
+          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', borderRadius: '4px', width: '100%', maxWidth: '560px', padding: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
               <div>
-                <h2 style={{ fontFamily: sans, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>{t.forms.aiAngebotAddTitle}</h2>
-                <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '4px 0 0', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                <h2 style={{ fontFamily: sans, fontWeight: 700, fontSize: '18px', color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>{t.forms.aiAngebotAddTitle}</h2>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '4px 0 0', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   {t.forms.aiModalSub}
                 </p>
               </div>
-              <button onClick={() => setAiOpen(false)} style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', lineHeight: 1, cursor: 'pointer' }}>×</button>
+              <button onClick={() => setAiOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '20px', lineHeight: 1, cursor: 'pointer' }}>×</button>
             </div>
 
             {/* Mode toggle */}
@@ -526,8 +526,8 @@ export default function EditAngebotPage() {
                   style={{
                     flex: 1,
                     background: aiMode === m ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'transparent',
-                    border: `1px solid ${aiMode === m ? 'color-mix(in srgb, var(--brand-primary) 50%, transparent)' : 'rgba(255,255,255,0.1)'}`,
-                    color: aiMode === m ? 'var(--brand-primary)' : '#888',
+                    border: `1px solid ${aiMode === m ? 'color-mix(in srgb, var(--brand-primary) 50%, transparent)' : 'var(--brand-border)'}`,
+                    color: aiMode === m ? 'var(--brand-primary)' : 'var(--brand-text-secondary)',
                     fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase',
                     padding: '8px 10px', cursor: 'pointer', borderRadius: '3px',
                   }}
@@ -536,7 +536,7 @@ export default function EditAngebotPage() {
                 </button>
               ))}
             </div>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: '0 0 14px', lineHeight: 1.6 }}>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '0 0 14px', lineHeight: 1.6 }}>
               {aiMode === 'merge' ? t.forms.aiModeMergeHint : t.forms.aiModeReplaceHint}
             </p>
 
@@ -546,8 +546,8 @@ export default function EditAngebotPage() {
               onDragLeave={() => setAiDragOver(false)}
               onDrop={aiHandleDrop}
               style={{
-                border: `2px dashed ${aiDragOver ? 'var(--brand-primary)' : 'rgba(255,255,255,0.12)'}`,
-                background: aiDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : '#0A0A0A',
+                border: `2px dashed ${aiDragOver ? 'var(--brand-primary)' : 'var(--brand-border)'}`,
+                background: aiDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : 'var(--brand-background)',
                 borderRadius: '4px', padding: '14px', marginBottom: '12px',
                 minHeight: '72px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'border-color 0.2s ease, background 0.2s ease',
@@ -555,7 +555,7 @@ export default function EditAngebotPage() {
             >
               {aiLoading && aiPreview ? (
                 <div style={{ textAlign: 'center' }}>
-                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.1em', margin: '0 0 6px' }}>{t.forms.aiReading}</p>
+                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: '0 0 6px' }}>{t.forms.aiReading}</p>
                   {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
                   <img src={aiPreview} alt="" style={{ maxWidth: '100%', maxHeight: '110px', objectFit: 'contain', opacity: 0.5 }} />
                 </div>
@@ -563,17 +563,17 @@ export default function EditAngebotPage() {
                 // eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs
                 <img src={aiPreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain' }} />
               ) : (
-                <p style={{ fontFamily: mono, fontSize: '11px', color: '#444', margin: 0, lineHeight: 1.7, textAlign: 'center' }}>
-                  {t.forms.aiDropZonePrefix} <strong style={{ color: '#666' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)', margin: 0, lineHeight: 1.7, textAlign: 'center' }}>
+                  {t.forms.aiDropZonePrefix} <strong style={{ color: 'var(--brand-text-secondary)' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
                   <span style={{ fontSize: '10px', opacity: 0.6 }}>{t.forms.aiDropZoneFormats}</span>
                 </p>
               )}
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteTextShort}</span>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+              <div style={{ flex: 1, height: '1px', background: 'var(--brand-border)' }} />
+              <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteTextShort}</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--brand-border)' }} />
             </div>
 
             <textarea
@@ -584,14 +584,14 @@ export default function EditAngebotPage() {
               style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }}
             />
 
-            {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 10px', letterSpacing: '0.06em' }}>⚠ {aiError}</p>}
+            {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}>▲ {aiError}</p>}
 
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
                 type="button"
                 onClick={aiExtractFromText}
                 disabled={aiLoading || !aiRawText.trim()}
-                style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '11px 18px', cursor: aiLoading || !aiRawText.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: aiLoading || !aiRawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
+                style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '11px 18px', cursor: aiLoading || !aiRawText.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: aiLoading || !aiRawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
               >
                 {aiLoading && !aiPreview ? t.forms.aiExtracting : (aiMode === 'merge' ? t.forms.aiMergeButton : t.forms.aiReplaceButton)}
               </button>
@@ -599,7 +599,7 @@ export default function EditAngebotPage() {
                 type="button"
                 onClick={() => aiFileRef.current?.click()}
                 disabled={aiLoading}
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: '2px' }}
+                style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '11px', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: '2px' }}
               >
                 {t.forms.aiBrowseFile}
               </button>
@@ -607,7 +607,7 @@ export default function EditAngebotPage() {
                 type="button"
                 onClick={() => setAiOpen(false)}
                 disabled={aiLoading}
-                style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: '2px', marginLeft: 'auto' }}
+                style={{ background: 'transparent', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '11px', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: '2px', marginLeft: 'auto' }}
               >
                 {t.common.cancel}
               </button>
@@ -626,22 +626,22 @@ export default function EditAngebotPage() {
       />
 
       {/* Breadcrumb */}
-      <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', marginBottom: '16px', letterSpacing: '0.1em' }}>
-        <Link href="/os/angebote" style={{ color: '#555', textDecoration: 'none' }}>{t.angebotDetail.breadcrumb}</Link>
+      <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', marginBottom: '16px', letterSpacing: '0.1em' }}>
+        <Link href="/os/angebote" style={{ color: 'var(--brand-text-muted)', textDecoration: 'none' }}>{t.angebotDetail.breadcrumb}</Link>
         {' / '}
-        <Link href={`/os/angebote/${id}`} style={{ color: '#555', textDecoration: 'none' }}>{angebotNumber}</Link>
+        <Link href={`/os/angebote/${id}`} style={{ color: 'var(--brand-text-muted)', textDecoration: 'none' }}>{angebotNumber}</Link>
         {' / '}
-        <span style={{ color: '#FFF' }}>{t.forms.editBreadcrumb}</span>
+        <span style={{ color: 'var(--brand-text)' }}>{t.forms.editBreadcrumb}</span>
       </p>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', gap: '12px', flexWrap: 'wrap' }}>
-        <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 700, color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>
+        <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 700, color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>
           {t.angebotForm.editHeading} {angebotNumber}
         </h1>
         <button
           type="button"
           onClick={() => { setAiOpen(true); setAiError(''); setAiPreview('') }}
-          style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary)', fontFamily: mono, fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', padding: '9px 16px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '4px' }}
+          style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '11px', fontWeight: 700, letterSpacing: '0.1em', padding: '9px 16px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '4px' }}
           title={t.forms.aiAddDataTooltip}
         >
           {t.angebotForm.aiAddData}
@@ -649,8 +649,8 @@ export default function EditAngebotPage() {
       </div>
 
       {aiAppliedMsg && (
-        <div style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid #22c55e', padding: '10px 14px', marginBottom: '16px', borderRadius: '3px' }}>
-          <p style={{ fontFamily: mono, fontSize: '11px', color: '#4ade80', margin: 0, letterSpacing: '0.04em' }}>✓ {aiAppliedMsg}</p>
+        <div style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: '16px', borderRadius: '3px' }}>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.04em' }}>✓ {aiAppliedMsg}</p>
         </div>
       )}
 
@@ -690,7 +690,7 @@ export default function EditAngebotPage() {
           </Field>
         </div>
 
-        <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)', margin: '4px 0' }} />
+        <div style={{ height: '1px', background: 'var(--brand-border)', margin: '4px 0' }} />
 
         <Field label={t.angebotForm.fieldClientName}>
           <input value={clientName} onChange={e => setClientName(e.target.value)} style={inp} />
@@ -702,13 +702,13 @@ export default function EditAngebotPage() {
           <textarea value={clientAddress} onChange={e => setClientAddress(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical', lineHeight: 1.6 }} />
         </Field>
 
-        <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)', margin: '4px 0' }} />
+        <div style={{ height: '1px', background: 'var(--brand-border)', margin: '4px 0' }} />
 
         {/* Line items */}
         <div>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
           {lineItems.map((item, i) => (
-            <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px' }}>
+            <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px' }}>
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'flex-start' }}>
                 <textarea
                   value={item.description}
@@ -721,9 +721,9 @@ export default function EditAngebotPage() {
                   type="button"
                   onClick={() => updateItem(i, 'isFixedPrice', !item.isFixedPrice)}
                   style={{
-                    background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'rgba(255,255,255,0.1)'}`,
-                    color: item.isFixedPrice ? 'var(--brand-primary)' : '#555',
+                    background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'var(--brand-border)',
+                    border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`,
+                    color: item.isFixedPrice ? 'var(--brand-primary)' : 'var(--brand-text-muted)',
                     fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em',
                     textTransform: 'uppercase', padding: '8px 10px', cursor: 'pointer',
                     whiteSpace: 'nowrap', borderRadius: '2px', alignSelf: 'flex-start',
@@ -734,16 +734,16 @@ export default function EditAngebotPage() {
                 <button
                   type="button"
                   onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))}
-                  style={{ background: 'none', border: 'none', color: '#444', cursor: 'pointer', fontSize: '18px', padding: '4px 6px', alignSelf: 'flex-start' }}
+                  style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '18px', padding: '4px 6px', alignSelf: 'flex-start' }}
                 >
                   ×
                 </button>
               </div>
               {item.isFixedPrice ? (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em' }}>{t.forms.amountLabel}</span>
+                  <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em' }}>{t.forms.amountLabel}</span>
                   <input type="number" value={item.total} onChange={e => updateItem(i, 'total', Number(e.target.value))} style={{ ...inp, width: '120px', textAlign: 'right' }} />
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{currency === 'GBP' ? '£' : '€'}</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{currency === 'GBP' ? '£' : '€'}</span>
                 </div>
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: '60px 120px 90px 1fr', gap: '6px', alignItems: 'center' }}>
@@ -752,7 +752,7 @@ export default function EditAngebotPage() {
                     {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
                   </select>
                   <input type="number" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', Number(e.target.value))} style={{ ...inp, padding: '7px 8px', textAlign: 'right' }} />
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)', textAlign: 'right' }}>{fmtEur(item.total)}</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)', textAlign: 'right' }}>{fmtEur(item.total)}</span>
                 </div>
               )}
             </div>
@@ -760,21 +760,21 @@ export default function EditAngebotPage() {
           <button
             type="button"
             onClick={() => setLineItems(prev => [...prev, blankItem()])}
-            style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}
+            style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}
           >
             {t.angebotForm.addItem}
           </button>
         </div>
 
         {/* Anzahlung + total */}
-        <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '16px' }}>
+        <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>{t.angebotForm.subtotal}</span>
-            <span style={{ fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
+            <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)' }}>{t.angebotForm.subtotal}</span>
+            <span style={{ fontFamily: mono, fontSize: '13px', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
           </div>
           <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
             <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }} />
-            <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.angebotForm.depositReceived}</span>
+            <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.angebotForm.depositReceived}</span>
           </label>
           {hasAnzahlung && (
             <>
@@ -789,15 +789,15 @@ export default function EditAngebotPage() {
                   </select>
                 </Field>
               </div>
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>{t.angebotForm.remainingBalance}</span>
-                <span style={{ fontFamily: mono, fontSize: '15px', color: '#FFF', fontWeight: 700 }}>{fmtEur(restbet)}</span>
+              <div style={{ borderTop: '1px solid var(--brand-border)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text)', fontWeight: 700 }}>{t.angebotForm.remainingBalance}</span>
+                <span style={{ fontFamily: mono, fontSize: '15px', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(restbet)}</span>
               </div>
             </>
           )}
           {!hasAnzahlung && (
             <div style={{ borderTop: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', paddingTop: '10px', textAlign: 'right' }}>
-              <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: '#FFF' }}>{fmtEur(subtotal)}</span>
+              <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)' }}>{fmtEur(subtotal)}</span>
             </div>
           )}
         </div>
@@ -819,7 +819,7 @@ export default function EditAngebotPage() {
         <Field label={t.angebotForm.fieldNotes}><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} style={{ ...inp, resize: 'vertical' }} /></Field>
 
         {saveError && (
-          <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '4px 0 0' }}>⚠ {saveError}</p>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '4px 0 0' }}>▲ {saveError}</p>
         )}
 
         <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
@@ -828,7 +828,7 @@ export default function EditAngebotPage() {
             onClick={handleSave}
             disabled={saving || !clientName.trim()}
             style={{
-              background: 'var(--brand-primary)', border: 'none', color: '#000',
+              background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)',
               fontFamily: mono, fontWeight: 700, fontSize: '11px',
               letterSpacing: '0.1em', padding: '12px 20px',
               cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer',
@@ -841,9 +841,9 @@ export default function EditAngebotPage() {
           <Link
             href={`/os/angebote/${id}`}
             style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              color: '#888', textDecoration: 'none',
+              background: 'var(--brand-border)',
+              border: '1px solid var(--brand-border)',
+              color: 'var(--brand-text-secondary)', textDecoration: 'none',
               fontFamily: mono, fontSize: '11px',
               padding: '12px 20px', borderRadius: '2px',
               letterSpacing: '0.1em', textTransform: 'uppercase',

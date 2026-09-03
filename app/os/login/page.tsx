@@ -58,7 +58,7 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}>
-      <label style={{ fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
+      <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
         {t.login.accessCode}
       </label>
 
@@ -69,10 +69,10 @@ function LoginForm() {
         autoFocus
         autoComplete="current-password"
         style={{
-          background: '#0D0D0D',
-          border: `1px solid ${error ? '#ef4444' : 'rgba(255,255,255,0.10)'}`,
+          background: 'var(--brand-surface)',
+          border: `1px solid ${error ? 'var(--semantic-danger)' : 'var(--brand-border)'}`,
           borderRadius: '4px',
-          color: '#FFFFFF',
+          color: 'var(--brand-text)',
           fontFamily: mono,
           fontSize: '14px',
           padding: '10px 14px',
@@ -84,7 +84,7 @@ function LoginForm() {
       />
 
       {error && (
-        <p style={{ fontFamily: sans, fontSize: '12px', color: '#ef4444', margin: '4px 0 0' }}>
+        <p style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', margin: '4px 0 0' }}>
           {error}
         </p>
       )}
@@ -97,7 +97,7 @@ function LoginForm() {
           background: 'var(--brand-primary)',
           border: 'none',
           borderRadius: '4px',
-          color: '#000000',
+          color: 'var(--brand-on-primary)',
           fontFamily: sans,
           fontWeight: 700,
           fontSize: '13px',
@@ -126,14 +126,14 @@ function LoginShell({ children }: { children: React.ReactNode }) {
       alignItems: 'center',
       justifyContent: 'center',
       height: '100vh',
-      background: '#0A0A0A',
+      background: 'var(--brand-background)',
       flexDirection: 'column',
     }}>
       <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-        <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 700, color: 'var(--brand-primary)', letterSpacing: '0.1em', margin: 0 }}>
+        <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 700, color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: 0 }}>
           {t.login.brand}
         </p>
-        <p style={{ fontFamily: sans, fontSize: '13px', color: '#555555', margin: '8px 0 0' }}>
+        <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)', margin: '8px 0 0' }}>
           {t.login.tagline}
         </p>
       </div>

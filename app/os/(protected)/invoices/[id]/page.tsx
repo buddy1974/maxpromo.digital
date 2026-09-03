@@ -18,10 +18,10 @@ interface Invoice {
 }
 
 const STATUS_COLOR: Record<string, { text: string; bg: string; border: string }> = {
-  draft:   { text: '#888',    bg: 'rgba(136,136,136,0.1)',  border: '#333' },
-  sent:    { text: '#60a5fa', bg: 'rgba(59,130,246,0.1)',   border: 'rgba(59,130,246,0.3)' },
-  paid:    { text: '#4ade80', bg: 'rgba(34,197,94,0.1)',    border: 'rgba(34,197,94,0.3)' },
-  overdue: { text: '#f87171', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
+  draft:   { text: 'var(--brand-text-secondary)',    bg: 'rgba(136,136,136,0.1)',  border: 'var(--brand-text-secondary)' },
+  sent:    { text: 'var(--semantic-info)', bg: 'rgba(59,130,246,0.1)',   border: 'rgba(59,130,246,0.3)' },
+  paid:    { text: 'var(--semantic-success)', bg: 'rgba(34,197,94,0.1)',    border: 'rgba(34,197,94,0.3)' },
+  overdue: { text: 'var(--semantic-danger)', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
 }
 
 export default function InvoiceDetailPage() {
@@ -80,14 +80,14 @@ export default function InvoiceDetailPage() {
 
   if (loading) return (
     <div style={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.2em' }}>{t.common.loading}</p>
+      <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em' }}>{t.common.loading}</p>
     </div>
   )
 
   if (error || !invoice) return (
     <div style={{ padding: '40px' }}>
-      <p style={{ fontFamily: mono, fontSize: '12px', color: '#ef4444' }}>{t.invoiceDetail.notFound}</p>
-      <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', textDecoration: 'none' }}>{t.invoiceDetail.backToInvoices}</Link>
+      <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-danger)' }}>{t.invoiceDetail.notFound}</p>
+      <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', textDecoration: 'none' }}>{t.invoiceDetail.backToInvoices}</Link>
     </div>
   )
 
@@ -105,24 +105,24 @@ export default function InvoiceDetailPage() {
     <div style={{ padding: '32px 40px', maxWidth: '860px' }}>
 
       {/* Breadcrumb */}
-      <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', marginBottom: '24px', letterSpacing: '0.1em' }}>
-        <Link href="/os/invoices" style={{ color: '#555', textDecoration: 'none' }}>{t.invoiceDetail.breadcrumb}</Link>
+      <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', marginBottom: '24px', letterSpacing: '0.1em' }}>
+        <Link href="/os/invoices" style={{ color: 'var(--brand-text-muted)', textDecoration: 'none' }}>{t.invoiceDetail.breadcrumb}</Link>
         {' / '}
-        <span style={{ color: '#FFF' }}>{invoice.invoice_number}</span>
+        <span style={{ color: 'var(--brand-text)' }}>{invoice.invoice_number}</span>
       </p>
 
       {/* Header row */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px', gap: '16px', flexWrap: 'wrap' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
-            <h1 style={{ fontFamily: sans, fontSize: '26px', fontWeight: 700, color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontFamily: sans, fontSize: '26px', fontWeight: 700, color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>
               {invoice.invoice_number}
             </h1>
             <span style={{ fontFamily: mono, fontSize: '10px', color: sc.text, background: sc.bg, border: `1px solid ${sc.border}`, padding: '3px 10px', letterSpacing: '0.12em', textTransform: 'uppercase', borderRadius: '3px' }}>
               {t.status.invoice[invoice.status] ?? invoice.status}
             </span>
           </div>
-          <p style={{ fontFamily: sans, fontSize: '15px', color: '#888', margin: 0 }}>{invoice.client_name}</p>
+          <p style={{ fontFamily: sans, fontSize: '15px', color: 'var(--brand-text-secondary)', margin: 0 }}>{invoice.client_name}</p>
         </div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
           <select
@@ -131,7 +131,7 @@ export default function InvoiceDetailPage() {
             onChange={e => changeLanguage(e.target.value as DocumentLanguage)}
             title={t.invoiceDetail.documentLanguageTitle}
             aria-label={t.invoiceDetail.documentLanguageTitle}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#ccc', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', padding: '9px 12px', cursor: changingLanguage ? 'wait' : 'pointer', opacity: changingLanguage ? 0.6 : 1, appearance: 'none' }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--brand-text)', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '9px 12px', cursor: changingLanguage ? 'wait' : 'pointer', opacity: changingLanguage ? 0.6 : 1, appearance: 'none' }}
           >
             {/* Endonyms — a document language is named in its own language in
                 both OS locales, so this select does NOT follow the OS UI. */}
@@ -141,7 +141,7 @@ export default function InvoiceDetailPage() {
           <a
             href={`/os/invoices/${invoice.id}/print`}
             target="_blank"
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#ccc', background: 'transparent', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', padding: '9px 16px', textDecoration: 'none', display: 'inline-block' }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--brand-text)', background: 'transparent', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '9px 16px', textDecoration: 'none', display: 'inline-block' }}
           >
             {t.invoiceDetail.pdf}
           </a>
@@ -149,7 +149,7 @@ export default function InvoiceDetailPage() {
             <button
               onClick={markPaid}
               disabled={marking}
-              style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#4ade80', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '4px', padding: '9px 16px', cursor: marking ? 'wait' : 'pointer', opacity: marking ? 0.6 : 1 }}
+              style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-success)', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '4px', padding: '9px 16px', cursor: marking ? 'wait' : 'pointer', opacity: marking ? 0.6 : 1 }}
             >
               {t.invoiceDetail.markPaid}
             </button>
@@ -157,7 +157,7 @@ export default function InvoiceDetailPage() {
           <button
             onClick={deleteInvoice}
             disabled={deleting}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '4px', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-danger)', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '4px', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
           >
             {t.invoiceDetail.delete}
           </button>
@@ -171,49 +171,49 @@ export default function InvoiceDetailPage() {
           { label: t.invoiceDetail.metaDueDate, value: fmtDate(invoice.due_date ? invoice.due_date + 'T12:00:00' : null) },
           { label: t.invoiceDetail.metaPaidOn,  value: fmtDate(invoice.paid_date ? invoice.paid_date + 'T12:00:00' : null) },
         ].map(m => (
-          <div key={m.label} style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', padding: '16px 20px' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{m.label}</p>
-            <p style={{ fontFamily: mono, fontSize: '14px', color: '#FFF', margin: 0 }}>{m.value}</p>
+          <div key={m.label} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '16px 20px' }}>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{m.label}</p>
+            <p style={{ fontFamily: mono, fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{m.value}</p>
           </div>
         ))}
       </div>
 
       {/* Client block */}
-      <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
-        <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.invoiceDetail.client}</p>
-        <p style={{ fontFamily: sans, fontSize: '15px', fontWeight: 600, color: '#FFF', margin: '0 0 4px' }}>{invoice.client_name}</p>
-        {invoice.client_email && <p style={{ fontFamily: mono, fontSize: '12px', color: '#888', margin: '0 0 3px' }}>{invoice.client_email}</p>}
-        {invoice.client_address && <p style={{ fontFamily: sans, fontSize: '13px', color: '#666', margin: 0, whiteSpace: 'pre-line' }}>{invoice.client_address}</p>}
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
+        <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.invoiceDetail.client}</p>
+        <p style={{ fontFamily: sans, fontSize: '15px', fontWeight: 600, color: 'var(--brand-text)', margin: '0 0 4px' }}>{invoice.client_name}</p>
+        {invoice.client_email && <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)', margin: '0 0 3px' }}>{invoice.client_email}</p>}
+        {invoice.client_address && <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)', margin: 0, whiteSpace: 'pre-line' }}>{invoice.client_address}</p>}
       </div>
 
       {/* Line items */}
-      <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', overflow: 'hidden', marginBottom: '20px' }}>
-        <div style={{ padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: '#0D0D0D' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>{t.invoiceDetail.lineItems}</p>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', overflow: 'hidden', marginBottom: '20px' }}>
+        <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--brand-border)', background: 'var(--brand-surface)' }}>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>{t.invoiceDetail.lineItems}</p>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ background: '#0D0D0D', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <tr style={{ background: 'var(--brand-surface)', borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map((h, ci) => (
-                <th key={h} style={{ padding: '10px 16px', textAlign: ci === 0 ? 'center' : ci === 1 ? 'left' : 'right', fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '10px 16px', textAlign: ci === 0 ? 'center' : ci === 1 ? 'left' : 'right', fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {items.length === 0 ? (
-              <tr><td colSpan={5} style={{ padding: '16px', fontFamily: sans, fontSize: '13px', color: '#444', textAlign: 'center' }}>{t.invoiceDetail.noLineItems}</td></tr>
+              <tr><td colSpan={5} style={{ padding: '16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)', textAlign: 'center' }}>{t.invoiceDetail.noLineItems}</td></tr>
             ) : items.map((item, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)' }}>{String(i + 1).padStart(2, '0')}</td>
-                <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: '#FFF' }}>
+              <tr key={i} style={{ borderBottom: '1px solid var(--brand-border)' }}>
+                <td style={{ padding: '12px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)' }}>{String(i + 1).padStart(2, '0')}</td>
+                <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)' }}>
                   {item.description}
                   {!item.isFixedPrice && item.unit && item.qty > 1 && (
-                    <span style={{ fontFamily: mono, fontSize: '11px', color: '#555', marginLeft: '8px' }}>({item.qty} {item.unit})</span>
+                    <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)', marginLeft: '8px' }}>({item.qty} {item.unit})</span>
                   )}
                 </td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: '#888' }}>{item.isFixedPrice ? '1' : item.qty}</td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: '#888' }}>{fmtEur(Number(item.unit_price || item.total))}</td>
-                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(Number(item.total))}</td>
+                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{item.isFixedPrice ? '1' : item.qty}</td>
+                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{fmtEur(Number(item.unit_price || item.total))}</td>
+                <td style={{ padding: '12px 16px', textAlign: 'right', fontFamily: mono, fontSize: '13px', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(Number(item.total))}</td>
               </tr>
             ))}
           </tbody>
@@ -225,24 +225,24 @@ export default function InvoiceDetailPage() {
             {hasAnz ? (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{t.invoiceDetail.subtotal}</span>
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{fmtEur(Number(invoice.subtotal || invoice.total))}</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{t.invoiceDetail.subtotal}</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{fmtEur(Number(invoice.subtotal || invoice.total))}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>
                     {t.invoiceDetail.deposit} ({invoice.anzahlung_method || t.invoiceDetail.depositDefaultMethod})
                   </span>
-                  <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>−{fmtEur(Number(invoice.anzahlung))}</span>
+                  <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>−{fmtEur(Number(invoice.anzahlung))}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
-                  <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: '#FFF' }}>{t.invoiceDetail.remainingBalance}</span>
-                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary)' }}>{fmtEur(restbet)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--brand-border)', paddingTop: '10px' }}>
+                  <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: 'var(--brand-text)' }}>{t.invoiceDetail.remainingBalance}</span>
+                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary-text)' }}>{fmtEur(restbet)}</span>
                 </div>
               </>
             ) : (
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: '#FFF' }}>{t.invoiceDetail.grandTotal}</span>
-                <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary)' }}>{fmtEur(Number(invoice.total))}</span>
+                <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: 'var(--brand-text)' }}>{t.invoiceDetail.grandTotal}</span>
+                <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary-text)' }}>{fmtEur(Number(invoice.total))}</span>
               </div>
             )}
           </div>
@@ -251,14 +251,14 @@ export default function InvoiceDetailPage() {
 
       {/* Notes */}
       {invoice.notes && (
-        <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.invoiceDetail.notes}</p>
-          <p style={{ fontFamily: sans, fontSize: '14px', color: '#888', margin: 0, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{invoice.notes}</p>
+        <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.invoiceDetail.notes}</p>
+          <p style={{ fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{invoice.notes}</p>
         </div>
       )}
 
       {/* §19 UStG — Kleinunternehmer status. Never charge VAT. */}
-      <p style={{ fontFamily: mono, fontSize: '10px', color: '#333', marginTop: '16px' }}>
+      <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', marginTop: '16px' }}>
         {t.invoiceDetail.legalFooter}
       </p>
     </div>

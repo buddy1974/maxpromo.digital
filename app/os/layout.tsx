@@ -4,7 +4,7 @@ export default function OsRootLayout({ children }: { children: React.ReactNode }
       style={{
         position: 'fixed',
         inset: 0,
-        background: '#0A0A0A',
+        background: 'var(--brand-background)',
         zIndex: 9999,
         overflow: 'hidden',
       }}

@@ -23,8 +23,8 @@ export default function PrintPage() {
     if (invoice) setTimeout(() => window.print(), 800)
   }, [invoice])
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fff', fontFamily: 'monospace', color: '#888' }}>Loading invoice...</div>
-  if (!invoice) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fff', fontFamily: 'monospace', color: '#888' }}>Invoice not found.</div>
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'var(--brand-surface)', fontFamily: 'monospace', color: 'var(--brand-text-secondary)' }}>Loading invoice...</div>
+  if (!invoice) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'var(--brand-surface)', fontFamily: 'monospace', color: 'var(--brand-text-secondary)' }}>Invoice not found.</div>
 
   return (
     <InvoiceDocument
@@ -34,25 +34,28 @@ export default function PrintPage() {
         <DocumentToolbar>
           <button
             onClick={() => window.print()}
-            style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
+            style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
           >
-            📄 Als PDF speichern
+            ▤ Als PDF speichern
           </button>
           <a
             href={buildInvoiceWhatsAppUrl(invoice)}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ background: '#25D366', color: '#FFF', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
+            /* #25D366 is WhatsApp's own brand colour, not ours: a third-party
+               button has to look like that platform's button to be recognised.
+               Deliberately literal, and the only hex left in app/os. */
+            style={{ background: '#25D366', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
           >
-            💬 Per WhatsApp senden
+            ▭ Per WhatsApp senden
           </a>
           <button
             onClick={() => window.close()}
-            style={{ background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#888', fontFamily: 'monospace', fontSize: '11px', padding: '10px 14px', cursor: 'pointer' }}
+            style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: 'monospace', fontSize: '11px', padding: '10px 14px', cursor: 'pointer' }}
           >
             Close
           </button>
-          <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#555', marginLeft: 'auto' }}>
+          <span style={{ fontFamily: 'monospace', fontSize: '10px', color: 'var(--brand-text-muted)', marginLeft: 'auto' }}>
             WhatsApp: message pre-filled — attach the PDF manually before sending
           </span>
         </DocumentToolbar>

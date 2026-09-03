@@ -23,8 +23,8 @@ export default function AngebotPrintPage() {
     if (angebot) setTimeout(() => window.print(), 800)
   }, [angebot])
 
-  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fff', fontFamily: 'monospace', color: '#888' }}>Loading angebot...</div>
-  if (!angebot) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fff', fontFamily: 'monospace', color: '#888' }}>Angebot not found.</div>
+  if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'var(--brand-surface)', fontFamily: 'monospace', color: 'var(--brand-text-secondary)' }}>Loading angebot...</div>
+  if (!angebot) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'var(--brand-surface)', fontFamily: 'monospace', color: 'var(--brand-text-secondary)' }}>Angebot not found.</div>
 
   return (
     <AngebotDocument
@@ -34,9 +34,9 @@ export default function AngebotPrintPage() {
         <DocumentToolbar>
           <button
             onClick={() => window.print()}
-            style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
+            style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
           >
-            📄 Als PDF speichern
+            ▤ Als PDF speichern
           </button>
           {/*
             WhatsApp Click-to-Chat URLs only support text — there's no API
@@ -48,17 +48,20 @@ export default function AngebotPrintPage() {
             href={buildAngebotWhatsAppUrl(angebot)}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ background: '#25D366', color: '#FFF', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
+            /* #25D366 is WhatsApp's own brand colour, not ours: a third-party
+               button has to look like that platform's button to be recognised.
+               Deliberately literal, and the only hex left in app/os. */
+            style={{ background: '#25D366', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
           >
-            💬 WhatsApp text
+            ▭ WhatsApp text
           </a>
           <button
             onClick={() => window.close()}
-            style={{ background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#888', fontFamily: 'monospace', fontSize: '11px', padding: '10px 14px', cursor: 'pointer' }}
+            style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: 'monospace', fontSize: '11px', padding: '10px 14px', cursor: 'pointer' }}
           >
             Close
           </button>
-          <span style={{ fontFamily: 'monospace', fontSize: '10px', color: '#888', marginLeft: 'auto', maxWidth: '380px', textAlign: 'right', lineHeight: 1.5 }}>
+          <span style={{ fontFamily: 'monospace', fontSize: '10px', color: 'var(--brand-text-secondary)', marginLeft: 'auto', maxWidth: '380px', textAlign: 'right', lineHeight: 1.5 }}>
             WhatsApp can&apos;t auto-attach files. PDF saves to Downloads — drag it into the chat after the text is pre-filled.
           </span>
         </DocumentToolbar>

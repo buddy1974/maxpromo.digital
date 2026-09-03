@@ -38,8 +38,8 @@ const blankItem = (): LineItem => ({ description: '', qty: 1, unit: 'pauschal', 
 function addDays(d: number) { const dt = new Date(); dt.setDate(dt.getDate() + d); return dt.toISOString().split('T')[0] }
 
 const inp: React.CSSProperties = {
-  width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)',
-  color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px',
+  width: '100%', background: 'var(--brand-background)', border: '1px solid var(--brand-border)',
+  color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '9px 12px',
   outline: 'none', boxSizing: 'border-box',
 }
 const inpMissing: React.CSSProperties = {
@@ -49,7 +49,7 @@ const inpMissing: React.CSSProperties = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
+      <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
       {children}
     </div>
   )
@@ -92,7 +92,7 @@ function StreetInput({ value, onChange, placeholder, aiEnhanced, onFill }: {
     <div style={{ position: 'relative' }}>
       <input value={value} onChange={e => handleChange(e.target.value)} placeholder={placeholder} style={aiEnhanced && !value.trim() ? inpMissing : inp} onBlur={() => setTimeout(() => setOpen(false), 200)} />
       {open && suggestions.length > 0 && (
-        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#111', border: '1px solid rgba(255,255,255,0.1)', zIndex: 50, maxHeight: '180px', overflowY: 'auto' }}>
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', zIndex: 50, maxHeight: '180px', overflowY: 'auto' }}>
           {suggestions.map((s, i) => {
             const road      = s.address.road || ''
             const num       = s.address.house_number || ''
@@ -102,12 +102,12 @@ function StreetInput({ value, onChange, placeholder, aiEnhanced, onFill }: {
             return (
               <button key={i}
                 onMouseDown={() => { onChange(streetStr || s.display_name.split(',')[0].trim()); onFill?.(streetStr || s.display_name.split(',')[0].trim(), postcode, city); setOpen(false) }}
-                style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#CCC', fontFamily: sans, fontSize: '12px', padding: '9px 12px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: 'var(--brand-text)', fontFamily: sans, fontSize: '12px', padding: '9px 12px', cursor: 'pointer', borderBottom: '1px solid var(--brand-border)' }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'color-mix(in srgb, var(--brand-primary) 8%, transparent)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'none')}
               >
                 {streetStr || s.display_name.split(',').slice(0, 2).join(',')}
-                {(postcode || city) && <span style={{ color: '#555', marginLeft: '10px', fontSize: '11px' }}>{[postcode, city].filter(Boolean).join(' ')}</span>}
+                {(postcode || city) && <span style={{ color: 'var(--brand-text-muted)', marginLeft: '10px', fontSize: '11px' }}>{[postcode, city].filter(Boolean).join(' ')}</span>}
               </button>
             )
           })}
@@ -455,13 +455,13 @@ export default function NewInvoicePage() {
   }
 
   // ── Confidence helpers ────────────────────────────────────────────────────
-  const confColor   = { high: '#22c55e', medium: 'var(--brand-primary)', low: '#ef4444' }
+  const confColor   = { high: 'var(--semantic-success)', medium: 'var(--brand-primary)', low: 'var(--semantic-danger)' }
   const confBg      = { high: 'rgba(34,197,94,0.08)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'rgba(239,68,68,0.08)' }
   const confBorder  = { high: 'rgba(34,197,94,0.25)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'rgba(239,68,68,0.25)' }
   const confMsg     = { high: t.forms.confHigh, medium: t.forms.confMedium, low: t.forms.confLow }
 
   function itemBorderLeft(item: LineItem): string | undefined {
-    if (item.aiConfidence === 'low')    return '3px solid #ef4444'
+    if (item.aiConfidence === 'low')    return '3px solid var(--semantic-danger)'
     if (item.aiConfidence === 'medium') return '3px solid color-mix(in srgb, var(--brand-primary) 60%, transparent)'
     return undefined
   }
@@ -475,15 +475,15 @@ export default function NewInvoicePage() {
     <>
       {/* ── UNIFIED AI MODAL ── */}
       {aiModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: '#111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
               <div>
-                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.02em' }}>{t.forms.aiInvoiceTitle}</h2>
-                <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: 0 }}>{t.forms.aiModalSub}</p>
+                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: 'var(--brand-text)', margin: '0 0 4px', letterSpacing: '-0.02em' }}>{t.forms.aiInvoiceTitle}</h2>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', margin: 0 }}>{t.forms.aiModalSub}</p>
               </div>
-              <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}>×</button>
+              <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}>×</button>
             </div>
 
             {/* Paste / drop zone */}
@@ -492,8 +492,8 @@ export default function NewInvoicePage() {
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               style={{
-                border: `2px dashed ${isDragOver ? 'var(--brand-primary)' : 'rgba(255,255,255,0.12)'}`,
-                background: isDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : '#0A0A0A',
+                border: `2px dashed ${isDragOver ? 'var(--brand-primary)' : 'var(--brand-border)'}`,
+                background: isDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : 'var(--brand-background)',
                 borderRadius: '4px',
                 padding: '16px',
                 marginBottom: '16px',
@@ -507,7 +507,7 @@ export default function NewInvoicePage() {
             >
               {aiLoading && pastePreview ? (
                 <div style={{ textAlign: 'center' }}>
-                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.1em', margin: '0 0 8px' }}>
+                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: '0 0 8px' }}>
                     {t.forms.aiReading}
                   </p>
                   {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
@@ -517,8 +517,8 @@ export default function NewInvoicePage() {
                 // eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs
                 <img src={pastePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '140px', objectFit: 'contain' }} />
               ) : (
-                <p style={{ fontFamily: mono, fontSize: '11px', color: '#444', letterSpacing: '0.06em', textAlign: 'center', margin: 0, lineHeight: 1.8 }}>
-                  {t.forms.aiDropZonePrefix} <strong style={{ color: '#666' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)', letterSpacing: '0.06em', textAlign: 'center', margin: 0, lineHeight: 1.8 }}>
+                  {t.forms.aiDropZonePrefix} <strong style={{ color: 'var(--brand-text-secondary)' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
                   <span style={{ fontSize: '10px', opacity: 0.6 }}>{t.forms.aiDropZoneFormats}</span>
                 </p>
               )}
@@ -526,9 +526,9 @@ export default function NewInvoicePage() {
 
             {/* Divider */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteText}</span>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+              <div style={{ flex: 1, height: '1px', background: 'var(--brand-border)' }} />
+              <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteText}</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--brand-border)' }} />
             </div>
 
             {/* Textarea */}
@@ -541,8 +541,8 @@ export default function NewInvoicePage() {
             />
 
             {aiError && (
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>
-                ⚠ {aiError}
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>
+                ▲ {aiError}
               </p>
             )}
 
@@ -550,13 +550,13 @@ export default function NewInvoicePage() {
               <button
                 onClick={handleGenerateAI}
                 disabled={aiLoading || !rawText.trim()}
-                style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
+                style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
               >
                 {aiLoading && !pastePreview ? t.forms.aiExtracting : t.forms.aiGenerateButton}
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}
+                style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}
               >
                 {t.forms.aiBrowseFile}
               </button>
@@ -570,23 +570,23 @@ export default function NewInvoicePage() {
       <div style={{ display: 'flex', height: '100vh' }}>
 
         {/* ── FORM ── */}
-        <div style={{ width: '50%', height: '100vh', overflowY: 'auto', padding: '28px 32px', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ width: '50%', height: '100vh', overflowY: 'auto', padding: '28px 32px', borderRight: '1px solid var(--brand-border)' }}>
 
           {/* Header row */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF', margin: 0, letterSpacing: '-0.02em' }}>{t.invoiceForm.newHeading}</h1>
+              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>{t.invoiceForm.newHeading}</h1>
               {aiEnhanced && (
-                <span style={{ fontFamily: mono, fontSize: '9px', color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-success)', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
                   {t.invoiceForm.aiEnhanced}
                 </span>
               )}
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary)', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>
+              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>
                 {t.invoiceForm.aiGenerate}
               </button>
-              <button onClick={() => fileInputRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>
+              <button onClick={() => fileInputRef.current?.click()} style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>
                 {t.invoiceForm.scanImage}
               </button>
             </div>
@@ -603,8 +603,8 @@ export default function NewInvoicePage() {
 
           {/* Extraction notes */}
           {aiEnhanced && extractionNotes && (
-            <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.07)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '11px', color: '#888', margin: 0, letterSpacing: '0.04em' }}>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.04em' }}>
                 ℹ️  {extractionNotes}
               </p>
             </div>
@@ -639,7 +639,7 @@ export default function NewInvoicePage() {
               </Field>
             </div>
 
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
+            <div style={{ height: '1px', background: 'var(--brand-border)' }} />
 
             <Field label={t.invoiceForm.fieldSelectClient}>
               <select value={clientId} onChange={e => selectClient(e.target.value)} style={{ ...inp, appearance: 'none' }}>
@@ -653,13 +653,13 @@ export default function NewInvoicePage() {
             <Field label={t.invoiceForm.fieldClientEmails}>
               {/* ── Email chips input ── */}
               <div
-                style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', background: '#0A0A0A', border: `1px solid ${emailError ? 'rgba(239,68,68,0.5)' : 'rgba(255,255,255,0.08)'}`, padding: '7px 10px', minHeight: '40px', alignItems: 'center', cursor: 'text' }}
+                style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', background: 'var(--brand-background)', border: `1px solid ${emailError ? 'rgba(239,68,68,0.5)' : 'var(--brand-border)'}`, padding: '7px 10px', minHeight: '40px', alignItems: 'center', cursor: 'text' }}
                 onClick={e => { const inp = (e.currentTarget as HTMLDivElement).querySelector('input'); inp?.focus() }}
               >
                 {clientEmails.map((e, i) => (
-                  <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'color-mix(in srgb, var(--brand-primary) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 35%, transparent)', color: 'var(--brand-primary)', fontFamily: mono, fontSize: '11px', padding: '2px 8px', borderRadius: '2px' }}>
+                  <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'color-mix(in srgb, var(--brand-primary) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 35%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '11px', padding: '2px 8px', borderRadius: '2px' }}>
                     {e}
-                    <button onClick={() => setClientEmails(prev => prev.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'var(--brand-primary)', cursor: 'pointer', fontSize: '13px', padding: '0', lineHeight: 1 }}>×</button>
+                    <button onClick={() => setClientEmails(prev => prev.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'var(--brand-primary-text)', cursor: 'pointer', fontSize: '13px', padding: '0', lineHeight: 1 }}>×</button>
                   </span>
                 ))}
                 <input
@@ -668,17 +668,17 @@ export default function NewInvoicePage() {
                   onKeyDown={handleEmailKeyDown}
                   onBlur={addEmail}
                   placeholder={clientEmails.length === 0 ? (aiEnhanced ? t.forms.emailAddPlaceholderAi : t.forms.emailAddPlaceholder) : ''}
-                  style={{ flex: '1', minWidth: '180px', background: 'none', border: 'none', outline: 'none', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '0' }}
+                  style={{ flex: '1', minWidth: '180px', background: 'none', border: 'none', outline: 'none', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '0' }}
                 />
               </div>
-              {emailError && <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '4px 0 0', letterSpacing: '0.06em' }}>⚠ {emailError}</p>}
+              {emailError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '4px 0 0', letterSpacing: '0.06em' }}>▲ {emailError}</p>}
             </Field>
 
             {/* Send copy checkbox */}
             <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
               <input type="checkbox" checked={sendCopy} onChange={e => setSendCopy(e.target.checked)}
                 style={{ width: '14px', height: '14px', accentColor: 'var(--brand-primary)', cursor: 'pointer' }} />
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.08em' }}>
+              <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.08em' }}>
                 {t.invoiceForm.sendCopyToMarcel}
               </span>
             </label>
@@ -700,15 +700,15 @@ export default function NewInvoicePage() {
               </Field>
             </div>
 
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
+            <div style={{ height: '1px', background: 'var(--brand-border)' }} />
 
             {/* Line items */}
             <div>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.invoiceForm.lineItemsHeading}</p>
+              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.invoiceForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
-                <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', borderLeft: itemBorderLeft(item) || '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
+                <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
                   {item.aiConfidence === 'low' && (
-                    <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: '#ef4444', letterSpacing: '0.08em' }}>
+                    <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}>
                       {t.forms.verifyBadge}
                     </span>
                   )}
@@ -719,16 +719,16 @@ export default function NewInvoicePage() {
                       placeholder={aiEnhanced && !item.description ? t.forms.notFoundFill : t.forms.descriptionPlaceholder}
                       style={{ ...inp, flex: 1, border: aiEnhanced && !item.description ? '1px dashed color-mix(in srgb, var(--brand-primary) 50%, transparent)' : inp.border as string }}
                     />
-                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'rgba(255,255,255,0.04)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'rgba(255,255,255,0.1)'}`, color: item.isFixedPrice ? 'var(--brand-primary)' : '#555', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
+                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'var(--brand-border)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`, color: item.isFixedPrice ? 'var(--brand-primary)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
                       {item.isFixedPrice ? t.invoiceForm.pauschal : t.invoiceForm.perUnit}
                     </button>
-                    <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#444', cursor: 'pointer', fontSize: '18px', padding: '0 4px', lineHeight: 1 }}>×</button>
+                    <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '18px', padding: '0 4px', lineHeight: 1 }}>×</button>
                   </div>
                   {item.isFixedPrice ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', flexShrink: 0 }}>{t.forms.amountLabel}</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', flexShrink: 0 }}>{t.forms.amountLabel}</span>
                       <input type="number" value={item.total} onChange={e => updateItem(i, 'total', Number(e.target.value))} style={{ ...inp, width: '120px', textAlign: 'right' }} />
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{currency === 'GBP' ? '£' : '€'}</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{currency === 'GBP' ? '£' : '€'}</span>
                     </div>
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: '60px 120px 90px 1fr', gap: '6px', alignItems: 'center' }}>
@@ -737,25 +737,25 @@ export default function NewInvoicePage() {
                         {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
                       </select>
                       <input type="number" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', Number(e.target.value))} style={{ ...inp, padding: '7px 8px', textAlign: 'right' }} />
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)', textAlign: 'right' }}>{fmtEur(item.total)}</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)', textAlign: 'right' }}>{fmtEur(item.total)}</span>
                     </div>
                   )}
                 </div>
               ))}
-              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>
+              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>
                 {t.invoiceForm.addItem}
               </button>
             </div>
 
             {/* Totals */}
-            <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '16px' }}>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>{t.invoiceForm.subtotal}</span>
-                <span style={{ fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
+                <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)' }}>{t.invoiceForm.subtotal}</span>
+                <span style={{ fontFamily: mono, fontSize: '13px', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
               </div>
               <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
                 <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }} />
-                <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.invoiceForm.depositReceived}</span>
+                <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.invoiceForm.depositReceived}</span>
               </label>
               {hasAnzahlung && (
                 <div style={{ marginBottom: '12px' }}>
@@ -772,23 +772,23 @@ export default function NewInvoicePage() {
                       </select>
                     </Field>
                   </div>
-                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
+                  <div style={{ borderTop: '1px solid var(--brand-border)', paddingTop: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#888' }}>{t.invoiceForm.deposit}</span>
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)' }}>−{fmtEur(Number(anzahlung))}</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{t.invoiceForm.deposit}</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)' }}>−{fmtEur(Number(anzahlung))}</span>
                     </div>
-                    <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '6px 0' }} />
+                    <div style={{ height: '1px', background: 'var(--brand-border)', margin: '6px 0' }} />
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>{t.invoiceForm.remainingBalance}</span>
-                      <span style={{ fontFamily: mono, fontSize: '15px', color: '#FFF', fontWeight: 700 }}>{fmtEur(restbetrag)}</span>
+                      <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text)', fontWeight: 700 }}>{t.invoiceForm.remainingBalance}</span>
+                      <span style={{ fontFamily: mono, fontSize: '15px', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(restbetrag)}</span>
                     </div>
                   </div>
                 </div>
               )}
               {!hasAnzahlung && (
                 <div style={{ borderTop: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', paddingTop: '10px', textAlign: 'right' }}>
-                  <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF' }}>{fmtEur(subtotal)}</span>
-                  <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0', letterSpacing: '0.06em' }}>{t.invoiceForm.vatNote}</p>
+                  <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)' }}>{fmtEur(subtotal)}</span>
+                  <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', margin: '4px 0 0', letterSpacing: '0.06em' }}>{t.invoiceForm.vatNote}</p>
                 </div>
               )}
             </div>
@@ -799,17 +799,17 @@ export default function NewInvoicePage() {
 
             {sendError && (
               <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)', padding: '10px 14px', borderRadius: '2px' }}>
-                <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: 0, letterSpacing: '0.06em' }}>⚠ {sendError}</p>
-                <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', background: 'none', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t.forms.retry}</button>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0, letterSpacing: '0.06em' }}>▲ {sendError}</p>
+                <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', background: 'none', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t.forms.retry}</button>
               </div>
             )}
 
             <div style={{ display: 'flex', gap: '10px', paddingBottom: '24px' }}>
-              <button onClick={handleSaveDraft} disabled={saving} style={{ background: '#111', border: '1px solid rgba(255,255,255,0.12)', color: '#FFF', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1 }}>
+              <button onClick={handleSaveDraft} disabled={saving} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1 }}>
                 {saving ? t.invoiceForm.savingDraft : t.invoiceForm.saveDraft}
               </button>
-              <button onClick={handleSend} disabled={sending} style={{ background: sending ? '#7c3a0c' : 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: sending ? 'wait' : 'pointer', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-                {sending && <span style={{ display: 'inline-block', width: '10px', height: '10px', border: '2px solid rgba(0,0,0,0.3)', borderTopColor: '#000', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
+              <button onClick={handleSend} disabled={sending} style={{ background: sending ? 'var(--brand-primary-dark)' : 'var(--brand-primary)', border: 'none', color: 'var(--brand-on-primary)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: sending ? 'wait' : 'pointer', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                {sending && <span style={{ display: 'inline-block', width: '10px', height: '10px', border: '2px solid color-mix(in srgb, var(--brand-text) 45%, transparent)', borderTopColor: 'var(--brand-text)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
                 {sending ? t.invoiceForm.sendingInvoice : t.invoiceForm.sendInvoice}
               </button>
             </div>
@@ -821,8 +821,8 @@ export default function NewInvoicePage() {
              print page (components/documents/InvoiceDocument.tsx) — not
              a third hand-rolled copy — so what you see here is exactly
              what "Als PDF speichern" will produce. */}
-        <div style={{ flex: 1, height: '100vh', overflowY: 'auto', background: '#f0f0f0', padding: '28px' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
+        <div style={{ flex: 1, height: '100vh', overflowY: 'auto', background: 'var(--brand-surface-subtle)', padding: '28px' }}>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
           <div style={{ maxWidth: '520px', margin: '0 auto', transform: 'scale(0.94)', transformOrigin: 'top center' }}>
             <InvoiceDocument
               invoice={{
@@ -851,26 +851,26 @@ export default function NewInvoicePage() {
 
       {/* ── SEND SUCCESS OVERLAY ── */}
       {sent && sentData && (
-        <div style={{ position: 'fixed', inset: 0, background: '#0A0A0A', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--brand-background)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
           <div style={{ textAlign: 'center', maxWidth: '440px', width: '100%' }}>
             {/* Checkmark */}
-            <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(34,197,94,0.12)', border: '2px solid #22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <span style={{ color: '#22c55e', fontSize: '32px', lineHeight: 1 }}>✓</span>
+            <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(34,197,94,0.12)', border: '2px solid var(--semantic-success)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+              <span style={{ color: 'var(--semantic-success)', fontSize: '32px', lineHeight: 1 }}>✓</span>
             </div>
-            <h2 style={{ color: '#FFF', fontSize: '22px', fontWeight: 700, margin: '0 0 8px', fontFamily: grotesk }}>{t.invoiceForm.sentHeading}</h2>
-            <p style={{ color: '#888', fontFamily: mono, fontSize: '12px', margin: '0 0 4px', letterSpacing: '0.04em' }}>{t.forms.invoiceNoPrefix} {sentData.number} {t.invoiceForm.sentSubheading}</p>
-            <p style={{ color: 'var(--brand-primary)', fontFamily: mono, fontSize: '12px', margin: '0 0 28px', letterSpacing: '0.04em', wordBreak: 'break-all' }}>{sentData.emails.join(', ')}</p>
+            <h2 style={{ color: 'var(--brand-text)', fontSize: '22px', fontWeight: 700, margin: '0 0 8px', fontFamily: grotesk }}>{t.invoiceForm.sentHeading}</h2>
+            <p style={{ color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '12px', margin: '0 0 4px', letterSpacing: '0.04em' }}>{t.forms.invoiceNoPrefix} {sentData.number} {t.invoiceForm.sentSubheading}</p>
+            <p style={{ color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '12px', margin: '0 0 28px', letterSpacing: '0.04em', wordBreak: 'break-all' }}>{sentData.emails.join(', ')}</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <button
                 onClick={() => window.open(`/os/invoices/${sentData.id}/print`, '_blank')}
-                style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}
+                style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}
               >
                 {t.invoiceForm.savePdf}
               </button>
               <button
                 onClick={() => router.push('/os/invoices')}
-                style={{ background: '#111', border: '1px solid rgba(255,255,255,0.12)', color: '#888', fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}
+                style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}
               >
                 {t.invoiceForm.backToInvoices}
               </button>
@@ -881,7 +881,7 @@ export default function NewInvoicePage() {
 
       {/* ── TOAST ── */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 400, background: '#111', border: '1px solid color-mix(in srgb, var(--brand-primary) 40%, transparent)', color: '#FFF', fontFamily: mono, fontSize: '12px', padding: '12px 18px', letterSpacing: '0.06em', maxWidth: '380px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+        <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 400, background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 40%, transparent)', color: 'var(--brand-text)', fontFamily: mono, fontSize: '12px', padding: '12px 18px', letterSpacing: '0.06em', maxWidth: '380px', boxShadow: '0 8px 32px color-mix(in srgb, var(--brand-text) 45%, transparent)' }}>
           {toast}
         </div>
       )}

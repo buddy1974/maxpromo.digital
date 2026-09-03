@@ -39,21 +39,21 @@ const BLANK = {
 }
 
 const inp: React.CSSProperties = {
-  width: '100%', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.10)',
-  borderRadius: '4px', color: '#FFF', fontFamily: sans, fontSize: '14px', padding: '10px 14px',
+  width: '100%', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)',
+  borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontSize: '14px', padding: '10px 14px',
   outline: 'none', boxSizing: 'border-box',
 }
 
 const sectionLbl: React.CSSProperties = {
-  fontFamily: mono, fontSize: '9px', color: '#444', letterSpacing: '0.2em',
+  fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em',
   textTransform: 'uppercase', margin: '20px 0 14px', paddingBottom: '8px',
-  borderBottom: '1px solid rgba(255,255,255,0.04)', display: 'block',
+  borderBottom: '1px solid var(--brand-border)', display: 'block',
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+      <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
         {label}
       </label>
       {children}
@@ -98,7 +98,7 @@ function StreetInput({ value, onChange, onFill }: {
         onBlur={() => setTimeout(() => setOpen(false), 200)}
       />
       {open && suggestions.length > 0 && (
-        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#111111', border: '1px solid rgba(255,255,255,0.10)', zIndex: 50, maxHeight: '180px', overflowY: 'auto', borderRadius: '0 0 4px 4px' }}>
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', zIndex: 50, maxHeight: '180px', overflowY: 'auto', borderRadius: '0 0 4px 4px' }}>
           {suggestions.map((s, i) => {
             const road      = s.address.road || ''
             const num       = s.address.house_number || ''
@@ -109,13 +109,13 @@ function StreetInput({ value, onChange, onFill }: {
               <button
                 key={i}
                 onMouseDown={() => { onChange(streetStr); onFill?.(streetStr, postcode, city); setOpen(false) }}
-                style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#CCC', fontFamily: sans, fontSize: '13px', padding: '9px 14px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '9px 14px', cursor: 'pointer', borderBottom: '1px solid var(--brand-border)' }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'color-mix(in srgb, var(--brand-primary) 8%, transparent)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'none')}
               >
                 {streetStr || s.display_name.split(',').slice(0, 2).join(',')}
                 {(postcode || city) && (
-                  <span style={{ color: '#555', marginLeft: '10px', fontSize: '12px' }}>
+                  <span style={{ color: 'var(--brand-text-muted)', marginLeft: '10px', fontSize: '12px' }}>
                     {[postcode, city].filter(Boolean).join(' ')}
                   </span>
                 )}
@@ -327,7 +327,7 @@ export default function ClientsPage() {
     `${c.name} ${c.company} ${c.email}`.toLowerCase().includes(search.toLowerCase())
   )
 
-  const confidenceColor = { high: '#22c55e', medium: 'var(--brand-primary)', low: '#ef4444' }
+  const confidenceColor = { high: 'var(--semantic-success)', medium: 'var(--brand-primary)', low: 'var(--semantic-danger)' }
 
   const columns = [
     t.clients.colName, t.clients.colCompany, t.clients.colEmail, t.clients.colPhone,
@@ -340,12 +340,12 @@ export default function ClientsPage() {
       {/* ── Header ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
-          <h1 style={{ fontFamily: sans, fontSize: '28px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.clients.heading}</h1>
-          <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>{clients.length} {t.common.total}</p>
+          <h1 style={{ fontFamily: sans, fontSize: '28px', fontWeight: 700, color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.clients.heading}</h1>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>{clients.length} {t.common.total}</p>
         </div>
         <button
           onClick={() => { setEditId(null); setForm({ ...BLANK }); setShowForm(true); resetScan() }}
-          style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: 'pointer' }}
+          style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: 'pointer' }}
         >
           {t.clients.newClient}
         </button>
@@ -361,10 +361,10 @@ export default function ClientsPage() {
 
       {/* ── New / Edit Client MODAL ── */}
       {showForm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
           <div style={{
-            background: '#111111',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'var(--brand-surface-subtle)',
+            border: '1px solid var(--brand-border)',
             borderTop: '2px solid var(--brand-primary)',
             borderRadius: '4px',
             width: '100%',
@@ -376,26 +376,26 @@ export default function ClientsPage() {
           }}>
 
             {/* ── MODAL HEADER — fixed top ── */}
-            <div style={{ padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
+            <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--brand-border)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
                 {editId ? t.clients.editClient : t.clients.newClientModal}
               </p>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <button
                   onClick={() => { setScanTab('scan'); fileRef.current?.click() }}
-                  style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary)', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
+                  style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
                 >
                   {t.clients.scanButton}
                 </button>
                 <button
                   onClick={() => { setScanTab('paste'); setExtracted(null); setScanPreview('') }}
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
+                  style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '10px', letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
                 >
                   {t.clients.pasteButton}
                 </button>
                 <button
                   onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
-                  style={{ background: 'none', border: 'none', color: '#555', fontSize: '22px', cursor: 'pointer', lineHeight: 1, padding: '0 0 0 8px' }}
+                  style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '22px', cursor: 'pointer', lineHeight: 1, padding: '0 0 0 8px' }}
                 >
                   ×
                 </button>
@@ -407,17 +407,17 @@ export default function ClientsPage() {
 
               {/* Image preview */}
               {scanTab === 'scan' && scanPreview && !extracted && (
-                <div style={{ marginBottom: '16px', background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '12px', borderRadius: '2px' }}>
+                <div style={{ marginBottom: '16px', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '12px', borderRadius: '2px' }}>
                   <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview of a scanned business card; next/image cannot optimize runtime data URLs */}
-                    <img src={scanPreview} alt={t.clients.imageAlt} style={{ width: '120px', height: '80px', objectFit: 'cover', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '2px' }} />
+                    <img src={scanPreview} alt={t.clients.imageAlt} style={{ width: '120px', height: '80px', objectFit: 'cover', border: '1px solid var(--brand-border)', borderRadius: '2px' }} />
                     <div style={{ flex: 1 }}>
-                      <p style={{ fontFamily: mono, fontSize: '10px', color: '#888', margin: '0 0 10px', letterSpacing: '0.08em' }}>{t.clients.imageReady}</p>
+                      <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: '0 0 10px', letterSpacing: '0.08em' }}>{t.clients.imageReady}</p>
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={runExtract} disabled={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: '2px' }}>
+                        <button onClick={runExtract} disabled={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: '2px' }}>
                           {extracting ? t.clients.extracting : t.clients.extract}
                         </button>
-                        <button onClick={() => { setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555', fontFamily: mono, fontSize: '10px', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
+                        <button onClick={() => { setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: '10px', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
                           {t.clients.remove}
                         </button>
                       </div>
@@ -437,10 +437,10 @@ export default function ClientsPage() {
                     style={{ ...inp, resize: 'vertical', lineHeight: 1.6, marginBottom: '8px' }}
                   />
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={runExtract} disabled={extracting || !pasteText.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
+                    <button onClick={runExtract} disabled={extracting || !pasteText.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
                       {extracting ? t.clients.extractingAi : t.clients.extractWithAi}
                     </button>
-                    <button onClick={() => { setScanTab('scan'); setPasteText('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555', fontFamily: mono, fontSize: '10px', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
+                    <button onClick={() => { setScanTab('scan'); setPasteText('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: '10px', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
                       {t.common.cancel}
                     </button>
                   </div>
@@ -448,22 +448,22 @@ export default function ClientsPage() {
               )}
 
               {extractError && (
-                <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>⚠ {extractError}</p>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>▲ {extractError}</p>
               )}
 
               {/* Extracted preview banner */}
               {extracted && (
-                <div style={{ marginBottom: '16px', background: '#0D0D0D', border: `1px solid ${confidenceColor[extracted.confidence]}33`, borderLeft: `3px solid ${confidenceColor[extracted.confidence]}`, padding: '12px 16px', borderRadius: '2px' }}>
+                <div style={{ marginBottom: '16px', background: 'var(--brand-surface)', border: `1px solid ${confidenceColor[extracted.confidence]}33`, borderLeft: `3px solid ${confidenceColor[extracted.confidence]}`, padding: '12px 16px', borderRadius: '2px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.clients.prefilled}</p>
+                    <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.clients.prefilled}</p>
                     <span style={{ fontFamily: mono, fontSize: '9px', color: confidenceColor[extracted.confidence], background: `${confidenceColor[extracted.confidence]}22`, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
                       {confidenceLabel[extracted.confidence]}
                     </span>
                   </div>
                   {extracted.confidence === 'low' && (
-                    <p style={{ fontFamily: mono, fontSize: '9px', color: '#ef4444', margin: '8px 0 0', letterSpacing: '0.08em' }}>{t.clients.lowConfidenceWarning}</p>
+                    <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', margin: '8px 0 0', letterSpacing: '0.08em' }}>{t.clients.lowConfidenceWarning}</p>
                   )}
-                  <button onClick={resetScan} style={{ fontFamily: mono, fontSize: '9px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
+                  <button onClick={resetScan} style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
                     {t.clients.rescan}
                   </button>
                 </div>
@@ -526,26 +526,26 @@ export default function ClientsPage() {
             </div>
 
             {/* ── MODAL FOOTER — always visible ── */}
-            <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.08)', background: '#111111', flexShrink: 0 }}>
+            <div style={{ padding: '16px 24px', borderTop: '1px solid var(--brand-border)', background: 'var(--brand-surface-subtle)', flexShrink: 0 }}>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button
                   type="button"
                   onClick={editId ? updateClient : save}
                   disabled={saving || !form.name.trim()}
-                  style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
+                  style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
                 >
                   {saving ? t.common.saving : editId ? t.clients.updateClient : t.clients.saveClient}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
-                  style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#cccccc', fontFamily: sans, fontSize: '13px', padding: '10px 18px', cursor: 'pointer' }}
+                  style={{ background: 'none', border: '1px solid var(--brand-border)', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '10px 18px', cursor: 'pointer' }}
                 >
                   {t.common.cancel}
                 </button>
               </div>
               {saveError && (
-                <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}>▲ {saveError}</p>
               )}
             </div>
 
@@ -556,35 +556,35 @@ export default function ClientsPage() {
       <input ref={fileRef} type="file" accept="image/*,.pdf" capture="environment" style={{ display: 'none' }} onChange={handleFileSelect} />
 
       {/* ── TABLE ── */}
-      <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden', borderRadius: '4px' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden', borderRadius: '4px' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
-            <tr style={{ background: '#0D0D0D', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <tr style={{ background: 'var(--brand-surface)', borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: '#555555', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: '#333333' }}>{t.common.loading}</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '14px', color: '#444444' }}>{t.clients.empty}</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{t.clients.empty}</td></tr>
             ) : (
               filtered.map(c => (
                 <tr
                   key={c.id}
-                  style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
-                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}
+                  style={{ borderBottom: '1px solid var(--brand-border)' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'var(--brand-border)')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                 >
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: '#FFFFFF' }}>{c.name}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: '#888888' }}>{c.company || t.common.notAvailable}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '12px', color: '#888888' }}>{c.email || t.common.notAvailable}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '12px', color: '#888888' }}>{c.phone || t.common.notAvailable}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: '#555555' }}>{c.city || t.common.notAvailable}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)' }}>{c.name}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-secondary)' }}>{c.company || t.common.notAvailable}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.email || t.common.notAvailable}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.phone || t.common.notAvailable}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{c.city || t.common.notAvailable}</td>
                   <td style={{ padding: '12px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '10px', color: c.status === 'active' ? '#4ade80' : '#666666', background: c.status === 'active' ? 'rgba(34,197,94,0.15)' : 'rgba(255,255,255,0.06)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '3px', border: `1px solid ${c.status === 'active' ? 'rgba(34,197,94,0.2)' : '#333333'}` }}>
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: c.status === 'active' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', background: c.status === 'active' ? 'rgba(34,197,94,0.15)' : 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '3px', border: `1px solid ${c.status === 'active' ? 'rgba(34,197,94,0.2)' : 'var(--brand-text-secondary)'}` }}>
                       {t.status.client[c.status] ?? c.status}
                     </span>
                   </td>
@@ -592,13 +592,13 @@ export default function ClientsPage() {
                     <div style={{ display: 'flex', gap: '10px' }}>
                       <button
                         onClick={() => startEdit(c)}
-                        style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                       >
                         {t.common.edit}
                       </button>
                       <button
                         onClick={() => deleteClient(c.id, c.name)}
-                        style={{ fontFamily: mono, fontSize: '10px', color: '#555', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                       >
                         {t.common.delete}
                       </button>
@@ -613,8 +613,8 @@ export default function ClientsPage() {
 
       {/* ── Success toast ── */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: '80px', right: '24px', background: '#111111', border: '1px solid rgba(34,197,94,0.3)', borderLeft: '3px solid #22c55e', padding: '12px 20px', borderRadius: '4px', zIndex: 500 }}>
-          <p style={{ fontFamily: mono, fontSize: '12px', color: '#22c55e', margin: 0, letterSpacing: '0.06em' }}>{toast}</p>
+        <div style={{ position: 'fixed', bottom: '80px', right: '24px', background: 'var(--brand-surface-subtle)', border: '1px solid rgba(34,197,94,0.3)', borderLeft: '3px solid var(--semantic-success)', padding: '12px 20px', borderRadius: '4px', zIndex: 500 }}>
+          <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.06em' }}>{toast}</p>
         </div>
       )}
     </div>

@@ -34,13 +34,13 @@ const blankItem = (): LineItem => ({ description: '', qty: 1, unit: 'pauschal', 
 
 function addDays(d: number) { const dt = new Date(); dt.setDate(dt.getDate() + d); return dt.toISOString().split('T')[0] }
 
-const inp: React.CSSProperties = { width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', boxSizing: 'border-box' }
+const inp: React.CSSProperties = { width: '100%', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', boxSizing: 'border-box' }
 const inpMissing: React.CSSProperties = { ...inp, border: '1px dashed color-mix(in srgb, var(--brand-primary) 50%, transparent)' }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
+      <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
       {children}
     </div>
   )
@@ -83,7 +83,7 @@ function StreetInput({ value, onChange, placeholder, aiEnhanced, onFill }: {
     <div style={{ position: 'relative' }}>
       <input value={value} onChange={e => handleChange(e.target.value)} placeholder={placeholder} style={aiEnhanced && !value.trim() ? inpMissing : inp} onBlur={() => setTimeout(() => setOpen(false), 200)} />
       {open && suggestions.length > 0 && (
-        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#111', border: '1px solid rgba(255,255,255,0.1)', zIndex: 50, maxHeight: '180px', overflowY: 'auto' }}>
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', zIndex: 50, maxHeight: '180px', overflowY: 'auto' }}>
           {suggestions.map((s, i) => {
             const road      = s.address.road || ''
             const num       = s.address.house_number || ''
@@ -93,12 +93,12 @@ function StreetInput({ value, onChange, placeholder, aiEnhanced, onFill }: {
             return (
               <button key={i}
                 onMouseDown={() => { onChange(streetStr || s.display_name.split(',')[0].trim()); onFill?.(streetStr || s.display_name.split(',')[0].trim(), postcode, city); setOpen(false) }}
-                style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#CCC', fontFamily: sans, fontSize: '12px', padding: '9px 12px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+                style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: 'var(--brand-text)', fontFamily: sans, fontSize: '12px', padding: '9px 12px', cursor: 'pointer', borderBottom: '1px solid var(--brand-border)' }}
                 onMouseEnter={e => (e.currentTarget.style.background = 'color-mix(in srgb, var(--brand-primary) 8%, transparent)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'none')}
               >
                 {streetStr || s.display_name.split(',').slice(0, 2).join(',')}
-                {(postcode || city) && <span style={{ color: '#555', marginLeft: '10px', fontSize: '11px' }}>{[postcode, city].filter(Boolean).join(' ')}</span>}
+                {(postcode || city) && <span style={{ color: 'var(--brand-text-muted)', marginLeft: '10px', fontSize: '11px' }}>{[postcode, city].filter(Boolean).join(' ')}</span>}
               </button>
             )
           })}
@@ -382,13 +382,13 @@ export default function NewAngebotPage() {
     } finally { setSaving(false) }
   }
 
-  const confColor  = { high: '#22c55e', medium: 'var(--brand-primary)', low: '#ef4444' }
+  const confColor  = { high: 'var(--semantic-success)', medium: 'var(--brand-primary)', low: 'var(--semantic-danger)' }
   const confBg     = { high: 'rgba(34,197,94,0.08)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'rgba(239,68,68,0.08)' }
   const confBorder = { high: 'rgba(34,197,94,0.25)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'rgba(239,68,68,0.25)' }
-  const confMsg    = { high: '✓ High confidence — review and confirm', medium: '⚠ Some fields need review — check highlighted items', low: '⚠ Low confidence — please verify all fields' }
+  const confMsg    = { high: '✓ High confidence — review and confirm', medium: '▲ Some fields need review — check highlighted items', low: '▲ Low confidence — please verify all fields' }
 
   function itemBorderLeft(item: LineItem): string | undefined {
-    if (item.aiConfidence === 'low')    return '3px solid #ef4444'
+    if (item.aiConfidence === 'low')    return '3px solid var(--semantic-danger)'
     if (item.aiConfidence === 'medium') return '3px solid color-mix(in srgb, var(--brand-primary) 60%, transparent)'
     return undefined
   }
@@ -399,24 +399,24 @@ export default function NewAngebotPage() {
     <>
       {/* Unified AI Modal */}
       {aiModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: '#111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
               <div>
-                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.02em' }}>{t.forms.aiAngebotTitle}</h2>
-                <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', margin: 0 }}>{t.forms.aiModalSub}</p>
+                <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: 'var(--brand-text)', margin: '0 0 4px', letterSpacing: '-0.02em' }}>{t.forms.aiAngebotTitle}</h2>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', margin: 0 }}>{t.forms.aiModalSub}</p>
               </div>
-              <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: '#555', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}>×</button>
+              <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}>×</button>
             </div>
 
             {/* Paste / drop zone */}
             <div
               onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
-              style={{ border: `2px dashed ${isDragOver ? 'var(--brand-primary)' : 'rgba(255,255,255,0.12)'}`, background: isDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : '#0A0A0A', borderRadius: '4px', padding: '16px', marginBottom: '16px', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s ease, background 0.2s ease' }}
+              style={{ border: `2px dashed ${isDragOver ? 'var(--brand-primary)' : 'var(--brand-border)'}`, background: isDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : 'var(--brand-background)', borderRadius: '4px', padding: '16px', marginBottom: '16px', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s ease, background 0.2s ease' }}
             >
               {aiLoading && pastePreview ? (
                 <div style={{ textAlign: 'center' }}>
-                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.1em', margin: '0 0 8px' }}>⟳ Reading your image...</p>
+                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: '0 0 8px' }}>⟳ Reading your image...</p>
                   {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
                   <img src={pastePreview} alt="" style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain', opacity: 0.5 }} />
                 </div>
@@ -424,28 +424,28 @@ export default function NewAngebotPage() {
                 // eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs
                 <img src={pastePreview} alt="Preview" style={{ maxWidth: '100%', maxHeight: '140px', objectFit: 'contain' }} />
               ) : (
-                <p style={{ fontFamily: mono, fontSize: '11px', color: '#444', letterSpacing: '0.06em', textAlign: 'center', margin: 0, lineHeight: 1.8 }}>
-                  {t.forms.aiDropZonePrefix} <strong style={{ color: '#666' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)', letterSpacing: '0.06em', textAlign: 'center', margin: 0, lineHeight: 1.8 }}>
+                  {t.forms.aiDropZonePrefix} <strong style={{ color: 'var(--brand-text-secondary)' }}>{t.forms.aiDropZoneKey}</strong> {t.forms.aiDropZoneSuffix}<br />
                   <span style={{ fontSize: '10px', opacity: 0.6 }}>{t.forms.aiDropZoneFormats}</span>
                 </p>
               )}
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-              <span style={{ fontFamily: mono, fontSize: '10px', color: '#444', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteText}</span>
-              <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
+              <div style={{ flex: 1, height: '1px', background: 'var(--brand-border)' }} />
+              <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteText}</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--brand-border)' }} />
             </div>
 
             <textarea value={rawText} onChange={e => setRawText(e.target.value)} rows={6} placeholder={t.forms.aiPlaceholderAngebot} style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }} />
 
-            {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>⚠ {aiError}</p>}
+            {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>▲ {aiError}</p>}
 
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
+              <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
                 {aiLoading && !pastePreview ? 'Extracting...' : 'Generate with AI →'}
               </button>
-              <button onClick={() => fileRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}>
+              <button onClick={() => fileRef.current?.click()} style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}>
                 ▦ Browse File
               </button>
             </div>
@@ -456,18 +456,18 @@ export default function NewAngebotPage() {
       <input ref={fileRef} type="file" accept="image/*,.pdf" capture="environment" style={{ display: 'none' }} onChange={handleFileSelect} />
 
       <div style={{ display: 'flex', minHeight: '100vh' }}>
-        <div style={{ width: '50%', overflowY: 'auto', padding: '28px 32px', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ width: '50%', overflowY: 'auto', padding: '28px 32px', borderRight: '1px solid var(--brand-border)' }}>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF', margin: 0 }}>{t.angebotForm.newHeading}</h1>
+              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)', margin: 0 }}>{t.angebotForm.newHeading}</h1>
               {aiEnhanced && (
-                <span style={{ fontFamily: mono, fontSize: '9px', color: '#22c55e', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiEnhanced}</span>
+                <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-success)', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiEnhanced}</span>
               )}
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary)', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiGenerate}</button>
-              <button onClick={() => fileRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.scanImage}</button>
+              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiGenerate}</button>
+              <button onClick={() => fileRef.current?.click()} style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.scanImage}</button>
             </div>
           </div>
 
@@ -480,18 +480,18 @@ export default function NewAngebotPage() {
 
           {/* Extraction notes */}
           {aiEnhanced && extractionNotes && (
-            <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.07)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '11px', color: '#888', margin: 0, letterSpacing: '0.04em' }}>ℹ️  {extractionNotes}</p>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.04em' }}>ℹ️  {extractionNotes}</p>
             </div>
           )}
 
           {/* Sum-reconciliation + missing-data warnings (server-side) */}
           {aiEnhanced && aiWarnings.length > 0 && (
             <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>⚠ Verify before sending</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>▲ Verify before sending</p>
               <ul style={{ margin: 0, paddingLeft: '18px' }}>
                 {aiWarnings.map((w, i) => (
-                  <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: '#FCA5A5', lineHeight: 1.5, marginBottom: '2px' }}>{w}</li>
+                  <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', lineHeight: 1.5, marginBottom: '2px' }}>{w}</li>
                 ))}
               </ul>
             </div>
@@ -499,22 +499,22 @@ export default function NewAngebotPage() {
 
           {/* Included (free) items — kept out of line items deliberately */}
           {aiEnhanced && includedItems.length > 0 && (
-            <div style={{ background: '#0D0D0D', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid #22c55e', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#22c55e', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.includedHeading}</p>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-success)', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.includedHeading}</p>
               <ul style={{ margin: 0, paddingLeft: '18px' }}>
                 {includedItems.map((it, i) => (
-                  <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: '#CCC', lineHeight: 1.5, marginBottom: '2px' }}>{it}</li>
+                  <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)', lineHeight: 1.5, marginBottom: '2px' }}>{it}</li>
                 ))}
               </ul>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', margin: '8px 0 0', letterSpacing: '0.05em' }}>{t.forms.includedNote}</p>
+              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', margin: '8px 0 0', letterSpacing: '0.05em' }}>{t.forms.includedNote}</p>
             </div>
           )}
 
           {/* Payment terms — captured but stored as part of notes when saving */}
           {aiEnhanced && paymentTerms && (
-            <div style={{ background: '#0D0D0D', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', borderLeft: '3px solid var(--brand-primary)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', margin: '0 0 4px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.paymentTermsHeading}</p>
-              <p style={{ fontFamily: sans, fontSize: '12px', color: '#CCC', margin: 0, lineHeight: 1.5 }}>{paymentTerms}</p>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', borderLeft: '3px solid var(--brand-primary)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', margin: '0 0 4px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.paymentTermsHeading}</p>
+              <p style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)', margin: 0, lineHeight: 1.5 }}>{paymentTerms}</p>
             </div>
           )}
 
@@ -547,7 +547,7 @@ export default function NewAngebotPage() {
               </Field>
             </div>
 
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
+            <div style={{ height: '1px', background: 'var(--brand-border)' }} />
 
             <Field label={t.angebotForm.fieldSelectClient}>
               <select value={clientId} onChange={e => selectClient(e.target.value)} style={{ ...inp, appearance: 'none' }}>
@@ -579,13 +579,13 @@ export default function NewAngebotPage() {
               </Field>
             </div>
 
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.04)' }} />
+            <div style={{ height: '1px', background: 'var(--brand-border)' }} />
 
             <div>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
+              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
-                <div key={i} style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', borderLeft: itemBorderLeft(item) || '1px solid rgba(255,255,255,0.06)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
-                  {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: '#ef4444', letterSpacing: '0.08em' }}>⚠ verify</span>}
+                <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
+                  {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}>▲ verify</span>}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                     <textarea
                       value={item.description}
@@ -594,16 +594,16 @@ export default function NewAngebotPage() {
                       rows={Math.max(1, Math.min(8, (item.description || '').split('\n').length))}
                       style={{ ...inp, flex: 1, resize: 'vertical', lineHeight: 1.5, fontFamily: sans, minHeight: '36px', border: aiEnhanced && !item.description ? '1px dashed color-mix(in srgb, var(--brand-primary) 50%, transparent)' : inp.border as string }}
                     />
-                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'rgba(255,255,255,0.04)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'rgba(255,255,255,0.1)'}`, color: item.isFixedPrice ? 'var(--brand-primary)' : '#555', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
+                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'var(--brand-border)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`, color: item.isFixedPrice ? 'var(--brand-primary)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
                       {item.isFixedPrice ? t.angebotForm.pauschal : t.angebotForm.perUnit}
                     </button>
-                    <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#444', cursor: 'pointer', fontSize: '18px', padding: '0 4px' }}>×</button>
+                    <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '18px', padding: '0 4px' }}>×</button>
                   </div>
                   {item.isFixedPrice ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#555', letterSpacing: '0.1em', flexShrink: 0 }}>{t.forms.amountLabel}</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', flexShrink: 0 }}>{t.forms.amountLabel}</span>
                       <input type="number" value={item.total} onChange={e => updateItem(i, 'total', Number(e.target.value))} style={{ ...inp, width: '120px', textAlign: 'right' }} />
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: '#888' }}>{currency === 'GBP' ? '£' : '€'}</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{currency === 'GBP' ? '£' : '€'}</span>
                     </div>
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: '60px 120px 90px 1fr', gap: '6px', alignItems: 'center' }}>
@@ -612,22 +612,22 @@ export default function NewAngebotPage() {
                         {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
                       </select>
                       <input type="number" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', Number(e.target.value))} style={{ ...inp, padding: '7px 8px', textAlign: 'right' }} />
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)', textAlign: 'right' }}>{fmtEur(item.total)}</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)', textAlign: 'right' }}>{fmtEur(item.total)}</span>
                     </div>
                   )}
                 </div>
               ))}
-              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>{t.angebotForm.addItem}</button>
+              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>{t.angebotForm.addItem}</button>
             </div>
 
-            <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '16px' }}>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontFamily: mono, fontSize: '11px', color: '#888' }}>{t.angebotForm.subtotal}</span>
-                <span style={{ fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
+                <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)' }}>{t.angebotForm.subtotal}</span>
+                <span style={{ fontFamily: mono, fontSize: '13px', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
               </div>
               <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
                 <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }} />
-                <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.angebotForm.depositReceived}</span>
+                <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.angebotForm.depositReceived}</span>
               </label>
               {hasAnzahlung && (
                 <div style={{ marginBottom: '12px' }}>
@@ -642,23 +642,23 @@ export default function NewAngebotPage() {
                       </select>
                     </Field>
                   </div>
-                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
+                  <div style={{ borderTop: '1px solid var(--brand-border)', paddingTop: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontFamily: mono, fontSize: '10px', color: '#888' }}>{t.angebotForm.deposit}</span>
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)' }}>−{fmtEur(Number(anzahlung))}</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{t.angebotForm.deposit}</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)' }}>−{fmtEur(Number(anzahlung))}</span>
                     </div>
-                    <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '6px 0' }} />
+                    <div style={{ height: '1px', background: 'var(--brand-border)', margin: '6px 0' }} />
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF', fontWeight: 700 }}>{t.angebotForm.remainingBalance}</span>
-                      <span style={{ fontFamily: mono, fontSize: '15px', color: '#FFF', fontWeight: 700 }}>{fmtEur(restbetrag)}</span>
+                      <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text)', fontWeight: 700 }}>{t.angebotForm.remainingBalance}</span>
+                      <span style={{ fontFamily: mono, fontSize: '15px', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(restbetrag)}</span>
                     </div>
                   </div>
                 </div>
               )}
               {!hasAnzahlung && (
                 <div style={{ borderTop: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', paddingTop: '10px', textAlign: 'right' }}>
-                  <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF' }}>{fmtEur(subtotal)}</span>
-                  <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0' }}>{t.forms.vatValidityNote}</p>
+                  <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)' }}>{fmtEur(subtotal)}</span>
+                  <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', margin: '4px 0 0' }}>{t.forms.vatValidityNote}</p>
                 </div>
               )}
             </div>
@@ -666,10 +666,10 @@ export default function NewAngebotPage() {
             <Field label={t.angebotForm.fieldNotes}><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical' }} /></Field>
 
             <div style={{ marginBottom: '24px' }}>
-              <button type="button" onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() ? 0.6 : 1 }}>
+              <button type="button" onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() ? 0.6 : 1 }}>
                 {saving ? t.angebotForm.saving : t.angebotForm.saveAngebot}
               </button>
-              {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>}
+              {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}>▲ {saveError}</p>}
             </div>
           </div>
         </div>
@@ -679,8 +679,8 @@ export default function NewAngebotPage() {
              print page (components/documents/AngebotDocument.tsx) — not
              a third hand-rolled copy — so what you see here is exactly
              what "Als PDF speichern" will produce. */}
-        <div style={{ flex: 1, overflowY: 'auto', background: '#f0f0f0', padding: '28px' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
+        <div style={{ flex: 1, overflowY: 'auto', background: 'var(--brand-surface-subtle)', padding: '28px' }}>
+          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
           <div style={{ maxWidth: '520px', margin: '0 auto', transform: 'scale(0.94)', transformOrigin: 'top center' }}>
             <AngebotDocument
               angebot={{

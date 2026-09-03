@@ -397,8 +397,8 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   left: 0;
   top: 0;
   height: 100vh;
-  background: #0D0D0D;
-  border-right: 1px solid rgba(255,255,255,0.06);
+  background: var(--brand-surface);
+  border-right: 1px solid var(--brand-border);
   display: flex;
   flex-direction: column;
   z-index: 100;
@@ -409,7 +409,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   margin-left: 260px;
   height: 100vh;
   overflow-y: auto;
-  background: #0A0A0A;
+  background: var(--brand-background);
 }
 
 .os-hamburger {
@@ -420,8 +420,8 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   z-index: 600;
   width: 40px;
   height: 40px;
-  background: #111111;
-  border: 1px solid rgba(255,255,255,0.10);
+  background: var(--brand-surface-subtle);
+  border: 1px solid var(--brand-border-strong);
   border-radius: 4px;
   cursor: pointer;
   align-items: center;
@@ -434,7 +434,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   display: block;
   width: 18px;
   height: 2px;
-  background: #cccccc;
+  background: var(--brand-text-secondary);
   border-radius: 2px;
 }
 
@@ -442,7 +442,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: color-mix(in srgb, var(--brand-text) 45%, transparent);
   z-index: 400;
 }
 
@@ -451,7 +451,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   padding: 16px 20px 8px;
   font-family: var(--brand-font-mono);
   font-size: 9px;
-  color: #444444;
+  color: var(--brand-text-muted);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin: 0;
@@ -472,16 +472,16 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   transition: background 0.15s ease;
   cursor: pointer;
 }
-.os-nav-item:hover { background: rgba(255,255,255,0.05); }
-.os-nav-item:hover .os-nav-icon  { color: var(--brand-primary) !important; }
-.os-nav-item:hover .os-nav-label { color: #ffffff !important; }
+.os-nav-item:hover { background: var(--brand-surface-subtle); }
+.os-nav-item:hover .os-nav-icon  { color: var(--brand-text) !important; }
+.os-nav-item:hover .os-nav-label { color: var(--brand-text) !important; }
 .os-nav-item.active {
-  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  background: var(--brand-surface-subtle);
   border-left-color: var(--brand-primary);
   padding-left: 14px;
 }
-.os-nav-item.active .os-nav-icon  { color: var(--brand-primary) !important; }
-.os-nav-item.active .os-nav-label { color: #ffffff !important; font-weight: 600; }
+.os-nav-item.active .os-nav-icon  { color: var(--brand-text) !important; }
+.os-nav-item.active .os-nav-label { color: var(--brand-text) !important; font-weight: 600; }
 
 button.os-nav-item {
   border-top: none;
@@ -493,7 +493,7 @@ button.os-nav-item {
   font-size: 15px;
   width: 20px;
   text-align: center;
-  color: #666666;
+  color: var(--brand-text-secondary);
   flex-shrink: 0;
   transition: color 0.15s ease;
 }
@@ -501,7 +501,7 @@ button.os-nav-item {
   font-family: var(--brand-font-sans);
   font-size: 14px;
   font-weight: 500;
-  color: #999999;
+  color: var(--brand-text-secondary);
   transition: color 0.15s ease;
   white-space: nowrap;
 }
@@ -510,8 +510,8 @@ button.os-nav-item {
   width: 100%;
   padding: 8px 12px;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.08);
-  color: #666666;
+  border: 1px solid var(--brand-border);
+  color: var(--brand-text-secondary);
   font-family: var(--brand-font-sans);
   font-size: 12px;
   border-radius: 4px;
@@ -521,7 +521,7 @@ button.os-nav-item {
   text-align: left;
 }
 .os-logout-btn:hover {
-  border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
+  border-color: var(--brand-text);
   color: var(--brand-primary);
 }
 

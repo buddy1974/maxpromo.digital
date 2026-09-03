@@ -11,12 +11,12 @@ interface MetricCardProps { label: string; value: string | number; sub?: string 
 function MetricCard({ label, value, sub }: MetricCardProps) {
   return (
     <div style={{
-      background: '#111111', borderTop: '2px solid var(--brand-primary)',
-      border: '1px solid rgba(255,255,255,0.06)', padding: '20px 24px', flex: 1,
+      background: 'var(--brand-surface-subtle)', borderTop: '2px solid var(--brand-primary)',
+      border: '1px solid var(--brand-border)', padding: '20px 24px', flex: 1,
     }}>
-      <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{label}</p>
-      <p style={{ fontFamily: grotesk, fontSize: '30px', fontWeight: 700, color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.03em' }}>{value}</p>
-      {sub && <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0 }}>{sub}</p>}
+      <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{label}</p>
+      <p style={{ fontFamily: grotesk, fontSize: '30px', fontWeight: 700, color: 'var(--brand-text)', margin: '0 0 4px', letterSpacing: '-0.03em' }}>{value}</p>
+      {sub && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: 0 }}>{sub}</p>}
     </div>
   )
 }
@@ -27,15 +27,15 @@ interface Job     { id: string; title: string; client_name: string; stage: strin
 interface Client  { id: string }
 
 const STATUS_COLORS: Record<string, string> = {
-  draft: '#555', sent: '#3b82f6', paid: '#22c55e', overdue: '#ef4444',
-  new: 'var(--brand-primary)', contacted: '#3b82f6', qualified: '#a855f7', converted: '#22c55e', lost: '#ef4444',
-  lead: '#555', discovery: '#3b82f6', proposal: '#a855f7', 'in progress': 'var(--brand-primary)',
-  review: '#eab308', completed: '#22c55e', invoiced: '#22c55e',
+  draft: 'var(--brand-text-muted)', sent: 'var(--semantic-info)', paid: 'var(--semantic-success)', overdue: 'var(--semantic-danger)',
+  new: 'var(--brand-primary)', contacted: 'var(--semantic-info)', qualified: 'var(--semantic-info)', converted: 'var(--semantic-success)', lost: 'var(--semantic-danger)',
+  lead: 'var(--brand-text-muted)', discovery: 'var(--semantic-info)', proposal: 'var(--semantic-info)', 'in progress': 'var(--brand-primary)',
+  review: 'var(--semantic-warning)', completed: 'var(--semantic-success)', invoiced: 'var(--semantic-success)',
 }
 
 /** `label` is the already-translated display string; `status` only drives the colour. */
 function Badge({ status, label }: { status: string; label: string }) {
-  const color = STATUS_COLORS[status?.toLowerCase()] ?? '#555'
+  const color = STATUS_COLORS[status?.toLowerCase()] ?? 'var(--brand-text-muted)'
   return (
     <span style={{ fontFamily: mono, fontSize: '9px', color, background: color + '22', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
       {label}
@@ -47,7 +47,7 @@ function QuickAction({ href, label }: { href: string; label: string }) {
   return (
     <Link href={href} style={{
       fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em',
-      color: '#000', background: 'var(--brand-primary)', padding: '10px 18px',
+      color: 'var(--brand-text)', background: 'var(--brand-primary)', padding: '10px 18px',
       textDecoration: 'none', textTransform: 'uppercase', fontWeight: 700,
     }}>
       {label}
@@ -104,10 +104,10 @@ export default function DashboardPage() {
     <div style={{ padding: '32px 40px', maxWidth: '1200px' }}>
       {/* Header */}
       <div style={{ marginBottom: '36px' }}>
-        <h1 style={{ fontFamily: grotesk, fontSize: '28px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
+        <h1 style={{ fontFamily: grotesk, fontSize: '28px', fontWeight: 700, color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
           {greeting}, {t.dashboard.ownerName}
         </h1>
-        <p style={{ fontFamily: mono, fontSize: '11px', color: '#555', letterSpacing: '0.1em', margin: 0, textTransform: 'uppercase' }}>
+        <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', margin: 0, textTransform: 'uppercase' }}>
           {today}
         </p>
       </div>
@@ -132,87 +132,87 @@ export default function DashboardPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px' }}>
 
         {/* Recent invoices */}
-        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentInvoices}</p>
+        <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)' }}>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentInvoices}</p>
           </div>
           {loading ? (
-            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>{t.common.loading}</p>
+            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</p>
           ) : invoices.length === 0 ? (
-            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>{t.dashboard.noInvoices}</p>
+            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)' }}>{t.dashboard.noInvoices}</p>
           ) : (
             invoices.slice(0, 5).map(inv => (
-              <div key={inv.id} style={{ padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+              <div key={inv.id} style={{ padding: '12px 20px', borderBottom: '1px solid var(--brand-border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontFamily: mono, fontSize: '11px', color: '#FFF' }}>{inv.invoice_number}</span>
+                  <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text)' }}>{inv.invoice_number}</span>
                   <Badge status={inv.status} label={t.status.invoice[inv.status] ?? inv.status} />
                 </div>
-                <p style={{ fontFamily: sans, fontSize: '12px', color: '#555', margin: '3px 0 0' }}>
+                <p style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text-muted)', margin: '3px 0 0' }}>
                   {inv.client_name} · {fmtEur(Number(inv.total))}
                 </p>
               </div>
             ))
           )}
           <div style={{ padding: '12px 20px' }}>
-            <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', textDecoration: 'none', letterSpacing: '0.1em' }}>
+            <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', textDecoration: 'none', letterSpacing: '0.1em' }}>
               {t.dashboard.viewAll}
             </Link>
           </div>
         </div>
 
         {/* Recent leads */}
-        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentLeads}</p>
+        <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)' }}>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentLeads}</p>
           </div>
           {loading ? (
-            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>{t.common.loading}</p>
+            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</p>
           ) : leads.length === 0 ? (
-            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>{t.dashboard.noLeads}</p>
+            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)' }}>{t.dashboard.noLeads}</p>
           ) : (
             leads.slice(0, 5).map(lead => (
-              <div key={lead.id} style={{ padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+              <div key={lead.id} style={{ padding: '12px 20px', borderBottom: '1px solid var(--brand-border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontFamily: sans, fontSize: '12px', color: '#FFF' }}>{lead.name || lead.company || t.dashboard.anonymous}</span>
+                  <span style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)' }}>{lead.name || lead.company || t.dashboard.anonymous}</span>
                   <Badge status={lead.status} label={t.status.lead[lead.status] ?? lead.status} />
                 </div>
-                <p style={{ fontFamily: mono, fontSize: '10px', color: '#444', margin: '3px 0 0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '3px 0 0', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                   {t.status.leadSource[lead.source] ?? lead.source}
                 </p>
               </div>
             ))
           )}
           <div style={{ padding: '12px 20px' }}>
-            <Link href="/os/leads" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', textDecoration: 'none', letterSpacing: '0.1em' }}>
+            <Link href="/os/leads" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', textDecoration: 'none', letterSpacing: '0.1em' }}>
               {t.dashboard.viewAll}
             </Link>
           </div>
         </div>
 
         {/* Recent jobs */}
-        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentJobs}</p>
+        <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)' }}>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentJobs}</p>
           </div>
           {loading ? (
-            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: '#333' }}>{t.common.loading}</p>
+            <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</p>
           ) : jobs.length === 0 ? (
-            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: '#444' }}>{t.dashboard.noJobs}</p>
+            <p style={{ padding: '20px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)' }}>{t.dashboard.noJobs}</p>
           ) : (
             jobs.slice(0, 5).map(job => (
-              <div key={job.id} style={{ padding: '12px 20px', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+              <div key={job.id} style={{ padding: '12px 20px', borderBottom: '1px solid var(--brand-border)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontFamily: sans, fontSize: '12px', color: '#FFF' }}>{job.title}</span>
+                  <span style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)' }}>{job.title}</span>
                   <Badge status={job.stage} label={t.status.jobStage[job.stage] ?? job.stage} />
                 </div>
-                <p style={{ fontFamily: sans, fontSize: '11px', color: '#555', margin: '3px 0 0' }}>
+                <p style={{ fontFamily: sans, fontSize: '11px', color: 'var(--brand-text-muted)', margin: '3px 0 0' }}>
                   {job.client_name || t.dashboard.noClient}{job.value ? ` · ${fmtEur(Number(job.value))}` : ''}
                 </p>
               </div>
             ))
           )}
           <div style={{ padding: '12px 20px' }}>
-            <Link href="/os/jobs" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', textDecoration: 'none', letterSpacing: '0.1em' }}>
+            <Link href="/os/jobs" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', textDecoration: 'none', letterSpacing: '0.1em' }}>
               {t.dashboard.viewKanban}
             </Link>
           </div>
