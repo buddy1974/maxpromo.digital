@@ -96,10 +96,21 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
-h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); }
-h2 { font-size: var(--text-h2); font-weight: var(--weight-subhead); line-height: var(--leading-snug); }
-h3 { font-size: var(--text-h3); font-weight: var(--weight-subhead); line-height: var(--leading-heading); }
+h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); max-width: 22ch; }
+h2 { font-size: var(--text-h2); font-weight: var(--weight-subhead); line-height: var(--leading-snug);  max-width: 26ch; }
+h3 { font-size: var(--text-h3); font-weight: var(--weight-subhead); line-height: var(--leading-heading); letter-spacing: -0.01em; }
 h4 { font-size: var(--text-h4); font-weight: var(--weight-subhead); line-height: var(--leading-heading); letter-spacing: 0; }
+
+/* A heading wider than about 22 characters stops reading as a heading and
+   starts reading as a sentence set large. The cap is on the element rather
+   than left to each caller, because it was left to each caller before and
+   half of them forgot. Callers that genuinely need a wider measure opt out
+   with .h-wide. */
+.h-wide { max-width: none; }
+
+/* Body copy has a measure too. */
+p { max-width: var(--measure); }
+p.h-wide, .prose-wide p, td p, li p { max-width: none; }
 
 /* Headings inside cards and grid tiles. The section scale is too loud at card
    size — a 3-up grid of 32px headings reads as a pricing page, not a document.
@@ -960,10 +971,10 @@ button.os-nav-item {
 /* Opening paragraph under an h1. Larger than body, never as large as a heading. */
 .lede {
   margin: 0;
-  font-size: 1.25rem;
-  line-height: 1.6;
+  font-size: var(--text-lede);
+  line-height: 1.65;
   color: var(--brand-text-secondary);
-  max-width: 44rem;
+  max-width: var(--measure);
 }
 
 /* Label column beside content. The documentation two-column, where the left
@@ -1159,3 +1170,34 @@ button.os-nav-item {
   border-radius: var(--radius-md);
   font-size: var(--text-small);
 }
+
+/* Scope: what is included beside what is not. Equal weight, because the
+   boundary is the half a buyer actually needs. */
+.scope-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+@media (min-width: 720px) { .scope-grid { grid-template-columns: 1fr 1fr; gap: var(--space-10); } }
+
+.scope-heading {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-secondary);
+}
+
+/* A list that reads as a list, without a tick beside every line. */
+.plain-list { margin: 0; padding: 0; list-style: none; }
+.plain-list li {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--brand-border);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.plain-list li:first-child { padding-top: 0; }
+.plain-list li:last-child { border-bottom: 0; }
+.plain-list-muted li { color: var(--brand-text-muted); }
