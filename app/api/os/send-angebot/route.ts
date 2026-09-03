@@ -1,3 +1,4 @@
+import { token } from '@/design/tokens'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { getDb } from '@/lib/db'
@@ -63,11 +64,11 @@ function buildAngebotEmail(a: AngebotRow): string {
     const total = Number(item.total) || 0
     return `
     <tr>
-      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#F97316;font-family:monospace;font-size:11px;font-weight:700;vertical-align:top;">${String(i + 1).padStart(2, '0')}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#111;font-size:13px;line-height:1.5;white-space:pre-wrap;vertical-align:top;">${escHtml(item.description)}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${qty}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${fmtUnitPrice(total, qty, currency)}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid #eeeeee;color:#111;text-align:right;font-family:monospace;font-size:13px;font-weight:700;vertical-align:top;">${fmt(total)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:${token.primaryText};font-family:monospace;font-size:11px;font-weight:700;vertical-align:top;">${String(i + 1).padStart(2, '0')}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:#111;font-size:13px;line-height:1.5;white-space:pre-wrap;vertical-align:top;">${escHtml(item.description)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${qty}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${fmtUnitPrice(total, qty, currency)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:#111;text-align:right;font-family:monospace;font-size:13px;font-weight:700;vertical-align:top;">${fmt(total)}</td>
     </tr>`
   }).join('')
 
@@ -80,11 +81,11 @@ function buildAngebotEmail(a: AngebotRow): string {
       <td colspan="4" style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${escHtml(t.deposit)} (${escHtml(a.anzahlung_method ?? t.bankTransfer)})</td>
       <td style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">−${fmt(anzahl)}</td>
     </tr>
-    <tr style="background:#F97316;">
+    <tr style="background:${token.primary};">
       <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.remainingBalance)}</td>
       <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmt(restbet)}</td>
     </tr>` : `
-    <tr style="background:#F97316;">
+    <tr style="background:${token.primary};">
       <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.quoteTotal)}</td>
       <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmt(total)}</td>
     </tr>`
@@ -102,7 +103,7 @@ function buildAngebotEmail(a: AngebotRow): string {
     : `vielen Dank für Ihre Anfrage. Anbei erhalten Sie mein Angebot Nr. <strong>${escHtml(a.angebot_number)}</strong> vom ${fmtDate(a.created_at)} mit folgenden Leistungen:`
 
   return `
-    <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:#ffffff;">
+    <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:${token.surface};">
 
       ${buildEmailHeaderHtml({
         docTypeLabel: t.quoteTitle,

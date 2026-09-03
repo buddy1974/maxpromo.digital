@@ -90,7 +90,7 @@ export function buildEmailAddressBlockHtml(opts: { nameOnly: string; company: st
   ].filter(Boolean).join('')
 
   return `
-      <div style="padding:20px 32px;background:#f9f9f9;border-bottom:1px solid #eee;">
+      <div style="padding:20px 32px;background:${BRAND_COLORS.surfaceSubtle};border-bottom:1px solid #eee;">
         <p style="color:#888;font-size:10px;margin:0 0 8px;font-family:monospace;text-transform:uppercase;letter-spacing:0.12em;">${escHtml(t.to)}</p>
         ${lines}
       </div>`
@@ -100,7 +100,7 @@ export function buildEmailAddressBlockHtml(opts: { nameOnly: string; company: st
 export function buildEmailTableHeaderHtml(language?: DocumentLanguage | null): string {
   const t = getLabels(language)
   return `
-          <tr style="background:#f5f5f5;">
+          <tr style="background:${BRAND_COLORS.surfaceSubtle};">
             <th style="padding:8px 10px;font-family:monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.08em;text-align:left;">${escHtml(t.colPos)}</th>
             <th style="padding:8px 10px;font-family:monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.08em;text-align:left;">${escHtml(t.colDescription)}</th>
             <th style="padding:8px 10px;font-family:monospace;font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.08em;text-align:right;">${escHtml(t.colQuantity)}</th>
@@ -113,7 +113,7 @@ export function buildEmailTableHeaderHtml(language?: DocumentLanguage | null): s
 export function buildEmailBankBlockHtml(reference: string, language?: DocumentLanguage | null): string {
   const t = getLabels(language)
   return `
-        <div style="background:#f5f5f5;border-left:3px solid ${BUSINESS_ACCENT};padding:16px 20px;margin-bottom:28px;">
+        <div style="background:${BRAND_COLORS.surfaceSubtle};border-left:3px solid ${BUSINESS_ACCENT};padding:16px 20px;margin-bottom:28px;">
           <p style="font-family:monospace;font-size:10px;color:${BUSINESS_ACCENT};text-transform:uppercase;letter-spacing:0.12em;margin:0 0 8px;">${escHtml(t.bankTransfer)}</p>
           <p style="font-family:monospace;font-size:13px;color:#111;margin:0 0 3px;">${escHtml(t.accountHolder)}: ${escHtml(BANK_TRANSFER.beneficiary)}</p>
           <p style="font-family:monospace;font-size:13px;color:#111;margin:0 0 3px;">IBAN: ${escHtml(BANK_TRANSFER.iban)}</p>
@@ -130,7 +130,7 @@ export function buildEmailFooterHtml(language?: DocumentLanguage | null): string
         <p style="font-family:monospace;font-size:11px;color:#555;margin:0 0 4px;">
           ${escHtml(t.taxNumberLabel)}: ${escHtml(BUSINESS.steuernummer)} &nbsp;·&nbsp; ${escHtml(t.taxOfficeLabel)}: ${escHtml(BUSINESS.finanzamt)}
         </p>
-        <p style="font-family:monospace;font-size:10px;color:#3d3d3d;margin:0;">
+        <p style="font-family:monospace;font-size:10px;color:${BRAND_COLORS.muted};margin:0;">
           ${escHtml(BUSINESS.brandFull)} &nbsp;·&nbsp; ${escHtml(BUSINESS.addressLine1)} &nbsp;·&nbsp; ${escHtml(BUSINESS.addressLine2)} &nbsp;·&nbsp; ${escHtml(BUSINESS.email)} &nbsp;·&nbsp; ${escHtml(BUSINESS.phone)}
         </p>
       </div>`

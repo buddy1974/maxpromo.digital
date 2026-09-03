@@ -1,3 +1,5 @@
+import { token } from '@/design/tokens'
+
 /**
  * lib/documents/printCss.ts
  *
@@ -27,7 +29,7 @@
  *    renders underneath the fixed strips.
  */
 export const DOCUMENT_PRINT_CSS = `
-  body { background: #f0f0f0; }
+  body { background: ${token.surfaceSunken}; }
   * { box-sizing: border-box; }
 
   @media print {

@@ -1,3 +1,5 @@
+import { token } from '@/design/tokens'
+
 /**
  * lib/documents/config.ts
  *
@@ -35,10 +37,30 @@ export const BUSINESS = {
   },
 } as const
 
+/**
+ * Document palette, derived from the platform token module rather than
+ * restated here. Documents and emails cannot resolve CSS custom properties,
+ * so they read the TypeScript mirror in design/tokens — same values, same
+ * source, one place to change them.
+ *
+ * `accent` and `accentText` are deliberately distinct, for the same reason
+ * the web tokens separate them: the brand accent is a FILL. As small text it
+ * is illegible, so any accent-coloured label, caption or table figure must
+ * use `accentText`, which is contrast-checked for body text on white.
+ * `onAccent` is the text colour that sits ON an accent fill — black, never
+ * white.
+ */
 export const BRAND_COLORS = {
-  ink: '#0A0A0A',
-  accent: '#F97316',
-  white: '#FFFFFF',
+  ink: token.text,
+  accent: token.primary,
+  accentText: token.primaryText,
+  accentSoft: token.primarySoft,
+  onAccent: token.onPrimary,
+  muted: token.textSecondary,
+  faint: token.textMuted,
+  border: token.border,
+  surfaceSubtle: token.surfaceSubtle,
+  white: token.surface,
 } as const
 
 /** Every payment method the document system knows how to render. */

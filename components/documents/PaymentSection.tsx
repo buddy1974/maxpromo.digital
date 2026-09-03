@@ -14,7 +14,7 @@ import { getLabels } from '@/lib/documents/labels'
 import { MomoQrCode } from './MomoQrCode'
 
 const mono = { fontFamily: 'monospace' } as const
-const subLabel = { ...mono, fontSize: '10px', fontWeight: 700, color: BRAND_COLORS.accent, textTransform: 'uppercase' as const, letterSpacing: '0.1em', margin: '0 0 10px' }
+const subLabel = { ...mono, fontSize: '10px', fontWeight: 700, color: BRAND_COLORS.accentText, textTransform: 'uppercase' as const, letterSpacing: '0.1em', margin: '0 0 10px' }
 
 interface PaymentSectionProps {
   method: PaymentMethodId

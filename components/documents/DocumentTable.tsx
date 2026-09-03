@@ -32,7 +32,7 @@ function TotalBar({ label, sublabel, amount, strong }: { label: string; sublabel
         {sublabel && <span style={{ ...mono, fontSize: '10px', color: '#aaa', marginTop: '2px' }}>{sublabel}</span>}
       </div>
       <div style={{ background: BRAND_COLORS.accent, padding: '14px 20px', display: 'flex', alignItems: 'center', minWidth: '140px', justifyContent: 'flex-end' }}>
-        <span style={{ fontFamily: 'Arial,sans-serif', fontSize: strong ? '22px' : '15px', fontWeight: 800, color: BRAND_COLORS.ink }}>{amount}</span>
+        <span style={{ fontFamily: 'Arial,sans-serif', fontSize: strong ? '22px' : '15px', fontWeight: 800, color: BRAND_COLORS.onAccent }}>{amount}</span>
       </div>
     </div>
   )
@@ -76,7 +76,7 @@ export function DocumentTable({
             const itemTotal = Number(item.total) || 0
             return (
               <tr key={i} style={{ borderBottom: '1px solid #eee', background: i % 2 === 1 ? '#fafafa' : '#fff' }}>
-                <td style={{ padding: '11px 12px', ...mono, fontSize: '11px', color: BRAND_COLORS.accent, fontWeight: 700, verticalAlign: 'top' }}>
+                <td style={{ padding: '11px 12px', ...mono, fontSize: '11px', color: BRAND_COLORS.accentText, fontWeight: 700, verticalAlign: 'top' }}>
                   {String(i + 1).padStart(2, '0')}
                 </td>
                 <td style={{ padding: '11px 12px', fontSize: '13px', color: '#111', whiteSpace: 'pre-wrap', verticalAlign: 'top', lineHeight: 1.5, wordBreak: 'break-word' }}>

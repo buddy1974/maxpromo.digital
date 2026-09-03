@@ -1,3 +1,4 @@
+import { token } from '@/design/tokens'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { neon } from '@neondatabase/serverless'
@@ -56,11 +57,11 @@ function buildInvoiceEmail(data: {
   // Line items rows
   const rows = data.line_items.map((item, i) => `
     <tr>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#F97316;font-family:monospace;font-size:12px;font-weight:700;">${String(i + 1).padStart(2, '0')}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#111;">${escHtml(item.description)}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;">${item.qty}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#555;text-align:right;font-family:monospace;">${fmt(Number(item.unit_price ?? item.total))}</td>
-      <td style="padding:8px 10px;border-bottom:1px solid #eeeeee;color:#111;text-align:right;font-family:monospace;font-weight:700;">${fmt(Number(item.total))}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid ${token.border};color:${token.primaryText};font-family:monospace;font-size:12px;font-weight:700;">${String(i + 1).padStart(2, '0')}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid ${token.border};color:#111;">${escHtml(item.description)}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid ${token.border};color:#555;text-align:right;font-family:monospace;">${item.qty}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid ${token.border};color:#555;text-align:right;font-family:monospace;">${fmt(Number(item.unit_price ?? item.total))}</td>
+      <td style="padding:8px 10px;border-bottom:1px solid ${token.border};color:#111;text-align:right;font-family:monospace;font-weight:700;">${fmt(Number(item.total))}</td>
     </tr>`).join('')
 
   // Totals rows
@@ -73,11 +74,11 @@ function buildInvoiceEmail(data: {
       <td colspan="4" style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${escHtml(t.deposit)} (${escHtml(data.anzahlung_method ?? t.bankTransfer)})</td>
       <td style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">−${fmt(Number(data.anzahlung))}</td>
     </tr>
-    <tr style="background:#F97316;">
+    <tr style="background:${token.primary};">
       <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.remainingBalance)}</td>
       <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmt(restbet)}</td>
     </tr>` : `
-    <tr style="background:#F97316;">
+    <tr style="background:${token.primary};">
       <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.totalDue)}</td>
       <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmt(subtotal)}</td>
     </tr>`
@@ -100,7 +101,7 @@ function buildInvoiceEmail(data: {
     : `Für Rückfragen stehe ich Ihnen jederzeit zur Verfügung.<br><br>${escHtml(t.closing)}<br><strong>${escHtml(BUSINESS.legalName)}</strong><br>${escHtml(BUSINESS.brandFull)}`
 
   return `
-    <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:#ffffff;">
+    <div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;background:${token.surface};">
 
       ${buildEmailHeaderHtml({
         docTypeLabel: t.invoiceTitle,

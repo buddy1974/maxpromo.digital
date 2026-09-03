@@ -1,3 +1,4 @@
+import { token } from '@/design/tokens'
 /**
  * components/documents/MomoQrCode.tsx
  *
@@ -52,10 +53,10 @@ export function MomoQrCode({ value, size = 120, margin = 2 }: MomoQrCodeProps) {
       width={size}
       height={size}
       viewBox={`0 0 ${size} ${size}`}
-      style={{ display: 'block', background: '#FFFFFF' }}
+      style={{ display: 'block', background: token.surface }}
     >
-      <rect x={0} y={0} width={size} height={size} fill="#FFFFFF" />
-      <path d={rects.join(' ')} fill="#0A0A0A" />
+      <rect x={0} y={0} width={size} height={size} fill={token.surface} />
+      <path d={rects.join(' ')} fill={token.text} />
     </svg>
   )
 }

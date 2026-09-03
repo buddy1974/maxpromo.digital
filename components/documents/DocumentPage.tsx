@@ -58,7 +58,7 @@ interface DocumentPageProps {
   children: ReactNode
 }
 
-const colLabel = { ...mono, fontSize: '10px', fontWeight: 700, color: BRAND_COLORS.accent, textTransform: 'uppercase' as const, letterSpacing: '0.14em', margin: '0 0 10px' }
+const colLabel = { ...mono, fontSize: '10px', fontWeight: 700, color: BRAND_COLORS.accentText, textTransform: 'uppercase' as const, letterSpacing: '0.14em', margin: '0 0 10px' }
 
 export function DocumentPage({
   filename, language, docTypeLabel, detailsLabel, numberLabel, number, dateLabel, date,
@@ -87,7 +87,7 @@ export function DocumentPage({
           {/* Title + brand line */}
           <div style={{ padding: '32px 40px 20px' }}>
             <h1 style={{ fontFamily: 'Arial,sans-serif', fontSize: '42px', fontWeight: 800, color: BRAND_COLORS.ink, margin: '0 0 10px', letterSpacing: '-0.01em' }}>{docTypeLabel}</h1>
-            <p style={{ ...mono, fontSize: '15px', fontWeight: 700, color: BRAND_COLORS.accent, margin: 0, letterSpacing: '0.02em' }}>{BUSINESS.website}</p>
+            <p style={{ ...mono, fontSize: '15px', fontWeight: 700, color: BRAND_COLORS.accentText, margin: 0, letterSpacing: '0.02em' }}>{BUSINESS.website}</p>
           </div>
           <div style={{ borderTop: `2px solid ${BRAND_COLORS.accent}`, margin: '0 40px' }} />
 

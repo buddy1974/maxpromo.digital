@@ -1,3 +1,4 @@
+import { token } from '@/design/tokens'
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { sendEmail } from '@/lib/email'
@@ -9,10 +10,10 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev'
 function buildWelcomeEmail(name: string): string {
   const display = name ? ` ${name}` : ''
   return `
-    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;">
-      <div style="background:#0A0A0A;padding:28px 32px;border-bottom:3px solid #F97316;">
-        <p style="font-family:monospace;font-size:10px;color:#F97316;letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;">Maxpromo Digital</p>
-        <h1 style="color:#ffffff;margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em;">You're subscribed.</h1>
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:${token.surface};">
+      <div style="background:${token.text};padding:28px 32px;border-bottom:3px solid ${token.primary};">
+        <p style="font-family:monospace;font-size:10px;color:${token.primaryText};letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;">Maxpromo Digital</p>
+        <h1 style="color:${token.surface};margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em;">You're subscribed.</h1>
       </div>
       <div style="padding:28px 32px;">
         <p style="color:#333;font-size:15px;line-height:1.7;margin:0 0 16px;">
@@ -24,11 +25,11 @@ function buildWelcomeEmail(name: string): string {
           You'll hear from us with practical automation tips, AI workflow breakdowns,
           and case studies from real client projects.
         </p>
-        <a href="https://maxpromo.digital" style="display:inline-block;background:#F97316;color:#000;font-family:monospace;font-weight:700;font-size:12px;letter-spacing:0.1em;padding:12px 24px;text-decoration:none;text-transform:uppercase;">
+        <a href="https://maxpromo.digital" style="display:inline-block;background:${token.primary};color:#000;font-family:monospace;font-weight:700;font-size:12px;letter-spacing:0.1em;padding:12px 24px;text-decoration:none;text-transform:uppercase;">
           Explore our work &rarr;
         </a>
       </div>
-      <div style="background:#0A0A0A;padding:16px 32px;">
+      <div style="background:${token.text};padding:16px 32px;">
         <p style="font-family:monospace;font-size:10px;color:#444;margin:0;">
           Maxpromo Digital &middot; Koernerstr. 8 &middot; 45143 Essen &middot; info@maxpromo.digital
         </p>
