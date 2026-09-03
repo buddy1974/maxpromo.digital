@@ -584,7 +584,7 @@ export default function ClientsPage() {
                   <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.phone || t.common.notAvailable}</td>
                   <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{c.city || t.common.notAvailable}</td>
                   <td style={{ padding: '12px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '10px', color: c.status === 'active' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', background: c.status === 'active' ? 'rgba(34,197,94,0.15)' : 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '3px', border: `1px solid ${c.status === 'active' ? 'rgba(34,197,94,0.2)' : 'var(--brand-text-secondary)'}` }}>
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: c.status === 'active' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', background: c.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 15%, transparent)' : 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '3px', border: `1px solid ${c.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 20%, transparent)' : 'var(--brand-text-secondary)'}` }}>
                       {t.status.client[c.status] ?? c.status}
                     </span>
                   </td>
@@ -613,7 +613,7 @@ export default function ClientsPage() {
 
       {/* ── Success toast ── */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: '80px', right: '24px', background: 'var(--brand-surface-subtle)', border: '1px solid rgba(34,197,94,0.3)', borderLeft: '3px solid var(--semantic-success)', padding: '12px 20px', borderRadius: '4px', zIndex: 500 }}>
+        <div style={{ position: 'fixed', bottom: '80px', right: '24px', background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--semantic-success) 30%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '12px 20px', borderRadius: '4px', zIndex: 500 }}>
           <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.06em' }}>{toast}</p>
         </div>
       )}

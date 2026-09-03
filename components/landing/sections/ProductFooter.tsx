@@ -32,7 +32,7 @@ export function ProductFooter({ domainBrand, locale, contactHref }: ProductFoote
   const year = '2026'
 
   return (
-    <footer style={{ borderTop: '1px solid rgba(128,128,128,0.12)', padding: SECTION_PADDING.minimal }}>
+    <footer style={{ borderTop: '1px solid var(--brand-border)', padding: SECTION_PADDING.minimal }}>
       <div
         style={{
           maxWidth: '80rem',

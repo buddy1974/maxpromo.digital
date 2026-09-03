@@ -65,29 +65,29 @@ function buildAngebotEmail(a: AngebotRow): string {
     return `
     <tr>
       <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:${token.primaryText};font-family:monospace;font-size:11px;font-weight:700;vertical-align:top;">${String(i + 1).padStart(2, '0')}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:#111;font-size:13px;line-height:1.5;white-space:pre-wrap;vertical-align:top;">${escHtml(item.description)}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${qty}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:#555;text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${fmtUnitPrice(total, qty, currency)}</td>
-      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:#111;text-align:right;font-family:monospace;font-size:13px;font-weight:700;vertical-align:top;">${fmt(total)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:var(--brand-text);font-size:13px;line-height:1.5;white-space:pre-wrap;vertical-align:top;">${escHtml(item.description)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:var(--brand-text-muted);text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${qty}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:var(--brand-text-muted);text-align:right;font-family:monospace;font-size:12px;vertical-align:top;">${fmtUnitPrice(total, qty, currency)}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid ${token.border};color:var(--brand-text);text-align:right;font-family:monospace;font-size:13px;font-weight:700;vertical-align:top;">${fmt(total)}</td>
     </tr>`
   }).join('')
 
   const totalsHtml = hasAnz ? `
     <tr>
-      <td colspan="4" style="padding:10px 10px 4px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${escHtml(t.subtotal)}</td>
-      <td style="padding:10px 10px 4px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${fmt(subtotal)}</td>
+      <td colspan="4" style="padding:10px 10px 4px;font-family:monospace;font-size:12px;color:var(--brand-text-muted);text-align:right;">${escHtml(t.subtotal)}</td>
+      <td style="padding:10px 10px 4px;font-family:monospace;font-size:12px;color:var(--brand-text-muted);text-align:right;">${fmt(subtotal)}</td>
     </tr>
     <tr>
-      <td colspan="4" style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">${escHtml(t.deposit)} (${escHtml(a.anzahlung_method ?? t.bankTransfer)})</td>
-      <td style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:#555;text-align:right;">−${fmt(anzahl)}</td>
+      <td colspan="4" style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:var(--brand-text-muted);text-align:right;">${escHtml(t.deposit)} (${escHtml(a.anzahlung_method ?? t.bankTransfer)})</td>
+      <td style="padding:4px 10px 10px;font-family:monospace;font-size:12px;color:var(--brand-text-muted);text-align:right;">−${fmt(anzahl)}</td>
     </tr>
     <tr style="background:${token.primary};">
-      <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.remainingBalance)}</td>
-      <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmt(restbet)}</td>
+      <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:var(--brand-surface-inverted);text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.remainingBalance)}</td>
+      <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:var(--brand-surface-inverted);text-align:right;">${fmt(restbet)}</td>
     </tr>` : `
     <tr style="background:${token.primary};">
-      <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:#000;text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.quoteTotal)}</td>
-      <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:#000;text-align:right;">${fmt(total)}</td>
+      <td colspan="4" style="padding:12px 10px;font-family:monospace;font-size:12px;font-weight:700;color:var(--brand-surface-inverted);text-transform:uppercase;letter-spacing:0.06em;">${escHtml(t.quoteTotal)}</td>
+      <td style="padding:12px 10px;font-family:monospace;font-size:16px;font-weight:700;color:var(--brand-surface-inverted);text-align:right;">${fmt(total)}</td>
     </tr>`
 
   // Inklusive (kostenlos) list intentionally omitted from the email body
@@ -95,7 +95,7 @@ function buildAngebotEmail(a: AngebotRow): string {
   // the row and visible inside the OS for internal reference.
 
   const paymentBlock = a.payment_terms
-    ? `<p style="font-size:12px;color:#333;margin:0 0 8px;"><strong>${escHtml(t.paymentTerms)}:</strong> ${escHtml(a.payment_terms)}</p>`
+    ? `<p style="font-size:12px;color:var(--brand-text-secondary);margin:0 0 8px;"><strong>${escHtml(t.paymentTerms)}:</strong> ${escHtml(a.payment_terms)}</p>`
     : ''
 
   const introHtml = language === 'en'
@@ -118,12 +118,12 @@ function buildAngebotEmail(a: AngebotRow): string {
       ${buildEmailAddressBlockHtml({ nameOnly, company, address: a.client_address, language })}
 
       <div style="padding:24px 32px;">
-        <p style="color:#333;font-size:13px;margin:0 0 16px;font-family:monospace;">${salutation}</p>
-        <p style="color:#333;font-size:14px;margin:0 0 20px;line-height:1.7;">
+        <p style="color:var(--brand-text-secondary);font-size:13px;margin:0 0 16px;font-family:monospace;">${salutation}</p>
+        <p style="color:var(--brand-text-secondary);font-size:14px;margin:0 0 20px;line-height:1.7;">
           ${introHtml}
         </p>
 
-        <table style="width:100%;border-collapse:collapse;border:1px solid #eee;margin-bottom:4px;">
+        <table style="width:100%;border-collapse:collapse;border:1px solid var(--brand-border);margin-bottom:4px;">
           ${buildEmailTableHeaderHtml(language)}
           ${rows}
           ${totalsHtml}
@@ -133,7 +133,7 @@ function buildAngebotEmail(a: AngebotRow): string {
 
         ${buildEmailVatClauseHtml(language, t.quoteValidUntilNote(fmtDate(a.valid_until)))}
 
-        <p style="color:#333;font-size:13px;line-height:1.5;margin:0 0 16px;">
+        <p style="color:var(--brand-text-secondary);font-size:13px;line-height:1.5;margin:0 0 16px;">
           ${escHtml(t.closing)}<br>
           <strong>Marcel Tabit Akwe</strong>
         </p>

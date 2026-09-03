@@ -86,7 +86,7 @@ export function MaxComposer() {
   }
 
   return (
-    <div style={{ padding: '12px 16px', borderTop: '1px solid #1A1A1A', display: 'flex', gap: '8px', alignItems: 'flex-end', background: '#0F0F0F' }}>
+    <div style={{ padding: '12px 16px', borderTop: '1px solid var(--brand-surface-sunken)', display: 'flex', gap: '8px', alignItems: 'flex-end', background: 'var(--brand-surface)' }}>
       <textarea
         ref={taRef}
         value={text}
@@ -97,10 +97,10 @@ export function MaxComposer() {
         disabled={isLoading}
         style={{
           flex:         1,
-          background:   '#1A1A1A',
-          border:       '1px solid #2A2A2A',
+          background:   'var(--brand-surface-sunken)',
+          border:       '1px solid var(--brand-surface-sunken)',
           borderRadius: '8px',
-          color:        '#E0DDD8',
+          color:        'var(--brand-text)',
           fontFamily:   'var(--font-body, system-ui, sans-serif)',
           fontSize:     '14px',
           lineHeight:   1.5,
@@ -112,7 +112,7 @@ export function MaxComposer() {
           transition:   'border-color 150ms ease',
         }}
         onFocus={e  => (e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--brand-primary) 40%, transparent)')}
-        onBlur={e   => (e.currentTarget.style.borderColor = '#2A2A2A')}
+        onBlur={e   => (e.currentTarget.style.borderColor = 'var(--brand-border)')}
       />
       <button
         onClick={() => void send()}
@@ -133,8 +133,8 @@ export function MaxComposer() {
         }}
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <line x1="22" y1="2" x2="11" y2="13" stroke="#080808" strokeWidth="2.5" strokeLinecap="round"/>
-          <polygon points="22 2 15 22 11 13 2 9 22 2" stroke="#080808" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <line x1="22" y1="2" x2="11" y2="13" stroke="var(--brand-on-primary)" strokeWidth="2.5" strokeLinecap="round"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2" stroke="var(--brand-on-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </button>
     </div>

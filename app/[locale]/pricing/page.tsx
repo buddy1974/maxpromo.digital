@@ -88,7 +88,7 @@ export default async function PricingPage() {
                     ...mono,
                     fontSize: '11px',
                     fontWeight: 700,
-                    color: '#FFFFFF',
+                    color: 'var(--brand-text-inverted)',
                     background: 'var(--color-primary)',
                     padding: '4px 12px',
                     letterSpacing: '0.1em',

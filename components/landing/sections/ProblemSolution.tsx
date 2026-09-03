@@ -63,7 +63,7 @@ export function ProblemSolution({ problemStatement, description, domainBrand, pa
         {painImages && (
           <div style={{ display: 'grid', gap: '10px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {painImages.map((src, i) => (
-              <div key={i} style={{ position: 'relative', aspectRatio: '3 / 4', borderRadius: '10px', overflow: 'hidden', background: 'rgba(128,128,128,0.06)' }}>
+              <div key={i} style={{ position: 'relative', aspectRatio: '3 / 4', borderRadius: '10px', overflow: 'hidden', background: 'var(--brand-border)' }}>
                 <Image
                   src={src}
                   alt={`${domainBrand} — problem illustration ${i + 1}`}

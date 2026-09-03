@@ -38,11 +38,11 @@ export function BeforeAfter({ bullets, problemStatement, lastStep, locale }: Bef
           {eyebrow}
         </p>
 
-        <div style={{ display: 'grid', gap: '1px', background: 'rgba(128,128,128,0.12)', borderRadius: RADIUS.lg, overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2">
+        <div style={{ display: 'grid', gap: '1px', background: 'var(--brand-border)', borderRadius: RADIUS.lg, overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2">
 
           {/* Before, left */}
           <div style={{ padding: '2.5rem', background: 'var(--showcase-bg)' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: '#ef4444', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--semantic-danger)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
               ✗ {colBefore}
             </p>
             {problemStatement ? (
@@ -53,7 +53,7 @@ export function BeforeAfter({ bullets, problemStatement, lastStep, locale }: Bef
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {bullets.map((b, i) => (
                   <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                    <span style={{ color: '#ef4444', flexShrink: 0, marginTop: '2px', fontSize: '13px' }}>✗</span>
+                    <span style={{ color: 'var(--semantic-danger)', flexShrink: 0, marginTop: '2px', fontSize: '13px' }}>✗</span>
                     <span style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--showcase-muted)', lineHeight: 1.5 }}>{b}</span>
                   </div>
                 ))}

@@ -586,7 +586,7 @@ const HANDWERK_OS = {
       de: 'images/systems/handwerk-os/card/handwerk-os-de.png',
     },
   },
-  brandColor:     '#22C55E',
+  brandColor:     'var(--semantic-success)',
   layoutVariant:  'B',
 
   // ── Links
@@ -854,7 +854,7 @@ const PRAXIS_OS = {
       de: 'images/systems/praxis-os/card/praxis-os-de.png',
     },
   },
-  brandColor:     '#3B82F6',
+  brandColor:     'var(--semantic-info)',
   layoutVariant:  'A',
 
   // ── Links

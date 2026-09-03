@@ -21,15 +21,15 @@ import { fmtCurrency, fmtUnitPrice } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
 
 const mono = { fontFamily: 'monospace' } as const
-const th: React.CSSProperties = { padding: '9px 12px', textAlign: 'left', ...mono, fontSize: '10.5px', color: '#fff', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }
+const th: React.CSSProperties = { padding: '9px 12px', textAlign: 'left', ...mono, fontSize: '10.5px', color: 'var(--brand-text-inverted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }
 
 /** Full-width dark/accent bar used for TOTAL DUE / ANGEBOTSSUMME and any single key→amount row — mirrors the Midas reference's bar treatment in Maxpromo's own black + orange palette. */
 function TotalBar({ label, sublabel, amount, strong }: { label: string; sublabel?: string; amount: string; strong?: boolean }) {
   return (
     <div style={{ display: 'flex', alignItems: 'stretch', marginBottom: strong ? 0 : '2px' }}>
       <div style={{ flex: 1, background: BRAND_COLORS.ink, padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-        <span style={{ fontFamily: 'Arial,sans-serif', fontSize: strong ? '15px' : '12px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</span>
-        {sublabel && <span style={{ ...mono, fontSize: '10px', color: '#aaa', marginTop: '2px' }}>{sublabel}</span>}
+        <span style={{ fontFamily: 'Arial,sans-serif', fontSize: strong ? '15px' : '12px', fontWeight: 700, color: 'var(--brand-text-inverted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</span>
+        {sublabel && <span style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', marginTop: '2px' }}>{sublabel}</span>}
       </div>
       <div style={{ background: BRAND_COLORS.accent, padding: '14px 20px', display: 'flex', alignItems: 'center', minWidth: '140px', justifyContent: 'flex-end' }}>
         <span style={{ fontFamily: 'Arial,sans-serif', fontSize: strong ? '22px' : '15px', fontWeight: 800, color: BRAND_COLORS.onAccent }}>{amount}</span>
@@ -75,23 +75,23 @@ export function DocumentTable({
             const qty = item.isFixedPrice ? 1 : Number(item.qty || 1)
             const itemTotal = Number(item.total) || 0
             return (
-              <tr key={i} style={{ borderBottom: '1px solid #eee', background: i % 2 === 1 ? '#fafafa' : '#fff' }}>
+              <tr key={i} style={{ borderBottom: '1px solid var(--brand-border)', background: i % 2 === 1 ? 'var(--brand-surface-subtle)' : 'var(--brand-surface)' }}>
                 <td style={{ padding: '11px 12px', ...mono, fontSize: '11px', color: BRAND_COLORS.accentText, fontWeight: 700, verticalAlign: 'top' }}>
                   {String(i + 1).padStart(2, '0')}
                 </td>
-                <td style={{ padding: '11px 12px', fontSize: '13px', color: '#111', whiteSpace: 'pre-wrap', verticalAlign: 'top', lineHeight: 1.5, wordBreak: 'break-word' }}>
+                <td style={{ padding: '11px 12px', fontSize: '13px', color: 'var(--brand-text)', whiteSpace: 'pre-wrap', verticalAlign: 'top', lineHeight: 1.5, wordBreak: 'break-word' }}>
                   {item.description}
                   {!item.isFixedPrice && item.unit && item.qty > 1 && (
-                    <span style={{ ...mono, fontSize: '11px', color: '#888', marginLeft: '6px' }}>({item.qty} {item.unit})</span>
+                    <span style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', marginLeft: '6px' }}>({item.qty} {item.unit})</span>
                   )}
                 </td>
-                <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12px', color: '#555', verticalAlign: 'top' }}>
+                <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12px', color: 'var(--brand-text-muted)', verticalAlign: 'top' }}>
                   {item.isFixedPrice ? '1' : item.qty}
                 </td>
-                <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12px', color: '#555', verticalAlign: 'top' }}>
+                <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12px', color: 'var(--brand-text-muted)', verticalAlign: 'top' }}>
                   {fmtUnitPrice(itemTotal, qty, currency)}
                 </td>
-                <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12.5px', color: '#111', fontWeight: 700, verticalAlign: 'top' }}>
+                <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12.5px', color: 'var(--brand-text)', fontWeight: 700, verticalAlign: 'top' }}>
                   {fmtCurrency(itemTotal, currency)}
                 </td>
               </tr>
@@ -103,11 +103,11 @@ export function DocumentTable({
       <div data-keep-together style={{ marginBottom: '20px' }}>
         {hasAnz ? (
           <>
-            <div style={{ padding: '8px 12px', textAlign: 'right', borderBottom: '1px solid #eee' }}>
-              <span style={{ ...mono, fontSize: '12px', color: '#555' }}>{t.subtotal}: {fmtCurrency(subtotal || total, currency)}</span>
+            <div style={{ padding: '8px 12px', textAlign: 'right', borderBottom: '1px solid var(--brand-border)' }}>
+              <span style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-muted)' }}>{t.subtotal}: {fmtCurrency(subtotal || total, currency)}</span>
             </div>
-            <div style={{ padding: '8px 12px', textAlign: 'right', borderBottom: '1px solid #eee', marginBottom: '10px' }}>
-              <span style={{ ...mono, fontSize: '12px', color: '#555' }}>{t.deposit} ({anzahlungMethod || t.bankTransfer}): −{fmtCurrency(Number(anzahlung), currency)}</span>
+            <div style={{ padding: '8px 12px', textAlign: 'right', borderBottom: '1px solid var(--brand-border)', marginBottom: '10px' }}>
+              <span style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-muted)' }}>{t.deposit} ({anzahlungMethod || t.bankTransfer}): −{fmtCurrency(Number(anzahlung), currency)}</span>
             </div>
             <TotalBar label={t.remainingBalance} amount={fmtCurrency(remaining, currency)} strong />
           </>

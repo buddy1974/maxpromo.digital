@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { THIRD_PARTY } from '@/lib/third-party-brands'
 import { notFound } from 'next/navigation'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
@@ -143,7 +144,7 @@ const mdxComponents = {
             href={`https://wa.me/${wa}?text=${msg}`}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '13px', letterSpacing: '0.02em', background: 'rgba(37,211,102,0.1)', color: '#1a8a4f', border: '1px solid rgba(37,211,102,0.3)', padding: '13px 24px', borderRadius: 'var(--radius-card)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
+            style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '13px', letterSpacing: '0.02em', background: THIRD_PARTY.whatsappTint, color: 'var(--brand-text-inverted)', border: '1px solid ${THIRD_PARTY.whatsappTint}', padding: '13px 24px', borderRadius: 'var(--radius-card)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
           >
             WhatsApp Maxpromo →
           </a>
@@ -412,7 +413,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="btn"
-              style={{ background: '#25D366', color: '#FFFFFF' }}
+              style={{ background: THIRD_PARTY.whatsapp, color: 'var(--brand-text-inverted)' }}
             >
               {t('whatsappCta')}
             </a>

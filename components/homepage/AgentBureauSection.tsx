@@ -309,11 +309,11 @@ export function AgentBureauSection({ locale }: { locale: string }) {
             </svg>
 
             <div className="hab-center">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--brand-text-inverted)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="6" cy="6" r="3" /><circle cx="18" cy="6" r="3" /><circle cx="12" cy="18" r="3" />
                 <path d="M8.5 7.5 10.5 15.5M15.5 7.5 13.5 15.5M9 6h6" />
               </svg>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, color: '#FFF', letterSpacing: '0.04em', marginTop: '6px', lineHeight: 1.25 }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, color: 'var(--brand-text-inverted)', letterSpacing: '0.04em', marginTop: '6px', lineHeight: 1.25 }}>
                 AGENT<br />BUREAU
               </span>
             </div>

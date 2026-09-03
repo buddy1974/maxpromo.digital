@@ -58,7 +58,7 @@ export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, brid
     : null
 
   return (
-    <section style={{ padding: SECTION_PADDING.cta, borderTop: '1px solid rgba(128,128,128,0.10)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+    <section style={{ padding: SECTION_PADDING.cta, borderTop: '1px solid var(--brand-border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <p style={{ ...EYEBROW_STYLE, marginBottom: '1rem' }}>
           {eyebrow}

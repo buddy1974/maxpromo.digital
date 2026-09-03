@@ -456,8 +456,8 @@ export default function NewInvoicePage() {
 
   // ── Confidence helpers ────────────────────────────────────────────────────
   const confColor   = { high: 'var(--semantic-success)', medium: 'var(--brand-primary)', low: 'var(--semantic-danger)' }
-  const confBg      = { high: 'rgba(34,197,94,0.08)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'rgba(239,68,68,0.08)' }
-  const confBorder  = { high: 'rgba(34,197,94,0.25)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'rgba(239,68,68,0.25)' }
+  const confBg      = { high: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'color-mix(in srgb, var(--semantic-danger) 8%, transparent)' }
+  const confBorder  = { high: 'color-mix(in srgb, var(--semantic-success) 25%, transparent)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'color-mix(in srgb, var(--semantic-danger) 25%, transparent)' }
   const confMsg     = { high: t.forms.confHigh, medium: t.forms.confMedium, low: t.forms.confLow }
 
   function itemBorderLeft(item: LineItem): string | undefined {
@@ -577,7 +577,7 @@ export default function NewInvoicePage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>{t.invoiceForm.newHeading}</h1>
               {aiEnhanced && (
-                <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-success)', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-success)', background: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
                   {t.invoiceForm.aiEnhanced}
                 </span>
               )}
@@ -653,7 +653,7 @@ export default function NewInvoicePage() {
             <Field label={t.invoiceForm.fieldClientEmails}>
               {/* ── Email chips input ── */}
               <div
-                style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', background: 'var(--brand-background)', border: `1px solid ${emailError ? 'rgba(239,68,68,0.5)' : 'var(--brand-border)'}`, padding: '7px 10px', minHeight: '40px', alignItems: 'center', cursor: 'text' }}
+                style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', background: 'var(--brand-background)', border: `1px solid ${emailError ? 'color-mix(in srgb, var(--semantic-danger) 50%, transparent)' : 'var(--brand-border)'}`, padding: '7px 10px', minHeight: '40px', alignItems: 'center', cursor: 'text' }}
                 onClick={e => { const inp = (e.currentTarget as HTMLDivElement).querySelector('input'); inp?.focus() }}
               >
                 {clientEmails.map((e, i) => (
@@ -798,9 +798,9 @@ export default function NewInvoicePage() {
             </Field>
 
             {sendError && (
-              <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)', padding: '10px 14px', borderRadius: '2px' }}>
+              <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 40%, transparent)', padding: '10px 14px', borderRadius: '2px' }}>
                 <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0, letterSpacing: '0.06em' }}>▲ {sendError}</p>
-                <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', background: 'none', border: '1px solid rgba(239,68,68,0.3)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t.forms.retry}</button>
+                <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', background: 'none', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t.forms.retry}</button>
               </div>
             )}
 
@@ -854,7 +854,7 @@ export default function NewInvoicePage() {
         <div style={{ position: 'fixed', inset: 0, background: 'var(--brand-background)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
           <div style={{ textAlign: 'center', maxWidth: '440px', width: '100%' }}>
             {/* Checkmark */}
-            <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'rgba(34,197,94,0.12)', border: '2px solid var(--semantic-success)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+            <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'color-mix(in srgb, var(--semantic-success) 12%, transparent)', border: '2px solid var(--semantic-success)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <span style={{ color: 'var(--semantic-success)', fontSize: '32px', lineHeight: 1 }}>✓</span>
             </div>
             <h2 style={{ color: 'var(--brand-text)', fontSize: '22px', fontWeight: 700, margin: '0 0 8px', fontFamily: grotesk }}>{t.invoiceForm.sentHeading}</h2>

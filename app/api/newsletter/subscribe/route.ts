@@ -16,21 +16,21 @@ function buildWelcomeEmail(name: string): string {
         <h1 style="color:${token.surface};margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em;">You're subscribed.</h1>
       </div>
       <div style="padding:28px 32px;">
-        <p style="color:#333;font-size:15px;line-height:1.7;margin:0 0 16px;">
+        <p style="color:var(--brand-text-secondary);font-size:15px;line-height:1.7;margin:0 0 16px;">
           Hey${display},<br><br>
           You're now subscribed to <strong>Maxpromo Digital Weekly Automation Insights</strong>.<br>
           Real builds. Real results. Every week.
         </p>
-        <p style="color:#888;font-size:13px;line-height:1.7;margin:0 0 24px;">
+        <p style="color:var(--brand-text-secondary);font-size:13px;line-height:1.7;margin:0 0 24px;">
           You'll hear from us with practical automation tips, AI workflow breakdowns,
           and case studies from real client projects.
         </p>
-        <a href="https://maxpromo.digital" style="display:inline-block;background:${token.primary};color:#000;font-family:monospace;font-weight:700;font-size:12px;letter-spacing:0.1em;padding:12px 24px;text-decoration:none;text-transform:uppercase;">
+        <a href="https://maxpromo.digital" style="display:inline-block;background:${token.primary};color:var(--brand-surface-inverted);font-family:monospace;font-weight:700;font-size:12px;letter-spacing:0.1em;padding:12px 24px;text-decoration:none;text-transform:uppercase;">
           Explore our work &rarr;
         </a>
       </div>
       <div style="background:${token.text};padding:16px 32px;">
-        <p style="font-family:monospace;font-size:10px;color:#444;margin:0;">
+        <p style="font-family:monospace;font-size:10px;color:var(--brand-text-muted);margin:0;">
           Maxpromo Digital &middot; Koernerstr. 8 &middot; 45143 Essen &middot; info@maxpromo.digital
         </p>
       </div>

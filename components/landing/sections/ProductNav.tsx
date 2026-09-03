@@ -41,7 +41,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
         background: 'color-mix(in srgb, var(--showcase-bg) 88%, transparent)',
         backdropFilter: 'blur(14px) saturate(140%)',
         WebkitBackdropFilter: 'blur(14px) saturate(140%)',
-        borderBottom: '1px solid rgba(128,128,128,0.12)',
+        borderBottom: '1px solid var(--brand-border)',
       }}
     >
       <div

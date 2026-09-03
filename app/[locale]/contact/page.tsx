@@ -172,7 +172,7 @@ export default function ContactPage() {
           className="mx-auto flex max-w-2xl flex-col gap-6 border border-[var(--color-border)] bg-[var(--color-bg)] p-6 md:p-12 rounded-[var(--radius-card)] shadow-[var(--shadow-card)]"
         >
           {status === 'error' && (
-            <p className="border border-red-300 bg-red-50 p-3 text-sm text-red-600 rounded-[var(--radius-card)]">
+            <p className="error-panel">
               {errorMessage}
             </p>
           )}

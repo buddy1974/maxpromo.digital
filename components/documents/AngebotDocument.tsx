@@ -24,7 +24,7 @@
 import { DocumentPage, SectionHeading } from './DocumentPage'
 import { DocumentTable } from './DocumentTable'
 import { PaymentSection } from './PaymentSection'
-import { BUSINESS, DEFAULT_PAYMENT_METHOD } from '@/lib/documents/config'
+import { BUSINESS, BRAND_COLORS, DEFAULT_PAYMENT_METHOD } from '@/lib/documents/config'
 import { fmtDocDate, fmtDocFilename, splitClientName } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
 import type { AngebotData } from '@/lib/documents/types'
@@ -66,8 +66,8 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
     >
       {/* Letter intro */}
       <div style={{ padding: '24px 40px 8px' }}>
-        <p style={{ fontSize: '13px', color: '#333', margin: '0 0 12px', ...mono }}>{salutation}</p>
-        <p style={{ fontSize: '14px', color: '#333', margin: 0, lineHeight: 1.7 }}>
+        <p style={{ fontSize: '13px', color: 'var(--brand-text-secondary)', margin: '0 0 12px', ...mono }}>{salutation}</p>
+        <p style={{ fontSize: '14px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.7 }}>
           {t.quoteIntro(angebot.angebot_number, date)}
         </p>
       </div>
@@ -95,27 +95,27 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
             </p>
             <ul style={{ margin: 0, paddingLeft: '18px' }}>
               {includedItems.map((it, i) => (
-                <li key={i} style={{ fontSize: '12px', color: '#555', lineHeight: 1.6 }}>{it}</li>
+                <li key={i} style={{ fontSize: '12px', color: 'var(--brand-text-muted)', lineHeight: 1.6 }}>{it}</li>
               ))}
             </ul>
           </div>
         )}
 
         {angebot.payment_terms && (
-          <p style={{ fontSize: '12px', color: '#333', margin: '0 0 6px' }}>
+          <p style={{ fontSize: '12px', color: 'var(--brand-text-secondary)', margin: '0 0 6px' }}>
             <strong>{t.paymentTerms}:</strong> {angebot.payment_terms}
           </p>
         )}
 
-        <p style={{ ...mono, fontSize: '11px', color: '#888', margin: '0 0 4px' }}>
+        <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', margin: '0 0 4px' }}>
           {BUSINESS.vatClause[angebot.language ?? 'de']} {t.quoteValidUntilNote(validTo)}
         </p>
 
         {angebot.notes && (
-          <p style={{ fontSize: '12px', color: '#555', margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>{angebot.notes}</p>
+          <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>{angebot.notes}</p>
         )}
 
-        <p style={{ fontSize: '13px', color: '#333', margin: '20px 0 0', lineHeight: 1.5 }}>
+        <p style={{ fontSize: '13px', color: 'var(--brand-text-secondary)', margin: '20px 0 0', lineHeight: 1.5 }}>
           {t.closing}<br />
           <strong>{BUSINESS.legalName}</strong>
         </p>
@@ -133,23 +133,23 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
       </div>
 
       {/* Acceptance section */}
-      <div data-keep-together style={{ padding: '20px 40px 8px', borderTop: '1px dashed #ccc' }}>
+      <div data-keep-together style={{ padding: '20px 40px 8px', borderTop: '1px dashed var(--brand-border-strong)' }}>
         <SectionHeading n={3} title={t.quoteAcceptanceHeading} />
-        <p style={{ fontSize: '12px', color: '#555', margin: '0 0 20px', lineHeight: 1.6 }}>
+        <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 20px', lineHeight: 1.6 }}>
           {t.quoteAcceptanceBody}
         </p>
         <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
           <div style={{ flex: '1 1 200px' }}>
-            <div style={{ borderBottom: '1px solid #999', height: '36px' }} />
-            <p style={{ ...mono, fontSize: '10px', color: '#888', margin: '6px 0 0' }}>{t.placeDate}</p>
+            <div style={{ borderBottom: `1px solid ${BRAND_COLORS.borderStrong}`, height: '36px' }} />
+            <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: '6px 0 0' }}>{t.placeDate}</p>
           </div>
           <div style={{ flex: '1 1 200px' }}>
-            <div style={{ borderBottom: '1px solid #999', height: '36px' }} />
-            <p style={{ ...mono, fontSize: '10px', color: '#888', margin: '6px 0 0' }}>{t.namePrinted}</p>
+            <div style={{ borderBottom: `1px solid ${BRAND_COLORS.borderStrong}`, height: '36px' }} />
+            <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: '6px 0 0' }}>{t.namePrinted}</p>
           </div>
           <div style={{ flex: '1 1 200px' }}>
-            <div style={{ borderBottom: '1px solid #999', height: '36px' }} />
-            <p style={{ ...mono, fontSize: '10px', color: '#888', margin: '6px 0 0' }}>{t.signature}</p>
+            <div style={{ borderBottom: `1px solid ${BRAND_COLORS.borderStrong}`, height: '36px' }} />
+            <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: '6px 0 0' }}>{t.signature}</p>
           </div>
         </div>
       </div>

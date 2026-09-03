@@ -127,7 +127,7 @@ export default function NewsletterPage() {
         </div>
 
         {sendResult && (
-          <div style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)', padding: '10px 16px', marginBottom: '12px' }}>
+          <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '10px 16px', marginBottom: '12px' }}>
             <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.06em' }}>
               {t.newsletter.sendResult(sendResult.sent, sendResult.failed)}
             </p>
@@ -191,7 +191,7 @@ export default function NewsletterPage() {
                   <td style={{ padding: '11px 16px' }}><span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', background: 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{sub.source || t.common.notAvailable}</span></td>
                   <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)' }}>{fmtDate(sub.created_at)}</td>
                   <td style={{ padding: '11px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: sub.status === 'active' ? 'var(--semantic-success)' : 'var(--semantic-danger)', background: sub.status === 'active' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
+                    <span style={{ fontFamily: mono, fontSize: '9px', color: sub.status === 'active' ? 'var(--semantic-success)' : 'var(--semantic-danger)', background: sub.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' : 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
                       {t.status.subscriber[sub.status] ?? sub.status}
                     </span>
                   </td>

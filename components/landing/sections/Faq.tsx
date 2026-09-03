@@ -30,7 +30,7 @@ export function Faq({ faq, locale }: FaqProps) {
   const eyebrow = isDE ? 'Häufige Fragen' : 'Common questions'
 
   return (
-    <section style={{ padding: SECTION_PADDING.relaxed, borderTop: '1px solid rgba(128,128,128,0.10)' }}>
+    <section style={{ padding: SECTION_PADDING.relaxed, borderTop: '1px solid var(--brand-border)' }}>
       <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
         <p style={{ ...EYEBROW_STYLE, marginBottom: '2.5rem' }}>
           {eyebrow}
@@ -40,7 +40,7 @@ export function Faq({ faq, locale }: FaqProps) {
           {faq.map((item, i) => {
             const isOpen = open === i
             return (
-              <div key={i} style={{ borderTop: '1px solid rgba(128,128,128,0.12)' }}>
+              <div key={i} style={{ borderTop: '1px solid var(--brand-border)' }}>
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
@@ -62,7 +62,7 @@ export function Faq({ faq, locale }: FaqProps) {
               </div>
             )
           })}
-          <div style={{ borderTop: '1px solid rgba(128,128,128,0.12)' }} />
+          <div style={{ borderTop: '1px solid var(--brand-border)' }} />
         </div>
       </div>
     </section>

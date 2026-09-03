@@ -59,6 +59,7 @@ export const BRAND_COLORS = {
   muted: token.textSecondary,
   faint: token.textMuted,
   border: token.border,
+  borderStrong: token.borderStrong,
   surfaceSubtle: token.surfaceSubtle,
   white: token.surface,
 } as const

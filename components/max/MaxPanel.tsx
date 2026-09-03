@@ -53,22 +53,22 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
       <div
         className="max-panel"
         style={{
-          background: '#0F0F0F',
-          border:     '1px solid #1A1A1A',
+          background: 'var(--brand-surface)',
+          border:     '1px solid var(--brand-surface-sunken)',
           display:    'flex',
           flexDirection: 'column',
           overflow:   'hidden',
-          boxShadow:  '0 24px 80px rgba(0,0,0,0.7)',
+          boxShadow:  '0 24px 80px color-mix(in srgb, var(--brand-text) 70%, transparent)',
         }}
       >
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #1A1A1A', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--brand-surface-sunken)', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '11px', color: '#080808', flexShrink: 0 }}>
+            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '11px', color: 'var(--brand-on-primary)', flexShrink: 0 }}>
               M
             </div>
             <div>
-              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '13px', color: '#E0DDD8', margin: 0, letterSpacing: '0.05em' }}>
+              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '13px', color: 'var(--brand-text)', margin: 0, letterSpacing: '0.05em' }}>
                 Max
               </p>
               <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '10px', color: 'var(--brand-primary)', margin: 0, letterSpacing: '0.1em' }}>
@@ -79,7 +79,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
           <button
             onClick={onClose}
             aria-label="Close"
-            style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', padding: '6px', fontSize: '18px', lineHeight: 1, borderRadius: '6px', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', padding: '6px', fontSize: '18px', lineHeight: 1, borderRadius: '6px', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             ✕
           </button>
@@ -92,7 +92,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
           className="chat-scroll"
         >
           {isEmpty && !isLoading && (
-            <p style={{ fontFamily: 'var(--font-body, system-ui, sans-serif)', fontSize: '15px', color: '#444', textAlign: 'center', padding: '2rem 2rem 0', lineHeight: 1.6 }}>
+            <p style={{ fontFamily: 'var(--font-body, system-ui, sans-serif)', fontSize: '15px', color: 'var(--brand-text-muted)', textAlign: 'center', padding: '2rem 2rem 0', lineHeight: 1.6 }}>
               {lang === 'de' ? 'Frage stellen. Echte Antwort.' : 'Ask a question. Real answer.'}
             </p>
           )}

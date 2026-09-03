@@ -24,24 +24,24 @@ export function MaxBubble({ onClick }: MaxBubbleProps) {
         display:      'flex',
         alignItems:   'center',
         justifyContent: 'center',
-        boxShadow:    '0 4px 24px color-mix(in srgb, var(--brand-primary) 45%, transparent), 0 2px 8px rgba(0,0,0,0.4)',
+        boxShadow:    '0 4px 24px color-mix(in srgb, var(--brand-primary) 45%, transparent), 0 2px 8px color-mix(in srgb, var(--brand-text) 40%, transparent)',
         transition:   'transform 150ms ease, box-shadow 150ms ease',
         flexShrink:   0,
       }}
       onMouseEnter={e => {
         e.currentTarget.style.transform  = 'scale(1.06)'
-        e.currentTarget.style.boxShadow  = '0 6px 32px color-mix(in srgb, var(--brand-primary) 55%, transparent), 0 2px 8px rgba(0,0,0,0.4)'
+        e.currentTarget.style.boxShadow  = '0 6px 32px color-mix(in srgb, var(--brand-primary) 55%, transparent), 0 2px 8px color-mix(in srgb, var(--brand-text) 40%, transparent)'
       }}
       onMouseLeave={e => {
         e.currentTarget.style.transform  = 'scale(1)'
-        e.currentTarget.style.boxShadow  = '0 4px 24px color-mix(in srgb, var(--brand-primary) 45%, transparent), 0 2px 8px rgba(0,0,0,0.4)'
+        e.currentTarget.style.boxShadow  = '0 4px 24px color-mix(in srgb, var(--brand-primary) 45%, transparent), 0 2px 8px color-mix(in srgb, var(--brand-text) 40%, transparent)'
       }}
     >
       {/* Chat bubble icon */}
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path
           d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-          stroke="#080808"
+          stroke="var(--brand-on-primary)"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"

@@ -38,7 +38,7 @@ export function WorkflowTimeline({ workflow, locale }: WorkflowTimelineProps) {
         </h2>
 
         <div
-          style={{ display: 'grid', gap: '1px', background: 'rgba(128,128,128,0.12)', borderRadius: RADIUS.lg, overflow: 'hidden' }}
+          style={{ display: 'grid', gap: '1px', background: 'var(--brand-border)', borderRadius: RADIUS.lg, overflow: 'hidden' }}
           className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
         >
           {workflow.map((step, i) => (

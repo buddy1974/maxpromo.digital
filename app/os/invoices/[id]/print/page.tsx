@@ -1,4 +1,6 @@
 'use client'
+
+import { THIRD_PARTY } from '@/lib/third-party-brands'
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { InvoiceDocument } from '@/components/documents/InvoiceDocument'
@@ -45,7 +47,7 @@ export default function PrintPage() {
             /* #25D366 is WhatsApp's own brand colour, not ours: a third-party
                button has to look like that platform's button to be recognised.
                Deliberately literal, and the only hex left in app/os. */
-            style={{ background: '#25D366', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
+            style={{ background: THIRD_PARTY.whatsapp, color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
           >
             ▭ Per WhatsApp senden
           </a>

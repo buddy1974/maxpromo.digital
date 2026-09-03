@@ -20,11 +20,11 @@ interface Angebot {
 }
 
 const STATUS_COLOR: Record<string, { text: string; bg: string; border: string }> = {
-  draft:    { text: 'var(--brand-text-secondary)',    bg: 'rgba(136,136,136,0.1)',  border: 'var(--brand-text-secondary)' },
-  sent:     { text: 'var(--semantic-info)', bg: 'rgba(59,130,246,0.1)',   border: 'rgba(59,130,246,0.3)' },
-  accepted: { text: 'var(--semantic-success)', bg: 'rgba(34,197,94,0.1)',    border: 'rgba(34,197,94,0.3)' },
-  rejected: { text: 'var(--semantic-danger)', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
-  expired:  { text: 'var(--semantic-danger)', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
+  draft:    { text: 'var(--brand-text-secondary)',    bg: 'color-mix(in srgb, var(--brand-text-secondary) 10%, transparent)',  border: 'var(--brand-text-secondary)' },
+  sent:     { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 10%, transparent)',   border: 'color-mix(in srgb, var(--semantic-info) 30%, transparent)' },
+  accepted: { text: 'var(--semantic-success)', bg: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-success) 30%, transparent)' },
+  rejected: { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-danger) 30%, transparent)' },
+  expired:  { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-danger) 30%, transparent)' },
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -243,7 +243,7 @@ export default function AngebotDetailPage() {
           <button
             onClick={deleteAngebot}
             disabled={deleting}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-danger)', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '4px', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-danger)', background: 'color-mix(in srgb, var(--semantic-danger) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 20%, transparent)', borderRadius: '4px', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
           >
             {t.angebotDetail.delete}
           </button>
@@ -252,7 +252,7 @@ export default function AngebotDetailPage() {
 
       {/* Persistent banners (shown on the page after the modal closes) */}
       {sendSuccess && (
-        <div style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.25)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
+        <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 25%, transparent)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
           <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0 }}>✓ {sendSuccess}</p>
         </div>
       )}
@@ -339,7 +339,7 @@ export default function AngebotDetailPage() {
             </label>
 
             {sendError && (
-              <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: '8px 12px', marginBottom: '14px', borderRadius: '3px' }}>
+              <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: '8px 12px', marginBottom: '14px', borderRadius: '3px' }}>
                 <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}>▲ {sendError}</p>
               </div>
             )}
@@ -465,7 +465,7 @@ export default function AngebotDetailPage() {
 
       {/* Included items (free) */}
       {Array.isArray(angebot.included_items) && angebot.included_items.length > 0 && (
-        <div style={{ background: 'var(--brand-surface)', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid var(--semantic-success)', borderRadius: '4px', padding: '14px 20px', marginBottom: '20px' }}>
+        <div style={{ background: 'var(--brand-surface)', border: '1px solid color-mix(in srgb, var(--semantic-success) 25%, transparent)', borderLeft: '3px solid var(--semantic-success)', borderRadius: '4px', padding: '14px 20px', marginBottom: '20px' }}>
           <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-success)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.angebotDetail.includedItems}</p>
           <ul style={{ margin: 0, paddingLeft: '18px' }}>
             {angebot.included_items.map((it, i) => (

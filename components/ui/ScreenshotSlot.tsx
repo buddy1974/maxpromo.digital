@@ -45,7 +45,7 @@ export interface ScreenshotSlotProps {
   style?: CSSProperties
 }
 
-const BORDER = '#1A1A1A'
+const BORDER = 'var(--brand-border)'
 
 export function ScreenshotSlot({
   src,
@@ -67,7 +67,7 @@ export function ScreenshotSlot({
           position:     'relative',
           width:        '100%',
           aspectRatio:  `${width} / ${height}`,
-          background:   '#0A0A0A',
+          background:   'var(--brand-background)',
           border:       `1px solid ${BORDER}`,
           borderRadius: '10px',
           overflow:     'hidden',
@@ -90,7 +90,7 @@ export function ScreenshotSlot({
             <p style={{
               fontFamily:    'var(--brand-font-sans)',
               fontSize:      '11px',
-              color:         '#F0F0F0',
+              color:         'var(--brand-text-inverted)',
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
               margin:        '0 0 5px',
@@ -102,7 +102,7 @@ export function ScreenshotSlot({
             <p style={{
               fontFamily: 'var(--font-body)',
               fontSize:   '13px',
-              color:      '#555',
+              color:      'var(--brand-text-muted)',
               lineHeight: 1.65,
               margin:     0,
             }}>

@@ -108,7 +108,7 @@ export default function AngebotePage() {
   return (
     <div style={{ padding: '32px 40px' }}>
       {convertError && (
-        <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
+        <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
           <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}>▲ {convertError}</p>
         </div>
       )}

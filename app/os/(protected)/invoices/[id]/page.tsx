@@ -18,10 +18,10 @@ interface Invoice {
 }
 
 const STATUS_COLOR: Record<string, { text: string; bg: string; border: string }> = {
-  draft:   { text: 'var(--brand-text-secondary)',    bg: 'rgba(136,136,136,0.1)',  border: 'var(--brand-text-secondary)' },
-  sent:    { text: 'var(--semantic-info)', bg: 'rgba(59,130,246,0.1)',   border: 'rgba(59,130,246,0.3)' },
-  paid:    { text: 'var(--semantic-success)', bg: 'rgba(34,197,94,0.1)',    border: 'rgba(34,197,94,0.3)' },
-  overdue: { text: 'var(--semantic-danger)', bg: 'rgba(239,68,68,0.1)',    border: 'rgba(239,68,68,0.3)' },
+  draft:   { text: 'var(--brand-text-secondary)',    bg: 'color-mix(in srgb, var(--brand-text-secondary) 10%, transparent)',  border: 'var(--brand-text-secondary)' },
+  sent:    { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 10%, transparent)',   border: 'color-mix(in srgb, var(--semantic-info) 30%, transparent)' },
+  paid:    { text: 'var(--semantic-success)', bg: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-success) 30%, transparent)' },
+  overdue: { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-danger) 30%, transparent)' },
 }
 
 export default function InvoiceDetailPage() {
@@ -149,7 +149,7 @@ export default function InvoiceDetailPage() {
             <button
               onClick={markPaid}
               disabled={marking}
-              style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-success)', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '4px', padding: '9px 16px', cursor: marking ? 'wait' : 'pointer', opacity: marking ? 0.6 : 1 }}
+              style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-success)', background: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 30%, transparent)', borderRadius: '4px', padding: '9px 16px', cursor: marking ? 'wait' : 'pointer', opacity: marking ? 0.6 : 1 }}
             >
               {t.invoiceDetail.markPaid}
             </button>
@@ -157,7 +157,7 @@ export default function InvoiceDetailPage() {
           <button
             onClick={deleteInvoice}
             disabled={deleting}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-danger)', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '4px', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: 'var(--semantic-danger)', background: 'color-mix(in srgb, var(--semantic-danger) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 20%, transparent)', borderRadius: '4px', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
           >
             {t.invoiceDetail.delete}
           </button>

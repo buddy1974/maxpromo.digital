@@ -16,7 +16,7 @@ export default function LocaleNotFound() {
   return (
     <main
       style={{
-        background: '#0A0A0A',
+        background: 'var(--brand-background)',
         minHeight: '70vh',
         display: 'flex',
         flexDirection: 'column',
@@ -38,14 +38,14 @@ export default function LocaleNotFound() {
       >
         {'404'}
       </p>
-      <h1 style={{ color: '#FFFFFF', margin: '0 0 12px' }}>
+      <h1 style={{ color: 'var(--brand-text-inverted)', margin: '0 0 12px' }}>
         {de ? 'Diese Seite gibt es nicht.' : 'This page does not exist.'}
       </h1>
       <p
         style={{
           fontFamily: 'var(--font-inter)',
           fontSize: '16px',
-          color: '#888888',
+          color: 'var(--brand-text-secondary)',
           lineHeight: 1.6,
           margin: '0 0 32px',
           maxWidth: '440px',
@@ -64,7 +64,7 @@ export default function LocaleNotFound() {
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
           background: 'var(--brand-primary)',
-          color: '#000',
+          color: 'var(--brand-text)',
           padding: '14px 24px',
           textDecoration: 'none',
           borderRadius: '2px',

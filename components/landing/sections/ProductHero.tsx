@@ -74,7 +74,7 @@ export function ProductHero({
         {/* Product visual, visible on every breakpoint */}
         <div
           className="order-first lg:order-last"
-          style={{ position: 'relative', aspectRatio: '6 / 5', borderRadius: RADIUS.xl, overflow: 'hidden', background: 'rgba(128,128,128,0.06)' }}
+          style={{ position: 'relative', aspectRatio: '6 / 5', borderRadius: RADIUS.xl, overflow: 'hidden', background: 'var(--brand-border)' }}
         >
           <Image
             src={cardImageSrc}

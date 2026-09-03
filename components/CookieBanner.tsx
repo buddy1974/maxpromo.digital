@@ -65,9 +65,9 @@ export default function CookieBanner() {
         left: '1.5rem',
         right: '1.5rem',
         maxWidth: '480px',
-        background: '#111111',
+        background: 'var(--brand-surface-subtle)',
         borderLeft: '3px solid var(--brand-primary)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        border: '1px solid color-mix(in srgb, var(--brand-surface) 8%, transparent)',
         borderLeftWidth: '3px',
         borderLeftColor: 'var(--brand-primary)',
         padding: '1rem 1.25rem',
@@ -82,7 +82,7 @@ export default function CookieBanner() {
           style={{
             fontFamily: 'var(--font-inter)',
             fontSize: '13px',
-            color: '#CCCCCC',
+            color: 'var(--brand-text)',
             margin: 0,
             lineHeight: '1.6',
           }}
@@ -102,7 +102,7 @@ export default function CookieBanner() {
         style={{
           flexShrink: 0,
           background: 'var(--brand-primary)',
-          color: '#000000',
+          color: 'var(--brand-text)',
           border: 'none',
           padding: '0.65rem 1.1rem',
           minWidth: '44px',

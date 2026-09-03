@@ -649,7 +649,7 @@ export default function EditAngebotPage() {
       </div>
 
       {aiAppliedMsg && (
-        <div style={{ background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: '16px', borderRadius: '3px' }}>
+        <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 25%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: '16px', borderRadius: '3px' }}>
           <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.04em' }}>✓ {aiAppliedMsg}</p>
         </div>
       )}

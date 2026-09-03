@@ -14,10 +14,10 @@ interface Lead {
 
 const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
   new:        { text: 'var(--brand-primary)', bg: 'color-mix(in srgb, var(--brand-primary) 12%, transparent)' },
-  contacted:  { text: 'var(--semantic-info)', bg: 'rgba(59,130,246,0.12)' },
-  qualified:  { text: 'var(--semantic-info)', bg: 'rgba(168,85,247,0.12)' },
-  converted:  { text: 'var(--semantic-success)', bg: 'rgba(34,197,94,0.12)' },
-  lost:       { text: 'var(--semantic-danger)', bg: 'rgba(239,68,68,0.12)' },
+  contacted:  { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 12%, transparent)' },
+  qualified:  { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 12%, transparent)' },
+  converted:  { text: 'var(--semantic-success)', bg: 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' },
+  lost:       { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)' },
 }
 
 /** Raw DB values — the persisted identity. Display text comes from t.status.*. */
@@ -25,7 +25,7 @@ const STATUSES = ['new', 'contacted', 'qualified', 'converted', 'lost']
 const SOURCES  = ['manual', 'website', 'referral', 'instagram', 'facebook', 'linkedin', 'google', 'whatsapp', 'email', 'phone', 'other']
 
 function StatusBadge({ status, label }: { status: string; label: string }) {
-  const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'rgba(136,136,136,0.12)' }
+  const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'color-mix(in srgb, var(--brand-text-secondary) 12%, transparent)' }
   return <span style={{ fontFamily: mono, fontSize: '9px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>{label}</span>
 }
 

@@ -38,7 +38,7 @@ export function PaymentSection({ method, language, reference }: PaymentSectionPr
     <div>
       {/* Dark caption bar — mirrors the Midas reference's "PAYMENT DETAILS" header */}
       <div style={{ background: BRAND_COLORS.ink, padding: '9px 16px', marginBottom: '18px' }}>
-        <span style={{ fontFamily: 'Arial,sans-serif', fontSize: '11px', fontWeight: 700, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <span style={{ fontFamily: 'Arial,sans-serif', fontSize: '11px', fontWeight: 700, color: 'var(--brand-text-inverted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {t.paymentDetailsHeading}
         </span>
       </div>
@@ -47,11 +47,11 @@ export function PaymentSection({ method, language, reference }: PaymentSectionPr
         {showBank && (
           <div style={{ flex: '1 1 260px', minWidth: '220px' }}>
             <p style={subLabel}>{bankHeading}</p>
-            <p style={{ ...mono, fontSize: '13px', color: '#111', margin: '0 0 3px' }}>{t.accountHolder}: {BANK_TRANSFER.beneficiary}</p>
-            <p style={{ ...mono, fontSize: '13px', color: '#111', margin: '0 0 3px' }}>IBAN: {BANK_TRANSFER.iban}</p>
-            <p style={{ ...mono, fontSize: '13px', color: '#111', margin: '0 0 3px' }}>BIC: {BANK_TRANSFER.bic}</p>
-            <p style={{ ...mono, fontSize: '13px', color: '#111', margin: '0 0 3px' }}>{t.paymentReference}: {reference}</p>
-            <p style={{ ...mono, fontSize: '12px', color: '#888', margin: 0 }}>{BANK_TRANSFER.bank}</p>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text)', margin: '0 0 3px' }}>{t.accountHolder}: {BANK_TRANSFER.beneficiary}</p>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text)', margin: '0 0 3px' }}>IBAN: {BANK_TRANSFER.iban}</p>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text)', margin: '0 0 3px' }}>BIC: {BANK_TRANSFER.bic}</p>
+            <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text)', margin: '0 0 3px' }}>{t.paymentReference}: {reference}</p>
+            <p style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-secondary)', margin: 0 }}>{BANK_TRANSFER.bank}</p>
           </div>
         )}
 
@@ -60,9 +60,9 @@ export function PaymentSection({ method, language, reference }: PaymentSectionPr
             <MomoQrCode value={MTN_MOMO.url} size={92} />
             <div>
               <p style={subLabel}>{momoHeading}</p>
-              <p style={{ ...mono, fontSize: '13px', color: '#111', margin: '0 0 3px' }}>{BUSINESS.legalName}</p>
-              <p style={{ ...mono, fontSize: '13px', color: '#111', margin: '0 0 3px' }}>{MTN_MOMO.number}</p>
-              <p style={{ ...mono, fontSize: '10px', color: '#888', margin: 0 }}>
+              <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text)', margin: '0 0 3px' }}>{BUSINESS.legalName}</p>
+              <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text)', margin: '0 0 3px' }}>{MTN_MOMO.number}</p>
+              <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: 0 }}>
                 {t.momoScanToPay}
               </p>
             </div>

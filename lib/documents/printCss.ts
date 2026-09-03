@@ -44,7 +44,7 @@ export const DOCUMENT_PRINT_CSS = `
     html, body {
       margin: 0 !important;
       padding: 0 !important;
-      background: #fff !important;
+      background: var(--brand-surface) !important;
       height: auto !important;
       min-height: 0 !important;
       overflow: visible !important;

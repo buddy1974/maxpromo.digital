@@ -193,7 +193,7 @@ export default function PortfolioPage() {
           style={inputBase}
         />
         {error && (
-          <p style={{ ...mono, fontSize: '13px', color: '#DC2626', margin: '12px 0 0' }}>⚠ {error}</p>
+          <p style={{ ...mono, fontSize: '13px', color: 'var(--semantic-danger)', margin: '12px 0 0' }}>⚠ {error}</p>
         )}
         <button
           type="submit"

@@ -383,8 +383,8 @@ export default function NewAngebotPage() {
   }
 
   const confColor  = { high: 'var(--semantic-success)', medium: 'var(--brand-primary)', low: 'var(--semantic-danger)' }
-  const confBg     = { high: 'rgba(34,197,94,0.08)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'rgba(239,68,68,0.08)' }
-  const confBorder = { high: 'rgba(34,197,94,0.25)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'rgba(239,68,68,0.25)' }
+  const confBg     = { high: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'color-mix(in srgb, var(--semantic-danger) 8%, transparent)' }
+  const confBorder = { high: 'color-mix(in srgb, var(--semantic-success) 25%, transparent)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'color-mix(in srgb, var(--semantic-danger) 25%, transparent)' }
   const confMsg    = { high: '✓ High confidence — review and confirm', medium: '▲ Some fields need review — check highlighted items', low: '▲ Low confidence — please verify all fields' }
 
   function itemBorderLeft(item: LineItem): string | undefined {
@@ -462,7 +462,7 @@ export default function NewAngebotPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)', margin: 0 }}>{t.angebotForm.newHeading}</h1>
               {aiEnhanced && (
-                <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-success)', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiEnhanced}</span>
+                <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-success)', background: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiEnhanced}</span>
               )}
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -487,7 +487,7 @@ export default function NewAngebotPage() {
 
           {/* Sum-reconciliation + missing-data warnings (server-side) */}
           {aiEnhanced && aiWarnings.length > 0 && (
-            <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+            <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 25%, transparent)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
               <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>▲ Verify before sending</p>
               <ul style={{ margin: 0, paddingLeft: '18px' }}>
                 {aiWarnings.map((w, i) => (
@@ -499,7 +499,7 @@ export default function NewAngebotPage() {
 
           {/* Included (free) items — kept out of line items deliberately */}
           {aiEnhanced && includedItems.length > 0 && (
-            <div style={{ background: 'var(--brand-surface)', border: '1px solid rgba(34,197,94,0.25)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid color-mix(in srgb, var(--semantic-success) 25%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
               <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-success)', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.includedHeading}</p>
               <ul style={{ margin: 0, paddingLeft: '18px' }}>
                 {includedItems.map((it, i) => (

@@ -26,7 +26,7 @@
 :root {
   --color-bg:             var(--brand-background);
   --color-bg-section:     var(--brand-surface-subtle);
-  --color-border:         var(--brand-border);
+  --color-border: var(--brand-border);
   --color-text-primary:   var(--brand-text);
   --color-text-secondary: var(--brand-text-secondary);
   --color-primary:        var(--brand-primary);
@@ -56,10 +56,10 @@
 }
 
 @theme inline {
-  --color-background:     var(--brand-background);
+  --color-background: var(--brand-background);
   --color-foreground:     var(--brand-text);
   --color-bg-section:     var(--brand-surface-subtle);
-  --color-border:         var(--brand-border);
+  --color-border: var(--brand-border);
   --color-primary:        var(--brand-primary);
   --color-primary-hover:  var(--brand-primary-hover);
   --color-text-primary:   var(--brand-text);
@@ -1148,4 +1148,14 @@ button.os-nav-item {
   font-family: var(--brand-font-mono);
   font-size: var(--text-micro);
   color: var(--brand-text-muted);
+}
+
+/* Inline error panel — semantic, not a raw red palette class. */
+.error-panel {
+  border: 1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent);
+  background: var(--semantic-danger-soft);
+  color: var(--semantic-danger);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-small);
 }

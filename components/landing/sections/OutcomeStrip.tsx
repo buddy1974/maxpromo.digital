@@ -27,9 +27,9 @@ export function OutcomeStrip({ outcomeStats }: OutcomeStripProps) {
   if (!outcomeStats) return null
 
   return (
-    <section style={{ padding: SECTION_PADDING.tight, borderTop: '1px solid rgba(128,128,128,0.10)', borderBottom: '1px solid rgba(128,128,128,0.10)' }}>
+    <section style={{ padding: SECTION_PADDING.tight, borderTop: '1px solid var(--brand-border)', borderBottom: '1px solid var(--brand-border)' }}>
       <div
-        style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '1px', background: 'rgba(128,128,128,0.12)' }}
+        style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '1px', background: 'var(--brand-border)' }}
         className="grid-cols-1 md:grid-cols-3"
       >
         {outcomeStats.map((stat, i) => (
