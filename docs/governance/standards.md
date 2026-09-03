@@ -99,3 +99,32 @@ together. Details in `docs/deployment/vercel.md`.
 
 Nothing merges to `main` without `npm run verify` passing. Production deploys
 are a human decision, not an automatic consequence of a merge.
+
+---
+
+## The audit suite
+
+Four checks, each answering a question the others cannot.
+
+```bash
+npm run verify            # the merge gate. Runs without a server.
+npm run certify           # verify + the three audits that need one.
+```
+
+| Command | Answers | In `verify`? |
+|---|---|---|
+| `check:tokens` | Is any colour defined outside the token package? | yes |
+| `check:responsive` | Does every grid collapse? Does anything exceed a 380px viewport? | yes |
+| `audit:a11y` | Landmarks, heading order, alt text, accessible names, labels, titles — on rendered output across every public route | needs both apps running |
+| `audit:consistency` | Do both applications resolve the same tokens, type scale and component classes? | needs both apps running |
+| `audit:platform` | Dead code, unused assets, unused exports, dependency direction | report only |
+
+`audit:a11y` and `audit:consistency` read **rendered HTML and emitted CSS**, not
+source. That distinction matters: a landmark that exists in a layout but never
+wraps the page looks correct in the source and is missing in the output, and
+two stylesheets can define the same class name and resolve differently.
+
+`audit:platform` reports and never edits. A tool that deletes what it believes
+is unused will eventually be wrong about something that matters — on its first
+run it flagged 19 API routes that are a working, secured data layer the
+dashboard has simply not been wired to yet.

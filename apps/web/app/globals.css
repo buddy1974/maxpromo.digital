@@ -1221,3 +1221,55 @@ button.os-nav-item {
 
 /* main should not introduce its own box; it is a landmark, not a layer. */
 main { display: block; }
+
+/* ─── Metric grid ─────────────────────────────────────────────────────────────
+   Sourced figures in a hairline grid. The entrance is a CSS animation with a
+   per-cell delay set inline, which replaced the last framer-motion usage in
+   the platform: a 110 KB runtime to fade three numbers in did not earn its
+   place. Reduced-motion users get the final state immediately.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+@media (min-width: 640px) { .metric-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.metric-cell {
+  background: var(--brand-surface);
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  animation: mp-fade-up 0.5s var(--ease) both;
+}
+
+.metric-value {
+  margin: 0 0 var(--space-3);
+  font-family: var(--brand-font-heading);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: var(--weight-subhead);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+  color: var(--brand-text);
+  max-width: none;
+}
+.metric-label {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text);
+  max-width: none;
+}
+.metric-source {
+  margin: 0;
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-cell { animation: none; }
+}

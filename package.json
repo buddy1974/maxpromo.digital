@@ -8,13 +8,18 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:web": "npm run dev --workspace @maxpromo/web",
-    "dev:bureau": "npm run dev --workspace @maxpromo/bureau",
+    "certify": "npm run verify && npm run audit:a11y && npm run audit:consistency && npm run audit:platform",
+    "verify": "npm run check:tokens && npm run check:responsive && npm run typecheck && npm run lint && npm run build",
+    "audit:a11y": "node packages/tooling/audit-a11y.mjs",
+    "audit:consistency": "node packages/tooling/audit-consistency.mjs",
+    "audit:platform": "node packages/tooling/audit-platform.mjs",
     "build": "npm run build --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present",
+    "check:responsive": "node packages/tooling/audit-responsive.mjs",
     "check:tokens": "node packages/tooling/check-design-tokens.mjs",
-    "verify": "npm run check:tokens && npm run typecheck && npm run lint && npm run build"
+    "dev:bureau": "npm run dev --workspace @maxpromo/bureau",
+    "dev:web": "npm run dev --workspace @maxpromo/web",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
   },
   "engines": {
     "node": ">=20"

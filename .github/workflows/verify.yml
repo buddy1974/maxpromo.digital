@@ -33,6 +33,9 @@ jobs:
       - name: Design token audit
         run: npm run check:tokens
 
+      - name: Responsive audit
+        run: npm run check:responsive
+
       - name: TypeScript
         run: npm run typecheck
 
@@ -41,3 +44,9 @@ jobs:
 
       - name: Build all applications
         run: npm run build
+
+      # Reporting only — dead code and unused assets are a review signal, not a
+      # merge blocker. It runs so nobody has to remember to run it.
+      - name: Platform audit (report only)
+        run: npm run audit:platform
+        continue-on-error: true
