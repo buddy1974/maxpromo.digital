@@ -49,8 +49,8 @@ export default function NewsletterSignup() {
           maxWidth: '600px',
           margin: '0 auto',
           background: '#111111',
-          border: '1px solid rgba(249,115,22,0.2)',
-          borderTop: '2px solid #F97316',
+          border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
+          borderTop: '2px solid var(--brand-primary)',
           padding: '48px',
           textAlign: 'center',
         }}
@@ -59,7 +59,7 @@ export default function NewsletterSignup() {
           style={{
             fontFamily: 'var(--font-roboto-mono)',
             fontSize: '11px',
-            color: '#F97316',
+            color: 'var(--brand-primary)',
             letterSpacing: '0.25em',
             textTransform: 'uppercase',
             margin: '0 0 16px',
@@ -120,7 +120,7 @@ export default function NewsletterSignup() {
               type="submit"
               disabled={status === 'loading' || !email.trim()}
               style={{
-                background: '#F97316',
+                background: 'var(--brand-primary)',
                 border: 'none',
                 color: '#000000',
                 fontFamily: 'var(--font-roboto-mono)',

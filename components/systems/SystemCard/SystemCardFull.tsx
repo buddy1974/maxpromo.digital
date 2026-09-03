@@ -154,7 +154,7 @@ export function SystemCardFull({
               alignSelf: 'flex-start',
               fontFamily: 'var(--brand-font-sans)', fontSize: '10px', fontWeight: 700,
               color: 'var(--brand-text-secondary)', letterSpacing: '0.08em', textTransform: 'uppercase',
-              background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)',
+              background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
               borderRadius: '4px', padding: '3px 8px',
             }}
           >

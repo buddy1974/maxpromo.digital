@@ -63,10 +63,10 @@ export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, brid
         <p style={{ ...EYEBROW_STYLE, marginBottom: '1rem' }}>
           {eyebrow}
         </p>
-        <h2 style={{ marginBottom: '1rem', color: 'var(--brand-fg)' }}>
+        <h2 style={{ marginBottom: '1rem', color: 'var(--showcase-fg)' }}>
           {heading}
         </h2>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--brand-muted)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--showcase-muted)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
           {sub}
         </p>
 
@@ -74,7 +74,7 @@ export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, brid
           <a
             href={primaryHref}
             className={INTERACTIVE_PRIMARY_CLASSES}
-            style={{ ...BUTTON_PRIMARY, boxShadow: '0 0 36px rgba(249,115,22,0.3)' }}
+            style={{ ...BUTTON_PRIMARY, boxShadow: '0 0 36px color-mix(in srgb, var(--brand-primary) 30%, transparent)' }}
             {...externalLinkProps(primaryHref)}
           >
             {primaryLabel}

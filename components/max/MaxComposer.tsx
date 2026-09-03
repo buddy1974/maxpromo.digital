@@ -111,7 +111,7 @@ export function MaxComposer() {
           outline:      'none',
           transition:   'border-color 150ms ease',
         }}
-        onFocus={e  => (e.currentTarget.style.borderColor = 'rgba(249,115,22,0.4)')}
+        onFocus={e  => (e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--brand-primary) 40%, transparent)')}
         onBlur={e   => (e.currentTarget.style.borderColor = '#2A2A2A')}
       />
       <button
@@ -122,7 +122,7 @@ export function MaxComposer() {
           width:        '40px',
           height:       '40px',
           borderRadius: '8px',
-          background:   text.trim() && !isLoading ? '#F97316' : 'rgba(249,115,22,0.25)',
+          background:   text.trim() && !isLoading ? 'var(--brand-primary)' : 'color-mix(in srgb, var(--brand-primary) 25%, transparent)',
           border:       'none',
           cursor:       text.trim() && !isLoading ? 'pointer' : 'not-allowed',
           display:      'flex',

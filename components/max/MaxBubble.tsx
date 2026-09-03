@@ -18,23 +18,23 @@ export function MaxBubble({ onClick }: MaxBubbleProps) {
         width:        '56px',
         height:       '56px',
         borderRadius: '50%',
-        background:   '#F97316',
+        background:   'var(--brand-primary)',
         border:       'none',
         cursor:       'pointer',
         display:      'flex',
         alignItems:   'center',
         justifyContent: 'center',
-        boxShadow:    '0 4px 24px rgba(249,115,22,0.45), 0 2px 8px rgba(0,0,0,0.4)',
+        boxShadow:    '0 4px 24px color-mix(in srgb, var(--brand-primary) 45%, transparent), 0 2px 8px rgba(0,0,0,0.4)',
         transition:   'transform 150ms ease, box-shadow 150ms ease',
         flexShrink:   0,
       }}
       onMouseEnter={e => {
         e.currentTarget.style.transform  = 'scale(1.06)'
-        e.currentTarget.style.boxShadow  = '0 6px 32px rgba(249,115,22,0.55), 0 2px 8px rgba(0,0,0,0.4)'
+        e.currentTarget.style.boxShadow  = '0 6px 32px color-mix(in srgb, var(--brand-primary) 55%, transparent), 0 2px 8px rgba(0,0,0,0.4)'
       }}
       onMouseLeave={e => {
         e.currentTarget.style.transform  = 'scale(1)'
-        e.currentTarget.style.boxShadow  = '0 4px 24px rgba(249,115,22,0.45), 0 2px 8px rgba(0,0,0,0.4)'
+        e.currentTarget.style.boxShadow  = '0 4px 24px color-mix(in srgb, var(--brand-primary) 45%, transparent), 0 2px 8px rgba(0,0,0,0.4)'
       }}
     >
       {/* Chat bubble icon */}

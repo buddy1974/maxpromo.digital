@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 /* ─── TOKENS ─── Visual Facelift v2.1 (design/visual-facelift-v2.1.md) */
-const ORANGE  = '#F97316'
+const ORANGE  = 'var(--brand-primary)'
 const BG      = 'var(--color-bg)'
 const SECTION = 'var(--color-bg-section)'
 const BORDER  = 'var(--color-border)'
@@ -169,8 +169,8 @@ export default async function AgentBureauPage({
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {workflow.map((step, i) => (
-                  <div key={step.name} style={{ display: 'flex', alignItems: 'center', gap: '14px', background: step.gate ? 'rgba(249,115,22,0.07)' : SECTION, border: `1px solid ${step.gate ? 'rgba(249,115,22,0.25)' : BORDER}`, borderRadius: '8px', padding: '12px 16px' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: ORANGE, background: 'rgba(249,115,22,0.1)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
+                  <div key={step.name} style={{ display: 'flex', alignItems: 'center', gap: '14px', background: step.gate ? 'color-mix(in srgb, var(--brand-primary) 7%, transparent)' : SECTION, border: `1px solid ${step.gate ? 'color-mix(in srgb, var(--brand-primary) 25%, transparent)' : BORDER}`, borderRadius: '8px', padding: '12px 16px' }}>
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: ORANGE, background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>
@@ -252,9 +252,9 @@ export default async function AgentBureauPage({
             <Reveal>
               <div className="ab-flow" style={{ borderRadius: 'var(--radius-card)', overflow: 'hidden' }}>
                 {workflow.map((step, i) => (
-                  <div key={step.name} style={{ background: step.gate ? 'rgba(249,115,22,0.07)' : BG, padding: '1.5rem 1.25rem', position: 'relative' }}>
+                  <div key={step.name} style={{ background: step.gate ? 'color-mix(in srgb, var(--brand-primary) 7%, transparent)' : BG, padding: '1.5rem 1.25rem', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: ORANGE, background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: '4px', padding: '3px 8px' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: ORANGE, background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: '4px', padding: '3px 8px' }}>
                         {String(i + 1).padStart(2, '0')}
                       </span>
                       {step.gate && (
@@ -283,7 +283,7 @@ export default async function AgentBureauPage({
             </div>
 
             {/* Trust badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'rgba(249,115,22,0.05)', border: '1px solid rgba(249,115,22,0.18)', borderRadius: 'var(--radius-card)', padding: '14px 20px', marginTop: '2.5rem', maxWidth: '100%' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'color-mix(in srgb, var(--brand-primary) 5%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent)', borderRadius: 'var(--radius-card)', padding: '14px 20px', marginTop: '2.5rem', maxWidth: '100%' }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={ORANGE} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 <path d="m9 12 2 2 4-4" />

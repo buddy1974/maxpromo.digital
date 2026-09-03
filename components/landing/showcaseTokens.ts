@@ -13,15 +13,17 @@ import type { CSSProperties } from 'react'
  * reason — this file is what those values now derive from, and where
  * a future rhythm change happens once instead of 14 times.
  *
- * Colors are deliberately NOT here — those stay as CSS custom properties
- * (--brand-accent / --brand-bg / --brand-fg / --brand-muted) set by
- * LandingThemeProvider.tsx per governance rules VG-01/VG-02/VG-03. This
- * file only standardizes spacing, radius, and typography scale, which
- * are shared across every product regardless of brand color or theme.
+ * v4.0 update: VG-01, VG-02 and VG-03 are retired. The CTA colour is no
+ * longer "locked to #F97316 and intentionally NOT a CSS variable" — a locked
+ * hex that must render identically on every product is precisely the mechanism
+ * that would have re-applied the retired orange after the brand migration.
+ * Buttons now take --brand-primary like every other surface.
  *
- * CTA button color is locked to #F97316 (VG-03) and is intentionally
- * NOT a CSS variable — it must render identically on every product
- * regardless of brandColor, dark or light background.
+ * Surface custom properties are --showcase-* (set by LandingThemeProvider);
+ * the --brand-* namespace belongs to the platform token layer.
+ *
+ * The heading scale that used to live here has moved to the platform type
+ * scale in design/tokens/brand.css — showcase headings are the same headings.
  */
 
 // ── Spacing scale ────────────────────────────────────────────────────
@@ -43,10 +45,10 @@ export const SECTION_PADDING = {
 /** Shared max-width for standard content sections. Narrower variants are set per-section where the content is intentionally narrower (hero copy column, FAQ, Conversion). */
 export const CONTENT_MAX_WIDTH = '80rem'
 
-export const SECTION_DIVIDER = '1px solid rgba(128,128,128,0.10)'
+export const SECTION_DIVIDER = '1px solid var(--brand-border)'
 
 /** Standard hairline border for cards (feature/trust/onboarding/use-case grids). */
-export const CARD_BORDER = '1px solid rgba(128,128,128,0.12)'
+export const CARD_BORDER = '1px solid var(--brand-border)'
 
 // ── Radius scale ─────────────────────────────────────────────────────
 export const RADIUS = {
@@ -61,11 +63,13 @@ export const RADIUS = {
 } as const
 
 // ── Typography scale ────────────────────────────────────────────────
+/** Section label. Sans, secondary grey — never mono, never accent-coloured. */
 export const EYEBROW_STYLE: CSSProperties = {
-  fontFamily: 'var(--font-mono)',
-  fontSize: '11px',
-  color: 'var(--brand-accent)',
-  letterSpacing: '0.18em',
+  fontFamily: 'var(--brand-font-sans)',
+  fontSize: 'var(--text-micro)',
+  fontWeight: 500,
+  color: 'var(--showcase-muted)',
+  letterSpacing: 'var(--tracking-label)',
   textTransform: 'uppercase',
 }
 
@@ -84,13 +88,12 @@ export const HEADING_SIZE = {
 
 // ── Buttons ──────────────────────────────────────────────────────────
 export const BUTTON_PRIMARY: CSSProperties = {
-  fontFamily: 'var(--font-mono)',
-  fontWeight: 700,
-  fontSize: '14px',
-  letterSpacing: '0.04em',
-  color: '#080808',
-  background: '#F97316',
-  padding: '16px 32px',
+  fontFamily: 'var(--brand-font-sans)',
+  fontWeight: 600,
+  fontSize: 'var(--text-small)',
+  color: 'var(--brand-on-primary)',
+  background: 'var(--brand-primary)',
+  padding: '13px 24px',
   borderRadius: RADIUS.md,
   textDecoration: 'none',
   display: 'inline-block',
@@ -107,12 +110,13 @@ export const BUTTON_PRIMARY_COMPACT: CSSProperties = {
 }
 
 export const BUTTON_SECONDARY: CSSProperties = {
-  fontFamily: 'var(--font-body)',
-  fontSize: '14px',
-  color: 'var(--brand-fg)',
-  padding: '16px 28px',
+  fontFamily: 'var(--brand-font-sans)',
+  fontSize: 'var(--text-small)',
+  fontWeight: 600,
+  color: 'var(--showcase-fg)',
+  padding: '13px 24px',
   borderRadius: RADIUS.md,
-  border: '1px solid rgba(128,128,128,0.25)',
+  border: '1px solid var(--brand-border-strong)',
   textDecoration: 'none',
   display: 'inline-block',
 }
@@ -127,13 +131,13 @@ export const BUTTON_SECONDARY: CSSProperties = {
 // LandingThemeProvider — a hardcoded white/10 hover would be invisible on
 // the light variant.
 export const INTERACTIVE_PRIMARY_CLASSES =
-  'transition duration-150 ease-out hover:brightness-110 hover:-translate-y-0.5 active:translate-y-0 active:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500'
+  'transition duration-150 ease-out hover:brightness-110 hover:-translate-y-0.5 active:translate-y-0 active:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current'
 
 export const INTERACTIVE_SECONDARY_CLASSES =
-  'transition-opacity duration-150 ease-out hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500'
+  'transition-opacity duration-150 ease-out hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current'
 
 export const INTERACTIVE_LINK_CLASSES =
-  'transition-opacity duration-150 ease-out hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 focus-visible:rounded-sm'
+  'transition-opacity duration-150 ease-out hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current focus-visible:rounded-sm'
 
 // ── External link handling ──────────────────────────────────────────
 // Added 2026-07-25 (RestaurantOS V2 migration) — RestaurantOS's primary

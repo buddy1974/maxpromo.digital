@@ -125,7 +125,7 @@ const mdxComponents = {
         : 'Hi, I would like to contact Maxpromo.'
     )
     return (
-      <div style={{ background: 'var(--color-bg-section)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: 'var(--radius-card)', padding: '2rem', margin: '2.5rem 0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div style={{ background: 'var(--color-bg-section)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: 'var(--radius-card)', padding: '2rem', margin: '2.5rem 0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
           {l === 'de' ? 'Kontakt' : 'Contact'}
         </p>

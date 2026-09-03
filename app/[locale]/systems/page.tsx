@@ -249,7 +249,7 @@ export default async function SystemsPage() {
                   display: 'grid',
                   gap: '20px',
                   alignItems: 'start',
-                  borderLeft: '2px solid rgba(249,115,22,0.3)',
+                  borderLeft: '2px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)',
                 }}
                 className="grid-cols-1 md:grid-cols-[220px_1fr_2fr]"
               >

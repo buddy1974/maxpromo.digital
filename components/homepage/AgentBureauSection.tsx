@@ -122,7 +122,7 @@ const CAPABILITY_GROUPS = {
 // =============================================================================
 
 function OrbitIcon({ name }: { name: string }) {
-  const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: '#F97316', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
+  const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--brand-primary)', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
   switch (name) {
     case 'inquiries': return <svg {...common}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
     case 'documents': return <svg {...common}><path d="M14 3v5h5" /><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /></svg>
@@ -135,7 +135,7 @@ function OrbitIcon({ name }: { name: string }) {
 }
 
 function CapabilityIcon({ name }: { name: string }) {
-  const common = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: '#F97316', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
+  const common = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--brand-primary)', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
   switch (name) {
     case 'audit':    return <svg {...common}><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /><path d="M11 8v6M8 11h6" /></svg>
     case 'waiting':  return <svg {...common}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
@@ -156,7 +156,7 @@ function CapabilityIcon({ name }: { name: string }) {
 const STYLES = `
   .hab-hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; }
   .hab-orbit-wrap { position: relative; aspect-ratio: 1 / 1; max-width: 440px; margin: 0 auto; }
-  .hab-line { stroke: rgba(249,115,22,0.35); stroke-width: 0.6; stroke-dasharray: 3 3; }
+  .hab-line { stroke: color-mix(in srgb, var(--brand-primary) 35%, transparent); stroke-width: 0.6; stroke-dasharray: 3 3; }
   .hab-line-anim { animation: hab-dash 3s linear infinite; }
   @keyframes hab-dash { to { stroke-dashoffset: -12; } }
   .hab-center {
@@ -178,7 +178,7 @@ const STYLES = `
     display: flex; align-items: center; justify-content: center;
     transition: border-color 200ms ease, transform 200ms ease;
   }
-  .hab-node:hover .hab-node-icon { border-color: rgba(249,115,22,0.5); transform: translateY(-2px); }
+  .hab-node:hover .hab-node-icon { border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent); transform: translateY(-2px); }
 
   .hab-workflow { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
   .hab-workflow::-webkit-scrollbar { height: 4px; }
@@ -190,17 +190,17 @@ const STYLES = `
     padding: 10px 16px; white-space: nowrap;
   }
   .hab-step-gate {
-    background: rgba(249,115,22,0.05);
-    border-color: rgba(249,115,22,0.4);
+    background: color-mix(in srgb, var(--brand-primary) 5%, transparent);
+    border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
   }
-  .hab-step-arrow { flex: 0 0 auto; color: rgba(249,115,22,0.45); font-size: 13px; }
+  .hab-step-arrow { flex: 0 0 auto; color: color-mix(in srgb, var(--brand-primary) 45%, transparent); font-size: 13px; }
 
   .hab-tag {
     display: inline-block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
     color: var(--color-text-secondary); background: var(--color-bg-section); border: 1px solid var(--color-border);
     border-radius: 5px; padding: 2px 7px; margin: 8px 6px 0 0;
   }
-  .hab-panel-featured .hab-tag { color: var(--color-primary); background: rgba(249,115,22,0.08); border-color: rgba(249,115,22,0.2); }
+  .hab-panel-featured .hab-tag { color: var(--color-primary); background: color-mix(in srgb, var(--brand-primary) 8%, transparent); border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent); }
 
   .hab-panel { transition: transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out; }
   .hab-panel:hover { transform: translateY(-3px); box-shadow: var(--shadow-elevated); }
@@ -282,7 +282,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
             </div>
 
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', maxWidth: '100%' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 <path d="m9 12 2 2 4-4" />
               </svg>
@@ -364,8 +364,8 @@ export function AgentBureauSection({ locale }: { locale: string }) {
               key={group.key}
               className={`hab-panel${group.featured ? ' hab-panel-featured' : ''}`}
               style={{
-                background: group.featured ? 'rgba(249,115,22,0.03)' : 'var(--color-bg)',
-                border: `1px solid ${group.featured ? 'rgba(249,115,22,0.35)' : 'var(--color-border)'}`,
+                background: group.featured ? 'color-mix(in srgb, var(--brand-primary) 3%, transparent)' : 'var(--color-bg)',
+                border: `1px solid ${group.featured ? 'color-mix(in srgb, var(--brand-primary) 35%, transparent)' : 'var(--color-border)'}`,
                 borderRadius: 'var(--radius-card)',
                 padding: group.featured ? '30px 26px' : '24px',
                 display: 'flex', flexDirection: 'column', gap: '18px',
@@ -378,7 +378,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 <div key={item.key} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <span style={{
                     width: group.featured ? '40px' : '36px', height: group.featured ? '40px' : '36px',
-                    borderRadius: '9px', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)',
+                    borderRadius: '9px', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
                     <CapabilityIcon name={item.icon} />

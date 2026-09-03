@@ -66,10 +66,10 @@ export default function CookieBanner() {
         right: '1.5rem',
         maxWidth: '480px',
         background: '#111111',
-        borderLeft: '3px solid #F97316',
+        borderLeft: '3px solid var(--brand-primary)',
         border: '1px solid rgba(255,255,255,0.08)',
         borderLeftWidth: '3px',
-        borderLeftColor: '#F97316',
+        borderLeftColor: 'var(--brand-primary)',
         padding: '1rem 1.25rem',
         zIndex: 9999,
         display: 'flex',
@@ -90,7 +90,7 @@ export default function CookieBanner() {
           {t('text')}{' '}
           <Link
             href="/privacy"
-            style={{ color: '#F97316', textDecoration: 'none' }}
+            style={{ color: 'var(--brand-primary)', textDecoration: 'none' }}
           >
             {t('privacyLink')}
           </Link>
@@ -101,7 +101,7 @@ export default function CookieBanner() {
         onClick={accept}
         style={{
           flexShrink: 0,
-          background: '#F97316',
+          background: 'var(--brand-primary)',
           color: '#000000',
           border: 'none',
           padding: '0.65rem 1.1rem',

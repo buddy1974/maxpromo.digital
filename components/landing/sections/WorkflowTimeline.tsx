@@ -42,20 +42,20 @@ export function WorkflowTimeline({ workflow, locale }: WorkflowTimelineProps) {
           className="grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
         >
           {workflow.map((step, i) => (
-            <div key={i} style={{ padding: '1.75rem 1.5rem', background: 'var(--brand-bg)', position: 'relative' }}>
-              <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '2rem', lineHeight: 1, color: 'var(--brand-accent)', marginBottom: '0.6rem', opacity: 0.9 }}>
+            <div key={i} style={{ padding: '1.75rem 1.5rem', background: 'var(--showcase-bg)', position: 'relative' }}>
+              <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '2rem', lineHeight: 1, color: 'var(--showcase-muted)', marginBottom: '0.6rem' }}>
                 {STEP_NUMS[i]}
               </p>
-              <h3 className="h-card" style={{ color: 'var(--brand-fg)', marginBottom: '0.5rem' }}>
+              <h3 className="h-card" style={{ color: 'var(--showcase-fg)', marginBottom: '0.5rem' }}>
                 {step.label}
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--brand-muted)', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--showcase-muted)', lineHeight: 1.6, margin: 0 }}>
                 {step.description}
               </p>
               {i < 4 && (
                 <span
                   className="hidden lg:block"
-                  style={{ position: 'absolute', right: '-8px', top: '50%', transform: 'translateY(-50%)', color: 'var(--brand-accent)', fontSize: '14px', opacity: 0.4, zIndex: 1 }}
+                  style={{ position: 'absolute', right: '-8px', top: '50%', transform: 'translateY(-50%)', color: 'var(--showcase-muted)', fontSize: '14px', opacity: 0.5, zIndex: 1 }}
                 >
                   →
                 </span>

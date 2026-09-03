@@ -94,7 +94,7 @@ export function ConnectedSystems({
       <div style={{ maxWidth: '72rem', margin: '0 auto' }}>
 
         {/* Header */}
-        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#F97316', marginBottom: '1rem' }}>
+        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--brand-primary)', marginBottom: '1rem' }}>
           {copy.eyebrow}
         </p>
         <h2 style={{ color: '#F0F0F0', marginBottom: '0.5rem' }}>
@@ -142,7 +142,7 @@ export function ConnectedSystems({
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: '#666666', margin: 0, lineHeight: 1.6, flex: 1 }}>
                     {system.description}
                   </p>
-                  <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '10px', color: '#F97316', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: '6px' }}>
+                  <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: '6px' }}>
                     {copy.cta}
                   </span>
                 </div>

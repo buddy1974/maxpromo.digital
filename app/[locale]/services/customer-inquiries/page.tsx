@@ -128,7 +128,7 @@ export default async function CustomerInquiriesPage() {
           <div
             style={{
               background: 'var(--color-bg-section)',
-              border: '2px solid rgba(249,115,22,0.35)',
+              border: '2px solid color-mix(in srgb, var(--brand-primary) 35%, transparent)',
               borderRadius: 'var(--radius-card)',
               padding: '1.5rem 2rem',
               textAlign: 'center',
@@ -158,8 +158,8 @@ export default async function CustomerInquiriesPage() {
                 <div
                   key={k}
                   style={{
-                    background: 'rgba(249,115,22,0.06)',
-                    border: '1px solid rgba(249,115,22,0.2)',
+                    background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)',
+                    border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
                     borderRadius: '6px',
                     padding: '10px 16px',
                     fontFamily: 'var(--font-mono)',

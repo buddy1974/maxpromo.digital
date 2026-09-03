@@ -45,8 +45,8 @@ export default async function BlogIndexPage() {
                 fontFamily: 'var(--font-mono)',
                 fontSize: '12px',
                 color: 'var(--brand-text-secondary)',
-                background: 'rgba(249,115,22,0.08)',
-                border: '1px solid rgba(249,115,22,0.25)',
+                background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)',
+                border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)',
                 padding: '6px 14px',
                 borderRadius: '6px',
                 letterSpacing: '0.04em',
@@ -88,7 +88,7 @@ export default async function BlogIndexPage() {
               {placeholders.map((card, i) => (
                 <article key={i} className="card" style={{ display: 'flex', flexDirection: 'column', opacity: 0.7, padding: 0 }}>
                   <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-                    <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
+                    <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
                       {card.tag}
                     </span>
                     <h2 className="h-card" style={{ margin: 0 }}>
@@ -151,8 +151,8 @@ export default async function BlogIndexPage() {
                               fontFamily: 'var(--brand-font-sans)',
                               fontSize: '11px',
                               color: 'var(--brand-text-secondary)',
-                              background: 'rgba(249,115,22,0.08)',
-                              border: '1px solid rgba(249,115,22,0.15)',
+                              background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)',
+                              border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)',
                               padding: '2px 8px',
                               letterSpacing: '0.05em',
                               textTransform: 'uppercase',

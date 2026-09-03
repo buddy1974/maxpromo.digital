@@ -14,7 +14,7 @@ const VARIANT_COLORS = {
     text: 'var(--color-text-secondary)',
     border: 'var(--color-border)',
     hoverText: 'var(--color-primary)',
-    hoverBorder: 'rgba(249,115,22,0.4)',
+    hoverBorder: 'color-mix(in srgb, var(--brand-primary) 40%, transparent)',
   },
   dark: {
     text: 'var(--color-footer-text)',

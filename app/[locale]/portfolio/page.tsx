@@ -151,7 +151,7 @@ export default function PortfolioPage() {
                 <p style={{ ...sans, fontSize: '16px', color: 'var(--color-text-secondary)', margin: '0 0 16px', lineHeight: 1.65 }}>{item.summary}</p>
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {item.metrics.map(m => (
-                    <span key={m} style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '4px 10px', borderRadius: '6px', letterSpacing: '0.03em' }}>
+                    <span key={m} style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', padding: '4px 10px', borderRadius: '6px', letterSpacing: '0.03em' }}>
                       {m}
                     </span>
                   ))}

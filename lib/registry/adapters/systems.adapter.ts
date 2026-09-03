@@ -75,7 +75,6 @@ export interface SystemsCardData {
   // ── Visual
   readonly brandColor: string
   readonly layoutVariant: ProductLayout
-  readonly backgroundDark: boolean
   readonly media: {
     readonly card: string
     readonly thumb: string | null
@@ -139,7 +138,6 @@ export function toSystemsCard(
     // ── Visual
     brandColor:     product.brandColor,
     layoutVariant:  product.layoutVariant,
-    backgroundDark: product.backgroundDark,
     media: {
       card:  resolveCardImage(product, locale),
       thumb: resolveThumbImage(product, locale),

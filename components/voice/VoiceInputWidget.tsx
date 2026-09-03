@@ -129,12 +129,12 @@ function MicButton({
         height: '48px',
         borderRadius: '50%',
         background: listening
-          ? 'rgba(249,115,22,0.2)'
+          ? 'color-mix(in srgb, var(--brand-primary) 20%, transparent)'
           : 'rgba(255,255,255,0.06)',
         border: listening
-          ? '1.5px solid rgba(249,115,22,0.7)'
+          ? '1.5px solid color-mix(in srgb, var(--brand-primary) 70%, transparent)'
           : '1px solid rgba(255,255,255,0.15)',
-        color: listening ? '#F97316' : '#888888',
+        color: listening ? 'var(--brand-primary)' : '#888888',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -161,7 +161,7 @@ function MicIcon({ active = false, muted = false }: { active?: boolean; muted?: 
       height="18"
       viewBox="0 0 24 24"
       fill="none"
-      stroke={muted ? '#333333' : active ? '#F97316' : 'currentColor'}
+      stroke={muted ? '#333333' : active ? 'var(--brand-primary)' : 'currentColor'}
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -229,8 +229,8 @@ export default function VoiceInputWidget({
       {/* Pulse animation keyframes injected once */}
       <style>{`
         @keyframes voicePulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.4); }
-          50%       { box-shadow: 0 0 0 8px rgba(249,115,22,0); }
+          0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand-primary) 40%, transparent); }
+          50%       { box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand-primary) 1%, transparent); }
         }
       `}</style>
 
@@ -264,8 +264,8 @@ export default function VoiceInputWidget({
           style={{
             marginTop: '8px',
             padding: '10px 14px',
-            background: 'rgba(249,115,22,0.06)',
-            border: '1px solid rgba(249,115,22,0.2)',
+            background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)',
+            border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
             borderRadius: '2px',
             display: 'flex',
             alignItems: 'center',
@@ -277,7 +277,7 @@ export default function VoiceInputWidget({
               width: '7px',
               height: '7px',
               borderRadius: '50%',
-              background: '#F97316',
+              background: 'var(--brand-primary)',
               flexShrink: 0,
               animation: 'voicePulse 1s ease-in-out infinite',
             }}
@@ -317,7 +317,7 @@ export default function VoiceInputWidget({
               alignItems: 'center',
             }}
           >
-            <span style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
               Voice Transcript
             </span>
             <button
@@ -358,13 +358,13 @@ export default function VoiceInputWidget({
                 borderTop: '1px solid rgba(255,255,255,0.05)',
               }}
             >
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '14px 0 8px' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '14px 0 8px' }}>
                 AI-enhanced version
               </p>
               <div
                 style={{
-                  background: 'rgba(249,115,22,0.05)',
-                  border: '1px solid rgba(249,115,22,0.15)',
+                  background: 'color-mix(in srgb, var(--brand-primary) 5%, transparent)',
+                  border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)',
                   borderRadius: '2px',
                   padding: '12px 14px',
                   fontFamily: sans,
@@ -407,9 +407,9 @@ export default function VoiceInputWidget({
                 disabled={!voice.editedRaw.trim()}
                 style={{
                   ...btnBase,
-                  background: 'rgba(249,115,22,0.1)',
-                  color: '#F97316',
-                  border: '1px solid rgba(249,115,22,0.3)',
+                  background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)',
+                  color: 'var(--brand-primary)',
+                  border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)',
                   opacity: !voice.editedRaw.trim() ? 0.5 : 1,
                   cursor: !voice.editedRaw.trim() ? 'not-allowed' : 'pointer',
                 }}
@@ -420,7 +420,7 @@ export default function VoiceInputWidget({
 
             {/* Enhancing spinner */}
             {voice.phase === 'enhancing' && (
-              <span style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.08em' }}>
+              <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.08em' }}>
                 ⟳ Enhancing…
               </span>
             )}
@@ -430,7 +430,7 @@ export default function VoiceInputWidget({
               <button
                 type="button"
                 onClick={() => voice.approveEnhanced(onChange)}
-                style={{ ...btnBase, background: '#F97316', color: '#0A0A0A' }}
+                style={{ ...btnBase, background: 'var(--brand-primary)', color: '#0A0A0A' }}
               >
                 ✓ Use enhanced
               </button>

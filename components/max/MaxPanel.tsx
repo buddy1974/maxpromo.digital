@@ -64,14 +64,14 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #1A1A1A', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#F97316', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '11px', color: '#080808', flexShrink: 0 }}>
+            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '11px', color: '#080808', flexShrink: 0 }}>
               M
             </div>
             <div>
               <p style={{ fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '13px', color: '#E0DDD8', margin: 0, letterSpacing: '0.05em' }}>
                 Max
               </p>
-              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '10px', color: '#F97316', margin: 0, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '10px', color: 'var(--brand-primary)', margin: 0, letterSpacing: '0.1em' }}>
                 {'Business Advisor'}
               </p>
             </div>

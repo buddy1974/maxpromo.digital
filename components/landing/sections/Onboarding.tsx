@@ -55,13 +55,13 @@ export function Onboarding({ locale, contactHref }: OnboardingProps) {
         <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 md:grid-cols-3">
           {steps.map((s) => (
             <div key={s.n} style={{ padding: '1.5rem', border: CARD_BORDER, borderRadius: RADIUS.md }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-accent)', background: 'color-mix(in srgb, var(--brand-accent) 12%, transparent)', borderRadius: '4px', padding: '3px 8px' }}>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--showcase-accent)', background: 'color-mix(in srgb, var(--showcase-accent) 12%, transparent)', borderRadius: '4px', padding: '3px 8px' }}>
                 {s.n}
               </span>
-              <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '15px', color: 'var(--brand-fg)', margin: '12px 0 6px' }}>
+              <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '15px', color: 'var(--showcase-fg)', margin: '12px 0 6px' }}>
                 {s.label}
               </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--brand-muted)', lineHeight: 1.65, margin: 0 }}>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--showcase-muted)', lineHeight: 1.65, margin: 0 }}>
                 {s.desc}
               </p>
             </div>
@@ -71,7 +71,7 @@ export function Onboarding({ locale, contactHref }: OnboardingProps) {
         <a
           href={contactHref}
           className={INTERACTIVE_LINK_CLASSES}
-          style={{ display: 'inline-block', marginTop: '1.75rem', fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-accent)', textDecoration: 'none', letterSpacing: '0.02em' }}
+          style={{ display: 'inline-block', marginTop: '1.75rem', fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--showcase-fg)', textDecoration: 'none', letterSpacing: '0.02em' }}
         >
           {isDE ? 'Jetzt Demo anfragen →' : 'Request a demo now →'}
         </a>

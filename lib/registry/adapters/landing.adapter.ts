@@ -93,7 +93,6 @@ export interface LandingData {
   // Visual
   readonly brandColor:    string
   readonly layoutVariant: ProductLayout
-  readonly backgroundDark: boolean
   readonly cardImageSrc:  string   // /public-relative path with leading slash
   /** Pain section images — leading-slash paths, maps 1:1 with bullets[]. Absent when not yet provided. */
   readonly painImages?:   readonly [string, string, string]
@@ -149,7 +148,6 @@ function toLandingData(product: ProductEntry, locale: string): LandingData {
     demoAccess:    product.demoAccess ?? null,
     brandColor:    product.brandColor,
     layoutVariant: product.layoutVariant,
-    backgroundDark: product.backgroundDark,
     cardImageSrc:  `/${resolveCardImage(product, locale)}`,
     painImages:    product.media.pain
       ? [`/${product.media.pain[0]}`, `/${product.media.pain[1]}`, `/${product.media.pain[2]}`] as const

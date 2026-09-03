@@ -65,7 +65,7 @@ export function ServiceImage({
             style={{
               fontFamily: 'var(--font-mono)',
               fontSize: '28px',
-              color: 'rgba(249,115,22,0.3)',
+              color: 'color-mix(in srgb, var(--brand-primary) 30%, transparent)',
             }}
           >
             ◰

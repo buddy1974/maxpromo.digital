@@ -44,9 +44,9 @@ export function ProductFooter({ domainBrand, locale, contactHref }: ProductFoote
           gap: '1.25rem',
         }}
       >
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-muted)', margin: 0 }}>
+        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--showcase-muted)', margin: 0 }}>
           © {year} {domainBrand} · {isDE ? 'ein Produkt von' : 'a product by'}{' '}
-          <a href="https://www.maxpromo.digital" className={INTERACTIVE_LINK_CLASSES} style={{ color: 'var(--brand-muted)' }}>
+          <a href="https://www.maxpromo.digital" className={INTERACTIVE_LINK_CLASSES} style={{ color: 'var(--showcase-muted)' }}>
             Maxpromo Digital
           </a>
         </p>
@@ -55,21 +55,21 @@ export function ProductFooter({ domainBrand, locale, contactHref }: ProductFoote
           <a
             href={contactHref}
             className={INTERACTIVE_LINK_CLASSES}
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-muted)', textDecoration: 'none' }}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--showcase-muted)', textDecoration: 'none' }}
           >
             {isDE ? 'Kontakt' : 'Contact'}
           </a>
           <a
             href={`https://www.maxpromo.digital/${locale}/impressum`}
             className={INTERACTIVE_LINK_CLASSES}
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-muted)', textDecoration: 'none' }}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--showcase-muted)', textDecoration: 'none' }}
           >
             {isDE ? 'Impressum' : 'Legal notice'}
           </a>
           <a
             href={`https://www.maxpromo.digital/${locale}/privacy`}
             className={INTERACTIVE_LINK_CLASSES}
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-muted)', textDecoration: 'none' }}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--showcase-muted)', textDecoration: 'none' }}
           >
             {isDE ? 'Datenschutz' : 'Privacy'}
           </a>

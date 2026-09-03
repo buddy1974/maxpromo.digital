@@ -103,7 +103,7 @@ export function LandingEngine({ data, bridge = false }: LandingEngineProps) {
   const ctaSecondaryHref  = hasDistinctSecondary ? data.finalCta!.secondaryUrl!   : null
 
   return (
-    <LandingThemeProvider brandColor={data.brandColor} backgroundDark={data.backgroundDark}>
+    <LandingThemeProvider brandColor={data.brandColor}>
 
       {!bridge && (
         <ProductNav

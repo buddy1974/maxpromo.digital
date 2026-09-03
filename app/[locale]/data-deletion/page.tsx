@@ -175,8 +175,8 @@ export default async function DataDeletionPage({
         <Card title={t(locale, 'Antrag stellen', 'Submit a Request')}>
           <div
             style={{
-              background: 'rgba(249,115,22,0.06)',
-              border: '1px solid rgba(249,115,22,0.18)',
+              background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)',
+              border: '1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent)',
               borderRadius: 'var(--radius-card)',
               padding: '18px 20px',
               marginBottom: '16px',

@@ -33,8 +33,8 @@ export function OutcomeStrip({ outcomeStats }: OutcomeStripProps) {
         className="grid-cols-1 md:grid-cols-3"
       >
         {outcomeStats.map((stat, i) => (
-          <div key={i} style={{ background: 'var(--brand-bg)', padding: '1.25rem 1.5rem', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', fontWeight: 700, color: 'var(--brand-accent)', letterSpacing: '-0.01em', margin: 0 }}>
+          <div key={i} style={{ background: 'var(--showcase-bg)', padding: '1.25rem 1.5rem', textAlign: 'center' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', fontWeight: 700, color: 'var(--showcase-fg)', letterSpacing: '-0.01em', margin: 0 }}>
               {stat}
             </p>
           </div>

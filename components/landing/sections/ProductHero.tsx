@@ -97,18 +97,18 @@ export function ProductHero({
             {line2 && <span style={{ display: 'block' }}>{line2}</span>}
           </h1>
 
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--brand-muted)', lineHeight: 1.7, maxWidth: '34rem', margin: 0 }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--showcase-muted)', lineHeight: 1.7, maxWidth: '34rem', margin: 0 }}>
             {subline}
           </p>
 
           {targetAudience && (
             <p
               style={{
-                fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-fg)',
+                fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--showcase-fg)',
                 lineHeight: 1.6, maxWidth: '34rem', margin: 0,
                 padding: '10px 14px', borderRadius: RADIUS.sm,
-                background: 'color-mix(in srgb, var(--brand-accent) 10%, transparent)',
-                border: '1px solid color-mix(in srgb, var(--brand-accent) 25%, transparent)',
+                background: 'color-mix(in srgb, var(--showcase-accent) 10%, transparent)',
+                border: '1px solid color-mix(in srgb, var(--showcase-accent) 25%, transparent)',
                 display: 'inline-block', width: 'fit-content',
               }}
             >
@@ -118,8 +118,8 @@ export function ProductHero({
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '0.15rem' }}>
             {bullets.map((b, i) => (
-              <span key={i} style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--brand-fg)' }}>
-                <span style={{ color: 'var(--brand-accent)', flexShrink: 0 }}>→</span>
+              <span key={i} style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--showcase-fg)' }}>
+                <span style={{ color: 'var(--showcase-muted)', flexShrink: 0 }}>→</span>
                 {b}
               </span>
             ))}
@@ -147,7 +147,7 @@ export function ProductHero({
           </div>
 
           {trustCue && (
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-muted)', margin: 0, marginTop: '0.2rem' }}>
+            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--showcase-muted)', margin: 0, marginTop: '0.2rem' }}>
               ✓ {trustCue}
             </p>
           )}

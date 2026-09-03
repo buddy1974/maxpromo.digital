@@ -38,7 +38,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
         position: 'sticky',
         top: 0,
         zIndex: 40,
-        background: 'color-mix(in srgb, var(--brand-bg) 88%, transparent)',
+        background: 'color-mix(in srgb, var(--showcase-bg) 88%, transparent)',
         backdropFilter: 'blur(14px) saturate(140%)',
         WebkitBackdropFilter: 'blur(14px) saturate(140%)',
         borderBottom: '1px solid rgba(128,128,128,0.12)',
@@ -64,7 +64,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
             fontSize: '13px',
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
-            color: 'var(--brand-fg)',
+            color: 'var(--showcase-fg)',
             textDecoration: 'none',
           }}
         >
@@ -74,7 +74,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <span
             className="hidden sm:inline"
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-muted)' }}
+            style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--showcase-muted)' }}
           >
             {domain}
           </span>

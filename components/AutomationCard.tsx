@@ -24,7 +24,7 @@ export default function AutomationCard({ title, description, tools, locale }: Au
       onMouseLeave={() => setHovered(false)}
       style={{
         background: hovered ? 'var(--color-bg-section)' : 'var(--color-bg)',
-        border: `1px solid ${hovered ? 'rgba(249,115,22,0.3)' : 'var(--color-border)'}`,
+        border: `1px solid ${hovered ? 'color-mix(in srgb, var(--brand-primary) 30%, transparent)' : 'var(--color-border)'}`,
         borderRadius: 'var(--radius-card)',
         padding: '32px',
         display: 'flex',
@@ -57,9 +57,9 @@ export default function AutomationCard({ title, description, tools, locale }: Au
           <span
             key={tool}
             style={{
-              background: 'rgba(249,115,22,0.08)',
+              background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)',
               color: 'var(--brand-text-secondary)',
-              border: '1px solid rgba(249,115,22,0.2)',
+              border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
               fontFamily: 'var(--font-mono)',
               fontSize: '11px',
               padding: '3px 10px',

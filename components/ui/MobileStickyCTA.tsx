@@ -118,14 +118,14 @@ export function MobileStickyCTA() {
               whileTap={{ scale: 0.97 }}
               animate={{
                 boxShadow: pulsing
-                  ? '0 0 0 8px rgba(249,115,22,0.18), 0 0 32px rgba(249,115,22,0.40)'
-                  : '0 0 28px rgba(249,115,22,0.28)',
+                  ? '0 0 0 8px color-mix(in srgb, var(--brand-primary) 18%, transparent), 0 0 32px color-mix(in srgb, var(--brand-primary) 40%, transparent)'
+                  : '0 0 28px color-mix(in srgb, var(--brand-primary) 28%, transparent)',
               }}
               transition={{ duration: 0.35 }}
               style={{
                 width: '100%',
                 minHeight: '52px',
-                background: '#F97316',
+                background: 'var(--brand-primary)',
                 border: 'none',
                 borderRadius: '16px',
                 fontFamily: 'var(--font-mono)',

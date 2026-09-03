@@ -71,9 +71,9 @@ export default async function PricingPage() {
               <div
                 key={tier.id}
                 style={{
-                  background: tier.featured ? 'rgba(249,115,22,0.03)' : 'var(--color-bg)',
+                  background: tier.featured ? 'color-mix(in srgb, var(--brand-primary) 3%, transparent)' : 'var(--color-bg)',
                   border: tier.featured
-                    ? '2px solid rgba(249,115,22,0.35)'
+                    ? '2px solid color-mix(in srgb, var(--brand-primary) 35%, transparent)'
                     : '1px solid var(--color-border)',
                   boxShadow: 'var(--shadow-card)',
                   borderRadius: 'var(--radius-card)',

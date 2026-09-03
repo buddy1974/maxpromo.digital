@@ -76,7 +76,7 @@ export default async function CaseStudiesPage() {
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '2rem' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <span style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.25)', padding: '4px 12px', letterSpacing: '0.05em', borderRadius: '4px' }}>
+                    <span style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', padding: '4px 12px', letterSpacing: '0.05em', borderRadius: '4px' }}>
                       {t(`${cs.id}Tag`)}
                     </span>
                   </div>
@@ -128,7 +128,7 @@ export default async function CaseStudiesPage() {
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {cs.tools.map((tool) => (
-                  <span key={tool} style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', padding: '3px 10px', letterSpacing: '0.05em', borderRadius: '4px' }}>
+                  <span key={tool} style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', padding: '3px 10px', letterSpacing: '0.05em', borderRadius: '4px' }}>
                     {tool}
                   </span>
                 ))}

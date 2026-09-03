@@ -270,7 +270,7 @@ export default async function HomePage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
             {(['step1', 'step2', 'step3', 'step4', 'step5'] as const).map((s, i) => (
               <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', padding: '18px 24px' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.2)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em' }}>
@@ -347,7 +347,7 @@ export default async function HomePage() {
                       {post.tags.length > 0 && (
                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                           {post.tags.map((tag) => (
-                            <span key={tag} style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.15)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                            <span key={tag} style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                               {tag}
                             </span>
                           ))}

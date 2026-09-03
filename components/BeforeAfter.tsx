@@ -105,7 +105,7 @@ export default function BeforeAfter() {
             style={{
               fontFamily: mono,
               fontSize: '11px',
-              color: '#F97316',
+              color: 'var(--brand-primary)',
               letterSpacing: '0.2em',
               textTransform: 'uppercase',
               marginBottom: '16px',
@@ -153,7 +153,7 @@ export default function BeforeAfter() {
                 letterSpacing: '0.08em',
                 fontWeight: active === i ? 600 : 400,
                 color: active === i ? '#000000' : '#555555',
-                background: active === i ? '#F97316' : 'transparent',
+                background: active === i ? 'var(--brand-primary)' : 'transparent',
                 border: 'none',
                 borderRight: i < SCENARIOS.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
                 cursor: 'pointer',
@@ -259,7 +259,7 @@ export default function BeforeAfter() {
               style={{
                 flex: 1,
                 width: '1px',
-                background: 'linear-gradient(180deg, transparent 0%, rgba(249,115,22,0.3) 100%)',
+                background: 'linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--brand-primary) 30%, transparent) 100%)',
                 minHeight: '40px',
               }}
             />
@@ -267,7 +267,7 @@ export default function BeforeAfter() {
               style={{
                 width: '48px',
                 height: '48px',
-                background: '#F97316',
+                background: 'var(--brand-primary)',
                 color: '#000000',
                 display: 'flex',
                 alignItems: 'center',
@@ -284,7 +284,7 @@ export default function BeforeAfter() {
               style={{
                 flex: 1,
                 width: '1px',
-                background: 'linear-gradient(180deg, rgba(249,115,22,0.3) 0%, transparent 100%)',
+                background: 'linear-gradient(180deg, color-mix(in srgb, var(--brand-primary) 30%, transparent) 0%, transparent 100%)',
                 minHeight: '40px',
               }}
             />
@@ -357,8 +357,8 @@ export default function BeforeAfter() {
             {/* Result box */}
             <div
               style={{
-                background: 'rgba(249,115,22,0.08)',
-                border: '1px solid rgba(249,115,22,0.2)',
+                background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)',
+                border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
                 padding: '20px',
                 marginTop: '20px',
                 display: 'flex',
@@ -371,7 +371,7 @@ export default function BeforeAfter() {
                   fontFamily: grotesk,
                   fontWeight: 700,
                   fontSize: '36px',
-                  color: '#F97316',
+                  color: 'var(--brand-primary)',
                   letterSpacing: '-0.04em',
                   lineHeight: 1,
                   flexShrink: 0,

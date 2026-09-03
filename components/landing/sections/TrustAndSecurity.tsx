@@ -62,14 +62,14 @@ export function TrustAndSecurity({ complianceNote, locale }: TrustAndSecurityPro
         <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 md:grid-cols-3">
           {points.map((p, i) => (
             <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '1.25rem', border: CARD_BORDER, borderRadius: RADIUS.md }}>
-              <span style={{ color: 'var(--brand-accent)', flexShrink: 0, fontSize: '14px', marginTop: '2px' }}>✓</span>
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--brand-fg)', lineHeight: 1.5 }}>{p}</span>
+              <span style={{ color: 'var(--showcase-muted)', flexShrink: 0, fontSize: '14px', marginTop: '2px' }}>✓</span>
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--showcase-fg)', lineHeight: 1.5 }}>{p}</span>
             </div>
           ))}
         </div>
 
         {complianceNote && (
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-muted)', marginTop: '1.5rem', lineHeight: 1.7 }}>
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--showcase-muted)', marginTop: '1.5rem', lineHeight: 1.7 }}>
             → {complianceNote}
           </p>
         )}

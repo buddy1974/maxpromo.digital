@@ -124,7 +124,6 @@ const AGENT_BUREAU = {
   },
   brandColor:     '#F97316',
   layoutVariant:  'B',
-  backgroundDark: true,
 
   // ── Links
   demoUrl:     'https://agents.maxpromo.digital',
@@ -379,7 +378,6 @@ const RESTAURANT_OS = {
   },
   brandColor:     '#F97316',
   layoutVariant:  'A',
-  backgroundDark: true,
 
   // ── Links
   demoUrl:    'https://demo.restaurant-os.de',
@@ -590,7 +588,6 @@ const HANDWERK_OS = {
   },
   brandColor:     '#22C55E',
   layoutVariant:  'B',
-  backgroundDark: true,
 
   // ── Links
   demoUrl:     'https://handwerkos.vercel.app',
@@ -859,7 +856,6 @@ const PRAXIS_OS = {
   },
   brandColor:     '#3B82F6',
   layoutVariant:  'A',
-  backgroundDark: false, // Clinical aesthetic — light background (VG-01 exception)
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL
@@ -1110,7 +1106,6 @@ const PRINTSHOP_OS = {
   },
   brandColor:     '#EC008C',
   layoutVariant:  'B',
-  backgroundDark: true,
 
   // ── Links
   demoUrl:     'https://printshop.maxpromo.digital',
@@ -1346,7 +1341,6 @@ const CARE_OS = {
   },
   brandColor:     '#14B8A6',
   layoutVariant:  'A',
-  backgroundDark: true,
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL
@@ -1576,7 +1570,6 @@ const REAL_ESTATE_OS = {
   },
   brandColor:     '#7C3AED',
   layoutVariant:  'A',
-  backgroundDark: true,
 
   // ── Links
   // RESOLVED 2026-07-26 (LANDINGENGINE CONSOLIDATION): contactSlug was
@@ -1797,7 +1790,6 @@ const PUBLISHING_OS = {
   // TODO: confirm exact brand hex — design card uses brown/maroon/beige palette
   brandColor:     '#8B5E3C',
   layoutVariant:  'B', // Books LEFT, dashboard RIGHT per spec
-  backgroundDark: true,
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL
@@ -2038,7 +2030,6 @@ const TAXKONTROL = {
   // Dashboard navy — matches the TaxKontrol UI color scheme
   brandColor:     '#1E3A5F',
   layoutVariant:  'B', // Salon owner LEFT, dashboard RIGHT
-  backgroundDark: true,
 
   // ── Links
   demoUrl:     null, // TODO: confirm demo URL — app not yet in public app stores
@@ -2127,7 +2118,6 @@ const DRIVE24 = {
   },
   brandColor:     '#009A44', // Cameroon flag green
   layoutVariant:  'C',       // Full-scene centered — consumer platform
-  backgroundDark: true,
 
   // ── Links
   demoUrl:     null, // TODO: confirm public demo or platform link
@@ -2202,7 +2192,6 @@ const MAXPROMO_OS = {
   },
   brandColor:     '#F97316',
   layoutVariant:  'B',
-  backgroundDark: true,
 
   // ── Links
   demoUrl:     null,

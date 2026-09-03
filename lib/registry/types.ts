@@ -595,12 +595,7 @@ export interface ProductEntry {
    */
   readonly media: MediaAssets
 
-  /**
-   * Brand accent hex color. Governance rule VG-02.
-   * Applied to: logo mark, one headline accent word, bullet icons,
-   * section dividers. NEVER used for the CTA button.
-   * CTA button is always #F97316 per governance rule VG-03.
-   */
+
   readonly brandColor: string
 
   /**
@@ -614,7 +609,6 @@ export interface ProductEntry {
    * False only for clinical/wellness products (PraxisOS, VeterinarOS).
    * Governance rule VG-01.
    */
-  readonly backgroundDark: boolean
 
   // ── LINKS ─────────────────────────────────────────────────────────────────
 

@@ -163,7 +163,7 @@ export default async function AboutPage() {
           <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {HOW_STEPS.map((step, idx) => (
               <div key={step} style={{ background: 'var(--color-bg)', padding: '36px 32px', position: 'relative', overflow: 'hidden' }}>
-                <span style={{ ...mono, fontSize: '48px', fontWeight: 700, color: 'rgba(249,115,22,0.10)', position: 'absolute', top: '16px', right: '24px', lineHeight: 1 }}>
+                <span style={{ ...mono, fontSize: '48px', fontWeight: 700, color: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', position: 'absolute', top: '16px', right: '24px', lineHeight: 1 }}>
                   {String(idx + 1).padStart(2, '0')}
                 </span>
                 <h3 className="h-card" style={{ marginBottom: '10px', position: 'relative' }}>
