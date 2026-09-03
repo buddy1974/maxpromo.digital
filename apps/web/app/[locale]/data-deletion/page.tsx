@@ -24,7 +24,6 @@ function t(locale: string, de: string, en: string): string {
 }
 
 const mono = 'var(--font-mono)'
-const grotesk = 'var(--font-body)'
 const sans = 'var(--font-body)'
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {

@@ -193,7 +193,10 @@ export default function EditAngebotPage() {
         setLoading(false)
       })
       .catch(() => { setLoadError(t.forms.loadAngebotFailed); setLoading(false) })
-  }, [id])
+    // The error message is localised, so a language change legitimately
+    // re-runs this. Refetching one angebot on a language switch is cheap and
+    // correct; suppressing the dependency to avoid it was not.
+  }, [id, t.forms.loadAngebotFailed])
 
   /**
    * Keep unit_price and total in agreement so the document never displays

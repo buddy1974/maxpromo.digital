@@ -50,7 +50,6 @@ const initialForm: FormData = {
 }
 
 const SECTION_PADDING = 'clamp(4.5rem, 8vw, 8.75rem) 2rem'
-const heroTitleStyle = { fontSize: 'clamp(2.5rem, 5vw, 3.75rem)', letterSpacing: '-0.02em' } as const
 
 export default function ContactPage() {
   const t = useTranslations('contact')

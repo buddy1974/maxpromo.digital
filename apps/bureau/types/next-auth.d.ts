@@ -8,7 +8,6 @@
  * WHY here: NextAuth ships narrow base types; augmenting them at the project
  * level avoids casting `session.user as any` throughout the codebase.
  */
-import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 import { JWT as DefaultJWT } from "next-auth/jwt";
 
 declare module "next-auth" {
