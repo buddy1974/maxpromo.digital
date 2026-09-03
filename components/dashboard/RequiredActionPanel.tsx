@@ -8,16 +8,16 @@ export function RequiredActionPanel({
 }) {
   if (!actions.length) {
     return (
-      <p className="text-xs text-zinc-500">Keine offene Aktion erforderlich.</p>
+      <p className="text-xs text-ink-muted">Keine offene Aktion erforderlich.</p>
     );
   }
   return (
     <ul className="space-y-1.5">
       {actions.map((a) => (
         <li key={a.id} className="flex items-center justify-between text-sm">
-          <span className="text-zinc-700">{a.label}</span>
+          <span className="text-ink-secondary">{a.label}</span>
           {a.deadline && (
-            <span className="font-mono text-[11px] text-orange-600">
+            <span className="font-mono text-[11px] text-danger">
               bis {a.deadline}
             </span>
           )}

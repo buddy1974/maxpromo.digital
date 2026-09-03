@@ -15,18 +15,18 @@ const EVENTS = [
 export function StatusTicker() {
   const loop = [...EVENTS, ...EVENTS];
   return (
-    <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-2">
-        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+    <div className="overflow-hidden rounded-lg border border-hairline bg-surface shadow-sm">
+      <div className="flex items-center justify-between border-b border-hairline px-4 py-2">
+        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-ink-muted">
           System-Status
         </span>
-        <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-accent">
+        <span className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-ink-secondary">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" />
           Produktvorschau
         </span>
       </div>
       <div className="relative whitespace-nowrap py-2.5">
-        <div className="animate-ticker inline-flex gap-8 px-4 font-mono text-xs text-zinc-600">
+        <div className="animate-ticker inline-flex gap-8 px-4 font-mono text-xs text-ink-secondary">
           {loop.map((e, i) => (
             <span key={i} className="shrink-0">
               {e}

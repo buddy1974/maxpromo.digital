@@ -8,9 +8,9 @@ const HANDOVER_LABEL = {
 } as const;
 
 const PRIORITY_STYLE = {
-  low: "text-zinc-500",
-  medium: "text-amber-600",
-  high: "text-red-600",
+  low: "text-ink-muted",
+  medium: "text-warning",
+  high: "text-danger",
 } as const;
 
 // Supports manual/concierge delivery — value delivered by hand before full
@@ -19,11 +19,11 @@ export default function ClientImplementationPage() {
   return (
     <DashboardShell title="Client Implementation">
       <div className="space-y-6">
-        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+        <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
             Concierge / Manuelle Lieferung
           </p>
-          <p className="mt-2 text-sm text-zinc-700">
+          <p className="mt-2 text-sm text-ink-secondary">
             Maxpromo liefert Wert zunächst manuell, während die Plattform wächst.
             Diese Seite hält Beobachtungen, vorgeschlagene Workflows und den
             Installations-Fortschritt pro Kunde fest.
@@ -31,17 +31,17 @@ export default function ClientImplementationPage() {
         </div>
 
         {MOCK_CLIENT_IMPLEMENTATIONS.map((c) => (
-          <div key={c.id} className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+          <div key={c.id} className="rounded-lg border border-hairline bg-surface p-6 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="text-lg font-semibold text-zinc-900">{c.clientName}</h3>
-                <p className="text-xs text-zinc-500">{c.industry}</p>
+                <h3 className="text-lg font-semibold text-ink">{c.clientName}</h3>
+                <p className="text-xs text-ink-muted">{c.industry}</p>
               </div>
               <div className="text-right">
                 <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${PRIORITY_STYLE[c.implementationPriority]}`}>
                   Priorität {c.implementationPriority}
                 </span>
-                <p className="mt-1 font-mono text-[11px] text-zinc-500">
+                <p className="mt-1 font-mono text-[11px] text-ink-muted">
                   {HANDOVER_LABEL[c.handoverStatus]}
                 </p>
               </div>
@@ -56,14 +56,14 @@ export default function ClientImplementationPage() {
               <Block label="Nächste Schritte" items={c.nextSteps} />
             </div>
 
-            <div className="mt-4 rounded-lg border border-zinc-200 bg-surface-subtle p-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+            <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
                 Manuelle Service-Notiz
               </p>
-              <p className="mt-1 text-sm text-zinc-700">{c.manualServiceNotes}</p>
+              <p className="mt-1 text-sm text-ink-secondary">{c.manualServiceNotes}</p>
             </div>
 
-            <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-zinc-500">
+            <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted">
               Wartungsbereit: {c.maintenanceReady ? "ja" : "noch nicht"}
             </p>
           </div>
@@ -76,10 +76,10 @@ export default function ClientImplementationPage() {
 function Block({ label, items, mono }: { label: string; items: string[]; mono?: boolean }) {
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">{label}</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">{label}</p>
       <ul className="mt-1 space-y-1">
         {items.map((it, i) => (
-          <li key={i} className={`text-sm ${mono ? "font-mono text-xs text-zinc-600" : "text-zinc-700"}`}>
+          <li key={i} className={`text-sm ${mono ? "font-mono text-xs text-ink-secondary" : "text-ink-secondary"}`}>
             {mono ? it : `• ${it}`}
           </li>
         ))}

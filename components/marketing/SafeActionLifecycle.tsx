@@ -30,14 +30,14 @@ const R  = 38;
 
 export function SafeActionLifecycle() {
   return (
-    <section id="ablauf" className="border-b border-zinc-200">
+    <section id="ablauf" className="border-b border-hairline">
       <div className="mx-auto max-w-content px-6 py-20 md:py-28">
-        <p className="eyebrow">{"// Sichere Aktions-Kette"}</p>
-        <h2 className="mt-4 max-w-2xl text-section-title text-zinc-900">
+        <p className="eyebrow">{"Sichere Aktions-Kette"}</p>
+        <h2 className="mt-4 max-w-2xl text-section-title text-ink">
           KI bereitet vor. Der Mensch entscheidet.
         </h2>
 
-        <div className="mt-8 overflow-x-auto rounded-lg border border-zinc-200 bg-surface-subtle p-4 md:p-6">
+        <div className="mt-8 overflow-x-auto rounded-lg border border-hairline bg-surface-subtle p-4 md:p-6">
           <svg
             viewBox="0 0 960 220"
             className="h-auto w-full min-w-[720px]"
@@ -123,10 +123,10 @@ export function SafeActionLifecycle() {
         </div>
 
         <div className="mt-5 flex items-center gap-2 rounded-lg border border-accent/30 bg-accent-soft px-4 py-2.5">
-          <span className="font-mono text-accent">✓</span>
-          <p className="text-sm text-zinc-700">
+          <span className="font-mono text-ink-secondary">✓</span>
+          <p className="text-sm text-ink-secondary">
             KI bereitet vor. Der Mensch entscheidet.{" "}
-            <span className="text-accent">Jede Aktion wird protokolliert.</span>
+            <span className="text-ink-secondary">Jede Aktion wird protokolliert.</span>
           </p>
         </div>
       </div>

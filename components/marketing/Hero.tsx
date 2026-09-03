@@ -1,50 +1,56 @@
 import Link from "next/link";
 import { StatusTicker } from "./StatusTicker";
 
-const BADGES = ["DSGVO-konform", "EU-gehostet", "Made in Essen"];
-
+/**
+ * components/marketing/Hero.tsx
+ *
+ * v5.0 Sprint 7. Three changes, all rule-driven rather than stylistic:
+ *
+ *   1. The headline no longer colours its second sentence. It was rendered in
+ *      the brand accent, which on white measures 1.51:1 — the phrase was
+ *      effectively invisible. Black carries the message; the platform rule is
+ *      that a heading is never part-coloured.
+ *   2. The three trust badges are gone. "DSGVO-konform · EU-gehostet · Made in
+ *      Essen" set in a tick list is the marketing-badge pattern the design
+ *      direction retires. The same three facts are now one plain sentence,
+ *      which is how a technical document would state them.
+ *   3. The "System-Vorschau" link reads as a link rather than as accent text.
+ */
 export function Hero() {
   return (
-    <section className="border-b border-zinc-200 bg-surface-subtle">
-      <div className="mx-auto max-w-content px-6 py-24 md:py-36">
-        <p className="eyebrow">{"// Essen · Überwachtes KI-Betriebsteam"}</p>
+    <section className="border-b border-hairline bg-surface-subtle">
+      <div className="mx-auto max-w-content px-6 py-24 md:py-32">
+        <p className="eyebrow">Essen · Überwachtes KI-Betriebsteam</p>
 
-        <h1 className="mt-6 max-w-4xl text-hero text-zinc-900">
-          Ein KI-Team, das Ihren Betrieb führt.{" "}
-          <span className="text-accent">Sie behalten die Kontrolle.</span>
+        <h1 className="mt-6 max-w-3xl text-hero text-ink">
+          Ein KI-Team, das Ihren Betrieb führt. Sie behalten die Kontrolle.
         </h1>
 
-        <p className="mt-6 max-w-2xl text-body text-zinc-600">
-          Kein Chatbot. Kein Spielzeug. Ein überwachtes Team aus KI-Agenten, das
-          Anfragen erfasst, Leads qualifiziert, Follow-ups vorbereitet und Ihren
-          Tag strukturiert — jede Aktion nach außen geht erst raus, wenn{" "}
-          <span className="font-medium text-zinc-900">Sie sie freigeben.</span>
+        <p className="mt-6 max-w-2xl text-body text-ink-secondary">
+          Kein Chatbot. Ein überwachtes Team aus Agenten, das Anfragen erfasst,
+          Leads qualifiziert, Follow-ups vorbereitet und Ihren Tag strukturiert.
+          Jede Aktion nach außen geht erst raus, wenn{" "}
+          <span className="font-medium text-ink">Sie sie freigeben.</span>
         </p>
 
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
           <a href="#audit" className="btn-primary">
-            Kostenlosen Geschäfts-Check anfragen
+            Geschäfts-Check anfragen
           </a>
           <a href="#bureau" className="btn-secondary">
-            Das Team ansehen →
+            Das Team ansehen
           </a>
         </div>
 
-        <Link
-          href="/dashboard"
-          className="mt-4 inline-flex items-center text-sm font-medium text-accent transition-colors hover:text-accent-hover"
-        >
-          System-Vorschau ansehen →
-        </Link>
-
-        <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-[0.14em] text-zinc-500">
-          {BADGES.map((b) => (
-            <span key={b} className="flex items-center gap-2">
-              <span className="text-accent">✓</span>
-              {b}
-            </span>
-          ))}
-        </div>
+        <p className="mt-6 text-sm text-ink-muted">
+          DSGVO-konform, in der EU gehostet, gebaut in Essen.{" "}
+          <Link
+            href="/dashboard"
+            className="text-ink underline decoration-hairline-strong decoration-1 underline-offset-4 transition-colors hover:text-accent-text"
+          >
+            System-Vorschau ansehen
+          </Link>
+        </p>
 
         <div className="mt-14">
           <StatusTicker />

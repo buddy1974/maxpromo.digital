@@ -28,7 +28,7 @@ export function ApprovalActions({
           ? "Abgelehnt — keine Aktion ausgeführt."
           : "Geprüft — Entscheidung erfasst.";
     return (
-      <p className="mt-4 rounded-lg border border-zinc-200 bg-surface-subtle px-3 py-2 text-xs text-zinc-600">
+      <p className="mt-4 rounded-lg border border-hairline bg-surface-subtle px-3 py-2 text-xs text-ink-secondary">
         {label}
       </p>
     );
@@ -84,7 +84,7 @@ export function ApprovalActions({
           type="button"
           disabled={busy}
           onClick={() => run("reject")}
-          className="rounded-lg border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-300 disabled:opacity-60"
+          className="rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong disabled:opacity-60"
         >
           Reject Proposal
         </button>
@@ -92,14 +92,14 @@ export function ApprovalActions({
           type="button"
           disabled={busy}
           onClick={() => run("mark_reviewed")}
-          className="rounded-lg border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-300 disabled:opacity-60"
+          className="rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong disabled:opacity-60"
         >
           Mark Reviewed
         </button>
       </div>
       {message && (
         <p
-          className={`mt-3 text-xs ${message.kind === "ok" ? "text-emerald-600" : "text-red-600"}`}
+          className={`mt-3 text-xs ${message.kind === "ok" ? "text-success" : "text-danger"}`}
           role="status"
         >
           {message.text}

@@ -37,3 +37,7 @@ tsconfig.tsbuildinfo
 .idea
 
 .vercel
+
+# OpenClaw dev-server logs and workspace export
+.openclaw/
+.openclaw-dev-server*.log

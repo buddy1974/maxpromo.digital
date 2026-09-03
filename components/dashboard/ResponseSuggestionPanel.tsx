@@ -9,16 +9,16 @@ export function ResponseSuggestionPanel({
   text: string;
 }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-surface-subtle p-3">
+    <div className="rounded-lg border border-hairline bg-surface-subtle p-3">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
           {label}
         </p>
-        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-accent">
+        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-secondary">
           nicht gesendet
         </span>
       </div>
-      <p className="mt-1 text-sm text-zinc-700">{text}</p>
+      <p className="mt-1 text-sm text-ink-secondary">{text}</p>
     </div>
   );
 }

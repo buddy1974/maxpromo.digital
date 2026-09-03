@@ -1,21 +1,21 @@
 import type { DashboardMetric } from "@/types/dashboard";
 
 const TREND_COLOR = {
-  up: "text-emerald-600",
-  down: "text-red-600",
-  flat: "text-zinc-500",
+  up: "text-success",
+  down: "text-danger",
+  flat: "text-ink-muted",
 } as const;
 
 const TREND_GLYPH = { up: "↑", down: "↓", flat: "→" } as const;
 
 export function MetricCard({ metric }: { metric: DashboardMetric }) {
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-500">
+    <div className="rounded-xl border border-hairline bg-surface p-5 shadow-sm">
+      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted">
         {metric.label}
       </p>
       <div className="mt-3 flex items-baseline gap-2">
-        <span className="text-3xl font-semibold tracking-tight text-zinc-900">
+        <span className="text-3xl font-semibold tracking-tight text-ink">
           {metric.value}
         </span>
         {metric.trend && metric.delta && (
@@ -25,7 +25,7 @@ export function MetricCard({ metric }: { metric: DashboardMetric }) {
         )}
       </div>
       {metric.hint && (
-        <p className="mt-1 text-xs text-zinc-500">{metric.hint}</p>
+        <p className="mt-1 text-xs text-ink-muted">{metric.hint}</p>
       )}
     </div>
   );

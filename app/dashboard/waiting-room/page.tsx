@@ -35,11 +35,11 @@ export default async function WaitingRoomPage() {
   return (
     <DashboardShell title="Kunden-Warteraum">
       <div className="space-y-6">
-        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+        <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
             Wer wartet auf eine Antwort?
           </p>
-          <p className="mt-2 text-sm text-zinc-700">
+          <p className="mt-2 text-sm text-ink-secondary">
             Antworten werden vorbereitet — gesendet wird erst nach Ihrer Freigabe.
             Keine ausgehende Nachricht wurde ausgeführt.
           </p>

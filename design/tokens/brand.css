@@ -1,0 +1,228 @@
+/* =============================================================================
+   MAXPROMO PLATFORM DESIGN TOKENS
+   =============================================================================
+
+   The single source of truth for colour, typography, spacing, radius and
+   elevation across every Maxpromo surface: maxpromo.digital, Agent Bureau,
+   os.maxpromo.digital, dashboards, invoices, quotations, PDFs and emails.
+
+   Authored deliberately as a standalone, dependency-free stylesheet so it can
+   move to packages/tokens/ in the monorepo consolidation without a rewrite,
+   and so any repository outside the monorepo can adopt the brand by importing
+   this one file.
+
+   ── STRUCTURE ──────────────────────────────────────────────────────────────
+   LAYER 1  --mp-*        Primitives. Raw values. NEVER referenced by a component.
+   LAYER 2  --brand-*     Brand identity. What components consume.
+            --semantic-*  Status meaning. Deliberately NOT --brand-*, so the
+                          v3.1 ruling ("brand colours are never semantic
+                          colours") is enforced by the token name itself.
+
+   ── RULES ──────────────────────────────────────────────────────────────────
+   1. Components may reference LAYER 2 only. Never --mp-*. Never a raw hex.
+   2. Brand lime has exactly three permitted jobs:
+        a. primary action fill (with --brand-on-primary text)
+        b. active / current state indicator
+        c. one emphasis mark per page, maximum
+      It is forbidden as: section background, card border, icon fill, label
+      text, body link, badge, divider, hover background, table header, chart
+      fill. Target: lime covers < 2% of viewport pixels on any page.
+   3. Semantic colours never appear on marketing pages. They exist only in
+      product surfaces — dashboards, forms, documents.
+   4. Black carries the message. Colour does not.
+
+   Governing documents: docs/platform-v3/phase-2-architecture.md §4,
+   docs/platform-v3/phase-2b-design-direction.md §3.
+   ========================================================================== */
+
+:root {
+
+  /* ===========================================================================
+     LAYER 1 — PRIMITIVES
+     Raw values. Never referenced by a component.
+     ======================================================================== */
+
+  /* — Neutrals ———————————————————————————————————————————————————————— */
+  --mp-black:      #111111;  /* Brand Black (official) */
+  --mp-white:      #FFFFFF;  /* White (official) */
+  --mp-gray-50:    #FAFAFA;
+  --mp-gray-100:   #F4F4F5;
+  --mp-gray-200:   #E4E4E7;
+  --mp-gray-300:   #D4D4D8;
+  --mp-gray-400:   #A1A1AA;
+  --mp-gray-500:   #71717A;
+  --mp-gray-600:   #52525B;
+  --mp-gray-700:   #3F3F46;
+  --mp-gray-800:   #27272A;
+  --mp-gray-900:   #18181B;
+
+  /* — Brand green ramp ————————————————————————————————————————————————
+     lime-50 / 400 / 600 are the official brand colours. The rest are derived,
+     and exist because the three official values alone cannot express an
+     accessible interface — see the contrast notes in LAYER 2. */
+  --mp-lime-50:    #F7FEE7;  /* Light Surface (official) */
+  --mp-lime-100:   #ECFCCB;
+  --mp-lime-200:   #D9F99D;
+  --mp-lime-300:   #BEF264;
+  --mp-lime-400:   #A3E635;  /* Brand Lime (official) */
+  --mp-lime-500:   #84CC16;
+  --mp-lime-600:   #65A30D;  /* Dark Green (official) */
+  --mp-lime-700:   #4D7C0F;  /* derived — 5.00:1 on white, the accessible accent text */
+  --mp-lime-800:   #3F6212;
+  --mp-lime-900:   #365314;
+
+  /* — Status primitives ——————————————————————————————————————————————
+     Success is deliberately blue-shifted (emerald, not lime) so it cannot be
+     read as the brand. All four are specified at a weight that passes WCAG AA
+     for body text on white. */
+  --mp-emerald-600: #059669;
+  --mp-emerald-700: #047857;  /* 5.49:1 on white */
+  --mp-emerald-50:  #ECFDF5;
+  --mp-amber-700:   #B45309;  /* 4.68:1 on white */
+  --mp-amber-50:    #FFFBEB;
+  --mp-red-700:     #B91C1C;  /* 6.54:1 on white */
+  --mp-red-50:      #FEF2F2;
+  --mp-blue-700:    #1D4ED8;  /* 6.33:1 on white */
+  --mp-blue-50:     #EFF6FF;
+
+
+  /* ===========================================================================
+     LAYER 2 — SEMANTIC TOKENS
+     The only names a component may use.
+     ======================================================================== */
+
+  /* — Surfaces ————————————————————————————————————————————————————————
+     Neutral, not brand-tinted. Brand colours are accents, not surfaces
+     (v3.1). --brand-surface-accent is the one lime-tinted surface and is
+     reserved for small callouts and badge backgrounds — never a full-bleed
+     section wash. */
+  --brand-background:       var(--mp-white);
+  --brand-surface:          var(--mp-white);
+  --brand-surface-subtle:   var(--mp-gray-50);
+  --brand-surface-sunken:   var(--mp-gray-100);
+  --brand-surface-accent:   var(--mp-lime-50);
+  --brand-surface-inverted: var(--mp-black);
+
+  /* — Borders ————————————————————————————————————————————————————————— */
+  --brand-border:           var(--mp-gray-200);
+  --brand-border-strong:    var(--mp-gray-300);
+  --brand-border-inverted:  rgba(255, 255, 255, 0.14);
+
+  /* — Text ———————————————————————————————————————————————————————————— */
+  --brand-text:             var(--mp-black);
+  --brand-text-secondary:   var(--mp-gray-600);
+  --brand-text-muted:       var(--mp-gray-500);
+  --brand-text-inverted:    var(--mp-gray-100);
+  --brand-text-inverted-secondary: rgba(255, 255, 255, 0.62);
+
+  /* — Brand accent ————————————————————————————————————————————————————
+     --brand-primary is a FILL. It is never a text colour: lime text on white
+     measures 1.51:1 and is illegible. Text ON lime is black (12.62:1), never
+     white. Where an accent *text* colour is genuinely needed — a hovered link,
+     a single emphasised word — use --brand-primary-text (5.00:1). */
+  --brand-primary:          var(--mp-lime-400);
+  --brand-primary-hover:    var(--mp-lime-500);
+  --brand-primary-dark:     var(--mp-lime-600);
+  --brand-primary-text:     var(--mp-lime-700);
+  --brand-primary-soft:     var(--mp-lime-50);
+  --brand-on-primary:       var(--mp-black);
+  --brand-focus:            var(--mp-lime-700);
+
+  /* — Semantic status ————————————————————————————————————————————————
+     Independent of the brand by rule. Product surfaces only. */
+  --semantic-success:       var(--mp-emerald-700);
+  --semantic-success-soft:  var(--mp-emerald-50);
+  --semantic-warning:       var(--mp-amber-700);
+  --semantic-warning-soft:  var(--mp-amber-50);
+  --semantic-danger:        var(--mp-red-700);
+  --semantic-danger-soft:   var(--mp-red-50);
+  --semantic-info:          var(--mp-blue-700);
+  --semantic-info-soft:     var(--mp-blue-50);
+
+
+  /* ===========================================================================
+     TYPOGRAPHY
+     One scale. Hierarchy comes from weight and size, not from typeface.
+     ======================================================================== */
+
+  /* One neutral grotesque for headings and body. Mono is reserved for code,
+     data tables and document reference numbers — it is not a label face. */
+  --brand-font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+                     'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --brand-font-mono: var(--font-roboto-mono), ui-monospace, SFMono-Regular,
+                     'SF Mono', Menlo, Consolas, monospace;
+
+  --brand-font-heading: var(--brand-font-sans);
+  --brand-font-body:    var(--brand-font-sans);
+
+  /* Sizes — desktop targets in the comments, fluid via clamp. */
+  --text-h1:    clamp(2.5rem,  1.9rem + 2.6vw, 4rem);      /* 40 → 64 */
+  --text-h2:    clamp(2rem,    1.7rem + 1.4vw, 2.75rem);   /* 32 → 44 */
+  --text-h3:    clamp(1.5rem,  1.35rem + 0.7vw, 2rem);     /* 24 → 32 */
+  --text-h4:    1.25rem;                                    /* 20 */
+  --text-body:  1.125rem;                                   /* 18 */
+  --text-small: 0.9375rem;                                  /* 15 */
+  --text-micro: 0.8125rem;                                  /* 13 */
+
+  --weight-heading:  700;   /* H1 */
+  --weight-subhead:  600;   /* H2, H3 */
+  --weight-medium:   500;
+  --weight-body:     400;
+
+  --leading-tight:   1.1;   /* H1 */
+  --leading-snug:    1.15;  /* H2 */
+  --leading-heading: 1.25;  /* H3 */
+  --leading-body:    1.75;  /* body — deliberately generous */
+  --leading-ui:      1.5;
+
+  --tracking-tight: -0.02em;
+  --tracking-label:  0.12em;
+
+
+  /* ===========================================================================
+     SPACING — 8px base. One rhythm.
+     ======================================================================== */
+
+  --space-1:   0.25rem;   /*   4 */
+  --space-2:   0.5rem;    /*   8 */
+  --space-3:   0.75rem;   /*  12 */
+  --space-4:   1rem;      /*  16 */
+  --space-5:   1.5rem;    /*  24 */
+  --space-6:   2rem;      /*  32 */
+  --space-8:   3rem;      /*  48 */
+  --space-10:  4rem;      /*  64 */
+  --space-12:  4.5rem;    /*  72 */
+  --space-16:  6rem;      /*  96 */
+  --space-20:  7rem;      /* 112 */
+  --space-24:  10rem;     /* 160 */
+
+  /* Exactly three section rhythms. A section not using one of these fails
+     review. Replaces eight ad-hoc paddings across two repositories. */
+  --section-y-compact: clamp(3rem,   2.2rem + 3vw, 4.5rem);   /*  48 → 72  */
+  --section-y:         clamp(4rem,   3rem + 5vw,   7rem);     /*  64 → 112 */
+  --section-y-feature: clamp(5rem,   3.5rem + 7vw, 10rem);    /*  80 → 160 */
+  --section-x:         clamp(1.25rem, 1rem + 1.5vw, 2rem);
+
+  --container:        1280px;
+  --container-narrow:  760px;   /* prose, hero copy */
+
+
+  /* ===========================================================================
+     RADIUS · ELEVATION · MOTION
+     Subtle only. No glow, no heavy shadow (v4.0).
+     ======================================================================== */
+
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   8px;
+  --radius-xl:  12px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(17, 17, 17, 0.04);
+  --shadow-md: 0 1px 3px rgba(17, 17, 17, 0.06), 0 1px 2px rgba(17, 17, 17, 0.04);
+  --shadow-lg: 0 4px 12px rgba(17, 17, 17, 0.07);
+
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --ease: cubic-bezier(0.2, 0, 0.2, 1);
+}

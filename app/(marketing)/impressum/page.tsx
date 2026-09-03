@@ -16,20 +16,20 @@ export default function ImpressumPage() {
       <main className="mx-auto max-w-2xl px-6 py-20">
         <Link
           href="/"
-          className="font-mono text-xs uppercase tracking-[0.16em] text-accent hover:text-accent-hover"
+          className="font-mono text-xs uppercase tracking-[0.16em] text-ink-secondary hover:text-accent-text"
         >
           ← Zurück
         </Link>
-        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-ink">
           Impressum
         </h1>
 
-        <div className="mt-8 space-y-6 text-zinc-600">
+        <div className="mt-8 space-y-6 text-ink-secondary">
           <section>
-            <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-zinc-500">
+            <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-ink-muted">
               Angaben gemäß § 5 DDG
             </h2>
-            <p className="mt-3 text-zinc-800">{BUSINESS.legalName}</p>
+            <p className="mt-3 text-ink">{BUSINESS.legalName}</p>
             <p>{BUSINESS.brand}</p>
             <p>{BUSINESS.street}</p>
             <p>
@@ -38,23 +38,23 @@ export default function ImpressumPage() {
           </section>
 
           <section>
-            <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-zinc-500">
+            <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-ink-muted">
               Kontakt
             </h2>
             <p className="mt-3">E-Mail: {BUSINESS.email}</p>
           </section>
 
           <section>
-            <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-zinc-500">
+            <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-ink-muted">
               Umsatzsteuer
             </h2>
             <p className="mt-3">Steuernummer: {BUSINESS.steuernummer}</p>
             <p>Finanzamt: {BUSINESS.finanzamt}</p>
-            <p className="mt-2 text-zinc-800">{UST_CLAUSE}</p>
+            <p className="mt-2 text-ink">{UST_CLAUSE}</p>
           </section>
 
           <section>
-            <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-zinc-500">
+            <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-ink-muted">
               Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV
             </h2>
             <p className="mt-3">

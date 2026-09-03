@@ -29,13 +29,13 @@ export default async function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Brand mark */}
         <div className="mb-8 flex flex-col items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent">
-            {"// maxpromo digital"}
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-secondary">
+            {"maxpromo digital"}
           </span>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-ink">
             Max Agent
           </h1>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-ink-muted">
             Melden Sie sich an, um fortzufahren.
           </p>
         </div>
@@ -46,7 +46,7 @@ export default async function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="mt-6 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-zinc-400">
+        <p className="mt-6 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-ink-muted">
           Maxpromo Digital · Essen · §19 UStG
         </p>
       </div>

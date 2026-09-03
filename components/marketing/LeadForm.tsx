@@ -85,11 +85,11 @@ export function LeadForm() {
   if (status === "success") {
     return (
       <div className="rounded-lg border border-accent/40 bg-accent-soft p-8 text-center">
-        <div className="font-mono text-2xl text-accent">✓</div>
-        <h3 className="mt-3 text-xl font-semibold text-zinc-900">
+        <div className="font-mono text-2xl text-ink-secondary">✓</div>
+        <h3 className="mt-3 text-xl font-semibold text-ink">
           Anfrage erhalten.
         </h3>
-        <p className="mt-2 text-zinc-600">
+        <p className="mt-2 text-ink-secondary">
           Wir melden uns zu Ihrem kostenlosen Geschäfts-Check. 30 Minuten,
           unverbindlich.
         </p>
@@ -131,7 +131,7 @@ export function LeadForm() {
       </div>
 
       {status === "error" && error && (
-        <p className="text-sm text-red-600" role="alert">
+        <p className="text-sm text-danger" role="alert">
           {error}
         </p>
       )}
@@ -146,10 +146,10 @@ export function LeadForm() {
           : "Kostenlosen Geschäfts-Check anfragen"}
       </button>
 
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-ink-muted">
         Mit dem Absenden stimmen Sie der Kontaktaufnahme zu. Ihre Daten werden
         ausschließlich zur Bearbeitung Ihrer Anfrage verwendet. Details:{" "}
-        <a href="/datenschutz" className="underline underline-offset-2 hover:text-zinc-700">
+        <a href="/datenschutz" className="underline underline-offset-2 hover:text-ink-secondary">
           Datenschutz
         </a>
         .

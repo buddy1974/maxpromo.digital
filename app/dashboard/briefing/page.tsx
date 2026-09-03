@@ -10,10 +10,10 @@ export default function BriefingPage() {
       <div className="space-y-8">
         <BriefingPanel briefing={s.briefing} />
         <section>
-          <h2 className="mb-3 text-base font-semibold text-zinc-900">
+          <h2 className="mb-3 text-base font-semibold text-ink">
             Wie das Briefing entstanden ist
           </h2>
-          <div className="rounded-lg border border-zinc-200 bg-white px-4 shadow-sm">
+          <div className="rounded-lg border border-hairline bg-surface px-4 shadow-sm">
             <ActivityFeed items={s.recentActivity} />
           </div>
         </section>

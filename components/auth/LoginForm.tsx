@@ -82,7 +82,7 @@ export default function LoginForm() {
 
       {/* Error message */}
       {error && (
-        <p className="rounded-md border border-red-200 bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
+        <p className="rounded-md border border-danger/30 bg-danger-soft px-3.5 py-2.5 text-sm text-danger">
           {error}
         </p>
       )}
@@ -100,7 +100,7 @@ export default function LoginForm() {
       </button>
 
       {/* No public signup notice */}
-      <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-400">
+      <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
         Kein Konto? Zugang wird von Maxpromo bereitgestellt.
       </p>
     </form>

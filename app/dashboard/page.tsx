@@ -108,14 +108,14 @@ export default async function DashboardOverviewPage() {
 
         <div className="grid gap-8 lg:grid-cols-2">
           <Section title="Aktive Agenten">
-            <ul className="divide-y divide-zinc-200 rounded-lg border border-zinc-200 bg-white shadow-sm">
+            <ul className="divide-y divide-zinc-200 rounded-lg border border-hairline bg-surface shadow-sm">
               {activeAgents.map((a) => (
                 <li key={a.id} className="flex items-center justify-between px-4 py-3">
                   <div>
-                    <p className="text-sm text-zinc-900">{a.name}</p>
-                    <p className="text-xs text-zinc-500">{a.role}</p>
+                    <p className="text-sm text-ink">{a.name}</p>
+                    <p className="text-xs text-ink-muted">{a.role}</p>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-accent">{a.status}</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-secondary">{a.status}</span>
                 </li>
               ))}
             </ul>
@@ -123,11 +123,11 @@ export default async function DashboardOverviewPage() {
 
           <Section title="Wartende Kunden">
             {urgent.length ? (
-              <ul className="divide-y divide-zinc-200 rounded-lg border border-zinc-200 bg-white shadow-sm">
+              <ul className="divide-y divide-zinc-200 rounded-lg border border-hairline bg-surface shadow-sm">
                 {urgent.map((w) => (
                   <li key={w.id} className="px-4 py-3">
-                    <p className="text-sm text-zinc-900">{w.customerName}</p>
-                    <p className="text-xs text-zinc-500">{w.company ?? "—"} · wartet {w.waitingFor}</p>
+                    <p className="text-sm text-ink">{w.customerName}</p>
+                    <p className="text-xs text-ink-muted">{w.company ?? "—"} · wartet {w.waitingFor}</p>
                   </li>
                 ))}
               </ul>
@@ -138,7 +138,7 @@ export default async function DashboardOverviewPage() {
         </div>
 
         <Section title="Letzte Aktivität">
-          <div className="rounded-lg border border-zinc-200 bg-white px-4 shadow-sm">
+          <div className="rounded-lg border border-hairline bg-surface px-4 shadow-sm">
             <ActivityFeed items={activity} />
           </div>
         </Section>
@@ -151,8 +151,8 @@ function Section({ title, hint, children }: { title: string; hint?: string; chil
   return (
     <section>
       <div className="mb-3">
-        <h2 className="text-base font-semibold text-zinc-900">{title}</h2>
-        {hint && <p className="text-xs text-zinc-500">{hint}</p>}
+        <h2 className="text-base font-semibold text-ink">{title}</h2>
+        {hint && <p className="text-xs text-ink-muted">{hint}</p>}
       </div>
       {children}
     </section>

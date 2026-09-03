@@ -3,10 +3,10 @@ import { MOCK_INTEGRATIONS } from "@/lib/mock/integrations";
 import type { IntegrationStatus } from "@/types/integration";
 
 const STATUS_STYLE: Record<IntegrationStatus, string> = {
-  connected: "border-emerald-200 bg-emerald-50 text-emerald-700",
-  available: "border-zinc-200 bg-zinc-100 text-zinc-600",
-  error: "border-red-200 bg-red-50 text-red-700",
-  coming_soon: "border-zinc-200 bg-zinc-100 text-zinc-400",
+  connected: "border-success/30 bg-success-soft text-success",
+  available: "border-hairline bg-surface-sunken text-ink-secondary",
+  error: "border-danger/30 bg-danger-soft text-danger",
+  coming_soon: "border-hairline bg-surface-sunken text-ink-muted",
 };
 
 const STATUS_LABEL: Record<IntegrationStatus, string> = {
@@ -21,18 +21,18 @@ export default function SettingsPage() {
     <DashboardShell title="Einstellungen">
       <div className="space-y-6">
         <section>
-          <h2 className="mb-3 text-base font-semibold text-zinc-900">
+          <h2 className="mb-3 text-base font-semibold text-ink">
             Integrationen
           </h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {MOCK_INTEGRATIONS.map((i) => (
               <div
                 key={i.id}
-                className="flex items-start justify-between gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm"
+                className="flex items-start justify-between gap-3 rounded-lg border border-hairline bg-surface p-4 shadow-sm"
               >
                 <div>
-                  <p className="text-sm font-medium text-zinc-900">{i.name}</p>
-                  <p className="mt-0.5 text-xs text-zinc-500">{i.description}</p>
+                  <p className="text-sm font-medium text-ink">{i.name}</p>
+                  <p className="mt-0.5 text-xs text-ink-muted">{i.description}</p>
                 </div>
                 <span
                   className={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${STATUS_STYLE[i.status]}`}
@@ -44,9 +44,9 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="text-base font-semibold text-zinc-900">Sicherheit & Kontrolle</h2>
-          <p className="mt-2 text-sm text-zinc-600">
+        <section className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
+          <h2 className="text-base font-semibold text-ink">Sicherheit & Kontrolle</h2>
+          <p className="mt-2 text-sm text-ink-secondary">
             Supervised Mode ist aktiv. Agenten führen keine Aktionen nach außen
             ohne Freigabe aus. Konfiguration von Rollen, Berechtigungen und
             Audit-Aufbewahrung folgt in einem späteren Sprint.

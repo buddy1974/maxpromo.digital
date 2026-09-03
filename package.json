@@ -2,12 +2,12 @@
   "name": "max-agent-bureau",
   "version": "0.1.0",
   "private": true,
-  "description": "Max Agent — public offer page (Sprint 1). Maxpromo Digital ecosystem.",
+  "description": "Max Agent \u2014 public offer page (Sprint 1). Maxpromo Digital ecosystem.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "db:generate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs generate",
     "db:push": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs push",
@@ -18,22 +18,21 @@
     "@neondatabase/serverless": "^0.10.4",
     "argon2": "^0.44.0",
     "drizzle-orm": "^0.38.3",
-    "next": "^15.1.6",
+    "next": "^16.1.6",
     "next-auth": "^4.24.14",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.10.7",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "autoprefixer": "^10.4.20",
     "drizzle-kit": "^0.30.2",
     "eslint": "^9.18.0",
-    "eslint-config-next": "^15.1.6",
-    "postcss": "^8.5.1",
-    "tailwindcss": "^3.4.17",
+    "eslint-config-next": "^16.1.6",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.7.3"
   }
 }

@@ -24,11 +24,11 @@ export default async function ApprovalsPage() {
   return (
     <DashboardShell title="Approval Desk">
       <div className="space-y-6">
-        <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+        <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
             Supervised Mode
           </p>
-          <p className="mt-2 text-sm text-zinc-700">
+          <p className="mt-2 text-sm text-ink-secondary">
             Eine Freigabe protokolliert nur die Entscheidung und den Audit-Trail.
             In dieser Vorschau wird keine externe Nachricht, E-Mail, Kalender-Aktion
             oder CRM-Aktualisierung ausgeführt.
@@ -38,11 +38,11 @@ export default async function ApprovalsPage() {
         {ordered.length ? (
           <div className="grid gap-4 lg:grid-cols-2">
             {ordered.map((p) => (
-              <div key={p.id} className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+              <div key={p.id} className="rounded-lg border border-hairline bg-surface p-6 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h3 className="font-semibold text-zinc-900">{p.title}</h3>
-                    <p className="mt-0.5 text-xs text-zinc-500">
+                    <h3 className="font-semibold text-ink">{p.title}</h3>
+                    <p className="mt-0.5 text-xs text-ink-muted">
                       {p.agentKey} ·{" "}
                       {p.status === "pending" ? "Awaiting Review" : p.status}
                     </p>
@@ -56,11 +56,11 @@ export default async function ApprovalsPage() {
                   <Row label="Erwartetes Ergebnis" value={p.expectedOutcome ?? "—"} />
                 </dl>
 
-                <div className="mt-4 rounded-lg border border-zinc-200 bg-surface-subtle p-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+                <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
                     Audit-Trail
                   </p>
-                  <ul className="mt-2 space-y-1 font-mono text-xs text-zinc-600">
+                  <ul className="mt-2 space-y-1 font-mono text-xs text-ink-secondary">
                     <li>Agent: {p.agentKey}</li>
                     <li>Aktion vorbereitet (nicht ausgeführt)</li>
                     <li>Wartet auf menschliche Freigabe</li>
@@ -93,8 +93,8 @@ export default async function ApprovalsPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">{label}</dt>
-      <dd className="mt-0.5 text-zinc-700">{value}</dd>
+      <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">{label}</dt>
+      <dd className="mt-0.5 text-ink-secondary">{value}</dd>
     </div>
   );
 }

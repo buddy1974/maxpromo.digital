@@ -8,32 +8,32 @@ export default function OperatingModelPage() {
   return (
     <DashboardShell title="Operating Model">
       <div className="space-y-8">
-        <section className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+        <section className="rounded-lg border border-hairline bg-surface p-6 shadow-sm">
+          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
             Produkt-Backbone
           </p>
-          <h2 className="mt-2 text-xl font-semibold text-zinc-900">
+          <h2 className="mt-2 text-xl font-semibold text-ink">
             Audit → Diagnose → Team-Design → Manuelle Lieferung → Systematisieren → Installieren → Warten
           </h2>
-          <p className="mt-2 text-sm text-zinc-700">
+          <p className="mt-2 text-sm text-ink-secondary">
             Das Dashboard ist die sichtbare Oberfläche. Das eigentliche Produkt ist
             dieses Betriebsmodell — ein System, das Maxpromo in einen Betrieb installiert.
           </p>
         </section>
 
         <section>
-          <h3 className="mb-3 text-base font-semibold text-zinc-900">Die sieben Stufen</h3>
+          <h3 className="mb-3 text-base font-semibold text-ink">Die sieben Stufen</h3>
           <ol className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-stretch">
             {OPERATING_STAGES.map((stage, i) => (
               <li key={stage.key} className="flex items-center gap-2 md:flex-1">
-                <div className="flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 shadow-sm">
-                  <span className="font-mono text-[10px] text-accent">
+                <div className="flex-1 rounded-lg border border-hairline bg-surface px-3 py-2 shadow-sm">
+                  <span className="font-mono text-[10px] text-ink-secondary">
                     {String(stage.order).padStart(2, "0")}
                   </span>
-                  <p className="mt-0.5 text-sm font-medium text-zinc-900">{stage.name}</p>
+                  <p className="mt-0.5 text-sm font-medium text-ink">{stage.name}</p>
                 </div>
                 {i < OPERATING_STAGES.length - 1 && (
-                  <span className="text-zinc-400 md:hidden">↓</span>
+                  <span className="text-ink-muted md:hidden">↓</span>
                 )}
               </li>
             ))}
@@ -41,15 +41,15 @@ export default function OperatingModelPage() {
         </section>
 
         <section>
-          <h3 className="mb-3 text-base font-semibold text-zinc-900">Sichere Aktions-Kette</h3>
+          <h3 className="mb-3 text-base font-semibold text-ink">Sichere Aktions-Kette</h3>
           <div className="flex flex-wrap gap-2">
             {SAFE_ACTION_LIFECYCLE.map((s, i) => (
               <span key={s.step} className="flex items-center gap-2">
-                <span className="rounded-md border border-zinc-200 bg-white px-3 py-1.5 font-mono text-xs text-zinc-700 shadow-sm">
+                <span className="rounded-md border border-hairline bg-surface px-3 py-1.5 font-mono text-xs text-ink-secondary shadow-sm">
                   {s.label}
                 </span>
                 {i < SAFE_ACTION_LIFECYCLE.length - 1 && (
-                  <span className="text-zinc-400">→</span>
+                  <span className="text-ink-muted">→</span>
                 )}
               </span>
             ))}
@@ -58,14 +58,14 @@ export default function OperatingModelPage() {
 
         <section className="space-y-4">
           {OPERATING_STAGES.map((stage) => (
-            <div key={stage.key} className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+            <div key={stage.key} className="rounded-lg border border-hairline bg-surface p-6 shadow-sm">
               <div className="flex items-baseline gap-3">
-                <span className="font-mono text-accent">
+                <span className="font-mono text-ink-secondary">
                   {String(stage.order).padStart(2, "0")}
                 </span>
-                <h3 className="text-lg font-semibold text-zinc-900">{stage.name}</h3>
+                <h3 className="text-lg font-semibold text-ink">{stage.name}</h3>
               </div>
-              <p className="mt-2 text-sm text-zinc-600">{stage.purpose}</p>
+              <p className="mt-2 text-sm text-ink-secondary">{stage.purpose}</p>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <Field label="Löst" value={stage.painAddressed} />
                 <Field label="Ergebnis" value={stage.output} />
@@ -77,16 +77,16 @@ export default function OperatingModelPage() {
         </section>
 
         <section>
-          <h3 className="mb-3 text-base font-semibold text-zinc-900">Agenten-Hierarchie</h3>
-          <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+          <h3 className="mb-3 text-base font-semibold text-ink">Agenten-Hierarchie</h3>
+          <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
             <ul className="space-y-2 text-sm">
               {AGENT_HIERARCHY.map((n) => (
                 <li key={n.role} className="flex gap-3">
-                  <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${n.reportsTo ? "text-zinc-500" : "text-accent"}`}>
+                  <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${n.reportsTo ? "text-ink-muted" : "text-ink-secondary"}`}>
                     {n.reportsTo ? "└─" : "◆"}
                   </span>
-                  <span className="text-zinc-900">{n.name}</span>
-                  <span className="text-zinc-500">— {n.summary}</span>
+                  <span className="text-ink">{n.name}</span>
+                  <span className="text-ink-muted">— {n.summary}</span>
                 </li>
               ))}
             </ul>
@@ -100,8 +100,8 @@ export default function OperatingModelPage() {
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">{label}</p>
-      <p className="mt-0.5 text-sm text-zinc-700">{value}</p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">{label}</p>
+      <p className="mt-0.5 text-sm text-ink-secondary">{value}</p>
     </div>
   );
 }

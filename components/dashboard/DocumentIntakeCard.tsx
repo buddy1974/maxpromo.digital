@@ -16,20 +16,20 @@ const TYPE_LABEL: Record<DocumentIntakeItem["type"], string> = {
 
 export function DocumentIntakeCard({ item }: { item: DocumentIntakeItem }) {
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-500">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted">
             {TYPE_LABEL[item.type]} · {item.source}
           </p>
-          <h3 className="mt-1 font-semibold text-zinc-900">{item.title}</h3>
+          <h3 className="mt-1 font-semibold text-ink">{item.title}</h3>
         </div>
         <DocumentRiskBadge level={item.riskLevel} />
       </div>
-      <p className="mt-2 text-sm text-zinc-600">{item.summary}</p>
+      <p className="mt-2 text-sm text-ink-secondary">{item.summary}</p>
 
       <div className="mt-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-zinc-500">
+        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
           Erforderliche Aktion
         </p>
         <div className="mt-1">
@@ -43,9 +43,9 @@ export function DocumentIntakeCard({ item }: { item: DocumentIntakeItem }) {
         </div>
       )}
 
-      <div className="mt-3 flex items-center justify-between text-xs text-zinc-500">
+      <div className="mt-3 flex items-center justify-between text-xs text-ink-muted">
         <span>{item.assignedAgent}</span>
-        <span className="rounded-full border border-zinc-200 bg-zinc-100 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-zinc-600">
+        <span className="rounded-full border border-hairline bg-surface-sunken px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-secondary">
           {item.approvalStatus === "pending" ? "Approval Required" : item.approvalStatus}
         </span>
       </div>

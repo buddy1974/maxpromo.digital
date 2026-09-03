@@ -10,12 +10,12 @@ export default function TasksPage() {
     <DashboardShell title="Aufgaben">
       <div className="space-y-8">
         <section>
-          <h2 className="mb-3 text-base font-semibold text-zinc-900">Offen</h2>
+          <h2 className="mb-3 text-base font-semibold text-ink">Offen</h2>
           <TaskList tasks={open} />
         </section>
         {done.length > 0 && (
           <section>
-            <h2 className="mb-3 text-base font-semibold text-zinc-900">Erledigt</h2>
+            <h2 className="mb-3 text-base font-semibold text-ink">Erledigt</h2>
             <TaskList tasks={done} />
           </section>
         )}

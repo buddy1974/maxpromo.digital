@@ -3,10 +3,10 @@ import type { PolicyChecklistItem } from "@/types/ai-governance";
 export function PolicyChecklist({ items }: { items: PolicyChecklistItem[] }) {
   const done = items.filter((i) => i.done).length;
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+    <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-zinc-900">Policy-Checkliste</h3>
-        <span className="font-mono text-[11px] text-zinc-500">
+        <h3 className="font-semibold text-ink">Policy-Checkliste</h3>
+        <span className="font-mono text-[11px] text-ink-muted">
           {done}/{items.length}
         </span>
       </div>
@@ -16,13 +16,13 @@ export function PolicyChecklist({ items }: { items: PolicyChecklistItem[] }) {
             <span
               className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
                 i.done
-                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                  : "border-zinc-300 text-zinc-300"
+                  ? "border-success/30 bg-success-soft text-success"
+                  : "border-hairline-strong text-ink-muted"
               }`}
             >
               {i.done ? "✓" : ""}
             </span>
-            <span className={i.done ? "text-zinc-400 line-through" : "text-zinc-900"}>
+            <span className={i.done ? "text-ink-muted line-through" : "text-ink"}>
               {i.label}
             </span>
           </li>

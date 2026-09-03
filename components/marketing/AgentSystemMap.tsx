@@ -40,7 +40,7 @@ export function AgentSystemMap() {
   return (
     <div className="mt-8">
       {/* Desktop: radial system map */}
-      <div className="hidden rounded-lg border border-zinc-200 bg-surface-subtle p-4 md:block">
+      <div className="hidden rounded-lg border border-hairline bg-surface-subtle p-4 md:block">
         <svg viewBox="0 0 960 500" className="h-auto w-full" role="img" aria-label="Chief of Staff koordiniert neun spezialisierte Agenten">
           {/* spokes */}
           {nodes.map((n, i) => (
@@ -70,7 +70,7 @@ export function AgentSystemMap() {
             Chief of Staff
           </text>
         </svg>
-        <p className="px-2 pb-1 text-center text-xs text-zinc-500">
+        <p className="px-2 pb-1 text-center text-xs text-ink-muted">
           Eine Koordinationsebene. Neun Spezialisten. Jede Aktion nach außen über menschliche Freigabe.
         </p>
       </div>
@@ -80,8 +80,8 @@ export function AgentSystemMap() {
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent font-mono text-xl text-white">
           ◆
         </span>
-        <p className="mt-3 font-semibold text-zinc-900">Chief of Staff</p>
-        <p className="mt-1 text-sm text-zinc-600">
+        <p className="mt-3 font-semibold text-ink">Chief of Staff</p>
+        <p className="mt-1 text-sm text-ink-secondary">
           koordiniert 9 spezialisierte Agenten — jede Aktion nach außen über
           menschliche Freigabe.
         </p>

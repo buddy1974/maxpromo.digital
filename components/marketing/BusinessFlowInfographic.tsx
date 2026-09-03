@@ -44,15 +44,15 @@ export function BusinessFlowInfographic() {
   const mHeight = MTOP + (FLOW.length - 1) * MGAP + 52;
 
   return (
-    <section className="border-b border-zinc-200">
+    <section className="border-b border-hairline">
       <div className="mx-auto max-w-content px-6 py-20 md:py-28">
-        <p className="eyebrow">{"// Vom Problem zum System"}</p>
-        <h2 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl">
+        <p className="eyebrow">{"Vom Problem zum System"}</p>
+        <h2 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-ink md:text-3xl">
           Vorschläge statt Blind-Automation. Der Owner bleibt in Kontrolle.
         </h2>
 
         {/* Desktop: horizontal flow */}
-        <div className="mt-8 hidden overflow-x-auto rounded-lg border border-zinc-200 bg-surface-subtle p-4 md:block md:p-6">
+        <div className="mt-8 hidden overflow-x-auto rounded-lg border border-hairline bg-surface-subtle p-4 md:block md:p-6">
           <svg
             viewBox="0 0 960 195"
             className="h-auto w-full min-w-[720px]"
@@ -123,7 +123,7 @@ export function BusinessFlowInfographic() {
         </div>
 
         {/* Mobile: vertical flow */}
-        <div className="mt-8 overflow-hidden rounded-lg border border-zinc-200 bg-surface-subtle p-4 md:hidden">
+        <div className="mt-8 overflow-hidden rounded-lg border border-hairline bg-surface-subtle p-4 md:hidden">
           <svg viewBox={`0 0 480 ${mHeight}`} className="h-auto w-full" role="img" aria-label="Prozess-Pipeline vertikal">
             {/* spine */}
             <line x1={MX} y1={MTOP} x2={MX} y2={MTOP + (FLOW.length - 1) * MGAP}

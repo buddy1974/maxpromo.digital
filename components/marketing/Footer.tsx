@@ -33,7 +33,7 @@ export function Footer() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-accent transition-colors hover:text-accent-hover"
+                  className="block text-ink-secondary transition-colors hover:text-accent-text"
                 >
                   {label}
                 </a>
@@ -45,13 +45,13 @@ export function Footer() {
               </p>
               <a
                 href="/impressum"
-                className="block text-accent transition-colors hover:text-accent-hover"
+                className="block text-ink-secondary transition-colors hover:text-accent-text"
               >
                 Impressum
               </a>
               <a
                 href="/datenschutz"
-                className="block text-accent transition-colors hover:text-accent-hover"
+                className="block text-ink-secondary transition-colors hover:text-accent-text"
               >
                 Datenschutz
               </a>

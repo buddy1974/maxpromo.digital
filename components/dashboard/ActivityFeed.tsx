@@ -2,9 +2,9 @@ import type { ActivityLog } from "@/types/activity";
 
 const ACTOR_GLYPH = { user: "●", agent: "⊟", system: "◆" } as const;
 const ACTOR_COLOR = {
-  user: "text-zinc-600",
-  agent: "text-zinc-500",
-  system: "text-zinc-400",
+  user: "text-ink-secondary",
+  agent: "text-ink-muted",
+  system: "text-ink-muted",
 } as const;
 
 function timeLabel(iso: string): string {
@@ -21,13 +21,13 @@ export function ActivityFeed({ items }: { items: ActivityLog[] }) {
             {ACTOR_GLYPH[a.actor]}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-sm text-zinc-800">
+            <p className="text-sm text-ink">
               <span className="font-medium">{a.actorName}</span> — {a.action}
-              {a.target ? <span className="text-zinc-500"> · {a.target}</span> : null}
+              {a.target ? <span className="text-ink-muted"> · {a.target}</span> : null}
             </p>
-            {a.detail && <p className="text-xs text-zinc-500">{a.detail}</p>}
+            {a.detail && <p className="text-xs text-ink-muted">{a.detail}</p>}
           </div>
-          <span className="shrink-0 font-mono text-[11px] text-zinc-400">
+          <span className="shrink-0 font-mono text-[11px] text-ink-muted">
             {timeLabel(a.timestamp)}
           </span>
         </li>

@@ -19,15 +19,15 @@ export default function DatenschutzPage() {
       <main className="mx-auto max-w-2xl px-6 py-20">
         <Link
           href="/"
-          className="font-mono text-xs uppercase tracking-[0.16em] text-accent hover:text-accent-hover"
+          className="font-mono text-xs uppercase tracking-[0.16em] text-ink-secondary hover:text-accent-text"
         >
           ← Zurück
         </Link>
-        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-zinc-900">
+        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-ink">
           Datenschutzerklärung
         </h1>
 
-        <div className="mt-8 space-y-7 text-zinc-600">
+        <div className="mt-8 space-y-7 text-ink-secondary">
           <Section title="1. Verantwortlicher">
             <p>
               {BUSINESS.legalName} ({BUSINESS.brand}), {BUSINESS.street},{" "}
@@ -81,8 +81,8 @@ export default function DatenschutzPage() {
             </p>
           </Section>
 
-          <p className="font-mono text-xs text-zinc-500">
-            {"// Stand: Basisfassung. Vor Skalierung von bezahltem Traffic rechtlich prüfen lassen."}
+          <p className="font-mono text-xs text-ink-muted">
+            {"Stand: Basisfassung. Vor Skalierung von bezahltem Traffic rechtlich prüfen lassen."}
           </p>
         </div>
       </main>
@@ -100,7 +100,7 @@ function Section({
 }) {
   return (
     <section>
-      <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-zinc-500">
+      <h2 className="font-mono text-xs uppercase tracking-[0.16em] text-ink-muted">
         {title}
       </h2>
       <div className="mt-3 leading-relaxed">{children}</div>
