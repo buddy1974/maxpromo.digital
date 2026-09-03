@@ -1,4 +1,31 @@
-# Known Risks
+# Known Risks — Maxpromo Platform
+
+## OPEN — Agent Bureau claims EU hosting; its database is in us-east-1
+
+`agents.maxpromo.digital` states publicly, in its hero: "DSGVO-konform, in der
+EU gehostet, gebaut in Essen." Its Neon database is in **us-east-1** (Virginia).
+The web application's is correctly in eu-central-1.
+
+The tables in that US instance include `contacts`, `leads`,
+`waiting_room_items`, `memory_entries` and `document_intake_items` — personal
+data of German business contacts.
+
+This is a factual mismatch between a public statement and deployed
+infrastructure, with GDPR Chapter V (third-country transfer) implications.
+
+**Not resolved unilaterally, deliberately.** Both available actions are
+Marcel's: changing the copy removes the claim rather than the discrepancy and
+erases the evidence of it; moving the database is a production data migration
+on live customer records.
+
+**Disclosure:** the sentence in its current wording was written during the v5.1
+copy rewrite. The claim predates that as the trust badge "EU-gehostet", but it
+was carried forward without being checked against the infrastructure.
+
+**Owner:** Marcel. **Blocks:** onboarding further personal data into Agent
+Bureau.
+
+---
 
 ## 2026-07-10 — Build/typecheck/lint unverified after public MVP sprint (BLOCKING)
 

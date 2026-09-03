@@ -57,3 +57,30 @@ rule lived in the token rather than at the call sites.
 **Microcopy.** Site and homepage metadata rewritten from AI-first positioning
 ("AI Business Systems & Automation Infrastructure") to the consultancy framing
 ("Business Systems, Built in Essen").
+
+## 2026-09-03 — Track B: platform unification
+
+Two repositories became one. `maxpromo.digital` is now `maxpromo-platform`:
+`apps/web`, `apps/bureau`, and four shared packages.
+
+- **B1** Architecture frozen and documented (`docs/architecture/platform.md`).
+- **B2** Agent Bureau merged via `git subtree`, preserving its 32 commits.
+  Workspace root created; duplicated root configuration removed. Twelve shared
+  dependencies aligned to one specifier each, which fixed a duplicate `next`
+  install and surfaced eight genuine react-hooks defects, all fixed.
+- **B3/B4** `packages/design-tokens`, `tooling`, `config`, `ui`. Legal identity
+  merged from two disagreeing copies. Eleven dashboard status maps replaced by
+  one tone system.
+- **B5** Five component classes declared in both stylesheets moved to
+  `@maxpromo/ui/components.css`. Parity verified against computed styles in
+  both running applications.
+- **B6** One documentation tree. Agent Bureau's separate docs, PLAN.md and
+  CLAUDE.md consolidated; risk registers merged.
+- **B7** Separate Vercel projects with selective rebuilds; settings documented.
+- **B8** CI verify workflow and a pull request template carrying the gates that
+  need judgement.
+- **B9** Validation: zero duplicate files, tokens, components, docs or orange.
+
+Deferred with reasons: `apps/os` extraction (needs `packages/shared` first, and
+its own domain and Vercel project); one database and one auth session (both
+separate pieces of work, recorded in ADR-0001).
