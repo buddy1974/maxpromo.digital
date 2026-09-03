@@ -1,4 +1,5 @@
 import { token } from '@maxpromo/design-tokens'
+import { BUSINESS as LEGAL, UST_CLAUSE } from '@maxpromo/config'
 
 /**
  * lib/documents/config.ts
@@ -19,22 +20,34 @@ import { token } from '@maxpromo/design-tokens'
  *   - The §19 UStG clause below is mandatory on every invoice and angebot.
  */
 
+/**
+ * Document letterhead identity.
+ *
+ * The legal facts come from @maxpromo/config — they are the same facts the
+ * Impressum, the footer and Agent Bureau state, and they must not be restated
+ * here. This module adds only what is specific to a printed document: the
+ * letterhead wordmark and the address split into layout lines.
+ *
+ * Until 2026-09-03 this was a third independent copy of the business identity,
+ * and it had already drifted: it said `country: 'Germany'` where the other two
+ * said 'Deutschland'. It prints on invoices and quotations, which is the worst
+ * place for that to be wrong.
+ */
 export const BUSINESS = {
-  legalName: 'Marcel Tabit Akwe',
+  legalName: LEGAL.legalName,
+  /** Letterhead wordmark. Presentation, not identity. */
   brand: 'MAXPROMO',
   brandFull: 'MAXPROMO DIGITAL',
-  website: 'maxpromo.digital',
-  addressLine1: 'Körnerstr. 8',
-  addressLine2: '45143 Essen',
-  country: 'Germany',
-  email: 'info@maxpromo.digital',
-  phone: '+49 173 3645698',
-  steuernummer: '111/5339/7597',
-  finanzamt: 'Essen-NordOst',
-  vatClause: {
-    de: 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.',
-    en: 'No VAT is charged pursuant to § 19 UStG.',
-  },
+  website: LEGAL.website,
+  /** The address split for a two-line letterhead block. */
+  addressLine1: LEGAL.street,
+  addressLine2: LEGAL.city,
+  country: LEGAL.country,
+  email: LEGAL.email,
+  phone: LEGAL.phone,
+  steuernummer: LEGAL.steuernummer,
+  finanzamt: LEGAL.finanzamt,
+  vatClause: UST_CLAUSE,
 } as const
 
 /**

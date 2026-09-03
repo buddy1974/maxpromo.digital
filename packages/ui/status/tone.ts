@@ -60,16 +60,6 @@ export const TONE_BADGE: Record<Tone, string> = {
   accent: 'border-accent bg-accent-soft text-ink',
 }
 
-/** A left rule, for list rows that carry a state. */
-export const TONE_RULE: Record<Tone, string> = {
-  neutral: 'border-l-2 border-hairline',
-  positive: 'border-l-2 border-success',
-  caution: 'border-l-2 border-warning',
-  critical: 'border-l-2 border-danger',
-  info: 'border-l-2 border-info',
-  accent: 'border-l-2 border-accent',
-}
-
 /**
  * Build a typed domain-to-tone mapper.
  *

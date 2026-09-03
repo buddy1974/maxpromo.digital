@@ -13,7 +13,7 @@
  * shared, it is borrowed.
  */
 
-export { TONE_TEXT, TONE_BADGE, TONE_RULE, toneMap } from './status/tone'
+export { TONE_TEXT, TONE_BADGE, toneMap } from './status/tone'
 export type { Tone } from './status/tone'
 
 export { SectionHeader } from './primitives/SectionHeader'

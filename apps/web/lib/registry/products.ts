@@ -369,6 +369,7 @@ const RESTAURANT_OS = {
   media: {
     card: {
       en: 'images/systems/restaurant-os/card/restaurant-os-en.png',
+      de: 'images/systems/restaurant-os/card/restaurant-os-de.png',
     },
     pain: [
       'images/systems/restaurant-os/pain/p1.png',
@@ -2187,7 +2188,10 @@ const MAXPROMO_OS = {
   // ── Media
   media: {
     card: {
-      en: 'images/systems/maxpromo-os/card/maxpromo-os-en.png', // TODO: create if needed
+      // Internal tool: visibility is 'internal', so no card is ever rendered
+      // and this path is intentionally unbacked. Create the asset before making
+      // this product public.
+      en: 'images/systems/maxpromo-os/card/maxpromo-os-en.png',
     },
   },
   brandColor:     '#A3E635',

@@ -10,4 +10,3 @@
  */
 
 export { BUSINESS, UST_CLAUSE } from './legal'
-export type { BusinessIdentity } from './legal'

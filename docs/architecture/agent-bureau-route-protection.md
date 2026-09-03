@@ -69,3 +69,36 @@ Last updated: 2026-06-08 (Auth-4 complete)
 - `getDemoBusinessId()` in all query files is replaced with session `businessId` in Auth-5.
 - Login rate limiting (10 attempts / 900s per email) is applied inside the NextAuth `authorize` callback (`auth.ts`).
 - Vercel preview URLs (maxpromo-agent-bureau.vercel.app) must not be treated as public-facing. They expose the same unprotected routes. Resolved implicitly by Auth-2 + Auth-3.
+
+---
+
+## Tenant boundary — how ownership is actually checked
+
+*Recorded 2026-09-03 when `lib/auth/tenancy.ts` was removed as unused. The
+module was well-designed; the reasoning is worth keeping even though the code
+was superseded.*
+
+Every guarded route derives `businessId` **from the session**, never from a
+path parameter or request body:
+
+```ts
+const auth = await requireApiUser()
+// ...
+if (!proposal || proposal.businessId !== auth.user.businessId) return notFound()
+```
+
+Two deliberate choices behind that line:
+
+**Session, not URL.** Taking the tenant from the session removes the IDOR class
+entirely — there is no attacker-supplied identifier to tamper with. The removed
+module offered a `requireBusinessAccess(requestedBusinessId)` variant for the
+path-parameter case; no route needs it, and none should.
+
+**404, not 403.** A mismatch returns "not found" rather than "forbidden", so the
+response does not confirm that a record with that id exists in another tenant.
+
+**If multi-business access is ever added** — admin roles, sub-tenants — this is
+the point that changes, and it should become a shared helper at that time
+rather than an inline comparison repeated per route. Until then, every new
+route that reads tenant-scoped data must derive `businessId` from the session
+and compare before returning anything.
