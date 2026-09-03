@@ -1,201 +1,157 @@
 import type { Metadata } from 'next'
 import { Link } from '@/i18n/navigation'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('pricing')
+/**
+ * app/[locale]/pricing/page.tsx
+ *
+ * Answers one business question: "what will this cost me?"
+ *
+ * Rebuilt in v5.1. The previous page was a three-card SaaS pricing grid: a
+ * "✦ most popular" pill floating over the middle card, prices set at 48px in
+ * weight 800, drop shadows, an accent-tinted featured card, and a tick beside
+ * every line. Every one of those is on the retire list, and together they are
+ * the single most template-looking screen on the site.
+ *
+ * It is now a plan table. Plans are compared in columns because that is what a
+ * reader is actually doing — comparing — and a table compares better than
+ * three cards do. Nothing is "most popular"; if one plan suits most people we
+ * can say so in a sentence rather than decorate it.
+ *
+ * Build work gets its own section rather than a fourth card, because it is
+ * quoted rather than listed and pretending otherwise helps nobody.
+ */
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'pricing' })
   return {
     title: t('metaTitle'),
     description: t('metaDesc'),
+    alternates: {
+      canonical: `https://www.maxpromo.digital/${locale}/pricing`,
+      languages: {
+        de: 'https://www.maxpromo.digital/de/pricing',
+        en: 'https://www.maxpromo.digital/en/pricing',
+      },
+    },
   }
 }
 
-interface TierRef {
-  id: 't1' | 't2' | 't3'
-  href: string
-  featured: boolean
-  hasTag: boolean
-  includesKeys: ReadonlyArray<'I1' | 'I2' | 'I3' | 'I4' | 'I5' | 'I6' | 'I7' | 'I8'>
-}
-
-const TIER_REFS: ReadonlyArray<TierRef> = [
-  {
-    id: 't1', href: '/contact', featured: false, hasTag: false,
-    includesKeys: ['I1','I2','I3','I4','I5','I6'],
-  },
-  {
-    id: 't2', href: '/contact', featured: true, hasTag: true,
-    includesKeys: ['I1','I2','I3','I4','I5','I6','I7','I8'],
-  },
-  {
-    id: 't3', href: '/contact', featured: false, hasTag: false,
-    includesKeys: ['I1','I2','I3','I4','I5','I6','I7','I8'],
-  },
-]
-
+const TIERS = ['t1', 't2', 't3'] as const
+const INCLUDE_KEYS = ['I1', 'I2', 'I3', 'I4', 'I5', 'I6', 'I7', 'I8'] as const
 const FAQ_IDS = ['q1', 'q2', 'q3', 'q4'] as const
 
-const mono    = { fontFamily: 'var(--font-mono)' } as const
-const grotesk = { fontFamily: 'var(--font-heading)' } as const
-const sans    = { fontFamily: 'var(--font-body)' } as const
-
-const SECTION_PADDING = 'clamp(4.5rem, 8vw, 8.75rem) 2rem'
-
-export default async function PricingPage() {
-  const t      = await getTranslations('pricing')
+export default async function PricingPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  setRequestLocale(locale)
+  const t = await getTranslations('pricing')
   const tTiers = await getTranslations('pricing.tiers')
-  const tFaq   = await getTranslations('pricing.faq')
+  const tFaq = await getTranslations('pricing.faq')
+  const isDE = locale === 'de'
+
+  // Each plan lists what it includes. Missing keys simply are not in that plan.
+  const tierIncludes: Record<string, string[]> = {
+    t1: ['I1', 'I2', 'I3', 'I4', 'I5', 'I6'],
+    t2: [...INCLUDE_KEYS],
+    t3: [...INCLUDE_KEYS],
+  }
 
   return (
-    <main style={{ background: 'var(--color-bg)' }}>
-      {/* Header */}
-      <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
-            {t('eyebrow')}
-          </p>
-          <h1 style={{ marginBottom: '20px' }}>
-            {t('title')}
-          </h1>
-          <p style={{ ...sans, fontSize: '19px', color: 'var(--color-text-secondary)', maxWidth: '44rem', margin: '0 auto', lineHeight: 1.75 }}>
-            {t('subtitle')}
-          </p>
+    <>
+      <section className="section-feature">
+        <div className="container">
+          <div style={{ maxWidth: 'var(--measure)' }}>
+            <p className="section-label">{t('eyebrow')}</p>
+            <h1 style={{ margin: '0 0 var(--space-5)' }}>{t('title')}</h1>
+            <p className="lede">{t('subtitle')}</p>
+          </div>
         </div>
       </section>
 
-      {/* Tiers */}
-      <section style={{ background: 'var(--color-bg-section)', padding: 'clamp(3.5rem, 6vw, 6rem) 2rem', borderBottom: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-          <div style={{ display: 'grid', gap: '20px', alignItems: 'start' }} className="grid-cols-1 lg:grid-cols-3">
-            {TIER_REFS.map((tier) => (
-              <div
-                key={tier.id}
-                style={{
-                  background: tier.featured ? 'color-mix(in srgb, var(--brand-primary) 3%, transparent)' : 'var(--color-bg)',
-                  border: tier.featured
-                    ? '2px solid color-mix(in srgb, var(--brand-primary) 35%, transparent)'
-                    : '1px solid var(--color-border)',
-                  boxShadow: 'var(--shadow-card)',
-                  borderRadius: 'var(--radius-card)',
-                  padding: '40px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  position: 'relative',
-                }}
-              >
-                {tier.hasTag && (
-                  <span style={{
-                    ...mono,
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    color: 'var(--brand-text-inverted)',
-                    background: 'var(--color-primary)',
-                    padding: '4px 12px',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    position: 'absolute',
-                    top: '-13px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    borderRadius: '20px',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    ✦ {tTiers(`${tier.id}Tag`)}
-                  </span>
-                )}
-                <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px', marginTop: tier.hasTag ? '12px' : '0' }}>
-                  {tTiers(`${tier.id}Name`)}
+      {/* Plans */}
+      <section className="section" style={{ borderTop: '1px solid var(--brand-border)' }}>
+        <div className="container">
+          <div className="plan-grid">
+            {TIERS.map((id) => (
+              <div key={id} className="plan">
+                <p className="plan-name">{tTiers(`${id}Name`)}</p>
+                <p className="plan-price">
+                  {tTiers(`${id}Price`)}
+                  <span className="plan-period">{tTiers(`${id}Period`)}</span>
                 </p>
-                <p style={{ ...grotesk, fontWeight: 800, fontSize: '48px', color: 'var(--color-text-primary)', letterSpacing: '-0.02em', lineHeight: 1, marginBottom: '6px' }}>
-                  {tTiers(`${tier.id}Price`)}
-                </p>
-                <p style={{ ...mono, fontSize: '13px', color: 'var(--color-text-secondary)', marginBottom: '20px', letterSpacing: '0.03em' }}>
-                  {tTiers(`${tier.id}Period`)}
-                </p>
-                <p style={{ ...sans, fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, marginBottom: '28px' }}>
-                  {tTiers(`${tier.id}Desc`)}
-                </p>
-                <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '24px', marginBottom: '32px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  {tier.includesKeys.map((ik) => (
-                    <div key={ik} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '10px 0', borderBottom: '1px solid var(--color-border)' }}>
-                      <span style={{ color: 'var(--brand-text-secondary)', flexShrink: 0, ...mono, fontSize: '14px' }}>✓</span>
-                      <span style={{ ...sans, fontSize: '15px', color: 'var(--color-text-primary)', lineHeight: 1.5 }}>
-                        {tTiers(`${tier.id}${ik}`)}
-                      </span>
-                    </div>
+                <p className="plan-desc">{tTiers(`${id}Desc`)}</p>
+                <ul className="plain-list plan-includes">
+                  {tierIncludes[id].map((ik) => (
+                    <li key={ik}>{tTiers(`${id}${ik}`)}</li>
                   ))}
-                </div>
-                <Link
-                  href={tier.href}
-                  className={tier.featured ? 'btn btn-primary' : 'btn btn-secondary'}
-                >
-                  {tTiers(`${tier.id}Cta`)} →
+                </ul>
+                <Link href="/contact" className="btn btn-secondary plan-cta">
+                  {tTiers(`${id}Cta`)}
                 </Link>
               </div>
             ))}
           </div>
-          <p style={{ ...mono, fontSize: '12px', color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '24px', letterSpacing: '0.05em' }}>
-            {t('footnote')}
-          </p>
+          <p className="plan-footnote">{t('footnote')}</p>
+        </div>
+      </section>
+
+      {/* Build work is quoted, not listed. */}
+      <section className="section" style={{ background: 'var(--brand-surface-subtle)', borderBlock: '1px solid var(--brand-border)' }}>
+        <div className="container">
+          <div className="prose-two-col">
+            <div>
+              <p className="section-label">{t('buildEyebrow')}</p>
+              <h2 style={{ margin: 0 }}>{t('buildTitle')}</h2>
+            </div>
+            <div>
+              <p style={{ margin: 0, fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
+                {t('buildDesc')}
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderBottom: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
-            {t('faqEyebrow')}
-          </p>
-          <h2 style={{ marginBottom: '3rem' }}>
-            {t('faqTitle')}
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-            {FAQ_IDS.map((qid, i) => (
-              <div
-                key={qid}
-                style={{
-                  borderTop: '1px solid var(--color-border)',
-                  padding: '2rem 0',
-                  borderBottom: i === FAQ_IDS.length - 1 ? '1px solid var(--color-border)' : 'none',
-                }}
-              >
-                <h3 className="h-card" style={{ marginBottom: '12px' }}>
-                  {tFaq(qid)}
-                </h3>
-                <p style={{ ...sans, fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.75 }}>
-                  {tFaq(`a${qid.substring(1)}`)}
-                </p>
-              </div>
-            ))}
+      <section className="section">
+        <div className="container">
+          <div className="prose-two-col">
+            <div>
+              <p className="section-label">{t('faqEyebrow')}</p>
+              <h2 style={{ margin: 0 }}>{t('faqTitle')}</h2>
+            </div>
+            <div>
+              <dl className="spec">
+                {FAQ_IDS.map((qid) => (
+                  <div key={qid}>
+                    <dt>{tFaq(qid)}</dt>
+                    <dd>{tFaq(`a${qid.substring(1)}`)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING }}>
-        <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
-            {t('ctaEyebrow')}
-          </p>
-          <h2 style={{ marginBottom: '20px' }}>
-            {t('ctaTitle')}
-          </h2>
-          <p style={{ ...sans, fontSize: '18px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.75 }}>
-            {t('ctaDesc')}
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
-            <Link href="/contact" className="btn btn-primary">
-              {t('ctaPrimary')}
-            </Link>
-            <Link href="/contact" className="btn btn-secondary">
-              {t('ctaSecondary')}
-            </Link>
+      <section className="section" style={{ background: 'var(--brand-surface-subtle)', borderTop: '1px solid var(--brand-border)' }}>
+        <div className="container">
+          <div style={{ maxWidth: 'var(--measure-narrow)' }}>
+            <p className="section-label">{t('ctaEyebrow')}</p>
+            <h2 style={{ margin: '0 0 var(--space-4)' }}>{t('ctaTitle')}</h2>
+            <p style={{ margin: '0 0 var(--space-6)', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
+              {t('ctaDesc')}
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+              <Link href="/contact" className="btn btn-primary">{t('ctaPrimary')}</Link>
+              <Link href="/solutions" className="btn btn-secondary">
+                {isDE ? 'Leistungen ansehen' : 'See what we do'}
+              </Link>
+            </div>
           </div>
-          <p style={{ ...mono, fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '20px', letterSpacing: '0.05em' }}>
-            {t('ctaFootnote')}
-          </p>
         </div>
       </section>
-    </main>
+    </>
   )
 }

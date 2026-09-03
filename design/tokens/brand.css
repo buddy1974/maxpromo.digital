@@ -107,6 +107,12 @@
   --brand-border:           var(--mp-gray-200);
   --brand-border-strong:    var(--mp-gray-300);
   --brand-border-inverted:  rgba(255, 255, 255, 0.14);
+  /* Functional boundaries — the edge of a form control or a button — must
+     reach 3:1 against the adjacent surface (WCAG 1.4.11), because that edge
+     is the only thing identifying the control. Decorative separators between
+     sections are exempt and stay at --brand-border, which is deliberately
+     lighter. gray-300 measures 1.48:1 and is not sufficient for a control.  */
+  --brand-border-control:   var(--mp-gray-500);   /* 4.83:1 on white */
 
   /* — Text ———————————————————————————————————————————————————————————— */
   --brand-text:             var(--mp-black);
@@ -127,6 +133,11 @@
   --brand-primary-soft:     var(--mp-lime-50);
   --brand-on-primary:       var(--mp-black);
   --brand-focus:            var(--mp-lime-700);
+  /* Brand Lime on white measures 1.51:1, so a lime button has no perceivable
+     edge for a low-vision reader. The fill stays the brand; the boundary is
+     drawn in Dark Green, which reaches 3.08:1 and satisfies 1.4.11 without
+     changing the colour anyone actually sees. */
+  --brand-primary-edge:     var(--mp-lime-600);   /* 3.08:1 on white */
 
   /* — Semantic status ————————————————————————————————————————————————
      Independent of the brand by rule. Product surfaces only. */

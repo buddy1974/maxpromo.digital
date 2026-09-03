@@ -30,7 +30,7 @@ export default function LocaleNotFound() {
         style={{
           fontFamily: 'var(--font-roboto-mono)',
           fontSize: '11px',
-          color: 'var(--brand-primary)',
+          color: 'var(--brand-primary-text)',
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
           margin: '0 0 16px',

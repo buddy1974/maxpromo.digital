@@ -593,20 +593,20 @@
     "errorGeneric": "Something went wrong. Please try again."
   },
   "caseStudies": {
-    "metaTitle": "Case Studies, Maxpromo Digital",
-    "metaDesc": "Real results from live deployments, time saved, costs reduced, processes transformed.",
-    "eyebrow": "Case Studies",
-    "heroTitle": "Real results, real operations",
-    "heroDesc": "Every number here comes from a live deployment. No demos, no projections, actual outcomes.",
-    "ndaNote": "Results are from live production systems. Client details withheld under NDA.",
+    "metaTitle": "Case studies",
+    "metaDesc": "Work we have delivered: the situation, what we built, and what changed afterwards.",
+    "eyebrow": "Case studies",
+    "heroTitle": "What we built, and what changed.",
+    "heroDesc": "Each of these ran in production. Where a number appears, it came from the system rather than from an estimate. Where we cannot evidence something, it is not here.",
+    "ndaNote": "These are live production systems. Client names are withheld under non-disclosure agreement.",
     "deliveredIn": "Delivered in",
-    "challengeLabel": "the challenge",
-    "solutionLabel": "the solution",
-    "resultsLabel": "results",
-    "ctaEyebrow": "Your turn",
-    "ctaTitle": "Results like these are possible for your business",
-    "ctaDesc": "Tell us what you need help with. We will respond within one business day.",
-    "ctaPrimary": "Contact us",
+    "challengeLabel": "The situation",
+    "solutionLabel": "What we built",
+    "resultsLabel": "What changed",
+    "ctaEyebrow": "Next step",
+    "ctaTitle": "If any of this sounds familiar",
+    "ctaDesc": "Tell us what is costing you time. We reply within one business day.",
+    "ctaPrimary": "Start a conversation",
     "ctaSecondary": "Talk to our team →",
     "cs1Tag": "OPERATIONS",
     "cs1Headline": "78% reduction in manual processing time",
@@ -637,30 +637,26 @@
     "cs3Timeline": "8 weeks"
   },
   "about": {
-    "metaTitle": "About Maxpromo | Built Before AI Became Fashion",
-    "metaDesc": "Maxpromo Digital is an Essen-based business systems and automation company. Long before AI agents became mainstream, we were working inside CMS platforms, hosting environments, databases and production systems.",
-    "eyebrow": "About Maxpromo",
-    "title": "Built before AI became fashion.",
-    "intro": "Maxpromo Digital is an Essen-based business systems and automation company. Long before AI agents became mainstream, we were already working inside CMS platforms, hosting environments, databases, migrations and production systems. The technical depth came first. The AI layer came later.",
+    "metaTitle": "About",
+    "metaDesc": "Maxpromo Digital is a software consultancy in Essen. Fifteen years of production systems work behind the systems we build and maintain.",
+    "eyebrow": "About",
+    "title": "Fifteen years of keeping systems running.",
+    "intro": "Maxpromo Digital is a software consultancy in Essen. We design and build the systems companies run on, and we maintain them afterwards — which is the part that decides whether any of it was worth doing.",
     "storyEyebrow": "Where the experience comes from",
-    "storyTitle": "Years of real systems work.",
-    "storyBody": "From Joomla and WordPress to Drupal and TYPO3. From shared hosting to WAMP environments, phpMyAdmin, SQL imports, .htaccess, PHP version management and production recovery. Maxpromo has worked across the full lifecycle of digital systems, including a complete migration of a Joomla website originally built around 2014 into a modern CI/CD deployment pipeline. That is legacy system transformation, not a website project.",
-    "transformEyebrow": "From legacy websites to operational systems",
+    "storyTitle": "Production systems, not prototypes.",
+    "storyBody": "Joomla, WordPress, Drupal and TYPO3. Shared hosting and self-managed servers. SQL, migrations, backups and the imports that go wrong at two in the morning. Fifteen years of that is what informs how we build now: cautiously, with a way back, and with someone responsible when it breaks.",
+    "transformEyebrow": "What businesses actually need",
     "transformTitle": "Most businesses do not need another website.",
-    "transformBody": "They need old systems modernized, manual work removed, and workflows connected. Joomla installations that nobody wants to touch. WordPress sites that take a developer to update. Catalogue shops with no stock logic. Email lists sitting unused in Excel. Manual processes disguised as digital ones. That is the gap we close.",
-    "todayEyebrow": "Today",
-    "todayTitle": "Today we install AI-powered business systems.",
+    "transformBody": "They need the old system brought up to date, the manual steps removed, and the tools they already pay for connected to each other. A rebuild is sometimes the answer. More often it is the expensive way to avoid a smaller, harder question about how the work moves.",
+    "todayEyebrow": "What we do now",
+    "todayTitle": "We build the systems a business runs on.",
     "todayList": [
-      "Workflow automation",
-      "AI agents",
-      "CRM logic",
-      "Internal dashboards",
-      "Content pipelines",
-      "Newsletter systems",
-      "Catalogue and shop modernization",
-      "Booking and order systems",
-      "Operational platforms",
-      "Legacy CMS modernization"
+      "Connecting tools so information is captured once",
+      "Bringing enquiries from every channel into one place",
+      "Modernising legacy websites and content systems",
+      "Operational dashboards that show the real state of the work",
+      "Assisted drafting and routing, with a person approving",
+      "Documents, quotes and invoices generated from the work itself"
     ],
     "principleEyebrow": "What we stand for",
     "principleTitle": "How we approach every system",
@@ -709,19 +705,40 @@
       "r2Label": "INFRASTRUCTURE",
       "r3Label": "INTEGRATIONS"
     },
-    "ctaEyebrow": "Ready to start?",
-    "ctaTitle": "Talk to us.",
-    "ctaDesc": "We identify the highest-impact changes before any commitment. 30 minutes. No pressure.",
-    "ctaPrimary": "Contact us →",
-    "ctaSecondary": "Contact us"
+    "ctaEyebrow": "Next step",
+    "ctaTitle": "Start with a conversation",
+    "ctaDesc": "Around 45 minutes walking through how your business actually works. Afterwards you will know where the time is going, whether or not we work together.",
+    "ctaPrimary": "Start a conversation",
+    "ctaSecondary": "See what we do",
+    "todayIntro": "The work falls into a handful of shapes. What they have in common is that each one removes a step somebody was doing by hand.",
+    "principlesEyebrow": "How we work",
+    "principlesTitle": "Four things we hold to.",
+    "principles": [
+      {
+        "t": "The business problem comes first",
+        "d": "We do not start from a technology and look for somewhere to put it. We start from what is costing time and work back."
+      },
+      {
+        "t": "The smallest system that works",
+        "d": "A smaller system that a team actually uses beats a larger one that impresses in a demo and is abandoned by March."
+      },
+      {
+        "t": "A person stays in the loop",
+        "d": "Anything that leaves the business is drafted and approved. Automation prepares work; it does not act on your behalf unsupervised."
+      },
+      {
+        "t": "We stay after it ships",
+        "d": "A system nobody maintains decays. We keep running what we build, or we hand it over properly to someone who will."
+      }
+    ]
   },
   "pricing": {
     "metaTitle": "Pricing",
-    "metaDesc": "Simple monthly plans for small businesses, website care, Google, social media and automation. No long-term contracts.",
+    "metaDesc": "What ongoing work costs, and what a build costs. Monthly, cancellable, no hidden fees.",
     "eyebrow": "Pricing",
-    "title": "Simple monthly plans for small businesses",
-    "subtitle": "No long-term lock-in. No hidden fees. Contact us and we will recommend the right plan for you.",
-    "footnote": "Gemäß §19 UStG wird keine Umsatzsteuer berechnet. · Business system installation from €999 · Custom projects priced after business check.",
+    "title": "What this costs.",
+    "subtitle": "Ongoing work is monthly and cancellable. Build work is quoted per project, because the scope genuinely differs. If a plan does not fit, we will say so rather than sell you the nearest one.",
+    "footnote": "Prices are net. Gemäß §19 UStG wird keine Umsatzsteuer berechnet.",
     "tiers": {
       "t1Name": "Digital Starter Care",
       "t1Price": "149 €",
@@ -762,8 +779,8 @@
       "t3I7": "Competitor monitoring",
       "t3I8": "Full account team"
     },
-    "faqEyebrow": "FAQ",
-    "faqTitle": "Common questions",
+    "faqEyebrow": "Questions people ask",
+    "faqTitle": "Before you ask",
     "faq": {
       "q1": "Can I cancel anytime?",
       "a1": "Yes. All plans are monthly and can be cancelled at any time with 30 days notice. No long-term contracts.",
@@ -774,12 +791,15 @@
       "q4": "Is there VAT on top of the price?",
       "a4": "No VAT. Maxpromo Digital operates as a Kleinunternehmer (§19 UStG), so no VAT is charged on any of our services."
     },
-    "ctaEyebrow": "Not sure where to start?",
-    "ctaTitle": "Not sure which plan is right?",
-    "ctaDesc": "Tell us what you need. We will explain what we recommend before any cost or commitment.",
-    "ctaPrimary": "Contact us",
+    "ctaEyebrow": "Not sure which fits?",
+    "ctaTitle": "Then do not choose yet.",
+    "ctaDesc": "Tell us what is costing you time. We will tell you what we would recommend, including if the answer is that you do not need us.",
+    "ctaPrimary": "Start a conversation",
     "ctaSecondary": "Contact us",
-    "ctaFootnote": "Free business check · No commitment · Gemäß §19 UStG keine Umsatzsteuer"
+    "ctaFootnote": "Free business check · No commitment · Gemäß §19 UStG keine Umsatzsteuer",
+    "buildEyebrow": "Build work",
+    "buildTitle": "Projects are quoted, not listed.",
+    "buildDesc": "A system build starts at €999 and is quoted after we have seen the actual process. Anyone quoting before that is guessing, and the guess is always low."
   },
   "contact": {
     "eyebrow": "Talk to us",

@@ -294,7 +294,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
       {/* ── AI SLIDE-OVER PANEL ── */}
       {aiOpen && (
         <div style={{
-          position: 'fixed', top: 0, right: 0, width: '380px', height: '100vh',
+          position: 'fixed', top: 0, right: 0, width: 'min(380px, 100vw)', height: '100vh',
           background: 'var(--brand-surface)', borderLeft: '1px solid var(--brand-border)',
           display: 'flex', flexDirection: 'column', zIndex: 200,
         }}>

@@ -317,7 +317,7 @@ export default function VoiceInputWidget({
               alignItems: 'center',
             }}
           >
-            <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
               Voice Transcript
             </span>
             <button
@@ -358,7 +358,7 @@ export default function VoiceInputWidget({
                 borderTop: '1px solid color-mix(in srgb, var(--brand-surface) 5%, transparent)',
               }}
             >
-              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '14px 0 8px' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '14px 0 8px' }}>
                 AI-enhanced version
               </p>
               <div
@@ -408,7 +408,7 @@ export default function VoiceInputWidget({
                 style={{
                   ...btnBase,
                   background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)',
-                  color: 'var(--brand-primary)',
+                  color: 'var(--brand-primary-text)',
                   border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)',
                   opacity: !voice.editedRaw.trim() ? 0.5 : 1,
                   cursor: !voice.editedRaw.trim() ? 'not-allowed' : 'pointer',
@@ -420,7 +420,7 @@ export default function VoiceInputWidget({
 
             {/* Enhancing spinner */}
             {voice.phase === 'enhancing' && (
-              <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.08em' }}>
+              <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.08em' }}>
                 ⟳ Enhancing…
               </span>
             )}

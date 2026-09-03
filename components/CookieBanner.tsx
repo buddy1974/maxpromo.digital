@@ -90,7 +90,7 @@ export default function CookieBanner() {
           {t('text')}{' '}
           <Link
             href="/privacy"
-            style={{ color: 'var(--brand-primary)', textDecoration: 'none' }}
+            style={{ color: 'var(--brand-primary-text)', textDecoration: 'none' }}
           >
             {t('privacyLink')}
           </Link>

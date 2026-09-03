@@ -46,7 +46,7 @@ export default function NewsletterPage() {
       const html = `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
           <div style="background:var(--brand-background);padding:24px 32px;border-bottom:3px solid var(--brand-primary);">
-            <p style="font-family:monospace;font-size:10px;color:var(--brand-primary);letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;">Maxpromo Digital</p>
+            <p style="font-family:monospace;font-size:10px;color:var(--brand-primary-text);letter-spacing:0.2em;text-transform:uppercase;margin:0 0 6px;">Maxpromo Digital</p>
             <h1 style="color:var(--brand-surface);margin:0;font-size:20px;font-weight:700;">${subject.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</h1>
           </div>
           <div style="padding:28px 32px;background:var(--brand-surface);">

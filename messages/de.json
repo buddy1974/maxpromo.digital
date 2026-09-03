@@ -593,20 +593,20 @@
     "errorGeneric": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
   },
   "caseStudies": {
-    "metaTitle": "Fallstudien, Maxpromo Digital",
-    "metaDesc": "Echte Ergebnisse aus Live-Deployments, Zeit gespart, Kosten reduziert, Prozesse transformiert.",
+    "metaTitle": "Fallstudien",
+    "metaDesc": "Umgesetzte Arbeit: Ausgangslage, was gebaut wurde und was sich danach geändert hat.",
     "eyebrow": "Fallstudien",
-    "heroTitle": "Echte Ergebnisse, echte Betriebe",
-    "heroDesc": "Jede Zahl hier kommt aus einem Live-Deployment. Keine Demos, keine Projektionen, echte Ergebnisse.",
-    "ndaNote": "Ergebnisse aus produktiven Systemen. Kundendaten unter NDA.",
+    "heroTitle": "Was wir gebaut haben und was sich änderte.",
+    "heroDesc": "Jedes dieser Systeme lief produktiv. Wo eine Zahl steht, kommt sie aus dem System und nicht aus einer Schätzung. Was wir nicht belegen können, steht hier nicht.",
+    "ndaNote": "Es handelt sich um produktive Systeme. Kundennamen sind durch Vertraulichkeitsvereinbarung geschützt.",
     "deliveredIn": "Umgesetzt in",
-    "challengeLabel": "die Herausforderung",
-    "solutionLabel": "die Lösung",
-    "resultsLabel": "Ergebnisse",
-    "ctaEyebrow": "Ihr Betrieb",
-    "ctaTitle": "Solche Ergebnisse sind auch für Ihren Betrieb möglich",
-    "ctaDesc": "Jedes Engagement beginnt mit einem kostenlosen Audit. Wir identifizieren Ihre wichtigsten Optimierungspotenziale, vor jeder Verpflichtung.",
-    "ctaPrimary": "Kontakt aufnehmen",
+    "challengeLabel": "Die Ausgangslage",
+    "solutionLabel": "Was wir gebaut haben",
+    "resultsLabel": "Was sich geändert hat",
+    "ctaEyebrow": "Nächster Schritt",
+    "ctaTitle": "Wenn Ihnen davon etwas bekannt vorkommt",
+    "ctaDesc": "Sagen Sie uns, was Zeit kostet. Wir antworten innerhalb eines Werktags.",
+    "ctaPrimary": "Gespräch vereinbaren",
     "ctaSecondary": "Mit unserem Team sprechen →",
     "cs1Tag": "OPERATIONS",
     "cs1Headline": "78 % weniger manuelle Bearbeitungszeit",
@@ -637,30 +637,26 @@
     "cs3Timeline": "8 Wochen"
   },
   "about": {
-    "metaTitle": "Über Maxpromo | Gebaut bevor KI Mode wurde",
-    "metaDesc": "Maxpromo Digital ist ein Essener Unternehmen für Business-Systeme und Automatisierung. Lange bevor KI-Agenten zum Trend wurden, arbeiteten wir bereits in CMS-Plattformen, Hosting-Umgebungen, Datenbanken und Produktionssystemen.",
-    "eyebrow": "Über Maxpromo",
-    "title": "Gebaut bevor KI Mode wurde.",
-    "intro": "Maxpromo Digital ist ein Essener Unternehmen für Business-Systeme und Automatisierung. Lange bevor KI-Agenten zum Mainstream wurden, arbeiteten wir bereits in CMS-Plattformen, Hosting-Umgebungen, Datenbanken, Migrationen und Produktionssystemen. Die technische Tiefe kam zuerst. Die KI-Schicht kam später.",
+    "metaTitle": "Über uns",
+    "metaDesc": "Maxpromo Digital ist eine Software-Beratung aus Essen. Fünfzehn Jahre Arbeit an Produktionssystemen stecken in dem, was wir bauen und betreiben.",
+    "eyebrow": "Über uns",
+    "title": "Fünfzehn Jahre Systeme am Laufen halten.",
+    "intro": "Maxpromo Digital ist eine Software-Beratung aus Essen. Wir entwerfen und bauen die Systeme, auf denen Betriebe laufen — und pflegen sie danach weiter. Dieser zweite Teil entscheidet, ob sich der erste gelohnt hat.",
     "storyEyebrow": "Woher die Erfahrung kommt",
-    "storyTitle": "Jahre echter Systemarbeit.",
-    "storyBody": "Von Joomla und WordPress bis Drupal und TYPO3. Von Shared Hosting zu WAMP-Umgebungen, phpMyAdmin, SQL-Imports, .htaccess, PHP-Versionsverwaltung und Produktions-Recovery. Maxpromo hat den vollständigen Lebenszyklus digitaler Systeme durchgearbeitet, einschließlich der vollständigen Migration einer Joomla-Website, die um 2014 entstanden war, in eine moderne CI/CD-Deployment-Pipeline. Das ist Legacy-System-Transformation, kein Website-Projekt.",
-    "transformEyebrow": "Von Legacy-Websites zu operativen Systemen",
+    "storyTitle": "Produktionssysteme, keine Prototypen.",
+    "storyBody": "Joomla, WordPress, Drupal und TYPO3. Shared Hosting und eigene Server. SQL, Migrationen, Backups und die Importe, die nachts um zwei schiefgehen. Fünfzehn Jahre davon prägen, wie wir heute bauen: vorsichtig, mit einem Weg zurück und mit jemandem, der zuständig ist, wenn es klemmt.",
+    "transformEyebrow": "Was Betriebe wirklich brauchen",
     "transformTitle": "Die meisten Betriebe brauchen keine neue Website.",
-    "transformBody": "Sie brauchen alte Systeme modernisiert, manuelle Arbeit entfernt und Workflows verbunden. Joomla-Installationen, die niemand anfassen will. WordPress-Seiten, die einen Entwickler für Updates benötigen. Katalog-Shops ohne Lager-Logik. E-Mail-Listen, die ungenutzt in Excel liegen. Manuelle Prozesse, die als digitale getarnt sind. Das ist die Lücke, die wir schließen.",
-    "todayEyebrow": "Heute",
-    "todayTitle": "Heute installieren wir KI-gestützte Business-Systeme.",
+    "transformBody": "Sie brauchen ein aktuelles Altsystem, weniger manuelle Schritte und Werkzeuge, die miteinander reden — die sie ohnehin schon bezahlen. Ein Neubau ist manchmal die Antwort. Öfter ist er der teure Weg, einer kleineren, unangenehmeren Frage auszuweichen: wie die Arbeit eigentlich läuft.",
+    "todayEyebrow": "Was wir heute machen",
+    "todayTitle": "Wir bauen die Systeme, auf denen ein Betrieb läuft.",
     "todayList": [
-      "Workflow-Automatisierung",
-      "KI-Agenten",
-      "CRM-Logik",
-      "Interne Dashboards",
-      "Content-Pipelines",
-      "Newsletter-Systeme",
-      "Katalog- und Shop-Modernisierung",
-      "Buchungs- und Bestellsysteme",
-      "Operative Plattformen",
-      "Legacy-CMS-Modernisierung"
+      "Werkzeuge verbinden, damit Informationen einmal erfasst werden",
+      "Anfragen aus allen Kanälen an einer Stelle zusammenführen",
+      "Alte Websites und Content-Systeme modernisieren",
+      "Operative Übersichten, die den echten Stand zeigen",
+      "Vorbereitete Entwürfe und Vorsortierung — freigegeben von einem Menschen",
+      "Dokumente, Angebote und Rechnungen, die aus der Arbeit selbst entstehen"
     ],
     "principleEyebrow": "Was uns antreibt",
     "principleTitle": "Wie wir an jedes System herangehen",
@@ -709,19 +705,40 @@
       "r2Label": "INFRASTRUKTUR",
       "r3Label": "INTEGRATIONEN"
     },
-    "ctaEyebrow": "Bereit anzufangen?",
-    "ctaTitle": "Sprechen Sie mit uns.",
-    "ctaDesc": "Wir zeigen den größten Hebel, vor jeder Verpflichtung. 30 Minuten. Unverbindlich.",
-    "ctaPrimary": "Kontakt aufnehmen →",
-    "ctaSecondary": "Kontakt"
+    "ctaEyebrow": "Nächster Schritt",
+    "ctaTitle": "Fangen Sie mit einem Gespräch an",
+    "ctaDesc": "Etwa 45 Minuten, in denen wir durchgehen, wie Ihr Betrieb wirklich arbeitet. Danach wissen Sie, wo die Zeit hingeht — unabhängig davon, ob wir zusammenarbeiten.",
+    "ctaPrimary": "Gespräch vereinbaren",
+    "ctaSecondary": "Leistungen ansehen",
+    "todayIntro": "Die Arbeit hat wenige Grundformen. Gemeinsam ist ihnen, dass jede einen Schritt entfernt, den vorher jemand von Hand gemacht hat.",
+    "principlesEyebrow": "Wie wir arbeiten",
+    "principlesTitle": "Vier Dinge, an die wir uns halten.",
+    "principles": [
+      {
+        "t": "Das Geschäftsproblem zuerst",
+        "d": "Wir starten nicht bei einer Technologie und suchen einen Ort dafür. Wir starten bei dem, was Zeit kostet, und arbeiten rückwärts."
+      },
+      {
+        "t": "Das kleinste System, das funktioniert",
+        "d": "Ein kleineres System, das ein Team tatsächlich nutzt, schlägt ein größeres, das in der Vorführung beeindruckt und im März niemand mehr öffnet."
+      },
+      {
+        "t": "Ein Mensch bleibt in der Schleife",
+        "d": "Was den Betrieb verlässt, wird vorbereitet und freigegeben. Automatisierung bereitet Arbeit vor; sie handelt nicht unbeaufsichtigt in Ihrem Namen."
+      },
+      {
+        "t": "Wir bleiben nach dem Start",
+        "d": "Ein System ohne Pflege verfällt. Wir betreiben weiter, was wir bauen — oder übergeben es sauber an jemanden, der es tut."
+      }
+    ]
   },
   "pricing": {
     "metaTitle": "Preise",
-    "metaDesc": "Einfache Monatspläne für kleine Unternehmen, Website, Google, Social Media und Automatisierung. Keine Langzeitverträge.",
+    "metaDesc": "Was laufende Betreuung kostet und was ein Aufbau kostet. Monatlich, kündbar, ohne versteckte Kosten.",
     "eyebrow": "Preise",
-    "title": "Einfache Monatspläne für kleine Unternehmen",
-    "subtitle": "Keine langen Verträge. Keine versteckten Kosten. Kontaktieren Sie uns und wir empfehlen den passenden Einstieg.",
-    "footnote": "Gemäß §19 UStG wird keine Umsatzsteuer berechnet. · Einmalige Business-System-Installation ab 999 € · Individuelle Projekte auf Anfrage.",
+    "title": "Was das kostet.",
+    "subtitle": "Laufende Betreuung ist monatlich und kündbar. Aufbauarbeit wird pro Projekt angeboten, weil der Umfang sich tatsächlich unterscheidet. Wenn kein Paket passt, sagen wir das — statt Ihnen das nächstbeste zu verkaufen.",
+    "footnote": "Preise netto. Gemäß §19 UStG wird keine Umsatzsteuer berechnet.",
     "tiers": {
       "t1Name": "Digital Starter Care",
       "t1Price": "149 €",
@@ -762,8 +779,8 @@
       "t3I7": "Wettbewerber-Monitoring",
       "t3I8": "Vollständiges Account-Team"
     },
-    "faqEyebrow": "FAQ",
-    "faqTitle": "Häufige Fragen",
+    "faqEyebrow": "Häufige Fragen",
+    "faqTitle": "Bevor Sie fragen",
     "faq": {
       "q1": "Kann ich jederzeit kündigen?",
       "a1": "Ja. Alle Pläne sind monatlich und können jederzeit mit 30 Tagen Frist gekündigt werden. Keine Langzeitverträge.",
@@ -774,12 +791,15 @@
       "q4": "Kommt Umsatzsteuer hinzu?",
       "a4": "Nein. Maxpromo Digital ist Kleinunternehmer gemäß §19 UStG, es wird keine Umsatzsteuer auf unsere Leistungen berechnet."
     },
-    "ctaEyebrow": "Unsicher, wo anfangen?",
-    "ctaTitle": "Unsicher, welcher Plan passt?",
-    "ctaDesc": "Sagen Sie uns, was Sie benötigen. Wir erklären unsere Empfehlung vor jeder Verpflichtung oder Kosten.",
-    "ctaPrimary": "Kontakt aufnehmen",
+    "ctaEyebrow": "Unsicher, was passt?",
+    "ctaTitle": "Dann wählen Sie noch nicht.",
+    "ctaDesc": "Sagen Sie uns, was Zeit kostet. Wir sagen Ihnen, was wir empfehlen würden — auch wenn die Antwort ist, dass Sie uns nicht brauchen.",
+    "ctaPrimary": "Gespräch vereinbaren",
     "ctaSecondary": "Kontakt",
-    "ctaFootnote": "Unverbindlich · Gemäß §19 UStG keine Umsatzsteuer"
+    "ctaFootnote": "Unverbindlich · Gemäß §19 UStG keine Umsatzsteuer",
+    "buildEyebrow": "Aufbauarbeit",
+    "buildTitle": "Projekte werden angeboten, nicht ausgepreist.",
+    "buildDesc": "Ein Systemaufbau beginnt bei 999 € und wird angeboten, nachdem wir den tatsächlichen Ablauf gesehen haben. Wer vorher eine Zahl nennt, rät — und der Schätzwert ist immer zu niedrig."
   },
   "contact": {
     "eyebrow": "Schreiben Sie uns",

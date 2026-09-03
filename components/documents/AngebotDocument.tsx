@@ -90,7 +90,7 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
 
         {includedItems.length > 0 && (
           <div style={{ marginBottom: '16px' }}>
-            <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-primary)', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px' }}>
+            <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-primary-text)', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px' }}>
               {t.includedFree}
             </p>
             <ul style={{ margin: 0, paddingLeft: '18px' }}>

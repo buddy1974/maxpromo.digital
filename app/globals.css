@@ -222,13 +222,14 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 .btn-primary {
   background: var(--brand-primary);
   color: var(--brand-on-primary);
+  border-color: var(--brand-primary-edge);
 }
 .btn-primary:hover { background: var(--brand-primary-hover); }
 
 .btn-secondary {
   background: var(--brand-surface);
   color: var(--brand-text);
-  border-color: var(--brand-border-strong);
+  border-color: var(--brand-border-control);
 }
 .btn-secondary:hover { border-color: var(--brand-text); }
 
@@ -263,7 +264,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   width: 100%;
   background: var(--brand-surface);
   color: var(--brand-text);
-  border: 1px solid var(--brand-border-strong);
+  border: 1px solid var(--brand-border-control);
   border-radius: var(--radius-md);
   padding: 11px 14px;
   font-family: var(--brand-font-body);
@@ -533,7 +534,7 @@ button.os-nav-item {
 }
 .os-logout-btn:hover {
   border-color: var(--brand-text);
-  color: var(--brand-primary);
+  color: var(--brand-primary-text);
 }
 
 @media (max-width: 768px) {
@@ -1201,3 +1202,86 @@ button.os-nav-item {
 .plain-list li:first-child { padding-top: 0; }
 .plain-list li:last-child { border-bottom: 0; }
 .plain-list-muted li { color: var(--brand-text-muted); }
+
+/* ─── Plans ───────────────────────────────────────────────────────────────────
+   A comparison, not a card deck. Hairline columns, no shadows, no featured
+   tint, no "most popular" badge, and a price set at reading size rather than
+   at 48px — the number is information, not a headline.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+}
+@media (min-width: 900px) { .plan-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-surface);
+  padding: var(--space-6);
+}
+.plan-name {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-secondary);
+}
+.plan-price {
+  margin: 0 0 var(--space-3);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--brand-text);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+.plan-period {
+  font-size: var(--text-small);
+  font-weight: 400;
+  color: var(--brand-text-muted);
+}
+.plan-desc {
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.plan-includes { flex: 1; margin-bottom: var(--space-6); }
+.plan-cta { align-self: flex-start; }
+.plan-footnote {
+  margin: var(--space-5) 0 0;
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+
+/* Skip link. Off-screen until focused, then anchored top-left. Without it a
+   keyboard user tabs through the whole navigation on every page. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 400;
+  padding: 12px 20px;
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border: 1px solid var(--brand-text);
+  border-radius: var(--radius-md);
+  font-size: var(--text-small);
+  font-weight: 600;
+  text-decoration: none;
+}
+.skip-link:focus {
+  left: var(--space-4);
+  top: var(--space-4);
+}
+
+/* main should not introduce its own box; it is a landmark, not a layer. */
+main { display: block; }

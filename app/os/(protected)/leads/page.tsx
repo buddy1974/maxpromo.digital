@@ -232,7 +232,7 @@ export default function LeadsPage() {
 
       {/* Detail panel */}
       {selected && (
-        <div style={{ position: 'fixed', top: 0, right: 0, width: '400px', height: '100vh', background: 'var(--brand-surface)', borderLeft: '1px solid var(--brand-border)', zIndex: 200, overflowY: 'auto' }}>
+        <div style={{ position: 'fixed', top: 0, right: 0, width: 'min(400px, 100vw)', height: '100vh', background: 'var(--brand-surface)', borderLeft: '1px solid var(--brand-border)', zIndex: 200, overflowY: 'auto' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--brand-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.leads.leadDetails}</p>
             <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>

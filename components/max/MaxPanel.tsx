@@ -71,7 +71,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
               <p style={{ fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '13px', color: 'var(--brand-text)', margin: 0, letterSpacing: '0.05em' }}>
                 Max
               </p>
-              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '10px', color: 'var(--brand-primary)', margin: 0, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '10px', color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>
                 {'Business Advisor'}
               </p>
             </div>

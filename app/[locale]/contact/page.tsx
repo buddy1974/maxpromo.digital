@@ -118,8 +118,8 @@ export default function ContactPage() {
     return (
       <main className="min-h-[70vh] bg-[var(--color-bg)]" style={{ padding: SECTION_PADDING }}>
         <div className="mx-auto max-w-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-12 text-center rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
-          <p className="mb-4 text-5xl text-[var(--color-primary)]">✓</p>
-          <h1 className="mb-3 font-heading text-3xl font-bold text-[var(--color-text-primary)]">{t('successTitle')}</h1>
+          <p className="mb-4 text-3xl text-[var(--semantic-success)]">✓</p>
+          <h1 className="mb-3">{t('successTitle')}</h1>
           <p className="mb-8 text-[var(--color-text-secondary)]">{t('successDesc')}</p>
           <button
             type="button"
@@ -127,7 +127,7 @@ export default function ContactPage() {
               setForm({ ...initialForm, system: form.system })
               setStatus('idle')
             }}
-            className="font-mono text-sm text-[var(--color-primary)]"
+            className="link text-sm"
           >
             {t('successAnother')}
           </button>
@@ -143,10 +143,10 @@ export default function ContactPage() {
           <>
             {/* Small contextual banner only, no product bullets, workflow or screenshots here.
                 Full product content lives on the dedicated /systems/<slug> page. */}
-            <p className="mb-3 font-mono text-[13px] uppercase tracking-[0.15em] text-[var(--color-primary)]">
+            <p className="section-label">
               {t(`systems.${contextSystem}.eyebrow`)}
             </p>
-            <h1 className="mb-5 font-heading font-extrabold text-[var(--color-text-primary)]" style={heroTitleStyle}>
+            <h1 className="mb-5">
               {t(`systems.${contextSystem}.title`)}
             </h1>
             <p className="mx-auto max-w-2xl text-[17px] leading-7 text-[var(--color-text-secondary)]">
@@ -155,10 +155,10 @@ export default function ContactPage() {
           </>
         ) : (
           <>
-            <p className="mb-3 font-mono text-[13px] uppercase tracking-[0.15em] text-[var(--color-primary)]">
+            <p className="section-label">
               {t('eyebrow')}
             </p>
-            <h1 className="mb-5 font-heading font-extrabold text-[var(--color-text-primary)]" style={heroTitleStyle}>
+            <h1 className="mb-5">
               {t('title')}
             </h1>
             <p className="mx-auto max-w-2xl text-[17px] leading-7 text-[var(--color-text-secondary)]">{t('subtitle')}</p>
@@ -235,7 +235,7 @@ export default function ContactPage() {
           </Field>
 
           <fieldset>
-            <legend className="mb-1 font-heading text-xl font-bold text-[var(--color-text-primary)]">
+            <legend className="mb-1 h-card">
               {t('painPointsTitle')}
             </legend>
             <p className="mb-4 text-sm text-[var(--color-text-secondary)]">{t('painPointsOptional')}</p>
@@ -300,8 +300,8 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-2 block font-mono text-[12px] font-bold uppercase tracking-[0.08em] text-[var(--color-text-secondary)]">
-        {label} {required && <span className="text-[var(--color-primary)]">*</span>}
+      <span className="label">
+        {label} {required && <span className="text-[var(--semantic-danger)]" aria-hidden="true">*</span>}
       </span>
       {children}
     </label>

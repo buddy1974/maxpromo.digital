@@ -80,7 +80,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider>
       {isShowcase ? (
         <>
-          {children}
+          <main id="content">{children}</main>
           <Max />
         </>
       ) : (
@@ -89,8 +89,17 @@ export default async function LocaleLayout({
             type="application/ld+json"
             dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
           />
+          {/* Skip link. First thing in the tab order, visible only on focus —
+              a keyboard user should not have to tab through the whole nav on
+              every page. */}
+          <a href="#content" className="skip-link">
+            {locale === 'de' ? 'Zum Inhalt springen' : 'Skip to content'}
+          </a>
           <Navbar />
-          {children}
+          {/* The <main> landmark was missing: pages rendered as fragments
+              directly under the provider, so a screen reader had no way to
+              jump past the chrome. */}
+          <main id="content">{children}</main>
           <Footer />
           <CookieBanner />
           <Max />
