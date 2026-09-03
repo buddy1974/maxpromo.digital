@@ -11,7 +11,7 @@ interface MetricCardProps { label: string; value: string | number; sub?: string 
 function MetricCard({ label, value, sub }: MetricCardProps) {
   return (
     <div style={{
-      background: '#111111', borderTop: '2px solid #F97316',
+      background: '#111111', borderTop: '2px solid var(--brand-primary)',
       border: '1px solid rgba(255,255,255,0.06)', padding: '20px 24px', flex: 1,
     }}>
       <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{label}</p>
@@ -28,8 +28,8 @@ interface Client  { id: string }
 
 const STATUS_COLORS: Record<string, string> = {
   draft: '#555', sent: '#3b82f6', paid: '#22c55e', overdue: '#ef4444',
-  new: '#F97316', contacted: '#3b82f6', qualified: '#a855f7', converted: '#22c55e', lost: '#ef4444',
-  lead: '#555', discovery: '#3b82f6', proposal: '#a855f7', 'in progress': '#F97316',
+  new: 'var(--brand-primary)', contacted: '#3b82f6', qualified: '#a855f7', converted: '#22c55e', lost: '#ef4444',
+  lead: '#555', discovery: '#3b82f6', proposal: '#a855f7', 'in progress': 'var(--brand-primary)',
   review: '#eab308', completed: '#22c55e', invoiced: '#22c55e',
 }
 
@@ -47,7 +47,7 @@ function QuickAction({ href, label }: { href: string; label: string }) {
   return (
     <Link href={href} style={{
       fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em',
-      color: '#000', background: '#F97316', padding: '10px 18px',
+      color: '#000', background: 'var(--brand-primary)', padding: '10px 18px',
       textDecoration: 'none', textTransform: 'uppercase', fontWeight: 700,
     }}>
       {label}
@@ -132,7 +132,7 @@ export default function DashboardPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px' }}>
 
         {/* Recent invoices */}
-        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316' }}>
+        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
             <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentInvoices}</p>
           </div>
@@ -154,14 +154,14 @@ export default function DashboardPage() {
             ))
           )}
           <div style={{ padding: '12px 20px' }}>
-            <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.1em' }}>
+            <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', textDecoration: 'none', letterSpacing: '0.1em' }}>
               {t.dashboard.viewAll}
             </Link>
           </div>
         </div>
 
         {/* Recent leads */}
-        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316' }}>
+        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
             <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentLeads}</p>
           </div>
@@ -183,14 +183,14 @@ export default function DashboardPage() {
             ))
           )}
           <div style={{ padding: '12px 20px' }}>
-            <Link href="/os/leads" style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.1em' }}>
+            <Link href="/os/leads" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', textDecoration: 'none', letterSpacing: '0.1em' }}>
               {t.dashboard.viewAll}
             </Link>
           </div>
         </div>
 
         {/* Recent jobs */}
-        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316' }}>
+        <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
             <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentJobs}</p>
           </div>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
             ))
           )}
           <div style={{ padding: '12px 20px' }}>
-            <Link href="/os/jobs" style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', textDecoration: 'none', letterSpacing: '0.1em' }}>
+            <Link href="/os/jobs" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', textDecoration: 'none', letterSpacing: '0.1em' }}>
               {t.dashboard.viewKanban}
             </Link>
           </div>

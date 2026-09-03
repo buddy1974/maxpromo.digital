@@ -35,7 +35,7 @@ const blankItem = (): LineItem => ({ description: '', qty: 1, unit: 'pauschal', 
 function addDays(d: number) { const dt = new Date(); dt.setDate(dt.getDate() + d); return dt.toISOString().split('T')[0] }
 
 const inp: React.CSSProperties = { width: '100%', background: '#0A0A0A', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', boxSizing: 'border-box' }
-const inpMissing: React.CSSProperties = { ...inp, border: '1px dashed rgba(249,115,22,0.5)' }
+const inpMissing: React.CSSProperties = { ...inp, border: '1px dashed color-mix(in srgb, var(--brand-primary) 50%, transparent)' }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -94,7 +94,7 @@ function StreetInput({ value, onChange, placeholder, aiEnhanced, onFill }: {
               <button key={i}
                 onMouseDown={() => { onChange(streetStr || s.display_name.split(',')[0].trim()); onFill?.(streetStr || s.display_name.split(',')[0].trim(), postcode, city); setOpen(false) }}
                 style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#CCC', fontFamily: sans, fontSize: '12px', padding: '9px 12px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(249,115,22,0.08)')}
+                onMouseEnter={e => (e.currentTarget.style.background = 'color-mix(in srgb, var(--brand-primary) 8%, transparent)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'none')}
               >
                 {streetStr || s.display_name.split(',').slice(0, 2).join(',')}
@@ -382,14 +382,14 @@ export default function NewAngebotPage() {
     } finally { setSaving(false) }
   }
 
-  const confColor  = { high: '#22c55e', medium: '#F97316', low: '#ef4444' }
-  const confBg     = { high: 'rgba(34,197,94,0.08)', medium: 'rgba(249,115,22,0.08)', low: 'rgba(239,68,68,0.08)' }
-  const confBorder = { high: 'rgba(34,197,94,0.25)', medium: 'rgba(249,115,22,0.25)', low: 'rgba(239,68,68,0.25)' }
+  const confColor  = { high: '#22c55e', medium: 'var(--brand-primary)', low: '#ef4444' }
+  const confBg     = { high: 'rgba(34,197,94,0.08)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'rgba(239,68,68,0.08)' }
+  const confBorder = { high: 'rgba(34,197,94,0.25)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'rgba(239,68,68,0.25)' }
   const confMsg    = { high: '✓ High confidence — review and confirm', medium: '⚠ Some fields need review — check highlighted items', low: '⚠ Low confidence — please verify all fields' }
 
   function itemBorderLeft(item: LineItem): string | undefined {
     if (item.aiConfidence === 'low')    return '3px solid #ef4444'
-    if (item.aiConfidence === 'medium') return '3px solid rgba(249,115,22,0.6)'
+    if (item.aiConfidence === 'medium') return '3px solid color-mix(in srgb, var(--brand-primary) 60%, transparent)'
     return undefined
   }
 
@@ -400,7 +400,7 @@ export default function NewAngebotPage() {
       {/* Unified AI Modal */}
       {aiModalOpen && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: '#111', border: '1px solid rgba(249,115,22,0.3)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
+          <div style={{ background: '#111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
               <div>
                 <h2 style={{ fontFamily: grotesk, fontWeight: 700, fontSize: '18px', color: '#FFF', margin: '0 0 4px', letterSpacing: '-0.02em' }}>{t.forms.aiAngebotTitle}</h2>
@@ -412,11 +412,11 @@ export default function NewAngebotPage() {
             {/* Paste / drop zone */}
             <div
               onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
-              style={{ border: `2px dashed ${isDragOver ? '#F97316' : 'rgba(255,255,255,0.12)'}`, background: isDragOver ? 'rgba(249,115,22,0.06)' : '#0A0A0A', borderRadius: '4px', padding: '16px', marginBottom: '16px', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s ease, background 0.2s ease' }}
+              style={{ border: `2px dashed ${isDragOver ? 'var(--brand-primary)' : 'rgba(255,255,255,0.12)'}`, background: isDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : '#0A0A0A', borderRadius: '4px', padding: '16px', marginBottom: '16px', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s ease, background 0.2s ease' }}
             >
               {aiLoading && pastePreview ? (
                 <div style={{ textAlign: 'center' }}>
-                  <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.1em', margin: '0 0 8px' }}>⟳ Reading your image...</p>
+                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.1em', margin: '0 0 8px' }}>⟳ Reading your image...</p>
                   {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
                   <img src={pastePreview} alt="" style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain', opacity: 0.5 }} />
                 </div>
@@ -442,7 +442,7 @@ export default function NewAngebotPage() {
             {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>⚠ {aiError}</p>}
 
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
+              <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
                 {aiLoading && !pastePreview ? 'Extracting...' : 'Generate with AI →'}
               </button>
               <button onClick={() => fileRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}>
@@ -466,7 +466,7 @@ export default function NewAngebotPage() {
               )}
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiGenerate}</button>
+              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary)', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiGenerate}</button>
               <button onClick={() => fileRef.current?.click()} style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', color: '#888', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.scanImage}</button>
             </div>
           </div>
@@ -512,8 +512,8 @@ export default function NewAngebotPage() {
 
           {/* Payment terms — captured but stored as part of notes when saving */}
           {aiEnhanced && paymentTerms && (
-            <div style={{ background: '#0D0D0D', border: '1px solid rgba(249,115,22,0.25)', borderLeft: '3px solid #F97316', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', margin: '0 0 4px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.paymentTermsHeading}</p>
+            <div style={{ background: '#0D0D0D', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', borderLeft: '3px solid var(--brand-primary)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', margin: '0 0 4px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.forms.paymentTermsHeading}</p>
               <p style={{ fontFamily: sans, fontSize: '12px', color: '#CCC', margin: 0, lineHeight: 1.5 }}>{paymentTerms}</p>
             </div>
           )}
@@ -592,9 +592,9 @@ export default function NewAngebotPage() {
                       onChange={e => updateItem(i, 'description', e.target.value)}
                       placeholder={aiEnhanced && !item.description ? t.forms.notFoundFill : t.forms.descriptionPlaceholderMultiline}
                       rows={Math.max(1, Math.min(8, (item.description || '').split('\n').length))}
-                      style={{ ...inp, flex: 1, resize: 'vertical', lineHeight: 1.5, fontFamily: sans, minHeight: '36px', border: aiEnhanced && !item.description ? '1px dashed rgba(249,115,22,0.5)' : inp.border as string }}
+                      style={{ ...inp, flex: 1, resize: 'vertical', lineHeight: 1.5, fontFamily: sans, minHeight: '36px', border: aiEnhanced && !item.description ? '1px dashed color-mix(in srgb, var(--brand-primary) 50%, transparent)' : inp.border as string }}
                     />
-                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'rgba(249,115,22,0.15)' : 'rgba(255,255,255,0.04)', border: `1px solid ${item.isFixedPrice ? 'rgba(249,115,22,0.4)' : 'rgba(255,255,255,0.1)'}`, color: item.isFixedPrice ? '#F97316' : '#555', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
+                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'rgba(255,255,255,0.04)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'rgba(255,255,255,0.1)'}`, color: item.isFixedPrice ? 'var(--brand-primary)' : '#555', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
                       {item.isFixedPrice ? t.angebotForm.pauschal : t.angebotForm.perUnit}
                     </button>
                     <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: '#444', cursor: 'pointer', fontSize: '18px', padding: '0 4px' }}>×</button>
@@ -612,12 +612,12 @@ export default function NewAngebotPage() {
                         {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
                       </select>
                       <input type="number" value={item.unit_price} onChange={e => updateItem(i, 'unit_price', Number(e.target.value))} style={{ ...inp, padding: '7px 8px', textAlign: 'right' }} />
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: '#F97316', textAlign: 'right' }}>{fmtEur(item.total)}</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)', textAlign: 'right' }}>{fmtEur(item.total)}</span>
                     </div>
                   )}
                 </div>
               ))}
-              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', background: 'none', border: '1px dashed rgba(249,115,22,0.3)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>{t.angebotForm.addItem}</button>
+              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>{t.angebotForm.addItem}</button>
             </div>
 
             <div style={{ background: '#0D0D0D', border: '1px solid rgba(255,255,255,0.06)', padding: '16px' }}>
@@ -626,7 +626,7 @@ export default function NewAngebotPage() {
                 <span style={{ fontFamily: mono, fontSize: '13px', color: '#FFF', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
               </div>
               <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
-                <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: '#F97316', width: '14px', height: '14px' }} />
+                <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }} />
                 <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.angebotForm.depositReceived}</span>
               </label>
               {hasAnzahlung && (
@@ -645,7 +645,7 @@ export default function NewAngebotPage() {
                   <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                       <span style={{ fontFamily: mono, fontSize: '10px', color: '#888' }}>{t.angebotForm.deposit}</span>
-                      <span style={{ fontFamily: mono, fontSize: '12px', color: '#F97316' }}>−{fmtEur(Number(anzahlung))}</span>
+                      <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)' }}>−{fmtEur(Number(anzahlung))}</span>
                     </div>
                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '6px 0' }} />
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -656,7 +656,7 @@ export default function NewAngebotPage() {
                 </div>
               )}
               {!hasAnzahlung && (
-                <div style={{ borderTop: '1px solid rgba(249,115,22,0.3)', paddingTop: '10px', textAlign: 'right' }}>
+                <div style={{ borderTop: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', paddingTop: '10px', textAlign: 'right' }}>
                   <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: '#FFF' }}>{fmtEur(subtotal)}</span>
                   <p style={{ fontFamily: mono, fontSize: '9px', color: '#444', margin: '4px 0 0' }}>{t.forms.vatValidityNote}</p>
                 </div>
@@ -666,7 +666,7 @@ export default function NewAngebotPage() {
             <Field label={t.angebotForm.fieldNotes}><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical' }} /></Field>
 
             <div style={{ marginBottom: '24px' }}>
-              <button type="button" onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() ? 0.6 : 1 }}>
+              <button type="button" onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() ? 0.6 : 1 }}>
                 {saving ? t.angebotForm.saving : t.angebotForm.saveAngebot}
               </button>
               {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0', letterSpacing: '0.04em' }}>⚠ {saveError}</p>}

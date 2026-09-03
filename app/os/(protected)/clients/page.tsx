@@ -110,7 +110,7 @@ function StreetInput({ value, onChange, onFill }: {
                 key={i}
                 onMouseDown={() => { onChange(streetStr); onFill?.(streetStr, postcode, city); setOpen(false) }}
                 style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: '#CCC', fontFamily: sans, fontSize: '13px', padding: '9px 14px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)' }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(249,115,22,0.08)')}
+                onMouseEnter={e => (e.currentTarget.style.background = 'color-mix(in srgb, var(--brand-primary) 8%, transparent)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'none')}
               >
                 {streetStr || s.display_name.split(',').slice(0, 2).join(',')}
@@ -327,7 +327,7 @@ export default function ClientsPage() {
     `${c.name} ${c.company} ${c.email}`.toLowerCase().includes(search.toLowerCase())
   )
 
-  const confidenceColor = { high: '#22c55e', medium: '#F97316', low: '#ef4444' }
+  const confidenceColor = { high: '#22c55e', medium: 'var(--brand-primary)', low: '#ef4444' }
 
   const columns = [
     t.clients.colName, t.clients.colCompany, t.clients.colEmail, t.clients.colPhone,
@@ -345,7 +345,7 @@ export default function ClientsPage() {
         </div>
         <button
           onClick={() => { setEditId(null); setForm({ ...BLANK }); setShowForm(true); resetScan() }}
-          style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: 'pointer' }}
+          style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: 'pointer' }}
         >
           {t.clients.newClient}
         </button>
@@ -365,7 +365,7 @@ export default function ClientsPage() {
           <div style={{
             background: '#111111',
             border: '1px solid rgba(255,255,255,0.08)',
-            borderTop: '2px solid #F97316',
+            borderTop: '2px solid var(--brand-primary)',
             borderRadius: '4px',
             width: '100%',
             maxWidth: '560px',
@@ -377,13 +377,13 @@ export default function ClientsPage() {
 
             {/* ── MODAL HEADER — fixed top ── */}
             <div style={{ padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
                 {editId ? t.clients.editClient : t.clients.newClientModal}
               </p>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <button
                   onClick={() => { setScanTab('scan'); fileRef.current?.click() }}
-                  style={{ background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
+                  style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary)', fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
                 >
                   {t.clients.scanButton}
                 </button>
@@ -414,7 +414,7 @@ export default function ClientsPage() {
                     <div style={{ flex: 1 }}>
                       <p style={{ fontFamily: mono, fontSize: '10px', color: '#888', margin: '0 0 10px', letterSpacing: '0.08em' }}>{t.clients.imageReady}</p>
                       <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={runExtract} disabled={extracting} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: '2px' }}>
+                        <button onClick={runExtract} disabled={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: '2px' }}>
                           {extracting ? t.clients.extracting : t.clients.extract}
                         </button>
                         <button onClick={() => { setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555', fontFamily: mono, fontSize: '10px', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
@@ -437,7 +437,7 @@ export default function ClientsPage() {
                     style={{ ...inp, resize: 'vertical', lineHeight: 1.6, marginBottom: '8px' }}
                   />
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={runExtract} disabled={extracting || !pasteText.trim()} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
+                    <button onClick={runExtract} disabled={extracting || !pasteText.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '10px', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
                       {extracting ? t.clients.extractingAi : t.clients.extractWithAi}
                     </button>
                     <button onClick={() => { setScanTab('scan'); setPasteText('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555', fontFamily: mono, fontSize: '10px', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
@@ -532,7 +532,7 @@ export default function ClientsPage() {
                   type="button"
                   onClick={editId ? updateClient : save}
                   disabled={saving || !form.name.trim()}
-                  style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
+                  style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
                 >
                   {saving ? t.common.saving : editId ? t.clients.updateClient : t.clients.saveClient}
                 </button>
@@ -556,7 +556,7 @@ export default function ClientsPage() {
       <input ref={fileRef} type="file" accept="image/*,.pdf" capture="environment" style={{ display: 'none' }} onChange={handleFileSelect} />
 
       {/* ── TABLE ── */}
-      <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderTop: '2px solid #F97316', overflow: 'hidden', borderRadius: '4px' }}>
+      <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden', borderRadius: '4px' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: '#0D0D0D', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -592,7 +592,7 @@ export default function ClientsPage() {
                     <div style={{ display: 'flex', gap: '10px' }}>
                       <button
                         onClick={() => startEdit(c)}
-                        style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                       >
                         {t.common.edit}
                       </button>

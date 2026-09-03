@@ -14,26 +14,6 @@
    ========================================================================== */
 
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   B3 TRANSITIONAL — DELETE THIS BLOCK IN B9
-
-   Tokenisation deliberately lands before the brand change, so that every sweep
-   batch (B4–B8) can be verified by the ABSENCE of visual change — the cheapest
-   possible QA question. This block holds the accent at the retiring orange so
-   nothing shifts while the sweeps run. B9 deletes it, and the entire platform
-   changes to Brand Lime in one reviewable, revertible commit.
-   ───────────────────────────────────────────────────────────────────────── */
-:root {
-  --brand-primary:       #F97316;
-  --brand-primary-hover: #FB8B3D;
-  --brand-primary-dark:  #EA580C;
-  --brand-primary-text:  #C2410C;
-  --brand-primary-soft:  #FFF7ED;
-  --brand-on-primary:    #FFFFFF;
-  --brand-focus:         #EA580C;
-}
-/* ───────────────────────────── END TRANSITIONAL ──────────────────────────── */
-
 
 /* ─────────────────────────────────────────────────────────────────────────────
    LEGACY ALIASES
@@ -493,14 +473,14 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   cursor: pointer;
 }
 .os-nav-item:hover { background: rgba(255,255,255,0.05); }
-.os-nav-item:hover .os-nav-icon  { color: #F97316 !important; }
+.os-nav-item:hover .os-nav-icon  { color: var(--brand-primary) !important; }
 .os-nav-item:hover .os-nav-label { color: #ffffff !important; }
 .os-nav-item.active {
-  background: rgba(249,115,22,0.1);
-  border-left-color: #F97316;
+  background: color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  border-left-color: var(--brand-primary);
   padding-left: 14px;
 }
-.os-nav-item.active .os-nav-icon  { color: #F97316 !important; }
+.os-nav-item.active .os-nav-icon  { color: var(--brand-primary) !important; }
 .os-nav-item.active .os-nav-label { color: #ffffff !important; font-weight: 600; }
 
 button.os-nav-item {
@@ -541,8 +521,8 @@ button.os-nav-item {
   text-align: left;
 }
 .os-logout-btn:hover {
-  border-color: rgba(249,115,22,0.4);
-  color: #F97316;
+  border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
+  color: var(--brand-primary);
 }
 
 @media (max-width: 768px) {

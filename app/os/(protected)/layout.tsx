@@ -177,7 +177,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
 
         {/* Header */}
         <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
-          <p style={{ fontFamily: mono, fontSize: '13px', fontWeight: 700, color: '#F97316', margin: 0, letterSpacing: '0.1em' }}>
+          <p style={{ fontFamily: mono, fontSize: '13px', fontWeight: 700, color: 'var(--brand-primary)', margin: 0, letterSpacing: '0.1em' }}>
             {t.sidebar.brand}
           </p>
           <p style={{ fontFamily: sans, fontSize: '11px', color: '#555555', margin: '5px 0 0' }}>
@@ -265,7 +265,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
           <button
             onClick={() => { setQsOpen(true); qsReset() }}
             style={{
-              background: '#111111', border: '1px solid rgba(249,115,22,0.3)', color: '#F97316',
+              background: '#111111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary)',
               fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.12em',
               padding: '10px 16px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: '6px',
@@ -279,7 +279,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
           <button
             onClick={() => setAiOpen(true)}
             style={{
-              background: '#F97316', color: '#000000',
+              background: 'var(--brand-primary)', color: '#000000',
               fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.12em',
               border: 'none', padding: '12px 18px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: '8px',
@@ -324,8 +324,8 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               <div key={i} style={{
                 alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
                 maxWidth: '88%',
-                background: msg.role === 'user' ? 'rgba(249,115,22,0.1)' : '#111111',
-                border: `1px solid ${msg.role === 'user' ? 'rgba(249,115,22,0.2)' : 'rgba(255,255,255,0.06)'}`,
+                background: msg.role === 'user' ? 'color-mix(in srgb, var(--brand-primary) 10%, transparent)' : '#111111',
+                border: `1px solid ${msg.role === 'user' ? 'color-mix(in srgb, var(--brand-primary) 20%, transparent)' : 'rgba(255,255,255,0.06)'}`,
                 padding: '10px 14px', borderRadius: '2px',
               }}>
                 <p style={{ fontFamily: sans, fontSize: '13px', color: '#CCCCCC', margin: 0, lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{msg.content}</p>
@@ -333,7 +333,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
             ))}
             {aiLoading && (
               <div style={{ alignSelf: 'flex-start', background: '#111111', border: '1px solid rgba(255,255,255,0.06)', padding: '10px 14px', borderRadius: '2px' }}>
-                <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', margin: 0, letterSpacing: '0.2em' }}>{t.ai.thinking}</p>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', margin: 0, letterSpacing: '0.2em' }}>{t.ai.thinking}</p>
               </div>
             )}
             <div ref={endRef} />
@@ -350,7 +350,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
             <button
               onClick={() => sendMsg(input)}
               disabled={aiLoading || !input.trim()}
-              style={{ background: '#F97316', border: 'none', color: '#000000', fontFamily: mono, fontWeight: 700, fontSize: '14px', padding: '10px 16px', cursor: 'pointer', opacity: (aiLoading || !input.trim()) ? 0.4 : 1 }}
+              style={{ background: 'var(--brand-primary)', border: 'none', color: '#000000', fontFamily: mono, fontWeight: 700, fontSize: '14px', padding: '10px 16px', cursor: 'pointer', opacity: (aiLoading || !input.trim()) ? 0.4 : 1 }}
             >
               ↑
             </button>
@@ -361,7 +361,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
       {/* ── QUICK SCAN MODAL ── */}
       {qsOpen && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: '#111111', border: '1px solid rgba(249,115,22,0.3)', width: '100%', maxWidth: '480px', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ background: '#111111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '480px', borderRadius: '4px', overflow: 'hidden' }}>
             <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <p style={{ fontFamily: sans, fontWeight: 700, fontSize: '15px', color: '#FFFFFF', margin: 0 }}>{t.quickScan.title}</p>
               <button onClick={() => setQsOpen(false)} style={{ background: 'none', border: 'none', color: '#555555', fontSize: '20px', cursor: 'pointer', lineHeight: 1 }}>×</button>
@@ -369,7 +369,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
 
             <div style={{ display: 'flex', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
               {(['scan', 'paste'] as const).map(tabKey => (
-                <button key={tabKey} onClick={() => { setQsTab(tabKey); qsReset() }} style={{ flex: 1, padding: '10px', background: qsTab === tabKey ? 'rgba(249,115,22,0.08)' : 'none', border: 'none', borderBottom: qsTab === tabKey ? '2px solid #F97316' : '2px solid transparent', color: qsTab === tabKey ? '#F97316' : '#555555', fontFamily: mono, fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
+                <button key={tabKey} onClick={() => { setQsTab(tabKey); qsReset() }} style={{ flex: 1, padding: '10px', background: qsTab === tabKey ? 'color-mix(in srgb, var(--brand-primary) 8%, transparent)' : 'none', border: 'none', borderBottom: qsTab === tabKey ? '2px solid var(--brand-primary)' : '2px solid transparent', color: qsTab === tabKey ? 'var(--brand-primary)' : '#555555', fontFamily: mono, fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
                   {tabKey === 'scan' ? t.quickScan.tabScan : t.quickScan.tabPaste}
                 </button>
               ))}
@@ -383,7 +383,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                       {!qsPreview ? (
                         <button
                           onClick={() => qsFileRef.current?.click()}
-                          style={{ width: '100%', background: '#0A0A0A', border: '2px dashed rgba(249,115,22,0.3)', color: '#F97316', fontFamily: mono, fontSize: '11px', letterSpacing: '0.1em', padding: '32px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', textAlign: 'center' }}
+                          style={{ width: '100%', background: '#0A0A0A', border: '2px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary)', fontFamily: mono, fontSize: '11px', letterSpacing: '0.1em', padding: '32px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', textAlign: 'center' }}
                         >
                           {t.quickScan.dropZone}
                           <br /><span style={{ fontSize: '9px', color: '#555555', fontWeight: 400 }}>{t.quickScan.dropZoneFormats}</span>
@@ -413,7 +413,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                     <button
                       onClick={qsExtract}
                       disabled={qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim())}
-                      style={{ background: '#F97316', border: 'none', color: '#000000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim()) ? 0.5 : 1 }}
+                      style={{ background: 'var(--brand-primary)', border: 'none', color: '#000000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim()) ? 0.5 : 1 }}
                     >
                       {qsLoading ? t.quickScan.extractingButton : t.quickScan.extractButton}
                     </button>
@@ -430,7 +430,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                     <p style={{ fontFamily: mono, fontSize: '9px', color: '#888888', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.quickScan.extractedHeading}</p>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: qsExtracted.confidence === 'high' ? '#22c55e' : qsExtracted.confidence === 'medium' ? '#F97316' : '#ef4444', background: qsExtracted.confidence === 'high' ? '#22c55e22' : qsExtracted.confidence === 'medium' ? '#F9731622' : '#ef444422', padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                    <span style={{ fontFamily: mono, fontSize: '9px', color: qsExtracted.confidence === 'high' ? '#22c55e' : qsExtracted.confidence === 'medium' ? 'var(--brand-primary)' : '#ef4444', background: qsExtracted.confidence === 'high' ? '#22c55e22' : qsExtracted.confidence === 'medium' ? 'var(--brand-primary)22' : '#ef444422', padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
                       {qsExtracted.confidence === 'high' ? t.quickScan.confidenceHigh : qsExtracted.confidence === 'medium' ? t.quickScan.confidenceMedium : t.quickScan.confidenceLow}
                     </span>
                   </div>
@@ -454,7 +454,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                     <p style={{ fontFamily: mono, fontSize: '9px', color: '#ef4444', margin: '0 0 12px', letterSpacing: '0.06em' }}>{t.quickScan.lowConfidenceWarning}</p>
                   )}
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={qsSaveClient} disabled={qsSaving} style={{ background: '#F97316', border: 'none', color: '#000000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsSaving ? 0.6 : 1 }}>
+                    <button onClick={qsSaveClient} disabled={qsSaving} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsSaving ? 0.6 : 1 }}>
                       {qsSaving ? t.quickScan.saving : t.quickScan.saveClient}
                     </button>
                     <button onClick={qsReset} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.1)', color: '#555555', fontFamily: mono, fontSize: '10px', padding: '10px 12px', cursor: 'pointer', borderRadius: '2px' }}>

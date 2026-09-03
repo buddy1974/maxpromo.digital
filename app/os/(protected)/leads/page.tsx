@@ -13,7 +13,7 @@ interface Lead {
 }
 
 const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
-  new:        { text: '#F97316', bg: 'rgba(249,115,22,0.12)' },
+  new:        { text: 'var(--brand-primary)', bg: 'color-mix(in srgb, var(--brand-primary) 12%, transparent)' },
   contacted:  { text: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
   qualified:  { text: '#a855f7', bg: 'rgba(168,85,247,0.12)' },
   converted:  { text: '#22c55e', bg: 'rgba(34,197,94,0.12)' },
@@ -112,8 +112,8 @@ export default function LeadsPage() {
       {/* New Lead Modal */}
       {showNew && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: '#111111', border: '1px solid rgba(249,115,22,0.3)', width: '100%', maxWidth: '440px', borderRadius: '4px', padding: '28px' }}>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>{t.leads.newLeadModal}</p>
+          <div style={{ background: '#111111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '440px', borderRadius: '4px', padding: '28px' }}>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>{t.leads.newLeadModal}</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {([
                 { label: t.leads.fieldName,    key: 'name',    type: 'text' },
@@ -139,7 +139,7 @@ export default function LeadsPage() {
             </div>
             {createErr && <p style={{ fontFamily: mono, fontSize: '11px', color: '#ef4444', margin: '10px 0 0' }}>⚠ {createErr}</p>}
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-              <button type="button" onClick={createLead} disabled={creating} style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: creating ? 'wait' : 'pointer', opacity: creating ? 0.6 : 1 }}>
+              <button type="button" onClick={createLead} disabled={creating} style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: creating ? 'wait' : 'pointer', opacity: creating ? 0.6 : 1 }}>
                 {creating ? t.common.saving : t.leads.saveLead}
               </button>
               <button type="button" onClick={() => { setShowNew(false); setCreateErr('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#ccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}>
@@ -155,11 +155,11 @@ export default function LeadsPage() {
           <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.leads.heading}</h1>
           <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>
             {stats.total} {t.leads.statTotal} &nbsp;·&nbsp;
-            <span style={{ color: '#F97316' }}>{stats.new} {t.leads.statNew}</span> &nbsp;·&nbsp;
+            <span style={{ color: 'var(--brand-primary)' }}>{stats.new} {t.leads.statNew}</span> &nbsp;·&nbsp;
             <span style={{ color: '#22c55e' }}>{stats.converted} {t.leads.statConverted}</span>
           </p>
         </div>
-        <button onClick={() => { setShowNew(true); setCreateErr('') }} style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 18px', cursor: 'pointer' }}>
+        <button onClick={() => { setShowNew(true); setCreateErr('') }} style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 18px', cursor: 'pointer' }}>
           {t.leads.newLead}
         </button>
       </div>
@@ -168,7 +168,7 @@ export default function LeadsPage() {
       <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', gap: '4px' }}>
           {['all', ...STATUSES].map(key => (
-            <button key={key} onClick={() => setTab(key)} style={{ fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '7px 12px', border: 'none', cursor: 'pointer', background: tab === key ? '#F97316' : 'transparent', color: tab === key ? '#000' : '#555' }}>
+            <button key={key} onClick={() => setTab(key)} style={{ fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '7px 12px', border: 'none', cursor: 'pointer', background: tab === key ? 'var(--brand-primary)' : 'transparent', color: tab === key ? '#000' : '#555' }}>
               {key === 'all' ? t.status.filterAll : statusLabel(key)}
             </button>
           ))}
@@ -176,7 +176,7 @@ export default function LeadsPage() {
         <input placeholder={t.common.searchPlaceholder} value={search} onChange={e => setSearch(e.target.value)} style={{ background: '#111', border: '1px solid rgba(255,255,255,0.08)', color: '#FFF', fontFamily: sans, fontSize: '13px', padding: '7px 14px', outline: 'none', width: '220px' }} />
       </div>
 
-      <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316', overflow: 'hidden' }}>
+      <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -234,7 +234,7 @@ export default function LeadsPage() {
       {selected && (
         <div style={{ position: 'fixed', top: 0, right: 0, width: '400px', height: '100vh', background: '#0D0D0D', borderLeft: '1px solid rgba(255,255,255,0.07)', zIndex: 200, overflowY: 'auto' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.leads.leadDetails}</p>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.leads.leadDetails}</p>
             <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
           </div>
           <div style={{ padding: '24px' }}>
@@ -259,8 +259,8 @@ export default function LeadsPage() {
             </div>
 
             {selected.summary && (
-              <div style={{ marginTop: '16px', background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderLeft: '2px solid #F97316', padding: '14px 16px' }}>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.leads.aiSummary}</p>
+              <div style={{ marginTop: '16px', background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderLeft: '2px solid var(--brand-primary)', padding: '14px 16px' }}>
+                <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.leads.aiSummary}</p>
                 <p style={{ fontFamily: sans, fontSize: '13px', color: '#888', margin: 0, lineHeight: 1.6 }}>{selected.summary}</p>
               </div>
             )}

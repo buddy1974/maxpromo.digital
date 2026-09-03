@@ -25,7 +25,7 @@ interface LogEntry {
 const TYPE_COLOR: Record<LogType, string> = {
   invoice_sent:  '#22c55e',
   angebot_sent:  '#3b82f6',
-  lead_enquiry:  '#F97316',
+  lead_enquiry:  'var(--brand-primary)',
   newsletter:    '#a855f7',
   other:         '#555',
 }
@@ -95,14 +95,14 @@ export default function InboxPage() {
         </p>
       </div>
 
-      <div style={{ background: 'rgba(249,115,22,0.06)', border: '1px solid rgba(249,115,22,0.15)', padding: '12px 18px', marginBottom: '24px' }}>
+      <div style={{ background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '12px 18px', marginBottom: '24px' }}>
         <p style={{ fontFamily: mono, fontSize: '10px', color: '#888', margin: 0, letterSpacing: '0.06em', lineHeight: 1.6 }}>
           {t.inbox.note1}<br />
-          {t.inbox.note2} <code style={{ color: '#F97316' }}>/api/os/inbox</code>
+          {t.inbox.note2} <code style={{ color: 'var(--brand-primary)' }}>/api/os/inbox</code>
         </p>
       </div>
 
-      <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316', overflow: 'hidden' }}>
+      <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>

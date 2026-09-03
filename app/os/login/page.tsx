@@ -94,7 +94,7 @@ function LoginForm() {
         disabled={loading || !password}
         style={{
           marginTop: '12px',
-          background: '#F97316',
+          background: 'var(--brand-primary)',
           border: 'none',
           borderRadius: '4px',
           color: '#000000',
@@ -130,7 +130,7 @@ function LoginShell({ children }: { children: React.ReactNode }) {
       flexDirection: 'column',
     }}>
       <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-        <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 700, color: '#F97316', letterSpacing: '0.1em', margin: 0 }}>
+        <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 700, color: 'var(--brand-primary)', letterSpacing: '0.1em', margin: 0 }}>
           {t.login.brand}
         </p>
         <p style={{ fontFamily: sans, fontSize: '13px', color: '#555555', margin: '8px 0 0' }}>

@@ -34,7 +34,7 @@ export default function AngebotPrintPage() {
         <DocumentToolbar>
           <button
             onClick={() => window.print()}
-            style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
+            style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
           >
             📄 Als PDF speichern
           </button>

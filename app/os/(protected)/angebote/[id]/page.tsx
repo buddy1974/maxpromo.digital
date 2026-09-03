@@ -158,14 +158,14 @@ export default function AngebotDetailPage() {
 
   if (loading) return (
     <div style={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em' }}>{t.common.loading}</p>
+      <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.2em' }}>{t.common.loading}</p>
     </div>
   )
 
   if (error || !angebot) return (
     <div style={{ padding: '40px' }}>
       <p style={{ fontFamily: mono, fontSize: '12px', color: '#ef4444' }}>{t.angebotDetail.notFound}</p>
-      <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', textDecoration: 'none' }}>{t.angebotDetail.backToAngebote}</Link>
+      <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', textDecoration: 'none' }}>{t.angebotDetail.backToAngebote}</Link>
     </div>
   )
 
@@ -236,7 +236,7 @@ export default function AngebotDetailPage() {
           <button
             onClick={openSendModal}
             disabled={sending}
-            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#000', background: '#F97316', border: 'none', borderRadius: '4px', padding: '9px 16px', cursor: sending ? 'wait' : 'pointer', opacity: sending ? 0.5 : 1, fontWeight: 700 }}
+            style={{ fontFamily: mono, fontSize: '11px', letterSpacing: '0.08em', color: '#000', background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', padding: '9px 16px', cursor: sending ? 'wait' : 'pointer', opacity: sending ? 0.5 : 1, fontWeight: 700 }}
           >
             {sending ? t.angebotDetail.sendingButton : t.angebotDetail.sendToClient}
           </button>
@@ -271,7 +271,7 @@ export default function AngebotDetailPage() {
         >
           <div
             style={{
-              background: '#111', border: '1px solid rgba(249,115,22,0.3)',
+              background: '#111', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)',
               borderRadius: '4px', width: '100%', maxWidth: '460px', padding: '28px',
             }}
           >
@@ -331,7 +331,7 @@ export default function AngebotDetailPage() {
                 type="checkbox"
                 checked={bccMarcel}
                 onChange={e => setBccMarcel(e.target.checked)}
-                style={{ accentColor: '#F97316', width: '14px', height: '14px' }}
+                style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }}
               />
               <span style={{ fontFamily: mono, fontSize: '10px', color: '#888', letterSpacing: '0.08em' }}>
                 {t.angebotDetail.bccMarcel}
@@ -362,7 +362,7 @@ export default function AngebotDetailPage() {
                 disabled={sending || !emailInput.trim()}
                 style={{
                   fontFamily: mono, fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em',
-                  color: '#000', background: '#F97316', border: 'none', borderRadius: '4px',
+                  color: '#000', background: 'var(--brand-primary)', border: 'none', borderRadius: '4px',
                   padding: '10px 18px',
                   cursor: sending || !emailInput.trim() ? 'not-allowed' : 'pointer',
                   opacity: sending || !emailInput.trim() ? 0.5 : 1,
@@ -417,7 +417,7 @@ export default function AngebotDetailPage() {
               const total = Number(item.total) || 0
               return (
                 <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                  <td style={{ padding: '10px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: '#F97316', verticalAlign: 'top' }}>{String(i + 1).padStart(2, '0')}</td>
+                  <td style={{ padding: '10px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)', verticalAlign: 'top' }}>{String(i + 1).padStart(2, '0')}</td>
                   <td style={{ padding: '10px 16px', fontFamily: sans, fontSize: '14px', color: '#FFF', whiteSpace: 'pre-wrap', verticalAlign: 'top', lineHeight: 1.5 }}>
                     {item.description}
                     {!item.isFixedPrice && item.unit && item.qty > 1 && (
@@ -434,7 +434,7 @@ export default function AngebotDetailPage() {
         </table>
 
         {/* Totals */}
-        <div style={{ padding: '16px 24px', borderTop: '2px solid #F97316', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ padding: '16px 24px', borderTop: '2px solid var(--brand-primary)', display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ minWidth: '240px' }}>
             {hasAnz ? (
               <>
@@ -450,13 +450,13 @@ export default function AngebotDetailPage() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
                   <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: '#FFF' }}>{t.angebotDetail.remainingBalance}</span>
-                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: '#F97316' }}>{fmtEur(restbet)}</span>
+                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary)' }}>{fmtEur(restbet)}</span>
                 </div>
               </>
             ) : (
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: '#FFF' }}>{t.angebotDetail.grandTotal}</span>
-                <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: '#F97316' }}>{fmtEur(Number(angebot.total))}</span>
+                <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary)' }}>{fmtEur(Number(angebot.total))}</span>
               </div>
             )}
           </div>
@@ -477,8 +477,8 @@ export default function AngebotDetailPage() {
 
       {/* Payment terms */}
       {angebot.payment_terms && (
-        <div style={{ background: '#0D0D0D', border: '1px solid rgba(249,115,22,0.25)', borderLeft: '3px solid #F97316', borderRadius: '4px', padding: '14px 20px', marginBottom: '20px' }}>
-          <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 6px' }}>{t.angebotDetail.paymentTerms}</p>
+        <div style={{ background: '#0D0D0D', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', borderLeft: '3px solid var(--brand-primary)', borderRadius: '4px', padding: '14px 20px', marginBottom: '20px' }}>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 6px' }}>{t.angebotDetail.paymentTerms}</p>
           <p style={{ fontFamily: sans, fontSize: '13px', color: '#CCC', margin: 0, lineHeight: 1.6 }}>{angebot.payment_terms}</p>
         </div>
       )}

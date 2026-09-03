@@ -80,14 +80,14 @@ export default function InvoiceDetailPage() {
 
   if (loading) return (
     <div style={{ padding: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', letterSpacing: '0.2em' }}>{t.common.loading}</p>
+      <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', letterSpacing: '0.2em' }}>{t.common.loading}</p>
     </div>
   )
 
   if (error || !invoice) return (
     <div style={{ padding: '40px' }}>
       <p style={{ fontFamily: mono, fontSize: '12px', color: '#ef4444' }}>{t.invoiceDetail.notFound}</p>
-      <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', textDecoration: 'none' }}>{t.invoiceDetail.backToInvoices}</Link>
+      <Link href="/os/invoices" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', textDecoration: 'none' }}>{t.invoiceDetail.backToInvoices}</Link>
     </div>
   )
 
@@ -204,7 +204,7 @@ export default function InvoiceDetailPage() {
               <tr><td colSpan={5} style={{ padding: '16px', fontFamily: sans, fontSize: '13px', color: '#444', textAlign: 'center' }}>{t.invoiceDetail.noLineItems}</td></tr>
             ) : items.map((item, i) => (
               <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={{ padding: '12px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: '#F97316' }}>{String(i + 1).padStart(2, '0')}</td>
+                <td style={{ padding: '12px 16px', textAlign: 'center', fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)' }}>{String(i + 1).padStart(2, '0')}</td>
                 <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: '#FFF' }}>
                   {item.description}
                   {!item.isFixedPrice && item.unit && item.qty > 1 && (
@@ -220,7 +220,7 @@ export default function InvoiceDetailPage() {
         </table>
 
         {/* Totals */}
-        <div style={{ padding: '16px 24px', borderTop: '2px solid #F97316', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ padding: '16px 24px', borderTop: '2px solid var(--brand-primary)', display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ minWidth: '240px' }}>
             {hasAnz ? (
               <>
@@ -236,13 +236,13 @@ export default function InvoiceDetailPage() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
                   <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: '#FFF' }}>{t.invoiceDetail.remainingBalance}</span>
-                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: '#F97316' }}>{fmtEur(restbet)}</span>
+                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary)' }}>{fmtEur(restbet)}</span>
                 </div>
               </>
             ) : (
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontFamily: sans, fontSize: '16px', fontWeight: 700, color: '#FFF' }}>{t.invoiceDetail.grandTotal}</span>
-                <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: '#F97316' }}>{fmtEur(Number(invoice.total))}</span>
+                <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 700, color: 'var(--brand-primary)' }}>{fmtEur(Number(invoice.total))}</span>
               </div>
             )}
           </div>

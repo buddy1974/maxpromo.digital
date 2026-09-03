@@ -122,7 +122,7 @@ const AGENT_BUREAU = {
       de: 'images/systems/agent-bureau/card/agent-bureau-de.png',
     },
   },
-  brandColor:     '#F97316',
+  brandColor:     '#A3E635',
   layoutVariant:  'B',
 
   // ── Links
@@ -376,7 +376,7 @@ const RESTAURANT_OS = {
       'images/systems/restaurant-os/pain/p3.png',
     ],
   },
-  brandColor:     '#F97316',
+  brandColor:     '#A3E635',
   layoutVariant:  'A',
 
   // ── Links
@@ -2190,7 +2190,7 @@ const MAXPROMO_OS = {
       en: 'images/systems/maxpromo-os/card/maxpromo-os-en.png', // TODO: create if needed
     },
   },
-  brandColor:     '#F97316',
+  brandColor:     '#A3E635',
   layoutVariant:  'B',
 
   // ── Links

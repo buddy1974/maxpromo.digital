@@ -17,7 +17,7 @@ interface Job {
   value: number | null; due_date: string | null; notes: string; description: string
 }
 
-const PRIORITY_COLOR: Record<string, string> = { high: '#ef4444', medium: '#F97316', low: '#555' }
+const PRIORITY_COLOR: Record<string, string> = { high: '#ef4444', medium: 'var(--brand-primary)', low: '#555' }
 
 interface NewJobForm { title: string; client_name: string; stage: Stage; priority: string; value: string; notes: string }
 const BLANK_FORM: NewJobForm = { title: '', client_name: '', stage: 'lead', priority: 'medium', value: '', notes: '' }
@@ -83,7 +83,7 @@ export default function JobsPage() {
           <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.jobs.heading}</h1>
           <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>{jobs.length} {t.common.total}</p>
         </div>
-        <button onClick={() => setShowNew(true)} style={{ background: '#F97316', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}>
+        <button onClick={() => setShowNew(true)} style={{ background: 'var(--brand-primary)', border: 'none', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}>
           {t.jobs.newJob}
         </button>
       </div>
@@ -91,11 +91,11 @@ export default function JobsPage() {
       {/* New job modal */}
       {showNew && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.08)', borderTop: '2px solid #F97316', borderRadius: '4px', width: '100%', maxWidth: '440px', maxHeight: 'calc(100vh - 48px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.08)', borderTop: '2px solid var(--brand-primary)', borderRadius: '4px', width: '100%', maxWidth: '440px', maxHeight: 'calc(100vh - 48px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
             {/* Header */}
             <div style={{ padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.jobs.newJobModal}</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.jobs.newJobModal}</p>
               <button onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: 'none', color: '#555', fontSize: '22px', cursor: 'pointer', lineHeight: 1 }}>×</button>
             </div>
 
@@ -137,7 +137,7 @@ export default function JobsPage() {
             {/* Footer — always visible */}
             <div style={{ padding: '16px 24px', borderTop: '1px solid rgba(255,255,255,0.08)', background: '#111111', flexShrink: 0 }}>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <button type="button" onClick={createJob} disabled={saving || !form.title.trim()} style={{ background: '#F97316', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.title.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.title.trim() ? 0.6 : 1 }}>
+                <button type="button" onClick={createJob} disabled={saving || !form.title.trim()} style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: '#000', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 24px', cursor: saving || !form.title.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.title.trim() ? 0.6 : 1 }}>
                   {saving ? t.common.saving : t.jobs.createJob}
                 </button>
                 <button type="button" onClick={() => { setShowNew(false); setSaveError('') }} style={{ background: 'none', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '4px', color: '#ccc', fontFamily: sans, fontSize: '13px', padding: '10px 16px', cursor: 'pointer' }}>
@@ -163,9 +163,9 @@ export default function JobsPage() {
               style={{ minWidth: '200px', flex: '0 0 200px', display: 'flex', flexDirection: 'column', gap: '8px' }}
             >
               {/* Column header */}
-              <div style={{ background: '#111', borderTop: '2px solid #F97316', border: '1px solid rgba(255,255,255,0.06)', padding: '10px 12px', flexShrink: 0 }}>
+              <div style={{ background: '#111', borderTop: '2px solid var(--brand-primary)', border: '1px solid rgba(255,255,255,0.06)', padding: '10px 12px', flexShrink: 0 }}>
                 <p style={{ fontFamily: mono, fontSize: '9px', color: '#555', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 2px' }}>{stageLabel(stage)}</p>
-                <p style={{ fontFamily: mono, fontSize: '11px', color: '#F97316', margin: 0 }}>{jobsByStage(stage).length}</p>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary)', margin: 0 }}>{jobsByStage(stage).length}</p>
               </div>
 
               {/* Cards */}
@@ -178,8 +178,8 @@ export default function JobsPage() {
                     onDragEnd={() => setDragId(null)}
                     onClick={() => setSelected(job)}
                     style={{
-                      background: dragId === job.id ? 'rgba(249,115,22,0.1)' : '#0D0D0D',
-                      border: `1px solid ${dragId === job.id ? 'rgba(249,115,22,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                      background: dragId === job.id ? 'color-mix(in srgb, var(--brand-primary) 10%, transparent)' : '#0D0D0D',
+                      border: `1px solid ${dragId === job.id ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'rgba(255,255,255,0.06)'}`,
                       borderLeft: `3px solid ${PRIORITY_COLOR[job.priority] ?? '#555'}`,
                       padding: '12px',
                       cursor: 'grab',
@@ -205,7 +205,7 @@ export default function JobsPage() {
       {selected && (
         <div style={{ position: 'fixed', top: 0, right: 0, width: '360px', height: '100vh', background: '#0D0D0D', borderLeft: '1px solid rgba(255,255,255,0.07)', zIndex: 200, overflowY: 'auto' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: '#F97316', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.jobs.jobDetails}</p>
+            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.jobs.jobDetails}</p>
             <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
           </div>
           <div style={{ padding: '24px' }}>
@@ -213,7 +213,7 @@ export default function JobsPage() {
             {selected.client_name && <p style={{ fontFamily: mono, fontSize: '11px', color: '#555', margin: '0 0 16px', letterSpacing: '0.06em' }}>{selected.client_name}</p>}
 
             <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: mono, fontSize: '9px', color: '#F97316', background: 'rgba(249,115,22,0.1)', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{stageLabel(selected.stage)}</span>
+              <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary)', background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{stageLabel(selected.stage)}</span>
               <span style={{ fontFamily: mono, fontSize: '9px', color: PRIORITY_COLOR[selected.priority], background: (PRIORITY_COLOR[selected.priority] ?? '#555') + '20', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(selected.priority)}</span>
               {selected.value && <span style={{ fontFamily: mono, fontSize: '9px', color: '#888', padding: '4px 10px', background: '#11111130', letterSpacing: '0.06em' }}>{fmtEur(Number(selected.value))}</span>}
             </div>

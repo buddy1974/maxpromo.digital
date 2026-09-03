@@ -76,11 +76,11 @@ export default function InvoicesPage() {
         <div>
           <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: '#FFF', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.invoiceList.heading}</h1>
           <p style={{ fontFamily: mono, fontSize: '10px', color: '#555', margin: 0, letterSpacing: '0.1em' }}>
-            {t.invoiceList.outstanding}: <span style={{ color: '#F97316' }}>{fmtEur(totals.outstanding)}</span>
+            {t.invoiceList.outstanding}: <span style={{ color: 'var(--brand-primary)' }}>{fmtEur(totals.outstanding)}</span>
             &nbsp;·&nbsp; {t.invoiceList.paid}: <span style={{ color: '#22c55e' }}>{fmtEur(totals.paid)}</span>
           </p>
         </div>
-        <Link href="/os/invoices/new" style={{ background: '#F97316', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', textTransform: 'uppercase' }}>
+        <Link href="/os/invoices/new" style={{ background: 'var(--brand-primary)', color: '#000', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', textTransform: 'uppercase' }}>
           {t.invoiceList.newInvoice}
         </Link>
       </div>
@@ -94,7 +94,7 @@ export default function InvoicesPage() {
             style={{
               fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase',
               padding: '7px 14px', border: 'none', cursor: 'pointer',
-              background: tab === key ? '#F97316' : 'transparent',
+              background: tab === key ? 'var(--brand-primary)' : 'transparent',
               color: tab === key ? '#000' : '#555',
               borderBottom: tab === key ? 'none' : '1px solid rgba(255,255,255,0.06)',
             }}
@@ -104,7 +104,7 @@ export default function InvoicesPage() {
         ))}
       </div>
 
-      <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid #F97316', overflow: 'hidden' }}>
+      <div style={{ background: '#111', border: '1px solid rgba(255,255,255,0.06)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -122,7 +122,7 @@ export default function InvoicesPage() {
               filtered.map(inv => (
                 <tr key={inv.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                   <td style={{ padding: '12px 16px' }}>
-                    <Link href={`/os/invoices/${inv.id}`} style={{ fontFamily: mono, fontSize: '12px', color: '#F97316', textDecoration: 'none' }}>{inv.invoice_number}</Link>
+                    <Link href={`/os/invoices/${inv.id}`} style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary)', textDecoration: 'none' }}>{inv.invoice_number}</Link>
                   </td>
                   <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '13px', color: '#FFF' }}>{inv.client_name}</td>
                   <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: '#555' }}>
