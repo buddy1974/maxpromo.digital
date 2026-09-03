@@ -84,3 +84,23 @@ Two repositories became one. `maxpromo.digital` is now `maxpromo-platform`:
 Deferred with reasons: `apps/os` extraction (needs `packages/shared` first, and
 its own domain and Vercel project); one database and one auth session (both
 separate pieces of work, recorded in ADR-0001).
+
+## 2026-09-03 — v6.0: platform audit, zero legacy, certification suite
+
+- **Audit tooling.** Four checks: design tokens, responsive, accessibility
+  (rendered output, 38 routes), cross-application consistency (33 resolved
+  tokens plus component classes, both apps compared live). `npm run verify` is
+  the merge gate; `npm run certify` runs everything.
+- **Zero legacy.** 24.3 MB of orphaned imagery removed (`public/` 44 MB → 20 MB),
+  13 dead modules, 2 unused i18n namespaces, 2 unused package exports.
+- **A third copy of the legal identity** found in the document system, already
+  drifted (`country: 'Germany'` vs `'Deutschland'`), now derived from
+  `@maxpromo/config`. It prints on invoices.
+- **Two "orphans" were gaps, fixed not deleted:** a German RestaurantOS card the
+  registry never referenced, and a misleading TODO on an internal product's
+  missing card.
+- **Performance.** framer-motion removed — one consumer shipping a ~110 KB
+  runtime to fade three numbers in. Client JS 1160 KB → 1055 KB.
+- **Not removed:** 19 Agent Bureau API routes the audit called uncalled. They
+  are a working, secured data layer; the dashboard just uses mocks. Recorded as
+  debt.

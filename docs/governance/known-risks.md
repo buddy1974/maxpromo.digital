@@ -99,6 +99,44 @@ marketing imagery be removed. These are content assets, not code, and need
 replacing with real product screenshots, workflow diagrams or architecture
 illustrations.
 
+## OPEN — the Agent Bureau dashboard renders from mock data
+
+Every page under `/dashboard` reads from `lib/mock/*` (14 files). The 19 API
+routes behind them query the real database, are correctly guarded and, where
+they mutate, rate limited — but nothing calls them.
+
+This is not dead code and must not be deleted: it is a working, secured data
+layer that the interface has not been wired to. The v6.0 platform audit
+reported those routes as uncalled, and deleting them on that signal would have
+destroyed the layer.
+
+**Consequence:** the dashboard looks finished and is not. Anyone demonstrating
+it should know the figures are fixtures.
+
+**Owner:** Marcel. **Next step:** wire the pages to the queries, page by page,
+verifying tenant scoping on each.
+
+---
+
+## Technical debt — recorded 2026-09-03
+
+- **Tenant ownership is checked inline per route**, not through a shared
+  helper. Every new route that reads tenant-scoped data must remember to derive
+  `businessId` from the session and compare. The reasoning and the pattern are
+  in `docs/architecture/agent-bureau-route-protection.md`.
+- **Most Agent Bureau API routes have no rate limit.** Only `/api/leads`,
+  `/api/ai/generate` and `/api/approvals/[id]` do. The others are
+  authentication-gated, so the exposure is bounded, but an authenticated client
+  can call them without limit.
+- **`apps/os` is not extracted.** The internal OS still lives inside
+  `apps/web`, sharing `lib/db` and `lib/email`. Extraction needs
+  `packages/shared` first, plus its own domain and Vercel project.
+- **No automated test suite.** Verification is types, lint, build and four
+  audits. There are no unit or integration tests; correctness of business logic
+  — invoice totals, VAT handling, document numbering — rests on review.
+
+---
+
 ---
 
 # Agent Bureau — risks carried over
