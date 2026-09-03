@@ -107,6 +107,12 @@
   --brand-border:           var(--mp-gray-200);
   --brand-border-strong:    var(--mp-gray-300);
   --brand-border-inverted:  rgba(255, 255, 255, 0.14);
+  /* Functional boundaries — the edge of a form control or a button — must
+     reach 3:1 against the adjacent surface (WCAG 1.4.11), because that edge
+     is the only thing identifying the control. Decorative separators between
+     sections are exempt and stay at --brand-border, which is deliberately
+     lighter. gray-300 measures 1.48:1 and is not sufficient for a control.  */
+  --brand-border-control:   var(--mp-gray-500);   /* 4.83:1 on white */
 
   /* — Text ———————————————————————————————————————————————————————————— */
   --brand-text:             var(--mp-black);
@@ -127,6 +133,11 @@
   --brand-primary-soft:     var(--mp-lime-50);
   --brand-on-primary:       var(--mp-black);
   --brand-focus:            var(--mp-lime-700);
+  /* Brand Lime on white measures 1.51:1, so a lime button has no perceivable
+     edge for a low-vision reader. The fill stays the brand; the boundary is
+     drawn in Dark Green, which reaches 3.08:1 and satisfies 1.4.11 without
+     changing the colour anyone actually sees. */
+  --brand-primary-edge:     var(--mp-lime-600);   /* 3.08:1 on white */
 
   /* — Semantic status ————————————————————————————————————————————————
      Independent of the brand by rule. Product surfaces only. */
@@ -155,25 +166,41 @@
   --brand-font-heading: var(--brand-font-sans);
   --brand-font-body:    var(--brand-font-sans);
 
-  /* Sizes — desktop targets in the comments, fluid via clamp. */
-  --text-h1:    clamp(2.5rem,  1.9rem + 2.6vw, 4rem);      /* 40 → 64 */
-  --text-h2:    clamp(2rem,    1.7rem + 1.4vw, 2.75rem);   /* 32 → 44 */
-  --text-h3:    clamp(1.5rem,  1.35rem + 0.7vw, 2rem);     /* 24 → 32 */
-  --text-h4:    1.25rem;                                    /* 20 */
-  --text-body:  1.125rem;                                   /* 18 */
-  --text-small: 0.9375rem;                                  /* 15 */
-  --text-micro: 0.8125rem;                                  /* 13 */
+  /* Sizes — desktop targets in the comments, fluid via clamp.
+     Revised down in v5.1. The previous scale topped out at 64px, which is
+     landing-page size: it makes a page shout, and shouting is the startup
+     tell. Hierarchy here comes from composition — whitespace, label, rule,
+     column width — not from type size. For comparison at the top of a page:
+     Basecamp ~40px, IBM ~42px, GitHub ~48px, Stripe ~56px. None of them
+     need 64.
 
-  --weight-heading:  700;   /* H1 */
+     Weights drop with the sizes. An H1 at 52px does not need 700 to read as
+     the largest thing on the page; at 600 it reads as considered rather than
+     emphatic. */
+  --text-h1:    clamp(2rem,     1.65rem + 1.75vw, 3.25rem); /* 32 → 52 */
+  --text-h2:    clamp(1.625rem, 1.45rem + 0.9vw,  2.25rem); /* 26 → 36 */
+  --text-h3:    clamp(1.25rem,  1.15rem + 0.5vw,  1.5rem);  /* 20 → 24 */
+  --text-h4:    1.0625rem;                                   /* 17 */
+  --text-body:  1.0625rem;                                   /* 17 */
+  --text-lede:  1.1875rem;                                   /* 19 */
+  --text-small: 0.9375rem;                                   /* 15 */
+  --text-micro: 0.8125rem;                                   /* 13 */
+
+  --weight-heading:  600;   /* H1 */
   --weight-subhead:  600;   /* H2, H3 */
   --weight-medium:   500;
   --weight-body:     400;
 
-  --leading-tight:   1.1;   /* H1 */
-  --leading-snug:    1.15;  /* H2 */
-  --leading-heading: 1.25;  /* H3 */
-  --leading-body:    1.75;  /* body — deliberately generous */
+  --leading-tight:   1.15;  /* H1 */
+  --leading-snug:    1.25;  /* H2 */
+  --leading-heading: 1.35;  /* H3 */
+  --leading-body:    1.7;   /* body */
   --leading-ui:      1.5;
+
+  /* Measure. Prose wider than this is tiring; narrower is choppy. Both are
+     expressed in characters so they hold as the type scale moves. */
+  --measure:        68ch;
+  --measure-narrow: 54ch;
 
   --tracking-tight: -0.02em;
   --tracking-label:  0.12em;

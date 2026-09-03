@@ -67,6 +67,15 @@ const ALLOW = [
   },
 ]
 
+/**
+ * The brand accent used as a TEXT colour. It is a fill: on white it measures
+ * 1.51:1, so the text is effectively invisible. This has now regressed three
+ * separate times — in the internal OS, in Agent Bureau, and on the contact
+ * form — each time through a different syntax. It is checked rather than
+ * remembered. --brand-primary-text is the accessible one (5.00:1).
+ */
+const ACCENT_TEXT = /text-\[var\(--(?:color|brand)-primary\)\]|(?<![-\w])(?:color|stroke):\s*'?var\(--(?:color|brand)-primary\)'?/g
+
 const HEX = /#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?\b/g
 const PALETTE = /\b(?:text|bg|border|ring|fill|stroke|from|to|via|decoration|outline|accent|shadow|divide|placeholder)-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-\d{2,3}\b/g
 const RGBA = /\brgba?\(\s*\d+\s*,\s*\d+\s*,\s*\d+/g
@@ -123,7 +132,7 @@ for (const dir of SCAN_DIRS) {
       if (opens && !closes) { inBlock = true; return }
       if (trimmed.startsWith('*') || trimmed.startsWith('//') || trimmed.startsWith('/*')) return
 
-      for (const [re, label] of [[HEX, 'hex literal'], [PALETTE, 'palette class'], [RGBA, 'rgba literal']]) {
+      for (const [re, label] of [[HEX, 'hex literal'], [PALETTE, 'palette class'], [RGBA, 'rgba literal'], [ACCENT_TEXT, 'accent used as text (1.51:1)']]) {
         re.lastIndex = 0
         let m
         while ((m = re.exec(line)) !== null) {

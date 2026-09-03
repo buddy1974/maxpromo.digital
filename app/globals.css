@@ -192,13 +192,14 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 .btn-primary {
   background: var(--brand-primary);
   color: var(--brand-on-primary);
+  border-color: var(--brand-primary-edge);
 }
 .btn-primary:hover:not(:disabled) { background: var(--brand-primary-hover); }
 
 .btn-secondary {
   background: var(--brand-surface);
   color: var(--brand-text);
-  border-color: var(--brand-border-strong);
+  border-color: var(--brand-border-control);
 }
 .btn-secondary:hover:not(:disabled) { border-color: var(--brand-text); }
 
@@ -213,7 +214,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   width: 100%;
   background: var(--brand-surface);
   color: var(--brand-text);
-  border: 1px solid var(--brand-border-strong);
+  border: 1px solid var(--brand-border-control);
   border-radius: var(--radius-md);
   padding: 11px 14px;
   font-family: var(--brand-font-body);
