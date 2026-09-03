@@ -1,3 +1,4 @@
+import { TONE_TEXT, toneMap } from "@maxpromo/ui";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { MOCK_PROJECTS } from "@/lib/mock/projects";
 import type { ProjectHealth, ProjectStatus } from "@/types/project";
@@ -10,11 +11,11 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   done: "Abgeschlossen",
 };
 
-const HEALTH_STYLE: Record<ProjectHealth, string> = {
-  on_track: "text-success",
-  at_risk: "text-warning",
-  off_track: "text-danger",
-};
+const HEALTH_STYLE_TONE = toneMap<ProjectHealth>({
+  on_track: 'positive',
+  at_risk: 'caution',
+  off_track: 'critical',
+})
 
 const HEALTH_LABEL: Record<ProjectHealth, string> = {
   on_track: "Auf Kurs",
@@ -30,7 +31,7 @@ export default function ProjectsPage() {
           <div key={p.id} className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <h3 className="font-semibold text-ink">{p.name}</h3>
-              <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${HEALTH_STYLE[p.health]}`}>
+              <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_TEXT[HEALTH_STYLE_TONE(p.health)]}`}>
                 {HEALTH_LABEL[p.health]}
               </span>
             </div>

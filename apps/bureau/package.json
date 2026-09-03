@@ -17,7 +17,9 @@
     "verify": "npm run check:tokens && npm run typecheck && npm run lint && npm run build"
   },
   "dependencies": {
+    "@maxpromo/config": "*",
     "@maxpromo/design-tokens": "*",
+    "@maxpromo/ui": "*",
     "@neondatabase/serverless": "^1.0.2",
     "argon2": "^0.44.0",
     "drizzle-orm": "^0.38.3",

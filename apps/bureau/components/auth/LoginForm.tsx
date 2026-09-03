@@ -1,5 +1,7 @@
 "use client";
 
+import { TONE_BADGE } from "@maxpromo/ui";
+
 /**
  * components/auth/LoginForm.tsx
  *
@@ -82,7 +84,7 @@ export default function LoginForm() {
 
       {/* Error message */}
       {error && (
-        <p className="rounded-md border border-danger/30 bg-danger-soft px-3.5 py-2.5 text-sm text-danger">
+        <p className={`rounded-md border px-3.5 py-2.5 text-sm ${TONE_BADGE.critical}`}>
           {error}
         </p>
       )}

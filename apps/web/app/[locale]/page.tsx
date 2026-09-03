@@ -6,6 +6,7 @@ import { getLandingData } from '@/lib/registry/adapters/landing.adapter'
 import { LandingEngine } from '@/components/landing/LandingEngine'
 import Hero from '@/components/Hero'
 import { Link } from '@/i18n/navigation'
+import { SectionHeader } from '@maxpromo/ui'
 import Image from 'next/image'
 import { getLatestPosts } from '@/lib/blog/posts'
 import { PainSlider } from '@/components/ui/PainSlider'
@@ -64,21 +65,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 /* ─── HELPERS ─── */
 
-/* The section label and heading now come from the shared primitive; these two
-   thin wrappers keep the existing call sites readable while the page's own
-   structure is reworked in the information-architecture batch (B16). */
-
-function SectionLabel({ children }: { children: string }) {
-  return <p className="section-label">{children}</p>
-}
-
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 style={{ margin: 0 }}>
-      {children}
-    </h2>
-  )
-}
+/* SectionLabel and SectionTitle were local wrappers duplicating what
+   @maxpromo/ui already exports. They are gone; the shared SectionHeader is
+   used directly at each call site. */
 
 /* ─── PAGE ─── */
 
@@ -135,8 +124,9 @@ export default async function HomePage() {
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
             <div>
-              <SectionLabel>{tProof('eyebrow')}</SectionLabel>
-              <SectionTitle>{tProof('title')}</SectionTitle>
+              <SectionHeader label={tProof('eyebrow')}>
+                {tProof('title')}
+              </SectionHeader>
             </div>
             <Link href="/case-studies" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
               {tProof('viewAll')}
@@ -163,8 +153,9 @@ export default async function HomePage() {
       <section data-section="legacy" style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ maxWidth: '52rem', marginBottom: '3rem' }}>
-            <SectionLabel>{tLegacy('eyebrow')}</SectionLabel>
-            <SectionTitle>{tLegacy('title')}</SectionTitle>
+            <SectionHeader label={tLegacy('eyebrow')}>
+                {tLegacy('title')}
+              </SectionHeader>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.75, marginTop: '1rem' }}>
               {tLegacy('subtitle')}
             </p>
@@ -203,8 +194,9 @@ export default async function HomePage() {
       <section data-section="routes" className="section" style={{ background: 'var(--brand-background)', borderTop: '1px solid var(--brand-border)' }}>
         <div className="container">
           <div style={{ maxWidth: '44rem', marginBottom: 'var(--space-8)' }}>
-            <SectionLabel>{tRoutes('eyebrow')}</SectionLabel>
-            <SectionTitle>{tRoutes('title')}</SectionTitle>
+            <SectionHeader label={tRoutes('eyebrow')}>
+                {tRoutes('title')}
+              </SectionHeader>
             <p style={{ margin: 'var(--space-4) 0 0', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
               {tRoutes('lede')}
             </p>
@@ -237,11 +229,10 @@ export default async function HomePage() {
       <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem', maxWidth: '44rem' }}>
-            <SectionLabel>{tWhyUs('eyebrow')}</SectionLabel>
-            <SectionTitle>
-              {tWhyUs('title')}{' '}
+            <SectionHeader label={tWhyUs('eyebrow')}>
+                {tWhyUs('title')}{' '}
               <span style={{ color: 'var(--brand-text-secondary)' }}>{tWhyUs('titleAccent')}</span>
-            </SectionTitle>
+              </SectionHeader>
           </div>
           <div style={{ display: 'grid', gap: '16px' }} className="grid-cols-1 sm:grid-cols-2">
             {WHY_REFS.map((id) => (
@@ -268,8 +259,9 @@ export default async function HomePage() {
       <section data-section="philosophy" style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', display: 'grid', gap: '4rem' }} className="grid-cols-1 lg:grid-cols-2">
           <div>
-            <SectionLabel>{tPhilosophy('eyebrow')}</SectionLabel>
-            <SectionTitle>{tPhilosophy('title')}</SectionTitle>
+            <SectionHeader label={tPhilosophy('eyebrow')}>
+                {tPhilosophy('title')}
+              </SectionHeader>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.85, marginTop: '1.5rem', whiteSpace: 'pre-line' }}>
               {tPhilosophy('body')}
             </p>
@@ -296,8 +288,9 @@ export default async function HomePage() {
       <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
-            <SectionLabel>{tProcess('processEyebrow')}</SectionLabel>
-            <SectionTitle>{tProcess('processTitle')}</SectionTitle>
+            <SectionHeader label={tProcess('processEyebrow')}>
+                {tProcess('processTitle')}
+              </SectionHeader>
           </div>
           <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
             {PROCESS_REFS.map((id, i) => (
@@ -334,11 +327,10 @@ export default async function HomePage() {
           <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
               <div>
-                <SectionLabel>{tBlog('homepageEyebrow')}</SectionLabel>
-                <SectionTitle>
-                  {tBlog('homepageTitle')}{' '}
+                <SectionHeader label={tBlog('homepageEyebrow')}>
+                {tBlog('homepageTitle')}{' '}
                   <span style={{ color: 'var(--brand-text-secondary)' }}>{tBlog('homepageTitleAccent')}</span>
-                </SectionTitle>
+              </SectionHeader>
               </div>
               <Link href="/blog" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
                 {tBlog('homepageViewAll')} →
@@ -385,7 +377,7 @@ export default async function HomePage() {
       {/* 10, Final CTA */}
       <section style={{ background: 'var(--color-bg-section)', padding: 'clamp(5rem, 10vw, 9.5rem) 2rem', borderTop: '1px solid var(--color-border)' }}>
         <div style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center' }}>
-          <SectionLabel>{t('finalCtaEyebrow')}</SectionLabel>
+          <p className="section-label">{t('finalCtaEyebrow')}</p>
           <h2 style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>
             {t('finalCtaTitle')}
           </h2>

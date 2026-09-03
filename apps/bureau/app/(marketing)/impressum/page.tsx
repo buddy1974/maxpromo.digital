@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BUSINESS, UST_CLAUSE } from "@/config/legal";
+import { BUSINESS, UST_CLAUSE } from "@maxpromo/config";
 import { Nav } from "@/components/marketing/Nav";
 import { Footer } from "@/components/marketing/Footer";
 
@@ -50,7 +50,7 @@ export default function ImpressumPage() {
             </h2>
             <p className="mt-3">Steuernummer: {BUSINESS.steuernummer}</p>
             <p>Finanzamt: {BUSINESS.finanzamt}</p>
-            <p className="mt-2 text-ink">{UST_CLAUSE}</p>
+            <p className="mt-2 text-ink">{UST_CLAUSE.de}</p>
           </section>
 
           <section>

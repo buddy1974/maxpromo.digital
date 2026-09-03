@@ -1,11 +1,12 @@
+import { TONE_TEXT, type Tone } from "@maxpromo/ui";
 import type { WaitingRoomItem } from "@/types/waiting-room";
 
-const URGENCY_STYLE = {
-  low: "text-ink-muted",
-  medium: "text-warning",
-  high: "text-danger",
-  urgent: "text-danger",
-} as const;
+const URGENCY_TONE_MAP = {
+  low: "neutral",
+  medium: "caution",
+  high: "critical",
+  urgent: "critical",
+} as const satisfies Record<string, Tone>;
 
 const CHANNEL_LABEL = {
   whatsapp: "WhatsApp",
@@ -25,7 +26,7 @@ export function WaitingCustomerCard({ item }: { item: WaitingRoomItem }) {
             {item.company ?? "—"} · {CHANNEL_LABEL[item.channel]}
           </p>
         </div>
-        <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${URGENCY_STYLE[item.urgency]}`}>
+        <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_TEXT[URGENCY_TONE_MAP[item.urgency]]}`}>
           wartet {item.waitingFor}
         </span>
       </div>

@@ -1,10 +1,11 @@
+import { TONE_BADGE, toneMap } from "@maxpromo/ui";
 import type { AIToolRegisterItem, AIToolStatus } from "@/types/ai-governance";
 
-const STATUS_STYLE: Record<AIToolStatus, string> = {
-  approved: "border-success/30 bg-success-soft text-success",
-  under_review: "border-warning/30 bg-warning-soft text-warning",
-  blocked: "border-danger/30 bg-danger-soft text-danger",
-};
+const STATUS_STYLE_TONE = toneMap<AIToolStatus>({
+  approved: 'positive',
+  under_review: 'caution',
+  blocked: 'critical',
+})
 
 const STATUS_LABEL: Record<AIToolStatus, string> = {
   approved: "Freigegeben",
@@ -30,7 +31,7 @@ export function AIToolRegister({ tools }: { tools: AIToolRegisterItem[] }) {
               <td className="px-4 py-3 font-medium text-ink">{t.name}</td>
               <td className="px-4 py-3 text-ink-secondary">{t.category}</td>
               <td className="px-4 py-3">
-                <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${STATUS_STYLE[t.status]}`}>
+                <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${TONE_BADGE[STATUS_STYLE_TONE(t.status)]}`}>
                   {STATUS_LABEL[t.status]}
                 </span>
               </td>

@@ -1,3 +1,4 @@
+import { TONE_TEXT, type Tone } from "@maxpromo/ui";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { MOCK_CLIENT_IMPLEMENTATIONS } from "@/lib/mock/client-implementation";
 
@@ -7,11 +8,11 @@ const HANDOVER_LABEL = {
   handed_over: "Übergeben",
 } as const;
 
-const PRIORITY_STYLE = {
-  low: "text-ink-muted",
-  medium: "text-warning",
-  high: "text-danger",
-} as const;
+const PRIORITY_TONE_MAP = {
+  low: "neutral",
+  medium: "caution",
+  high: "critical",
+} as const satisfies Record<string, Tone>;
 
 // Supports manual/concierge delivery — value delivered by hand before full
 // automation exists. Central to the Maxpromo "we install a system" model.
@@ -38,7 +39,7 @@ export default function ClientImplementationPage() {
                 <p className="text-xs text-ink-muted">{c.industry}</p>
               </div>
               <div className="text-right">
-                <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${PRIORITY_STYLE[c.implementationPriority]}`}>
+                <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_TEXT[PRIORITY_TONE_MAP[c.implementationPriority]]}`}>
                   Priorität {c.implementationPriority}
                 </span>
                 <p className="mt-1 font-mono text-[11px] text-ink-muted">

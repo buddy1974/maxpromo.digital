@@ -1,3 +1,4 @@
+import { TONE_BADGE } from "@maxpromo/ui";
 import type { PolicyChecklistItem } from "@/types/ai-governance";
 
 export function PolicyChecklist({ items }: { items: PolicyChecklistItem[] }) {
@@ -16,8 +17,8 @@ export function PolicyChecklist({ items }: { items: PolicyChecklistItem[] }) {
             <span
               className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
                 i.done
-                  ? "border-success/30 bg-success-soft text-success"
-                  : "border-hairline-strong text-ink-muted"
+                  ? TONE_BADGE.positive
+                  : TONE_BADGE.neutral
               }`}
             >
               {i.done ? "✓" : ""}

@@ -1,4 +1,4 @@
-import { BUSINESS } from "@/config/legal";
+import { BUSINESS } from "@maxpromo/config";
 
 export function Footer() {
   return (

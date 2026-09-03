@@ -1,11 +1,12 @@
+import { TONE_TEXT, toneMap } from "@maxpromo/ui";
 import type { DataSensitivityRow, DataSensitivity } from "@/types/ai-governance";
 
-const SENSITIVITY_STYLE: Record<DataSensitivity, string> = {
-  public: "text-success",
-  internal: "text-warning",
-  confidential: "text-danger",
-  personal: "text-danger",
-};
+const SENSITIVITY_STYLE_TONE = toneMap<DataSensitivity>({
+  public: 'positive',
+  internal: 'caution',
+  confidential: 'critical',
+  personal: 'critical',
+})
 
 const SENSITIVITY_LABEL: Record<DataSensitivity, string> = {
   public: "Öffentlich",
@@ -29,7 +30,7 @@ export function DataSensitivityMatrix({ rows }: { rows: DataSensitivityRow[] }) 
           {rows.map((r) => (
             <tr key={r.id} className="text-ink-secondary">
               <td className="px-4 py-3">{r.dataType}</td>
-              <td className={`px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em] ${SENSITIVITY_STYLE[r.sensitivity]}`}>
+              <td className={`px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_TEXT[SENSITIVITY_STYLE_TONE(r.sensitivity)]}`}>
                 {SENSITIVITY_LABEL[r.sensitivity]}
               </td>
               <td className="px-4 py-3 text-ink-secondary">{r.allowedTools}</td>

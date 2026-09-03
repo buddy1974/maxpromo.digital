@@ -2,9 +2,27 @@
   "extends": "../../packages/tooling/tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@/*": ["./*"],
-      "@maxpromo/design-tokens": ["../../packages/design-tokens/index.ts"],
-      "@maxpromo/design-tokens/*": ["../../packages/design-tokens/*"]
+      "@/*": [
+        "./*"
+      ],
+      "@maxpromo/design-tokens": [
+        "../../packages/design-tokens/index.ts"
+      ],
+      "@maxpromo/design-tokens/*": [
+        "../../packages/design-tokens/*"
+      ],
+      "@maxpromo/config": [
+        "../../packages/config/index.ts"
+      ],
+      "@maxpromo/config/*": [
+        "../../packages/config/*"
+      ],
+      "@maxpromo/ui": [
+        "../../packages/ui/index.ts"
+      ],
+      "@maxpromo/ui/*": [
+        "../../packages/ui/*"
+      ]
     }
   },
   "include": [
@@ -13,5 +31,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

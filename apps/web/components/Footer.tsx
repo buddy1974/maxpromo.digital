@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { BUSINESS, UST_CLAUSE } from '@/lib/legal'
+import { BUSINESS, UST_CLAUSE } from '@maxpromo/config'
 
 /**
  * components/Footer.tsx

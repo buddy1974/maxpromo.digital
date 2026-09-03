@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { BUSINESS } from '@/lib/legal'
+import { BUSINESS } from '@maxpromo/config'
 
 /**
  * app/[locale]/about/page.tsx

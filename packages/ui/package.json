@@ -1,0 +1,16 @@
+{
+  "name": "@maxpromo/ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared interface components and style maps. Depends on @maxpromo/design-tokens and nothing else.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./status": "./status/tone.ts",
+    "./primitives/*": "./primitives/*"
+  },
+  "dependencies": {
+    "@maxpromo/design-tokens": "*"
+  }
+}

@@ -1,3 +1,4 @@
+import { TONE_TEXT, type Tone } from "@maxpromo/ui";
 import type { AuditFinding } from "@/types/audit";
 import { RiskBadge } from "./RiskBadge";
 
@@ -8,12 +9,12 @@ const IMPACT_LABEL = {
   risk: "Risiko",
 } as const;
 
-const PRIORITY_STYLE = {
-  low: "text-ink-muted",
-  medium: "text-warning",
-  high: "text-danger",
-  critical: "text-danger",
-} as const;
+const PRIORITY_TONE_MAP = {
+  low: "neutral",
+  medium: "caution",
+  high: "critical",
+  critical: "critical",
+} as const satisfies Record<string, Tone>;
 
 export function AuditFindingCard({ finding }: { finding: AuditFinding }) {
   return (
@@ -25,7 +26,7 @@ export function AuditFindingCard({ finding }: { finding: AuditFinding }) {
           </p>
           <h3 className="mt-1 font-semibold text-ink">{finding.title}</h3>
         </div>
-        <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${PRIORITY_STYLE[finding.priority]}`}>
+        <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_TEXT[PRIORITY_TONE_MAP[finding.priority]]}`}>
           {finding.priority}
         </span>
       </div>

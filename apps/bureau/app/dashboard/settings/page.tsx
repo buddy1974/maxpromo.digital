@@ -1,13 +1,14 @@
+import { TONE_BADGE, toneMap } from "@maxpromo/ui";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { MOCK_INTEGRATIONS } from "@/lib/mock/integrations";
 import type { IntegrationStatus } from "@/types/integration";
 
-const STATUS_STYLE: Record<IntegrationStatus, string> = {
-  connected: "border-success/30 bg-success-soft text-success",
-  available: "border-hairline bg-surface-sunken text-ink-secondary",
-  error: "border-danger/30 bg-danger-soft text-danger",
-  coming_soon: "border-hairline bg-surface-sunken text-ink-muted",
-};
+const STATUS_TONE = toneMap<IntegrationStatus>({
+  connected: 'positive',
+  available: 'neutral',
+  error: 'critical',
+  coming_soon: 'neutral',
+})
 
 const STATUS_LABEL: Record<IntegrationStatus, string> = {
   connected: "Verbunden",
@@ -35,7 +36,7 @@ export default function SettingsPage() {
                   <p className="mt-0.5 text-xs text-ink-muted">{i.description}</p>
                 </div>
                 <span
-                  className={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${STATUS_STYLE[i.status]}`}
+                  className={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${TONE_BADGE[STATUS_TONE(i.status)]}`}
                 >
                   {STATUS_LABEL[i.status]}
                 </span>

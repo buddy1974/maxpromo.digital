@@ -1,11 +1,12 @@
+import { TONE_BADGE, toneMap } from "@maxpromo/ui";
 import type { AgentRiskLevel } from "@/types/agent";
 
-const STYLES: Record<AgentRiskLevel, string> = {
-  low: "border-success/30 bg-success-soft text-success",
-  medium: "border-warning/30 bg-warning-soft text-warning",
-  high: "border-danger/30 bg-danger-soft text-danger",
-  critical: "border-danger/30 bg-danger-soft text-danger",
-};
+const RISK_TONE = toneMap<AgentRiskLevel>({
+  low: 'positive',
+  medium: 'caution',
+  high: 'critical',
+  critical: 'critical',
+})
 
 const LABELS: Record<AgentRiskLevel, string> = {
   low: "Risiko niedrig",
@@ -17,7 +18,7 @@ const LABELS: Record<AgentRiskLevel, string> = {
 export function RiskBadge({ level }: { level: AgentRiskLevel }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] ${STYLES[level]}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_BADGE[RISK_TONE(level)]}`}
     >
       {LABELS[level]}
     </span>
