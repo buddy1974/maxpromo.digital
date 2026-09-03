@@ -987,9 +987,19 @@ button.os-nav-item {
 }
 @media (min-width: 900px) {
   .prose-two-col {
-    grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
     gap: var(--space-10);
   }
+}
+
+/* A heading in the label column is a section marker, not a page heading: at
+   the full h2 size it wrapped to four lines in a 17rem column, which reads as
+   a mistake rather than as hierarchy. It steps down one level here, and the
+   hierarchy comes from position instead — which is the point of the layout. */
+.prose-two-col > :first-child h2 {
+  font-size: var(--text-h3);
+  line-height: var(--leading-heading);
+  max-width: 18ch;
 }
 
 /* Numbered method. The number is a reference mark, not a decorated badge. */

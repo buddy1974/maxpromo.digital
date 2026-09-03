@@ -10,7 +10,7 @@ export async function generateMetadata({
   const { locale } = await params
   const isDE = locale === 'de'
   return {
-    title: isDE ? 'Antrag auf Datenlöschung | Maxpromo Digital' : 'Data Deletion Request | Maxpromo Digital',
+    title: isDE ? 'Antrag auf Datenlöschung' : 'Data deletion request',
     description: isDE
       ? 'Beantragen Sie die Löschung Ihrer personenbezogenen Daten aus den Systemen von Maxpromo Digital gemäß Art. 17 DSGVO.'
       : 'Request deletion of your personal data from Maxpromo Digital systems under DSGVO Article 17.',

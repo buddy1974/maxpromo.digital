@@ -1475,7 +1475,7 @@ const REAL_ESTATE_OS = {
     en: [
       { question: 'Who is RealEstateOS for?',                      answer: 'RealEstateOS is built for property companies that want their operations run from a single, individually configured system.' },
       { question: 'Does it replace my existing CRM or tools?',     answer: 'Not necessarily. What replaces, connects to, or runs alongside your existing tools is discussed and agreed individually.' },
-      { question: 'Is there AI-powered deal analysis?',            answer: 'No AI analysis capability is confirmed as part of the base system. Any AI involvement is discussed and defined individually based on what is actually implemented for your installation.' },
+      { question: 'Does it analyse deals automatically?',            answer: 'No AI analysis capability is confirmed as part of the base system. Any AI involvement is discussed and defined individually based on what is actually implemented for your installation.' },
       { question: 'Is there a built-in investor CRM?',              answer: 'Whether CRM functionality is included depends on what is agreed and configured for your installation — it is not a fixed, built-in feature of every system.' },
       { question: 'Does the system handle campaigns automatically?', answer: 'Campaign functionality, if included, is configured individually — no specific automation is assumed until it is discussed with you.' },
       { question: 'Can you migrate our existing property and investor data?', answer: 'Migration needs are assessed individually for each company as part of the initial conversation, not assumed in advance.' },

@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
  * noindex as defence in depth in case it's ever linked externally.
  */
 export const metadata: Metadata = {
-  title: 'Staff Access | Maxpromo Digital',
+  title: 'Staff access',
   robots: { index: false, follow: false },
 }
 

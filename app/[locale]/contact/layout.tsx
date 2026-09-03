@@ -16,8 +16,8 @@ export async function generateMetadata({
   const { locale } = await params
   const isDE = locale === 'de'
   const title = isDE
-    ? 'Kontakt | Maxpromo Digital'
-    : 'Contact | Maxpromo Digital'
+    ? 'Kontakt'
+    : 'Contact'
   const description = isDE
     ? 'Sprechen Sie mit Maxpromo Digital über Business-Systeme, Automatisierung oder ein bestimmtes Produkt, Antwort innerhalb eines Werktags.'
     : 'Talk to Maxpromo Digital about business systems, automation, or a specific product, we reply within one business day.'

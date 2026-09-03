@@ -9,8 +9,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const isDE = locale === 'de'
   const title = isDE
-    ? 'Max Agent Bureau | Intelligente KI-Agenten, sichere Prozesse'
-    : 'Max Agent Bureau | Intelligent AI Agents, Secure Processes'
+    ? 'Max Agent Bureau'
+    : 'Max Agent Bureau'
   const description = isDE
     ? 'Ein Team aus KI-Agenten übernimmt Kundenanfragen, Follow-ups, Freigaben und Berichte, jede wichtige Aktion läuft vorher über Sie.'
     : 'A team of AI agents handles customer enquiries, follow-ups, approvals and reporting, every important action still goes through you first.'
