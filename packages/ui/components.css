@@ -1,0 +1,111 @@
+/* =============================================================================
+   @maxpromo/ui — shared component classes
+   =============================================================================
+
+   The interface elements every application uses, defined once.
+
+   These five — .btn, .btn-primary, .btn-secondary, .card and .section-label —
+   were previously declared independently in both application stylesheets. They
+   produced identical output only because the second copy was written from the
+   first, and nothing enforced that. It is exactly how the two Tailwind configs
+   drifted: same brief, hand-matched values, and accent-hover ended up lighter
+   in one and darker in the other.
+
+   Every value here resolves to a token from @maxpromo/design-tokens. This file
+   defines no colour, size or spacing of its own.
+
+   Imported after the token file and before an application's own styles, so an
+   application can still override in the rare case it genuinely needs to — and
+   that override is then visible as a deliberate exception rather than a
+   silently divergent copy.
+   ========================================================================== */
+
+/* ─── Buttons ─────────────────────────────────────────────────────────────────
+   Each variant is self-contained: call sites use a single class
+   (className="btn-primary"), and requiring two would break every existing one.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--brand-font-body);
+  font-size: var(--text-small);
+  font-weight: var(--weight-subhead);
+  line-height: 1.2;
+  padding: 13px 24px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition: background-color var(--duration-base) var(--ease),
+              border-color var(--duration-base) var(--ease),
+              color var(--duration-base) var(--ease);
+}
+
+.btn:disabled,
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* The one place the brand accent is a fill. Text on it is black: lime with
+   white text measures 1.51:1. The border is Dark Green because a lime fill on
+   white has no perceivable edge (WCAG 1.4.11). */
+.btn-primary {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary-edge);
+}
+.btn-primary:hover:not(:disabled) { background: var(--brand-primary-hover); }
+
+.btn-secondary {
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border-color: var(--brand-border-control);
+}
+.btn-secondary:hover:not(:disabled) { border-color: var(--brand-text); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--brand-text-secondary);
+  padding-inline: 0;
+}
+.btn-ghost:hover { color: var(--brand-text); }
+
+.btn-sm {
+  padding: 9px 16px;
+  font-size: var(--text-micro);
+}
+
+/* ─── Surfaces ────────────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+/* ─── Section label ───────────────────────────────────────────────────────────
+   Uppercase sans in secondary grey. Never mono, never accent-coloured, never
+   prefixed with a motif. `.eyebrow` is kept as an alias so Agent Bureau's
+   existing call sites keep working.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.section-label,
+.eyebrow {
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--brand-text-secondary);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  margin: 0 0 var(--space-3);
+}

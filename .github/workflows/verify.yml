@@ -1,0 +1,43 @@
+name: verify
+
+# Governance gate. Nothing merges without this passing.
+#
+# The token audit runs as its own step rather than only inside `npm run verify`
+# so a failure is legible in the checks list: "design tokens" failing tells you
+# what is wrong without opening the log.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install workspace
+        run: npm ci
+
+      - name: Design token audit
+        run: npm run check:tokens
+
+      - name: TypeScript
+        run: npm run typecheck
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Build all applications
+        run: npm run build

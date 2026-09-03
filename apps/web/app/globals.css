@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@maxpromo/design-tokens/brand.css";
+@import "@maxpromo/ui/components.css";
 
 /* =============================================================================
    MAXPROMO — application stylesheet
@@ -179,77 +180,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 .footer-link:hover { color: var(--brand-text-inverted); }
 
 
-/* ─── Section label ───────────────────────────────────────────────────────────
-   Replaces the `// eyebrow` motif. Uppercase sans, secondary grey — never
-   mono, never accent-coloured. Section labels were the single most frequent
-   accent appearance on every page.
-   ───────────────────────────────────────────────────────────────────────── */
-
-.section-label {
-  font-family: var(--brand-font-sans);
-  font-size: var(--text-micro);
-  font-weight: var(--weight-medium);
-  color: var(--brand-text-secondary);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  margin: 0 0 var(--space-3);
-}
-
-
-/* ─── Buttons ─────────────────────────────────────────────────────────────── */
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  font-family: var(--brand-font-body);
-  font-size: var(--text-small);
-  font-weight: var(--weight-subhead);
-  line-height: 1.2;
-  padding: 13px 24px;
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  cursor: pointer;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  transition: background-color var(--duration-base) var(--ease),
-              border-color var(--duration-base) var(--ease),
-              color var(--duration-base) var(--ease);
-}
-
-/* The one place brand lime is a fill. Text on it is --brand-on-primary. */
-.btn-primary {
-  background: var(--brand-primary);
-  color: var(--brand-on-primary);
-  border-color: var(--brand-primary-edge);
-}
-.btn-primary:hover { background: var(--brand-primary-hover); }
-
-.btn-secondary {
-  background: var(--brand-surface);
-  color: var(--brand-text);
-  border-color: var(--brand-border-control);
-}
-.btn-secondary:hover { border-color: var(--brand-text); }
-
-.btn-ghost {
-  background: transparent;
-  color: var(--brand-text-secondary);
-  padding-left: 0;
-  padding-right: 0;
-}
-.btn-ghost:hover { color: var(--brand-text); }
-
-
 /* ─── Surfaces ────────────────────────────────────────────────────────────── */
-
-.card {
-  background: var(--brand-surface);
-  border: 1px solid var(--brand-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-}
 
 .rule {
   border: 0;
@@ -692,11 +623,6 @@ button.os-nav-item {
   align-items: center;
   gap: var(--space-4);
   flex-shrink: 0;
-}
-
-.btn-sm {
-  padding: 9px 16px;
-  font-size: var(--text-micro);
 }
 
 /* Burger */

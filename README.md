@@ -1,50 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Maxpromo Platform
 
-## Getting Started
-
-First, run the development server:
+The Maxpromo Digital software platform: the public site, Agent Bureau, the
+internal operating system, and the packages they share.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev:web       # maxpromo.digital           → :3020
+npm run dev:bureau    # agents.maxpromo.digital
+npm run verify        # token audit, typecheck, lint, build — all workspaces
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Layout
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+apps/web        maxpromo.digital, nine product showcase domains, and the
+                internal OS at /os
+apps/bureau     agents.maxpromo.digital
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+packages/
+  design-tokens the design system. Zero dependencies. The only place a colour
+                is defined
+  ui            shared components and the status tone system
+  config        legal identity and company constants
+  tooling       the design-token audit, shared tsconfig and eslint base
 
-## Learn More
+docs/           architecture, decisions, governance, deployment, brand
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Where to start
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Architecture** — `docs/architecture/platform.md`
+- **Standards every change must meet** — `docs/governance/standards.md`
+- **The design system** — `docs/brand/design-system.md`
+- **Deploying** — `docs/deployment/vercel.md`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-## Technical Operations Standard
-
-This project follows the global deployment standard located at:
-
-../TECH-OPS-STANDARD.md
-
-The standard defines:
-
-- Git → GitHub → Cloudflare/Vercel deployment flow
-- SPA routing configuration
-- build and deployment requirements
-- security patterns for admin routes
-
-All infrastructure changes must follow that document.
+Applications deploy independently as separate Vercel projects and are governed
+together. Nothing merges without `npm run verify` passing.

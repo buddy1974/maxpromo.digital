@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@maxpromo/design-tokens/brand.css";
+@import "@maxpromo/ui/components.css";
 
 /* =============================================================================
    AGENT BUREAU — application stylesheet
@@ -120,25 +121,6 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   border-radius: var(--radius-sm);
 }
 
-/* ─── Section label ───────────────────────────────────────────────────────────
-   Was `.eyebrow`: mono, accent-coloured, and prefixed in every caller with a
-   literal `//`. All three are retired — the motif is gone platform-wide, and
-   section labels were the single most frequent accent appearance on the page.
-   The class name is kept so callers keep working; the styling is now identical
-   to the website's .section-label.
-   ───────────────────────────────────────────────────────────────────────── */
-
-.eyebrow,
-.section-label {
-  font-family: var(--brand-font-sans);
-  font-size: var(--text-micro);
-  font-weight: var(--weight-medium);
-  color: var(--brand-text-secondary);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  margin: 0 0 var(--space-3);
-}
-
 /* Was a radial accent glow plus grid-line texture. Flat surface now. */
 .bg-grid {
   background-color: var(--brand-surface-subtle);
@@ -149,55 +131,6 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
    Same definitions as the website's, so a card here and a card there are the
    same card. These move to packages/ui in the consolidation.
    ───────────────────────────────────────────────────────────────────────── */
-
-.card {
-  background: var(--brand-surface);
-  border: 1px solid var(--brand-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6);
-}
-
-/* Callers use a single class (className="btn-primary"), so each variant is
-   self-contained rather than composed. Same values as the website's .btn. */
-.btn,
-.btn-primary,
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  font-family: var(--brand-font-body);
-  font-size: var(--text-small);
-  font-weight: var(--weight-subhead);
-  line-height: 1.2;
-  padding: 13px 24px;
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  cursor: pointer;
-  border: 1px solid transparent;
-  white-space: nowrap;
-  transition: background-color var(--duration-base) var(--ease),
-              border-color var(--duration-base) var(--ease),
-              color var(--duration-base) var(--ease);
-}
-.btn:disabled,
-.btn-primary:disabled,
-.btn-secondary:disabled { cursor: not-allowed; opacity: 0.6; }
-
-/* Text on the accent fill is black, never white. */
-.btn-primary {
-  background: var(--brand-primary);
-  color: var(--brand-on-primary);
-  border-color: var(--brand-primary-edge);
-}
-.btn-primary:hover:not(:disabled) { background: var(--brand-primary-hover); }
-
-.btn-secondary {
-  background: var(--brand-surface);
-  color: var(--brand-text);
-  border-color: var(--brand-border-control);
-}
-.btn-secondary:hover:not(:disabled) { border-color: var(--brand-text); }
 
 .field-label {
   display: block;
