@@ -1,0 +1,9 @@
+{
+  "name": "@maxpromo/tooling",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Platform checks and shared configuration. The design-token audit lives here so every application runs the same one.",
+  "bin": {
+    "check-design-tokens": "./check-design-tokens.mjs"
+  }
+}

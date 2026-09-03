@@ -1,0 +1,43 @@
+{
+  "name": "@maxpromo/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "maxpromo.digital and the nine product showcase domains.",
+  "scripts": {
+    "dev": "next dev --port 3020",
+    "build": "next build",
+    "start": "next start --port 3020",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "check:tokens": "node ../../packages/tooling/check-design-tokens.mjs",
+    "verify": "npm run check:tokens && npm run typecheck && npm run lint && npm run build"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.98.0",
+    "@maxpromo/design-tokens": "*",
+    "@mdx-js/loader": "^3.1.1",
+    "@mdx-js/mdx": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
+    "@neondatabase/serverless": "^1.0.2",
+    "@next/mdx": "^16.2.6",
+    "framer-motion": "^12.38.0",
+    "gray-matter": "^4.0.3",
+    "next": "16.1.6",
+    "next-intl": "^4.12.0",
+    "qrcode": "^1.5.4",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "reading-time": "^1.5.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

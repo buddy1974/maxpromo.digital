@@ -1,0 +1,3 @@
+{
+  "/api/os/send-angebot/route": "app/api/os/send-angebot/route.js"
+}

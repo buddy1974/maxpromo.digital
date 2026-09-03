@@ -1,0 +1,19 @@
+{
+  "extends": "../../packages/tooling/tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"],
+      "@maxpromo/design-tokens": ["../../packages/design-tokens/index.ts"],
+      "@maxpromo/design-tokens/*": ["../../packages/design-tokens/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}
