@@ -23,15 +23,12 @@ interface LandingEngineProps {
 }
 
 /**
- * V2 registry-driven product showcase engine. Rebuilt 2026-07-25 per
- * Marcel's correction — the V1 engine (HeroWorld → Pain → BeforeAfter →
- * HowItWorks → Features → InAction → AIImport → Installation → Faq →
- * Conversion) is retired. AIImport.tsx / Installation.tsx are no longer
- * imported anywhere (both were permanent `return null` stubs — dead
- * Phase 5 architecture, not carried into V2). The old section files
- * (HeroWorld.tsx, Pain.tsx, HowItWorks.tsx, Features.tsx, InAction.tsx)
- * are left on disk unused — this sandbox's device bridge cannot delete
- * files; flagged in the delivery report for manual cleanup.
+ * V2 registry-driven product showcase engine.
+ *
+ * The V1 engine (HeroWorld / Pain / HowItWorks / Features / InAction /
+ * AIImport / Installation) was retired 2026-07-25 and its section files
+ * were deleted in the v4.0 platform transformation (batch B0) — they had
+ * been left on disk unused since then.
  *
  * showcase mode (bridge=false, default):
  *   Full page: nav, hero, and every content block, footer. Used on

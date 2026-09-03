@@ -86,7 +86,9 @@
       "Bash(Start-Sleep -Seconds 8)",
       "Bash(Invoke-WebRequest -Uri \"http://localhost:7777/de/products/taxkontrol\" -UseBasicParsing -TimeoutSec 15)",
       "PowerShell(Start-Sleep -Seconds 6; Invoke-WebRequest -Uri \"http://localhost:7777/de/products/taxkontrol\" -UseBasicParsing -TimeoutSec 15 | Select-Object StatusCode)",
-      "PowerShell(npx kill-port 7777 2>$null; Start-Sleep -Seconds 1)"
+      "PowerShell(npx kill-port 7777 2>$null; Start-Sleep -Seconds 1)",
+      "Bash(git fetch *)",
+      "Bash(git ls-remote *)"
     ]
   }
 }
