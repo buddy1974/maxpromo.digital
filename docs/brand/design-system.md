@@ -103,6 +103,60 @@ enforced in none, and the site shipped five ad-hoc clamps against one token use
 112px below it, which no single screenshot shows. `audit-responsive` now fails
 on a clamp-based section padding that is not one of the three.
 
+Inside a section, spacing comes from `--space-*`. 575 declarations moved onto
+it in v7.1 at identical computed values. What did not move is recorded rather
+than rounded: the scale steps in eights above 16px (16, 24, 32, 48) and the
+product is built at a granularity of two — 10px, 14px, 6px and 20px account for
+479 of the raw values. The scale describes the marketing site and the product
+runs on a finer grid, which is the same shape as the type scale before v7.0.
+See known-risks 23.
+
+---
+
+## Radius
+
+Six steps: `--radius-xs` (2), `--radius-sm` (4), `--radius-md` (6),
+`--radius-lg` (8), `--radius-xl` (12), `--radius-full`.
+
+`--radius-xs` was added in v7.1. 2px is the most used corner in the platform —
+73 declarations, every data surface in the internal OS and the dashboards,
+where 8px reads as a card — and it had no name, so twelve raw values were in
+use against a scale of five: 2, 3, 4, 5, 6, 8, 9, 10 and 12px. A 3px corner
+beside a 4px one beside a 5px one is not a decision anyone made.
+
+---
+
+## Motion
+
+Two durations and one curve.
+
+| Token | Value | For |
+|---|---|---|
+| `--duration-fast` | 120ms | a state change on a control: colour, border |
+| `--duration-base` | 180ms | a surface moving: background, transform, opacity |
+| `--ease` | `cubic-bezier(0.2, 0, 0.2, 1)` | everything |
+
+Before v7.1 the platform wrote nine durations and four curves across 41
+transitions — 0.15s and 150ms in the same codebase, and 0.2s, 200ms, 220ms and
+0.25s all meaning about a fifth of a second. Motion that varies by 30ms between
+two adjacent controls does not read as a decision.
+
+`transition: all` is not used. It animates every property including layout, and
+hides what is moving from anyone reading the component.
+
+---
+
+## Elevation
+
+`--shadow-sm`, `--shadow-md`, `--shadow-lg` for surfaces that sit in the page;
+`--shadow-overlay` for the few that float above it — the chat bubble and panel,
+a toast.
+
+`--shadow-overlay` exists because those three had each invented their own, and
+two invented it out of the accent: a 24px Brand Lime glow at 45% on the chat
+bubble, on every page, and a 36px lime halo on a showcase call to action. A
+shadow with no offset is not elevation, it is light, and the accent is a fill.
+
 ---
 
 ## Retired, and not to be reintroduced
@@ -111,7 +165,8 @@ The `//` label motif · split-colour headlines · marketing pills and badges ·
 emoji in interface chrome · decorative gradients and glows · tick lists ·
 oversized icon tiles · drop shadows as decoration · the orange accent ·
 Space Grotesk · JetBrains Mono · Unicode marks standing in for icons ·
-`--color-*` alias names · headings at weight 700.
+`--color-*` alias names · headings at weight 700 · coloured glows ·
+`transition: all` · hover states with no matching focus state.
 
 Each was removed for a stated reason recorded in `docs/history/`. Reintroducing
 one is a decision, not a detail.

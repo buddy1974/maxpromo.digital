@@ -153,3 +153,36 @@ homepage at 140px above and 112px below - which no single screenshot shows.
 sections. That is the documented value, and it sits inside the 96-128px band the
 reference companies use; 140px was above it.
 
+## 2026-09-04 - v7.1: the scales gain the steps the product actually uses
+
+**Decision:** `--radius-xs` (2px) and `--shadow-overlay` are added to the token
+package; 164 radius declarations, 41 transitions and 575 spacing declarations
+move onto tokens.
+**Why:** Three times now the same finding: the published scale describes the
+marketing site, the product runs on a step the scale does not contain, and the
+call sites therefore write raw values. It was 10px and 11px type in v7.0, and
+weight 700 before that. Here it is the 2px corner every data surface in the OS
+is drawn at - 73 declarations, the most used radius in the platform, unnamed -
+and the elevation a floating element needs, which three components had each
+invented, two of them out of the accent.
+**How to apply:** When a raw value appears more often than the token it should
+be, check whether the scale is missing a step before changing the call sites.
+
+## 2026-09-04 - Every hover state gets a matching focus state
+
+**Decision:** Sixteen classes with a `:hover` and no `:focus-visible` now have
+both. Interaction that lived in `onMouseEnter` moved to CSS.
+**Why:** The global focus ring meant this was never an audit failure - it is
+that a mouse user was told what was interactive and a keyboard user was told
+only where they were. The affordance and the ring are different things.
+
+## 2026-09-04 - Eight data tables were clipping rather than scrolling
+
+**Decision:** Wrappers with `overflow: hidden` around full-width tables become
+scroll containers.
+**Why:** On a narrow viewport the far columns were unreachable, not merely
+off-screen. The responsive audit looks for fixed widths and collapsing grids
+and finds neither in a table of auto-width columns, and `.table-wrap {
+overflow-x: auto }` had been sitting unused in the stylesheet the whole time -
+the third "orphan" in this repository that was a gap rather than dead code.
+

@@ -16,7 +16,7 @@ From the workspace root. It runs, in order:
 | # | Gate | What it catches |
 |---|---|---|
 | 1 | **Design token audit** | Hex literals, raw Tailwind palette classes, rgba literals, and the brand accent used as a text colour — directly, through a conditional, aliased to a local name, or bound to a field named as text. Anywhere outside the token package |
-| 2 | **Token input audit** | A custom property the token package reads that an application never defines. An undefined `var()` falls through to the fallback stack silently — see ADR-0006 |
+| 2 | **Token input audit** | A custom property the token package reads that an application never defines, and any `var()` an application uses that nothing defines at all. An undefined `var()` does not warn: with a fallback it silently uses it, without one the whole declaration is dropped — see ADR-0006 |
 | 3 | **Icon audit** | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
 | 4 | **Responsive audit** | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
 | 5 | **Typography audit** | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
@@ -92,7 +92,18 @@ exists for one role — the small uppercase mono label and the numeric, at 10 to
 13px, where 600 disappears — and the audit fails on 700 above that band.
 
 **Spacing.** Three section rhythms and no fourth. A clamp-based section padding
-that is not one of them fails the responsive audit.
+that is not one of them fails the responsive audit. Inside a section, spacing
+comes from `--space-*`.
+
+**Motion.** Two durations and one curve, from the tokens. Never `transition:
+all` — it animates layout and hides what is moving from the reader.
+
+**Interaction.** Every `:hover` has a matching `:focus-visible`. The focus ring
+from the reset is not the affordance; it sits on top of it. A state a mouse user
+is shown and a keyboard user is not is a defect even when the audit passes.
+
+**Elevation.** Four shadows, from the tokens. No coloured shadow: a glow is the
+accent used as light, and the accent is a fill.
 
 **Iconography.** One set, in `@maxpromo/ui`. Stroke only, 1.5px, currentColor,
 four sizes. Icons are named at the call site, never typed as a character, and
@@ -150,7 +161,7 @@ whichever port was free, and the two live audits address `:3021` by name. A
 | Command | Answers | In `verify`? |
 |---|---|---|
 | `check:tokens` | Is any colour defined outside the token package? | yes |
-| `check:token-inputs` | Does every application define what the token package reads? | yes |
+| `check:token-inputs` | Does every application define what the token package reads, and does every `var()` resolve? | yes |
 | `check:icons` | Is any Unicode mark standing in for an icon? | yes |
 | `check:responsive` | Does every grid collapse? Does anything exceed a 380px viewport? | yes |
 | `audit:typography` | Is any type below the legibility floor, on a sub-pixel size, or at weight 700 above the label band? | yes |

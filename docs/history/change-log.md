@@ -317,3 +317,112 @@ tokens and 3 component classes in both running applications.
 
 Nothing pushed. Nothing merged to main.
 
+## 2026-09-04 - v7.1: the values nobody chose
+
+Branch feature/track-b. Three batches, full gate green after each; both live
+audits run against both applications.
+
+v7.0 found rules that could not see. v7.1 found the opposite problem: values
+that no rule was looking at, because none of them is wrong on its own. A 3px
+corner is fine. A 3px corner beside a 4px one beside a 5px one is a build.
+
+### One motion language
+
+Nine durations and four curves across 41 transitions. 0.15s and 150ms in the
+same codebase; 0.2s, 200ms, 220ms and 0.25s all meaning about a fifth of a
+second. Nobody chose that - it is what accumulates when each call site types a
+number. Now two tokens and one curve.
+
+`transition: all` on a card removed: it animates every property including
+layout, and hides what is moving from anyone reading the component.
+
+### One radius scale, plus the step it was missing
+
+Twelve raw values - 2, 3, 4, 5, 6, 8, 9, 10, 12px - against a scale of five.
+164 declarations moved onto tokens.
+
+The scale was also missing its most used step. 2px is 73 declarations: every
+data surface in the internal OS and the dashboards, where 8px reads as a card.
+Named `--radius-xs`. Third time this session's finding has had that shape.
+
+### Spacing
+
+575 declarations onto `--space-*` at identical computed values. 718 did not
+move, and the reason is recorded rather than rounded away: the scale steps in
+eights above 16px and the product is built at a granularity of two.
+
+### Eight tables a phone could not read
+
+Six in the internal OS, four in Agent Bureau, each in a wrapper with
+`overflow: hidden`. On a narrow viewport the far columns were clipped, not
+scrolled - gone rather than off-screen. The responsive audit looks for fixed
+widths and collapsing grids and a table of auto-width columns has neither, and
+`.table-wrap { overflow-x: auto }` had been sitting unused in the stylesheet
+the whole time. Third orphan in this repository that was a gap, not dead code.
+
+### The glows
+
+Three elements had each invented their own elevation and two invented it out of
+the accent:
+
+    chat bubble   0 4px 24px lime 45% + 0 2px 8px black 40%    every page
+    chat panel    0 24px 80px black 70%
+    showcase CTA  0 0 36px lime 30%                             no offset
+
+A shadow with no offset is not elevation, it is light. `--shadow-overlay` now
+covers the case those three were reaching for, and it is the heaviest shadow
+the platform has.
+
+The chat bubble was the clearest single artefact left on the public site. Its
+own comment described it as "56px, orange, soft glow" - a colour retired three
+brand generations ago. It drew its own chat glyph as inline SVG next to an icon
+package that has one, had no perceivable edge (lime on white is 1.51:1, the
+problem `--brand-primary-edge` exists for), and kept its hover in
+`onMouseEnter`, so a keyboard user was told nothing.
+
+### Focus
+
+Sixteen classes had a `:hover` and no `:focus-visible`. Never an audit failure,
+because the reset draws a ring - it is that the affordance and the ring are
+different things, and only one of them was being offered to a keyboard user.
+
+### Skip link
+
+The website had one. Agent Bureau did not, so a keyboard visitor tabbed the
+whole navigation on every page, and the dashboard's twenty-two-link sidebar
+before every screen. Moved into `@maxpromo/ui` rather than copied.
+
+### Dangling var()
+
+`check-token-inputs` now also fails on any custom property an application
+references and nothing defines. Four survivors of the v7.0 alias retirement,
+all in the chat widget: `var(--font-body, system-ui, sans-serif)`. The fallback
+list is why they survived - it made a dead reference look deliberate, and
+rendered the chat in the system font.
+
+Its first run produced four false positives, because the showcase engine
+declares its per-product theme as quoted keys in a React style object and the
+detector only understood CSS declarations. Watched failing, corrected, watched
+failing again on a reintroduced defect, then clean.
+
+### Marks
+
+Thirteen straight apostrophes and two typographic ones in one locale, on the
+same journey: the homepage said "we've", the contact page said "We'll". Forty-
+four labels ended in three periods where others used an ellipsis. Standardised,
+except the terminal mock - three periods are what a CLI prints.
+
+### Also
+
+- Nine files declared both `sans` and `grotesk` as `var(--brand-font-body)`:
+  two names for one value in the same file, one naming a typeface retired three
+  brand generations ago.
+- Five dead rules removed, including a 2s infinite pulse with nothing to
+  indicate and a second implementation of `@maxpromo/ui`'s `.status-error`.
+- Ten row-action controls had `padding: 0` - a hit area around 30x14. They now
+  carry a transparent one, with the label in exactly the same place.
+- Agent Bureau's dev port pinned so `certify` can reach it; web states
+  `font-display` explicitly, as Agent Bureau already did.
+
+Nothing pushed. Nothing merged to main.
+
