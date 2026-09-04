@@ -37,13 +37,13 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
           left: 0;
           right: 0;
           z-index: 999;
-          border-radius: 12px 12px 0 0;
+          border-radius: var(--radius-xl) var(--radius-xl) 0 0;
           max-height: 560px;
         }
         @media (min-width: 640px) {
           .max-panel {
             left: auto;
-            right: 24px;
+            right: var(--space-5);
             bottom: 90px;
             width: 380px;
             border-radius: var(--radius-xl);
@@ -59,20 +59,20 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
           display:    'flex',
           flexDirection: 'column',
           overflow:   'hidden',
-          boxShadow:  '0 24px 80px color-mix(in srgb, var(--brand-text) 70%, transparent)',
+          boxShadow:  'var(--shadow-overlay)',
         }}
       >
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--brand-surface-sunken)', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: 'var(--text-label)', color: 'var(--brand-on-primary)', flexShrink: 0 }}>
+            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--brand-font-mono)', fontWeight: 700, fontSize: 'var(--text-label)', color: 'var(--brand-on-primary)', flexShrink: 0 }}>
               M
             </div>
             <div>
-              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: 0, letterSpacing: '0.05em' }}>
+              <p style={{ fontFamily: 'var(--brand-font-mono)', fontWeight: 700, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: 0, letterSpacing: '0.05em' }}>
                 Max
               </p>
-              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>
                 {'Business Advisor'}
               </p>
             </div>
@@ -93,7 +93,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
           className="chat-scroll"
         >
           {isEmpty && !isLoading && (
-            <p style={{ fontFamily: 'var(--font-body, system-ui, sans-serif)', fontSize: 'var(--text-small)', color: 'var(--brand-text-muted)', textAlign: 'center', padding: 'var(--space-6) var(--space-6) 0', lineHeight: 1.6 }}>
+            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-muted)', textAlign: 'center', padding: 'var(--space-6) var(--space-6) 0', lineHeight: 1.6 }}>
               {lang === 'de' ? 'Frage stellen. Echte Antwort.' : 'Ask a question. Real answer.'}
             </p>
           )}

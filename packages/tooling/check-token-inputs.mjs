@@ -121,18 +121,79 @@ for (const app of APPS) {
   }
 }
 
+/**
+ * PART TWO — a var() an application references and nothing defines.
+ *
+ * Part one checks the contract the token package declares. This checks the
+ * looser version of the same failure: any custom property referenced anywhere
+ * in an application that no stylesheet, package or font binding defines.
+ *
+ * It is the same silence. `var(--font-mono, monospace)` survived the v7.0
+ * alias retirement in the chat panel because the fallback made it look
+ * deliberate, and a reference with no fallback simply renders as nothing —
+ * `color: var(--gone)` is an invalid declaration the browser drops, so the
+ * element inherits and the page still looks plausible.
+ */
+const DEFINE_SOURCES = [
+  join(ROOT, 'packages'),
+  ...APPS.map((a) => join(ROOT, 'apps', a)),
+]
+const DEFINED = new Set()
+const REFERENCED = new Map()   // name -> first "file:line" that reads it
+
+/** Tailwind writes its own bookkeeping properties at build time. */
+const FRAMEWORK = /^--(tw|radix|next|headlessui)-/
+
+for (const dir of DEFINE_SOURCES) {
+  for (const f of walk(dir)) {
+    const src = readFileSync(f, 'utf8')
+    // A CSS declaration, a quoted key in a React style object (which is how the
+    // showcase engine sets its per-product theme), or a next/font binding.
+    for (const m of src.matchAll(/(--[\w-]+)\s*:/g)) DEFINED.add(m[1])
+    for (const m of src.matchAll(/['"`](--[\w-]+)['"`]\s*:/g)) DEFINED.add(m[1])
+    for (const m of src.matchAll(/variable:\s*['"`](--[\w-]+)['"`]/g)) DEFINED.add(m[1])
+  }
+}
+for (const app of APPS) {
+  for (const f of walk(join(ROOT, 'apps', app))) {
+    const rel = relative(ROOT, f).split(sep).join('/')
+    const lines = readFileSync(f, 'utf8').split('\n')
+    lines.forEach((line, i) => {
+      for (const m of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
+        if (!REFERENCED.has(m[1])) REFERENCED.set(m[1], rel + ':' + (i + 1))
+      }
+    })
+  }
+}
+const dangling = [...REFERENCED.entries()]
+  .filter(([name]) => !DEFINED.has(name) && !FRAMEWORK.test(name))
+  .sort()
+
 console.log('='.repeat(74))
 console.log(`token inputs: ${inputs.length} expected by the token package — ${inputs.join(', ')}`)
 console.log(`${APPS.length} application(s), ${filesChecked} file(s) checked`)
 
+console.log(`custom properties: ${DEFINED.size} defined, ${REFERENCED.size} referenced by an application`)
+
+for (const [name, where] of dangling) {
+  findings.push({ app: where, name, dangling: true })
+}
+
 if (findings.length === 0) {
-  console.log('TOKEN INPUTS: clean — every application defines what the token package reads')
+  console.log('TOKEN INPUTS: clean — every application defines what the token package reads,')
+  console.log('              and every var() it uses resolves to something')
 } else {
   console.log(`\nTOKEN INPUTS: ${findings.length} finding(s)\n`)
   for (const f of findings) {
-    console.log(`  apps/${f.app} never defines ${f.name}`)
-    console.log(`      @maxpromo/design-tokens reads it. Undefined, it falls through to the`)
-    console.log(`      fallback stack silently — no warning, no build error, a different face.`)
+    if (f.dangling) {
+      console.log(`  ${f.name} is referenced at ${f.app} and defined nowhere`)
+      console.log(`      An undefined var() does not warn. With a fallback it silently uses it;`)
+      console.log(`      without one the whole declaration is dropped and the element inherits.`)
+    } else {
+      console.log(`  apps/${f.app} never defines ${f.name}`)
+      console.log(`      @maxpromo/design-tokens reads it. Undefined, it falls through to the`)
+      console.log(`      fallback stack silently — no warning, no build error, a different face.`)
+    }
   }
   console.log('\nIn Next, define it where the font is loaded:')
   console.log("  Inter({ subsets: ['latin'], variable: '--font-inter' })")

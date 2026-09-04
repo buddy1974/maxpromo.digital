@@ -74,7 +74,7 @@ export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, brid
           <a
             href={primaryHref}
             className={INTERACTIVE_PRIMARY_CLASSES}
-            style={{ ...BUTTON_PRIMARY, boxShadow: '0 0 36px color-mix(in srgb, var(--brand-primary) 30%, transparent)' }}
+            style={BUTTON_PRIMARY}
             {...externalLinkProps(primaryHref)}
           >
             {primaryLabel}

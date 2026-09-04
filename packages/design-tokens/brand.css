@@ -285,6 +285,14 @@
   --shadow-sm: 0 1px 2px rgba(17, 17, 17, 0.04);
   --shadow-md: 0 1px 3px rgba(17, 17, 17, 0.06), 0 1px 2px rgba(17, 17, 17, 0.04);
   --shadow-lg: 0 4px 12px rgba(17, 17, 17, 0.07);
+  /* Elements that float above the page rather than sitting in it: the chat
+     bubble and panel, a toast. The card scale is too flat to read as detached
+     and every one of them had invented its own — a 24px lime glow at 45% on
+     the bubble, an 80px black smear at 70% on the panel, a 36px lime halo on a
+     showcase CTA. Two of those are the "decorative gradients and glows" this
+     design system retired, and the accent is a fill; a halo is the accent used
+     as light. One elevation, and it is the heaviest the platform has. */
+  --shadow-overlay: 0 8px 24px rgba(17, 17, 17, 0.12), 0 2px 6px rgba(17, 17, 17, 0.08);
 
   /* Two durations and one curve, and nothing else.
      Before v7.1 the platform wrote nine durations and four curves across 41

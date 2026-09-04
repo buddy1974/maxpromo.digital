@@ -801,7 +801,7 @@
     "formRequired": "*",
     "formAutomationLabel": "Anfrage zu:",
     "formCta": "Nachricht senden →",
-    "formCtaSending": "Wird gesendet...",
+    "formCtaSending": "Wird gesendet…",
     "formPrivacy": "Ihre Daten werden nie an Dritte weitergegeben.",
     "successTitle": "Nachricht gesendet.",
     "successDesc": "Wir antworten innerhalb eines Werktags.",

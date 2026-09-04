@@ -30,6 +30,7 @@ import './globals.css'
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
+  display: 'swap',
 })
 
 /**
@@ -46,6 +47,7 @@ const robotoMono = Roboto_Mono({
   variable: '--font-roboto-mono',
   subsets: ['latin'],
   weight: ['400', '500', '700'],
+  display: 'swap',
 })
 
 const SITE_URL = 'https://www.maxpromo.digital'

@@ -101,7 +101,7 @@ export function MaxComposer() {
           border:       '1px solid var(--brand-surface-sunken)',
           borderRadius: 'var(--radius-lg)',
           color:        'var(--brand-text)',
-          fontFamily:   'var(--font-body, system-ui, sans-serif)',
+          fontFamily:   'var(--brand-font-body)',
           fontSize:     '14px',
           lineHeight:   1.5,
           padding:      '9px 12px',

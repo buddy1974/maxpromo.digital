@@ -884,7 +884,7 @@ export default function NewInvoicePage() {
 
       {/* ── TOAST ── */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 400, background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 40%, transparent)', color: 'var(--brand-text)', fontFamily: mono, fontSize: '12px', padding: '12px 18px', letterSpacing: '0.06em', maxWidth: '380px', boxShadow: '0 8px 32px color-mix(in srgb, var(--brand-text) 45%, transparent)' }}>
+        <div style={{ position: 'fixed', bottom: '24px', right: '24px', zIndex: 400, background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 40%, transparent)', color: 'var(--brand-text)', fontFamily: mono, fontSize: '12px', padding: '12px 18px', letterSpacing: '0.06em', maxWidth: '380px', boxShadow: 'var(--shadow-overlay)' }}>
           {toast}
         </div>
       )}

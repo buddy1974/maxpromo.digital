@@ -23,7 +23,7 @@ export function MaxMessage({ message }: MaxMessageProps) {
           borderRadius: isUser ? '14px 14px 4px 14px' : '4px 14px 14px 14px',
           background:   isUser ? 'var(--brand-primary-dark)' : 'var(--brand-surface-sunken)',
           border:       isUser ? 'none' : '1px solid var(--brand-surface-sunken)',
-          fontFamily:   'var(--font-body, system-ui, sans-serif)',
+          fontFamily:   'var(--brand-font-body)',
           fontSize:     '14px',
           lineHeight:   1.6,
           color:        isUser ? 'var(--brand-on-primary)' : 'var(--brand-text)',
