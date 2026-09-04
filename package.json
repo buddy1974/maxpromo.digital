@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "certify": "npm run verify && npm run audit:a11y && npm run audit:consistency && npm run audit:platform",
-    "verify": "npm run check:tokens && npm run check:icons && npm run check:responsive && npm run audit:typography && npm run typecheck && npm run lint && npm run build",
+    "verify": "npm run check:tokens && npm run check:token-inputs && npm run check:icons && npm run check:responsive && npm run audit:typography && npm run typecheck && npm run lint && npm run build",
     "audit:a11y": "node packages/tooling/audit-a11y.mjs",
     "audit:consistency": "node packages/tooling/audit-consistency.mjs",
     "audit:platform": "node packages/tooling/audit-platform.mjs",
@@ -21,6 +21,7 @@
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "check:icons": "node packages/tooling/check-icons.mjs",
+    "check:token-inputs": "node packages/tooling/check-token-inputs.mjs",
     "audit:typography": "node packages/tooling/audit-typography.mjs"
   },
   "engines": {

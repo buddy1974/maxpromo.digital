@@ -32,11 +32,20 @@ const inter = Inter({
   subsets: ['latin'],
 })
 
-/** Code, data tables and document reference numbers only — not a label face. */
+/**
+ * Code, data tables and document reference numbers only — not a label face.
+ *
+ * 700 is loaded because the scale uses it. --weight-bold has one documented
+ * role, the small uppercase mono label, and it is used at 51 sites — every one
+ * of which the browser was synthesising, because this face shipped 400 and 500
+ * only. Faux bold on 10px uppercase mono at 0.2em tracking is the worst place
+ * to have it: the strokes thicken unevenly at exactly the size where the
+ * letterforms have the least room.
+ */
 const robotoMono = Roboto_Mono({
   variable: '--font-roboto-mono',
   subsets: ['latin'],
-  weight: ['400', '500'],
+  weight: ['400', '500', '700'],
 })
 
 const SITE_URL = 'https://www.maxpromo.digital'
