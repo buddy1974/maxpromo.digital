@@ -25,7 +25,7 @@ import './globals.css'
  * Basecamp, Thoughtworks) uses a neutral grotesque this way.
  *
  * To reverse: restore the Space_Grotesk import here and repoint
- * --brand-font-heading in design/tokens/brand.css. Nothing else depends on it.
+ * --brand-font-heading in @maxpromo/design-tokens/brand.css. Nothing else depends on it.
  */
 const inter = Inter({
   variable: '--font-inter',

@@ -15,27 +15,32 @@ From the workspace root. It runs, in order:
 
 | # | Gate | What it catches |
 |---|---|---|
-| 1 | **Design token audit** | Hex literals, raw Tailwind palette classes, rgba literals, the brand accent used as a text colour, and the accent aliased to a local name to evade that rule — anywhere outside the token package |
-| 2 | **Icon audit** | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
-| 3 | **Responsive audit** | Every grid collapses; no fixed width exceeds a 380px viewport |
-| 4 | **Typography audit** | Any size below the 10px legibility floor, and any sub-pixel size |
-| 5 | **TypeScript** | `tsc --noEmit` in every workspace |
-| 6 | **ESLint** | Zero errors in every workspace. Warnings are allowed; errors are not |
-| 7 | **Production build** | Every application builds |
+| 1 | **Design token audit** | Hex literals, raw Tailwind palette classes, rgba literals, and the brand accent used as a text colour — directly, through a conditional, aliased to a local name, or bound to a field named as text. Anywhere outside the token package |
+| 2 | **Token input audit** | A custom property the token package reads that an application never defines. An undefined `var()` falls through to the fallback stack silently — see ADR-0006 |
+| 3 | **Icon audit** | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
+| 4 | **Responsive audit** | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
+| 5 | **Typography audit** | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
+| 6 | **TypeScript** | `tsc --noEmit` in every workspace |
+| 7 | **ESLint** | Zero errors in every workspace. Warnings are allowed; errors are not |
+| 8 | **Production build** | Every application builds |
 
 The static audits run first on purpose: they are the fastest and they catch the
 classes of regression this platform has had most often.
 
 ### Every check must be able to fail
 
-Four checks in this repository have silently passed — reported success while
-examining nothing. See **ADR-0004**. The rules it imposes apply to anything
-added to `packages/tooling/`:
+Six checks in this repository have silently passed — reported success while
+examining nothing, or while examining the wrong thing. See **ADR-0004**. The
+rules it imposes apply to anything added to `packages/tooling/`:
 
 - Resolve scan targets explicitly and print the count.
 - Exit non-zero on zero targets.
 - Use `strip-comments.mjs` for comment state. Never a line-by-line flag.
-- Demonstrate the rule firing on the real codebase before believing it.
+- Demonstrate the rule firing on the real codebase before believing it. This is
+  the one that keeps paying: three of the six were found this way, including a
+  rule whose pattern contained a literal backspace byte where `` should have
+  been, and a second whose escape was eaten by a template literal. Both looked
+  correct in the source and matched nothing.
 
 ---
 
@@ -80,18 +85,18 @@ measures 1.51:1. Where an accent text colour is genuinely needed,
 namespaces, and success is deliberately blue-shifted so it cannot be read as
 the green brand.
 
-**Typography.** One scale, one family. Hierarchy comes from weight, size and
-composition — never from a second typeface. Headings and paragraphs carry a
-measure; no call site sets its own. Nothing below 10px. Weight 700 exists in
-the scale for one role — the small uppercase mono label and the numeric, where
-600 disappears — and headings never use it.
+**Typography.** One scale, one family, one mono. Hierarchy comes from weight,
+size and composition — never from a second typeface. Headings and paragraphs
+carry a measure; no call site sets its own. Nothing below 10px. Weight 700
+exists for one role — the small uppercase mono label and the numeric, at 10 to
+13px, where 600 disappears — and the audit fails on 700 above that band.
+
+**Spacing.** Three section rhythms and no fourth. A clamp-based section padding
+that is not one of them fails the responsive audit.
 
 **Iconography.** One set, in `@maxpromo/ui`. Stroke only, 1.5px, currentColor,
 four sizes. Icons are named at the call site, never typed as a character, and
 never carried inside a translation string. See **ADR-0003**.
-
-**Spacing.** Three section rhythms. A section not using one of them fails
-review.
 
 ---
 
@@ -131,12 +136,24 @@ npm run verify            # the merge gate. Runs without a server.
 npm run certify           # verify + the three audits that need one.
 ```
 
+`certify` needs both applications running on the ports the audits address:
+
+```bash
+npm run dev:web           # :3020
+npm run dev:bureau        # :3021
+```
+
+Agent Bureau's dev script did not pin its port until v7.0 — it started on
+whichever port was free, and the two live audits address `:3021` by name. A
+`certify` run after a plain `npm run dev:bureau` therefore could not reach it.
+
 | Command | Answers | In `verify`? |
 |---|---|---|
 | `check:tokens` | Is any colour defined outside the token package? | yes |
+| `check:token-inputs` | Does every application define what the token package reads? | yes |
 | `check:icons` | Is any Unicode mark standing in for an icon? | yes |
 | `check:responsive` | Does every grid collapse? Does anything exceed a 380px viewport? | yes |
-| `audit:typography` | Is any type below the legibility floor, or on a sub-pixel size? | yes |
+| `audit:typography` | Is any type below the legibility floor, on a sub-pixel size, or at weight 700 above the label band? | yes |
 | `audit:a11y` | Landmarks, heading order, alt text, accessible names, labels, titles — on rendered output across every public route | needs both apps running |
 | `audit:consistency` | Do both applications resolve the same tokens, type scale and component classes? | needs both apps running |
 | `audit:platform` | Dead code, unused assets, unused exports, dependency direction | report only |

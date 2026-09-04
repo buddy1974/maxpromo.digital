@@ -193,3 +193,127 @@ wrong. Its role is documented and excludes headings.
 been observed producing findings on this codebase and then producing none.
 
 Nothing pushed. Nothing merged to main.
+
+## 2026-09-04 - v7.0 continued: the rules that could not see
+
+Branch feature/track-b. Every gate re-run and passing; both live audits run
+against both applications on their real ports.
+
+**The finding is not a defect, it is a pattern.** Four checks in this repository
+were widened this session, and every one of them produced findings immediately
+- defects that had been live while the check reported clean. In each case the
+rule was correct and its reach was not. The order below is the order they were
+found, because the order is the argument.
+
+### The accent, reached through a syntax the rule did not model
+
+`check-design-tokens` matched the accent only where the token followed `color:`
+immediately, and only where it was bound with `const`. Both of the syntaxes
+actually in use walked past it:
+
+    color: isOpen ? 'var(--brand-primary)' : ...       ternary
+    { light: { hoverText: 'var(--color-primary)' } }   style map
+
+Ten live failures at 1.51:1, including the language toggle in the header of
+every page on the site, and the FAQ marker on the homepage. Two of the ten used
+the brand accent as a *status* colour, which the token file forbids by name.
+
+Also two `var(--token)22` values - a hex alpha suffix left on a token by the
+v4.0 migration. Not a colour, so those backgrounds never rendered at all.
+
+### An icon range that stopped one block short
+
+The mark sweep of the previous session retired 36 Unicode icons. Its scan
+ranges ended at U+27BF; the rotation arrow U+27F3 sits above it. Fourteen uses
+survived, twelve of them frozen inside the internal OS translation strings -
+where a label carries an icon it cannot restyle and a translator has to keep.
+The convert button swapped its entire label for the glyph, so a control lost
+its accessible name for the duration of the action.
+
+### A rhythm written in three documents and checked in none
+
+"Exactly three section rhythms; a section not using one fails review" appears
+in the token file, the design system and the standards. The public site shipped
+five ad-hoc clamps and used a token in one place. Two of them sat adjacent on
+the homepage, 140px of padding above a section and 112px below it, which no
+single screenshot shows.
+
+Writing that check reproduced ADR-0004's fifth failure exactly: `` landed in
+the pattern as a literal backspace byte, so one of its two patterns matched
+nothing while the other found 15 and made the rule look alive. Repaired, it
+found 18.
+
+### A weight the font did not have
+
+`--weight-bold` documents one role - the small uppercase mono label and the
+numeric, where 600 disappears - and says headings use 600. Every h1 and h2 in
+the internal OS carried an inline 700 at 18 to 30px: 46 declarations, in the
+application whose own stylesheet says not to.
+
+And the 51 sites that use 700 *correctly*, on mono, were being synthesised:
+Roboto Mono was loaded at 400 and 500 only. Faux bold at 10px uppercase with
+0.2em tracking is the worst place to have it.
+
+### Two applications, two typefaces
+
+The one that had been hiding longest. `@maxpromo/design-tokens` is
+dependency-free, so it cannot load a webfont; it names one, and each
+application defines it. Agent Bureau passed `variable: '--font-sans'` to
+next/font and loaded JetBrains Mono as `--font-mono`. Neither is a name the
+token package reads.
+
+Nothing failed. An undefined `var()` does not warn - it falls through. So Agent
+Bureau rendered in Segoe UI while maxpromo.digital rendered in Inter, and both
+of Agent Bureau's downloaded webfonts sat unused in its bundle. It survived a
+design system, a consolidation, a brand migration and six audits, because each
+of those looked at one application at a time and each was internally
+consistent. `audit-consistency` compared the declarations, which were identical
+character for character, and passed.
+
+New gate: `check-token-inputs.mjs`. ADR-0006.
+
+### One namespace
+
+The v4.0 alias block - twenty-four `--color-*` and `--font-*` names repointed at
+the token package "until call sites migrate" - had 507 call sites, on a
+homepage carrying both names in the same style object. All migrated, block
+deleted, `@theme` reduced to the three font keys whose utilities are used.
+ADR-0005.
+
+### Typography
+
+The scale gained the two steps it was missing. 476 of 927 declarations sat at
+10px or 11px and neither had a name: the published scale described the
+marketing site while the product ran on two sizes it did not contain. 649
+declarations moved onto tokens at identical computed values - token coverage 2%
+to 69%, with no pixel moved.
+
+Agent Bureau's body text was 18px against the website's 17px, because its
+`@theme` redeclared `--text-body` and `@theme` lands in `:root`. One platform,
+two reading sizes, and neither stylesheet said so.
+
+### Also
+
+- A voice widget styled for a dark ground, mounted on the white contact form:
+  every surface a 3-15% white veil, so the mic button, the transcript panel and
+  each divider had no visible boundary. The cookie dialog had a `border`
+  shorthand written between the two `borderLeft` longhands it was meant to keep.
+- Agent Bureau's dev script did not pin a port. Both live audits address
+  `:3021` by name, so `certify` after `npm run dev:bureau` could not reach it.
+- `check-design-tokens` had an allowlist entry requiring an import of
+  `@/design/tokens`, a path that stopped existing at the consolidation. Nothing
+  was hiding behind it, but the entry had quietly withdrawn itself.
+- `architecture/platform.md` described `apps/os` and `packages/shared` in the
+  present tense. Neither exists; both were deferred with reasons that were
+  recorded while the document was not. Now marked planned.
+
+### Gates
+
+`npm run verify` runs eight, five of them static audits. Every one has been
+observed producing findings on this codebase and then producing none.
+
+Live: `audit:a11y` clean across 38 routes; `audit:consistency` clean across 33
+tokens and 3 component classes in both running applications.
+
+Nothing pushed. Nothing merged to main.
+

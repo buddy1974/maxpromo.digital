@@ -1,7 +1,7 @@
 /**
- * design/tokens/index.ts
+ * packages/design-tokens/index.ts
  *
- * TypeScript mirror of design/tokens/brand.css.
+ * TypeScript mirror of packages/design-tokens/brand.css.
  *
  * WHY THIS FILE EXISTS
  * Email clients do not reliably support CSS custom properties, so email HTML

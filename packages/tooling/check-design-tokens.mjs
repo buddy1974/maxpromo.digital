@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * scripts/check-design-tokens.mjs
+ * packages/tooling/check-design-tokens.mjs
  *
  * Fails the build when a colour is hardcoded outside the token layer.
  *
@@ -20,8 +20,8 @@
  *      tint follows the brand rather than pinning it.
  *
  * Usage:
- *   node scripts/check-design-tokens.mjs           # report and exit non-zero
- *   node scripts/check-design-tokens.mjs --warn    # report and exit zero
+ *   node packages/tooling/check-design-tokens.mjs           # report and exit non-zero
+ *   node packages/tooling/check-design-tokens.mjs --warn    # report and exit zero
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
@@ -100,10 +100,18 @@ const ALLOW = [
   {
     // Print and PDF output cannot resolve CSS custom properties, and email
     // clients do not support them reliably. These read the token values from
-    // design/tokens/index.ts instead; the check confirms they import it.
+    // the TypeScript mirror in @maxpromo/design-tokens instead, and the check
+    // confirms they import it.
     match: /^#/,
     files: [/lib[\\/]documents[\\/]/, /lib[\\/]email\.ts$/],
-    requireImport: '@/design/tokens',
+    // This said '@/design/tokens' until v7.0 — a path that stopped existing at
+    // the consolidation. A requireImport that can never be satisfied does not
+    // fail; it quietly withdraws the allowlist entry, which is the same shape
+    // as the Windows-only allowlist regex in ADR-0004. Nothing was hiding
+    // behind it — both files are clean — but the next hex added to a print
+    // template would have been reported as a violation of a rule it is
+    // explicitly exempt from.
+    requireImport: '@maxpromo/design-tokens',
   },
 ]
 
@@ -258,7 +266,7 @@ for (const f of findings.slice(0, 400)) {
 }
 if (findings.length > 400) console.log(`  ... and ${findings.length - 400} more`)
 console.log('')
-console.log('Use a token from design/tokens/brand.css. For a tint, use')
+console.log('Use a token from @maxpromo/design-tokens/brand.css. For a tint, use')
 console.log('color-mix(in srgb, var(--brand-primary) 12%, transparent) so it')
 console.log('follows the brand instead of pinning it.')
 

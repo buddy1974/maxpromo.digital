@@ -53,7 +53,7 @@ export const BUSINESS = {
 /**
  * Document palette, derived from the platform token module rather than
  * restated here. Documents and emails cannot resolve CSS custom properties,
- * so they read the TypeScript mirror in design/tokens — same values, same
+ * so they read the TypeScript mirror in @maxpromo/design-tokens — same values, same
  * source, one place to change them.
  *
  * `accent` and `accentText` are deliberately distinct, for the same reason

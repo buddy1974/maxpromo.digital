@@ -4,7 +4,7 @@
   "private": true,
   "description": "agents.maxpromo.digital \u2014 Max Agent Bureau: public offer page and the supervised-agent dashboard.",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3021",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

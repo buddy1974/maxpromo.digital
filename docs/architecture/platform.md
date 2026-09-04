@@ -1,7 +1,15 @@
 # Maxpromo Platform — Architecture
 
 Status: **Current.** Updated as the platform changes.
-Last updated: 2026-09-03 (Track B, B1 — architecture frozen before consolidation)
+Last updated: 2026-09-04 (v7.0 — corrected against the tree)
+
+> **What is built and what is planned.** Until v7.0 this document described
+> `apps/os` and `packages/shared` as though they existed. They do not. The
+> internal OS lives inside `apps/web` under `/os`, and the modules intended for
+> `packages/shared` are still application-local. Both extractions were deferred
+> with reasons in ADR-0001 and the Track B change-log entry; the deferral was
+> recorded and this document was not. Planned structure is marked **planned**
+> below rather than written in the present tense.
 
 This is the reference for how the platform is put together: what the
 applications are, what they share, where they deploy, and where the boundaries
@@ -15,7 +23,12 @@ run. It replaces the per-repository architecture notes.
 |---|---|---|---|
 | **web** | `maxpromo.digital` + 9 product domains | Public consultancy site, and the showcase engine that renders each product on its own domain | Prospects |
 | **bureau** | `agents.maxpromo.digital` | Max Agent Bureau: public offer page plus the supervised-agent dashboard | Prospects, then operators |
-| **os** | `os.maxpromo.digital` | Internal business operating system — clients, invoices, quotations, jobs, leads, newsletter, inbox | Maxpromo staff |
+| **os** | `/os` inside the web deployment | Internal business operating system — clients, invoices, quotations, jobs, leads, newsletter, inbox | Maxpromo staff |
+
+The OS is **not** a separate application today. It is a route group inside
+`apps/web`, gated by that application's middleware, and it ships in the same
+deployment as the ten public domains. `os.maxpromo.digital` and an `apps/os`
+workspace are **planned** — see §6.
 
 `web` is not one site. `lib/host/HOST_MAP.ts` classifies every request as `hub`
 or `showcase` and `middleware.ts` stamps `x-mp-mode`; on a showcase host the
@@ -79,10 +92,18 @@ One system, in `packages/design-tokens`, consumed by every application.
 - A TypeScript mirror exports the same values for email, PDF and inline SVG,
   which cannot resolve CSS custom properties.
 
-Enforced, not documented: `scripts/check-design-tokens.mjs` fails the build on
-any hex literal, raw Tailwind palette class, rgba literal, or use of the brand
-accent as a text colour, outside the token package. The allowlist is narrow and
-every entry states a reason.
+Enforced, not documented: `packages/tooling/check-design-tokens.mjs` fails the
+build on any hex literal, raw Tailwind palette class, rgba literal, or use of
+the brand accent as a text colour — including the accent reached through a
+conditional or bound to a field named as text, both of which the first version
+of the rule could not see. The allowlist is narrow and every entry states a
+reason.
+
+**The token package declares its inputs.** It is dependency-free, so it cannot
+load a webfont; it names one (`var(--font-inter)`, `var(--font-roboto-mono)`)
+and each application must define it. An unmet contract here is silent — an
+undefined `var()` falls through to the fallback stack without a warning — so
+`check-token-inputs.mjs` fails the build instead. See **ADR-0006**.
 
 **Accent rules.** Brand Lime has exactly three jobs: primary action fill, active
 state, and at most one emphasis mark per page. It is a fill and never a text
@@ -122,8 +143,8 @@ project. Merging the two is a data migration, not a repository change.
 > ⚠️ **Open compliance item.** `agents.maxpromo.digital` publicly states
 > "DSGVO-konform, in der EU gehostet" while its database is in `us-east-1`,
 > holding `contacts`, `leads`, `waiting_room_items` and `memory_entries`. This
-> is unresolved and is recorded in `docs/known-risks.md`. It is a legal
-> decision, not an engineering one.
+> is unresolved and is recorded in `docs/governance/known-risks.md`. It is a
+> legal decision, not an engineering one.
 
 ---
 
@@ -132,11 +153,11 @@ project. Merging the two is a data migration, not a repository change.
 **One repository, separate Vercel projects.** Deploy independently, govern
 together.
 
-| Project | Root directory | Domains | Database |
-|---|---|---|---|
-| maxpromo-web | `apps/web` | 10 | eu-central-1 |
-| maxpromo-bureau | `apps/bureau` | 1 | us-east-1 |
-| maxpromo-os | `apps/os` | 1 | eu-central-1 |
+| Project | Root directory | Domains | Database | Status |
+|---|---|---|---|---|
+| maxpromo-web | `apps/web` | 10, plus `/os` | eu-central-1 | built |
+| maxpromo-bureau | `apps/bureau` | 1 | us-east-1 | built |
+| maxpromo-os | `apps/os` | 1 | eu-central-1 | **planned** — the workspace does not exist |
 
 They are not merged into one project on purpose:
 
@@ -167,7 +188,8 @@ accessibility check (contrast, landmarks, heading order, focus), internal link
 audit, and a documentation update where a decision was made.
 
 Durable facts live in `docs/`, never in chat history. Decisions go in
-`docs/adr/`; risks in `docs/known-risks.md`; changes in `docs/change-log.md`.
+`docs/adr/`; risks in `docs/governance/known-risks.md`; changes in
+`docs/history/change-log.md`.
 
 ---
 
@@ -176,22 +198,26 @@ Durable facts live in `docs/`, never in chat history. Decisions go in
 ```
 maxpromo-platform/
 ├─ apps/
-│  ├─ web/        maxpromo.digital + 9 showcase domains
-│  ├─ bureau/     agents.maxpromo.digital
-│  └─ os/         os.maxpromo.digital
+│  ├─ web/        maxpromo.digital + 9 showcase domains, and /os
+│  └─ bureau/     agents.maxpromo.digital
 ├─ packages/
 │  ├─ design-tokens/   the design system. Zero dependencies.
 │  ├─ ui/              shared React components. Depends on tokens.
 │  ├─ config/          legal identity, shared constants
-│  ├─ shared/          db, email, rate limiting, AI access, telemetry
-│  └─ tooling/         token check, shared eslint and tsconfig
+│  └─ tooling/         the audit suite, shared eslint and tsconfig
 └─ docs/
    ├─ architecture/    this document
    ├─ adr/             numbered decision records
    ├─ brand/           design system reference
    ├─ deployment/      Vercel, environments, runbooks
-   └─ governance/      the standards every change must meet
+   ├─ governance/      the standards every change must meet
+   └─ history/         superseded documents, kept for their reasoning
 ```
+
+**Planned, not built:** `apps/os` (the OS extracted from `apps/web`, with its
+own domain and Vercel project) and `packages/shared` (db, email, rate limiting,
+AI access — measured as shared in §2 and still application-local). Both are
+recorded as deferred in ADR-0001.
 
 Package names are explicit (`@maxpromo/ui`, `@maxpromo/design-tokens`) while
 `@/*` stays application-local. An import therefore states whether it crosses an

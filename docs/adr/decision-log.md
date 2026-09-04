@@ -96,3 +96,60 @@ lib/registry/products.ts, its types and both adapters.
 products carried true, which is what made the showcase pages dark while the
 marketing site was light - two design languages, sourced from a content file.
 Surface choice belongs to the token layer.
+
+## 2026-09-04 - ADR-0005: the legacy alias namespace retired
+
+**Decision:** The twenty-four `--color-*` / `--font-*` / `--radius-card` aliases
+in `apps/web/app/globals.css` are deleted and all 507 call sites migrated to the
+token names. `@theme` keeps only the three font keys whose Tailwind utilities
+are actually used.
+**Why:** The block was written in v4.0 to spare a large find-and-replace, with a
+comment saying it would shrink over time. It grew instead, from an estimated
+1100 references to 507 live ones, and both names resolved so nothing marked
+either as wrong. Fifteen contrast failures had been hiding behind an alias named
+for a colour retired two brand generations earlier.
+**How to apply:** A migration that leaves the old name working is not a
+migration. Rename and rewrite the call sites in the same change, or do not
+rename.
+
+## 2026-09-04 - ADR-0006: a package declares the variables it reads
+
+**Decision:** `check-token-inputs.mjs` derives the set of custom properties the
+token package references but does not define, and fails the build if any
+application does not supply them. Wired into `npm run verify` as gate 2.
+**Why:** `@maxpromo/design-tokens` is dependency-free and cannot load a webfont,
+so it names one. Agent Bureau never defined `--font-inter` or
+`--font-roboto-mono`, an undefined `var()` falls through silently, and the two
+applications rendered in different typefaces for a year without a single check,
+audit or review noticing.
+**How to apply:** Any package naming a variable it cannot provide has declared
+an input. Inputs are checked, not assumed.
+
+## 2026-09-04 - The type scale gains its two bottom steps
+
+**Decision:** `--text-label` (11px) and `--text-label-dense` (10px) are added to
+the scale, with a stated role - interface chrome, uppercase mono, never prose -
+and 649 raw declarations moved onto them and the existing steps at identical
+computed values.
+**Why:** The audit found 927 size declarations of which 476, fifty-one per cent,
+sat at 10px or 11px, and neither had a name. The scale described the marketing
+site while the product ran on two sizes it did not contain, so nothing could
+reference them and nothing could check them. Same finding as `--weight-bold`:
+the scale was incomplete, not the call sites wrong.
+**Not decided:** The mid-band consolidation - 12, 14, 16, 18, 20, 22, 26, 28,
+30, 42, 48 - is a real visual change of about one pixel each across dense
+internal screens and is left for a human pass. See known-risks 23.
+
+## 2026-09-04 - Section rhythm is enforced rather than documented
+
+**Decision:** The eighteen ad-hoc section paddings on the public site move onto
+`--section-y` and `--section-y-feature`, and `audit-responsive` fails on a
+clamp-based section padding that is not one of the three rhythms.
+**Why:** "Exactly three section rhythms; a section not using one fails review"
+was written in three documents and checked in none. The site shipped five
+ad-hoc values and used a token in one place, with two of them adjacent on the
+homepage at 140px above and 112px below - which no single screenshot shows.
+**Visual effect:** Desktop section padding moves from 140px to 112px on ten
+sections. That is the documented value, and it sits inside the 96-128px band the
+reference companies use; 140px was above it.
+

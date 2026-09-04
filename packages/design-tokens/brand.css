@@ -6,10 +6,15 @@
    elevation across every Maxpromo surface: maxpromo.digital, Agent Bureau,
    os.maxpromo.digital, dashboards, invoices, quotations, PDFs and emails.
 
-   Authored deliberately as a standalone, dependency-free stylesheet so it can
-   move to packages/tokens/ in the monorepo consolidation without a rewrite,
-   and so any repository outside the monorepo can adopt the brand by importing
-   this one file.
+   Authored deliberately as a standalone, dependency-free stylesheet, so any
+   repository outside this one can adopt the brand by importing this file.
+
+   Being dependency-free means it cannot load a webfont. It names one instead —
+   var(--font-inter), var(--font-roboto-mono) — and every application must
+   define those. That is a contract, and an unmet one is silent: an undefined
+   var() falls through to the rest of the stack without a warning. Agent Bureau
+   left both undefined for a year. packages/tooling/check-token-inputs.mjs now
+   fails the build on it.
 
    ── STRUCTURE ──────────────────────────────────────────────────────────────
    LAYER 1  --mp-*        Primitives. Raw values. NEVER referenced by a component.
@@ -31,8 +36,8 @@
       product surfaces — dashboards, forms, documents.
    4. Black carries the message. Colour does not.
 
-   Governing documents: docs/platform-v3/phase-2-architecture.md §4,
-   docs/platform-v3/phase-2b-design-direction.md §3.
+   Governing documents: docs/history/platform-v3/phase-2-architecture.md §4,
+   docs/history/platform-v3/phase-2b-design-direction.md §3.
    ========================================================================== */
 
 :root {

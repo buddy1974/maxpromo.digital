@@ -5,7 +5,7 @@
 /* =============================================================================
    MAXPROMO — application stylesheet
    =============================================================================
-   All design values come from design/tokens/brand.css. This file contains only
+   All design values come from @maxpromo/design-tokens/brand.css. This file contains only
    the reset, base element styling, and the small set of component classes that
    are genuinely shared. It defines no colours, sizes or spacing of its own.
 

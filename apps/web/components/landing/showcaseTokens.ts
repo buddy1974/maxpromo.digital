@@ -23,7 +23,7 @@ import type { CSSProperties } from 'react'
  * the --brand-* namespace belongs to the platform token layer.
  *
  * The heading scale that used to live here has moved to the platform type
- * scale in design/tokens/brand.css — showcase headings are the same headings.
+ * scale in @maxpromo/design-tokens/brand.css — showcase headings are the same headings.
  */
 
 // ── Spacing scale ────────────────────────────────────────────────────
