@@ -25,7 +25,7 @@ export function Footer() {
               </p>
               {[
                 ["Website", "https://www.maxpromo.digital/de"],
-                ["Systeme", "https://www.maxpromo.digital/de/systems"],
+                ["Leistungen", "https://www.maxpromo.digital/de/solutions"],
                 ["Kontakt", "https://www.maxpromo.digital/de/contact"],
               ].map(([label, href]) => (
                 <a

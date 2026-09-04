@@ -23,7 +23,7 @@ export function Hero() {
         <p className="eyebrow">Essen · Überwachtes KI-Betriebsteam</p>
 
         <h1 className="mt-6 max-w-3xl text-hero text-ink">
-          Ein KI-Team, das Ihren Betrieb führt. Sie behalten die Kontrolle.
+          Ihr Tagesgeschäft läuft vorbereitet. Sie behalten die Kontrolle.
         </h1>
 
         <p className="mt-6 max-w-2xl text-body text-ink-secondary">
@@ -44,11 +44,15 @@ export function Hero() {
 
         <p className="mt-6 text-sm text-ink-muted">
           DSGVO-konform, in der EU gehostet, gebaut in Essen.{" "}
+          {/* This offered a "System-Vorschau" and pointed at /dashboard, which
+              is behind authentication — so the one thing on this page that
+              promised a look at the product delivered a login form. It is a
+              login, and now says so. */}
           <Link
-            href="/dashboard"
+            href="/login"
             className="text-ink underline decoration-hairline-strong decoration-1 underline-offset-4 transition-colors hover:text-accent-text"
           >
-            System-Vorschau ansehen
+            Anmelden
           </Link>
         </p>
 

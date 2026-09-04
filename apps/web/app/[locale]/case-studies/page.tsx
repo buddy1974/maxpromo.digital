@@ -152,11 +152,11 @@ export default async function CaseStudiesPage() {
             {t('ctaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', justifyContent: 'center' }}>
+            {/* A secondary action earns its place by going somewhere else —
+                the way /about and the hero send a reader to /solutions. This
+                pair pointed at /contact twice under two names. */}
             <Link href="/contact" className="btn btn-primary">
               {t('ctaPrimary')}
-            </Link>
-            <Link href="/contact" className="btn btn-secondary">
-              {t('ctaSecondary')}
             </Link>
           </div>
         </div>
