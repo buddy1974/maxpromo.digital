@@ -34,11 +34,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 /* ─── TOKENS ─── Visual Facelift v2.1 (design/visual-facelift-v2.1.md) */
-const BG      = 'var(--color-bg)'
-const SECTION = 'var(--color-bg-section)'
-const BORDER  = 'var(--color-border)'
-const TEXT    = 'var(--color-text-primary)'
-const MUTED   = 'var(--color-text-secondary)'
+const BG      = 'var(--brand-background)'
+const SECTION = 'var(--brand-surface-subtle)'
+const BORDER  = 'var(--brand-border)'
+const TEXT    = 'var(--brand-text)'
+const MUTED   = 'var(--brand-text-secondary)'
 
 const STYLES = `
   .ab-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: ${BORDER}; border: 1px solid ${BORDER}; }
@@ -120,7 +120,7 @@ export default async function AgentBureauPage({
         { q: 'What tasks is this built for?',   a: 'Customer enquiry handling, email triage, follow-ups, appointment coordination, document preparation, reporting and internal notifications.' },
       ]
 
-  const SECTION_PADDING = 'clamp(4.5rem, 8vw, 8.75rem) 2rem'
+  const SECTION_PADDING = 'var(--section-y) var(--section-x)'
 
   return (
     <>
@@ -129,15 +129,15 @@ export default async function AgentBureauPage({
 
         {/* 1. HERO */}
         <section style={{ padding: SECTION_PADDING, borderBottom: `1px solid ${BORDER}` }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }} className="ab-hero">
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }} className="ab-hero">
             <div>
-              <p className="mp-hero-1" style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1.5rem' }}>
+              <p className="mp-hero-1" style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1.5rem' }}>
                 {isDE ? 'MAX AGENT BUREAU · KI-BÜRO' : 'MAX AGENT BUREAU · AI OFFICE'}
               </p>
               <h1 className="mp-hero-2" style={{ marginBottom: '1.5rem', maxWidth: '760px' }}>
                 {isDE ? <>Intelligente KI-Agenten.<br />Sichere Prozesse.</> : <>Intelligent AI agents.<br />Secure processes.</>}
               </h1>
-              <p className="mp-hero-3" style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: MUTED, maxWidth: '580px', lineHeight: 1.75, marginBottom: '2.5rem' }}>
+              <p className="mp-hero-3" style={{ fontFamily: 'var(--brand-font-body)', fontSize: '18px', color: MUTED, maxWidth: '580px', lineHeight: 1.75, marginBottom: '2.5rem' }}>
                 {isDE
                   ? 'Ein Team aus KI-Agenten übernimmt Kundenanfragen, Follow-ups, Freigaben und Berichte für Ihr Unternehmen, jede wichtige Aktion läuft vorher über Sie.'
                   : 'A team of AI agents handles customer enquiries, follow-ups, approvals and reporting for your business, every important action still goes through you first.'}
@@ -147,7 +147,7 @@ export default async function AgentBureauPage({
                   ? ['Wir automatisieren die Routinearbeit', 'Sie geben die Entscheidungen frei', 'Keine autonome Ausführung', 'Jede Aktion protokolliert']
                   : ['We automate the busywork', 'You approve the decisions', 'No autonomous execution', 'Every action logged']
                 ).map(p => (
-                  <span key={p} style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: TEXT, background: SECTION, border: `1px solid ${BORDER}`, padding: '6px 14px', borderRadius: '6px', letterSpacing: '0.03em' }}>→ {p}</span>
+                  <span key={p} style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: TEXT, background: SECTION, border: `1px solid ${BORDER}`, padding: '6px 14px', borderRadius: '6px', letterSpacing: '0.03em' }}>→ {p}</span>
                 ))}
               </div>
               <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -163,18 +163,18 @@ export default async function AgentBureauPage({
             {/* Workflow diagram — informational, not decorative: shows the actual
                 audit → assign → approve → execute → log pipeline */}
             <div className="card">
-              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1.25rem' }}>
+              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1.25rem' }}>
                 {isDE ? 'DER ABLAUF' : 'THE WORKFLOW'}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {workflow.map((step, i) => (
                   <div key={step.name} style={{ display: 'flex', alignItems: 'center', gap: '14px', background: step.gate ? 'color-mix(in srgb, var(--brand-primary) 7%, transparent)' : SECTION, border: `1px solid ${step.gate ? 'color-mix(in srgb, var(--brand-primary) 25%, transparent)' : BORDER}`, borderRadius: '8px', padding: '12px 16px' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-primary-text)', background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
+                    <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-primary-text)', background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div>
-                      <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '14px', color: TEXT, margin: 0 }}>{step.name}</p>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: step.gate ? 'var(--brand-primary-text)' : MUTED, margin: 0 }}>{step.caption}</p>
+                      <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: '14px', color: TEXT, margin: 0 }}>{step.name}</p>
+                      <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-micro)', color: step.gate ? 'var(--brand-primary-text)' : MUTED, margin: 0 }}>{step.caption}</p>
                     </div>
                   </div>
                 ))}
@@ -185,8 +185,8 @@ export default async function AgentBureauPage({
 
         {/* 2. THIS KEEPS HAPPENING */}
         <section style={{ background: SECTION, borderBottom: `1px solid ${BORDER}`, padding: SECTION_PADDING }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1rem' }}>{isDE ? 'DAS PASSIERT IMMER WIEDER' : 'THIS KEEPS HAPPENING'}</p>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1rem' }}>{isDE ? 'DAS PASSIERT IMMER WIEDER' : 'THIS KEEPS HAPPENING'}</p>
             <h2 style={{ marginBottom: '2.5rem' }}>{isDE ? 'Dieselbe Vorbereitung. Jede Woche.' : 'The same preparation work. Every week.'}</h2>
             <div className="ab-grid-2">
               {(isDE ? [
@@ -200,7 +200,7 @@ export default async function AgentBureauPage({
               ]).map(item => (
                 <div key={item.label} style={{ background: BG, padding: '36px', borderTop: `3px solid var(--brand-primary-edge)` }}>
                   <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: MUTED, letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 16px' }}>{item.label}</p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: MUTED, lineHeight: 1.75, margin: 0 }}>{item.text}</p>
+                  <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '16px', color: MUTED, lineHeight: 1.75, margin: 0 }}>{item.text}</p>
                 </div>
               ))}
             </div>
@@ -209,19 +209,19 @@ export default async function AgentBureauPage({
 
         {/* 3. SYSTEM INSTALLED */}
         <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: SECTION_PADDING }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1.5rem' }}>{isDE ? 'SYSTEM INSTALLIERT' : 'SYSTEM INSTALLED'}</p>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1.5rem' }}>{isDE ? 'SYSTEM INSTALLIERT' : 'SYSTEM INSTALLED'}</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }} className="grid-cols-1 lg:grid-cols-2">
               <div>
                 <h2 style={{ marginBottom: '1.5rem' }}>
                   {isDE ? 'Agent Bureau wird in das Unternehmen installiert. Die Vorbereitungsarbeit läuft im Hintergrund.' : 'Agent Bureau is installed into the business. The preparation work runs in the background.'}
                 </h2>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: MUTED, lineHeight: 1.75 }}>
+                <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: MUTED, lineHeight: 1.75 }}>
                   {isDE
                     ? 'Agenten scannen die aktuell laufenden Abläufe, per E-Mail, WhatsApp, Tabellen und manuellen Schritten, und ordnen Aufgaben spezialisierten Agenten zu, Anfragenbearbeitung, Follow-ups, Dokumentenvorbereitung, Berichte.'
                     : 'Agents scan the business workflows currently running by email, WhatsApp, spreadsheets and manual steps, and assign tasks to specialised agents, enquiry handling, follow-ups, document prep, reporting.'}
                 </p>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: MUTED, lineHeight: 1.75, marginTop: '1rem' }}>
+                <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: MUTED, lineHeight: 1.75, marginTop: '1rem' }}>
                   {isDE
                     ? 'Jede kritische Aktion wird zur Freigabe vorgelegt, bevor sie ausgeführt wird. Keine autonome Ausführung. Erst nach Freigabe laufen Antworten, Aktualisierungen und Aufgaben.'
                     : 'Every critical action is queued for human approval before it goes out. No autonomous execution. Only after approval do replies, updates and tasks run.'}
@@ -234,8 +234,8 @@ export default async function AgentBureauPage({
                   : ['Enquiries sorted, prioritised, prepared for reply', 'Follow-ups triggered before a lead goes cold', 'Documents prepared and gaps flagged', 'Reports compiled, from every source', 'Every action logged, with timestamp and approver']
                 ).map(line => (
                   <div key={line} style={{ display: 'flex', gap: '12px', marginBottom: '14px', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--brand-primary-text)', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '2px', fontWeight: 700 }}>→</span>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: MUTED, margin: 0, lineHeight: 1.65 }}>{line}</p>
+                    <span style={{ color: 'var(--brand-primary-text)', flexShrink: 0, fontFamily: 'var(--brand-font-mono)', fontSize: '12px', paddingTop: '2px', fontWeight: 700 }}>→</span>
+                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: MUTED, margin: 0, lineHeight: 1.65 }}>{line}</p>
                   </div>
                 ))}
               </div>
@@ -245,15 +245,15 @@ export default async function AgentBureauPage({
 
         {/* 4. WORKFLOW */}
         <section id="workflow" style={{ background: SECTION, borderBottom: `1px solid ${BORDER}`, padding: SECTION_PADDING }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1rem' }}>{isDE ? 'WIE DAS SYSTEM FUNKTIONIERT' : 'HOW THE SYSTEM WORKS'}</p>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1rem' }}>{isDE ? 'WIE DAS SYSTEM FUNKTIONIERT' : 'HOW THE SYSTEM WORKS'}</p>
             <h2 style={{ marginBottom: '3rem' }}>{isDE ? 'Fünf Schritte. Jede kritische Aktion braucht eine Freigabe.' : 'Five steps. Every critical action needs a sign-off.'}</h2>
             <Reveal>
-              <div className="ab-flow" style={{ borderRadius: 'var(--radius-card)', overflow: 'hidden' }}>
+              <div className="ab-flow" style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
                 {workflow.map((step, i) => (
                   <div key={step.name} style={{ background: step.gate ? 'color-mix(in srgb, var(--brand-primary) 7%, transparent)' : BG, padding: '1.5rem 1.25rem', position: 'relative' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-primary-text)', background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: '4px', padding: '3px 8px' }}>
+                      <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-primary-text)', background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: '4px', padding: '3px 8px' }}>
                         {String(i + 1).padStart(2, '0')}
                       </span>
                       {step.gate && (
@@ -264,30 +264,30 @@ export default async function AgentBureauPage({
                       )}
                     </div>
                     <h3 className="h-card" style={{ margin: '0 0 4px 0' }}>{step.name}</h3>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: step.gate ? 'var(--brand-primary-text)' : MUTED, lineHeight: 1.55, margin: 0 }}>{step.caption}</p>
+                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-micro)', color: step.gate ? 'var(--brand-primary-text)' : MUTED, lineHeight: 1.55, margin: 0 }}>{step.caption}</p>
                   </div>
                 ))}
               </div>
             </Reveal>
 
             {/* Module cards */}
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, margin: '3rem 0 1.25rem' }}>{isDE ? 'DIE MODULE' : 'THE MODULES'}</p>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, margin: '3rem 0 1.25rem' }}>{isDE ? 'DIE MODULE' : 'THE MODULES'}</p>
             <div className="ab-modules">
               {modules.map(card => (
                 <div key={card.title} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <h3 className="h-card" style={{ margin: 0 }}>{card.title}</h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: MUTED, lineHeight: 1.7, margin: 0 }}>{card.body}</p>
+                  <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: MUTED, lineHeight: 1.7, margin: 0 }}>{card.body}</p>
                 </div>
               ))}
             </div>
 
             {/* Trust badge */}
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'color-mix(in srgb, var(--brand-primary) 5%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent)', borderRadius: 'var(--radius-card)', padding: '14px 20px', marginTop: '2.5rem', maxWidth: '100%' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'color-mix(in srgb, var(--brand-primary) 5%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent)', borderRadius: 'var(--radius-lg)', padding: '14px 20px', marginTop: '2.5rem', maxWidth: '100%' }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-primary-text)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }} aria-hidden="true">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 <path d="m9 12 2 2 4-4" />
               </svg>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: MUTED, letterSpacing: '0.02em', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: MUTED, letterSpacing: '0.02em', lineHeight: 1.6, margin: 0 }}>
                 {isDE ? 'Keine autonome Ausführung. Jede kritische Aktion bleibt freigabepflichtig.' : 'No autonomous execution. Every critical action requires human approval.'}
               </p>
             </div>
@@ -296,13 +296,13 @@ export default async function AgentBureauPage({
 
         {/* 5. WHAT CHANGES */}
         <section style={{ background: BG, borderBottom: `1px solid ${BORDER}`, padding: SECTION_PADDING }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1rem' }}>{isDE ? 'WAS SICH NACH DER INSTALLATION ÄNDERT' : 'WHAT CHANGES AFTER INSTALLATION'}</p>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1rem' }}>{isDE ? 'WAS SICH NACH DER INSTALLATION ÄNDERT' : 'WHAT CHANGES AFTER INSTALLATION'}</p>
             <h2 style={{ marginBottom: '2rem' }}>{isDE ? 'Das Team trifft dieselben Entscheidungen. Es bereitet sie nicht mehr selbst vor.' : 'The team makes the same decisions. It no longer prepares them alone.'}</h2>
-            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 'var(--radius-card)', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '1px', background: BORDER }}>
+            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 'var(--radius-lg)', overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: '1px', background: BORDER }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: BG }}>
-                <div style={{ padding: '14px 28px', borderRight: `1px solid ${BORDER}` }}><p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: MUTED, letterSpacing: '0.12em', textTransform: 'uppercase', margin: 0 }}>{isDE ? 'VORHER' : 'BEFORE'}</p></div>
-                <div style={{ padding: '14px 28px' }}><p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: MUTED, letterSpacing: '0.12em', textTransform: 'uppercase', margin: 0 }}>{isDE ? 'NACHHER' : 'AFTER'}</p></div>
+                <div style={{ padding: '14px 28px', borderRight: `1px solid ${BORDER}` }}><p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label)', color: MUTED, letterSpacing: '0.12em', textTransform: 'uppercase', margin: 0 }}>{isDE ? 'VORHER' : 'BEFORE'}</p></div>
+                <div style={{ padding: '14px 28px' }}><p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label)', color: MUTED, letterSpacing: '0.12em', textTransform: 'uppercase', margin: 0 }}>{isDE ? 'NACHHER' : 'AFTER'}</p></div>
               </div>
               {(isDE ? [
                 { before: 'Jede Anfrage einzeln von Hand sortiert', after: 'Anfragen vorsortiert, priorisiert, vorbereitet zur Beantwortung' },
@@ -317,12 +317,12 @@ export default async function AgentBureauPage({
               ]).map((row, i) => (
                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: BG }}>
                   <div style={{ padding: '18px 28px', borderRight: `1px solid ${BORDER}`, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                    <span style={{ color: MUTED, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '2px' }}><Icon name="cross" size="sm" /></span>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: MUTED, margin: 0, lineHeight: 1.6 }}>{row.before}</p>
+                    <span style={{ color: MUTED, flexShrink: 0, fontFamily: 'var(--brand-font-mono)', fontSize: '12px', paddingTop: '2px' }}><Icon name="cross" size="sm" /></span>
+                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: MUTED, margin: 0, lineHeight: 1.6 }}>{row.before}</p>
                   </div>
                   <div style={{ padding: '18px 28px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--brand-primary-text)', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '2px', fontWeight: 700 }}><Icon name="check" size="sm" /></span>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: TEXT, margin: 0, lineHeight: 1.6 }}>{row.after}</p>
+                    <span style={{ color: 'var(--brand-primary-text)', flexShrink: 0, fontFamily: 'var(--brand-font-mono)', fontSize: '12px', paddingTop: '2px', fontWeight: 700 }}><Icon name="check" size="sm" /></span>
+                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: TEXT, margin: 0, lineHeight: 1.6 }}>{row.after}</p>
                   </div>
                 </div>
               ))}
@@ -332,13 +332,13 @@ export default async function AgentBureauPage({
 
         {/* 6. FAQ */}
         <section style={{ background: SECTION, borderBottom: `1px solid ${BORDER}`, padding: SECTION_PADDING }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '2rem' }}>{isDE ? 'HÄUFIG GEFRAGT' : 'COMMONLY ASKED'}</p>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '2rem' }}>{isDE ? 'HÄUFIG GEFRAGT' : 'COMMONLY ASKED'}</p>
             <div className="ab-grid-2">
               {faq.map(item => (
                 <div key={item.q} style={{ background: BG, padding: '32px' }}>
                   <h3 className="h-card" style={{ marginBottom: '10px' }}>{item.q}</h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: MUTED, lineHeight: 1.75, margin: 0 }}>{item.a}</p>
+                  <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: MUTED, lineHeight: 1.75, margin: 0 }}>{item.a}</p>
                 </div>
               ))}
             </div>
@@ -347,10 +347,10 @@ export default async function AgentBureauPage({
 
         {/* 7. CTA */}
         <section style={{ background: BG, padding: SECTION_PADDING }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1rem' }}>{isDE ? 'DEMO ANFRAGEN' : 'REQUEST A DEMO'}</p>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', textTransform: 'uppercase', letterSpacing: '0.12em', color: MUTED, marginBottom: '1rem' }}>{isDE ? 'DEMO ANFRAGEN' : 'REQUEST A DEMO'}</p>
             <h2 style={{ marginBottom: '1rem' }}>{isDE ? 'Sehen Sie Agent Bureau live, für Ihr Unternehmen.' : 'See how Agent Bureau prepares work for your business.'}</h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: MUTED, lineHeight: 1.75, maxWidth: '520px', marginBottom: '2.5rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '18px', color: MUTED, lineHeight: 1.75, maxWidth: '520px', marginBottom: '2.5rem' }}>
               {isDE
                 ? 'Wir zeigen das Live-System, Anfragenbearbeitung, Follow-ups, Freigabeprozess und Protokollierung, konfiguriert für Ihre bestehenden Abläufe.'
                 : 'We walk through the live system, enquiry handling, follow-ups, the approval process and logging, configured for your existing workflows.'}
@@ -363,7 +363,7 @@ export default async function AgentBureauPage({
                 {isDE ? 'Demo anfragen →' : 'Request demo →'}
               </Link>
             </div>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: MUTED, letterSpacing: '0.05em', margin: '20px 0 0' }}>
+            <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: MUTED, letterSpacing: '0.05em', margin: '20px 0 0' }}>
               {isDE ? 'Unverbindlich · Antwort innerhalb von 24 Stunden' : 'No commitment · Reply within 24 hours'}
             </p>
           </div>

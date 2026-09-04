@@ -11,13 +11,13 @@ interface LocaleSwitcherProps {
 
 const VARIANT_COLORS = {
   light: {
-    text: 'var(--color-text-secondary)',
-    border: 'var(--color-border)',
-    hoverText: 'var(--color-primary)',
+    text: 'var(--brand-text-secondary)',
+    border: 'var(--brand-border)',
+    hoverText: 'var(--brand-primary-text)',
     hoverBorder: 'color-mix(in srgb, var(--brand-primary) 40%, transparent)',
   },
   dark: {
-    text: 'var(--color-footer-text)',
+    text: 'var(--brand-text-inverted-secondary)',
     border: 'color-mix(in srgb, var(--brand-surface) 14%, transparent)',
     hoverText: 'var(--brand-text-inverted)',
     hoverBorder: 'color-mix(in srgb, var(--brand-surface) 32%, transparent)',
@@ -53,7 +53,7 @@ export default function LocaleSwitcher({ variant = 'light' }: LocaleSwitcherProp
       disabled={isPending}
       aria-label={`Switch language to ${target.toUpperCase()}`}
       style={{
-        fontFamily: 'var(--font-mono)',
+        fontFamily: 'var(--brand-font-mono)',
         fontSize: '12px',
         fontWeight: 700,
         letterSpacing: '0.1em',

@@ -12,8 +12,8 @@ interface ScannedContact {
   website: string; notes: string; confidence: 'high' | 'medium' | 'low'
 }
 
-const mono = 'var(--font-roboto-mono)'
-const sans = 'var(--font-inter)'
+const mono = 'var(--brand-font-mono)'
+const sans = 'var(--brand-font-body)'
 
 interface AIMsg { role: 'user' | 'assistant'; content: string }
 
@@ -178,10 +178,10 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
 
         {/* Header */}
         <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid var(--brand-border)', flexShrink: 0 }}>
-          <p style={{ fontFamily: mono, fontSize: '13px', fontWeight: 700, color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>
+          <p style={{ fontFamily: mono, fontSize: 'var(--text-micro)', fontWeight: 700, color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>
             {t.sidebar.brand}
           </p>
-          <p style={{ fontFamily: sans, fontSize: '11px', color: 'var(--brand-text-muted)', margin: '5px 0 0' }}>
+          <p style={{ fontFamily: sans, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', margin: '5px 0 0' }}>
             {t.sidebar.tagline}
           </p>
         </div>
@@ -231,8 +231,8 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
 
         {/* Footer */}
         <div style={{ padding: '16px 20px', borderTop: '1px solid var(--brand-border)', flexShrink: 0 }}>
-          <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text)', margin: '0 0 3px' }}>Marcel Tabit Akwe</p>
-          <p style={{ fontFamily: sans, fontSize: '11px', color: 'var(--brand-text-muted)', margin: 0 }}>info@maxpromo.digital</p>
+          <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: '0 0 3px' }}>Marcel Tabit Akwe</p>
+          <p style={{ fontFamily: sans, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', margin: 0 }}>info@maxpromo.digital</p>
           <button onClick={logout} className="os-logout-btn">{t.sidebar.signOut}</button>
           <LanguageSwitcher />
         </div>
@@ -267,7 +267,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
             onClick={() => { setQsOpen(true); qsReset() }}
             style={{
               background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)',
-              fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.12em',
+              fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.12em',
               padding: '10px 16px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: '6px',
               textTransform: 'uppercase', borderRadius: '2px',
@@ -281,7 +281,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
             onClick={() => setAiOpen(true)}
             style={{
               background: 'var(--brand-primary)', color: 'var(--brand-text)',
-              fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.12em',
+              fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.12em',
               border: 'none', padding: '12px 18px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: '8px',
               textTransform: 'uppercase', borderRadius: '2px',
@@ -301,15 +301,15 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
         }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
-              <p style={{ fontFamily: sans, fontWeight: 700, fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{t.ai.title}</p>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', margin: '3px 0 0' }}>{t.ai.subtitle}</p>
+              <p style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{t.ai.title}</p>
+              <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', margin: '3px 0 0' }}>{t.ai.subtitle}</p>
             </div>
             <button onClick={() => setAiOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
           </div>
 
           {msgs.length === 0 && (
             <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--brand-border)' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.ai.quickPrompts}</p>
+              <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.ai.quickPrompts}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {QUICK_PROMPTS.map(p => (
                   <button key={p} onClick={() => sendMsg(p)} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: sans, fontSize: '12px', padding: '9px 12px', textAlign: 'left', cursor: 'pointer', borderRadius: '2px' }}>
@@ -329,12 +329,12 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                 border: `1px solid ${msg.role === 'user' ? 'color-mix(in srgb, var(--brand-primary) 20%, transparent)' : 'var(--brand-border)'}`,
                 padding: '10px 14px', borderRadius: '2px',
               }}>
-                <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text)', margin: 0, lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: 0, lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{msg.content}</p>
               </div>
             ))}
             {aiLoading && (
               <div style={{ alignSelf: 'flex-start', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', padding: '10px 14px', borderRadius: '2px' }}>
-                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.2em' }}>{t.ai.thinking}</p>
+                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.2em' }}>{t.ai.thinking}</p>
               </div>
             )}
             <div ref={endRef} />
@@ -346,12 +346,12 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(input) } }}
               placeholder={t.ai.inputPlaceholder}
-              style={{ flex: 1, background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '10px 12px', outline: 'none', borderRadius: '2px' }}
+              style={{ flex: 1, background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 12px', outline: 'none', borderRadius: '2px' }}
             />
             <button
               onClick={() => sendMsg(input)}
               disabled={aiLoading || !input.trim()}
-              style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '14px', padding: '10px 16px', cursor: 'pointer', opacity: (aiLoading || !input.trim()) ? 0.4 : 1 }}
+              style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 'var(--weight-heading)', fontSize: '14px', padding: '10px 16px', cursor: 'pointer', opacity: (aiLoading || !input.trim()) ? 0.4 : 1 }}
             >
               <Icon name="send" size="md" label="Senden" />
             </button>
@@ -364,13 +364,13 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
         <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
           <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '480px', borderRadius: '4px', overflow: 'hidden' }}>
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <p style={{ fontFamily: sans, fontWeight: 700, fontSize: '15px', color: 'var(--brand-text)', margin: 0 }}>{t.quickScan.title}</p>
+              <p style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', fontSize: 'var(--text-small)', color: 'var(--brand-text)', margin: 0 }}>{t.quickScan.title}</p>
               <button onClick={() => setQsOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '20px', cursor: 'pointer', lineHeight: 1 }}>×</button>
             </div>
 
             <div style={{ display: 'flex', borderBottom: '1px solid var(--brand-border)' }}>
               {(['scan', 'paste'] as const).map(tabKey => (
-                <button key={tabKey} onClick={() => { setQsTab(tabKey); qsReset() }} style={{ flex: 1, padding: '10px', background: qsTab === tabKey ? 'color-mix(in srgb, var(--brand-primary) 8%, transparent)' : 'none', border: 'none', borderBottom: qsTab === tabKey ? '2px solid var(--brand-primary)' : '2px solid transparent', color: qsTab === tabKey ? 'var(--brand-primary)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: '10px', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
+                <button key={tabKey} onClick={() => { setQsTab(tabKey); qsReset() }} style={{ flex: 1, padding: '10px', background: qsTab === tabKey ? 'color-mix(in srgb, var(--brand-primary) 8%, transparent)' : 'none', border: 'none', borderBottom: qsTab === tabKey ? '2px solid var(--brand-primary-edge)' : '2px solid transparent', color: qsTab === tabKey ? 'var(--brand-primary-text)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
                   {tabKey === 'scan' ? t.quickScan.tabScan : t.quickScan.tabPaste}
                 </button>
               ))}
@@ -384,10 +384,10 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                       {!qsPreview ? (
                         <button
                           onClick={() => qsFileRef.current?.click()}
-                          style={{ width: '100%', background: 'var(--brand-background)', border: '2px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '11px', letterSpacing: '0.1em', padding: '32px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', textAlign: 'center' }}
+                          style={{ width: '100%', background: 'var(--brand-background)', border: '2px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '32px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', textAlign: 'center' }}
                         >
                           {t.quickScan.dropZone}
-                          <br /><span style={{ fontSize: '10px', color: 'var(--brand-text-muted)', fontWeight: 400 }}>{t.quickScan.dropZoneFormats}</span>
+                          <br /><span style={{ fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', fontWeight: 400 }}>{t.quickScan.dropZoneFormats}</span>
                         </button>
                       ) : (
                         <div style={{ textAlign: 'center', marginBottom: '12px' }}>
@@ -404,22 +404,24 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                       onChange={e => setQsPaste(e.target.value)}
                       rows={5}
                       placeholder={t.quickScan.pastePlaceholder}
-                      style={{ width: '100%', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '10px 12px', outline: 'none', resize: 'vertical', lineHeight: 1.6, boxSizing: 'border-box', marginBottom: '12px' }}
+                      style={{ width: '100%', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 12px', outline: 'none', resize: 'vertical', lineHeight: 1.6, boxSizing: 'border-box', marginBottom: '12px' }}
                     />
                   )}
 
-                  {qsError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {qsError}</p>}
+                  {qsError && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {qsError}</p>}
 
                   <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
                     <button
                       onClick={qsExtract}
                       disabled={qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim())}
-                      style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim()) ? 0.5 : 1 }}
+                      aria-busy={qsLoading}
+                      style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim()) ? 0.5 : 1 }}
                     >
+                      {qsLoading && <Icon name="running" size="xs" />}
                       {qsLoading ? t.quickScan.extractingButton : t.quickScan.extractButton}
                     </button>
                     {qsTab === 'scan' && qsPreview && (
-                      <button onClick={() => { setQsPreview(''); setQsBase64('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: '10px', padding: '10px 12px', cursor: 'pointer', borderRadius: '2px' }}>
+                      <button onClick={() => { setQsPreview(''); setQsBase64('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '10px 12px', cursor: 'pointer', borderRadius: '2px' }}>
                         {t.quickScan.remove}
                       </button>
                     )}
@@ -430,8 +432,8 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               {qsExtracted && !qsSaved && (
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.quickScan.extractedHeading}</p>
-                    <span style={{ fontFamily: mono, fontSize: '10px', color: qsExtracted.confidence === 'high' ? 'var(--semantic-success)' : qsExtracted.confidence === 'medium' ? 'var(--brand-primary)' : 'var(--semantic-danger)', background: qsExtracted.confidence === 'high' ? 'var(--semantic-success)22' : qsExtracted.confidence === 'medium' ? 'var(--brand-primary)22' : 'var(--semantic-danger)22', padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                    <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.quickScan.extractedHeading}</p>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: qsExtracted.confidence === 'high' ? 'var(--semantic-success)' : qsExtracted.confidence === 'medium' ? 'var(--semantic-warning)' : 'var(--semantic-danger)', background: qsExtracted.confidence === 'high' ? 'color-mix(in srgb, var(--semantic-success) 13%, transparent)' : qsExtracted.confidence === 'medium' ? 'color-mix(in srgb, var(--semantic-warning) 13%, transparent)' : 'color-mix(in srgb, var(--semantic-danger) 13%, transparent)', padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
                       {qsExtracted.confidence === 'high' ? t.quickScan.confidenceHigh : qsExtracted.confidence === 'medium' ? t.quickScan.confidenceMedium : t.quickScan.confidenceLow}
                     </span>
                   </div>
@@ -446,19 +448,19 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                       [t.quickScan.fieldCountry, qsExtracted.country],
                     ].filter(([, v]) => v).map(([k, v]) => (
                       <p key={k} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)', margin: 0 }}>
-                        <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', display: 'inline-block', width: '60px' }}>{k}</span>
+                        <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', display: 'inline-block', width: '60px' }}>{k}</span>
                         {v}
                       </p>
                     ))}
                   </div>
                   {qsExtracted.confidence === 'low' && (
-                    <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>{t.quickScan.lowConfidenceWarning}</p>
+                    <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>{t.quickScan.lowConfidenceWarning}</p>
                   )}
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={qsSaveClient} disabled={qsSaving} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsSaving ? 0.6 : 1 }}>
+                    <button onClick={qsSaveClient} disabled={qsSaving} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsSaving ? 0.6 : 1 }}>
                       {qsSaving ? t.quickScan.saving : t.quickScan.saveClient}
                     </button>
-                    <button onClick={qsReset} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: '10px', padding: '10px 12px', cursor: 'pointer', borderRadius: '2px' }}>
+                    <button onClick={qsReset} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '10px 12px', cursor: 'pointer', borderRadius: '2px' }}>
                       {t.quickScan.rescan}
                     </button>
                   </div>
@@ -468,7 +470,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               {qsSaved && (
                 <div style={{ textAlign: 'center', padding: '20px 0' }}>
                   <p style={{ fontFamily: mono, fontSize: '14px', color: 'var(--semantic-success)', margin: '0 0 6px' }}>{t.quickScan.savedHeading}</p>
-                  <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: 0 }}>{qsExtracted?.name}</p>
+                  <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0 }}>{qsExtracted?.name}</p>
                 </div>
               )}
             </div>

@@ -11,10 +11,10 @@ export function ResponseSuggestionPanel({
   return (
     <div className="rounded-lg border border-hairline bg-surface-subtle p-3">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+        <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
           {label}
         </p>
-        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-secondary">
+        <span className="font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">
           nicht gesendet
         </span>
       </div>

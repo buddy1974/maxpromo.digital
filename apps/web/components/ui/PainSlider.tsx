@@ -26,9 +26,9 @@ export function PainSlider() {
   return (
     <div
       style={{
-        background: 'var(--color-bg-section)',
-        borderTop: '1px solid var(--color-border)',
-        borderBottom: '1px solid var(--color-border)',
+        background: 'var(--brand-surface-subtle)',
+        borderTop: '1px solid var(--brand-border)',
+        borderBottom: '1px solid var(--brand-border)',
         padding: '22px 2rem',
       }}
     >
@@ -46,8 +46,8 @@ export function PainSlider() {
         <span
           style={{
             fontFamily: 'var(--brand-font-sans)',
-            fontSize: '11px',
-            color: 'var(--color-text-secondary)',
+            fontSize: 'var(--text-label)',
+            color: 'var(--brand-text-secondary)',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
             flexShrink: 0,
@@ -59,7 +59,7 @@ export function PainSlider() {
         {/* Rotating content */}
         <span
           style={{
-            fontFamily: 'var(--font-mono)',
+            fontFamily: 'var(--brand-font-mono)',
             fontSize: '14px',
             opacity: visible ? 1 : 0,
             transition: 'opacity 220ms ease',
@@ -70,10 +70,10 @@ export function PainSlider() {
             flex: 1,
           }}
         >
-          <span style={{ color: 'var(--color-text-primary)' }}>
+          <span style={{ color: 'var(--brand-text)' }}>
             {t(`${key}Pain`)}
           </span>
-          <span style={{ color: 'var(--color-text-secondary)' }}>-</span>
+          <span style={{ color: 'var(--brand-text-secondary)' }}>-</span>
           <span style={{ color: 'var(--brand-text-secondary)' }}>
             {t(`${key}Fix`)}
           </span>
@@ -90,7 +90,7 @@ export function PainSlider() {
                 width: i === active ? '18px' : '5px',
                 height: '5px',
                 borderRadius: '3px',
-                background: i === active ? 'var(--color-primary)' : 'var(--color-border)',
+                background: i === active ? 'var(--brand-primary)' : 'var(--brand-border)',
                 border: 'none',
                 padding: 0,
                 cursor: 'pointer',

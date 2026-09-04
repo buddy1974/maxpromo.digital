@@ -25,7 +25,7 @@ export default async function ApprovalsPage() {
     <DashboardShell title="Approval Desk">
       <div className="space-y-6">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+          <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
             Supervised Mode
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
@@ -57,7 +57,7 @@ export default async function ApprovalsPage() {
                 </dl>
 
                 <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+                  <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
                     Audit-Trail
                   </p>
                   <ul className="mt-2 space-y-1 font-mono text-xs text-ink-secondary">
@@ -93,7 +93,7 @@ export default async function ApprovalsPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">{label}</dt>
+      <dt className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">{label}</dt>
       <dd className="mt-0.5 text-ink-secondary">{value}</dd>
     </div>
   );

@@ -20,19 +20,19 @@ export default async function BlogIndexPage() {
   const placeholders = t.raw('placeholders') as Array<{ tag: string; title: string; excerpt: string; readTime: string }>
 
   return (
-    <main style={{ background: 'var(--color-bg)', minHeight: '100vh', paddingTop: 'clamp(4rem, 8vw, 6rem)', paddingBottom: 'clamp(4.5rem, 8vw, 8.75rem)' }}>
-      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', padding: '0 2rem' }}>
+    <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--section-y)', paddingBottom: 'var(--section-y)' }}>
+      <div style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '0 2rem' }}>
 
         {/* Header */}
         <div style={{ marginBottom: '4rem', maxWidth: '640px' }}>
-          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+          <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('indexEyebrow')}
           </p>
           <h1 style={{ marginBottom: '1rem' }}>
             {t('indexTitle')}{' '}
             <span>{t('indexTitleAccent')}</span>
           </h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
+          <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '18px', color: 'var(--brand-text-secondary)', lineHeight: 1.75, margin: 0 }}>
             {t('indexLede')}
           </p>
         </div>
@@ -42,7 +42,7 @@ export default async function BlogIndexPage() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '3rem' }}>
             <span
               style={{
-                fontFamily: 'var(--font-mono)',
+                fontFamily: 'var(--brand-font-mono)',
                 fontSize: '12px',
                 color: 'var(--brand-text-secondary)',
                 background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)',
@@ -58,11 +58,11 @@ export default async function BlogIndexPage() {
               <span
                 key={tag}
                 style={{
-                  fontFamily: 'var(--font-mono)',
+                  fontFamily: 'var(--brand-font-mono)',
                   fontSize: '12px',
-                  color: 'var(--color-text-secondary)',
-                  border: '1px solid var(--color-border)',
-                  background: 'var(--color-bg)',
+                  color: 'var(--brand-text-secondary)',
+                  border: '1px solid var(--brand-border)',
+                  background: 'var(--brand-background)',
                   padding: '6px 14px',
                   borderRadius: '6px',
                   letterSpacing: '0.04em',
@@ -78,7 +78,7 @@ export default async function BlogIndexPage() {
         {/* Article grid or placeholder cards */}
         {posts.length === 0 ? (
           <>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.08em', marginBottom: '2rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.08em', marginBottom: '2rem' }}>
               {t('emptyTitle')}
             </p>
             <div
@@ -88,20 +88,20 @@ export default async function BlogIndexPage() {
               {placeholders.map((card, i) => (
                 <article key={i} className="card" style={{ display: 'flex', flexDirection: 'column', opacity: 0.7, padding: 0 }}>
                   <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
-                    <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
+                    <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
                       {card.tag}
                     </span>
                     <h2 className="h-card" style={{ margin: 0 }}>
                       {card.title}
                     </h2>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
                       {card.excerpt}
                     </p>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--color-border)', marginTop: 'auto' }}>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--brand-border)', marginTop: 'auto' }}>
+                      <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                         {card.readTime}
                       </span>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
+                      <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                         {t('readArticle')}
                       </span>
                     </div>
@@ -149,7 +149,7 @@ export default async function BlogIndexPage() {
                             key={tag}
                             style={{
                               fontFamily: 'var(--brand-font-sans)',
-                              fontSize: '11px',
+                              fontSize: 'var(--text-label)',
                               color: 'var(--brand-text-secondary)',
                               background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)',
                               border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)',
@@ -170,16 +170,16 @@ export default async function BlogIndexPage() {
                     </h2>
 
                     {/* Excerpt */}
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
                       {post.excerpt}
                     </p>
 
                     {/* Footer row */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--color-border)', marginTop: 'auto' }}>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--brand-border)', marginTop: 'auto' }}>
+                      <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                         {post.publishedAt}
                       </span>
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
+                      <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                         {t('readArticle')}
                       </span>
                     </div>

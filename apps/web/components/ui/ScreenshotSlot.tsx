@@ -89,7 +89,7 @@ export function ScreenshotSlot({
           {caption && (
             <p style={{
               fontFamily:    'var(--brand-font-sans)',
-              fontSize:      '11px',
+              fontSize:      'var(--text-label)',
               color:         'var(--brand-text-inverted)',
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
@@ -100,8 +100,8 @@ export function ScreenshotSlot({
           )}
           {subcaption && (
             <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize:   '13px',
+              fontFamily: 'var(--brand-font-body)',
+              fontSize:   'var(--text-micro)',
               color:      'var(--brand-text-muted)',
               lineHeight: 1.65,
               margin:     0,

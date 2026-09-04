@@ -43,13 +43,13 @@ export function WorkflowTimeline({ workflow, locale }: WorkflowTimelineProps) {
         >
           {workflow.map((step, i) => (
             <div key={i} style={{ padding: '1.75rem 1.5rem', background: 'var(--showcase-bg)', position: 'relative' }}>
-              <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '2rem', lineHeight: 1, color: 'var(--showcase-muted)', marginBottom: '0.6rem' }}>
+              <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: '2rem', lineHeight: 1, color: 'var(--showcase-muted)', marginBottom: '0.6rem' }}>
                 {STEP_NUMS[i]}
               </p>
               <h3 className="h-card" style={{ color: 'var(--showcase-fg)', marginBottom: '0.5rem' }}>
                 {step.label}
               </h3>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--showcase-muted)', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-micro)', color: 'var(--showcase-muted)', lineHeight: 1.6, margin: 0 }}>
                 {step.description}
               </p>
               {i < 4 && (

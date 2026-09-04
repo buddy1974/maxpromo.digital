@@ -65,14 +65,14 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid var(--brand-surface-sunken)', flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '11px', color: 'var(--brand-on-primary)', flexShrink: 0 }}>
+            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--brand-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: 'var(--text-label)', color: 'var(--brand-on-primary)', flexShrink: 0 }}>
               M
             </div>
             <div>
-              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: '13px', color: 'var(--brand-text)', margin: 0, letterSpacing: '0.05em' }}>
+              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: 0, letterSpacing: '0.05em' }}>
                 Max
               </p>
-              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: '10px', color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>
+              <p style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>
                 {'Business Advisor'}
               </p>
             </div>
@@ -93,7 +93,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
           className="chat-scroll"
         >
           {isEmpty && !isLoading && (
-            <p style={{ fontFamily: 'var(--font-body, system-ui, sans-serif)', fontSize: '15px', color: 'var(--brand-text-muted)', textAlign: 'center', padding: '2rem 2rem 0', lineHeight: 1.6 }}>
+            <p style={{ fontFamily: 'var(--font-body, system-ui, sans-serif)', fontSize: 'var(--text-small)', color: 'var(--brand-text-muted)', textAlign: 'center', padding: '2rem 2rem 0', lineHeight: 1.6 }}>
               {lang === 'de' ? 'Frage stellen. Echte Antwort.' : 'Ask a question. Real answer.'}
             </p>
           )}

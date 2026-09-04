@@ -8,7 +8,7 @@ export function PolicyChecklist({ items }: { items: PolicyChecklistItem[] }) {
     <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-ink">Policy-Checkliste</h3>
-        <span className="font-mono text-[11px] text-ink-muted">
+        <span className="font-mono text-label text-ink-muted">
           {done}/{items.length}
         </span>
       </div>
@@ -16,7 +16,7 @@ export function PolicyChecklist({ items }: { items: PolicyChecklistItem[] }) {
         {items.map((i) => (
           <li key={i.id} className="flex items-center gap-3 text-sm">
             <span
-              className={`flex h-4 w-4 items-center justify-center rounded border text-[10px] ${
+              className={`flex h-4 w-4 items-center justify-center rounded border text-label-dense ${
                 i.done
                   ? TONE_BADGE.positive
                   : TONE_BADGE.neutral

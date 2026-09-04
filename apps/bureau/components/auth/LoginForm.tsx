@@ -99,7 +99,7 @@ export default function LoginForm() {
       </button>
 
       {/* No public signup notice */}
-      <p className="text-center font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+      <p className="text-center font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
         Kein Konto? Zugang wird von Maxpromo bereitgestellt.
       </p>
     </form>

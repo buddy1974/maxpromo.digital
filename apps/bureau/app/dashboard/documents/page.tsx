@@ -54,7 +54,7 @@ export default async function DocumentsPage() {
     <DashboardShell title="Document Intake Desk">
       <div className="space-y-8">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+          <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
             Aus Dokument-Chaos wird strukturierte Aktion
           </p>
           <p className="mt-2 text-sm text-ink-secondary">

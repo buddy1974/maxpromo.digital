@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { Icon } from '@maxpromo/ui'
 
-const mono    = 'var(--font-roboto-mono)'
-const grotesk = 'var(--font-inter)'
-const sans    = 'var(--font-inter)'
+const mono    = 'var(--brand-font-mono)'
+const grotesk = 'var(--brand-font-body)'
+const sans    = 'var(--brand-font-body)'
 
 interface Angebot {
   id: string; angebot_number: string; client_name: string; client_email: string
@@ -27,7 +27,7 @@ const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
 
 function StatusBadge({ status, label }: { status: string; label: string }) {
   const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'var(--brand-surface-sunken)' }
-  return <span style={{ fontFamily: mono, fontSize: '10px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>{label}</span>
+  return <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>{label}</span>
 }
 
 /** Raw DB status values — the filter identity. Display text comes from t.status.angebot. */
@@ -110,22 +110,22 @@ export default function AngebotePage() {
     <div style={{ padding: '32px 40px' }}>
       {convertError && (
         <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
-          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}><Icon name="warning" size="xs" /> {convertError}</p>
+          <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: 0 }}><Icon name="warning" size="xs" /> {convertError}</p>
         </div>
       )}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.angebotList.heading}</h1>
-          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>{angebote.length} {t.common.total}</p>
+          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.angebotList.heading}</h1>
+          <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>{angebote.length} {t.common.total}</p>
         </div>
-        <Link href="/os/angebote/new" style={{ background: 'var(--brand-primary)', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', textTransform: 'uppercase' }}>
+        <Link href="/os/angebote/new" style={{ background: 'var(--brand-primary)', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', textTransform: 'uppercase' }}>
           {t.angebotList.newAngebot}
         </Link>
       </div>
 
       <div style={{ display: 'flex', gap: '4px', marginBottom: '20px' }}>
         {TABS.map(key => (
-          <button key={key} onClick={() => setTab(key)} style={{ fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '7px 14px', border: 'none', cursor: 'pointer', background: tab === key ? 'var(--brand-primary)' : 'transparent', color: tab === key ? 'var(--brand-text)' : 'var(--brand-text-muted)' }}>
+          <button key={key} onClick={() => setTab(key)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '7px 14px', border: 'none', cursor: 'pointer', background: tab === key ? 'var(--brand-primary)' : 'transparent', color: tab === key ? 'var(--brand-text)' : 'var(--brand-text-muted)' }}>
             {tabLabel(key)}
           </button>
         ))}
@@ -136,15 +136,15 @@ export default function AngebotePage() {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)' }}>{t.angebotList.empty}</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.angebotList.empty}</td></tr>
             ) : (
               filtered.map(a => (
                 <tr key={a.id} style={{ borderBottom: '1px solid var(--brand-border)' }}>
@@ -156,18 +156,18 @@ export default function AngebotePage() {
                       {a.angebot_number}
                     </Link>
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text)' }}>
+                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)' }}>
                     <Link href={`/os/angebote/${a.id}`} style={{ color: 'var(--brand-text)', textDecoration: 'none' }}>
                       {a.client_name}
                     </Link>
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)' }}>
+                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)' }}>
                     {fmtDate(a.created_at)}
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)' }}>
+                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)' }}>
                     {fmtDate(a.valid_until)}
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '13px', color: 'var(--brand-text)', fontWeight: 700 }}>
+                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', fontWeight: 700 }}>
                     {fmtEur(Number(a.total))}
                   </td>
                   <td style={{ padding: '12px 16px' }}>
@@ -179,16 +179,18 @@ export default function AngebotePage() {
                         <button
                           onClick={() => convertToInvoice(a)}
                           disabled={converting === a.id}
-                          style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: converting === a.id ? 'wait' : 'pointer', padding: 0, letterSpacing: '0.06em', opacity: converting === a.id ? 0.5 : 1 }}
+                          aria-busy={converting === a.id}
+                          style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: converting === a.id ? 'wait' : 'pointer', padding: 0, letterSpacing: '0.06em', opacity: converting === a.id ? 0.5 : 1 }}
                         >
-                          {converting === a.id ? '⟳' : t.angebotList.convert}
+                          {converting === a.id && <Icon name="running" size="xs" />}
+                          {t.angebotList.convert}
                         </button>
                       ) : (
-                        <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.06em' }}>{t.angebotList.converted}</span>
+                        <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.06em' }}>{t.angebotList.converted}</span>
                       )}
                       <button
                         onClick={() => deleteAngebot(a.id, a.angebot_number)}
-                        style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                       >
                         {t.angebotList.delete}
                       </button>

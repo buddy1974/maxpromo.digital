@@ -5,10 +5,10 @@ export function Topbar({ title }: { title: string }) {
         {title}
       </h1>
       <div className="flex items-center gap-3">
-        <span className="rounded-full border border-accent/30 bg-accent-soft px-3 py-1 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-secondary">
+        <span className="rounded-full border border-accent/30 bg-accent-soft px-3 py-1 font-mono text-label uppercase tracking-[0.14em] text-ink-secondary">
           System Preview
         </span>
-        <span className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted sm:inline">
+        <span className="hidden font-mono text-label uppercase tracking-[0.14em] text-ink-muted sm:inline">
           Supervised Mode
         </span>
       </div>

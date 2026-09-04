@@ -36,7 +36,7 @@ export default function SettingsPage() {
                   <p className="mt-0.5 text-xs text-ink-muted">{i.description}</p>
                 </div>
                 <span
-                  className={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${TONE_BADGE[STATUS_TONE(i.status)]}`}
+                  className={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-label-dense uppercase tracking-[0.12em] ${TONE_BADGE[STATUS_TONE(i.status)]}`}
                 >
                   {STATUS_LABEL[i.status]}
                 </span>

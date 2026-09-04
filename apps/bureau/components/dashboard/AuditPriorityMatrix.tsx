@@ -20,11 +20,11 @@ export function AuditPriorityMatrix({ findings }: { findings: AuditFinding[] }) 
       <table className="w-full text-center text-sm">
         <thead className="border-b border-hairline text-ink-muted">
           <tr>
-            <th className="px-3 py-2 text-left font-mono text-[10px] uppercase tracking-[0.12em]">
+            <th className="px-3 py-2 text-left font-mono text-label-dense uppercase tracking-[0.12em]">
               Priorität \ Wirkung
             </th>
             {IMPACTS.map((i) => (
-              <th key={i} className="px-3 py-2 font-mono text-[10px] uppercase tracking-[0.12em]">
+              <th key={i} className="px-3 py-2 font-mono text-label-dense uppercase tracking-[0.12em]">
                 {IMPACT_LABEL[i]}
               </th>
             ))}
@@ -33,7 +33,7 @@ export function AuditPriorityMatrix({ findings }: { findings: AuditFinding[] }) 
         <tbody className="divide-y divide-hairline">
           {PRIORITIES.map((p) => (
             <tr key={p}>
-              <td className="px-3 py-2 text-left font-mono text-[11px] uppercase tracking-[0.12em] text-ink-secondary">
+              <td className="px-3 py-2 text-left font-mono text-label uppercase tracking-[0.12em] text-ink-secondary">
                 {p}
               </td>
               {IMPACTS.map((i) => {

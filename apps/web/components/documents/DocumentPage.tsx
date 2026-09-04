@@ -58,7 +58,7 @@ interface DocumentPageProps {
   children: ReactNode
 }
 
-const colLabel = { ...mono, fontSize: '10px', fontWeight: 700, color: BRAND_COLORS.accentText, textTransform: 'uppercase' as const, letterSpacing: '0.14em', margin: '0 0 10px' }
+const colLabel = { ...mono, fontSize: 'var(--text-label-dense)', fontWeight: 700, color: BRAND_COLORS.accentText, textTransform: 'uppercase' as const, letterSpacing: '0.14em', margin: '0 0 10px' }
 
 export function DocumentPage({
   filename, language, docTypeLabel, detailsLabel, numberLabel, number, dateLabel, date,
@@ -78,7 +78,7 @@ export function DocumentPage({
 
         {/* Compact repeating top strip — fixed in print, see printCss.ts */}
         <div data-print-topstrip style={{ padding: '9px 40px', borderBottom: '1px solid var(--brand-border)', background: 'var(--brand-surface)' }}>
-          <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.02em' }}>
+          <p style={{ ...mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.02em' }}>
             {BUSINESS.website} &nbsp;|&nbsp; {numberLabel}: {number} &nbsp;|&nbsp; {date}
           </p>
         </div>
@@ -87,7 +87,7 @@ export function DocumentPage({
           {/* Title + brand line */}
           <div style={{ padding: '32px 40px 20px' }}>
             <h1 style={{ fontFamily: 'Arial,sans-serif', fontSize: '42px', fontWeight: 700, color: BRAND_COLORS.ink, margin: '0 0 10px', letterSpacing: '-0.01em' }}>{docTypeLabel}</h1>
-            <p style={{ ...mono, fontSize: '15px', fontWeight: 700, color: BRAND_COLORS.accentText, margin: 0, letterSpacing: '0.02em' }}>{BUSINESS.website}</p>
+            <p style={{ ...mono, fontSize: 'var(--text-small)', fontWeight: 700, color: BRAND_COLORS.accentText, margin: 0, letterSpacing: '0.02em' }}>{BUSINESS.website}</p>
           </div>
           <div style={{ borderTop: `2px solid ${BRAND_COLORS.accent}`, margin: '0 40px' }} />
 
@@ -120,7 +120,7 @@ export function DocumentPage({
 
         {/* Repeating footer — fixed in print, see printCss.ts */}
         <div data-print-footer style={{ padding: '9px 40px', borderTop: '1px solid var(--brand-border)', background: 'var(--brand-surface)' }}>
-          <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: 0 }}>
+          <p style={{ ...mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: 0 }}>
             {BUSINESS.website} &nbsp;|&nbsp; {BUSINESS.legalName} &nbsp;|&nbsp; {BUSINESS.addressLine2} &nbsp;|&nbsp; {docTypeLabel} {number} &nbsp;|&nbsp; {t.taxNumberLabel}: {BUSINESS.steuernummer}
           </p>
         </div>
@@ -151,7 +151,7 @@ export function SectionHeading({ n, title, subtitle }: { n: number; title: strin
         {n}. {title}
       </h2>
       <div style={{ borderTop: `1px solid ${BRAND_COLORS.border}`, marginBottom: subtitle ? '8px' : 0 }} />
-      {subtitle && <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', margin: 0 }}>{subtitle}</p>}
+      {subtitle && <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', margin: 0 }}>{subtitle}</p>}
     </div>
   )
 }

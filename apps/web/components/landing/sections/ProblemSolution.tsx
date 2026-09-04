@@ -50,12 +50,12 @@ export function ProblemSolution({ problemStatement, description, domainBrand, pa
           </p>
 
           {problemStatement && (
-            <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: HEADING_SIZE.narrative, letterSpacing: '-0.02em', lineHeight: 1.4, color: 'var(--showcase-muted)', margin: 0, marginBottom: '1.5rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: HEADING_SIZE.narrative, letterSpacing: '-0.02em', lineHeight: 1.4, color: 'var(--showcase-muted)', margin: 0, marginBottom: '1.5rem' }}>
               {problemStatement}
             </p>
           )}
 
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--showcase-fg)', lineHeight: 1.8, margin: 0 }}>
+          <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--showcase-fg)', lineHeight: 1.8, margin: 0 }}>
             {description}
           </p>
         </div>

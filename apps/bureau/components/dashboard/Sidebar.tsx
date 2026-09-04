@@ -53,7 +53,7 @@ export function Sidebar() {
           return (
             <div key={item.href}>
               {item.group && (
-                <p className="px-3 pb-1 pt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-muted">
+                <p className="px-3 pb-1 pt-4 font-mono text-label-dense uppercase tracking-[0.16em] text-ink-muted">
                   {item.group}
                 </p>
               )}
@@ -73,7 +73,7 @@ export function Sidebar() {
         })}
       </nav>
       <div className="border-t border-hairline p-4 flex flex-col gap-3">
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-muted">
+        <span className="font-mono text-label-dense uppercase tracking-[0.16em] text-ink-muted">
           Supervised Mode
         </span>
         <button

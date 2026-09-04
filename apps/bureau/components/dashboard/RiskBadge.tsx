@@ -18,7 +18,7 @@ const LABELS: Record<AgentRiskLevel, string> = {
 export function RiskBadge({ level }: { level: AgentRiskLevel }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_BADGE[RISK_TONE(level)]}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 font-mono text-label uppercase tracking-[0.12em] ${TONE_BADGE[RISK_TONE(level)]}`}
     >
       {LABELS[level]}
     </span>

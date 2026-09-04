@@ -17,59 +17,31 @@
 
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   LEGACY ALIASES
+   TAILWIND THEME
 
-   ~1100 call sites still reference the v2.1 --color-* names. Rather than a
-   1100-line find-and-replace, they are repointed here so every consumer
-   inherits the new system immediately. Call sites migrate to --brand-* names
-   opportunistically as each file is touched; this block shrinks over time.
+   Tailwind v4 is CSS-first: a utility exists because a theme name exists. Only
+   the three font names are declared, because only the three font utilities
+   (font-sans, font-mono, font-display) are used. Every colour, size and space
+   is referenced as its token, so there is one name for each value.
+
+   What stood here until v7.0 was a second namespace: twenty-four --color-*,
+   --font-*, --text-*, --radius-* and --shadow-* aliases repointed at the token
+   package, written in v4.0 to spare a large find-and-replace and expected to
+   "shrink over time". It did not shrink; it grew to 507 call sites, and the
+   platform spent a year with two names for every value — --color-bg and
+   --brand-background, --radius-card and --radius-lg — appearing side by side
+   in the same style object on the homepage. Aliases were also where the accent
+   hid: fifteen contrast failures lived behind a name that still said "orange"
+   three brand generations after that colour was retired.
+
+   Adding a name here again means adding a second name for something that
+   already has one. See "Never two implementations" in
+   docs/governance/standards.md.
    ───────────────────────────────────────────────────────────────────────── */
-:root {
-  --color-bg:             var(--brand-background);
-  --color-bg-section:     var(--brand-surface-subtle);
-  --color-border: var(--brand-border);
-  --color-text-primary:   var(--brand-text);
-  --color-text-secondary: var(--brand-text-secondary);
-  --color-primary:        var(--brand-primary);
-  --color-primary-hover:  var(--brand-primary-hover);
-  --color-footer-bg:      var(--brand-surface-inverted);
-  --color-footer-text:    var(--brand-text-inverted-secondary);
-
-  --font-heading: var(--brand-font-heading);
-  --font-body:    var(--brand-font-body);
-  --font-mono:    var(--brand-font-mono);
-
-  --text-hero:          var(--text-h1);
-  --text-section-title: var(--text-h2);
-  --text-card-title:    var(--text-h3);
-  --text-nav:           var(--text-small);
-  --text-button:        var(--text-small);
-
-  --container-width: var(--container);
-  --space-section:   var(--section-y);
-  --space-card:      var(--space-6);
-  --radius-card:     var(--radius-lg);
-
-  --shadow-card:     var(--shadow-sm);
-  --shadow-elevated: var(--shadow-lg);
-
-  --ease-out-expo: var(--ease);
-}
-
 @theme inline {
-  --color-background: var(--brand-background);
-  --color-foreground:     var(--brand-text);
-  --color-bg-section:     var(--brand-surface-subtle);
-  --color-border: var(--brand-border);
-  --color-primary:        var(--brand-primary);
-  --color-primary-hover:  var(--brand-primary-hover);
-  --color-text-primary:   var(--brand-text);
-  --color-text-secondary: var(--brand-text-secondary);
-  --color-footer-bg:      var(--brand-surface-inverted);
-  --color-footer-text:    var(--brand-text-inverted-secondary);
-  --font-sans:            var(--brand-font-sans);
-  --font-mono:            var(--brand-font-mono);
-  --font-display:         var(--brand-font-heading);
+  --font-sans:    var(--brand-font-sans);
+  --font-mono:    var(--brand-font-mono);
+  --font-display: var(--brand-font-heading);
 }
 
 

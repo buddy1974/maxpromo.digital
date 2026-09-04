@@ -31,8 +31,8 @@ import { Icon } from '@maxpromo/ui'
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-const mono = 'var(--font-roboto-mono)'
-const sans = 'var(--font-inter)'
+const mono = 'var(--brand-font-mono)'
+const sans = 'var(--brand-font-body)'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -100,8 +100,8 @@ function MicButton({
           width: '44px',
           height: '44px',
           borderRadius: '50%',
-          background: 'color-mix(in srgb, var(--brand-surface) 4%, transparent)',
-          border: '1px solid color-mix(in srgb, var(--brand-surface) 8%, transparent)',
+          background: 'var(--brand-surface-subtle)',
+          border: '1px solid var(--brand-border-strong)',
           color: 'var(--brand-text-muted)',
           cursor: 'not-allowed',
           display: 'flex',
@@ -131,11 +131,11 @@ function MicButton({
         borderRadius: '50%',
         background: listening
           ? 'color-mix(in srgb, var(--brand-primary) 20%, transparent)'
-          : 'color-mix(in srgb, var(--brand-surface) 6%, transparent)',
+          : 'var(--brand-surface-subtle)',
         border: listening
-          ? '1.5px solid color-mix(in srgb, var(--brand-primary) 70%, transparent)'
-          : '1px solid color-mix(in srgb, var(--brand-surface) 15%, transparent)',
-        color: listening ? 'var(--brand-primary)' : 'var(--brand-text-secondary)',
+          ? '1.5px solid var(--brand-primary-edge)'
+          : '1px solid var(--brand-border-control)',
+        color: listening ? 'var(--brand-text)' : 'var(--brand-text-secondary)',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
@@ -196,9 +196,9 @@ export default function VoiceInputWidget({
 
   const baseTextarea: React.CSSProperties = {
     width: '100%',
-    background: 'color-mix(in srgb, var(--brand-surface) 4%, transparent)',
-    border: '1px solid color-mix(in srgb, var(--brand-surface) 10%, transparent)',
-    color: 'var(--brand-text-inverted)',
+    background: 'var(--brand-background)',
+    border: '1px solid var(--brand-border-control)',
+    color: 'var(--brand-text)',
     fontFamily: sans,
     fontSize: '14px',
     padding: '14px 16px',
@@ -214,7 +214,7 @@ export default function VoiceInputWidget({
   const btnBase: React.CSSProperties = {
     fontFamily: mono,
     fontWeight: 700,
-    fontSize: '11px',
+    fontSize: 'var(--text-label)',
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
     border: 'none',
@@ -286,7 +286,7 @@ export default function VoiceInputWidget({
           <p
             style={{
               fontFamily: sans,
-              fontSize: '13px',
+              fontSize: 'var(--text-micro)',
               color: 'var(--brand-text-secondary)',
               margin: 0,
               fontStyle: voice.interimTranscript ? 'normal' : 'italic',
@@ -302,7 +302,7 @@ export default function VoiceInputWidget({
         <div
           style={{
             marginTop: '10px',
-            border: '1px solid color-mix(in srgb, var(--brand-surface) 10%, transparent)',
+            border: '1px solid var(--brand-border)',
             borderRadius: '2px',
             overflow: 'hidden',
           }}
@@ -311,20 +311,20 @@ export default function VoiceInputWidget({
           <div
             style={{
               padding: '10px 14px',
-              background: 'color-mix(in srgb, var(--brand-surface) 3%, transparent)',
-              borderBottom: '1px solid color-mix(in srgb, var(--brand-surface) 6%, transparent)',
+              background: 'var(--brand-surface-subtle)',
+              borderBottom: '1px solid var(--brand-border)',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
           >
-            <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+            <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
               Voice Transcript
             </span>
             <button
               type="button"
               onClick={voice.dismiss}
-              style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontFamily: mono, fontSize: '11px', padding: '2px 6px' }}
+              style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontFamily: mono, fontSize: 'var(--text-label)', padding: '2px 6px' }}
               aria-label="Dismiss voice panel"
             >
               <Icon name="close" size="sm" label="Close" />
@@ -333,7 +333,7 @@ export default function VoiceInputWidget({
 
           {/* Raw transcript, editable */}
           <div style={{ padding: '14px' }}>
-            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
+            <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
               Raw transcript, edit if needed
             </p>
             <textarea
@@ -343,7 +343,7 @@ export default function VoiceInputWidget({
               style={{
                 ...baseTextarea,
                 minHeight: 'auto',
-                fontSize: '13px',
+                fontSize: 'var(--text-micro)',
                 fontFamily: mono,
                 resize: 'vertical',
               }}
@@ -356,10 +356,10 @@ export default function VoiceInputWidget({
             <div
               style={{
                 padding: '0 14px 14px',
-                borderTop: '1px solid color-mix(in srgb, var(--brand-surface) 5%, transparent)',
+                borderTop: '1px solid var(--brand-border)',
               }}
             >
-              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '14px 0 8px' }}>
+              <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', textTransform: 'uppercase', margin: '14px 0 8px' }}>
                 AI-enhanced version
               </p>
               <div
@@ -369,7 +369,7 @@ export default function VoiceInputWidget({
                   borderRadius: '2px',
                   padding: '12px 14px',
                   fontFamily: sans,
-                  fontSize: '13px',
+                  fontSize: 'var(--text-micro)',
                   color: 'var(--brand-text)',
                   lineHeight: 1.7,
                   whiteSpace: 'pre-wrap',
@@ -384,7 +384,7 @@ export default function VoiceInputWidget({
           <div
             style={{
               padding: '12px 14px',
-              borderTop: '1px solid color-mix(in srgb, var(--brand-surface) 6%, transparent)',
+              borderTop: '1px solid var(--brand-border)',
               display: 'flex',
               flexWrap: 'wrap',
               gap: '8px',
@@ -395,7 +395,7 @@ export default function VoiceInputWidget({
             <button
               type="button"
               onClick={() => voice.approveRaw(onChange)}
-              style={{ ...btnBase, background: 'color-mix(in srgb, var(--brand-surface) 8%, transparent)', color: 'var(--brand-text)' }}
+              style={{ ...btnBase, background: 'var(--brand-surface-subtle)', color: 'var(--brand-text)' }}
             >
               <Icon name="check" size="sm" /> Use transcript
             </button>
@@ -421,8 +421,8 @@ export default function VoiceInputWidget({
 
             {/* Enhancing spinner */}
             {voice.phase === 'enhancing' && (
-              <span style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.08em' }}>
-                ⟳ Enhancing…
+              <span style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-primary-text)', letterSpacing: '0.08em' }}>
+                <Icon name="running" size="xs" /> Enhancing…
               </span>
             )}
 
@@ -449,8 +449,8 @@ export default function VoiceInputWidget({
 
           {/* Error */}
           {voice.error && (
-            <div style={{ padding: '10px 14px', borderTop: '1px solid color-mix(in srgb, var(--brand-surface) 6%, transparent)' }}>
-              <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}>
+            <div style={{ padding: '10px 14px', borderTop: '1px solid var(--brand-border)' }}>
+              <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: 0 }}>
                 <Icon name="warning" size="xs" /> {voice.error}
               </p>
             </div>
@@ -463,7 +463,7 @@ export default function VoiceInputWidget({
         <p
           style={{
             fontFamily: mono,
-            fontSize: '10px',
+            fontSize: 'var(--text-label-dense)',
             color: 'var(--brand-text-secondary)',
             marginTop: '6px',
             letterSpacing: '0.05em',

@@ -200,6 +200,18 @@ Last updated: 2026-08-11 (Visual Facelift v2.1 — Phases 1–6 complete)
 
 ---
 
+## P2 — Platform debt recorded during v7.0 (2026-09-04)
+
+| # | Risk | Detail |
+|---|------|--------|
+| 21 | `middleware.ts` uses a convention Next 16 deprecates | Next 16 warns on every build that the `middleware` file convention is deprecated in favour of `proxy`. **Not migrated, deliberately.** Both files are the authentication enforcement layer: `apps/web/middleware.ts` gates `/os/*` and `/api/os/*` on a signed cookie, and `apps/bureau/middleware.ts` is a NextAuth v4 `withAuth` default export guarding `/dashboard/*`. NextAuth v4's helper is written against the middleware convention and its behaviour under `proxy` is unverified; a wrong guess here silently opens a dashboard rather than breaking a build. **Action:** migrate deliberately, against a preview deployment, verifying that an unauthenticated request to `/os` and to `/dashboard` still redirects. Do not treat as a mechanical rename. |
+| 22 | The icon set is bundled as one module | `packages/ui/primitives/Icon.tsx` keys every path off one object, so any client component importing `Icon` pulls the whole set. Measured cost: apps/web client JS went from 1055 KB to 1087 KB (+32 KB uncompressed, roughly 8 KB gzipped). Acceptable at ~45 icons; if the set passes roughly fifty, either split into per-icon modules or adopt a licensed set — see ADR-0003. |
+| 23 | 906 of 927 type sizes are still raw px | The typography audit enforces a 10px floor and bans sub-pixel sizes, and both are clean. It does not yet enforce the scale: 2% of size declarations reference a token. `audit:typography --strict` reports the rest today and is not wired into `verify`, because moving ~900 declarations onto tokens is a visual change across dense internal screens that needs a human looking at them. |
+| 24 | 10px uppercase mono remains at the edge of legibility | 91 declarations moved from 9px to the 10px floor. The 1px step was chosen over a larger one because 91 sites across dense tables could not be visually verified in-session and a 22% jump risks wrapping column headers that currently fit. 10px uppercase mono at 0.2em tracking is the floor, not a recommendation. **Action:** a human should look at the OS tables and decide whether labels belong at 11px. |
+| 25 | 19 Agent Bureau API routes are a secured data layer nothing calls | Carried forward. The dashboard renders from `lib/mock/*` while the routes exist, are authenticated, and are unreferenced. They are not dead code to delete; they are unfinished wiring. |
+
+---
+
 ## Resolution path
 
 Risks 1–5 are resolved by Auth-1 through Auth-4.

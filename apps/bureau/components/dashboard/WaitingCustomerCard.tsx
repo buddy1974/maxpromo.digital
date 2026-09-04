@@ -26,20 +26,20 @@ export function WaitingCustomerCard({ item }: { item: WaitingRoomItem }) {
             {item.company ?? "—"} · {CHANNEL_LABEL[item.channel]}
           </p>
         </div>
-        <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_TEXT[URGENCY_TONE_MAP[item.urgency]]}`}>
+        <span className={`font-mono text-label uppercase tracking-[0.12em] ${TONE_TEXT[URGENCY_TONE_MAP[item.urgency]]}`}>
           wartet {item.waitingFor}
         </span>
       </div>
       <p className="mt-2 text-sm text-ink-secondary">{item.reason}</p>
       <div className="mt-3 rounded-lg border border-hairline bg-surface-subtle p-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+        <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
           Vorbereitete nächste Aktion (nicht gesendet)
         </p>
         <p className="mt-1 text-sm text-ink-secondary">{item.suggestedAction}</p>
       </div>
       <div className="mt-3 flex items-center justify-between text-xs text-ink-muted">
         <span>{item.assignedAgent}</span>
-        <span className="rounded-full border border-hairline bg-surface-sunken px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-secondary">
+        <span className="rounded-full border border-hairline bg-surface-sunken px-2.5 py-0.5 font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">
           {item.approvalStatus === "pending" ? "Approval Required" : item.approvalStatus}
         </span>
       </div>

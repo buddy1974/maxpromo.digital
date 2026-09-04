@@ -74,9 +74,25 @@
   --text-hero:          var(--text-h1);
   --text-section-title: var(--text-h2);
   --text-card-title:    var(--text-h3);
-  --text-body:          1.125rem;
-  --text-small:         0.9375rem;
-  --text-micro:         0.8125rem;
+
+  /* Tailwind generates a `text-*` utility only from a key declared here, and a
+     key cannot reference the platform token of the same name without recursing
+     — so these six repeat the platform's values as literals. They are not a
+     second scale: audit-consistency resolves both applications' computed
+     values and fails on any difference between them.
+
+     --text-body was 1.125rem here until v7.0. Because @theme lands in :root it
+     shadowed the platform token for the whole application, including the
+     `body` rule below, and Agent Bureau ran at 18px body text against the
+     website's 17px. One platform, two reading sizes, and neither stylesheet
+     said so — the kind of drift that is invisible in either application alone
+     and obvious the moment a visitor crosses between them. */
+  --text-lede:          1.1875rem;   /* 19 — platform --text-lede */
+  --text-body:          1.0625rem;   /* 17 — platform --text-body */
+  --text-small:         0.9375rem;   /* 15 — platform --text-small */
+  --text-micro:         0.8125rem;   /* 13 — platform --text-micro */
+  --text-label:         0.6875rem;   /* 11 — platform --text-label */
+  --text-label-dense:   0.625rem;    /* 10 — platform --text-label-dense */
 
   --container-content: var(--container);
 }

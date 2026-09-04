@@ -12,7 +12,7 @@ export default function ResearchPage() {
     <DashboardShell title="Research">
       <div className="space-y-4">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+          <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
             Research Agent · Supervised
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
@@ -26,7 +26,7 @@ export default function ResearchPage() {
             <div key={m.id} className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
               <h3 className="font-semibold text-ink">{m.title}</h3>
               <p className="mt-1 text-sm text-ink-secondary">{m.summary}</p>
-              <p className="mt-2 font-mono text-[11px] text-ink-muted">
+              <p className="mt-2 font-mono text-label text-ink-muted">
                 {m.createdAt.slice(0, 10)} · {m.source}
               </p>
             </div>

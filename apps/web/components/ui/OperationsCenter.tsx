@@ -86,7 +86,7 @@ export function OperationsCenter({
       >
         <span
           style={{
-            fontSize: '11px',
+            fontSize: 'var(--text-label)',
             fontWeight: 600,
             letterSpacing: 'var(--tracking-label)',
             textTransform: 'uppercase',
@@ -98,7 +98,7 @@ export function OperationsCenter({
         <span
           style={{
             fontFamily: 'var(--brand-font-mono)',
-            fontSize: '11px',
+            fontSize: 'var(--text-label)',
             color: 'var(--brand-text-muted)',
           }}
         >
@@ -157,7 +157,7 @@ export function OperationsCenter({
               <span
                 style={{
                   fontFamily: 'var(--brand-font-mono)',
-                  fontSize: '10px',
+                  fontSize: 'var(--text-label-dense)',
                   lineHeight: 1.6,
                   color:
                     s.state === 'attention'
@@ -172,7 +172,7 @@ export function OperationsCenter({
               </span>
               <span
                 style={{
-                  fontSize: '13px',
+                  fontSize: 'var(--text-micro)',
                   fontWeight: 500,
                   color: 'var(--brand-text)',
                   flexShrink: 0,
@@ -183,7 +183,7 @@ export function OperationsCenter({
               <span
                 style={{
                   fontFamily: 'var(--brand-font-mono)',
-                  fontSize: '11px',
+                  fontSize: 'var(--text-label)',
                   color: 'var(--brand-text-muted)',
                   marginLeft: 'auto',
                   whiteSpace: 'nowrap',
@@ -201,7 +201,7 @@ export function OperationsCenter({
             <p
               style={{
                 margin: '0 0 8px',
-                fontSize: '10px',
+                fontSize: 'var(--text-label-dense)',
                 fontWeight: 600,
                 letterSpacing: 'var(--tracking-label)',
                 textTransform: 'uppercase',
@@ -216,7 +216,7 @@ export function OperationsCenter({
                 style={{
                   margin: '0 0 5px',
                   fontFamily: 'var(--brand-font-mono)',
-                  fontSize: '11px',
+                  fontSize: 'var(--text-label)',
                   lineHeight: 1.5,
                   color: 'var(--brand-text-secondary)',
                   whiteSpace: 'nowrap',
@@ -230,7 +230,7 @@ export function OperationsCenter({
             <p
               style={{
                 margin: '10px 0 0',
-                fontSize: '11px',
+                fontSize: 'var(--text-label)',
                 color: 'var(--brand-text-muted)',
               }}
             >

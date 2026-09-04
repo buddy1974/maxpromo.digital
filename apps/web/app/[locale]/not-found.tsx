@@ -28,8 +28,8 @@ export default function LocaleNotFound() {
     >
       <p
         style={{
-          fontFamily: 'var(--font-roboto-mono)',
-          fontSize: '11px',
+          fontFamily: 'var(--brand-font-mono)',
+          fontSize: 'var(--text-label)',
           color: 'var(--brand-primary-text)',
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
@@ -43,7 +43,7 @@ export default function LocaleNotFound() {
       </h1>
       <p
         style={{
-          fontFamily: 'var(--font-inter)',
+          fontFamily: 'var(--brand-font-body)',
           fontSize: '16px',
           color: 'var(--brand-text-secondary)',
           lineHeight: 1.6,
@@ -58,9 +58,9 @@ export default function LocaleNotFound() {
       <Link
         href={`/${de ? 'de' : 'en'}`}
         style={{
-          fontFamily: 'var(--font-roboto-mono)',
+          fontFamily: 'var(--brand-font-mono)',
           fontWeight: 700,
-          fontSize: '13px',
+          fontSize: 'var(--text-micro)',
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
           background: 'var(--brand-primary)',

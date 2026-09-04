@@ -17,7 +17,7 @@ export function RequiredActionPanel({
         <li key={a.id} className="flex items-center justify-between text-sm">
           <span className="text-ink-secondary">{a.label}</span>
           {a.deadline && (
-            <span className="font-mono text-[11px] text-danger">
+            <span className="font-mono text-label text-danger">
               bis {a.deadline}
             </span>
           )}

@@ -186,6 +186,24 @@
   --text-small: 0.9375rem;                                   /* 15 */
   --text-micro: 0.8125rem;                                   /* 13 */
 
+  /* The two steps below the scale's published bottom.
+     A typography audit found 927 size declarations in the platform, of which
+     476 — fifty-one per cent — sat at 10px or 11px, and neither had a name.
+     The scale described the marketing site; the product ran on two sizes it
+     did not contain, so nothing could reference them and nothing could check
+     them. This is the same finding as --weight-bold: the scale was incomplete,
+     not the call sites wrong.
+
+     Their role is narrow and it is not prose. Interface chrome: the uppercase
+     mono label over a data table, a status badge, a dense toolbar. Never a
+     sentence, never a heading. 10px is the legibility floor rather than a
+     recommendation — at 0.2em tracking in uppercase mono it is at the edge of
+     what a reader can take in, and whether those labels belong at 11px is an
+     open question for a human looking at the OS tables, recorded in
+     docs/governance/known-risks.md. */
+  --text-label:       0.6875rem;                             /* 11 */
+  --text-label-dense: 0.625rem;                              /* 10 — the floor */
+
   --weight-heading:  600;   /* H1 */
   --weight-subhead:  600;   /* H2, H3 */
   --weight-medium:   500;

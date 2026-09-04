@@ -34,7 +34,7 @@ export function OutcomeStrip({ outcomeStats }: OutcomeStripProps) {
       >
         {outcomeStats.map((stat, i) => (
           <div key={i} style={{ background: 'var(--showcase-bg)', padding: '1.25rem 1.5rem', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', fontWeight: 700, color: 'var(--showcase-fg)', letterSpacing: '-0.01em', margin: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', fontWeight: 'var(--weight-heading)', color: 'var(--showcase-fg)', letterSpacing: '-0.01em', margin: 0 }}>
               {stat}
             </p>
           </div>

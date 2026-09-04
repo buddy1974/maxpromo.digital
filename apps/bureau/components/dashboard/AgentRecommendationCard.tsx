@@ -7,7 +7,7 @@ export function AgentRecommendationCard({
 }) {
   return (
     <div className="rounded-lg border border-accent/30 bg-accent-soft p-5">
-      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-secondary">
+      <p className="font-mono text-label uppercase tracking-[0.14em] text-ink-secondary">
         Empfohlenes Team
       </p>
       <h3 className="mt-1 font-semibold text-ink">{recommendation.tier}</h3>
@@ -16,7 +16,7 @@ export function AgentRecommendationCard({
         {recommendation.agents.map((a) => (
           <span
             key={a}
-            className="rounded-full border border-hairline bg-surface px-2.5 py-0.5 font-mono text-[10px] text-ink-secondary"
+            className="rounded-full border border-hairline bg-surface px-2.5 py-0.5 font-mono text-label-dense text-ink-secondary"
           >
             {a}
           </span>

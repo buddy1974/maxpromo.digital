@@ -50,7 +50,7 @@ const initialForm: FormData = {
   system: '',
 }
 
-const SECTION_PADDING = 'clamp(4.5rem, 8vw, 8.75rem) 2rem'
+const SECTION_PADDING = 'var(--section-y) var(--section-x)'
 
 export default function ContactPage() {
   const t = useTranslations('contact')
@@ -121,11 +121,11 @@ export default function ContactPage() {
 
   if (status === 'success') {
     return (
-      <main className="min-h-[70vh] bg-[var(--color-bg)]" style={{ padding: SECTION_PADDING }}>
-        <div role="status" className="mx-auto max-w-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-12 text-center rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
+      <main className="min-h-[70vh] bg-[var(--brand-background)]" style={{ padding: SECTION_PADDING }}>
+        <div role="status" className="mx-auto max-w-xl border border-[var(--brand-border)] bg-[var(--brand-background)] p-12 text-center rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)]">
           <p className="mb-4 text-[var(--semantic-success)]"><Icon name="check" size="lg" /></p>
           <h1 className="mb-3">{t('successTitle')}</h1>
-          <p className="mb-8 text-[var(--color-text-secondary)]">{t('successDesc')}</p>
+          <p className="mb-8 text-[var(--brand-text-secondary)]">{t('successDesc')}</p>
           <button
             type="button"
             onClick={() => {
@@ -142,8 +142,8 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="bg-[var(--color-bg)]">
-      <section className="border-b border-[var(--color-border)] text-center bg-[var(--color-bg)]" style={{ padding: SECTION_PADDING }}>
+    <main className="bg-[var(--brand-background)]">
+      <section className="border-b border-[var(--brand-border)] text-center bg-[var(--brand-background)]" style={{ padding: SECTION_PADDING }}>
         {contextSystem ? (
           <>
             {/* Small contextual banner only, no product bullets, workflow or screenshots here.
@@ -154,7 +154,7 @@ export default function ContactPage() {
             <h1 className="mb-5">
               {t(`systems.${contextSystem}.title`)}
             </h1>
-            <p className="mx-auto max-w-2xl text-[17px] leading-7 text-[var(--color-text-secondary)]">
+            <p className="mx-auto max-w-2xl text-body leading-7 text-[var(--brand-text-secondary)]">
               {t(`systems.${contextSystem}.subtitle`)}
             </p>
           </>
@@ -166,15 +166,15 @@ export default function ContactPage() {
             <h1 className="mb-5">
               {t('title')}
             </h1>
-            <p className="mx-auto max-w-2xl text-[17px] leading-7 text-[var(--color-text-secondary)]">{t('subtitle')}</p>
+            <p className="mx-auto max-w-2xl text-body leading-7 text-[var(--brand-text-secondary)]">{t('subtitle')}</p>
           </>
         )}
       </section>
 
-      <section className="bg-[var(--color-bg-section)]" style={{ padding: SECTION_PADDING }}>
+      <section className="bg-[var(--brand-surface-subtle)]" style={{ padding: SECTION_PADDING }}>
         <form
           onSubmit={handleSubmit}
-          className="mx-auto flex max-w-2xl flex-col gap-6 border border-[var(--color-border)] bg-[var(--color-bg)] p-6 md:p-12 rounded-[var(--radius-card)] shadow-[var(--shadow-card)]"
+          className="mx-auto flex max-w-2xl flex-col gap-6 border border-[var(--brand-border)] bg-[var(--brand-background)] p-6 md:p-12 rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)]"
         >
           <FormStatus tone="critical">
             {status === 'error' ? errorMessage : null}
@@ -241,18 +241,18 @@ export default function ContactPage() {
             <legend className="mb-1 h-card">
               {t('painPointsTitle')}
             </legend>
-            <p className="mb-4 text-sm text-[var(--color-text-secondary)]">{t('painPointsOptional')}</p>
+            <p className="mb-4 text-sm text-[var(--brand-text-secondary)]">{t('painPointsOptional')}</p>
             <div className="grid gap-3 sm:grid-cols-2">
               {CONTACT_PAIN_POINTS.map((painPoint) => (
                 <label
                   key={painPoint}
-                  className="flex cursor-pointer items-start gap-3 text-sm text-[var(--color-text-secondary)]"
+                  className="flex cursor-pointer items-start gap-3 text-sm text-[var(--brand-text-secondary)]"
                 >
                   <input
                     type="checkbox"
                     checked={form.painPoints.includes(painPoint)}
                     onChange={() => togglePainPoint(painPoint)}
-                    className="mt-0.5 accent-[var(--color-primary)]"
+                    className="mt-0.5 accent-[var(--brand-primary)]"
                   />
                   {t(`painPoints.${painPoint}`)}
                 </label>
@@ -269,11 +269,11 @@ export default function ContactPage() {
               context="Contact message"
               textareaStyle={{
                 width: '100%',
-                border: '1px solid var(--color-border)',
-                background: 'var(--color-bg)',
-                borderRadius: 'var(--radius-card)',
+                border: '1px solid var(--brand-border)',
+                background: 'var(--brand-background)',
+                borderRadius: 'var(--radius-lg)',
                 padding: '14px 16px',
-                color: 'var(--color-text-primary)',
+                color: 'var(--brand-text)',
               }}
             />
           </Field>
@@ -286,7 +286,7 @@ export default function ContactPage() {
           >
             {status === 'loading' ? t('formCtaSending') : t('formCta')}
           </button>
-          <p className="text-center font-mono text-[12px] text-[var(--color-text-secondary)]">{t('formPrivacy')}</p>
+          <p className="text-center font-mono text-[12px] text-[var(--brand-text-secondary)]">{t('formPrivacy')}</p>
         </form>
       </section>
     </main>

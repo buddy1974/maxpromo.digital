@@ -47,15 +47,15 @@ export function Faq({ faq, locale }: FaqProps) {
                   className={`${INTERACTIVE_LINK_CLASSES} rounded-sm`}
                   style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1.25rem 4px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
                 >
-                  <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '16px', color: isOpen ? 'var(--showcase-fg)' : 'var(--showcase-muted)', letterSpacing: '-0.01em', lineHeight: 1.4, transition: 'color 200ms ease' }}>
+                  <span style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: '16px', color: isOpen ? 'var(--showcase-fg)' : 'var(--showcase-muted)', letterSpacing: '-0.01em', lineHeight: 1.4, transition: 'color 200ms ease' }}>
                     {item.question}
                   </span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '16px', color: isOpen ? 'var(--showcase-accent)' : 'var(--showcase-muted)', flexShrink: 0, display: 'inline-block', transform: isOpen ? 'rotate(45deg)' : 'none', transition: 'transform 200ms ease, color 200ms ease' }}>
+                  <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '16px', color: isOpen ? 'var(--showcase-accent)' : 'var(--showcase-muted)', flexShrink: 0, display: 'inline-block', transform: isOpen ? 'rotate(45deg)' : 'none', transition: 'transform 200ms ease, color 200ms ease' }}>
                     +
                   </span>
                 </button>
                 {isOpen && (
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--showcase-muted)', lineHeight: 1.8, padding: '0 4px 1.25rem', margin: 0 }}>
+                  <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--showcase-muted)', lineHeight: 1.8, padding: '0 4px 1.25rem', margin: 0 }}>
                     {item.answer}
                   </p>
                 )}

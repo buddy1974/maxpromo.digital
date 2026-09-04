@@ -66,10 +66,11 @@ export default function CookieBanner() {
         right: '1.5rem',
         maxWidth: '480px',
         background: 'var(--brand-surface-subtle)',
-        borderLeft: '3px solid var(--brand-primary)',
-        border: '1px solid color-mix(in srgb, var(--brand-surface) 8%, transparent)',
+        // Longhands after the shorthand, not before it: the shorthand used to
+        // sit between the two borderLeft declarations and reset the first.
+        border: '1px solid var(--brand-border-strong)',
         borderLeftWidth: '3px',
-        borderLeftColor: 'var(--brand-primary)',
+        borderLeftColor: 'var(--brand-primary-edge)',
         padding: '1rem 1.25rem',
         zIndex: 9999,
         display: 'flex',
@@ -80,8 +81,8 @@ export default function CookieBanner() {
       <div style={{ flex: 1 }}>
         <p
           style={{
-            fontFamily: 'var(--font-inter)',
-            fontSize: '13px',
+            fontFamily: 'var(--brand-font-body)',
+            fontSize: 'var(--text-micro)',
             color: 'var(--brand-text)',
             margin: 0,
             lineHeight: '1.6',
@@ -107,8 +108,8 @@ export default function CookieBanner() {
           padding: '0.65rem 1.1rem',
           minWidth: '44px',
           minHeight: '44px',
-          fontFamily: 'var(--font-roboto-mono)',
-          fontSize: '11px',
+          fontFamily: 'var(--brand-font-mono)',
+          fontSize: 'var(--text-label)',
           fontWeight: 700,
           letterSpacing: '0.05em',
           cursor: 'pointer',

@@ -16,7 +16,7 @@ export default function LeadsPage() {
                 <p className="text-sm text-ink">{c.name}</p>
                 <p className="text-xs text-ink-muted">{c.companyName ?? "—"} · {c.role ?? ""}</p>
               </div>
-              <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted">
+              <span className="font-mono text-label uppercase tracking-[0.12em] text-ink-muted">
                 {c.status}
               </span>
             </li>

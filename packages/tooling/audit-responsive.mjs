@@ -4,10 +4,17 @@
  *
  * Static responsive audit across every application.
  *
- * Checks the two failure modes that actually ship: a multi-column grid with no
- * single-column state, and a fixed width wider than a phone viewport. Both are
- * invisible on a desktop and obvious on a phone, which is why they survive
- * review.
+ * Checks the failure modes that actually ship: a multi-column grid with no
+ * single-column state, a fixed width wider than a phone viewport, and a
+ * section padding invented at the call site. The first two are invisible on a
+ * desktop and obvious on a phone, which is why they survive review.
+ *
+ * The third is invisible everywhere except side by side. The design system
+ * defines exactly three section rhythms and says a section not using one fails
+ * review; the rule was written in three documents and checked in none, and the
+ * public site shipped five ad-hoc clamps and used a token in one place. Two of
+ * them sat next to each other on the homepage — 140px of padding above a
+ * section and 112px below it — which no single screenshot shows.
  *
  *   node packages/tooling/audit-responsive.mjs
  */
@@ -35,6 +42,13 @@ const rel = (p) => relative(ROOT, p).split(sep).join('/')
 const apps = existsSync(join(ROOT, 'apps')) ? readdirSync(join(ROOT, 'apps')) : []
 const scanRoots = [...apps.map((a) => join(ROOT, 'apps', a)), join(ROOT, 'packages')]
 const files = scanRoots.flatMap((r) => walk(r))
+
+// ADR-0004: a check that resolved nothing must not report clean.
+if (files.length === 0) {
+  console.error('responsive: no files found under ' + ROOT)
+  console.error('Refusing to report clean without having checked anything.')
+  process.exit(1)
+}
 
 const findings = []
 let gridsChecked = 0
@@ -98,7 +112,47 @@ for (const f of files.filter((f) => /\.tsx?$/.test(f))) {
   }
 }
 
+// ── Section rhythm: three, and no fourth ────────────────────────────────────
+// A section padding is a clamp whose upper bound reaches the section scale.
+// Anything smaller is a card or a panel and is none of this rule's business.
+const SECTION_SCALE_REM = 4
+const upperRem = (value) => {
+  const rems = [...value.matchAll(/(\d+(?:\.\d+)?)rem/g)].map((m) => parseFloat(m[1]))
+  return rems.length ? Math.max(...rems) : 0
+}
+const offRhythm = (value) =>
+  value.includes('clamp(') && !value.includes('var(--section-y') && upperRem(value) >= SECTION_SCALE_REM
+
+const PAD_PROP = /padding(?:Block|Top|Bottom|-block|-top|-bottom)?\s*:\s*'([^']+)'/g
+const PAD_CONST = /\b[A-Za-z_]*PADDING[A-Za-z_]*\s*=\s*'([^']+)'/g
+const PAD_CSS = /padding(?:-block|-top|-bottom)?\s*:\s*([^;{}]*clamp\([^;{}]*)/g
+let rhythmsChecked = 0
+
+for (const f of files) {
+  const r = rel(f)
+  if (r.startsWith('packages/design-tokens/')) continue
+  if (/\.(tsx?|css)$/.test(r) === false) continue
+  const src = readFileSync(f, 'utf8')
+  const res = r.endsWith('.css') ? [PAD_CSS] : [PAD_PROP, PAD_CONST]
+  for (const re of res) {
+    re.lastIndex = 0
+    let m
+    while ((m = re.exec(src)) !== null) {
+      const value = m[1].trim()
+      if (!value.includes('clamp(')) continue
+      rhythmsChecked++
+      if (offRhythm(value)) {
+        findings.push({
+          file: r,
+          issue: `section padding "${value}" is not one of the three rhythms (--section-y, --section-y-compact, --section-y-feature)`,
+        })
+      }
+    }
+  }
+}
+
 console.log(`multi-column grids checked : ${gridsChecked}`)
+console.log(`section paddings checked   : ${rhythmsChecked}`)
 console.log(`media queries found        : ${queriesFound}`)
 console.log(`narrowest supported viewport: ${NARROWEST}px\n`)
 

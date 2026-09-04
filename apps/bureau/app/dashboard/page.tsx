@@ -115,7 +115,7 @@ export default async function DashboardOverviewPage() {
                     <p className="text-sm text-ink">{a.name}</p>
                     <p className="text-xs text-ink-muted">{a.role}</p>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-secondary">{a.status}</span>
+                  <span className="font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">{a.status}</span>
                 </li>
               ))}
             </ul>

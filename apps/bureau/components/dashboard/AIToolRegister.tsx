@@ -19,10 +19,10 @@ export function AIToolRegister({ tools }: { tools: AIToolRegisterItem[] }) {
       <table className="w-full text-left text-sm">
         <thead className="border-b border-hairline text-ink-muted">
           <tr>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Tool</th>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Kategorie</th>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Status</th>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Hinweis</th>
+            <th className="px-4 py-3 font-mono text-label-dense uppercase tracking-[0.12em]">Tool</th>
+            <th className="px-4 py-3 font-mono text-label-dense uppercase tracking-[0.12em]">Kategorie</th>
+            <th className="px-4 py-3 font-mono text-label-dense uppercase tracking-[0.12em]">Status</th>
+            <th className="px-4 py-3 font-mono text-label-dense uppercase tracking-[0.12em]">Hinweis</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-hairline">
@@ -31,7 +31,7 @@ export function AIToolRegister({ tools }: { tools: AIToolRegisterItem[] }) {
               <td className="px-4 py-3 font-medium text-ink">{t.name}</td>
               <td className="px-4 py-3 text-ink-secondary">{t.category}</td>
               <td className="px-4 py-3">
-                <span className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${TONE_BADGE[STATUS_STYLE_TONE(t.status)]}`}>
+                <span className={`rounded-full border px-2.5 py-0.5 font-mono text-label-dense uppercase tracking-[0.12em] ${TONE_BADGE[STATUS_STYLE_TONE(t.status)]}`}>
                   {STATUS_LABEL[t.status]}
                 </span>
               </td>

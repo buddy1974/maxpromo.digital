@@ -56,7 +56,7 @@ export function AILabClient() {
   return (
     <div className="space-y-6">
       <div className="rounded-lg border border-accent/30 bg-accent-soft p-5">
-        <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+        <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
           AI Lab — Draft Mode
         </p>
         <p className="mt-2 text-sm text-ink-secondary">
@@ -122,14 +122,14 @@ export function AILabClient() {
           <p className="mt-2 text-sm text-ink-secondary">{result.summary}</p>
 
           <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+            <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
               Entwurf (nicht gesendet)
             </p>
             <p className="mt-2 whitespace-pre-wrap text-sm text-ink">{result.draft}</p>
           </div>
 
           <div className="mt-4 border-t border-hairline pt-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+            <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
               Empfohlene nächste Aktion
             </p>
             <p className="mt-1 text-sm text-ink-secondary">{result.recommendedNextAction}</p>

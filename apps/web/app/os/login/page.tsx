@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { OsLocaleProvider, useOsLocale } from '@/lib/os-i18n/context'
 import { LanguageSwitcher } from '@/components/os/LanguageSwitcher'
 
-const mono = 'var(--font-roboto-mono)'
-const sans = 'var(--font-inter)'
+const mono = 'var(--brand-font-mono)'
+const sans = 'var(--brand-font-body)'
 
 /**
  * Inner form component — uses useSearchParams() to read the ?returnTo
@@ -58,7 +58,7 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}>
-      <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
+      <label style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
         {t.login.accessCode}
       </label>
 
@@ -100,7 +100,7 @@ function LoginForm() {
           color: 'var(--brand-on-primary)',
           fontFamily: sans,
           fontWeight: 700,
-          fontSize: '13px',
+          fontSize: 'var(--text-micro)',
           padding: '10px 20px',
           cursor: loading || !password ? 'not-allowed' : 'pointer',
           opacity: loading || !password ? 0.6 : 1,
@@ -130,10 +130,10 @@ function LoginShell({ children }: { children: React.ReactNode }) {
       flexDirection: 'column',
     }}>
       <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-        <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 700, color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: 0 }}>
+        <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: 0 }}>
           {t.login.brand}
         </p>
-        <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)', margin: '8px 0 0' }}>
+        <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)', margin: '8px 0 0' }}>
           {t.login.tagline}
         </p>
       </div>

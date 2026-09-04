@@ -59,14 +59,14 @@ export default async function AuditConsolePage() {
         <section className="rounded-lg border border-hairline bg-surface p-6 shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+              <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
                 Geschäfts-Check · {session.industry ?? "—"}
               </p>
               <h2 className="mt-1 text-xl font-semibold text-ink">{session.businessName}</h2>
             </div>
             <div className="text-right">
               <p className="text-3xl font-semibold text-ink-secondary">{session.priorityScore}</p>
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">Prioritäts-Score</p>
+              <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">Prioritäts-Score</p>
             </div>
           </div>
         </section>

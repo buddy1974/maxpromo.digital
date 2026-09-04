@@ -29,7 +29,7 @@ export default async function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Brand mark */}
         <div className="mb-8 flex flex-col items-center gap-2">
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-ink-secondary">
+          <span className="font-mono text-label-dense uppercase tracking-[0.22em] text-ink-secondary">
             {"maxpromo digital"}
           </span>
           <h1 className="text-2xl font-semibold tracking-tight text-ink">
@@ -46,7 +46,7 @@ export default async function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-ink-muted">
+        <p className="mt-6 text-center font-mono text-label-dense uppercase tracking-[0.16em] text-ink-muted">
           Maxpromo Digital · Essen · §19 UStG
         </p>
       </div>

@@ -12,7 +12,7 @@ const TREND_ICON = { up: "trendUp", down: "trendDown", flat: "trendFlat" } as co
 export function MetricCard({ metric }: { metric: DashboardMetric }) {
   return (
     <div className="rounded-xl border border-hairline bg-surface p-5 shadow-sm">
-      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-muted">
+      <p className="font-mono text-label uppercase tracking-[0.14em] text-ink-muted">
         {metric.label}
       </p>
       <div className="mt-3 flex items-baseline gap-2">

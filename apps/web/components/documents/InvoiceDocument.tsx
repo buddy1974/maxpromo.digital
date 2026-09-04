@@ -66,13 +66,13 @@ export function InvoiceDocument({ invoice, withFilename, toolbar }: InvoiceDocum
         />
 
         {hasAnz && invoice.anzahlung_date && (
-          <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-muted)', fontStyle: 'italic', margin: '14px 0 0' }}>
+          <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', fontStyle: 'italic', margin: '14px 0 0' }}>
             {t.depositThanks(fmtCurrency(Number(invoice.anzahlung), invoice.currency), fmtDocDate(invoice.anzahlung_date, invoice.language))}
           </p>
         )}
 
-        <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', margin: '14px 0 0' }}>{BUSINESS.vatClause[invoice.language ?? 'de']}</p>
-        {invoice.notes && <p style={{ fontSize: '13px', color: 'var(--brand-text-muted)', margin: '12px 0 0', fontStyle: 'italic' }}>{invoice.notes}</p>}
+        <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', margin: '14px 0 0' }}>{BUSINESS.vatClause[invoice.language ?? 'de']}</p>
+        {invoice.notes && <p style={{ fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)', margin: '12px 0 0', fontStyle: 'italic' }}>{invoice.notes}</p>}
       </div>
 
       {/* Payment */}

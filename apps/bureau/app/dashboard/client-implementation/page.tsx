@@ -21,7 +21,7 @@ export default function ClientImplementationPage() {
     <DashboardShell title="Client Implementation">
       <div className="space-y-6">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+          <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
             Concierge / Manuelle Lieferung
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
@@ -39,10 +39,10 @@ export default function ClientImplementationPage() {
                 <p className="text-xs text-ink-muted">{c.industry}</p>
               </div>
               <div className="text-right">
-                <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_TEXT[PRIORITY_TONE_MAP[c.implementationPriority]]}`}>
+                <span className={`font-mono text-label uppercase tracking-[0.12em] ${TONE_TEXT[PRIORITY_TONE_MAP[c.implementationPriority]]}`}>
                   Priorität {c.implementationPriority}
                 </span>
-                <p className="mt-1 font-mono text-[11px] text-ink-muted">
+                <p className="mt-1 font-mono text-label text-ink-muted">
                   {HANDOVER_LABEL[c.handoverStatus]}
                 </p>
               </div>
@@ -58,13 +58,13 @@ export default function ClientImplementationPage() {
             </div>
 
             <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+              <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
                 Manuelle Service-Notiz
               </p>
               <p className="mt-1 text-sm text-ink-secondary">{c.manualServiceNotes}</p>
             </div>
 
-            <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted">
+            <p className="mt-3 font-mono text-label uppercase tracking-[0.12em] text-ink-muted">
               Wartungsbereit: {c.maintenanceReady ? "ja" : "noch nicht"}
             </p>
           </div>
@@ -77,7 +77,7 @@ export default function ClientImplementationPage() {
 function Block({ label, items, mono }: { label: string; items: string[]; mono?: boolean }) {
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">{label}</p>
+      <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">{label}</p>
       <ul className="mt-1 space-y-1">
         {items.map((it, i) => (
           <li key={i} className={`text-sm ${mono ? "font-mono text-xs text-ink-secondary" : "text-ink-secondary"}`}>

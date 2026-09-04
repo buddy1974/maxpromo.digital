@@ -37,7 +37,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
             </p>
           </div>
           {t.isOverdue && (
-            <span className={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] ${TONE_BADGE.critical}`}>
+            <span className={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-label-dense uppercase tracking-[0.12em] ${TONE_BADGE.critical}`}>
               Überfällig
             </span>
           )}

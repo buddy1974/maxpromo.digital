@@ -88,31 +88,31 @@ const mdxComponents = {
     <h3 className="h-card" style={{ marginTop: '2rem', marginBottom: '0.5rem' }} {...props} />
   ),
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p style={{ fontFamily: 'var(--font-body)', fontSize: '18px', color: 'var(--color-text-secondary)', lineHeight: 1.75, marginBottom: '1.25rem', marginTop: 0 }} {...props} />
+    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '18px', color: 'var(--brand-text-secondary)', lineHeight: 1.75, marginBottom: '1.25rem', marginTop: 0 }} {...props} />
   ),
   ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul style={{ paddingLeft: '1.5rem', marginBottom: '1.25rem', color: 'var(--color-text-secondary)' }} {...props} />
+    <ul style={{ paddingLeft: '1.5rem', marginBottom: '1.25rem', color: 'var(--brand-text-secondary)' }} {...props} />
   ),
   ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol style={{ paddingLeft: '1.5rem', marginBottom: '1.25rem', color: 'var(--color-text-secondary)' }} {...props} />
+    <ol style={{ paddingLeft: '1.5rem', marginBottom: '1.25rem', color: 'var(--brand-text-secondary)' }} {...props} />
   ),
   li: (props: React.HTMLAttributes<HTMLLIElement>) => (
-    <li style={{ fontFamily: 'var(--font-body)', fontSize: '18px', lineHeight: 1.75, marginBottom: '0.35rem' }} {...props} />
+    <li style={{ fontFamily: 'var(--brand-font-body)', fontSize: '18px', lineHeight: 1.75, marginBottom: '0.35rem' }} {...props} />
   ),
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
-    <blockquote style={{ borderLeft: '2px solid var(--color-primary)', paddingLeft: '1.25rem', marginLeft: 0, marginRight: 0, marginBottom: '1.5rem', color: 'var(--color-text-secondary)', fontStyle: 'italic' }} {...props} />
+    <blockquote style={{ borderLeft: '2px solid var(--brand-primary-edge)', paddingLeft: '1.25rem', marginLeft: 0, marginRight: 0, marginBottom: '1.5rem', color: 'var(--brand-text-secondary)', fontStyle: 'italic' }} {...props} />
   ),
   code: (props: React.HTMLAttributes<HTMLElement>) => (
-    <code style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', background: 'var(--color-bg-section)', padding: '2px 6px', color: 'var(--color-text-primary)', borderRadius: '4px' }} {...props} />
+    <code style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', background: 'var(--brand-surface-subtle)', padding: '2px 6px', color: 'var(--brand-text)', borderRadius: '4px' }} {...props} />
   ),
   pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
-    <pre style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', padding: '1.25rem', overflow: 'auto', marginBottom: '1.5rem' }} {...props} />
+    <pre style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', overflow: 'auto', marginBottom: '1.5rem' }} {...props} />
   ),
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }} {...props} />
   ),
   strong: (props: React.HTMLAttributes<HTMLElement>) => (
-    <strong style={{ color: 'var(--color-text-primary)', fontWeight: 700 }} {...props} />
+    <strong style={{ color: 'var(--brand-text)', fontWeight: 700 }} {...props} />
   ),
 
   // Inline article CTA block, placed in MDX above "Continue reading"
@@ -124,14 +124,14 @@ const mdxComponents = {
         : 'Hi, I would like to contact Maxpromo.'
     )
     return (
-      <div style={{ background: 'var(--color-bg-section)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: 'var(--radius-card)', padding: '2rem', margin: '2.5rem 0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: 'var(--radius-lg)', padding: '2rem', margin: '2.5rem 0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
           {l === 'de' ? 'Kontakt' : 'Contact'}
         </p>
         <h3 style={{ margin: 0 }}>
           {l === 'de' ? 'Noch eine alte Website im Einsatz?' : 'Still running an old website?'}
         </h3>
-        <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.65, margin: 0 }}>
+        <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.65, margin: 0 }}>
           {l === 'de'
             ? 'Zeigen Sie uns Ihre aktuelle Website, Ihr CMS, Ihren Workflow oder manuellen Prozess. Wir identifizieren, was modernisiert, automatisiert oder transformiert werden kann.'
             : 'Show us your current website, CMS, workflow, online shop or manual process. We identify what can be modernized, automated or transformed.'}
@@ -144,7 +144,7 @@ const mdxComponents = {
             href={`https://wa.me/${wa}?text=${msg}`}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '13px', letterSpacing: '0.02em', background: THIRD_PARTY.whatsappTint, color: 'var(--brand-text-inverted)', border: '1px solid ${THIRD_PARTY.whatsappTint}', padding: '13px 24px', borderRadius: 'var(--radius-card)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
+            style={{ fontFamily: 'var(--brand-font-mono)', fontWeight: 600, fontSize: 'var(--text-micro)', letterSpacing: '0.02em', background: THIRD_PARTY.whatsappTint, color: 'var(--brand-text-inverted)', border: '1px solid ${THIRD_PARTY.whatsappTint}', padding: '13px 24px', borderRadius: 'var(--radius-lg)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
           >
             WhatsApp Maxpromo →
           </a>
@@ -217,7 +217,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main style={{ background: 'var(--color-bg)', minHeight: '100vh', paddingTop: 'clamp(5rem, 10vw, 8rem)', paddingBottom: '6rem' }}>
+      <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--section-y)', paddingBottom: '6rem' }}>
 
         {/* ─────────────────────────────────────────────── */}
         {/* 1. HERO                                         */}
@@ -226,14 +226,14 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
           <Link
             href="/blog"
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', display: 'inline-block', marginBottom: '2.5rem' }}
+            style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', display: 'inline-block', marginBottom: '2.5rem' }}
           >
             {t('backToAll')}
           </Link>
 
           {/* Category eyebrow */}
           {(post.category ?? post.tags[0]) && (
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px', marginTop: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px', marginTop: 0 }}>
               {post.category ?? post.tags[0]}
             </p>
           )}
@@ -244,17 +244,17 @@ export default async function BlogDetailPage({ params }: PageProps) {
           </h1>
 
           {/* Meta row: date · read time · author */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap', paddingBottom: '2rem', borderBottom: '1px solid var(--color-border)', marginBottom: '2.5rem' }}>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap', paddingBottom: '2rem', borderBottom: '1px solid var(--brand-border)', marginBottom: '2.5rem' }}>
+            <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
               {t('publishedOn')} {post.publishedAt}
             </span>
             {post.readTime && (
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
+              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                 {post.readTime} {t('readTimeMin')}
               </span>
             )}
             {post.author && (
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
+              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                 {t('authorBy')} {post.author}
               </span>
             )}
@@ -270,12 +270,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
           {post.excerpt && (
             <p
               style={{
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'var(--brand-font-body)',
                 fontSize: '18px',
-                color: 'var(--color-text-secondary)',
+                color: 'var(--brand-text-secondary)',
                 lineHeight: 1.7,
                 marginBottom: '2rem',
-                borderLeft: '2px solid var(--color-primary)',
+                borderLeft: '2px solid var(--brand-primary-edge)',
                 paddingLeft: '1.25rem',
                 marginTop: 0,
               }}
@@ -291,8 +291,8 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 aspectRatio: '16/9',
                 overflow: 'hidden',
                 marginBottom: '2.5rem',
-                borderRadius: 'var(--radius-card)',
-                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid var(--brand-border)',
               }}
             >
               <Image
@@ -334,7 +334,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             <h2 style={{ margin: 0 }}>
               {t('ctaBlockTitle')}
             </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.65, margin: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.65, margin: 0 }}>
               {t('ctaBlockBody')}
             </p>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '4px' }}>
@@ -351,8 +351,8 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {/* ─────────────────────────────────────────────── */}
         {/* 5. RELATED SERVICES, 3 service tiles           */}
         {/* ─────────────────────────────────────────────── */}
-        <section style={{ borderTop: '1px solid var(--color-border)', paddingTop: '4rem', paddingBottom: '4rem' }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', padding: '0 2rem' }}>
+        <section style={{ borderTop: '1px solid var(--brand-border)', paddingTop: '4rem', paddingBottom: '4rem' }}>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '0 2rem' }}>
             <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px', marginTop: 0 }}>
               {t('relatedServicesEyebrow')}
             </p>
@@ -360,7 +360,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
               {t('relatedServicesTitle')}
             </h2>
             <div
-              style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }}
+              style={{ display: 'grid', gap: '1px', background: 'var(--brand-border)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}
               className="grid-cols-1 md:grid-cols-3"
             >
               {SERVICES.map(({ key, href }) => (
@@ -372,7 +372,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                   <div
                     className="service-card"
                     style={{
-                      background: 'var(--color-bg)',
+                      background: 'var(--brand-background)',
                       padding: '2rem',
                       display: 'flex',
                       flexDirection: 'column',
@@ -384,10 +384,10 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     <h3 className="h-card" style={{ margin: 0 }}>
                       {t(`${key}Title` as Parameters<typeof t>[0])}
                     </h3>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.65, margin: 0, flex: 1 }}>
+                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.65, margin: 0, flex: 1 }}>
                       {t(`${key}Desc` as Parameters<typeof t>[0])}
                     </p>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em', marginTop: 'auto' }}>
+                    <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em', marginTop: 'auto' }}>
                       {t(`${key}Cta` as Parameters<typeof t>[0])}
                     </span>
                   </div>
@@ -400,7 +400,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {/* ─────────────────────────────────────────────── */}
         {/* 7. WHATSAPP CTA                                 */}
         {/* ─────────────────────────────────────────────── */}
-        <section style={{ background: 'var(--color-bg-section)', borderTop: '1px solid var(--color-border)', padding: '4rem 2rem' }}>
+        <section style={{ background: 'var(--brand-surface-subtle)', borderTop: '1px solid var(--brand-border)', padding: '4rem 2rem' }}>
           <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
             <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px', marginTop: 0 }}>
               {t('whatsappEyebrow')}

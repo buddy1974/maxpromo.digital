@@ -71,6 +71,12 @@ const RANGES = [
   [0x2500, 0x257f], // box drawing
   [0x25a0, 0x25ff], // geometric shapes
   [0x2600, 0x27bf], // symbols and dingbats
+  // 0x27c0-0x2aff was the gap. It holds Supplemental Arrows-A and -B, Braille
+  // (whose patterns are a common spinner), and the mathematical symbol blocks.
+  // The sweep that retired 36 marks did not reach it, and fourteen uses of the
+  // rotation arrow U+27F3 survived — twelve of them frozen into the internal
+  // OS translation strings, where a label carries an icon it cannot restyle.
+  [0x27c0, 0x2aff], // supplemental arrows, braille, mathematical symbols
   [0x2b00, 0x2bff], // more arrows and shapes
   [0x1f300, 0x1faff], // emoji
 ]

@@ -10,7 +10,7 @@ export default function OperatingModelPage() {
     <DashboardShell title="Operating Model">
       <div className="space-y-8">
         <section className="rounded-lg border border-hairline bg-surface p-6 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+          <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
             Produkt-Backbone
           </p>
           <h2 className="mt-2 text-xl font-semibold text-ink">
@@ -28,7 +28,7 @@ export default function OperatingModelPage() {
             {OPERATING_STAGES.map((stage, i) => (
               <li key={stage.key} className="flex items-center gap-2 md:flex-1">
                 <div className="flex-1 rounded-lg border border-hairline bg-surface px-3 py-2 shadow-sm">
-                  <span className="font-mono text-[10px] text-ink-secondary">
+                  <span className="font-mono text-label-dense text-ink-secondary">
                     {String(stage.order).padStart(2, "0")}
                   </span>
                   <p className="mt-0.5 text-sm font-medium text-ink">{stage.name}</p>
@@ -83,7 +83,7 @@ export default function OperatingModelPage() {
             <ul className="space-y-2 text-sm">
               {AGENT_HIERARCHY.map((n) => (
                 <li key={n.role} className="flex gap-3">
-                  <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${n.reportsTo ? "text-ink-muted" : "text-ink-secondary"}`}>
+                  <span className={`font-mono text-label uppercase tracking-[0.12em] ${n.reportsTo ? "text-ink-muted" : "text-ink-secondary"}`}>
                     {n.reportsTo ? "└─" : <Icon name="dashboard" size="xs" />}
                   </span>
                   <span className="text-ink">{n.name}</span>
@@ -101,7 +101,7 @@ export default function OperatingModelPage() {
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">{label}</p>
+      <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">{label}</p>
       <p className="mt-0.5 text-sm text-ink-secondary">{value}</p>
     </div>
   );

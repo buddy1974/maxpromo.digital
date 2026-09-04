@@ -61,7 +61,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
           style={{
             fontFamily: 'var(--brand-font-sans)',
             fontWeight: 700,
-            fontSize: '13px',
+            fontSize: 'var(--text-micro)',
             letterSpacing: '0.14em',
             textTransform: 'uppercase',
             color: 'var(--showcase-fg)',
@@ -74,7 +74,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <span
             className="hidden sm:inline"
-            style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--showcase-muted)' }}
+            style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--showcase-muted)' }}
           >
             {domain}
           </span>

@@ -113,8 +113,19 @@ const ALLOW = [
  * separate times — in the internal OS, in Agent Bureau, and on the contact
  * form — each time through a different syntax. It is checked rather than
  * remembered. --brand-primary-text is the accessible one (5.00:1).
+ *
+ * The token is matched anywhere inside the property value, not only at its
+ * start. The first version of this rule required it to follow `color:`
+ * immediately, so a conditional walked straight past:
+ *
+ *     color: isOpen ? 'var(--brand-primary)' : 'var(--brand-text-secondary)'
+ *
+ * Four of those were live when the rule was widened — an FAQ marker on the
+ * homepage and three toggles in the internal OS — and the check had reported
+ * clean over every one. The scan window stops at the first `,`, `;` or `}`,
+ * so a legitimate accent fill later in the same style object is not swept in.
  */
-const ACCENT_TEXT = /text-\[var\(--(?:color|brand)-primary\)\]|(?<![-\w])(?:color|stroke):\s*'?var\(--(?:color|brand)-primary\)'?/g
+const ACCENT_TEXT = /text-\[var\(--(?:color|brand)-primary\)\]|(?<![-\w])(?:color|stroke)\s*:\s*[^;,}\n]*var\(--(?:color|brand)-primary\)/g
 
 /**
  * The accent bound to a local identifier.
@@ -130,6 +141,27 @@ const ACCENT_TEXT = /text-\[var\(--(?:color|brand)-primary\)\]|(?<![-\w])(?:colo
  * genuinely needs a semantic of its own, add one to the token package.
  */
 const ACCENT_ALIAS = /\b(?:const|let|var)\s+\w+\s*(?::[^=]+)?=\s*'?"?var\(--(?:color|brand)-primary\)/g
+
+/**
+ * The accent bound to a *field* whose name says it is text.
+ *
+ * The rule above catches a `const`. It does not catch a style map, and a style
+ * map is where the site header's language toggle kept it:
+ *
+ *     const VARIANT_COLORS = { light: { hoverText: 'var(--color-primary)' } }
+ *     onMouseEnter={(e) => { e.currentTarget.style.color = colors.hoverText }}
+ *
+ * Hovering that control turned its label Brand Lime on white — 1.51:1, on
+ * every page of the site — and no rule here could see it: the binding is a
+ * property and the use is a DOM assignment two functions away.
+ *
+ * Flagging every property bound to the accent would be wrong, because
+ * `background`, `borderColor` and `fill` are what the accent is for. So the
+ * rule keys on the name claiming to be text: a field called `hoverText` or
+ * `inkActive` holding a fill-only token is a contradiction on its face,
+ * wherever it is eventually applied.
+ */
+const ACCENT_TEXT_FIELD = /(?<![-\w])\w*(?:[Tt]ext|[Ii]nk|[Ff]oreground)\w*\s*:\s*'?"?var\(--(?:color|brand)-primary\)/g
 
 // A colour literal is not preceded by `&` (an HTML numeric entity such as
 // &#039;) or by a word character.
@@ -188,6 +220,7 @@ for (const dir of SCAN_DIRS) {
         [RGBA, 'rgba literal'],
         [ACCENT_TEXT, 'accent used as text (1.51:1)'],
         [ACCENT_ALIAS, 'accent aliased to a local name (hides it from the rule above)'],
+        [ACCENT_TEXT_FIELD, 'accent bound to a field named as text (1.51:1 wherever it lands)'],
       ]) {
         re.lastIndex = 0
         let m

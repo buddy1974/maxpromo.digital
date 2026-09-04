@@ -22,6 +22,16 @@
  *      broke where they wanted on a specific screen. They do not survive a
  *      font change and they are invisible to a reviewer.
  *
+ *   3. Weight 700 only below 14px. The token file states 700's single role —
+ *      the small uppercase mono label and the numeric, 10 to 12px at wide
+ *      tracking, where 600 disappears — and states that headings use 600,
+ *      because a heading at 700 is the startup voice this design brief
+ *      retired. The rule was written down and never checked, and every h1 and
+ *      h2 in the internal OS carried an inline 700 at 18 to 30px: forty-nine
+ *      declarations, in the application whose stylesheet says not to.
+ *      Print and email output is exempt — it is set in Arial for clients that
+ *      resolve no custom properties, and its weights are not this scale.
+ *
  * Everything else — the long tail of raw px sizes, and heading weights that
  * disagree with the token — is counted and printed, so the number moves in one
  * direction over time and a regression is visible in a diff.
@@ -81,8 +91,27 @@ function walk(dir, out = []) {
 }
 
 const SIZE_INLINE = /fontSize:\s*'([^']+)'/g
+
+/**
+ * Sizes that a weight rule can resolve. A clamp() heading is always above the
+ * label band, so it does not need a number here — anything not listed and not
+ * a plain px value is treated as a heading size.
+ */
+const SIZE_PX = {
+  'var(--text-label-dense)': 10,
+  'var(--text-label)': 11,
+  'var(--text-micro)': 13,
+  'var(--text-small)': 15,
+  'var(--text-body)': 17,
+  'var(--text-h4)': 17,
+  'var(--text-lede)': 19,
+}
+const LABEL_BAND_MAX = 13
+
+/** Documents and email are set for clients that resolve no custom properties. */
+const WEIGHT_EXEMPT = /(?:^|\/)(?:components\/documents|lib\/documents|lib\/email)/
 const SIZE_CLASS = /text-\[(\d+(?:\.\d+)?px)\]/g
-const WEIGHT = /fontWeight:\s*'?(\d{3}|bold)'?/g
+const WEIGHT = /fontWeight:\s*'?(\d{3}|bold|var\(--weight-[a-z]+\))'?/g
 
 const sizes = new Map()   // value -> { count, files:Set }
 const weights = new Map()
@@ -129,7 +158,22 @@ for (const dir of SCAN_DIRS) {
       }
       WEIGHT.lastIndex = 0
       let w
-      while ((w = WEIGHT.exec(line)) !== null) note(weights, w[1], rel)
+      while ((w = WEIGHT.exec(line)) !== null) {
+        note(weights, w[1], rel)
+        if (w[1] !== '700' && w[1] !== 'bold') continue
+        if (WEIGHT_EXEMPT.test(rel)) continue
+        // Pair the weight with the size on the same line. A style object that
+        // splits the two across lines is not resolved here and is not claimed
+        // to be; the rule reports what it can actually see.
+        SIZE_INLINE.lastIndex = 0
+        const sm = SIZE_INLINE.exec(line)
+        if (!sm) continue
+        const raw = sm[1]
+        const px = SIZE_PX[raw] ?? (/^(\d+(?:\.\d+)?)px$/.test(raw) ? parseFloat(raw) : Infinity)
+        if (px > LABEL_BAND_MAX) {
+          violations.push({ file: rel, line: i + 1, kind: 'weight 700 above the ' + LABEL_BAND_MAX + 'px label band', value: raw })
+        }
+      }
     })
   }
 }

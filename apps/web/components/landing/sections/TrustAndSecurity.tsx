@@ -64,13 +64,13 @@ export function TrustAndSecurity({ complianceNote, locale }: TrustAndSecurityPro
           {points.map((p, i) => (
             <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '1.25rem', border: CARD_BORDER, borderRadius: RADIUS.md }}>
               <span style={{ color: 'var(--showcase-muted)', flexShrink: 0, fontSize: '14px', marginTop: '2px' }}><Icon name="check" size="sm" /></span>
-              <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--showcase-fg)', lineHeight: 1.5 }}>{p}</span>
+              <span style={{ fontFamily: 'var(--brand-font-body)', fontSize: '14px', color: 'var(--showcase-fg)', lineHeight: 1.5 }}>{p}</span>
             </div>
           ))}
         </div>
 
         {complianceNote && (
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--showcase-muted)', marginTop: '1.5rem', lineHeight: 1.7 }}>
+          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--showcase-muted)', marginTop: '1.5rem', lineHeight: 1.7 }}>
             → {complianceNote}
           </p>
         )}

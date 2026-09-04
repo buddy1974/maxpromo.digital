@@ -13,7 +13,7 @@ function Paragraph({ de, en }: { de: string; en?: string }) {
       {en && (
         <>
           <br />
-          <span style={{ color: 'var(--color-text-secondary)', fontSize: '14px' }}>{en}</span>
+          <span style={{ color: 'var(--brand-text-secondary)', fontSize: '14px' }}>{en}</span>
         </>
       )}
     </p>
@@ -24,9 +24,9 @@ function Section({ para, label, children }: { para: string; label: string; child
   return (
     <div
       style={{
-        background: 'var(--color-bg-section)',
-        borderLeft: '3px solid var(--color-primary)',
-        borderRadius: 'var(--radius-card)',
+        background: 'var(--brand-surface-subtle)',
+        borderLeft: '3px solid var(--brand-primary-edge)',
+        borderRadius: 'var(--radius-lg)',
         padding: '1.75rem 2.25rem',
         marginBottom: '1.5rem',
       }}
@@ -45,10 +45,10 @@ function Section({ para, label, children }: { para: string; label: string; child
       </p>
       <p
         style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: '17px',
+          fontFamily: 'var(--brand-font-body)',
+          fontSize: 'var(--text-body)',
           fontWeight: 600,
-          color: 'var(--color-text-primary)',
+          color: 'var(--brand-text)',
           marginBottom: '12px',
         }}
       >
@@ -56,9 +56,9 @@ function Section({ para, label, children }: { para: string; label: string; child
       </p>
       <div
         style={{
-          color: 'var(--color-text-primary)',
+          color: 'var(--brand-text)',
           lineHeight: '1.8',
-          fontFamily: 'var(--font-body)',
+          fontFamily: 'var(--brand-font-body)',
           fontSize: '16px',
         }}
       >
@@ -70,13 +70,13 @@ function Section({ para, label, children }: { para: string; label: string; child
 
 export default function AgbPage() {
   return (
-    <main style={{ background: 'var(--color-bg)', minHeight: '100vh', paddingTop: '7rem', paddingBottom: '7rem' }}>
+    <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: '7rem', paddingBottom: '7rem' }}>
       <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 1.5rem' }}>
 
         <p
           style={{
             fontFamily: 'var(--brand-font-sans)',
-            fontSize: '13px',
+            fontSize: 'var(--text-micro)',
             color: 'var(--brand-text-secondary)',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
@@ -87,15 +87,15 @@ export default function AgbPage() {
         </p>
         <h1 style={{ marginBottom: '8px' }}>
           Allgemeine Geschäftsbedingungen
-          <span style={{ display: 'block', fontSize: '0.55em', color: 'var(--color-text-secondary)', fontWeight: 400, marginTop: '4px' }}>
+          <span style={{ display: 'block', fontSize: '0.55em', color: 'var(--brand-text-secondary)', fontWeight: 400, marginTop: '4px' }}>
             General Terms &amp; Conditions
           </span>
         </h1>
         <p
           style={{
-            fontFamily: 'var(--font-body)',
+            fontFamily: 'var(--brand-font-body)',
             fontSize: '16px',
-            color: 'var(--color-text-secondary)',
+            color: 'var(--brand-text-secondary)',
             marginBottom: '3rem',
           }}
         >
@@ -235,9 +235,9 @@ export default function AgbPage() {
 
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            color: 'var(--color-text-secondary)',
+            fontFamily: 'var(--brand-font-mono)',
+            fontSize: 'var(--text-label)',
+            color: 'var(--brand-text-secondary)',
             marginTop: '3rem',
             textAlign: 'center',
           }}

@@ -28,7 +28,7 @@ export function ActivityFeed({ items }: { items: ActivityLog[] }) {
             </p>
             {a.detail && <p className="text-xs text-ink-muted">{a.detail}</p>}
           </div>
-          <span className="shrink-0 font-mono text-[11px] text-ink-muted">
+          <span className="shrink-0 font-mono text-label text-ink-muted">
             {timeLabel(a.timestamp)}
           </span>
         </li>

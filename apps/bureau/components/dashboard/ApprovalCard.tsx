@@ -26,7 +26,7 @@ export function ApprovalCard({ proposal }: { proposal: AgentProposal }) {
       </dl>
 
       <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+        <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
           Audit-Trail (Vorschau)
         </p>
         <ul className="mt-2 space-y-1">
@@ -72,7 +72,7 @@ export function ApprovalCard({ proposal }: { proposal: AgentProposal }) {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+      <dt className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
         {label}
       </dt>
       <dd className="mt-0.5 text-ink-secondary">{value}</dd>

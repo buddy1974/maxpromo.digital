@@ -19,7 +19,7 @@ import { Link } from '@/i18n/navigation'
  * are removed.
  */
 
-const BORDER = 'var(--color-border)'
+const BORDER = 'var(--brand-border)'
 
 // =============================================================================
 // COPY — DE/EN inline, matching this file's existing convention throughout
@@ -162,7 +162,7 @@ const STYLES = `
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     width: 108px; height: 108px; border-radius: 50%;
-    background: var(--color-primary);
+    background: var(--brand-primary);
     text-align: center; padding: 8px; z-index: 2;
   }
   .hab-node {
@@ -172,8 +172,8 @@ const STYLES = `
   }
   .hab-node-icon {
     width: 40px; height: 40px; border-radius: 10px;
-    background: var(--color-bg); border: 1px solid ${BORDER};
-    box-shadow: var(--shadow-card);
+    background: var(--brand-background); border: 1px solid ${BORDER};
+    box-shadow: var(--shadow-sm);
     display: flex; align-items: center; justify-content: center;
     transition: border-color 200ms ease, transform 200ms ease;
   }
@@ -181,11 +181,11 @@ const STYLES = `
 
   .hab-workflow { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
   .hab-workflow::-webkit-scrollbar { height: 4px; }
-  .hab-workflow::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+  .hab-workflow::-webkit-scrollbar-thumb { background: var(--brand-border); border-radius: 4px; }
   .hab-step {
     scroll-snap-align: start; flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
-    background: var(--color-bg);
-    border: 1px solid var(--color-border); border-radius: 999px;
+    background: var(--brand-background);
+    border: 1px solid var(--brand-border); border-radius: 999px;
     padding: 10px 16px; white-space: nowrap;
   }
   .hab-step-gate {
@@ -195,14 +195,14 @@ const STYLES = `
   .hab-step-arrow { flex: 0 0 auto; color: color-mix(in srgb, var(--brand-primary) 45%, transparent); font-size: 13px; }
 
   .hab-tag {
-    display: inline-block; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.02em;
-    color: var(--color-text-secondary); background: var(--color-bg-section); border: 1px solid var(--color-border);
+    display: inline-block; font-family: var(--brand-font-mono); font-size: 11px; letter-spacing: 0.02em;
+    color: var(--brand-text-secondary); background: var(--brand-surface-subtle); border: 1px solid var(--brand-border);
     border-radius: 5px; padding: 2px 7px; margin: 8px 6px 0 0;
   }
   .hab-panel-featured .hab-tag { color: var(--brand-primary-text); background: color-mix(in srgb, var(--brand-primary) 8%, transparent); border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent); }
 
   .hab-panel { transition: transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out; }
-  .hab-panel:hover { transform: translateY(-3px); box-shadow: var(--shadow-elevated); }
+  .hab-panel:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
   .hab-panel-featured { border-width: 2px !important; }
 
   @media (min-width: 1024px) {
@@ -245,16 +245,16 @@ export function AgentBureauSection({ locale }: { locale: string }) {
   })
 
   return (
-    <section id="agent-bureau" data-section="agent-bureau" style={{ background: 'var(--color-bg-section)', padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem', borderTop: '1px solid var(--color-border)' }}>
+    <section id="agent-bureau" data-section="agent-bureau" style={{ background: 'var(--brand-surface-subtle)', padding: 'var(--section-y) var(--section-x)', borderTop: '1px solid var(--brand-border)' }}>
       <style>{STYLES}</style>
-      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
 
         {/* ─────────────────────────────────────────── HERO, two columns */}
         <div className="hab-hero" style={{ marginBottom: '4rem' }}>
 
           {/* LEFT — headline, copy, CTAs, trust note */}
           <div>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>
               {'Max Agent Bureau'}
             </p>
             <h2 style={{ marginBottom: '1.25rem', maxWidth: '30rem' }}>
@@ -262,7 +262,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 ? <>Ein KI-Team, das Arbeit <span>vorbereitet, koordiniert und ausführt.</span></>
                 : <>An AI team that <span>prepares, coordinates and executes work.</span></>}
             </h2>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.7, marginBottom: '2rem', maxWidth: '30rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, marginBottom: '2rem', maxWidth: '30rem' }}>
               {isDE
                 ? 'Agent Bureau prüft Abläufe, verteilt Aufgaben, bereitet Entscheidungen vor und führt freigegebene Aktionen über Ihre Systeme hinweg aus.'
                 : 'Agent Bureau audits your workflows, assigns tasks, prepares decisions, and executes approved actions across your business systems.'}
@@ -285,7 +285,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 <path d="m9 12 2 2 4-4" />
               </svg>
-              <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.01em', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.01em', lineHeight: 1.6, margin: 0 }}>
                 {isDE
                   ? 'Keine autonome Ausführung. Jede kritische Aktion bleibt freigabepflichtig.'
                   : 'No autonomous execution. Every critical action requires human approval.'}
@@ -312,7 +312,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 <circle cx="6" cy="6" r="3" /><circle cx="18" cy="6" r="3" /><circle cx="12" cy="18" r="3" />
                 <path d="M8.5 7.5 10.5 15.5M15.5 7.5 13.5 15.5M9 6h6" />
               </svg>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 700, color: 'var(--brand-text-inverted)', letterSpacing: '0.04em', marginTop: '6px', lineHeight: 1.25 }}>
+              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label-dense)', fontWeight: 700, color: 'var(--brand-text-inverted)', letterSpacing: '0.04em', marginTop: '6px', lineHeight: 1.25 }}>
                 AGENT<br />BUREAU
               </span>
             </div>
@@ -320,7 +320,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
             {nodes.map((node, i) => (
               <div key={node.key} className="hab-node" style={{ left: `${positions[i].x}%`, top: `${positions[i].y}%` }}>
                 <span className="hab-node-icon"><OrbitIcon name={node.key} /></span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.01em', lineHeight: 1.3 }}>
+                <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.01em', lineHeight: 1.3 }}>
                   {node.label}
                 </span>
               </div>
@@ -329,21 +329,21 @@ export function AgentBureauSection({ locale }: { locale: string }) {
         </div>
 
         {/* ─────────────────────────────────────────── WORKFLOW, compact connected strip */}
-        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--color-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
+        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
           {isDE ? 'Der Ablauf' : 'The workflow'}
         </p>
         <div className="hab-workflow" style={{ marginBottom: '3rem' }}>
           {flow.map((step, i) => (
             <div key={step.name} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div className={`hab-step${'gate' in step && step.gate ? ' hab-step-gate' : ''}`}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-primary-text)', flexShrink: 0 }}>
+                <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-primary-text)', flexShrink: 0 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span>
-                  <span style={{ display: 'block', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '14px', color: 'var(--color-text-primary)', lineHeight: 1.2 }}>
+                  <span style={{ display: 'block', fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: '14px', color: 'var(--brand-text)', lineHeight: 1.2 }}>
                     {step.name}
                   </span>
-                  <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: '12px', color: 'gate' in step && step.gate ? 'var(--brand-primary-text)' : 'var(--color-text-secondary)', lineHeight: 1.3 }}>
+                  <span style={{ display: 'block', fontFamily: 'var(--brand-font-body)', fontSize: '12px', color: 'gate' in step && step.gate ? 'var(--brand-primary-text)' : 'var(--brand-text-secondary)', lineHeight: 1.3 }}>
                     {step.caption}
                   </span>
                 </span>
@@ -363,14 +363,14 @@ export function AgentBureauSection({ locale }: { locale: string }) {
               key={group.key}
               className={`hab-panel${group.featured ? ' hab-panel-featured' : ''}`}
               style={{
-                background: group.featured ? 'color-mix(in srgb, var(--brand-primary) 3%, transparent)' : 'var(--color-bg)',
-                border: `1px solid ${group.featured ? 'color-mix(in srgb, var(--brand-primary) 35%, transparent)' : 'var(--color-border)'}`,
-                borderRadius: 'var(--radius-card)',
+                background: group.featured ? 'color-mix(in srgb, var(--brand-primary) 3%, transparent)' : 'var(--brand-background)',
+                border: `1px solid ${group.featured ? 'color-mix(in srgb, var(--brand-primary) 35%, transparent)' : 'var(--brand-border)'}`,
+                borderRadius: 'var(--radius-lg)',
                 padding: group.featured ? '30px 26px' : '24px',
                 display: 'flex', flexDirection: 'column', gap: '18px',
               }}
             >
-              <h3 className="h-card" style={{ color: 'var(--color-text-secondary)', textTransform: 'uppercase', margin: 0 }}>
+              <h3 className="h-card" style={{ color: 'var(--brand-text-secondary)', textTransform: 'uppercase', margin: 0 }}>
                 {group.title}
               </h3>
               {group.items.map((item) => (
@@ -383,10 +383,10 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                     <CapabilityIcon name={item.icon} />
                   </span>
                   <div>
-                    <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: group.featured ? '18px' : '17px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em', margin: '0 0 4px 0', lineHeight: 1.3 }}>
+                    <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: group.featured ? '18px' : 'var(--text-body)', color: 'var(--brand-text)', letterSpacing: '-0.01em', margin: '0 0 4px 0', lineHeight: 1.3 }}>
                       {item.title}
                     </p>
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.6, margin: 0 }}>
+                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.6, margin: 0 }}>
                       {item.body}
                     </p>
                     <div>

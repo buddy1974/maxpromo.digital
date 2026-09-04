@@ -24,16 +24,16 @@ function t(locale: string, de: string, en: string): string {
   return locale === 'de' ? de : en
 }
 
-const mono = 'var(--font-mono)'
-const sans = 'var(--font-body)'
+const mono = 'var(--brand-font-mono)'
+const sans = 'var(--brand-font-body)'
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div
       style={{
-        background: 'var(--color-bg-section)',
-        borderTop: '2px solid var(--color-primary)',
-        borderRadius: 'var(--radius-card)',
+        background: 'var(--brand-surface-subtle)',
+        borderTop: '2px solid var(--brand-primary-edge)',
+        borderRadius: 'var(--radius-lg)',
         padding: '32px',
         marginBottom: '20px',
       }}
@@ -60,11 +60,11 @@ function BulletItem({ children }: { children: React.ReactNode }) {
     <li
       style={{
         fontFamily: sans,
-        fontSize: '15px',
-        color: 'var(--color-text-primary)',
+        fontSize: 'var(--text-small)',
+        color: 'var(--brand-text)',
         lineHeight: 1.6,
         padding: '7px 0 7px 16px',
-        borderBottom: '1px solid var(--color-border)',
+        borderBottom: '1px solid var(--brand-border)',
         position: 'relative' as const,
         listStyle: 'none',
       }}
@@ -75,7 +75,7 @@ function BulletItem({ children }: { children: React.ReactNode }) {
           left: 0,
           top: '9px',
           color: 'var(--brand-text-secondary)',
-          fontSize: '10px',
+          fontSize: 'var(--text-label-dense)',
         }}
       >
         <Icon name="chevronRight" size="xs" />
@@ -96,7 +96,7 @@ export default async function DataDeletionPage({
   return (
     <main
       style={{
-        background: 'var(--color-bg)',
+        background: 'var(--brand-background)',
         minHeight: '100vh',
         padding: '80px 24px 96px',
       }}
@@ -119,7 +119,7 @@ export default async function DataDeletionPage({
         <div
           style={{
             height: '2px',
-            background: 'var(--color-primary)',
+            background: 'var(--brand-primary)',
             width: '100%',
             marginBottom: '40px',
           }}
@@ -132,8 +132,8 @@ export default async function DataDeletionPage({
         <p
           style={{
             fontFamily: mono,
-            fontSize: '13px',
-            color: 'var(--color-text-secondary)',
+            fontSize: 'var(--text-micro)',
+            color: 'var(--brand-text-secondary)',
             margin: '0 0 36px',
             letterSpacing: '0.04em',
           }}
@@ -146,7 +146,7 @@ export default async function DataDeletionPage({
           style={{
             fontFamily: sans,
             fontSize: '16px',
-            color: 'var(--color-text-secondary)',
+            color: 'var(--brand-text-secondary)',
             lineHeight: 1.75,
             margin: '0 0 36px',
           }}
@@ -161,7 +161,7 @@ export default async function DataDeletionPage({
           style={{
             fontFamily: mono,
             fontSize: '12px',
-            color: 'var(--color-text-secondary)',
+            color: 'var(--brand-text-secondary)',
             lineHeight: 1.7,
             margin: '-20px 0 36px',
           }}
@@ -177,7 +177,7 @@ export default async function DataDeletionPage({
             style={{
               background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)',
               border: '1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent)',
-              borderRadius: 'var(--radius-card)',
+              borderRadius: 'var(--radius-lg)',
               padding: '18px 20px',
               marginBottom: '16px',
             }}
@@ -185,8 +185,8 @@ export default async function DataDeletionPage({
             <p
               style={{
                 fontFamily: mono,
-                fontSize: '11px',
-                color: 'var(--color-text-secondary)',
+                fontSize: 'var(--text-label)',
+                color: 'var(--brand-text-secondary)',
                 letterSpacing: '0.1em',
                 margin: '0 0 6px',
               }}
@@ -209,8 +209,8 @@ export default async function DataDeletionPage({
             <p
               style={{
                 fontFamily: mono,
-                fontSize: '11px',
-                color: 'var(--color-text-secondary)',
+                fontSize: 'var(--text-label)',
+                color: 'var(--brand-text-secondary)',
                 letterSpacing: '0.1em',
                 margin: '0 0 6px',
               }}
@@ -220,8 +220,8 @@ export default async function DataDeletionPage({
             <p
               style={{
                 fontFamily: mono,
-                fontSize: '13px',
-                color: 'var(--color-text-primary)',
+                fontSize: 'var(--text-micro)',
+                color: 'var(--brand-text)',
                 margin: 0,
               }}
             >
@@ -232,15 +232,15 @@ export default async function DataDeletionPage({
             style={{
               fontFamily: sans,
               fontSize: '14px',
-              color: 'var(--color-text-secondary)',
+              color: 'var(--brand-text-secondary)',
               lineHeight: 1.7,
               margin: 0,
             }}
           >
             {t(locale, 'Wir bestätigen den Eingang innerhalb von', 'We will confirm receipt within')}{' '}
-            <span style={{ color: 'var(--color-text-primary)' }}>{t(locale, '48 Stunden', '48 hours')}</span>{' '}
+            <span style={{ color: 'var(--brand-text)' }}>{t(locale, '48 Stunden', '48 hours')}</span>{' '}
             {t(locale, 'und bearbeiten Ihren Antrag innerhalb von', 'and process your request within')}{' '}
-            <span style={{ color: 'var(--color-text-primary)' }}>{t(locale, '30 Tagen', '30 days')}</span>.
+            <span style={{ color: 'var(--brand-text)' }}>{t(locale, '30 Tagen', '30 days')}</span>.
           </p>
         </Card>
 
@@ -249,26 +249,26 @@ export default async function DataDeletionPage({
           <ul style={{ padding: 0, margin: 0 }}>
             <BulletItem>
               {t(locale, 'Kontaktformular-Übermittlungen', 'Contact form submissions')}{' '}
-              <span style={{ color: 'var(--color-text-secondary)', fontSize: '13px' }}>
+              <span style={{ color: 'var(--brand-text-secondary)', fontSize: 'var(--text-micro)' }}>
                 {t(locale, '(Name, E-Mail, Nachricht, Unternehmen)', '(name, email, message, company)')}
               </span>
             </BulletItem>
             <BulletItem>
               {t(locale, 'Antworten aus dem Kontaktformular', 'Contact form responses')}{' '}
-              <span style={{ color: 'var(--color-text-secondary)', fontSize: '13px' }}>
+              <span style={{ color: 'var(--brand-text-secondary)', fontSize: 'var(--text-micro)' }}>
                 {t(locale, '(bereitgestellte Unternehmensinformationen)', '(business information provided)')}
               </span>
             </BulletItem>
             <BulletItem>{t(locale, 'Demo-Anfragen über die System-Kontaktseiten', 'System demo request submissions')}</BulletItem>
             <BulletItem>
               {t(locale, 'Chat-Gesprächsinhalte', 'Chat conversation content')}{' '}
-              <span style={{ color: 'var(--color-text-secondary)', fontSize: '13px' }}>
+              <span style={{ color: 'var(--brand-text-secondary)', fontSize: 'var(--text-micro)' }}>
                 {t(locale, '(nur während der Sitzung, nicht dauerhaft gespeichert)', '(session only, not stored permanently)')}
               </span>
             </BulletItem>
             <BulletItem>
               {t(locale, 'Server-Zugriffsprotokolle', 'Server access logs')}{' '}
-              <span style={{ color: 'var(--color-text-secondary)', fontSize: '13px' }}>
+              <span style={{ color: 'var(--brand-text-secondary)', fontSize: 'var(--text-micro)' }}>
                 {t(locale, '(IP-Adresse, max. 7 Tage)', '(IP address, max 7 days)')}
               </span>
             </BulletItem>
@@ -284,7 +284,7 @@ export default async function DataDeletionPage({
             </BulletItem>
             <BulletItem>
               {t(locale, 'Wir löschen sie dauerhaft aus allen unseren Systemen innerhalb von', 'We permanently delete it from all our systems within')}{' '}
-              <span style={{ color: 'var(--color-text-primary)' }}>{t(locale, '30 Tagen', '30 days')}</span>
+              <span style={{ color: 'var(--brand-text)' }}>{t(locale, '30 Tagen', '30 days')}</span>
             </BulletItem>
             <BulletItem>{t(locale, 'Wir senden Ihnen eine schriftliche Bestätigung', 'We send you written confirmation')}</BulletItem>
           </ul>
@@ -294,8 +294,8 @@ export default async function DataDeletionPage({
         <p
           style={{
             fontFamily: mono,
-            fontSize: '11px',
-            color: 'var(--color-text-secondary)',
+            fontSize: 'var(--text-label)',
+            color: 'var(--brand-text-secondary)',
             lineHeight: 1.7,
             margin: '32px 0 24px',
             letterSpacing: '0.04em',

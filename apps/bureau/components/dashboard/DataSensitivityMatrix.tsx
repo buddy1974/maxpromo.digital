@@ -21,16 +21,16 @@ export function DataSensitivityMatrix({ rows }: { rows: DataSensitivityRow[] }) 
       <table className="w-full text-left text-sm">
         <thead className="border-b border-hairline text-ink-muted">
           <tr>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Datentyp</th>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Sensibilität</th>
-            <th className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.12em]">Erlaubte Tools</th>
+            <th className="px-4 py-3 font-mono text-label-dense uppercase tracking-[0.12em]">Datentyp</th>
+            <th className="px-4 py-3 font-mono text-label-dense uppercase tracking-[0.12em]">Sensibilität</th>
+            <th className="px-4 py-3 font-mono text-label-dense uppercase tracking-[0.12em]">Erlaubte Tools</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-hairline">
           {rows.map((r) => (
             <tr key={r.id} className="text-ink-secondary">
               <td className="px-4 py-3">{r.dataType}</td>
-              <td className={`px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em] ${TONE_TEXT[SENSITIVITY_STYLE_TONE(r.sensitivity)]}`}>
+              <td className={`px-4 py-3 font-mono text-label uppercase tracking-[0.12em] ${TONE_TEXT[SENSITIVITY_STYLE_TONE(r.sensitivity)]}`}>
                 {SENSITIVITY_LABEL[r.sensitivity]}
               </td>
               <td className="px-4 py-3 text-ink-secondary">{r.allowedTools}</td>

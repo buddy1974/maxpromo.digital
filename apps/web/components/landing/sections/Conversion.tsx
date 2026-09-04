@@ -66,7 +66,7 @@ export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, brid
         <h2 style={{ marginBottom: '1rem', color: 'var(--showcase-fg)' }}>
           {heading}
         </h2>
-        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--showcase-muted)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
+        <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', color: 'var(--showcase-muted)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
           {sub}
         </p>
 

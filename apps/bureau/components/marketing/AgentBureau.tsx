@@ -93,7 +93,7 @@ export function AgentBureau() {
             <div>
               <div className="flex flex-wrap items-center gap-3">
                 <h3 className="text-card-title text-ink">{CHIEF.name}</h3>
-                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+                <span className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
                   {CHIEF.role}
                 </span>
               </div>
@@ -108,7 +108,7 @@ export function AgentBureau() {
             <div key={a.name} className="card">
               <div className="flex items-start justify-between gap-3">
                 <span className="text-ink-secondary"><Icon name={a.icon} size="md" /></span>
-                <span className="rounded-full border border-hairline bg-surface-subtle px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted">
+                <span className="rounded-full border border-hairline bg-surface-subtle px-2.5 py-1 font-mono text-label-dense uppercase tracking-[0.12em] text-ink-muted">
                   Freigabe: {a.approval}
                 </span>
               </div>

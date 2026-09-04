@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
 
-const mono    = 'var(--font-roboto-mono)'
-const grotesk = 'var(--font-inter)'
-const sans    = 'var(--font-inter)'
+const mono    = 'var(--brand-font-mono)'
+const grotesk = 'var(--brand-font-body)'
+const sans    = 'var(--brand-font-body)'
 
 interface Invoice {
   id: string; invoice_number: string; client_name: string; client_email: string
@@ -24,7 +24,7 @@ const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
 function StatusBadge({ status, label }: { status: string; label: string }) {
   const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'var(--brand-surface-sunken)' }
   return (
-    <span style={{ fontFamily: mono, fontSize: '10px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
+    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
       {label}
     </span>
   )
@@ -74,13 +74,13 @@ export default function InvoicesPage() {
     <div style={{ padding: '32px 40px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
         <div>
-          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 700, color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.invoiceList.heading}</h1>
-          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>
+          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.invoiceList.heading}</h1>
+          <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>
             {t.invoiceList.outstanding}: <span style={{ color: 'var(--brand-primary-text)' }}>{fmtEur(totals.outstanding)}</span>
             &nbsp;·&nbsp; {t.invoiceList.paid}: <span style={{ color: 'var(--semantic-success)' }}>{fmtEur(totals.paid)}</span>
           </p>
         </div>
-        <Link href="/os/invoices/new" style={{ background: 'var(--brand-primary)', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', textTransform: 'uppercase' }}>
+        <Link href="/os/invoices/new" style={{ background: 'var(--brand-primary)', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', textTransform: 'uppercase' }}>
           {t.invoiceList.newInvoice}
         </Link>
       </div>
@@ -92,7 +92,7 @@ export default function InvoicesPage() {
             key={key}
             onClick={() => setTab(key)}
             style={{
-              fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase',
+              fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', textTransform: 'uppercase',
               padding: '7px 14px', border: 'none', cursor: 'pointer',
               background: tab === key ? 'var(--brand-primary)' : 'transparent',
               color: tab === key ? 'var(--brand-text)' : 'var(--brand-text-muted)',
@@ -109,29 +109,29 @@ export default function InvoicesPage() {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-muted)' }}>{t.invoiceList.empty}</td></tr>
+              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.invoiceList.empty}</td></tr>
             ) : (
               filtered.map(inv => (
                 <tr key={inv.id} style={{ borderBottom: '1px solid var(--brand-border)' }}>
                   <td style={{ padding: '12px 16px' }}>
                     <Link href={`/os/invoices/${inv.id}`} style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)', textDecoration: 'none' }}>{inv.invoice_number}</Link>
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text)' }}>{inv.client_name}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)' }}>
+                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)' }}>{inv.client_name}</td>
+                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)' }}>
                     {fmtDate(inv.created_at)}
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '11px', color: inv.status === 'overdue' ? 'var(--semantic-danger)' : 'var(--brand-text-muted)' }}>
+                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: inv.status === 'overdue' ? 'var(--semantic-danger)' : 'var(--brand-text-muted)' }}>
                     {fmtDate(inv.due_date)}
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '13px', color: 'var(--brand-text)', fontWeight: 700 }}>
+                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', fontWeight: 700 }}>
                     {fmtEur(Number(inv.total))}
                   </td>
                   <td style={{ padding: '12px 16px' }}>
@@ -142,21 +142,21 @@ export default function InvoicesPage() {
                       <a
                         href={`/os/invoices/${inv.id}/print`}
                         target="_blank"
-                        style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.06em' }}
                       >
                         {t.invoiceList.pdf}
                       </a>
                       {inv.status !== 'paid' && (
                         <button
                           onClick={() => markPaid(inv.id)}
-                          style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                          style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                         >
                           {t.invoiceList.markPaid}
                         </button>
                       )}
                       <button
                         onClick={() => deleteInvoice(inv.id, inv.invoice_number)}
-                        style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
                       >
                         {t.invoiceList.delete}
                       </button>

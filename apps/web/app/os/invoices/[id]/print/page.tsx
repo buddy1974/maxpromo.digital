@@ -37,7 +37,7 @@ export default function PrintPage() {
         <DocumentToolbar>
           <button
             onClick={() => window.print()}
-            style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
+            style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
           >
             <Icon name="download" size="sm" /> Als PDF speichern
           </button>
@@ -48,17 +48,17 @@ export default function PrintPage() {
             /* #25D366 is WhatsApp's own brand colour, not ours: a third-party
                button has to look like that platform's button to be recognised.
                Deliberately literal, and the only hex left in app/os. */
-            style={{ background: THIRD_PARTY.whatsapp, color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
+            style={{ background: THIRD_PARTY.whatsapp, color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
           >
             <Icon name="message" size="sm" /> Per WhatsApp senden
           </a>
           <button
             onClick={() => window.close()}
-            style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: 'monospace', fontSize: '11px', padding: '10px 14px', cursor: 'pointer' }}
+            style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: 'monospace', fontSize: 'var(--text-label)', padding: '10px 14px', cursor: 'pointer' }}
           >
             Close
           </button>
-          <span style={{ fontFamily: 'monospace', fontSize: '10px', color: 'var(--brand-text-muted)', marginLeft: 'auto' }}>
+          <span style={{ fontFamily: 'monospace', fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', marginLeft: 'auto' }}>
             WhatsApp: message pre-filled — attach the PDF manually before sending
           </span>
         </DocumentToolbar>

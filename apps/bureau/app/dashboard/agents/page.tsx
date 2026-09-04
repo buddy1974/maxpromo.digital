@@ -11,7 +11,7 @@ export default function AgentsPage() {
     <DashboardShell title="Agenten">
       <div className="space-y-6">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+          <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
             Agent Bureau · {AGENTS.length} Agenten
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
@@ -23,7 +23,7 @@ export default function AgentsPage() {
 
         {chief && (
           <section>
-            <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
+            <h2 className="mb-3 font-mono text-label uppercase tracking-[0.16em] text-ink-muted">
               Koordination
             </h2>
             <AgentIdentityCard agent={chief} primary />
@@ -31,7 +31,7 @@ export default function AgentsPage() {
         )}
 
         <section>
-          <h2 className="mb-3 font-mono text-[11px] uppercase tracking-[0.16em] text-ink-muted">
+          <h2 className="mb-3 font-mono text-label uppercase tracking-[0.16em] text-ink-muted">
             Spezialisten
           </h2>
           <div className="grid gap-4 lg:grid-cols-2">

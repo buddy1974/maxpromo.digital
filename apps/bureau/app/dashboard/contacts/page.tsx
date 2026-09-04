@@ -8,10 +8,10 @@ export default function ContactsPage() {
         <table className="w-full text-left text-sm">
           <thead className="border-b border-hairline text-ink-muted">
             <tr>
-              <th className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em]">Name</th>
-              <th className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em]">Firma</th>
-              <th className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em]">Status</th>
-              <th className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.12em]">Nächstes Follow-up</th>
+              <th className="px-4 py-3 font-mono text-label uppercase tracking-[0.12em]">Name</th>
+              <th className="px-4 py-3 font-mono text-label uppercase tracking-[0.12em]">Firma</th>
+              <th className="px-4 py-3 font-mono text-label uppercase tracking-[0.12em]">Status</th>
+              <th className="px-4 py-3 font-mono text-label uppercase tracking-[0.12em]">Nächstes Follow-up</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-hairline">

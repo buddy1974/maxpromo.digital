@@ -104,7 +104,7 @@ export default async function HomePage() {
   const PROOF_REFS = ['p1', 'p2', 'p3'] as const
   const PROCESS_REFS = ['p1', 'p2', 'p3', 'p4', 'p5'] as const
 
-  const SECTION_PADDING = 'clamp(4.5rem, 8vw, 8.75rem) 2rem'
+  const SECTION_PADDING = 'var(--section-y) var(--section-x)'
 
   return (
     <>
@@ -120,19 +120,19 @@ export default async function HomePage() {
       <PainCards />
 
       {/* 3, Proof strip */}
-      <section data-section="proof" style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+      <section data-section="proof" style={{ background: 'var(--brand-background)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
+        <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
             <div>
               <SectionHeader label={tProof('eyebrow')}>
                 {tProof('title')}
               </SectionHeader>
             </div>
-            <Link href="/case-studies" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
+            <Link href="/case-studies" style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
               {tProof('viewAll')}
             </Link>
           </div>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.7, marginBottom: '2.5rem', maxWidth: '44rem' }}>
+          <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, marginBottom: '2.5rem', maxWidth: '44rem' }}>
             {tProof('subtitle')}
           </p>
           <ProofMetrics
@@ -143,20 +143,20 @@ export default async function HomePage() {
               source: tProof(`${id}Source`),
             }))}
           />
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', marginTop: '1rem', letterSpacing: '0.05em' }}>
+          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', marginTop: '1rem', letterSpacing: '0.05em' }}>
             {tProof('note')}
           </p>
         </div>
       </section>
 
       {/* 4a, Legacy modernization */}
-      <section data-section="legacy" style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+      <section data-section="legacy" style={{ background: 'var(--brand-surface-subtle)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
+        <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
           <div style={{ maxWidth: '52rem', marginBottom: '3rem' }}>
             <SectionHeader label={tLegacy('eyebrow')}>
                 {tLegacy('title')}
               </SectionHeader>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.75, marginTop: '1rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.75, marginTop: '1rem' }}>
               {tLegacy('subtitle')}
             </p>
           </div>
@@ -166,17 +166,17 @@ export default async function HomePage() {
                 <h3 className="h-card" style={{ margin: 0 }}>
                   {tLegacy(`${id}Title`)}
                 </h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0 }}>
                   {tLegacy(`${id}Pain`)}
                 </p>
-                <p style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', lineHeight: 1.6, margin: 0, paddingTop: '10px', borderTop: '1px solid var(--color-border)' }}>
+                <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', lineHeight: 1.6, margin: 0, paddingTop: '10px', borderTop: '1px solid var(--brand-border)' }}>
                   → {tLegacy(`${id}System`)}
                 </p>
               </div>
             ))}
           </div>
           <div style={{ marginTop: '3rem', display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center' }}>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-secondary)', lineHeight: 1.7, maxWidth: '52rem', margin: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '16px', color: 'var(--brand-text-secondary)', lineHeight: 1.7, maxWidth: '52rem', margin: 0 }}>
               {tLegacy('closing')}
             </p>
             <Link href="/contact" className="btn btn-primary" style={{ flexShrink: 0 }}>
@@ -226,8 +226,8 @@ export default async function HomePage() {
       <AgentBureauSection locale={locale} />
 
       {/* 5, Why Maxpromo */}
-      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+      <section style={{ background: 'var(--brand-surface-subtle)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
+        <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem', maxWidth: '44rem' }}>
             <SectionHeader label={tWhyUs('eyebrow')}>
                 {tWhyUs('title')}{' '}
@@ -237,12 +237,12 @@ export default async function HomePage() {
           <div style={{ display: 'grid', gap: '16px' }} className="grid-cols-1 sm:grid-cols-2">
             {WHY_REFS.map((id) => (
               <div key={id} className="card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                <span style={{ color: 'var(--brand-text-secondary)', fontFamily: 'var(--font-mono)', fontSize: '18px', flexShrink: 0, paddingTop: '2px' }}><Icon name="check" size="sm" /></span>
+                <span style={{ color: 'var(--brand-text-secondary)', fontFamily: 'var(--brand-font-mono)', fontSize: '18px', flexShrink: 0, paddingTop: '2px' }}><Icon name="check" size="sm" /></span>
                 <div>
                   <h3 className="h-card" style={{ marginBottom: '8px' }}>
                     {tWhyUs(`${id}Title`)}
                   </h3>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.75, margin: 0 }}>
+                  <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.75, margin: 0 }}>
                     {tWhyUs(`${id}Desc`)}
                   </p>
                 </div>
@@ -256,26 +256,26 @@ export default async function HomePage() {
       <TeamTrust />
 
       {/* 6a, Philosophy */}
-      <section data-section="philosophy" style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto', display: 'grid', gap: '4rem' }} className="grid-cols-1 lg:grid-cols-2">
+      <section data-section="philosophy" style={{ background: 'var(--brand-background)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
+        <div style={{ maxWidth: 'var(--container)', margin: '0 auto', display: 'grid', gap: '4rem' }} className="grid-cols-1 lg:grid-cols-2">
           <div>
             <SectionHeader label={tPhilosophy('eyebrow')}>
                 {tPhilosophy('title')}
               </SectionHeader>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: '17px', color: 'var(--color-text-secondary)', lineHeight: 1.85, marginTop: '1.5rem', whiteSpace: 'pre-line' }}>
+            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.85, marginTop: '1.5rem', whiteSpace: 'pre-line' }}>
               {tPhilosophy('body')}
             </p>
-            <p style={{ fontFamily: 'var(--font-mono)', fontSize: '14px', color: 'var(--brand-text-secondary)', marginTop: '2rem', letterSpacing: '0.03em' }}>
+            <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', color: 'var(--brand-text-secondary)', marginTop: '2rem', letterSpacing: '0.03em' }}>
               → {tPhilosophy('closing')}
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
             {(['step1', 'step2', 'step3', 'step4', 'step5'] as const).map((s, i) => (
-              <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', padding: '18px 24px' }}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
+              <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '16px', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', padding: '18px 24px' }}>
+                <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: '4px', padding: '3px 8px', flexShrink: 0 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <span style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--color-text-primary)', letterSpacing: '-0.01em' }}>
+                <span style={{ fontFamily: 'var(--brand-font-body)', fontSize: '16px', color: 'var(--brand-text)', letterSpacing: '-0.01em' }}>
                   {tPhilosophy(s)}
                 </span>
               </div>
@@ -285,26 +285,26 @@ export default async function HomePage() {
       </section>
 
       {/* 7, How we work */}
-      <section style={{ background: 'var(--color-bg-section)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
-        <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+      <section style={{ background: 'var(--brand-surface-subtle)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
+        <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
           <div style={{ marginBottom: '3.5rem' }}>
             <SectionHeader label={tProcess('processEyebrow')}>
                 {tProcess('processTitle')}
               </SectionHeader>
           </div>
-          <div style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
+          <div style={{ display: 'grid', gap: '1px', background: 'var(--brand-border)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
             {PROCESS_REFS.map((id, i) => (
-              <div key={id} style={{ background: 'var(--color-bg)', padding: '2rem 1.75rem', position: 'relative' }}>
-                <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '48px', lineHeight: 1, marginBottom: '0.75rem', color: 'var(--brand-text-secondary)' }}>
+              <div key={id} style={{ background: 'var(--brand-background)', padding: '2rem 1.75rem', position: 'relative' }}>
+                <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: '48px', lineHeight: 1, marginBottom: '0.75rem', color: 'var(--brand-text-secondary)' }}>
                   {tProcess(`${id}Num`)}
                 </p>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', background: 'var(--color-bg-section)', border: '1px solid var(--color-border)', padding: '2px 7px', display: 'inline-block', marginBottom: '10px', letterSpacing: '0.05em' }}>
+                <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', padding: '2px 7px', display: 'inline-block', marginBottom: '10px', letterSpacing: '0.05em' }}>
                   {tProcess(`${id}Time`)}
                 </span>
                 <h3 className="h-card" style={{ marginBottom: '8px' }}>
                   {tProcess(`${id}Title`)}
                 </h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '14px', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0 }}>
                   {tProcess(`${id}Desc`)}
                 </p>
                 {i < PROCESS_REFS.length - 1 && (
@@ -323,8 +323,8 @@ export default async function HomePage() {
 
       {/* 9, Latest insights (only when posts exist) */}
       {latestPosts.length > 0 && (
-        <section style={{ background: 'var(--color-bg)', padding: SECTION_PADDING, borderTop: '1px solid var(--color-border)' }}>
-          <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+        <section style={{ background: 'var(--brand-background)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1.5rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
               <div>
                 <SectionHeader label={tBlog('homepageEyebrow')}>
@@ -332,7 +332,7 @@ export default async function HomePage() {
                   <span style={{ color: 'var(--brand-text-secondary)' }}>{tBlog('homepageTitleAccent')}</span>
               </SectionHeader>
               </div>
-              <Link href="/blog" style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
+              <Link href="/blog" style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
                 {tBlog('homepageViewAll')} →
               </Link>
             </div>
@@ -349,7 +349,7 @@ export default async function HomePage() {
                       {post.tags.length > 0 && (
                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                           {post.tags.map((tag) => (
-                            <span key={tag} style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                            <span key={tag} style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                               {tag}
                             </span>
                           ))}
@@ -358,12 +358,12 @@ export default async function HomePage() {
                       <h3 className="h-card" style={{ margin: 0 }}>
                         {post.title}
                       </h3>
-                      <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
+                      <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
                         {post.excerpt}
                       </p>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--color-border)', marginTop: 'auto' }}>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>{post.publishedAt}</span>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>{tBlog('readArticle')}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--brand-border)', marginTop: 'auto' }}>
+                        <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>{post.publishedAt}</span>
+                        <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>{tBlog('readArticle')}</span>
                       </div>
                     </div>
                   </article>
@@ -375,13 +375,13 @@ export default async function HomePage() {
       )}
 
       {/* 10, Final CTA */}
-      <section style={{ background: 'var(--color-bg-section)', padding: 'clamp(5rem, 10vw, 9.5rem) 2rem', borderTop: '1px solid var(--color-border)' }}>
+      <section style={{ background: 'var(--brand-surface-subtle)', padding: 'var(--section-y-feature) var(--section-x)', borderTop: '1px solid var(--brand-border)' }}>
         <div style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center' }}>
           <p className="section-label">{t('finalCtaEyebrow')}</p>
           <h2 style={{ marginBottom: '1rem', marginTop: '0.5rem' }}>
             {t('finalCtaTitle')}
           </h2>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '15px', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
+          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
             {t('finalCtaDesc')}
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center', marginBottom: '1.25rem' }}>
@@ -392,7 +392,7 @@ export default async function HomePage() {
               {t('finalCtaSecondary')}
             </Link>
           </div>
-          <p style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--color-text-secondary)', letterSpacing: '0.05em' }}>
+          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
             {t('finalCtaFootnote')}
           </p>
         </div>

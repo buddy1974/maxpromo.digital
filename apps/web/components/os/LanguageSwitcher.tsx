@@ -11,7 +11,7 @@
 
 import { useOsLocale } from '@/lib/os-i18n/context'
 
-const mono = 'var(--font-roboto-mono)'
+const mono = 'var(--brand-font-mono)'
 
 export function LanguageSwitcher() {
   const { locale, setLocale } = useOsLocale()
@@ -28,7 +28,7 @@ export function LanguageSwitcher() {
             background: locale === l ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'transparent',
             border: `1px solid ${locale === l ? 'var(--brand-primary-dark)' : 'var(--brand-border)'}`,
             color: locale === l ? 'var(--brand-text)' : 'var(--brand-text-muted)',
-            fontFamily: mono, fontSize: '10px', fontWeight: 700, letterSpacing: '0.1em',
+            fontFamily: mono, fontSize: 'var(--text-label-dense)', fontWeight: 700, letterSpacing: '0.1em',
             padding: '6px 8px', cursor: 'pointer', borderRadius: '2px', textTransform: 'uppercase',
           }}
         >

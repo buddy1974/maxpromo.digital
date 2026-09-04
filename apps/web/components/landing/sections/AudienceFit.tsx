@@ -33,11 +33,11 @@ export function AudienceFit({ targetAudience, problemStatement, locale }: Audien
         <p style={{ ...EYEBROW_STYLE, marginBottom: '1rem' }}>
           {eyebrow}
         </p>
-        <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: HEADING_SIZE.compact, letterSpacing: '-0.03em', lineHeight: 1.35, margin: 0, color: 'var(--showcase-fg)' }}>
+        <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: HEADING_SIZE.compact, letterSpacing: '-0.03em', lineHeight: 1.35, margin: 0, color: 'var(--showcase-fg)' }}>
           {targetAudience}
         </p>
         {problemStatement && (
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '16px', color: 'var(--showcase-muted)', lineHeight: 1.75, marginTop: '1rem', maxWidth: '42rem' }}>
+          <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '16px', color: 'var(--showcase-muted)', lineHeight: 1.75, marginTop: '1rem', maxWidth: '42rem' }}>
             {problemStatement}
           </p>
         )}

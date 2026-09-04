@@ -11,7 +11,7 @@ export function Nav() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-10 text-[19px] font-medium tracking-[-0.01em] text-ink-secondary md:flex">
+        <nav className="hidden items-center gap-10 text-lede font-medium tracking-[-0.01em] text-ink-secondary md:flex">
           <a href="#bureau" className="transition-colors hover:text-ink">
             Das Team
           </a>

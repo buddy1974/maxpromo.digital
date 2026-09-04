@@ -8,12 +8,12 @@ export async function TeamTrust() {
   return (
     <section
       style={{
-        background: 'var(--color-bg-section)',
-        padding: 'clamp(4.5rem, 8vw, 8.75rem) 2rem',
-        borderTop: '1px solid var(--color-border)',
+        background: 'var(--brand-surface-subtle)',
+        padding: 'var(--section-y) var(--section-x)',
+        borderTop: '1px solid var(--brand-border)',
       }}
     >
-      <div style={{ maxWidth: 'var(--container-width)', margin: '0 auto' }}>
+      <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
 
         {/* Header */}
         <div
@@ -32,9 +32,9 @@ export async function TeamTrust() {
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', gap: '1.1rem' }}>
             <p
               style={{
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'var(--brand-font-body)',
                 fontSize: '18px',
-                color: 'var(--color-text-primary)',
+                color: 'var(--brand-text)',
                 lineHeight: 1.7,
                 margin: 0,
               }}
@@ -48,11 +48,11 @@ export async function TeamTrust() {
                 <span
                   key={k}
                   style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '13px',
-                    color: 'var(--color-text-secondary)',
-                    background: 'var(--color-bg)',
-                    border: '1px solid var(--color-border)',
+                    fontFamily: 'var(--brand-font-mono)',
+                    fontSize: 'var(--text-micro)',
+                    color: 'var(--brand-text-secondary)',
+                    background: 'var(--brand-background)',
+                    border: '1px solid var(--brand-border)',
                     padding: '5px 12px',
                     borderRadius: '6px',
                     letterSpacing: '0.02em',
@@ -65,9 +65,9 @@ export async function TeamTrust() {
 
             <p
               style={{
-                fontFamily: 'var(--font-body)',
+                fontFamily: 'var(--brand-font-body)',
                 fontSize: '16px',
-                color: 'var(--color-text-secondary)',
+                color: 'var(--brand-text-secondary)',
                 lineHeight: 1.7,
                 margin: 0,
                 fontStyle: 'italic',
@@ -80,14 +80,14 @@ export async function TeamTrust() {
 
         {/* Three pillars */}
         <div
-          style={{ display: 'grid', gap: '1px', background: 'var(--color-border)', borderRadius: 'var(--radius-card)', overflow: 'hidden', border: '1px solid var(--color-border)' }}
+          style={{ display: 'grid', gap: '1px', background: 'var(--brand-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--brand-border)' }}
           className="grid-cols-1 sm:grid-cols-3"
         >
           {LABELS.map((id) => (
             <div
               key={id}
               style={{
-                background: 'var(--color-bg)',
+                background: 'var(--brand-background)',
                 padding: '2.25rem 2.5rem',
               }}
             >
@@ -106,9 +106,9 @@ export async function TeamTrust() {
               </p>
               <p
                 style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '15px',
-                  color: 'var(--color-text-secondary)',
+                  fontFamily: 'var(--brand-font-body)',
+                  fontSize: 'var(--text-small)',
+                  color: 'var(--brand-text-secondary)',
                   lineHeight: 1.7,
                   margin: 0,
                 }}
@@ -122,9 +122,9 @@ export async function TeamTrust() {
         {/* Footer note */}
         <p
           style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            color: 'var(--color-text-secondary)',
+            fontFamily: 'var(--brand-font-mono)',
+            fontSize: 'var(--text-label)',
+            color: 'var(--brand-text-secondary)',
             letterSpacing: '0.05em',
             marginTop: '1.25rem',
             textAlign: 'right',

@@ -43,13 +43,13 @@ export function UseCases({ seeInAction, locale }: UseCasesProps) {
         <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {seeInAction.map((tab, i) => (
             <div key={i} style={{ padding: '1.5rem', border: CARD_BORDER, borderRadius: RADIUS.md }}>
-              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '10px', color: 'var(--showcase-muted)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', marginBottom: '8px' }}>
+              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label-dense)', color: 'var(--showcase-muted)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', marginBottom: '8px' }}>
                 {tab.tab}
               </p>
-              <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '15px', color: 'var(--showcase-fg)', margin: '0 0 6px', lineHeight: 1.35 }}>
+              <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: 'var(--text-small)', color: 'var(--showcase-fg)', margin: '0 0 6px', lineHeight: 1.35 }}>
                 {tab.headline}
               </p>
-              <p style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--showcase-muted)', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-micro)', color: 'var(--showcase-muted)', lineHeight: 1.6, margin: 0 }}>
                 {tab.description}
               </p>
             </div>

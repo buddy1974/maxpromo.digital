@@ -36,7 +36,7 @@ export default async function WaitingRoomPage() {
     <DashboardShell title="Kunden-Warteraum">
       <div className="space-y-6">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-ink-secondary">
+          <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
             Wer wartet auf eine Antwort?
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
