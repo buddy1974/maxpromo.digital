@@ -19,7 +19,6 @@ import { Link } from '@/i18n/navigation'
  * are removed.
  */
 
-const ORANGE = 'var(--color-primary)'
 const BORDER = 'var(--color-border)'
 
 // =============================================================================
@@ -122,7 +121,7 @@ const CAPABILITY_GROUPS = {
 // =============================================================================
 
 function OrbitIcon({ name }: { name: string }) {
-  const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--brand-primary)', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
+  const common = { width: 18, height: 18, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--brand-primary-text)', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
   switch (name) {
     case 'inquiries': return <svg {...common}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
     case 'documents': return <svg {...common}><path d="M14 3v5h5" /><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /></svg>
@@ -135,7 +134,7 @@ function OrbitIcon({ name }: { name: string }) {
 }
 
 function CapabilityIcon({ name }: { name: string }) {
-  const common = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--brand-primary)', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
+  const common = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--brand-primary-text)', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
   switch (name) {
     case 'audit':    return <svg {...common}><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /><path d="M11 8v6M8 11h6" /></svg>
     case 'waiting':  return <svg {...common}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
@@ -200,7 +199,7 @@ const STYLES = `
     color: var(--color-text-secondary); background: var(--color-bg-section); border: 1px solid var(--color-border);
     border-radius: 5px; padding: 2px 7px; margin: 8px 6px 0 0;
   }
-  .hab-panel-featured .hab-tag { color: var(--color-primary); background: color-mix(in srgb, var(--brand-primary) 8%, transparent); border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent); }
+  .hab-panel-featured .hab-tag { color: var(--brand-primary-text); background: color-mix(in srgb, var(--brand-primary) 8%, transparent); border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent); }
 
   .hab-panel { transition: transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out; }
   .hab-panel:hover { transform: translateY(-3px); box-shadow: var(--shadow-elevated); }
@@ -255,7 +254,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
 
           {/* LEFT — headline, copy, CTAs, trust note */}
           <div>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: ORANGE, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '13px', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>
               {'Max Agent Bureau'}
             </p>
             <h2 style={{ marginBottom: '1.25rem', maxWidth: '30rem' }}>
@@ -337,14 +336,14 @@ export function AgentBureauSection({ locale }: { locale: string }) {
           {flow.map((step, i) => (
             <div key={step.name} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div className={`hab-step${'gate' in step && step.gate ? ' hab-step-gate' : ''}`}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: ORANGE, flexShrink: 0 }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--brand-primary-text)', flexShrink: 0 }}>
                   {String(i + 1).padStart(2, '0')}
                 </span>
                 <span>
                   <span style={{ display: 'block', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '14px', color: 'var(--color-text-primary)', lineHeight: 1.2 }}>
                     {step.name}
                   </span>
-                  <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: '12px', color: 'gate' in step && step.gate ? ORANGE : 'var(--color-text-secondary)', lineHeight: 1.3 }}>
+                  <span style={{ display: 'block', fontFamily: 'var(--font-body)', fontSize: '12px', color: 'gate' in step && step.gate ? 'var(--brand-primary-text)' : 'var(--color-text-secondary)', lineHeight: 1.3 }}>
                     {step.caption}
                   </span>
                 </span>

@@ -1,4 +1,5 @@
 'use client'
+import { FormStatus } from '@maxpromo/ui'
 
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -121,7 +122,7 @@ export default function ContactPage() {
   if (status === 'success') {
     return (
       <main className="min-h-[70vh] bg-[var(--color-bg)]" style={{ padding: SECTION_PADDING }}>
-        <div className="mx-auto max-w-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-12 text-center rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
+        <div role="status" className="mx-auto max-w-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-12 text-center rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
           <p className="mb-4 text-3xl text-[var(--semantic-success)]">✓</p>
           <h1 className="mb-3">{t('successTitle')}</h1>
           <p className="mb-8 text-[var(--color-text-secondary)]">{t('successDesc')}</p>
@@ -175,11 +176,9 @@ export default function ContactPage() {
           onSubmit={handleSubmit}
           className="mx-auto flex max-w-2xl flex-col gap-6 border border-[var(--color-border)] bg-[var(--color-bg)] p-6 md:p-12 rounded-[var(--radius-card)] shadow-[var(--shadow-card)]"
         >
-          {status === 'error' && (
-            <p className="error-panel">
-              {errorMessage}
-            </p>
-          )}
+          <FormStatus tone="critical">
+            {status === 'error' ? errorMessage : null}
+          </FormStatus>
 
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label={t('formName')} required>
@@ -282,6 +281,7 @@ export default function ContactPage() {
           <button
             type="submit"
             disabled={!isValid || status === 'loading'}
+            aria-busy={status === 'loading'}
             className="btn btn-primary disabled:cursor-not-allowed disabled:opacity-40"
           >
             {status === 'loading' ? t('formCtaSending') : t('formCta')}

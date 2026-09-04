@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { leadSchema } from "@/lib/validation/lead";
+import { FormStatus } from "@maxpromo/ui";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -130,11 +131,7 @@ export function LeadForm() {
         </label>
       </div>
 
-      {status === "error" && error && (
-        <p className="text-sm text-danger" role="alert">
-          {error}
-        </p>
-      )}
+      <FormStatus tone="critical">{status === "error" ? error : null}</FormStatus>
 
       <button
         type="submit"

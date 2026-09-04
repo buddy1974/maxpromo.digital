@@ -84,7 +84,7 @@ function LoginForm() {
       />
 
       {error && (
-        <p style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', margin: '4px 0 0' }}>
+        <p role="alert" style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', margin: '4px 0 0' }}>
           {error}
         </p>
       )}

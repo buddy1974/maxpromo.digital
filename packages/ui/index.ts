@@ -17,3 +17,5 @@ export { TONE_TEXT, TONE_BADGE, toneMap } from './status/tone'
 export type { Tone } from './status/tone'
 
 export { SectionHeader } from './primitives/SectionHeader'
+export { FormStatus } from './primitives/FormStatus'
+export type { FormStatusTone } from './primitives/FormStatus'

@@ -416,8 +416,8 @@ export default function NewAngebotPage() {
               style={{ border: `2px dashed ${isDragOver ? 'var(--brand-primary)' : 'var(--brand-border)'}`, background: isDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : 'var(--brand-background)', borderRadius: '4px', padding: '16px', marginBottom: '16px', minHeight: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'border-color 0.2s ease, background 0.2s ease' }}
             >
               {aiLoading && pastePreview ? (
-                <div style={{ textAlign: 'center' }}>
-                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: '0 0 8px' }}>⟳ Reading your image...</p>
+                <div role="status" style={{ textAlign: 'center' }}>
+                  <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: '0 0 8px' }}>{t.forms.aiReading}</p>
                   {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
                   <img src={pastePreview} alt="" style={{ maxWidth: '100%', maxHeight: '120px', objectFit: 'contain', opacity: 0.5 }} />
                 </div>
@@ -440,11 +440,11 @@ export default function NewAngebotPage() {
 
             <textarea value={rawText} onChange={e => setRawText(e.target.value)} rows={6} placeholder={t.forms.aiPlaceholderAngebot} style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }} />
 
-            {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>▲ {aiError}</p>}
+            {aiError && <p role="alert" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>▲ {aiError}</p>}
 
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
-                {aiLoading && !pastePreview ? 'Extracting...' : 'Generate with AI →'}
+              <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} aria-busy={aiLoading} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
+                {aiLoading && !pastePreview ? t.forms.aiExtracting : t.forms.aiGenerateButton}
               </button>
               <button onClick={() => fileRef.current?.click()} style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}>
                 ▦ Browse File

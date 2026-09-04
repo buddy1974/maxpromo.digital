@@ -83,6 +83,18 @@ function analyse(app, path, html) {
   // Viewport meta, or mobile zoom is broken.
   if (!/<meta name="viewport"/.test(html)) f.push('no viewport meta')
 
+  // WCAG 4.1.3 Status Messages. A page that can show an error or a success
+  // state must be able to announce it. Checked structurally: if the markup
+  // carries a form, it needs somewhere for a status to land.
+  const hasForm = /<form[ >]/.test(html)
+  const hasLiveRegion = /role="(alert|status)"|aria-live=/.test(html)
+  if (hasForm && !hasLiveRegion) f.push('form with no live region for status messages')
+
+  // A focusable control that is only identifiable by colour.
+  if (/<button[^>]*style="[^"]*color:[^"]*"[^>]*>\s*<\/button>/.test(html)) {
+    f.push('button conveying state by colour alone')
+  }
+
   rows.push({ app, path, h1, headings: headings.length, findings: f.length })
   f.forEach((x) => findings.push({ app, path, issue: x }))
 }

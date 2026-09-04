@@ -109,3 +109,111 @@
   text-transform: uppercase;
   margin: 0 0 var(--space-3);
 }
+
+/* ─── Focus ───────────────────────────────────────────────────────────────────
+   Defined here rather than only in each application's stylesheet, so a shared
+   component carries its own focus treatment. A component that depends on its
+   host for keyboard visibility is not portable, and the first application to
+   forget the rule ships an inaccessible button.
+
+   :focus-visible rather than :focus — a mouse user clicking a button should
+   not see a keyboard ring, but a keyboard user must.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-ghost:focus-visible {
+  outline: 2px solid var(--brand-focus);
+  outline-offset: 2px;
+}
+
+/* Disabled controls are not focus targets and must not look interactive. */
+.btn[disabled],
+.btn-primary[disabled],
+.btn-secondary[disabled] {
+  pointer-events: none;
+}
+
+/* A control that is working says so, and stops inviting a second press. */
+.btn[aria-busy='true'],
+.btn-primary[aria-busy='true'],
+.btn-secondary[aria-busy='true'] {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+/* ─── Status regions ──────────────────────────────────────────────────────────
+   Paired with role="alert" / role="status" in markup. The colour carries the
+   meaning visually; the role carries it to assistive technology. Neither on
+   its own is sufficient.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.status-error,
+.status-success,
+.status-info {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid;
+  border-radius: var(--radius-md);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+}
+.status-error {
+  border-color: color-mix(in srgb, var(--semantic-danger) 30%, transparent);
+  background: var(--semantic-danger-soft);
+  color: var(--semantic-danger);
+}
+.status-success {
+  border-color: color-mix(in srgb, var(--semantic-success) 30%, transparent);
+  background: var(--semantic-success-soft);
+  color: var(--semantic-success);
+}
+.status-info {
+  border-color: color-mix(in srgb, var(--semantic-info) 30%, transparent);
+  background: var(--semantic-info-soft);
+  color: var(--semantic-info);
+}
+
+/* ─── Empty and loading states ────────────────────────────────────────────────
+   Both are content, not absences. An empty table that renders nothing reads as
+   a bug; one that says what would be here reads as a system working correctly.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.empty-state {
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  border: 1px dashed var(--brand-border-strong);
+  border-radius: var(--radius-lg);
+  color: var(--brand-text-secondary);
+}
+.empty-state-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  color: var(--brand-text);
+  max-width: none;
+}
+.empty-state-body {
+  margin: 0 auto;
+  max-width: 44ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+}
+
+/* A skeleton stands in for content that is coming. It pulses gently; a fast
+   shimmer reads as a loading screen from a consumer app. */
+.skeleton {
+  background: var(--brand-surface-sunken);
+  border-radius: var(--radius-sm);
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
+}
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}

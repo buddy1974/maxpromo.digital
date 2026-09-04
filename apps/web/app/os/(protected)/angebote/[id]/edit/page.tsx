@@ -494,7 +494,7 @@ export default function EditAngebotPage() {
 
   if (loadError) return (
     <div style={{ padding: '40px' }}>
-      <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-danger)' }}>{loadError}</p>
+      <p role="alert" style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-danger)' }}>{loadError}</p>
       <Link href="/os/angebote" style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', textDecoration: 'none' }}>{t.angebotDetail.backToAngebote}</Link>
     </div>
   )
@@ -587,7 +587,7 @@ export default function EditAngebotPage() {
               style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }}
             />
 
-            {aiError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}>▲ {aiError}</p>}
+            {aiError && <p role="alert" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}>▲ {aiError}</p>}
 
             <div style={{ display: 'flex', gap: '8px' }}>
               <button

@@ -508,7 +508,7 @@ export default function NewInvoicePage() {
               }}
             >
               {aiLoading && pastePreview ? (
-                <div style={{ textAlign: 'center' }}>
+                <div role="status" style={{ textAlign: 'center' }}>
                   <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: '0 0 8px' }}>
                     {t.forms.aiReading}
                   </p>
@@ -543,7 +543,7 @@ export default function NewInvoicePage() {
             />
 
             {aiError && (
-              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>
+              <p role="alert" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>
                 ▲ {aiError}
               </p>
             )}
@@ -551,7 +551,7 @@ export default function NewInvoicePage() {
             <div style={{ display: 'flex', gap: '10px' }}>
               <button
                 onClick={handleGenerateAI}
-                disabled={aiLoading || !rawText.trim()}
+                disabled={aiLoading || !rawText.trim()} aria-busy={aiLoading}
                 style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
               >
                 {aiLoading && !pastePreview ? t.forms.aiExtracting : t.forms.aiGenerateButton}

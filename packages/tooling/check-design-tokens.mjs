@@ -25,6 +25,7 @@
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
+import { stripComments } from './strip-comments.mjs'
 import { join, relative, sep } from 'node:path'
 
 const ROOT = process.cwd()
@@ -115,6 +116,21 @@ const ALLOW = [
  */
 const ACCENT_TEXT = /text-\[var\(--(?:color|brand)-primary\)\]|(?<![-\w])(?:color|stroke):\s*'?var\(--(?:color|brand)-primary\)'?/g
 
+/**
+ * The accent bound to a local identifier.
+ *
+ * The rule above matches the token at the point of use. Binding it to a name
+ * first — `const ORANGE = 'var(--color-primary)'`, then `color: ORANGE` —
+ * slips past it, and did: three contrast failures lived on the homepage behind
+ * exactly that alias, under a name that had outlived the colour it described
+ * by two brand generations.
+ *
+ * There is no legitimate reason to rename a token that is already short and
+ * already the canonical name. Reference it directly, or, if a component
+ * genuinely needs a semantic of its own, add one to the token package.
+ */
+const ACCENT_ALIAS = /\b(?:const|let|var)\s+\w+\s*(?::[^=]+)?=\s*'?"?var\(--(?:color|brand)-primary\)/g
+
 // A colour literal is not preceded by `&` (an HTML numeric entity such as
 // &#039;) or by a word character.
 const HEX = /(?<![&\w])#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?\b/g
@@ -155,25 +171,24 @@ for (const dir of SCAN_DIRS) {
   }
   for (const file of files) {
     const source = readFileSync(file, 'utf8')
-    const lines = source.split('\n')
 
-    // Comments document history and legitimately name retired colours, so
-    // they are skipped — including the interior of a block comment, which does
-    // not necessarily start its line with an asterisk.
-    let inBlock = false
+    // Comments document history and legitimately name retired colours, so they
+    // are removed before scanning. That is done by a string-aware pass rather
+    // than line-by-line flags: the previous implementation could be switched
+    // off for the remainder of a file by an ordinary line comment containing a
+    // path glob, and was. See packages/tooling/strip-comments.mjs.
+    const lines = stripComments(source).split('\n')
 
     lines.forEach((line, i) => {
       const trimmed = line.trim()
-      const opens = line.includes('/*')
-      const closes = line.includes('*/')
-      if (inBlock) {
-        if (closes) inBlock = false
-        return
-      }
-      if (opens && !closes) { inBlock = true; return }
-      if (trimmed.startsWith('*') || trimmed.startsWith('//') || trimmed.startsWith('/*')) return
 
-      for (const [re, label] of [[HEX, 'hex literal'], [PALETTE, 'palette class'], [RGBA, 'rgba literal'], [ACCENT_TEXT, 'accent used as text (1.51:1)']]) {
+      for (const [re, label] of [
+        [HEX, 'hex literal'],
+        [PALETTE, 'palette class'],
+        [RGBA, 'rgba literal'],
+        [ACCENT_TEXT, 'accent used as text (1.51:1)'],
+        [ACCENT_ALIAS, 'accent aliased to a local name (hides it from the rule above)'],
+      ]) {
         re.lastIndex = 0
         let m
         while ((m = re.exec(line)) !== null) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { TONE_BADGE } from "@maxpromo/ui";
+import { FormStatus } from "@maxpromo/ui";
 
 /**
  * components/auth/LoginForm.tsx
@@ -8,7 +8,7 @@ import { TONE_BADGE } from "@maxpromo/ui";
  * Client island: handles the login form submission.
  * Calls signIn("credentials") from next-auth/react.
  *
- * Design: v2.1 light system, Maxpromo accent orange.
+ * Design: platform design system. Colour comes from @maxpromo/design-tokens.
  * Language: German UI (target market is German SMEs).
  * No public signup — accounts are provisioned by Maxpromo.
  */
@@ -63,6 +63,7 @@ export default function LoginForm() {
           className="field-input"
           placeholder="name@unternehmen.de"
           disabled={isPending}
+          aria-busy={isPending}
         />
       </label>
 
@@ -82,12 +83,8 @@ export default function LoginForm() {
         />
       </label>
 
-      {/* Error message */}
-      {error && (
-        <p className={`rounded-md border px-3.5 py-2.5 text-sm ${TONE_BADGE.critical}`}>
-          {error}
-        </p>
-      )}
+      {/* Error message. The region is always present; only its contents change. */}
+      <FormStatus tone="critical">{error}</FormStatus>
 
       {/* Submit */}
       <button type="submit" disabled={isPending} className="btn-primary mt-1">
