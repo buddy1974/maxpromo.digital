@@ -230,3 +230,26 @@ stated client saving by seventeen per cent; deciding whether the figures are
 formatting fix, and CLAUDE.md makes a public claim the infrastructure does not
 support a stop-and-escalate condition.
 
+## 2026-09-04 - ADR-0007: claims are audited, never auto-corrected
+
+**Decision:** `audit:claims` reports currency disagreement and results stated
+as estimates, in `certify` rather than `verify`, and never rewrites.
+**Why:** The case-studies page promises "where a number appears, it came from
+the system rather than from an estimate", and two things were wrong underneath
+it that no single string reveals - the same client saving in two currencies,
+and two results carrying hedges. Correcting either means knowing what was
+delivered; a tool that guessed would invent a fact about a client.
+
+## 2026-09-04 - v9.0: seven findings flagged rather than fixed
+
+**Decision:** The pricing page's marketing retainer, "full account team", the
+build-duration disagreement, the two meeting lengths, the maintenance wording,
+the three orphaned content sets and the invisible engineering discipline are
+recorded as known-risks 38-44 and left in place.
+**Why:** Every one of them is a statement about what the company sells,
+promises or does. CLAUDE.md makes a public claim the infrastructure does not
+support a stop-and-escalate condition, and v9's own brief says to flag rather
+than rewrite where confirmation is required.
+**How to apply:** The test is whether correcting the finding requires knowing a
+business fact. Two names for one CTA does not; what maintenance costs does.
+

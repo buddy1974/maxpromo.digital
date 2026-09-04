@@ -525,3 +525,95 @@ or AI cliché in either.
 
 Nothing pushed. Nothing merged to main.
 
+## 2026-09-04 - v9.0: what the site claims, and whether it agrees with itself
+
+Branch feature/track-b. One batch. Full certification green - eight gates,
+accessibility across 38 rendered routes, cross-application consistency against
+both running apps - plus a new report-only audit that is deliberately not
+green, because its findings need answers this session cannot give.
+
+### The shape of this pass
+
+v8 fixed what the site said twice. v9 asked whether what it says is true, and
+almost everything found is a business fact rather than a defect. Seven of the
+nine findings are recorded and left in place; the brief's own instruction for
+claims is to flag rather than rewrite, and CLAUDE.md makes a public claim the
+infrastructure does not support a stop-and-escalate condition.
+
+### A claim is now checked like a token
+
+`audit-claims.mjs` reads the message catalogues and reports two things that no
+single string reveals: the same magnitude carrying more than one currency
+symbol, and a hedge word in a string whose key presents it as a result.
+Magnitudes are normalised, so 14k, 14.000 and 14,000 compare equal across the
+German and English number formats.
+
+Five findings, symmetric across both locales, on 1,376 strings, with no false
+positives. ADR-0007. It reports and never rewrites, and it sits in `certify`
+rather than `verify`, because a check whose findings need a business decision
+cannot block every merge.
+
+Its hedge rule fired on "Client satisfaction scores increased significantly"
+and missed "Kundenzufriedenheit deutlich gestiegen" - the stem list was built
+from infinitives and German puts the change in the participle. A rule that
+catches one half of a translated pair looks correct in every English review it
+will ever get.
+
+### What the case studies promise, and what they contain
+
+The page opens: "Where a number appears, it came from the system rather than
+from an estimate. Where we cannot evidence something, it is not here." Under
+that standard:
+
+- The same client saving is €14k/mo on the homepage and £14,000/month here.
+- "Cash flow improved by approximately 18 days per quarter." "Client
+  satisfaction scores increased significantly."
+- The £14,000 does not follow from its own paragraph: three people, two days a
+  month each, is six person-days - about £2,300 a person-day.
+
+### What the site disagrees with itself about
+
+- **How long a build takes.** The process section commits to 1-4 weeks. The
+  FAQ four sections below says 2 to 6. The three case studies were delivered
+  in 4, 6 and 8 - every one outside the process commitment.
+- **How long the first meeting is.** 30 minutes on the homepage, twice; around
+  45 on /about and all six industry pages.
+- **Whether maintenance is included.** The homepage FAQ says "included, not
+  billed as extras". The pricing page sells it as €149-399 a month.
+
+### What the pricing page sells
+
+Three monthly plans whose contents are website maintenance, a Google Business
+profile, 4 to 12 social posts a month, review responses, a newsletter, Google
+Ads management and competitor monitoring. That is a marketing retainer, on the
+page where a buyer goes to understand the commercial relationship, under a
+brand whose permanent rule is never to be positioned as a website or marketing
+agency - and beside an /about page that says most businesses do not need
+another website. One of the two is wrong about what the company sells.
+
+Also "Full account team", in a business whose Impressum, footer and tax clause
+all state one person.
+
+### Verified without change
+
+The six solution pages answer every question the brief asks of a service page
+- who it is for, the business problem, the approach, the outcome, the next
+step - and each carries an explicit "what is included, and what is not",
+including "a chatbot that guesses without a grounded knowledge base" under Not
+included. With the industry pages, they remain the strongest work on the site.
+
+Three content sets - a testimonial block, an ROI calculator, a six-question
+FAQ - are written, translated and read by nothing. Recorded rather than
+removed: unlike the sections deleted in v8 these look planned, but `roi`
+carries a "60-90 days payback" claim sitting one wire-up away from publication.
+
+### Not written
+
+The platform runs eight merge gates, keeps seven decision records and audits
+accessibility on every public route before anything merges. A business buying a
+mission-critical system asks precisely this, and no public page mentions it. I
+can verify the platform is built that way; I cannot verify client systems are,
+and a claim about delivery practice has to come from Marcel.
+
+Nothing pushed. Nothing merged to main.
+

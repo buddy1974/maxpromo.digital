@@ -68,6 +68,11 @@ rate limit and an explicit auth decision recorded. Personal data must not
 change region or provider without a legal review — see the open item in
 `known-risks.md`.
 
+**Claims.** A number stated publicly about a client outcome is a commitment. It
+must agree with itself across every page and both languages, and it must not
+hedge where the page presents it as a result. `audit:claims` reports;
+a human answers. An AI agent does not decide what was delivered.
+
 ---
 
 ## Design rules the audit enforces
@@ -168,11 +173,19 @@ whichever port was free, and the two live audits address `:3021` by name. A
 | `audit:a11y` | Landmarks, heading order, alt text, accessible names, labels, titles — on rendered output across every public route | needs both apps running |
 | `audit:consistency` | Do both applications resolve the same tokens, type scale and component classes? | needs both apps running |
 | `audit:platform` | Dead code, unused assets, unused exports, dependency direction | report only |
+| `audit:claims` | Does the same figure carry two currencies? Is a result stated as an estimate? | report only |
 
 `audit:a11y` and `audit:consistency` read **rendered HTML and emitted CSS**, not
 source. That distinction matters: a landmark that exists in a layout but never
 wraps the page looks correct in the source and is missing in the output, and
 two stylesheets can define the same class name and resolve differently.
+
+`audit:claims` and `audit:platform` report and never edit, and they are in
+`certify` rather than `verify` for the same reason: their findings need a human
+answer, so putting them in the merge gate would block every commit on a
+business question. See **ADR-0007** — resolving a claim requires knowing
+something about delivered work that a tool cannot know, and a tool that "fixed"
+a currency would be inventing a fact about a client.
 
 `audit:platform` reports and never edits. A tool that deletes what it believes
 is unused will eventually be wrong about something that matters — on its first

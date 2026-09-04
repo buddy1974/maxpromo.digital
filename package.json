@@ -8,11 +8,12 @@
     "packages/*"
   ],
   "scripts": {
-    "certify": "npm run verify && npm run audit:a11y && npm run audit:consistency && npm run audit:platform",
+    "certify": "npm run verify && npm run audit:a11y && npm run audit:consistency && npm run audit:platform && npm run audit:claims",
     "verify": "npm run check:tokens && npm run check:token-inputs && npm run check:icons && npm run check:responsive && npm run audit:typography && npm run typecheck && npm run lint && npm run build",
     "audit:a11y": "node packages/tooling/audit-a11y.mjs",
     "audit:consistency": "node packages/tooling/audit-consistency.mjs",
     "audit:platform": "node packages/tooling/audit-platform.mjs",
+    "audit:claims": "node packages/tooling/audit-claims.mjs",
     "build": "npm run build --workspaces --if-present",
     "check:responsive": "node packages/tooling/audit-responsive.mjs",
     "check:tokens": "node packages/tooling/check-design-tokens.mjs",
