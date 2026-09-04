@@ -22,10 +22,13 @@ const COLUMNS = [
   {
     titleKey: 'colCompany',
     links: [
-      { key: 'about',      href: '/about' },
-      { key: 'solutions',  href: '/solutions' },
-      { key: 'industries', href: '/industries' },
-      { key: 'contact',    href: '/contact' },
+      { key: 'about',       href: '/about' },
+      { key: 'solutions',   href: '/solutions' },
+      { key: 'industries',  href: '/industries' },
+      // The one product marketed publicly from the hub, and until v8.0 it had
+      // exactly one inbound link on the entire site: a homepage section.
+      { key: 'agentBureau', href: '/agent-bureau' },
+      { key: 'contact',     href: '/contact' },
     ],
   },
   {

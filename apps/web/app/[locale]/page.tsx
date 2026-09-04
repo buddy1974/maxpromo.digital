@@ -257,30 +257,16 @@ export default async function HomePage() {
 
       {/* 6a, Philosophy */}
       <section data-section="philosophy" style={{ background: 'var(--brand-background)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
-        <div style={{ maxWidth: 'var(--container)', margin: '0 auto', display: 'grid', gap: 'var(--space-10)' }} className="grid-cols-1 lg:grid-cols-2">
-          <div>
-            <SectionHeader label={tPhilosophy('eyebrow')}>
-                {tPhilosophy('title')}
-              </SectionHeader>
-            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.85, marginTop: 'var(--space-5)', whiteSpace: 'pre-line' }}>
-              {tPhilosophy('body')}
-            </p>
-            <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', color: 'var(--brand-text-secondary)', marginTop: 'var(--space-6)', letterSpacing: '0.03em' }}>
-              → {tPhilosophy('closing')}
-            </p>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
-            {(['step1', 'step2', 'step3', 'step4', 'step5'] as const).map((s, i) => (
-              <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', padding: '18px 24px' }}>
-                <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: 'var(--radius-sm)', padding: '3px 8px', flexShrink: 0 }}>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span style={{ fontFamily: 'var(--brand-font-body)', fontSize: '16px', color: 'var(--brand-text)', letterSpacing: '-0.01em' }}>
-                  {tPhilosophy(s)}
-                </span>
-              </div>
-            ))}
-          </div>
+        <div style={{ maxWidth: 'var(--container-narrow)', margin: '0 auto' }}>
+          <SectionHeader label={tPhilosophy('eyebrow')}>
+            {tPhilosophy('title')}
+          </SectionHeader>
+          <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.85, marginTop: 'var(--space-5)', whiteSpace: 'pre-line' }}>
+            {tPhilosophy('body')}
+          </p>
+          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', color: 'var(--brand-text-secondary)', marginTop: 'var(--space-6)', letterSpacing: '0.03em' }}>
+            → {tPhilosophy('closing')}
+          </p>
         </div>
       </section>
 
@@ -387,9 +373,6 @@ export default async function HomePage() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', justifyContent: 'center', marginBottom: '1.25rem' }}>
             <Link href="/contact" className="btn btn-primary">
               {t('finalCtaPrimary')}
-            </Link>
-            <Link href="/contact" className="btn btn-secondary">
-              {t('finalCtaSecondary')}
             </Link>
           </div>
           <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>

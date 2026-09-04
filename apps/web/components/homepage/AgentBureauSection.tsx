@@ -47,74 +47,6 @@ const ORBIT_NODES = {
   ],
 } as const
 
-const WORKFLOW = {
-  de: [
-    { name: 'Audit',         caption: 'Abläufe prüfen' },
-    { name: 'Diagnose',      caption: 'Engpässe finden' },
-    { name: 'Agent Team',    caption: 'Aufgaben verteilen' },
-    { name: 'Human Review',  caption: 'Mensch gibt frei', gate: true },
-    { name: 'Execute',       caption: 'Aktion ausführen' },
-    { name: 'Log',           caption: 'Alles dokumentiert' },
-  ],
-  en: [
-    { name: 'Audit',         caption: 'Scan workflows' },
-    { name: 'Diagnose',      caption: 'Find bottlenecks' },
-    { name: 'Agent Team',    caption: 'Assign tasks' },
-    { name: 'Human Review',  caption: 'Human approves', gate: true },
-    { name: 'Execute',       caption: 'Run the action' },
-    { name: 'Log',           caption: 'Everything logged' },
-  ],
-} as const
-
-const CAPABILITY_GROUPS = {
-  de: [
-    {
-      key: 'analyse', title: 'Analysieren & Vorbereiten', featured: false,
-      items: [
-        { key: 'audit',  icon: 'audit',  title: 'AI Audit Console',     body: 'Findet Engpässe, Risiken und Automatisierungschancen.', tags: ['Engpässe', 'Risiken'] },
-        { key: 'intake', icon: 'intake', title: 'Document Intake Desk', body: 'Sortiert Dokumente, erkennt Lücken und bereitet Pakete vor.', tags: ['Dokumente', 'Lücken'] },
-      ],
-    },
-    {
-      key: 'coordinate', title: 'Koordinieren & Freigeben', featured: true,
-      items: [
-        { key: 'waiting',  icon: 'waiting',  title: 'Customer Waiting Room', body: 'Sammelt Anfragen, ordnet Prioritäten und hält Kunden sichtbar.', tags: ['Anfragen', 'Priorität'] },
-        { key: 'approval', icon: 'approval', title: 'Approval Desk',         body: 'Entscheidungen bleiben kontrolliert, dokumentiert und freigabepflichtig.', tags: ['Kontrolle', 'Freigabe'] },
-      ],
-    },
-    {
-      key: 'monitor', title: 'Verfolgen & Kontrollieren', featured: false,
-      items: [
-        { key: 'shadow', icon: 'shadow', title: 'Shadow AI Governance', body: 'Zeigt, wo KI im Betrieb genutzt wird und wo Kontrolle fehlt.', tags: ['Transparenz', 'Kontrolle'] },
-        { key: 'logs',   icon: 'logs',   title: 'Protokoll & Nachverfolgung', body: 'Jede Aktion protokolliert, mit Zeitstempel und Ergebnis.', tags: ['Protokoll', 'Zeitstempel'] },
-      ],
-    },
-  ],
-  en: [
-    {
-      key: 'analyse', title: 'Analyse & Prepare', featured: false,
-      items: [
-        { key: 'audit',  icon: 'audit',  title: 'AI Audit Console',     body: 'Identifies bottlenecks, risks, and automation opportunities.', tags: ['Bottlenecks', 'Risk'] },
-        { key: 'intake', icon: 'intake', title: 'Document Intake Desk', body: 'Sorts documents, spots gaps, and prepares delivery packages.', tags: ['Documents', 'Gaps'] },
-      ],
-    },
-    {
-      key: 'coordinate', title: 'Coordinate & Approve', featured: true,
-      items: [
-        { key: 'waiting',  icon: 'waiting',  title: 'Customer Waiting Room', body: 'Collects requests, ranks priorities, keeps clients visible.', tags: ['Requests', 'Priority'] },
-        { key: 'approval', icon: 'approval', title: 'Approval Desk',         body: 'Decisions stay controlled, documented, and approval-gated.', tags: ['Control', 'Approval'] },
-      ],
-    },
-    {
-      key: 'monitor', title: 'Monitor & Govern', featured: false,
-      items: [
-        { key: 'shadow', icon: 'shadow', title: 'Shadow AI Governance', body: 'Shows where AI is used in the business and where control is missing.', tags: ['Visibility', 'Control'] },
-        { key: 'logs',   icon: 'logs',   title: 'Logs & Audit Trail',   body: 'Every action is logged, with a timestamp and outcome.', tags: ['Log', 'Timestamp'] },
-      ],
-    },
-  ],
-} as const
-
 // =============================================================================
 // ICONS — inline SVG, matching the existing icon style already used across
 // this page (stroke-based, 1.75–2px width, no fills)
@@ -179,34 +111,7 @@ const STYLES = `
   }
   .hab-node:hover .hab-node-icon { border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent); transform: translateY(-2px); }
 
-  .hab-workflow { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
-  .hab-workflow::-webkit-scrollbar { height: 4px; }
-  .hab-workflow::-webkit-scrollbar-thumb { background: var(--brand-border); border-radius: var(--radius-sm); }
-  .hab-step {
-    scroll-snap-align: start; flex: 0 0 auto; display: flex; align-items: center; gap: var(--space-2);
-    background: var(--brand-background);
-    border: 1px solid var(--brand-border); border-radius: var(--radius-full);
-    padding: 10px 16px; white-space: nowrap;
-  }
-  .hab-step-gate {
-    background: color-mix(in srgb, var(--brand-primary) 5%, transparent);
-    border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
-  }
-  .hab-step-arrow { flex: 0 0 auto; color: color-mix(in srgb, var(--brand-primary) 45%, transparent); font-size: 13px; }
-
-  .hab-tag {
-    display: inline-block; font-family: var(--brand-font-mono); font-size: 11px; letter-spacing: 0.02em;
-    color: var(--brand-text-secondary); background: var(--brand-surface-subtle); border: 1px solid var(--brand-border);
-    border-radius: var(--radius-md); padding: 2px 7px; margin: 8px 6px 0 0;
-  }
-  .hab-panel-featured .hab-tag { color: var(--brand-primary-text); background: color-mix(in srgb, var(--brand-primary) 8%, transparent); border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent); }
-
-  .hab-panel { transition: transform var(--duration-base) var(--ease), border-color var(--duration-base) var(--ease), box-shadow var(--duration-base) var(--ease); }
-  .hab-panel:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-  .hab-panel-featured { border-width: 2px !important; }
-
   @media (min-width: 1024px) {
-    .hab-capabilities { grid-template-columns: 1fr 1.14fr 1fr; align-items: stretch; }
   }
 
   @media (max-width: 900px) {
@@ -231,8 +136,6 @@ const STYLES = `
 export function AgentBureauSection({ locale }: { locale: string }) {
   const isDE   = locale === 'de'
   const nodes  = isDE ? ORBIT_NODES.de : ORBIT_NODES.en
-  const flow   = isDE ? WORKFLOW.de : WORKFLOW.en
-  const groups = isDE ? CAPABILITY_GROUPS.de : CAPABILITY_GROUPS.en
 
   // 6 nodes evenly spaced around the circle, starting at 12 o'clock.
   const RADIUS = 42
@@ -259,8 +162,8 @@ export function AgentBureauSection({ locale }: { locale: string }) {
             </p>
             <h2 style={{ marginBottom: '1.25rem', maxWidth: '30rem' }}>
               {isDE
-                ? <>Ein KI-Team, das Arbeit <span>vorbereitet, koordiniert und ausführt.</span></>
-                : <>An AI team that <span>prepares, coordinates and executes work.</span></>}
+                ? <>Ihr Team trifft dieselben Entscheidungen. <span>Es bereitet sie nicht mehr selbst vor.</span></>
+                : <>Your team makes the same decisions. <span>It no longer prepares them alone.</span></>}
             </h2>
             <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, marginBottom: 'var(--space-6)', maxWidth: '30rem' }}>
               {isDE
@@ -268,15 +171,12 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 : 'Agent Bureau audits your workflows, assigns tasks, prepares decisions, and executes approved actions across your business systems.'}
             </p>
 
-            {/* Routing correction 2026-07-25: this homepage hero is an entry point,
-                not the dedicated page — both CTAs now route to /systems/agent-bureau
-                first. That page carries its own external product / contact CTA pair. */}
+            {/* One destination, one button. This carried two — "View system" and
+                "Learn more" — pointing at the same page under different names,
+                which asks the reader to choose between two words for one act. */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', alignItems: 'center', marginBottom: 'var(--space-5)' }}>
               <Link href="/agent-bureau" className="btn btn-primary">
-                {isDE ? 'System ansehen →' : 'View system →'}
-              </Link>
-              <Link href="/agent-bureau" className="btn btn-secondary">
-                {isDE ? 'Mehr erfahren →' : 'Learn more →'}
+                {isDE ? 'Agent Bureau ansehen →' : 'See Agent Bureau →'}
               </Link>
             </div>
 
@@ -326,77 +226,6 @@ export function AgentBureauSection({ locale }: { locale: string }) {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* ─────────────────────────────────────────── WORKFLOW, compact connected strip */}
-        <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
-          {isDE ? 'Der Ablauf' : 'The workflow'}
-        </p>
-        <div className="hab-workflow" style={{ marginBottom: 'var(--space-8)' }}>
-          {flow.map((step, i) => (
-            <div key={step.name} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div className={`hab-step${'gate' in step && step.gate ? ' hab-step-gate' : ''}`}>
-                <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-primary-text)', flexShrink: 0 }}>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <span>
-                  <span style={{ display: 'block', fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: '14px', color: 'var(--brand-text)', lineHeight: 1.2 }}>
-                    {step.name}
-                  </span>
-                  <span style={{ display: 'block', fontFamily: 'var(--brand-font-body)', fontSize: '12px', color: 'gate' in step && step.gate ? 'var(--brand-primary-text)' : 'var(--brand-text-secondary)', lineHeight: 1.3 }}>
-                    {step.caption}
-                  </span>
-                </span>
-              </div>
-              {i < flow.length - 1 && <span className="hab-step-arrow" aria-hidden="true">→</span>}
-            </div>
-          ))}
-        </div>
-
-        {/* ─────────────────────────────────────────── CAPABILITIES, 3 grouped panels
-            Featured (Coordinate & Approve) panel gets extra padding + a wider grid
-            track (see .hab-capabilities @ ≥1024px) so it reads as the visual center
-            of gravity rather than three identically-weighted boxes. */}
-        <div className="hab-capabilities" style={{ display: 'grid', gap: '18px' }}>
-          {groups.map((group) => (
-            <div
-              key={group.key}
-              className={`hab-panel${group.featured ? ' hab-panel-featured' : ''}`}
-              style={{
-                background: group.featured ? 'color-mix(in srgb, var(--brand-primary) 3%, transparent)' : 'var(--brand-background)',
-                border: `1px solid ${group.featured ? 'color-mix(in srgb, var(--brand-primary) 35%, transparent)' : 'var(--brand-border)'}`,
-                borderRadius: 'var(--radius-lg)',
-                padding: group.featured ? '30px 26px' : '24px',
-                display: 'flex', flexDirection: 'column', gap: '18px',
-              }}
-            >
-              <h3 className="h-card" style={{ color: 'var(--brand-text-secondary)', textTransform: 'uppercase', margin: 0 }}>
-                {group.title}
-              </h3>
-              {group.items.map((item) => (
-                <div key={item.key} style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'flex-start' }}>
-                  <span style={{
-                    width: group.featured ? '40px' : '36px', height: group.featured ? '40px' : '36px',
-                    borderRadius: 'var(--radius-lg)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}>
-                    <CapabilityIcon name={item.icon} />
-                  </span>
-                  <div>
-                    <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: group.featured ? '18px' : 'var(--text-body)', color: 'var(--brand-text)', letterSpacing: '-0.01em', margin: '0 0 var(--space-1) 0', lineHeight: 1.3 }}>
-                      {item.title}
-                    </p>
-                    <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.6, margin: 0 }}>
-                      {item.body}
-                    </p>
-                    <div>
-                      {item.tags.map((tag) => <span key={tag} className="hab-tag">{tag}</span>)}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
         </div>
 
       </div>

@@ -58,6 +58,14 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
         : 'Specific projects: the situation, the approach, the result. Without numbers we cannot evidence.',
     },
     {
+      href: '/automation-lab',
+      label: isDE ? 'Referenz' : 'Reference',
+      title: isDE ? 'Die Systeme, auf denen wir bauen' : 'The runtimes we build on',
+      desc: isDE
+        ? 'Ein Verzeichnis der Entscheidungs-, Koordinations- und Kommunikationssysteme, die wir installieren, und wofür jedes gedacht ist.'
+        : 'A catalogue of the decision, coordination and communication runtimes we install, and what each one is for.',
+    },
+    {
       href: '/pricing',
       label: isDE ? 'Preise' : 'Pricing',
       title: isDE ? 'Was eine Arbeit kostet' : 'What a piece of work costs',

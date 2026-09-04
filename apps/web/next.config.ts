@@ -82,6 +82,12 @@ const nextConfig: NextConfig = {
         permanent: true,
       })),
 
+      // /ai-websites served the same page as /solutions/websites-platforms —
+      // identical H1, identical body, no canonical tag, no inbound link, and
+      // both submitted in the sitemap. It was a duplicate address for a page
+      // that already has one, so it becomes a redirect to it.
+      { source: `${L}/ai-websites`, destination: '/:locale/solutions/websites-platforms', permanent: true },
+
       // Agent Bureau keeps a public home, one level up.
       { source: `${L}/systems/agent-bureau`, destination: '/:locale/agent-bureau', permanent: true },
       { source: `${L}/products/agent-bureau`, destination: '/:locale/agent-bureau', permanent: true },

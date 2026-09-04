@@ -66,9 +66,13 @@ const AGENT_BUREAU = {
   industry:       'operations',
 
   // ── Content
+  // Business first, technology second — the rule in the core memory, and the
+  // order the subline and description below already follow. This read
+  // "Intelligent AI agents. Secure processes." until v8.0, which named the
+  // technology twice and the outcome not at all.
   headline: {
-    en: 'Intelligent AI agents. Secure processes.',
-    de: 'Intelligente KI-Agenten. Sichere Prozesse.',
+    en: 'The busywork gets prepared. Your team still decides.',
+    de: 'Die Routinearbeit wird vorbereitet. Ihr Team entscheidet weiterhin.',
   },
   subline: {
     en: 'We automate the busywork. You approve the decisions.',

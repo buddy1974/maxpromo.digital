@@ -49,7 +49,8 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataR
 
   { path: '/about',                          priority: 0.7, changeFrequency: 'monthly' },
   { path: '/contact',                        priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/ai-websites',                    priority: 0.5, changeFrequency: 'monthly' },
+  // /ai-websites is gone: it served the same page as
+  // /solutions/websites-platforms and now redirects there permanently.
   { path: '/automation-lab',                 priority: 0.5, changeFrequency: 'monthly' },
   { path: '/impressum',                      priority: 0.3, changeFrequency: 'yearly'  },
   { path: '/privacy',                        priority: 0.3, changeFrequency: 'yearly'  },

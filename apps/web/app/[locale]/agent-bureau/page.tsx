@@ -135,7 +135,9 @@ export default async function AgentBureauPage({
                 {isDE ? 'MAX AGENT BUREAU · KI-BÜRO' : 'MAX AGENT BUREAU · AI OFFICE'}
               </p>
               <h1 className="mp-hero-2" style={{ marginBottom: 'var(--space-5)', maxWidth: '760px' }}>
-                {isDE ? <>Intelligente KI-Agenten.<br />Sichere Prozesse.</> : <>Intelligent AI agents.<br />Secure processes.</>}
+                {isDE
+                  ? <>Die Routinearbeit wird vorbereitet.<br />Ihr Team entscheidet weiterhin.</>
+                  : <>The busywork gets prepared.<br />Your team still decides.</>}
               </h1>
               <p className="mp-hero-3" style={{ fontFamily: 'var(--brand-font-body)', fontSize: '18px', color: MUTED, maxWidth: '580px', lineHeight: 1.75, marginBottom: '2.5rem' }}>
                 {isDE
