@@ -27,7 +27,7 @@ const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
 
 function StatusBadge({ status, label }: { status: string; label: string }) {
   const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'var(--brand-surface-sunken)' }
-  return <span style={{ fontFamily: mono, fontSize: '9px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>{label}</span>
+  return <span style={{ fontFamily: mono, fontSize: '10px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>{label}</span>
 }
 
 /** Raw DB status values — the filter identity. Display text comes from t.status.angebot. */
@@ -136,7 +136,7 @@ export default function AngebotePage() {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -184,7 +184,7 @@ export default function AngebotePage() {
                           {converting === a.id ? '⟳' : t.angebotList.convert}
                         </button>
                       ) : (
-                        <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.06em' }}>{t.angebotList.converted}</span>
+                        <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.06em' }}>{t.angebotList.converted}</span>
                       )}
                       <button
                         onClick={() => deleteAngebot(a.id, a.angebot_number)}

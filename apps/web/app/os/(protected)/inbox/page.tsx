@@ -107,7 +107,7 @@ export default function InboxPage() {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -132,12 +132,12 @@ export default function InboxPage() {
                     {entry.subject}
                   </td>
                   <td style={{ padding: '11px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: TYPE_COLOR[entry.type], background: TYPE_COLOR[entry.type] + '20', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: TYPE_COLOR[entry.type], background: TYPE_COLOR[entry.type] + '20', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
                       {typeLabel[entry.type]}
                     </span>
                   </td>
                   <td style={{ padding: '11px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: entry.status === 'sent' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: entry.status === 'sent' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                       {statusLabel[entry.status]}
                     </span>
                   </td>

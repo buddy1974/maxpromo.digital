@@ -15,13 +15,27 @@ From the workspace root. It runs, in order:
 
 | # | Gate | What it catches |
 |---|---|---|
-| 1 | **Design token audit** | Hex literals, raw Tailwind palette classes, rgba literals, and the brand accent used as a text colour — anywhere outside the token package |
-| 2 | **TypeScript** | `tsc --noEmit` in every workspace |
-| 3 | **ESLint** | Zero errors in every workspace. Warnings are allowed; errors are not |
-| 4 | **Production build** | Every application builds |
+| 1 | **Design token audit** | Hex literals, raw Tailwind palette classes, rgba literals, the brand accent used as a text colour, and the accent aliased to a local name to evade that rule — anywhere outside the token package |
+| 2 | **Icon audit** | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
+| 3 | **Responsive audit** | Every grid collapses; no fixed width exceeds a 380px viewport |
+| 4 | **Typography audit** | Any size below the 10px legibility floor, and any sub-pixel size |
+| 5 | **TypeScript** | `tsc --noEmit` in every workspace |
+| 6 | **ESLint** | Zero errors in every workspace. Warnings are allowed; errors are not |
+| 7 | **Production build** | Every application builds |
 
-The token audit runs first on purpose: it is the fastest and it catches the
-class of regression this platform has had most often.
+The static audits run first on purpose: they are the fastest and they catch the
+classes of regression this platform has had most often.
+
+### Every check must be able to fail
+
+Four checks in this repository have silently passed — reported success while
+examining nothing. See **ADR-0004**. The rules it imposes apply to anything
+added to `packages/tooling/`:
+
+- Resolve scan targets explicitly and print the count.
+- Exit non-zero on zero targets.
+- Use `strip-comments.mjs` for comment state. Never a line-by-line flag.
+- Demonstrate the rule firing on the real codebase before believing it.
 
 ---
 
@@ -68,7 +82,13 @@ the green brand.
 
 **Typography.** One scale, one family. Hierarchy comes from weight, size and
 composition — never from a second typeface. Headings and paragraphs carry a
-measure; no call site sets its own.
+measure; no call site sets its own. Nothing below 10px. Weight 700 exists in
+the scale for one role — the small uppercase mono label and the numeric, where
+600 disappears — and headings never use it.
+
+**Iconography.** One set, in `@maxpromo/ui`. Stroke only, 1.5px, currentColor,
+four sizes. Icons are named at the call site, never typed as a character, and
+never carried inside a translation string. See **ADR-0003**.
 
 **Spacing.** Three section rhythms. A section not using one of them fails
 review.
@@ -114,7 +134,9 @@ npm run certify           # verify + the three audits that need one.
 | Command | Answers | In `verify`? |
 |---|---|---|
 | `check:tokens` | Is any colour defined outside the token package? | yes |
+| `check:icons` | Is any Unicode mark standing in for an icon? | yes |
 | `check:responsive` | Does every grid collapse? Does anything exceed a 380px viewport? | yes |
+| `audit:typography` | Is any type below the legibility floor, or on a sub-pixel size? | yes |
 | `audit:a11y` | Landmarks, heading order, alt text, accessible names, labels, titles — on rendered output across every public route | needs both apps running |
 | `audit:consistency` | Do both applications resolve the same tokens, type scale and component classes? | needs both apps running |
 | `audit:platform` | Dead code, unused assets, unused exports, dependency direction | report only |

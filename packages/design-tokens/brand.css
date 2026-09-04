@@ -190,6 +190,14 @@
   --weight-subhead:  600;   /* H2, H3 */
   --weight-medium:   500;
   --weight-body:     400;
+  /* 700 is in the system because the product needs it, not because headings
+     want it. Its one role is the small uppercase mono label and the numeric —
+     10 to 12px, wide tracking — where 600 simply disappears. A typography
+     audit found 118 uses of it against a scale that stopped at 600; the scale
+     was incomplete, rather than 118 call sites being wrong. Headings use
+     --weight-heading. A heading at 700 is the startup voice this design
+     brief retired. */
+  --weight-bold:     700;
 
   --leading-tight:   1.15;  /* H1 */
   --leading-snug:    1.25;  /* H2 */

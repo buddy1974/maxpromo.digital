@@ -21,7 +21,7 @@ import { fmtCurrency, fmtUnitPrice } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
 
 const mono = { fontFamily: 'monospace' } as const
-const th: React.CSSProperties = { padding: '9px 12px', textAlign: 'left', ...mono, fontSize: '10.5px', color: 'var(--brand-text-inverted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }
+const th: React.CSSProperties = { padding: '9px 12px', textAlign: 'left', ...mono, fontSize: '10px', color: 'var(--brand-text-inverted)', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }
 
 /** Full-width dark/accent bar used for TOTAL DUE / ANGEBOTSSUMME and any single key→amount row — mirrors the Midas reference's bar treatment in Maxpromo's own black + orange palette. */
 function TotalBar({ label, sublabel, amount, strong }: { label: string; sublabel?: string; amount: string; strong?: boolean }) {
@@ -32,7 +32,7 @@ function TotalBar({ label, sublabel, amount, strong }: { label: string; sublabel
         {sublabel && <span style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', marginTop: '2px' }}>{sublabel}</span>}
       </div>
       <div style={{ background: BRAND_COLORS.accent, padding: '14px 20px', display: 'flex', alignItems: 'center', minWidth: '140px', justifyContent: 'flex-end' }}>
-        <span style={{ fontFamily: 'Arial,sans-serif', fontSize: strong ? '22px' : '15px', fontWeight: 800, color: BRAND_COLORS.onAccent }}>{amount}</span>
+        <span style={{ fontFamily: 'Arial,sans-serif', fontSize: strong ? '22px' : '15px', fontWeight: 700, color: BRAND_COLORS.onAccent }}>{amount}</span>
       </div>
     </div>
   )
@@ -91,7 +91,7 @@ export function DocumentTable({
                 <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12px', color: 'var(--brand-text-muted)', verticalAlign: 'top' }}>
                   {fmtUnitPrice(itemTotal, qty, currency)}
                 </td>
-                <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12.5px', color: 'var(--brand-text)', fontWeight: 700, verticalAlign: 'top' }}>
+                <td style={{ padding: '11px 12px', textAlign: 'right', ...mono, fontSize: '12px', color: 'var(--brand-text)', fontWeight: 700, verticalAlign: 'top' }}>
                   {fmtCurrency(itemTotal, currency)}
                 </td>
               </tr>

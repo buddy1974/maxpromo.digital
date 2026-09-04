@@ -98,7 +98,7 @@ function dateInputValue(value: string | null | undefined): string {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
+      <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
       {children}
     </div>
   )
@@ -710,7 +710,7 @@ export default function EditAngebotPage() {
 
         {/* Line items */}
         <div>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
           {lineItems.map((item, i) => (
             <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px' }}>
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'flex-start' }}>
@@ -728,7 +728,7 @@ export default function EditAngebotPage() {
                     background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'var(--brand-border)',
                     border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`,
                     color: item.isFixedPrice ? 'var(--brand-primary)' : 'var(--brand-text-muted)',
-                    fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em',
+                    fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em',
                     textTransform: 'uppercase', padding: '8px 10px', cursor: 'pointer',
                     whiteSpace: 'nowrap', borderRadius: '2px', alignSelf: 'flex-start',
                   }}

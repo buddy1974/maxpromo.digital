@@ -46,7 +46,7 @@ export default async function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="mt-6 text-center font-mono text-[9px] uppercase tracking-[0.16em] text-ink-muted">
+        <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.16em] text-ink-muted">
           Maxpromo Digital · Essen · §19 UStG
         </p>
       </div>

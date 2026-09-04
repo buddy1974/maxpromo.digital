@@ -172,7 +172,7 @@ export default function InvoiceDetailPage() {
           { label: t.invoiceDetail.metaPaidOn,  value: fmtDate(invoice.paid_date ? invoice.paid_date + 'T12:00:00' : null) },
         ].map(m => (
           <div key={m.label} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '16px 20px' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{m.label}</p>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 8px' }}>{m.label}</p>
             <p style={{ fontFamily: mono, fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{m.value}</p>
           </div>
         ))}
@@ -180,7 +180,7 @@ export default function InvoiceDetailPage() {
 
       {/* Client block */}
       <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
-        <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.invoiceDetail.client}</p>
+        <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.invoiceDetail.client}</p>
         <p style={{ fontFamily: sans, fontSize: '15px', fontWeight: 600, color: 'var(--brand-text)', margin: '0 0 4px' }}>{invoice.client_name}</p>
         {invoice.client_email && <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)', margin: '0 0 3px' }}>{invoice.client_email}</p>}
         {invoice.client_address && <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)', margin: 0, whiteSpace: 'pre-line' }}>{invoice.client_address}</p>}
@@ -189,13 +189,13 @@ export default function InvoiceDetailPage() {
       {/* Line items */}
       <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', overflow: 'hidden', marginBottom: '20px' }}>
         <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--brand-border)', background: 'var(--brand-surface)' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>{t.invoiceDetail.lineItems}</p>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>{t.invoiceDetail.lineItems}</p>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: 'var(--brand-surface)', borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map((h, ci) => (
-                <th key={h} style={{ padding: '10px 16px', textAlign: ci === 0 ? 'center' : ci === 1 ? 'left' : 'right', fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '10px 16px', textAlign: ci === 0 ? 'center' : ci === 1 ? 'left' : 'right', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -252,7 +252,7 @@ export default function InvoiceDetailPage() {
       {/* Notes */}
       {invoice.notes && (
         <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: '4px', padding: '20px 24px', marginBottom: '20px' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.invoiceDetail.notes}</p>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.invoiceDetail.notes}</p>
           <p style={{ fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{invoice.notes}</p>
         </div>
       )}

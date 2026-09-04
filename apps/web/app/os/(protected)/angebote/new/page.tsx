@@ -41,7 +41,7 @@ const inpMissing: React.CSSProperties = { ...inp, border: '1px dashed color-mix(
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
+      <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{label}</label>
       {children}
     </div>
   )
@@ -465,7 +465,7 @@ export default function NewAngebotPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)', margin: 0 }}>{t.angebotForm.newHeading}</h1>
               {aiEnhanced && (
-                <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-success)', background: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiEnhanced}</span>
+                <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-success)', background: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>{t.angebotForm.aiEnhanced}</span>
               )}
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
@@ -509,7 +509,7 @@ export default function NewAngebotPage() {
                   <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)', lineHeight: 1.5, marginBottom: '2px' }}>{it}</li>
                 ))}
               </ul>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', margin: '8px 0 0', letterSpacing: '0.05em' }}>{t.forms.includedNote}</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '8px 0 0', letterSpacing: '0.05em' }}>{t.forms.includedNote}</p>
             </div>
           )}
 
@@ -585,10 +585,10 @@ export default function NewAngebotPage() {
             <div style={{ height: '1px', background: 'var(--brand-border)' }} />
 
             <div>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
                 <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
-                  {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> verify</span>}
+                  {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> verify</span>}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                     <textarea
                       value={item.description}
@@ -597,7 +597,7 @@ export default function NewAngebotPage() {
                       rows={Math.max(1, Math.min(8, (item.description || '').split('\n').length))}
                       style={{ ...inp, flex: 1, resize: 'vertical', lineHeight: 1.5, fontFamily: sans, minHeight: '36px', border: aiEnhanced && !item.description ? '1px dashed color-mix(in srgb, var(--brand-primary) 50%, transparent)' : inp.border as string }}
                     />
-                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'var(--brand-border)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`, color: item.isFixedPrice ? 'var(--brand-primary)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
+                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'var(--brand-border)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`, color: item.isFixedPrice ? 'var(--brand-primary)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
                       {item.isFixedPrice ? t.angebotForm.pauschal : t.angebotForm.perUnit}
                     </button>
                     <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '18px', padding: '0 4px' }}>×</button>
@@ -661,7 +661,7 @@ export default function NewAngebotPage() {
               {!hasAnzahlung && (
                 <div style={{ borderTop: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', paddingTop: '10px', textAlign: 'right' }}>
                   <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 700, color: 'var(--brand-text)' }}>{fmtEur(subtotal)}</span>
-                  <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', margin: '4px 0 0' }}>{t.forms.vatValidityNote}</p>
+                  <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '4px 0 0' }}>{t.forms.vatValidityNote}</p>
                 </div>
               )}
             </div>
@@ -683,7 +683,7 @@ export default function NewAngebotPage() {
              a third hand-rolled copy — so what you see here is exactly
              what "Als PDF speichern" will produce. */}
         <div style={{ flex: 1, overflowY: 'auto', background: 'var(--brand-surface-subtle)', padding: '28px' }}>
-          <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
+          <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
           <div style={{ maxWidth: '520px', margin: '0 auto', transform: 'scale(0.94)', transformOrigin: 'top center' }}>
             <AngebotDocument
               angebot={{

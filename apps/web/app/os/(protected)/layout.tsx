@@ -302,14 +302,14 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <p style={{ fontFamily: sans, fontWeight: 700, fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{t.ai.title}</p>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', margin: '3px 0 0' }}>{t.ai.subtitle}</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', margin: '3px 0 0' }}>{t.ai.subtitle}</p>
             </div>
             <button onClick={() => setAiOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
           </div>
 
           {msgs.length === 0 && (
             <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--brand-border)' }}>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.ai.quickPrompts}</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.ai.quickPrompts}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {QUICK_PROMPTS.map(p => (
                   <button key={p} onClick={() => sendMsg(p)} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: sans, fontSize: '12px', padding: '9px 12px', textAlign: 'left', cursor: 'pointer', borderRadius: '2px' }}>
@@ -387,7 +387,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                           style={{ width: '100%', background: 'var(--brand-background)', border: '2px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '11px', letterSpacing: '0.1em', padding: '32px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', textAlign: 'center' }}
                         >
                           {t.quickScan.dropZone}
-                          <br /><span style={{ fontSize: '9px', color: 'var(--brand-text-muted)', fontWeight: 400 }}>{t.quickScan.dropZoneFormats}</span>
+                          <br /><span style={{ fontSize: '10px', color: 'var(--brand-text-muted)', fontWeight: 400 }}>{t.quickScan.dropZoneFormats}</span>
                         </button>
                       ) : (
                         <div style={{ textAlign: 'center', marginBottom: '12px' }}>
@@ -430,8 +430,8 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               {qsExtracted && !qsSaved && (
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.quickScan.extractedHeading}</p>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: qsExtracted.confidence === 'high' ? 'var(--semantic-success)' : qsExtracted.confidence === 'medium' ? 'var(--brand-primary)' : 'var(--semantic-danger)', background: qsExtracted.confidence === 'high' ? 'var(--semantic-success)22' : qsExtracted.confidence === 'medium' ? 'var(--brand-primary)22' : 'var(--semantic-danger)22', padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                    <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.quickScan.extractedHeading}</p>
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: qsExtracted.confidence === 'high' ? 'var(--semantic-success)' : qsExtracted.confidence === 'medium' ? 'var(--brand-primary)' : 'var(--semantic-danger)', background: qsExtracted.confidence === 'high' ? 'var(--semantic-success)22' : qsExtracted.confidence === 'medium' ? 'var(--brand-primary)22' : 'var(--semantic-danger)22', padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
                       {qsExtracted.confidence === 'high' ? t.quickScan.confidenceHigh : qsExtracted.confidence === 'medium' ? t.quickScan.confidenceMedium : t.quickScan.confidenceLow}
                     </span>
                   </div>
@@ -446,13 +446,13 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                       [t.quickScan.fieldCountry, qsExtracted.country],
                     ].filter(([, v]) => v).map(([k, v]) => (
                       <p key={k} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)', margin: 0 }}>
-                        <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', display: 'inline-block', width: '60px' }}>{k}</span>
+                        <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', display: 'inline-block', width: '60px' }}>{k}</span>
                         {v}
                       </p>
                     ))}
                   </div>
                   {qsExtracted.confidence === 'low' && (
-                    <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>{t.quickScan.lowConfidenceWarning}</p>
+                    <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>{t.quickScan.lowConfidenceWarning}</p>
                   )}
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <button onClick={qsSaveClient} disabled={qsSaving} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px', opacity: qsSaving ? 0.6 : 1 }}>

@@ -86,7 +86,7 @@ export function DocumentPage({
         <div data-print-body>
           {/* Title + brand line */}
           <div style={{ padding: '32px 40px 20px' }}>
-            <h1 style={{ fontFamily: 'Arial,sans-serif', fontSize: '42px', fontWeight: 800, color: BRAND_COLORS.ink, margin: '0 0 10px', letterSpacing: '-0.01em' }}>{docTypeLabel}</h1>
+            <h1 style={{ fontFamily: 'Arial,sans-serif', fontSize: '42px', fontWeight: 700, color: BRAND_COLORS.ink, margin: '0 0 10px', letterSpacing: '-0.01em' }}>{docTypeLabel}</h1>
             <p style={{ ...mono, fontSize: '15px', fontWeight: 700, color: BRAND_COLORS.accentText, margin: 0, letterSpacing: '0.02em' }}>{BUSINESS.website}</p>
           </div>
           <div style={{ borderTop: `2px solid ${BRAND_COLORS.accent}`, margin: '0 40px' }} />
@@ -96,22 +96,22 @@ export function DocumentPage({
             <div>
               <p style={colLabel}>{t.from}</p>
               <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--brand-text)', margin: '0 0 2px' }}>{BUSINESS.legalName}</p>
-              <p style={{ fontSize: '12.5px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{BUSINESS.brandFull}</p>
-              <p style={{ fontSize: '12.5px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{BUSINESS.addressLine1}</p>
-              <p style={{ fontSize: '12.5px', color: 'var(--brand-text-muted)', margin: 0 }}>{BUSINESS.addressLine2}, {BUSINESS.country}</p>
+              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{BUSINESS.brandFull}</p>
+              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{BUSINESS.addressLine1}</p>
+              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: 0 }}>{BUSINESS.addressLine2}, {BUSINESS.country}</p>
             </div>
             <div>
               <p style={colLabel}>{t.to}</p>
               <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--brand-text)', margin: '0 0 2px' }}>{clientNameOnly || '—'}</p>
-              {company && <p style={{ fontSize: '12.5px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{company}</p>}
-              {clientAddress && <p style={{ fontSize: '12.5px', color: 'var(--brand-text-muted)', margin: 0, whiteSpace: 'pre-line' }}>{clientAddress}</p>}
+              {company && <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{company}</p>}
+              {clientAddress && <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: 0, whiteSpace: 'pre-line' }}>{clientAddress}</p>}
             </div>
             <div>
               <p style={colLabel}>{detailsLabel}</p>
-              <p style={{ ...mono, fontSize: '12.5px', color: 'var(--brand-text-secondary)', margin: '0 0 3px' }}>{numberLabel}: {number}</p>
-              <p style={{ ...mono, fontSize: '12.5px', color: 'var(--brand-text-secondary)', margin: '0 0 3px' }}>{dateLabel}: {date}</p>
-              <p style={{ ...mono, fontSize: '12.5px', color: 'var(--brand-text-secondary)', margin: currency ? '0 0 3px' : 0 }}>{secondaryDateLabel}: {secondaryDate}</p>
-              {currency && <p style={{ ...mono, fontSize: '12.5px', color: 'var(--brand-text-secondary)', margin: 0 }}>{t.currency}: {currency}</p>}
+              <p style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-secondary)', margin: '0 0 3px' }}>{numberLabel}: {number}</p>
+              <p style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-secondary)', margin: '0 0 3px' }}>{dateLabel}: {date}</p>
+              <p style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-secondary)', margin: currency ? '0 0 3px' : 0 }}>{secondaryDateLabel}: {secondaryDate}</p>
+              {currency && <p style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-secondary)', margin: 0 }}>{t.currency}: {currency}</p>}
             </div>
           </div>
 
@@ -120,7 +120,7 @@ export function DocumentPage({
 
         {/* Repeating footer — fixed in print, see printCss.ts */}
         <div data-print-footer style={{ padding: '9px 40px', borderTop: '1px solid var(--brand-border)', background: 'var(--brand-surface)' }}>
-          <p style={{ ...mono, fontSize: '9.5px', color: 'var(--brand-text-secondary)', margin: 0 }}>
+          <p style={{ ...mono, fontSize: '10px', color: 'var(--brand-text-secondary)', margin: 0 }}>
             {BUSINESS.website} &nbsp;|&nbsp; {BUSINESS.legalName} &nbsp;|&nbsp; {BUSINESS.addressLine2} &nbsp;|&nbsp; {docTypeLabel} {number} &nbsp;|&nbsp; {t.taxNumberLabel}: {BUSINESS.steuernummer}
           </p>
         </div>
@@ -151,7 +151,7 @@ export function SectionHeading({ n, title, subtitle }: { n: number; title: strin
         {n}. {title}
       </h2>
       <div style={{ borderTop: `1px solid ${BRAND_COLORS.border}`, marginBottom: subtitle ? '8px' : 0 }} />
-      {subtitle && <p style={{ ...mono, fontSize: '11.5px', color: 'var(--brand-text-secondary)', margin: 0 }}>{subtitle}</p>}
+      {subtitle && <p style={{ ...mono, fontSize: '11px', color: 'var(--brand-text-secondary)', margin: 0 }}>{subtitle}</p>}
     </div>
   )
 }

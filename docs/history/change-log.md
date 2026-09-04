@@ -104,3 +104,92 @@ separate pieces of work, recorded in ADR-0001).
 - **Not removed:** 19 Agent Bureau API routes the audit called uncalled. They
   are a working, secured data layer; the dashboard just uses mocks. Recorded as
   debt.
+
+## 2026-09-04 - Platform v7.0: enterprise polish, and four audits that were not auditing
+
+Branch feature/track-b. Three batches, each verified against the full gate.
+
+**The headline is not the polish.** Extending the accessibility audit exposed
+that the design-token check had been reporting "clean" while examining roughly
+half of one of the largest components on the homepage, and that the failures it
+was not seeing were real. What follows is in the order it was found, because
+the order is the point.
+
+### A check a comment could switch off
+
+`check-design-tokens.mjs` skipped comments with a line-by-line `inBlock` flag
+that tested for a block-comment opener before testing whether the line was an
+ordinary line comment. A comment containing a path glob therefore opened a block
+that never closed, and the remaining 250 lines of the file went unscanned.
+
+Replaced by `strip-comments.mjs`, a character walk that tracks string and
+template-literal state, so a delimiter inside a string cannot change the comment
+state. Comment spans are blanked rather than deleted, so line numbers still
+point at real source.
+
+This is the fourth silent pass in this repository. ADR-0004 now governs the
+class: resolve targets explicitly, exit non-zero on zero targets, parse rather
+than pattern-match, and demonstrate a rule firing before believing it.
+
+### What the repaired check found
+
+Three accent-as-text failures on the homepage, all at 1.51:1 on a light ground.
+A new fifth rule then found a second alias with fifteen more on the Agent Bureau
+page. Both hid the same way:
+
+    const ORANGE = 'var(--color-primary)'   // then: color: ORANGE
+
+The rule matched the token at the point of use, so binding it to a name walked
+straight past. `ACCENT_ALIAS` now flags the binding. The name in question still
+said "orange" three brand generations after that colour was retired, which is
+how fifteen sites of an unreadable colour survived two design passes.
+
+Replaced by role: nine section labels de-coloured to secondary grey (which the
+corporate design brief had asked for independently), six emphasis sites to
+`--brand-primary-text` at 5.00:1, two rules to `--brand-primary-edge` at 3.09:1,
+four icon strokes to 5.00:1.
+
+### WCAG 4.1.3, status messages
+
+Four forms showed errors and announced none of them. The fix is a component, not
+an attribute: `{error && <p role="alert">}` inserts the region and its content
+in one paint, which assistive technology handles inconsistently. `FormStatus`
+renders the region on first paint and empty, and changes only its contents.
+
+Also `aria-busy` on the two document scanners - found by reading their markup
+rather than assuming the pattern from the other three held, which it did not.
+
+### One icon language
+
+36 distinct Unicode marks across 68 files. The visible problem was stroke
+weight; the real one was that three navigations had each invented a vocabulary
+and six marks carried twelve meanings across two applications a user moves
+between. Full reasoning in ADR-0003.
+
+Replaced by one SVG set in `@maxpromo/ui`: stroke only, 1.5px, currentColor,
+four sizes, decorative unless labelled. 72 call sites.
+
+Writing the check that was meant to lock this in found another 110 occurrences,
+because the inventory had walked `app/` and `components/` and the internal OS
+keeps its labels in `lib/os-i18n/dictionary.ts`. The marks were in the copy -
+180 lines of it, plus emoji in the WhatsApp invoice text sent to clients and in
+the Telegram operations notification, whose status dot was the retired brand
+colour rendered as an emoji.
+
+### Typography
+
+927 inline size declarations across 31 distinct values, 21 of which referenced
+a token. 91 sat at 9px - on form labels, table headers and status badges, in
+uppercase mono at 0.2em tracking. Moved to the 10px floor; twelve sub-pixel
+sizes rounded onto steps already in use. 31 distinct values down to 26.
+
+`--weight-bold: 700` added to the scale. It was used 118 times against a scale
+that stopped at 600: the scale was incomplete rather than 118 call sites being
+wrong. Its role is documented and excludes headings.
+
+### Gates
+
+`npm run verify` now runs seven gates, four of them static audits. Every one has
+been observed producing findings on this codebase and then producing none.
+
+Nothing pushed. Nothing merged to main.

@@ -114,14 +114,14 @@ export default function NewsletterPage() {
 
       {/* Compose */}
       <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', padding: '24px', marginBottom: '28px' }}>
-        <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>{t.newsletter.compose}</p>
+        <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>{t.newsletter.compose}</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
           <div>
-            <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{t.newsletter.fieldSubject}</label>
+            <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{t.newsletter.fieldSubject}</label>
             <input value={subject} onChange={e => setSubject(e.target.value)} style={{ width: '100%', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: '14px', padding: '10px 14px', outline: 'none', boxSizing: 'border-box' }} />
           </div>
           <div>
-            <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{t.newsletter.fieldBody}</label>
+            <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{t.newsletter.fieldBody}</label>
             <textarea value={body} onChange={e => setBody(e.target.value)} rows={8} style={{ width: '100%', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '10px 14px', outline: 'none', resize: 'vertical', boxSizing: 'border-box', lineHeight: 1.7 }} />
           </div>
         </div>
@@ -145,10 +145,10 @@ export default function NewsletterPage() {
 
         {preview && subject && body && (
           <div style={{ marginTop: '20px', border: '1px solid var(--brand-border)', padding: '0', overflow: 'hidden' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '8px 16px', borderBottom: '1px solid var(--brand-border)', margin: 0 }}>{t.newsletter.emailPreview}</p>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '8px 16px', borderBottom: '1px solid var(--brand-border)', margin: 0 }}>{t.newsletter.emailPreview}</p>
             <div style={{ padding: '20px', background: 'var(--brand-surface-subtle)' }}>
               <div style={{ background: 'var(--brand-background)', padding: '20px 24px', borderBottom: '3px solid var(--brand-primary)', marginBottom: '0' }}>
-                <p style={{ fontFamily: 'monospace', fontSize: '9px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 4px' }}>Maxpromo Digital</p>
+                <p style={{ fontFamily: 'monospace', fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 4px' }}>Maxpromo Digital</p>
                 <p style={{ color: 'var(--brand-text)', margin: 0, fontSize: '17px', fontWeight: 700 }}>{subject}</p>
               </div>
               <div style={{ background: 'var(--brand-surface)', padding: '20px 24px' }}>
@@ -174,7 +174,7 @@ export default function NewsletterPage() {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map((h, i) => (
-                <th key={i} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={i} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -188,10 +188,10 @@ export default function NewsletterPage() {
                 <tr key={sub.id} style={{ borderBottom: '1px solid var(--brand-border)' }}>
                   <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text)' }}>{sub.email}</td>
                   <td style={{ padding: '11px 16px', fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)' }}>{sub.name || t.common.notAvailable}</td>
-                  <td style={{ padding: '11px 16px' }}><span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', background: 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{sub.source || t.common.notAvailable}</span></td>
+                  <td style={{ padding: '11px 16px' }}><span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', background: 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{sub.source || t.common.notAvailable}</span></td>
                   <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)' }}>{fmtDate(sub.created_at)}</td>
                   <td style={{ padding: '11px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: sub.status === 'active' ? 'var(--semantic-success)' : 'var(--semantic-danger)', background: sub.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' : 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: sub.status === 'active' ? 'var(--semantic-success)' : 'var(--semantic-danger)', background: sub.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' : 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
                       {t.status.subscriber[sub.status] ?? sub.status}
                     </span>
                   </td>

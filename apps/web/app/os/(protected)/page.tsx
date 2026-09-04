@@ -14,7 +14,7 @@ function MetricCard({ label, value, sub }: MetricCardProps) {
       background: 'var(--brand-surface-subtle)', borderTop: '2px solid var(--brand-primary)',
       border: '1px solid var(--brand-border)', padding: '20px 24px', flex: 1,
     }}>
-      <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{label}</p>
+      <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{label}</p>
       <p style={{ fontFamily: grotesk, fontSize: '30px', fontWeight: 700, color: 'var(--brand-text)', margin: '0 0 4px', letterSpacing: '-0.03em' }}>{value}</p>
       {sub && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: 0 }}>{sub}</p>}
     </div>
@@ -37,7 +37,7 @@ const STATUS_COLORS: Record<string, string> = {
 function Badge({ status, label }: { status: string; label: string }) {
   const color = STATUS_COLORS[status?.toLowerCase()] ?? 'var(--brand-text-muted)'
   return (
-    <span style={{ fontFamily: mono, fontSize: '9px', color, background: color + '22', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+    <span style={{ fontFamily: mono, fontSize: '10px', color, background: color + '22', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
       {label}
     </span>
   )
@@ -134,7 +134,7 @@ export default function DashboardPage() {
         {/* Recent invoices */}
         <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentInvoices}</p>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentInvoices}</p>
           </div>
           {loading ? (
             <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</p>
@@ -163,7 +163,7 @@ export default function DashboardPage() {
         {/* Recent leads */}
         <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentLeads}</p>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentLeads}</p>
           </div>
           {loading ? (
             <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</p>
@@ -192,7 +192,7 @@ export default function DashboardPage() {
         {/* Recent jobs */}
         <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentJobs}</p>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.dashboard.recentJobs}</p>
           </div>
           {loading ? (
             <p style={{ padding: '20px', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</p>

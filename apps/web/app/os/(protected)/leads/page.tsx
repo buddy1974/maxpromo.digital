@@ -27,7 +27,7 @@ const SOURCES  = ['manual', 'website', 'referral', 'instagram', 'facebook', 'lin
 
 function StatusBadge({ status, label }: { status: string; label: string }) {
   const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'color-mix(in srgb, var(--brand-text-secondary) 12%, transparent)' }
-  return <span style={{ fontFamily: mono, fontSize: '9px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>{label}</span>
+  return <span style={{ fontFamily: mono, fontSize: '10px', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>{label}</span>
 }
 
 const LEAD_BLANK = { name: '', company: '', email: '', phone: '', source: 'manual', notes: '' }
@@ -123,18 +123,18 @@ export default function LeadsPage() {
                 { label: t.leads.fieldPhone,   key: 'phone',   type: 'text' },
               ] as const).map(f => (
                 <div key={f.key}>
-                  <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
+                  <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
                   <input type={f.type} value={newForm[f.key]} onChange={e => setNewForm(p => ({ ...p, [f.key]: e.target.value }))} style={inpStyle} />
                 </div>
               ))}
               <div>
-                <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.leads.fieldSource}</label>
+                <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.leads.fieldSource}</label>
                 <select value={newForm.source} onChange={e => setNewForm(p => ({ ...p, source: e.target.value }))} style={{ ...inpStyle, appearance: 'none' }}>
                   {SOURCES.map(s => <option key={s} value={s}>{sourceLabel(s)}</option>)}
                 </select>
               </div>
               <div>
-                <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.leads.fieldNotes}</label>
+                <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.leads.fieldNotes}</label>
                 <textarea value={newForm.notes} onChange={e => setNewForm(p => ({ ...p, notes: e.target.value }))} rows={3} style={{ ...inpStyle, resize: 'vertical' }} />
               </div>
             </div>
@@ -182,7 +182,7 @@ export default function LeadsPage() {
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
@@ -199,7 +199,7 @@ export default function LeadsPage() {
                     {lead.company && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.04em' }}>{lead.company}</p>}
                   </td>
                   <td style={{ padding: '12px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'var(--brand-border)', padding: '3px 8px' }}>
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'var(--brand-border)', padding: '3px 8px' }}>
                       {lead.source ? sourceLabel(lead.source) : t.common.notAvailable}
                     </span>
                   </td>
@@ -235,7 +235,7 @@ export default function LeadsPage() {
       {selected && (
         <div style={{ position: 'fixed', top: 0, right: 0, width: 'min(400px, 100vw)', height: '100vh', background: 'var(--brand-surface)', borderLeft: '1px solid var(--brand-border)', zIndex: 200, overflowY: 'auto' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--brand-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.leads.leadDetails}</p>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.leads.leadDetails}</p>
             <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
           </div>
           <div style={{ padding: '24px' }}>
@@ -253,7 +253,7 @@ export default function LeadsPage() {
                 { label: t.leads.colDate,       value: fmtDate(selected.created_at) },
               ].filter(f => f.value).map(f => (
                 <div key={f.label}>
-                  <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 3px' }}>{f.label}</p>
+                  <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 3px' }}>{f.label}</p>
                   <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)', margin: 0 }}>{f.value}</p>
                 </div>
               ))}
@@ -261,23 +261,23 @@ export default function LeadsPage() {
 
             {selected.summary && (
               <div style={{ marginTop: '16px', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderLeft: '2px solid var(--brand-primary)', padding: '14px 16px' }}>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.leads.aiSummary}</p>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.leads.aiSummary}</p>
                 <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.6 }}>{selected.summary}</p>
               </div>
             )}
 
             {selected.notes && (
               <div style={{ marginTop: '16px' }}>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px' }}>{t.leads.fieldNotes}</p>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px' }}>{t.leads.fieldNotes}</p>
                 <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.6 }}>{selected.notes}</p>
               </div>
             )}
 
             <div style={{ marginTop: '24px', borderTop: '1px solid var(--brand-border)', paddingTop: '20px' }}>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.leads.updateStatus}</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.leads.updateStatus}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {STATUSES.filter(s => s !== selected.status).map(s => (
-                  <button key={s} onClick={() => updateStatus(selected.id, s)} style={{ fontFamily: mono, fontSize: '9px', color: STATUS_COLOR[s]?.text ?? 'var(--brand-text-secondary)', background: STATUS_COLOR[s]?.bg ?? 'transparent', border: `1px solid ${STATUS_COLOR[s]?.text ?? 'var(--brand-text-muted)'}40`, padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
+                  <button key={s} onClick={() => updateStatus(selected.id, s)} style={{ fontFamily: mono, fontSize: '10px', color: STATUS_COLOR[s]?.text ?? 'var(--brand-text-secondary)', background: STATUS_COLOR[s]?.bg ?? 'transparent', border: `1px solid ${STATUS_COLOR[s]?.text ?? 'var(--brand-text-muted)'}40`, padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
                     {statusLabel(s)}
                   </button>
                 ))}

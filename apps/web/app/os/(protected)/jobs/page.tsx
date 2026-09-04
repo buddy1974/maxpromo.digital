@@ -109,27 +109,27 @@ export default function JobsPage() {
                   { label: t.jobs.fieldValue,      key: 'value',       type: 'number' },
                 ] as const).map(f => (
                   <div key={f.key}>
-                    <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
+                    <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
                     <input type={f.type} value={form[f.key]} onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
                       style={{ width: '100%', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', boxSizing: 'border-box' }} />
                   </div>
                 ))}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <div>
-                    <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldStage}</label>
+                    <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldStage}</label>
                     <select value={form.stage} onChange={e => setForm(f => ({ ...f, stage: e.target.value as Stage }))} style={{ width: '100%', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', appearance: 'none' }}>
                       {STAGES.map(s => <option key={s} value={s}>{stageLabel(s)}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldPriority}</label>
+                    <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldPriority}</label>
                     <select value={form.priority} onChange={e => setForm(f => ({ ...f, priority: e.target.value }))} style={{ width: '100%', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', appearance: 'none' }}>
                       {PRIORITIES.map(p => <option key={p} value={p}>{priorityLabel(p)}</option>)}
                     </select>
                   </div>
                 </div>
                 <div>
-                  <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldNotes}</label>
+                  <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{t.jobs.fieldNotes}</label>
                   <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={3} style={{ width: '100%', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '9px 12px', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }} />
                 </div>
               </div>
@@ -165,7 +165,7 @@ export default function JobsPage() {
             >
               {/* Column header */}
               <div style={{ background: 'var(--brand-surface-subtle)', borderTop: '2px solid var(--brand-primary)', border: '1px solid var(--brand-border)', padding: '10px 12px', flexShrink: 0 }}>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 2px' }}>{stageLabel(stage)}</p>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 2px' }}>{stageLabel(stage)}</p>
                 <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-primary-text)', margin: 0 }}>{jobsByStage(stage).length}</p>
               </div>
 
@@ -191,9 +191,9 @@ export default function JobsPage() {
                     {job.client_name && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '0 0 6px', letterSpacing: '0.04em' }}>{job.client_name}</p>}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       {job.value && <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)' }}>{fmtEur(Number(job.value))}</span>}
-                      <span style={{ fontFamily: mono, fontSize: '9px', color: PRIORITY_COLOR[job.priority] ?? 'var(--brand-text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(job.priority)}</span>
+                      <span style={{ fontFamily: mono, fontSize: '10px', color: PRIORITY_COLOR[job.priority] ?? 'var(--brand-text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(job.priority)}</span>
                     </div>
-                    {job.due_date && <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', margin: '4px 0 0', letterSpacing: '0.06em' }}>{fmtDate(job.due_date)}</p>}
+                    {job.due_date && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', margin: '4px 0 0', letterSpacing: '0.06em' }}>{fmtDate(job.due_date)}</p>}
                   </div>
                 ))}
               </div>
@@ -206,7 +206,7 @@ export default function JobsPage() {
       {selected && (
         <div style={{ position: 'fixed', top: 0, right: 0, width: '360px', height: '100vh', background: 'var(--brand-surface)', borderLeft: '1px solid var(--brand-border)', zIndex: 200, overflowY: 'auto' }}>
           <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--brand-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.jobs.jobDetails}</p>
+            <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.jobs.jobDetails}</p>
             <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
           </div>
           <div style={{ padding: '24px' }}>
@@ -214,32 +214,32 @@ export default function JobsPage() {
             {selected.client_name && <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--brand-text-muted)', margin: '0 0 16px', letterSpacing: '0.06em' }}>{selected.client_name}</p>}
 
             <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-              <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-primary-text)', background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{stageLabel(selected.stage)}</span>
-              <span style={{ fontFamily: mono, fontSize: '9px', color: PRIORITY_COLOR[selected.priority], background: (PRIORITY_COLOR[selected.priority] ?? 'var(--brand-text-muted)') + '20', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(selected.priority)}</span>
-              {selected.value && <span style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', padding: '4px 10px', background: 'var(--brand-surface-subtle)30', letterSpacing: '0.06em' }}>{fmtEur(Number(selected.value))}</span>}
+              <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-primary-text)', background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{stageLabel(selected.stage)}</span>
+              <span style={{ fontFamily: mono, fontSize: '10px', color: PRIORITY_COLOR[selected.priority], background: (PRIORITY_COLOR[selected.priority] ?? 'var(--brand-text-muted)') + '20', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(selected.priority)}</span>
+              {selected.value && <span style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', padding: '4px 10px', background: 'var(--brand-surface-subtle)30', letterSpacing: '0.06em' }}>{fmtEur(Number(selected.value))}</span>}
             </div>
 
             {selected.description && (
               <div style={{ marginBottom: '16px' }}>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.jobs.description}</p>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.jobs.description}</p>
                 <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.6 }}>{selected.description}</p>
               </div>
             )}
 
             {selected.notes && (
               <div>
-                <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.jobs.notes}</p>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 8px' }}>{t.jobs.notes}</p>
                 <p style={{ fontFamily: sans, fontSize: '13px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.6 }}>{selected.notes}</p>
               </div>
             )}
 
             {/* Move stage buttons */}
             <div style={{ marginTop: '24px', borderTop: '1px solid var(--brand-border)', paddingTop: '20px' }}>
-              <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.jobs.moveToStage}</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.jobs.moveToStage}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {STAGES.filter(s => s !== selected.stage).map(s => (
                   <button key={s} onClick={() => { moveJob(selected.id, s); setSelected(prev => prev ? { ...prev, stage: s } : null) }}
-                    style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', padding: '6px 10px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', padding: '6px 10px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     {stageLabel(s)}
                   </button>
                 ))}

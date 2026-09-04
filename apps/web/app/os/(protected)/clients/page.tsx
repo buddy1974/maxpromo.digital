@@ -46,7 +46,7 @@ const inp: React.CSSProperties = {
 }
 
 const sectionLbl: React.CSSProperties = {
-  fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em',
+  fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em',
   textTransform: 'uppercase', margin: '20px 0 14px', paddingBottom: '8px',
   borderBottom: '1px solid var(--brand-border)', display: 'block',
 }
@@ -54,7 +54,7 @@ const sectionLbl: React.CSSProperties = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+      <label style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
         {label}
       </label>
       {children}
@@ -456,15 +456,15 @@ export default function ClientsPage() {
               {extracted && (
                 <div style={{ marginBottom: '16px', background: 'var(--brand-surface)', border: `1px solid ${confidenceColor[extracted.confidence]}33`, borderLeft: `3px solid ${confidenceColor[extracted.confidence]}`, padding: '12px 16px', borderRadius: '2px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.clients.prefilled}</p>
-                    <span style={{ fontFamily: mono, fontSize: '9px', color: confidenceColor[extracted.confidence], background: `${confidenceColor[extracted.confidence]}22`, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                    <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.clients.prefilled}</p>
+                    <span style={{ fontFamily: mono, fontSize: '10px', color: confidenceColor[extracted.confidence], background: `${confidenceColor[extracted.confidence]}22`, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
                       {confidenceLabel[extracted.confidence]}
                     </span>
                   </div>
                   {extracted.confidence === 'low' && (
-                    <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', margin: '8px 0 0', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> {t.clients.lowConfidenceWarning}</p>
+                    <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '8px 0 0', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> {t.clients.lowConfidenceWarning}</p>
                   )}
-                  <button onClick={resetScan} style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
+                  <button onClick={resetScan} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
                     {t.clients.rescan}
                   </button>
                 </div>
