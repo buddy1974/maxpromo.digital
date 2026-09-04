@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { leadSchema } from "@/lib/validation/lead";
 import { FormStatus } from "@maxpromo/ui";
+import { Icon } from "@maxpromo/ui";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -86,7 +87,7 @@ export function LeadForm() {
   if (status === "success") {
     return (
       <div className="rounded-lg border border-accent/40 bg-accent-soft p-8 text-center">
-        <div className="font-mono text-2xl text-ink-secondary">✓</div>
+        <div className="flex justify-center text-ink-secondary"><Icon name="check" size="lg" /></div>
         <h3 className="mt-3 text-xl font-semibold text-ink">
           Anfrage erhalten.
         </h3>

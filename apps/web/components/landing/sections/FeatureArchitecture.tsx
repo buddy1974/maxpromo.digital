@@ -1,5 +1,6 @@
 import type { BulletTuple } from '@/lib/registry/types'
 import { EYEBROW_STYLE, RADIUS, SECTION_PADDING, SECTION_DIVIDER, CARD_BORDER } from '@/components/landing/showcaseTokens'
+import { Icon, type IconName } from '@maxpromo/ui'
 
 interface FeatureArchitectureProps {
   bullets: BulletTuple
@@ -44,9 +45,9 @@ export function FeatureArchitecture({ bullets, featureBenefits, locale }: Featur
   const resolvedBullets = featureBenefits ?? bullets
 
   const cols = [
-    { cat: isDE ? 'Zeit'     : 'Time',     label: resolvedBullets[0], icon: '⟳' },
-    { cat: isDE ? 'Qualität' : 'Quality',  label: resolvedBullets[1], icon: '◈' },
-    { cat: isDE ? 'Umsatz'   : 'Revenue',  label: resolvedBullets[2], icon: '↑' },
+    { cat: isDE ? 'Zeit'     : 'Time',     label: resolvedBullets[0], icon: 'waiting' as IconName },
+    { cat: isDE ? 'Qualität' : 'Quality',  label: resolvedBullets[1], icon: 'quality' as IconName },
+    { cat: isDE ? 'Umsatz'   : 'Revenue',  label: resolvedBullets[2], icon: 'trendUp' as IconName },
   ] as const
 
   return (
@@ -63,7 +64,7 @@ export function FeatureArchitecture({ bullets, featureBenefits, locale }: Featur
           {cols.map((col, i) => (
             <div key={i} style={{ padding: '1.75rem', border: CARD_BORDER, borderRadius: RADIUS.lg, background: 'var(--showcase-bg)' }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', color: 'var(--showcase-muted)', display: 'block', marginBottom: '1rem' }}>
-                {col.icon}
+                <Icon name={col.icon} size="md" />
               </span>
               <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '10px', color: 'var(--showcase-muted)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', marginBottom: '8px' }}>
                 {col.cat}

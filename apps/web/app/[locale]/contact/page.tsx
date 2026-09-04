@@ -1,5 +1,5 @@
 'use client'
-import { FormStatus } from '@maxpromo/ui'
+import { Icon, FormStatus } from '@maxpromo/ui'
 
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -123,7 +123,7 @@ export default function ContactPage() {
     return (
       <main className="min-h-[70vh] bg-[var(--color-bg)]" style={{ padding: SECTION_PADDING }}>
         <div role="status" className="mx-auto max-w-xl border border-[var(--color-border)] bg-[var(--color-bg)] p-12 text-center rounded-[var(--radius-card)] shadow-[var(--shadow-card)]">
-          <p className="mb-4 text-3xl text-[var(--semantic-success)]">✓</p>
+          <p className="mb-4 text-[var(--semantic-success)]"><Icon name="check" size="lg" /></p>
           <h1 className="mb-3">{t('successTitle')}</h1>
           <p className="mb-8 text-[var(--color-text-secondary)]">{t('successDesc')}</p>
           <button

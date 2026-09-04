@@ -7,6 +7,7 @@ import { AngebotDocument } from '@/components/documents/AngebotDocument'
 import { DocumentToolbar } from '@/components/documents/DocumentPage'
 import { buildAngebotWhatsAppUrl } from '@/lib/documents/whatsapp'
 import type { AngebotData } from '@/lib/documents/types'
+import { Icon } from '@maxpromo/ui'
 
 export default function AngebotPrintPage() {
   const { id } = useParams<{ id: string }>()
@@ -38,7 +39,7 @@ export default function AngebotPrintPage() {
             onClick={() => window.print()}
             style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
           >
-            ▤ Als PDF speichern
+            <Icon name="download" size="sm" /> Als PDF speichern
           </button>
           {/*
             WhatsApp Click-to-Chat URLs only support text — there's no API
@@ -55,7 +56,7 @@ export default function AngebotPrintPage() {
                Deliberately literal, and the only hex left in app/os. */
             style={{ background: THIRD_PARTY.whatsapp, color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
           >
-            ▭ WhatsApp text
+            <Icon name="message" size="sm" /> WhatsApp text
           </a>
           <button
             onClick={() => window.close()}

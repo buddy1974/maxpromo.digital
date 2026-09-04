@@ -82,7 +82,7 @@ export default async function ApprovalsPage() {
           <EmptyState
             title="Keine Vorschläge"
             hint="Führen Sie den Demo-Seed aus: npm run db:seed:demo"
-            glyph="✓"
+            icon="approvals"
           />
         )}
       </div>

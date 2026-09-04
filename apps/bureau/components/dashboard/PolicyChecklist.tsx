@@ -1,3 +1,4 @@
+import { Icon } from "@maxpromo/ui";
 import { TONE_BADGE } from "@maxpromo/ui";
 import type { PolicyChecklistItem } from "@/types/ai-governance";
 
@@ -21,7 +22,7 @@ export function PolicyChecklist({ items }: { items: PolicyChecklistItem[] }) {
                   : TONE_BADGE.neutral
               }`}
             >
-              {i.done ? "✓" : ""}
+              {i.done ? <Icon name="check" size="sm" /> : null}
             </span>
             <span className={i.done ? "text-ink-muted line-through" : "text-ink"}>
               {i.label}

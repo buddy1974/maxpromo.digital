@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { DocumentLanguage } from '@/lib/documents/config'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon } from '@maxpromo/ui'
 
 const mono = 'var(--font-roboto-mono)'
 const sans = 'var(--font-inter)'
@@ -253,7 +254,7 @@ export default function AngebotDetailPage() {
       {/* Persistent banners (shown on the page after the modal closes) */}
       {sendSuccess && (
         <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 25%, transparent)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
-          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0 }}>✓ {sendSuccess}</p>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0 }}><Icon name="check" size="xs" /> {sendSuccess}</p>
         </div>
       )}
 
@@ -340,7 +341,7 @@ export default function AngebotDetailPage() {
 
             {sendError && (
               <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: '8px 12px', marginBottom: '14px', borderRadius: '3px' }}>
-                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}>▲ {sendError}</p>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}><Icon name="warning" size="xs" /> {sendError}</p>
               </div>
             )}
 

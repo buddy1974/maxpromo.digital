@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import type { BulletTuple } from '@/lib/registry/types'
+import { Icon } from '@maxpromo/ui'
 import {
   EYEBROW_STYLE, RADIUS,
   BUTTON_PRIMARY, BUTTON_SECONDARY,
@@ -148,7 +149,7 @@ export function ProductHero({
 
           {trustCue && (
             <p style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', color: 'var(--showcase-muted)', margin: 0, marginTop: '0.2rem' }}>
-              ✓ {trustCue}
+              <Icon name="check" size="sm" /> {trustCue}
             </p>
           )}
         </div>

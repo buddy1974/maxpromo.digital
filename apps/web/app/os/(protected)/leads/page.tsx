@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon } from '@maxpromo/ui'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -137,7 +138,7 @@ export default function LeadsPage() {
                 <textarea value={newForm.notes} onChange={e => setNewForm(p => ({ ...p, notes: e.target.value }))} rows={3} style={{ ...inpStyle, resize: 'vertical' }} />
               </div>
             </div>
-            {createErr && <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0' }}>▲ {createErr}</p>}
+            {createErr && <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0' }}><Icon name="warning" size="xs" /> {createErr}</p>}
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
               <button type="button" onClick={createLead} disabled={creating} style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: '13px', padding: '10px 20px', cursor: creating ? 'wait' : 'pointer', opacity: creating ? 0.6 : 1 }}>
                 {creating ? t.common.saving : t.leads.saveLead}

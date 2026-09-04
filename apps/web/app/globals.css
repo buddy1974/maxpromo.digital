@@ -432,10 +432,14 @@ button.os-nav-item {
   border-bottom: none;
 }
 
+/* Holds an <Icon>, which draws itself at 20px and inherits this colour.
+   `font-size` and `text-align` were here to wrangle a Unicode glyph whose size
+   depended on whichever font happened to cover it; an SVG needs neither. */
 .os-nav-icon {
-  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 20px;
-  text-align: center;
   color: var(--brand-text-secondary);
   flex-shrink: 0;
   transition: color 0.15s ease;

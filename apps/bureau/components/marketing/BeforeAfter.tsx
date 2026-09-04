@@ -1,3 +1,4 @@
+import { Icon } from "@maxpromo/ui";
 // The "you are the bottleneck" narrative, in the Maxpromo voice.
 const BEFORE = [
   "Anfragen kommen nach Feierabend — und gehen unter.",
@@ -44,7 +45,7 @@ export function BeforeAfter() {
             <ul className="mt-5 space-y-4">
               {AFTER.map((a) => (
                 <li key={a} className="flex gap-3 text-ink">
-                  <span className="mt-0.5 text-ink-secondary">✓</span>
+                  <span className="mt-0.5 text-ink-secondary"><Icon name="check" size="sm" /></span>
                   <span>{a}</span>
                 </li>
               ))}

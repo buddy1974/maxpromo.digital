@@ -51,7 +51,7 @@ export default async function WaitingRoomPage() {
           <EmptyState
             title="Niemand im Warteraum"
             hint="Führen Sie den Demo-Seed aus: npm run db:seed:demo"
-            glyph="◷"
+            icon="waiting"
           />
         )}
       </div>

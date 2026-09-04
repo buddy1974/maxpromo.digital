@@ -7,7 +7,7 @@ const URGENCY_RANK = { urgent: 0, high: 1, medium: 2, low: 3 } as const;
 
 export function WaitingRoomQueue({ items }: { items: WaitingRoomItem[] }) {
   if (!items.length) {
-    return <EmptyState title="Niemand wartet" hint="Wartende Kunden erscheinen hier." glyph="○" />;
+    return <EmptyState title="Niemand wartet" hint="Wartende Kunden erscheinen hier." icon="empty" />;
   }
   const ordered = [...items].sort(
     (a, b) => URGENCY_RANK[a.urgency] - URGENCY_RANK[b.urgency],

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
+import { Icon } from '@maxpromo/ui'
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('caseStudies')
@@ -117,7 +118,7 @@ export default async function CaseStudiesPage() {
                 <div style={{ display: 'grid', gap: '10px' }} className="grid-cols-1 sm:grid-cols-2">
                   {cs.resultKeys.map((rk) => (
                     <div key={rk} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                      <span style={{ color: 'var(--brand-text-secondary)', flexShrink: 0, ...mono, fontSize: '13px' }}>✓</span>
+                      <span style={{ color: 'var(--brand-text-secondary)', flexShrink: 0, ...mono, fontSize: '13px' }}><Icon name="check" size="sm" /></span>
                       <span style={{ ...sans, fontSize: '15px', color: 'var(--color-text-primary)', lineHeight: 1.6 }}>
                         {t(`${cs.id}${rk}`)}
                       </span>

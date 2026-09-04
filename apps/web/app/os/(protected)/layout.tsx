@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { Icon } from '@maxpromo/ui'
 import { OsLocaleProvider, useOsLocale } from '@/lib/os-i18n/context'
 import { LanguageSwitcher } from '@/components/os/LanguageSwitcher'
 
@@ -35,18 +36,18 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
 
   const MAIN_NAV = [
-    { icon: '◆', label: t.sidebar.navDashboard,  href: '/os' },
-    { icon: '❖', label: t.sidebar.navClients,    href: '/os/clients' },
-    { icon: '▤', label: t.sidebar.navInvoices,   href: '/os/invoices' },
-    { icon: '▦', label: t.sidebar.navAngebote,   href: '/os/angebote' },
-    { icon: '◉', label: t.sidebar.navJobs,       href: '/os/jobs' },
-    { icon: '⊟', label: t.sidebar.navLeads,      href: '/os/leads' },
-    { icon: '▥', label: t.sidebar.navNewsletter, href: '/os/newsletter' },
-    { icon: '◷', label: t.sidebar.navInbox,      href: '/os/inbox' },
+    { icon: 'dashboard'  as const, label: t.sidebar.navDashboard,  href: '/os' },
+    { icon: 'clients'    as const, label: t.sidebar.navClients,    href: '/os/clients' },
+    { icon: 'invoice'    as const, label: t.sidebar.navInvoices,   href: '/os/invoices' },
+    { icon: 'quote'      as const, label: t.sidebar.navAngebote,   href: '/os/angebote' },
+    { icon: 'jobs'       as const, label: t.sidebar.navJobs,       href: '/os/jobs' },
+    { icon: 'leads'      as const, label: t.sidebar.navLeads,      href: '/os/leads' },
+    { icon: 'newsletter' as const, label: t.sidebar.navNewsletter, href: '/os/newsletter' },
+    { icon: 'inbox'      as const, label: t.sidebar.navInbox,      href: '/os/inbox' },
   ]
 
   const EXT_LINKS = [
-    { icon: '↗', label: t.sidebar.linkWebsite,          href: 'https://maxpromo.digital', external: true },
+    { icon: 'external'   as const, label: t.sidebar.linkWebsite,          href: 'https://maxpromo.digital', external: true },
   ]
 
   const QUICK_PROMPTS = [t.ai.prompt1, t.ai.prompt2, t.ai.prompt3, t.ai.prompt4]
@@ -196,7 +197,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               className={`os-nav-item${isActive(item.href) ? ' active' : ''}`}
               onClick={() => setMobileOpen(false)}
             >
-              <span className="os-nav-icon">{item.icon}</span>
+              <span className="os-nav-icon"><Icon name={item.icon} size="md" /></span>
               <span className="os-nav-label">{item.label}</span>
             </Link>
           ))}
@@ -206,7 +207,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
             onClick={() => { setAiOpen(true); setMobileOpen(false) }}
             className="os-nav-item"
           >
-            <span className="os-nav-icon">◈</span>
+            <span className="os-nav-icon"><Icon name="lab" size="md" /></span>
             <span className="os-nav-label">{t.sidebar.toolAiAssistant}</span>
           </button>
 
@@ -222,7 +223,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               className="os-nav-item"
               onClick={() => setMobileOpen(false)}
             >
-              <span className="os-nav-icon">{link.icon}</span>
+              <span className="os-nav-icon"><Icon name={link.icon} size="md" /></span>
               <span className="os-nav-label">{link.label}</span>
             </a>
           ))}
@@ -352,7 +353,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               disabled={aiLoading || !input.trim()}
               style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '14px', padding: '10px 16px', cursor: 'pointer', opacity: (aiLoading || !input.trim()) ? 0.4 : 1 }}
             >
-              ↑
+              <Icon name="send" size="md" label="Senden" />
             </button>
           </div>
         </div>
@@ -407,7 +408,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                     />
                   )}
 
-                  {qsError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}>▲ {qsError}</p>}
+                  {qsError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {qsError}</p>}
 
                   <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
                     <button

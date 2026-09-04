@@ -4,6 +4,7 @@
 // Desktop: horizontal flow. Mobile: horizontally scrollable (min-w).
 
 import { token } from "@maxpromo/design-tokens";
+import { Icon, type IconName } from "@maxpromo/ui";
 
 /**
  * Diagram palette. SVG presentation attributes cannot resolve CSS custom
@@ -31,14 +32,14 @@ const C = {
   ink:    V.surface,
 };
 
-type Step = { label: string[]; glyph: string; gate?: boolean; gated?: boolean };
+type Step = { label: string[]; icon: IconName; gate?: boolean; gated?: boolean };
 const STEPS: Step[] = [
-  { label: ["Beobachten"],         glyph: "●" },
-  { label: ["Vorbereiten"],        glyph: "⊟" },
-  { label: ["Vorschlagen"],        glyph: "→" },
-  { label: ["Menschliche","Freigabe"], glyph: "✓", gate: true },
-  { label: ["Ausführen"],          glyph: "◆", gated: true },
-  { label: ["Protokollieren"],     glyph: "▦" },
+  { label: ["Beobachten"],         icon: "running" as IconName },
+  { label: ["Vorbereiten"],        icon: "leads" as IconName },
+  { label: ["Vorschlagen"],        icon: "arrowRight" as IconName },
+  { label: ["Menschliche","Freigabe"], icon: "approvals" as IconName, gate: true },
+  { label: ["Ausführen"],          icon: "dashboard" as IconName, gated: true },
+  { label: ["Protokollieren"],     icon: "tasks" as IconName },
 ];
 
 // Even 160-px spacing across 960 wide canvas.
@@ -120,11 +121,13 @@ export function SafeActionLifecycle() {
                     strokeWidth={s.gated ? 2 : 1.5}
                     strokeDasharray={s.gated ? "5 4" : undefined}
                   />
-                  {/* glyph */}
-                  <text x={x} y={CY + 1} textAnchor="middle" dominantBaseline="central" fontSize="22"
-                    fill={s.gate ? C.ink : s.gated ? C.accent : C.text}>
-                    {s.glyph}
-                  </text>
+                  {/* A nested <svg> is valid inside <g>, so the shared Icon
+                      renders here unchanged rather than being redrawn as a
+                      diagram-only glyph. */}
+                  <g transform={`translate(${x - 10}, ${CY - 10})`}
+                    color={s.gate ? C.ink : s.gated ? C.accent : C.text}>
+                    <Icon name={s.icon} size="md" />
+                  </g>
                   {/* label lines */}
                   {s.label.map((ln, k) => (
                     <text key={k} x={x} y={CY + R + 20 + k * 16}
@@ -141,7 +144,7 @@ export function SafeActionLifecycle() {
         </div>
 
         <div className="mt-5 flex items-center gap-2 rounded-lg border border-accent/30 bg-accent-soft px-4 py-2.5">
-          <span className="font-mono text-ink-secondary">✓</span>
+          <span className="font-mono text-ink-secondary"><Icon name="check" size="sm" /></span>
           <p className="text-sm text-ink-secondary">
             KI bereitet vor. Der Mensch entscheidet.{" "}
             <span className="text-ink-secondary">Jede Aktion wird protokolliert.</span>

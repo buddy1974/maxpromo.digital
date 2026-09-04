@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import Link from 'next/link'
+import { Icon } from '@maxpromo/ui'
 
 export async function generateMetadata({
   params,
@@ -77,7 +78,7 @@ function BulletItem({ children }: { children: React.ReactNode }) {
           fontSize: '10px',
         }}
       >
-        ▸
+        <Icon name="chevronRight" size="xs" />
       </span>
       {children}
     </li>

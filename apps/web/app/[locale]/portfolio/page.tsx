@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import { Icon } from '@maxpromo/ui'
 
 const mono = { fontFamily: 'var(--font-mono)' } as const
 const sans = { fontFamily: 'var(--font-body)' } as const
@@ -193,7 +194,7 @@ export default function PortfolioPage() {
           style={inputBase}
         />
         {error && (
-          <p role="alert" style={{ ...mono, fontSize: '13px', color: 'var(--semantic-danger)', margin: '12px 0 0' }}>⚠ {error}</p>
+          <p role="alert" style={{ ...mono, fontSize: '13px', color: 'var(--semantic-danger)', margin: '12px 0 0' }}><Icon name="warning" size="xs" /> {error}</p>
         )}
         <button
           type="submit"

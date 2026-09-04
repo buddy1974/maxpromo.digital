@@ -1,3 +1,4 @@
+import { Icon } from "@maxpromo/ui";
 import type { DashboardMetric } from "@/types/dashboard";
 
 const TREND_COLOR = {
@@ -6,7 +7,7 @@ const TREND_COLOR = {
   flat: "text-ink-muted",
 } as const;
 
-const TREND_GLYPH = { up: "↑", down: "↓", flat: "→" } as const;
+const TREND_ICON = { up: "trendUp", down: "trendDown", flat: "trendFlat" } as const;
 
 export function MetricCard({ metric }: { metric: DashboardMetric }) {
   return (
@@ -20,7 +21,7 @@ export function MetricCard({ metric }: { metric: DashboardMetric }) {
         </span>
         {metric.trend && metric.delta && (
           <span className={`text-sm font-medium ${TREND_COLOR[metric.trend]}`}>
-            {TREND_GLYPH[metric.trend]} {metric.delta}
+            <Icon name={TREND_ICON[metric.trend]} size="xs" /> {metric.delta}
           </span>
         )}
       </div>

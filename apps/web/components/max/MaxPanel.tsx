@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import { useMax } from './MaxMemoryProvider'
 import { MaxMessage } from './MaxMessage'
 import { MaxComposer } from './MaxComposer'
+import { Icon } from '@maxpromo/ui'
 
 interface MaxPanelProps {
   open:    boolean
@@ -81,7 +82,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
             aria-label="Close"
             style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', padding: '6px', fontSize: '18px', lineHeight: 1, borderRadius: '6px', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            ✕
+            <Icon name="close" size="sm" label="Close" />
           </button>
         </div>
 

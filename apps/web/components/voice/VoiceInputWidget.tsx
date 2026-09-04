@@ -27,6 +27,7 @@
 
 import { useRef, useCallback } from 'react'
 import { useVoiceInput } from '@/hooks/useVoiceInput'
+import { Icon } from '@maxpromo/ui'
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -326,7 +327,7 @@ export default function VoiceInputWidget({
               style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontFamily: mono, fontSize: '11px', padding: '2px 6px' }}
               aria-label="Dismiss voice panel"
             >
-              ✕
+              <Icon name="close" size="sm" label="Close" />
             </button>
           </div>
 
@@ -396,7 +397,7 @@ export default function VoiceInputWidget({
               onClick={() => voice.approveRaw(onChange)}
               style={{ ...btnBase, background: 'color-mix(in srgb, var(--brand-surface) 8%, transparent)', color: 'var(--brand-text)' }}
             >
-              ✓ Use transcript
+              <Icon name="check" size="sm" /> Use transcript
             </button>
 
             {/* Enhance with AI, only shown when no enhanced result yet */}
@@ -414,7 +415,7 @@ export default function VoiceInputWidget({
                   cursor: !voice.editedRaw.trim() ? 'not-allowed' : 'pointer',
                 }}
               >
-                ◈ Enhance with AI
+                <Icon name="lab" size="sm" /> Enhance with AI
               </button>
             )}
 
@@ -432,7 +433,7 @@ export default function VoiceInputWidget({
                 onClick={() => voice.approveEnhanced(onChange)}
                 style={{ ...btnBase, background: 'var(--brand-primary)', color: 'var(--brand-text)' }}
               >
-                ✓ Use enhanced
+                <Icon name="check" size="sm" /> Use enhanced
               </button>
             )}
 
@@ -450,7 +451,7 @@ export default function VoiceInputWidget({
           {voice.error && (
             <div style={{ padding: '10px 14px', borderTop: '1px solid color-mix(in srgb, var(--brand-surface) 6%, transparent)' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}>
-                ⚠ {voice.error}
+                <Icon name="warning" size="xs" /> {voice.error}
               </p>
             </div>
           )}

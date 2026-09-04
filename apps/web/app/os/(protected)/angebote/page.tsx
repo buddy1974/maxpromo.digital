@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon } from '@maxpromo/ui'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -109,7 +110,7 @@ export default function AngebotePage() {
     <div style={{ padding: '32px 40px' }}>
       {convertError && (
         <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: '10px 16px', marginBottom: '16px', borderRadius: '4px' }}>
-          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}>▲ {convertError}</p>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0 }}><Icon name="warning" size="xs" /> {convertError}</p>
         </div>
       )}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>

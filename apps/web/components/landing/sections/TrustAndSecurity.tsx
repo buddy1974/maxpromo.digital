@@ -1,4 +1,5 @@
 import { EYEBROW_STYLE, RADIUS, SECTION_PADDING, SECTION_DIVIDER, CARD_BORDER } from '@/components/landing/showcaseTokens'
+import { Icon } from '@maxpromo/ui'
 
 interface TrustAndSecurityProps {
   complianceNote: string | null
@@ -62,7 +63,7 @@ export function TrustAndSecurity({ complianceNote, locale }: TrustAndSecurityPro
         <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 md:grid-cols-3">
           {points.map((p, i) => (
             <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '1.25rem', border: CARD_BORDER, borderRadius: RADIUS.md }}>
-              <span style={{ color: 'var(--showcase-muted)', flexShrink: 0, fontSize: '14px', marginTop: '2px' }}>✓</span>
+              <span style={{ color: 'var(--showcase-muted)', flexShrink: 0, fontSize: '14px', marginTop: '2px' }}><Icon name="check" size="sm" /></span>
               <span style={{ fontFamily: 'var(--font-body)', fontSize: '14px', color: 'var(--showcase-fg)', lineHeight: 1.5 }}>{p}</span>
             </div>
           ))}

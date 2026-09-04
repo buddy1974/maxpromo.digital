@@ -6,7 +6,7 @@ import { getLandingData } from '@/lib/registry/adapters/landing.adapter'
 import { LandingEngine } from '@/components/landing/LandingEngine'
 import Hero from '@/components/Hero'
 import { Link } from '@/i18n/navigation'
-import { SectionHeader } from '@maxpromo/ui'
+import { Icon, SectionHeader } from '@maxpromo/ui'
 import Image from 'next/image'
 import { getLatestPosts } from '@/lib/blog/posts'
 import { PainSlider } from '@/components/ui/PainSlider'
@@ -237,7 +237,7 @@ export default async function HomePage() {
           <div style={{ display: 'grid', gap: '16px' }} className="grid-cols-1 sm:grid-cols-2">
             {WHY_REFS.map((id) => (
               <div key={id} className="card" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                <span style={{ color: 'var(--brand-text-secondary)', fontFamily: 'var(--font-mono)', fontSize: '18px', flexShrink: 0, paddingTop: '2px' }}>✓</span>
+                <span style={{ color: 'var(--brand-text-secondary)', fontFamily: 'var(--font-mono)', fontSize: '18px', flexShrink: 0, paddingTop: '2px' }}><Icon name="check" size="sm" /></span>
                 <div>
                   <h3 className="h-card" style={{ marginBottom: '8px' }}>
                     {tWhyUs(`${id}Title`)}

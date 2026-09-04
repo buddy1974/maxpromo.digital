@@ -33,8 +33,8 @@ export function buildInvoiceWhatsAppUrl(inv: InvoiceData): string {
   const intro = inv.language === 'en'
     ? `attached is your Invoice No. ${inv.invoice_number} from ${BUSINESS.brandFull}.`
     : `anbei Ihre Rechnung Nr. ${inv.invoice_number} von ${BUSINESS.brandFull}.`
-  const servicesLabel = inv.language === 'en' ? '📋 Services:' : '📋 Leistungen:'
-  const dueLabel = inv.language === 'en' ? '📅 Payment due:' : '📅 Zahlungsziel:'
+  const servicesLabel = inv.language === 'en' ? 'Services:' : 'Leistungen:'
+  const dueLabel = inv.language === 'en' ? 'Payment due:' : 'Zahlungsziel:'
   const pdfNote = inv.language === 'en'
     ? 'The complete document is attached as a PDF.'
     : 'Das vollständige Dokument als PDF finden Sie im Anhang.'
@@ -48,7 +48,7 @@ ${intro}
 ${servicesLabel}
 ${items}
 
-💰 ${t.totalDue}: ${fmtCurrency(Number(inv.total), inv.currency)}${anzText}
+${t.totalDue}: ${fmtCurrency(Number(inv.total), inv.currency)}${anzText}
 
 ${dueLabel} ${fmtDocDate(inv.due_date, inv.language)}
 

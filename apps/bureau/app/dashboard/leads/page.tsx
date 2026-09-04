@@ -23,7 +23,7 @@ export default function LeadsPage() {
           ))}
         </ul>
       ) : (
-        <EmptyState title="Keine offenen Leads" glyph="⊟" />
+        <EmptyState title="Keine offenen Leads" icon="leads" />
       )}
     </DashboardShell>
   );

@@ -27,7 +27,7 @@ export default async function AuditConsolePage() {
         <EmptyState
           title="Kein Audit im Demo-Workspace"
           hint="Führen Sie den Demo-Seed aus: npm run db:seed:demo"
-          glyph="◉"
+          icon="audit"
         />
       </DashboardShell>
     );
@@ -94,7 +94,7 @@ export default async function AuditConsolePage() {
             </section>
           </>
         ) : (
-          <EmptyState title="Keine Findings" glyph="◉" />
+          <EmptyState title="Keine Findings" icon="audit" />
         )}
       </div>
     </DashboardShell>

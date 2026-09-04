@@ -1,5 +1,6 @@
 import type { BulletTuple, WorkflowStep } from '@/lib/registry/types'
 import { EYEBROW_STYLE, RADIUS, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
+import { Icon } from '@maxpromo/ui'
 
 interface BeforeAfterProps {
   bullets:          BulletTuple
@@ -43,7 +44,7 @@ export function BeforeAfter({ bullets, problemStatement, lastStep, locale }: Bef
           {/* Before, left */}
           <div style={{ padding: '2.5rem', background: 'var(--showcase-bg)' }}>
             <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--semantic-danger)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-              ✗ {colBefore}
+              <Icon name="cross" size="sm" /> {colBefore}
             </p>
             {problemStatement ? (
               <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--showcase-muted)', lineHeight: 1.7, margin: 0 }}>
@@ -53,7 +54,7 @@ export function BeforeAfter({ bullets, problemStatement, lastStep, locale }: Bef
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {bullets.map((b, i) => (
                   <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--semantic-danger)', flexShrink: 0, marginTop: '2px', fontSize: '13px' }}>✗</span>
+                    <span style={{ color: 'var(--semantic-danger)', flexShrink: 0, marginTop: '2px', fontSize: '13px' }}><Icon name="cross" size="sm" /></span>
                     <span style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--showcase-muted)', lineHeight: 1.5 }}>{b}</span>
                   </div>
                 ))}
@@ -64,7 +65,7 @@ export function BeforeAfter({ bullets, problemStatement, lastStep, locale }: Bef
           {/* After, right */}
           <div style={{ padding: '2.5rem', background: 'var(--showcase-bg)', borderLeft: '2px solid var(--showcase-accent)' }}>
             <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '11px', color: 'var(--showcase-muted)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-              ✓ {colAfter}
+              <Icon name="check" size="sm" /> {colAfter}
             </p>
             <p style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '16px', color: 'var(--showcase-fg)', margin: '0 0 8px', lineHeight: 1.4 }}>
               {lastStep.label}

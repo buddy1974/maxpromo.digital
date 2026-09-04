@@ -7,6 +7,7 @@ import { InvoiceDocument } from '@/components/documents/InvoiceDocument'
 import { DocumentToolbar } from '@/components/documents/DocumentPage'
 import { buildInvoiceWhatsAppUrl } from '@/lib/documents/whatsapp'
 import type { InvoiceData } from '@/lib/documents/types'
+import { Icon } from '@maxpromo/ui'
 
 export default function PrintPage() {
   const { id } = useParams<{ id: string }>()
@@ -38,7 +39,7 @@ export default function PrintPage() {
             onClick={() => window.print()}
             style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase' }}
           >
-            ▤ Als PDF speichern
+            <Icon name="download" size="sm" /> Als PDF speichern
           </button>
           <a
             href={buildInvoiceWhatsAppUrl(invoice)}
@@ -49,7 +50,7 @@ export default function PrintPage() {
                Deliberately literal, and the only hex left in app/os. */
             style={{ background: THIRD_PARTY.whatsapp, color: 'var(--brand-text)', fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '10px 18px', textDecoration: 'none', display: 'inline-block', textTransform: 'uppercase' }}
           >
-            ▭ Per WhatsApp senden
+            <Icon name="message" size="sm" /> Per WhatsApp senden
           </a>
           <button
             onClick={() => window.close()}

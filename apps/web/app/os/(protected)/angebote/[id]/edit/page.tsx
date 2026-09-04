@@ -5,6 +5,7 @@ import Link from 'next/link'
 import type { CurrencyCode, PaymentMethodId, DocumentLanguage } from '@/lib/documents/config'
 import { fmtCurrency } from '@/lib/documents/format'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon } from '@maxpromo/ui'
 
 const mono = 'var(--font-roboto-mono)'
 const sans = 'var(--font-inter)'
@@ -587,7 +588,7 @@ export default function EditAngebotPage() {
               style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }}
             />
 
-            {aiError && <p role="alert" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}>▲ {aiError}</p>}
+            {aiError && <p role="alert" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {aiError}</p>}
 
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
@@ -653,7 +654,7 @@ export default function EditAngebotPage() {
 
       {aiAppliedMsg && (
         <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 25%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: '16px', borderRadius: '3px' }}>
-          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.04em' }}>✓ {aiAppliedMsg}</p>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.04em' }}><Icon name="check" size="xs" /> {aiAppliedMsg}</p>
         </div>
       )}
 
@@ -822,7 +823,7 @@ export default function EditAngebotPage() {
         <Field label={t.angebotForm.fieldNotes}><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} style={{ ...inp, resize: 'vertical' }} /></Field>
 
         {saveError && (
-          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '4px 0 0' }}>▲ {saveError}</p>
+          <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '4px 0 0' }}><Icon name="warning" size="xs" /> {saveError}</p>
         )}
 
         <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>

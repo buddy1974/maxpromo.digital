@@ -1,5 +1,6 @@
 import { TONE_TEXT, toneMap, TONE_BADGE } from "@maxpromo/ui";
 import type { Task, TaskStatus, TaskPriority } from "@/types/task";
+import { Icon } from "@maxpromo/ui";
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
   todo: "Offen",
@@ -25,7 +26,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
             className={`font-mono text-xs uppercase tracking-[0.12em] ${TONE_TEXT[PRIORITY_COLOR_TONE(t.priority)]}`}
             title={`Priorität: ${t.priority}`}
           >
-            ●
+            <Icon name="running" size="xs" />
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm text-ink">{t.title}</p>

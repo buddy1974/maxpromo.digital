@@ -1,3 +1,4 @@
+import { Icon, type IconName } from "@maxpromo/ui";
 import { AgentSystemMap } from "./AgentSystemMap";
 
 // Public agent team section. Operational identities only — no faces/avatars.
@@ -5,7 +6,7 @@ import { AgentSystemMap } from "./AgentSystemMap";
 // approval scope. Chief hub gets an elevated treatment above the grid.
 
 const CHIEF = {
-  glyph: "◆",
+  icon: "dashboard" as IconName,
   name:  "Chief of Staff",
   role:  "Die zentrale Koordinationsebene",
   desc:  "Priorisiert, koordiniert, eskaliert und erstellt das tägliche Briefing. Entscheidet nicht allein, sondern legt Aktionen zur Freigabe vor.",
@@ -13,55 +14,55 @@ const CHIEF = {
 
 const AGENTS = [
   {
-    glyph:    "⊟",
+    icon:     "leads" as IconName,
     name:     "Lead-Agent",
     fn:       "Anfragen & Qualifizierung",
     approval: "Direktkontakt",
   },
   {
-    glyph:    "▤",
+    icon:     "research" as IconName,
     name:     "Research-Agent",
     fn:       "Markt & Wettbewerb",
     approval: "Externe Inhalte",
   },
   {
-    glyph:    "→",
+    icon:     "clients" as IconName,
     name:     "CRM-Agent",
     fn:       "Deals & Follow-ups",
     approval: "Kundennachrichten",
   },
   {
-    glyph:    "▦",
+    icon:     "calendar" as IconName,
     name:     "Kalender-Agent",
     fn:       "Termine & Erinnerungen",
     approval: "Einladungsversand",
   },
   {
-    glyph:    "✎",
+    icon:     "edit" as IconName,
     name:     "Content-Agent",
     fn:       "Entwürfe & Kampagnen",
     approval: "Veröffentlichung",
   },
   {
-    glyph:    "◰",
+    icon:     "projects" as IconName,
     name:     "Operations-Agent",
     fn:       "Projekte & Deadlines",
     approval: "Aufgaben-Umverteilung",
   },
   {
-    glyph:    "▢",
+    icon:     "documents" as IconName,
     name:     "Document-Agent",
     fn:       "Dokumente & Fristen",
     approval: "Externer Versand",
   },
   {
-    glyph:    "◷",
+    icon:     "waiting" as IconName,
     name:     "Follow-Up-Agent",
     fn:       "Wartende Kunden",
     approval: "Jede externe Nachricht",
   },
   {
-    glyph:    "⚐",
+    icon:     "governance" as IconName,
     name:     "Governance-Agent",
     fn:       "KI-Risiken & Policy",
     approval: "Policy-Änderungen",
@@ -88,7 +89,7 @@ export function AgentBureau() {
         {/* Chief of Staff — elevated */}
         <div className="mt-8 rounded-lg border border-accent/30 bg-accent-soft p-8 md:p-10">
           <div className="flex items-start gap-4">
-            <span className="font-mono text-2xl text-ink-secondary">{CHIEF.glyph}</span>
+            <span className="text-ink-secondary"><Icon name={CHIEF.icon} size="lg" /></span>
             <div>
               <div className="flex flex-wrap items-center gap-3">
                 <h3 className="text-card-title text-ink">{CHIEF.name}</h3>
@@ -106,7 +107,7 @@ export function AgentBureau() {
           {AGENTS.map((a) => (
             <div key={a.name} className="card">
               <div className="flex items-start justify-between gap-3">
-                <span className="font-mono text-xl text-ink-secondary">{a.glyph}</span>
+                <span className="text-ink-secondary"><Icon name={a.icon} size="md" /></span>
                 <span className="rounded-full border border-hairline bg-surface-subtle px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted">
                   Freigabe: {a.approval}
                 </span>

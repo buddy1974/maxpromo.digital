@@ -44,7 +44,7 @@ export default async function DocumentsPage() {
         <EmptyState
           title="Keine Dokumente im Demo-Workspace"
           hint="Führen Sie den Demo-Seed aus: npm run db:seed:demo"
-          glyph="▢"
+          icon="documents"
         />
       </DashboardShell>
     );

@@ -1,4 +1,5 @@
 import { LeadForm } from "./LeadForm";
+import { Icon } from "@maxpromo/ui";
 
 // The primary conversion section. Two columns: the offer + the form.
 export function AuditCta() {
@@ -22,7 +23,7 @@ export function AuditCta() {
               "Sie behalten die Kontrolle über jede Aktion",
             ].map((p) => (
               <li key={p} className="flex gap-3">
-                <span className="mt-0.5 text-ink-secondary">✓</span>
+                <span className="mt-0.5 text-ink-secondary"><Icon name="check" size="sm" /></span>
                 {p}
               </li>
             ))}

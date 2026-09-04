@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { Reveal } from '@/components/ui/Reveal'
+import { Icon } from '@maxpromo/ui'
 
 /* ─── METADATA ─── */
 
@@ -316,11 +317,11 @@ export default async function AgentBureauPage({
               ]).map((row, i) => (
                 <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', background: BG }}>
                   <div style={{ padding: '18px 28px', borderRight: `1px solid ${BORDER}`, display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                    <span style={{ color: MUTED, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '2px' }}>✕</span>
+                    <span style={{ color: MUTED, flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '2px' }}><Icon name="cross" size="sm" /></span>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: MUTED, margin: 0, lineHeight: 1.6 }}>{row.before}</p>
                   </div>
                   <div style={{ padding: '18px 28px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                    <span style={{ color: 'var(--brand-primary-text)', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '2px', fontWeight: 700 }}>✓</span>
+                    <span style={{ color: 'var(--brand-primary-text)', flexShrink: 0, fontFamily: 'var(--font-mono)', fontSize: '12px', paddingTop: '2px', fontWeight: 700 }}><Icon name="check" size="sm" /></span>
                     <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: TEXT, margin: 0, lineHeight: 1.6 }}>{row.after}</p>
                   </div>
                 </div>

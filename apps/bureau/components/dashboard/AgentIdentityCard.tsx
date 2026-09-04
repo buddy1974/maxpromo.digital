@@ -1,3 +1,4 @@
+import { Icon } from "@maxpromo/ui";
 import type { Agent } from "@/types/agent";
 import { StatusBadge } from "./StatusBadge";
 import { RiskBadge } from "./RiskBadge";
@@ -21,7 +22,7 @@ export function AgentIdentityCard({
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
           <span className={`mt-0.5 font-mono text-lg ${primary ? "text-ink-secondary" : "text-ink-muted"}`}>
-            {primary ? "◆" : "◇"}
+            <Icon name={primary ? "dashboard" : "agents"} size="sm" />
           </span>
           <div>
             <h3 className="font-semibold text-ink">{agent.name}</h3>

@@ -27,7 +27,7 @@ export default async function DashboardOverviewPage() {
         <EmptyState
           title="Demo-Workspace ist leer"
           hint="Führen Sie den Demo-Seed aus, um diesen Workspace zu befüllen: npm run db:seed:demo"
-          glyph="◆"
+          icon="dashboard"
         />
       </DashboardShell>
     );
@@ -102,7 +102,7 @@ export default async function DashboardOverviewPage() {
               ))}
             </div>
           ) : (
-            <EmptyState title="Keine offenen Freigaben" glyph="✓" />
+            <EmptyState title="Keine offenen Freigaben" icon="approvals" />
           )}
         </Section>
 
@@ -132,7 +132,7 @@ export default async function DashboardOverviewPage() {
                 ))}
               </ul>
             ) : (
-              <EmptyState title="Niemand wartet dringend" glyph="◷" />
+              <EmptyState title="Niemand wartet dringend" icon="waiting" />
             )}
           </Section>
         </div>

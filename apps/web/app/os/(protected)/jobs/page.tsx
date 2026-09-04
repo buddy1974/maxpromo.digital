@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon } from '@maxpromo/ui'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -144,7 +145,7 @@ export default function JobsPage() {
                   {t.common.cancel}
                 </button>
               </div>
-              {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}>▲ {saveError}</p>}
+              {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {saveError}</p>}
             </div>
           </div>
         </div>

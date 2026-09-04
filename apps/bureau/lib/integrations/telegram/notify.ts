@@ -33,7 +33,7 @@ export async function notifyTelegram(
       : "";
 
   const text =
-    `<b>🟠 Neue Anfrage — Max Agent</b>\n` +
+    `<b>Neue Anfrage — Max Agent</b>\n` +
     `Typ: ${escapeHtml(lead.ctaType)}\n` +
     `Name: ${escapeHtml(lead.name)}\n` +
     `E-Mail: ${escapeHtml(lead.email)}\n` +

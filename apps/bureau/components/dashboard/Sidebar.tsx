@@ -1,5 +1,6 @@
 "use client";
 
+import { Icon, type IconName } from "@maxpromo/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -7,29 +8,29 @@ import { signOut } from "next-auth/react";
 // Client component: needs the active path to highlight the current section.
 // Grouped: the backbone/operational-control items lead, then the supporting
 // workspace, then config. Order mirrors the operating model where it makes sense.
-type NavItem = { href: string; label: string; glyph: string; group?: string };
+type NavItem = { href: string; label: string; glyph: IconName; group?: string };
 const NAV: NavItem[] = [
-  { href: "/dashboard", label: "Übersicht", glyph: "◆", group: "Steuerung" },
-  { href: "/dashboard/operating-model", label: "Operating Model", glyph: "❖" },
-  { href: "/dashboard/audit", label: "Audit Console", glyph: "◉" },
-  { href: "/dashboard/waiting-room", label: "Warteraum", glyph: "◷" },
-  { href: "/dashboard/documents", label: "Dokumente", glyph: "▢" },
-  { href: "/dashboard/approvals", label: "Approval Desk", glyph: "✓" },
-  { href: "/dashboard/ai-governance", label: "AI Governance", glyph: "⚐" },
-  { href: "/dashboard/playbooks", label: "Playbooks", glyph: "❑" },
-  { href: "/dashboard/client-implementation", label: "Client Implementation", glyph: "⌂" },
+  { href: "/dashboard", label: "Übersicht", glyph: "dashboard", group: "Steuerung" },
+  { href: "/dashboard/operating-model", label: "Operating Model", glyph: "operatingModel" },
+  { href: "/dashboard/audit", label: "Audit Console", glyph: "audit" },
+  { href: "/dashboard/waiting-room", label: "Warteraum", glyph: "waiting" },
+  { href: "/dashboard/documents", label: "Dokumente", glyph: "documents" },
+  { href: "/dashboard/approvals", label: "Approval Desk", glyph: "approvals" },
+  { href: "/dashboard/ai-governance", label: "AI Governance", glyph: "governance" },
+  { href: "/dashboard/playbooks", label: "Playbooks", glyph: "playbooks" },
+  { href: "/dashboard/client-implementation", label: "Client Implementation", glyph: "implementation" },
 
-  { href: "/dashboard/briefing", label: "Briefing", glyph: "▤", group: "Arbeitsbereich" },
-  { href: "/dashboard/tasks", label: "Aufgaben", glyph: "▦" },
-  { href: "/dashboard/projects", label: "Projekte", glyph: "◰" },
-  { href: "/dashboard/leads", label: "Leads", glyph: "⊟" },
-  { href: "/dashboard/contacts", label: "Kontakte", glyph: "→" },
-  { href: "/dashboard/research", label: "Research", glyph: "▥" },
-  { href: "/dashboard/agents", label: "Agenten", glyph: "◇" },
-  { href: "/dashboard/memory", label: "Memory", glyph: "◎" },
-  { href: "/dashboard/ai-lab", label: "AI Lab", glyph: "✦" },
+  { href: "/dashboard/briefing", label: "Briefing", glyph: "briefing", group: "Arbeitsbereich" },
+  { href: "/dashboard/tasks", label: "Aufgaben", glyph: "tasks" },
+  { href: "/dashboard/projects", label: "Projekte", glyph: "projects" },
+  { href: "/dashboard/leads", label: "Leads", glyph: "leads" },
+  { href: "/dashboard/contacts", label: "Kontakte", glyph: "clients" },
+  { href: "/dashboard/research", label: "Research", glyph: "research" },
+  { href: "/dashboard/agents", label: "Agenten", glyph: "agents" },
+  { href: "/dashboard/memory", label: "Memory", glyph: "memory" },
+  { href: "/dashboard/ai-lab", label: "AI Lab", glyph: "lab" },
 
-  { href: "/dashboard/settings", label: "Einstellungen", glyph: "⚙", group: "System" },
+  { href: "/dashboard/settings", label: "Einstellungen", glyph: "settings", group: "System" },
 ];
 
 export function Sidebar() {
@@ -64,7 +65,7 @@ export function Sidebar() {
                     : "text-ink-secondary hover:bg-surface-subtle hover:text-ink"
                 }`}
               >
-                <span className="w-4 text-center font-mono">{item.glyph}</span>
+                <span className="flex w-4 justify-center"><Icon name={item.glyph} size="md" /></span>
                 {item.label}
               </Link>
             </div>
@@ -79,7 +80,7 @@ export function Sidebar() {
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-ink-muted transition-colors hover:bg-surface-subtle hover:text-ink w-full"
         >
-          <span className="w-4 text-center font-mono">⏻</span>
+          <span className="flex w-4 justify-center"><Icon name="logout" size="md" /></span>
           Abmelden
         </button>
       </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import LocaleSwitcher from './LocaleSwitcher'
+import { Icon } from '@maxpromo/ui'
 
 /**
  * components/Navbar.tsx
@@ -103,7 +104,7 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
               aria-label={t('closeMenu')}
             >
-              ✕
+              <Icon name="close" size="sm" label="Menü schließen" />
             </button>
           </div>
 

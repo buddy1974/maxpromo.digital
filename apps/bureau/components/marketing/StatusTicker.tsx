@@ -1,15 +1,21 @@
+import { Icon } from "@maxpromo/ui";
+
 // The supervised-operating-layer motif from maxpromo.digital: a live feed of
 // agent events. Honestly labelled as a PRODUCT PREVIEW (pre-launch, not live data).
+const ACTOR_ICON = { user: "user", agent: "agents", system: "system" } as const;
+
+// "<actor>|<text>". The actor used to be a Unicode mark glued to the front of
+// the string, which meant the feed's only classification lived inside its copy.
 const EVENTS = [
-  "● Neue Anfrage erfasst — Essen",
-  "⊟ Lead-Agent qualifiziert Kontakt",
-  "→ Follow-up vorbereitet — wartet auf Freigabe",
-  "◆ Briefing erstellt — 08:00",
-  "● CRM synchronisiert — 14 Datensätze",
-  "⊟ Research-Agent: Markt-Scan abgeschlossen",
-  "→ Termin vorgeschlagen — Kalender",
-  "◆ Content-Entwurf bereit zur Prüfung",
-  "● Überfällige Aufgabe markiert",
+  "user|Neue Anfrage erfasst — Essen",
+  "agent|Lead-Agent qualifiziert Kontakt",
+  "agent|Follow-up vorbereitet — wartet auf Freigabe",
+  "system|Briefing erstellt — 08:00",
+  "user|CRM synchronisiert — 14 Datensätze",
+  "agent|Research-Agent: Markt-Scan abgeschlossen",
+  "agent|Termin vorgeschlagen — Kalender",
+  "system|Content-Entwurf bereit zur Prüfung",
+  "user|Überfällige Aufgabe markiert",
 ];
 
 export function StatusTicker() {
@@ -28,8 +34,9 @@ export function StatusTicker() {
       <div className="relative whitespace-nowrap py-2.5">
         <div className="animate-ticker inline-flex gap-8 px-4 font-mono text-xs text-ink-secondary">
           {loop.map((e, i) => (
-            <span key={i} className="shrink-0">
-              {e}
+            <span key={i} className="flex shrink-0 items-center gap-2">
+              <Icon name={ACTOR_ICON[e.split("|")[0] as keyof typeof ACTOR_ICON]} size="xs" />
+              {e.split("|")[1]}
             </span>
           ))}
         </div>

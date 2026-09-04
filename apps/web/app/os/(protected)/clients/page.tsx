@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon } from '@maxpromo/ui'
 
 const mono = 'var(--font-roboto-mono)'
 const sans = 'var(--font-inter)'
@@ -448,7 +449,7 @@ export default function ClientsPage() {
               )}
 
               {extractError && (
-                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>▲ {extractError}</p>
+                <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {extractError}</p>
               )}
 
               {/* Extracted preview banner */}
@@ -461,7 +462,7 @@ export default function ClientsPage() {
                     </span>
                   </div>
                   {extracted.confidence === 'low' && (
-                    <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', margin: '8px 0 0', letterSpacing: '0.08em' }}>{t.clients.lowConfidenceWarning}</p>
+                    <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', margin: '8px 0 0', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> {t.clients.lowConfidenceWarning}</p>
                   )}
                   <button onClick={resetScan} style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
                     {t.clients.rescan}
@@ -545,7 +546,7 @@ export default function ClientsPage() {
                 </button>
               </div>
               {saveError && (
-                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}>▲ {saveError}</p>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {saveError}</p>
               )}
             </div>
 

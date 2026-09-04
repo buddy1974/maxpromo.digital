@@ -32,7 +32,7 @@ export default function ResearchPage() {
             </div>
           ))
         ) : (
-          <EmptyState title="Noch keine Recherche" glyph="▥" />
+          <EmptyState title="Noch keine Recherche" icon="research" />
         )}
       </div>
     </DashboardShell>

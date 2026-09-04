@@ -6,6 +6,7 @@ import type { CurrencyCode, PaymentMethodId, DocumentLanguage } from '@/lib/docu
 import type { InvoiceData } from '@/lib/documents/types'
 import { fmtCurrency } from '@/lib/documents/format'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon } from '@maxpromo/ui'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -461,6 +462,7 @@ export default function NewInvoicePage() {
   const confBg      = { high: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'color-mix(in srgb, var(--semantic-danger) 8%, transparent)' }
   const confBorder  = { high: 'color-mix(in srgb, var(--semantic-success) 25%, transparent)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'color-mix(in srgb, var(--semantic-danger) 25%, transparent)' }
   const confMsg     = { high: t.forms.confHigh, medium: t.forms.confMedium, low: t.forms.confLow }
+  const confIcon    = { high: 'check', medium: 'warning', low: 'warning' } as const
 
   function itemBorderLeft(item: LineItem): string | undefined {
     if (item.aiConfidence === 'low')    return '3px solid var(--semantic-danger)'
@@ -544,7 +546,7 @@ export default function NewInvoicePage() {
 
             {aiError && (
               <p role="alert" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>
-                ▲ {aiError}
+                <Icon name="warning" size="xs" /> {aiError}
               </p>
             )}
 
@@ -598,7 +600,7 @@ export default function NewInvoicePage() {
           {aiEnhanced && overallConfidence && (
             <div style={{ background: confBg[overallConfidence], border: `1px solid ${confBorder[overallConfidence]}`, padding: '10px 14px', marginBottom: '14px', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <p style={{ fontFamily: mono, fontSize: '11px', color: confColor[overallConfidence], margin: 0, letterSpacing: '0.06em' }}>
-                {confMsg[overallConfidence]}
+                <Icon name={confIcon[overallConfidence]} size="xs" /> {confMsg[overallConfidence]}
               </p>
             </div>
           )}
@@ -673,7 +675,7 @@ export default function NewInvoicePage() {
                   style={{ flex: '1', minWidth: '180px', background: 'none', border: 'none', outline: 'none', color: 'var(--brand-text)', fontFamily: sans, fontSize: '13px', padding: '0' }}
                 />
               </div>
-              {emailError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '4px 0 0', letterSpacing: '0.06em' }}>▲ {emailError}</p>}
+              {emailError && <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '4px 0 0', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {emailError}</p>}
             </Field>
 
             {/* Send copy checkbox */}
@@ -711,7 +713,7 @@ export default function NewInvoicePage() {
                 <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
                   {item.aiConfidence === 'low' && (
                     <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}>
-                      {t.forms.verifyBadge}
+                      <Icon name="warning" size="xs" /> {t.forms.verifyBadge}
                     </span>
                   )}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
@@ -801,7 +803,7 @@ export default function NewInvoicePage() {
 
             {sendError && (
               <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 40%, transparent)', padding: '10px 14px', borderRadius: '2px' }}>
-                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0, letterSpacing: '0.06em' }}>▲ {sendError}</p>
+                <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: 0, letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {sendError}</p>
                 <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', background: 'none', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t.forms.retry}</button>
               </div>
             )}
@@ -857,7 +859,7 @@ export default function NewInvoicePage() {
           <div style={{ textAlign: 'center', maxWidth: '440px', width: '100%' }}>
             {/* Checkmark */}
             <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'color-mix(in srgb, var(--semantic-success) 12%, transparent)', border: '2px solid var(--semantic-success)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-              <span style={{ color: 'var(--semantic-success)', fontSize: '32px', lineHeight: 1 }}>✓</span>
+              <span style={{ color: 'var(--semantic-success)', fontSize: '32px', lineHeight: 1 }}><Icon name="check" size="sm" /></span>
             </div>
             <h2 style={{ color: 'var(--brand-text)', fontSize: '22px', fontWeight: 700, margin: '0 0 8px', fontFamily: grotesk }}>{t.invoiceForm.sentHeading}</h2>
             <p style={{ color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '12px', margin: '0 0 4px', letterSpacing: '0.04em' }}>{t.forms.invoiceNoPrefix} {sentData.number} {t.invoiceForm.sentSubheading}</p>

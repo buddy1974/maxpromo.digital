@@ -6,6 +6,7 @@ import type { CurrencyCode, PaymentMethodId, DocumentLanguage } from '@/lib/docu
 import type { AngebotData } from '@/lib/documents/types'
 import { fmtCurrency } from '@/lib/documents/format'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon } from '@maxpromo/ui'
 
 const mono    = 'var(--font-roboto-mono)'
 const grotesk = 'var(--font-inter)'
@@ -386,7 +387,8 @@ export default function NewAngebotPage() {
   const confColor  = { high: 'var(--semantic-success)', medium: 'var(--brand-primary)', low: 'var(--semantic-danger)' }
   const confBg     = { high: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', medium: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', low: 'color-mix(in srgb, var(--semantic-danger) 8%, transparent)' }
   const confBorder = { high: 'color-mix(in srgb, var(--semantic-success) 25%, transparent)', medium: 'color-mix(in srgb, var(--brand-primary) 25%, transparent)', low: 'color-mix(in srgb, var(--semantic-danger) 25%, transparent)' }
-  const confMsg    = { high: '✓ High confidence — review and confirm', medium: '▲ Some fields need review — check highlighted items', low: '▲ Low confidence — please verify all fields' }
+  const confMsg    = { high: 'High confidence — review and confirm', medium: 'Some fields need review — check highlighted items', low: 'Low confidence — please verify all fields' }
+  const confIcon   = { high: 'check', medium: 'warning', low: 'warning' } as const
 
   function itemBorderLeft(item: LineItem): string | undefined {
     if (item.aiConfidence === 'low')    return '3px solid var(--semantic-danger)'
@@ -440,14 +442,14 @@ export default function NewAngebotPage() {
 
             <textarea value={rawText} onChange={e => setRawText(e.target.value)} rows={6} placeholder={t.forms.aiPlaceholderAngebot} style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }} />
 
-            {aiError && <p role="alert" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>▲ {aiError}</p>}
+            {aiError && <p role="alert" style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {aiError}</p>}
 
             <div style={{ display: 'flex', gap: '10px' }}>
               <button onClick={handleGenerateAI} disabled={aiLoading || !rawText.trim()} aria-busy={aiLoading} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
                 {aiLoading && !pastePreview ? t.forms.aiExtracting : t.forms.aiGenerateButton}
               </button>
               <button onClick={() => fileRef.current?.click()} style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '11px', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}>
-                ▦ Browse File
+                <Icon name="upload" size="sm" /> Browse File
               </button>
             </div>
           </div>
@@ -475,7 +477,7 @@ export default function NewAngebotPage() {
           {/* Confidence banner */}
           {aiEnhanced && overallConfidence && (
             <div style={{ background: confBg[overallConfidence], border: `1px solid ${confBorder[overallConfidence]}`, padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '11px', color: confColor[overallConfidence], margin: 0, letterSpacing: '0.06em' }}>{confMsg[overallConfidence]}</p>
+              <p style={{ fontFamily: mono, fontSize: '11px', color: confColor[overallConfidence], margin: 0, letterSpacing: '0.06em' }}><Icon name={confIcon[overallConfidence]} size="xs" /> {confMsg[overallConfidence]}</p>
             </div>
           )}
 
@@ -489,7 +491,7 @@ export default function NewAngebotPage() {
           {/* Sum-reconciliation + missing-data warnings (server-side) */}
           {aiEnhanced && aiWarnings.length > 0 && (
             <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 25%, transparent)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
-              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>▲ Verify before sending</p>
+              <p style={{ fontFamily: mono, fontSize: '10px', color: 'var(--semantic-danger)', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}><Icon name="warning" size="xs" /> Verify before sending</p>
               <ul style={{ margin: 0, paddingLeft: '18px' }}>
                 {aiWarnings.map((w, i) => (
                   <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', lineHeight: 1.5, marginBottom: '2px' }}>{w}</li>
@@ -586,7 +588,7 @@ export default function NewAngebotPage() {
               <p style={{ fontFamily: mono, fontSize: '9px', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
                 <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
-                  {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}>▲ verify</span>}
+                  {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: '9px', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> verify</span>}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                     <textarea
                       value={item.description}
@@ -670,7 +672,7 @@ export default function NewAngebotPage() {
               <button type="button" onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: '11px', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() ? 0.6 : 1 }}>
                 {saving ? t.angebotForm.saving : t.angebotForm.saveAngebot}
               </button>
-              {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}>▲ {saveError}</p>}
+              {saveError && <p style={{ fontFamily: mono, fontSize: '11px', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {saveError}</p>}
             </div>
           </div>
         </div>

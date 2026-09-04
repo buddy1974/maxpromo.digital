@@ -1,3 +1,4 @@
+import { Icon, type IconName } from '@maxpromo/ui'
 /**
  * components/ui/OperationsCenter.tsx
  *
@@ -44,10 +45,10 @@ interface OperationsCenterProps {
   footnote: string
 }
 
-const STATE_MARK: Record<SystemRow['state'], string> = {
-  running: '●',
-  attention: '▲',
-  scheduled: '◷',
+const STATE_ICON: Record<SystemRow['state'], IconName> = {
+  running: 'running' as const,
+  attention: 'warning' as const,
+  scheduled: 'waiting' as const,
 }
 
 export function OperationsCenter({
@@ -167,7 +168,7 @@ export function OperationsCenter({
                   flexShrink: 0,
                 }}
               >
-                {STATE_MARK[s.state]}
+                <Icon name={STATE_ICON[s.state]} size="sm" />
               </span>
               <span
                 style={{

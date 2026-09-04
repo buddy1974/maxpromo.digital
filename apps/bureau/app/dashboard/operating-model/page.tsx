@@ -1,6 +1,7 @@
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { OPERATING_STAGES, SAFE_ACTION_LIFECYCLE } from "@/lib/core/operating-model";
 import { AGENT_HIERARCHY } from "@/lib/core/agent-hierarchy";
+import { Icon } from "@maxpromo/ui";
 
 // Internal product control page — explains the backbone the bureau is built on.
 // Not marketing fluff: shows what each stage does, who supports it, the handoff.
@@ -33,7 +34,7 @@ export default function OperatingModelPage() {
                   <p className="mt-0.5 text-sm font-medium text-ink">{stage.name}</p>
                 </div>
                 {i < OPERATING_STAGES.length - 1 && (
-                  <span className="text-ink-muted md:hidden">↓</span>
+                  <span className="text-ink-muted md:hidden"><Icon name="chevronDown" size="sm" /></span>
                 )}
               </li>
             ))}
@@ -83,7 +84,7 @@ export default function OperatingModelPage() {
               {AGENT_HIERARCHY.map((n) => (
                 <li key={n.role} className="flex gap-3">
                   <span className={`font-mono text-[11px] uppercase tracking-[0.12em] ${n.reportsTo ? "text-ink-muted" : "text-ink-secondary"}`}>
-                    {n.reportsTo ? "└─" : "◆"}
+                    {n.reportsTo ? "└─" : <Icon name="dashboard" size="xs" />}
                   </span>
                   <span className="text-ink">{n.name}</span>
                   <span className="text-ink-muted">— {n.summary}</span>
