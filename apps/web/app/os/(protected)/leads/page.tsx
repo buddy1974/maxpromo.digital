@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
-import { Icon } from '@maxpromo/ui'
+import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -12,20 +12,14 @@ interface Lead {
   converted: boolean; created_at: string
 }
 
-const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
-  new:        { text: 'var(--semantic-warning)', bg: 'color-mix(in srgb, var(--semantic-warning) 12%, transparent)' },
-  contacted:  { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 12%, transparent)' },
-  qualified:  { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 12%, transparent)' },
-  converted:  { text: 'var(--semantic-success)', bg: 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' },
-  lost:       { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)' },
-}
+const statusTone = toneMap<string>({ new: 'caution', contacted: 'info', qualified: 'info', converted: 'positive', lost: 'critical' })
 
 /** Raw DB values — the persisted identity. Display text comes from t.status.*. */
 const STATUSES = ['new', 'contacted', 'qualified', 'converted', 'lost']
 const SOURCES  = ['manual', 'website', 'referral', 'instagram', 'facebook', 'linkedin', 'google', 'whatsapp', 'email', 'phone', 'other']
 
 function StatusBadge({ status, label }: { status: string; label: string }) {
-  const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'color-mix(in srgb, var(--brand-text-secondary) 12%, transparent)' }
+  const c = TONE_VARS[statusTone(status)]
   return <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>{label}</span>
 }
 
@@ -276,7 +270,7 @@ export default function LeadsPage() {
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.leads.updateStatus}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                 {STATUSES.filter(s => s !== selected.status).map(s => (
-                  <button key={s} onClick={() => updateStatus(selected.id, s)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: STATUS_COLOR[s]?.text ?? 'var(--brand-text-secondary)', background: STATUS_COLOR[s]?.bg ?? 'transparent', border: `1px solid ${STATUS_COLOR[s]?.text ?? 'var(--brand-text-muted)'}40`, padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
+                  <button key={s} onClick={() => updateStatus(selected.id, s)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[statusTone(s)].text, background: TONE_VARS[statusTone(s)].bg, border: `1px solid ${TONE_VARS[statusTone(s)].border}`, padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
                     {statusLabel(s)}
                   </button>
                 ))}

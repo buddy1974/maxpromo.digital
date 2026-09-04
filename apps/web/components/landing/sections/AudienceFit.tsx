@@ -1,4 +1,4 @@
-import { EYEBROW_STYLE, HEADING_SIZE, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
+import { EYEBROW_STYLE, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
 
 interface AudienceFitProps {
   targetAudience:    string | null
@@ -33,9 +33,13 @@ export function AudienceFit({ targetAudience, problemStatement, locale }: Audien
         <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-4)' }}>
           {eyebrow}
         </p>
-        <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: HEADING_SIZE.compact, letterSpacing: '-0.03em', lineHeight: 1.35, margin: 0, color: 'var(--showcase-fg)' }}>
+        {/* This was a <p> at a size from the showcase engine's own heading
+            scale, which meant the section had no heading in the outline and
+            the type came from a scale the platform retired. It is the
+            section's heading, so it is one. */}
+        <h2 style={{ margin: 0, color: 'var(--showcase-fg)' }}>
           {targetAudience}
-        </p>
+        </h2>
         {problemStatement && (
           <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '16px', color: 'var(--showcase-muted)', lineHeight: 1.75, marginTop: 'var(--space-4)', maxWidth: '42rem' }}>
             {problemStatement}

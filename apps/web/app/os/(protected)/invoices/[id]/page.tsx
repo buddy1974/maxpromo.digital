@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { DocumentLanguage } from '@/lib/documents/config'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
@@ -17,12 +18,7 @@ interface Invoice {
   language?: DocumentLanguage | null
 }
 
-const STATUS_COLOR: Record<string, { text: string; bg: string; border: string }> = {
-  draft:   { text: 'var(--brand-text-secondary)',    bg: 'color-mix(in srgb, var(--brand-text-secondary) 10%, transparent)',  border: 'var(--brand-text-secondary)' },
-  sent:    { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 10%, transparent)',   border: 'color-mix(in srgb, var(--semantic-info) 30%, transparent)' },
-  paid:    { text: 'var(--semantic-success)', bg: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-success) 30%, transparent)' },
-  overdue: { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-danger) 30%, transparent)' },
-}
+const statusTone = toneMap<string>({ draft: 'neutral', sent: 'info', paid: 'positive', overdue: 'critical' })
 
 export default function InvoiceDetailPage() {
   const { t, fmtEur, fmtDate } = useOsLocale()
@@ -94,7 +90,7 @@ export default function InvoiceDetailPage() {
   const items    = Array.isArray(invoice.line_items) ? invoice.line_items : []
   const hasAnz   = Number(invoice.anzahlung) > 0
   const restbet  = hasAnz ? Number(invoice.restbetrag ?? (Number(invoice.total) - Number(invoice.anzahlung))) : Number(invoice.total)
-  const sc       = STATUS_COLOR[invoice.status] ?? STATUS_COLOR.draft
+  const sc       = TONE_VARS[statusTone(invoice.status)]
 
   const columns = [
     t.invoiceDetail.colIndex, t.invoiceDetail.colDescription,

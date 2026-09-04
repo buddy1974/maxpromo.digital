@@ -324,3 +324,29 @@ hiding three currency conflicts in one published article, which gives a
 migration's hosting cost in pounds in English and euros in German, four lines
 above the sentence "those are documented outcomes from a real project".
 
+## 2026-09-04 - v10.0: a shared abstraction the caller cannot consume is unadopted
+
+**Decision:** `@maxpromo/ui` exports `TONE_VARS` - the same six tones as CSS
+custom properties - and the internal OS's nine status maps are migrated onto
+it. ADR-0002 is amended.
+**Why:** ADR-0002 replaced eleven status maps in Agent Bureau with a tone
+system, and its general lesson was that an abstraction callers ignore is wrong.
+The OS then accumulated nine of its own, because TONE_TEXT and TONE_BADGE are
+Tailwind class strings and the OS styles with inline custom properties. It
+could not adopt them physically, which is the same outcome as ignoring them.
+The drift arrived on schedule: the dashboard coloured a new lead lime, the
+leads page amber.
+**How to apply:** When extracting a shared abstraction, check the call sites
+can consume the form you chose, not only that they share the idea.
+
+## 2026-09-04 - The showcase heading scale is deleted, not documented as moved
+
+**Decision:** `HEADING_SIZE` is removed from the showcase engine.
+**Why:** Its own file header had said the heading scale "has moved to the
+platform type scale - showcase headings are the same headings" for a release
+while the constant sat below it with five entries, two unused and one holding
+the 4rem display size the design system retired by name. Documentation that
+describes a removal is not a removal.
+**Also found:** two showcase sections had no heading element at all - their
+headings were paragraphs sized from that constant.
+

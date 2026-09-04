@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { EYEBROW_STYLE, HEADING_SIZE, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
+import { EYEBROW_STYLE, SECTION_PADDING, SECTION_DIVIDER } from '@/components/landing/showcaseTokens'
 
 interface ProblemSolutionProps {
   problemStatement: string | null
@@ -50,7 +50,7 @@ export function ProblemSolution({ problemStatement, description, domainBrand, pa
           </p>
 
           {problemStatement && (
-            <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: HEADING_SIZE.narrative, letterSpacing: '-0.02em', lineHeight: 1.4, color: 'var(--showcase-muted)', margin: 0, marginBottom: 'var(--space-5)' }}>
+            <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: 'var(--text-h3)', letterSpacing: '-0.02em', lineHeight: 1.4, color: 'var(--showcase-muted)', margin: 0, marginBottom: 'var(--space-5)' }}>
               {problemStatement}
             </p>
           )}

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useOsLocale } from '@/lib/os-i18n/context'
-import { Icon } from '@maxpromo/ui'
+import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -16,16 +16,10 @@ interface Angebot {
   payment_method?: string; currency?: string; language?: string
 }
 
-const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
-  draft:     { text: 'var(--brand-text-secondary)',     bg: 'var(--brand-surface-sunken)' },
-  sent:      { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 12%, transparent)' },
-  accepted:  { text: 'var(--semantic-success)', bg: 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' },
-  rejected:  { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)' },
-  expired:   { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)' },
-}
+const statusTone = toneMap<string>({ draft: 'neutral', sent: 'info', accepted: 'positive', rejected: 'critical', expired: 'critical' })
 
 function StatusBadge({ status, label }: { status: string; label: string }) {
-  const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'var(--brand-surface-sunken)' }
+  const c = TONE_VARS[statusTone(status)]
   return <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>{label}</span>
 }
 

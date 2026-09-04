@@ -23,7 +23,11 @@ import type { CSSProperties } from 'react'
  * the --brand-* namespace belongs to the platform token layer.
  *
  * The heading scale that used to live here has moved to the platform type
- * scale in @maxpromo/design-tokens/brand.css — showcase headings are the same headings.
+ * scale in @maxpromo/design-tokens/brand.css — showcase headings are the same
+ * headings. That sentence was written before the constant was actually gone:
+ * HEADING_SIZE survived it by a release with five entries, two of which had no
+ * consumers and one of which was the 4rem display size the design system
+ * retired by name ("64px headings are landing-page size"). Removed in v10.0.
  */
 
 // ── Spacing scale ────────────────────────────────────────────────────
@@ -73,18 +77,6 @@ export const EYEBROW_STYLE: CSSProperties = {
   textTransform: 'uppercase',
 }
 
-export const HEADING_SIZE = {
-  /** Hero <h1> only — the single largest element on the page. */
-  display: 'clamp(2.5rem, 5.5vw, 4rem)',
-  /** Final CTA <h2> — second-largest. The page's other high-stakes moment earns the second-biggest type on the page, nothing else does. */
-  cta: 'clamp(2rem, 4.5vw, 3rem)',
-  /** Standard section <h2> (Workflow, Features, Gallery). */
-  section: 'clamp(1.75rem, 3.5vw, 2.5rem)',
-  /** Narrative/compact section headings (Trust, Onboarding). */
-  compact: 'clamp(1.5rem, 3vw, 2rem)',
-  /** Prose-led headings inside narrative sections (ProblemSolution's problem statement, AudienceFit's audience line). */
-  narrative: 'clamp(1.35rem, 2.6vw, 1.75rem)',
-} as const
 
 // ── Buttons ──────────────────────────────────────────────────────────
 export const BUTTON_PRIMARY: CSSProperties = {

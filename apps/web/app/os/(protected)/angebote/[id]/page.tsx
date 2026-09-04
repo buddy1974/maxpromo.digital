@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { DocumentLanguage } from '@/lib/documents/config'
 import { useOsLocale } from '@/lib/os-i18n/context'
-import { Icon } from '@maxpromo/ui'
+import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
@@ -20,13 +20,7 @@ interface Angebot {
   language?: DocumentLanguage | null
 }
 
-const STATUS_COLOR: Record<string, { text: string; bg: string; border: string }> = {
-  draft:    { text: 'var(--brand-text-secondary)',    bg: 'color-mix(in srgb, var(--brand-text-secondary) 10%, transparent)',  border: 'var(--brand-text-secondary)' },
-  sent:     { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 10%, transparent)',   border: 'color-mix(in srgb, var(--semantic-info) 30%, transparent)' },
-  accepted: { text: 'var(--semantic-success)', bg: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-success) 30%, transparent)' },
-  rejected: { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-danger) 30%, transparent)' },
-  expired:  { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)',    border: 'color-mix(in srgb, var(--semantic-danger) 30%, transparent)' },
-}
+const statusTone = toneMap<string>({ draft: 'neutral', sent: 'info', accepted: 'positive', rejected: 'critical', expired: 'critical' })
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -173,7 +167,7 @@ export default function AngebotDetailPage() {
   const items = Array.isArray(angebot.line_items) ? angebot.line_items : []
   const hasAnz = Number(angebot.anzahlung) > 0
   const restbet = hasAnz ? Number(angebot.total) - Number(angebot.anzahlung) : Number(angebot.total)
-  const sc = STATUS_COLOR[angebot.status] ?? STATUS_COLOR.draft
+  const sc = TONE_VARS[statusTone(angebot.status)]
 
   const columns = [
     t.angebotDetail.colIndex, t.angebotDetail.colDescription,

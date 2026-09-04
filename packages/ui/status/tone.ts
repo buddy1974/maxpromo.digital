@@ -61,6 +61,64 @@ export const TONE_BADGE: Record<Tone, string> = {
 }
 
 /**
+ * The same tones as custom properties, for surfaces that style inline.
+ *
+ * TONE_TEXT and TONE_BADGE are Tailwind class strings, which is why the
+ * internal OS could not use them: it styles with inline `style` objects and
+ * CSS custom properties, so a class name is no use to it. The result was the
+ * situation ADR-0002 describes, happening a second time in a different
+ * application — eight status maps across the OS, with different vocabularies
+ * (invoice status, quotation status, lead status, job priority, log type) and
+ * style values that were identical character for character.
+ *
+ * They had drifted, as eleven copies did before them. The dashboard coloured a
+ * new lead with the brand accent while the leads page coloured it amber, so
+ * the same status was two colours on two screens — and the accent as a status
+ * is forbidden twice over: brand colours are never semantic colours, and Brand
+ * Lime as text measures 1.51:1.
+ *
+ * The lesson of ADR-0002 holds: the shared thing is the tone, not the
+ * vocabulary. This is the same six tones in the form the OS can consume.
+ */
+export const TONE_VARS: Record<Tone, { text: string; bg: string; border: string }> = {
+  neutral: {
+    text: 'var(--brand-text-secondary)',
+    bg: 'var(--brand-surface-sunken)',
+    border: 'var(--brand-border)',
+  },
+  positive: {
+    text: 'var(--semantic-success)',
+    bg: 'color-mix(in srgb, var(--semantic-success) 12%, transparent)',
+    border: 'color-mix(in srgb, var(--semantic-success) 30%, transparent)',
+  },
+  caution: {
+    text: 'var(--semantic-warning)',
+    bg: 'color-mix(in srgb, var(--semantic-warning) 12%, transparent)',
+    border: 'color-mix(in srgb, var(--semantic-warning) 30%, transparent)',
+  },
+  critical: {
+    text: 'var(--semantic-danger)',
+    bg: 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)',
+    border: 'color-mix(in srgb, var(--semantic-danger) 30%, transparent)',
+  },
+  info: {
+    text: 'var(--semantic-info)',
+    bg: 'color-mix(in srgb, var(--semantic-info) 12%, transparent)',
+    border: 'color-mix(in srgb, var(--semantic-info) 30%, transparent)',
+  },
+  /**
+   * Selected or active — not a status. The text is the accessible accent at
+   * 5.00:1, never --brand-primary, which is a fill and measures 1.51:1 as
+   * text. Four OS maps used the fill.
+   */
+  accent: {
+    text: 'var(--brand-primary-text)',
+    bg: 'color-mix(in srgb, var(--brand-primary) 12%, transparent)',
+    border: 'var(--brand-primary-edge)',
+  },
+}
+
+/**
  * Build a typed domain-to-tone mapper.
  *
  * Keeps each component's own union type intact while the styling stays here:

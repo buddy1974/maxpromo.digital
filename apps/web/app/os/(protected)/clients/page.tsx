@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
-import { Icon } from '@maxpromo/ui'
+import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
@@ -328,7 +328,9 @@ export default function ClientsPage() {
     `${c.name} ${c.company} ${c.email}`.toLowerCase().includes(search.toLowerCase())
   )
 
-  const confidenceColor = { high: 'var(--semantic-success)', medium: 'var(--brand-primary)', low: 'var(--semantic-danger)' }
+  // The ninth status map in the internal OS, and the third to colour a
+  // middle value with the brand accent — which is a fill, and is not a status.
+  const confidenceTone = toneMap<string>({ high: 'positive', medium: 'caution', low: 'critical' })
 
   const columns = [
     t.clients.colName, t.clients.colCompany, t.clients.colEmail, t.clients.colPhone,
@@ -456,10 +458,10 @@ export default function ClientsPage() {
 
               {/* Extracted preview banner */}
               {extracted && (
-                <div style={{ marginBottom: 'var(--space-4)', background: 'var(--brand-surface)', border: `1px solid ${confidenceColor[extracted.confidence]}33`, borderLeft: `3px solid ${confidenceColor[extracted.confidence]}`, padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-xs)' }}>
+                <div style={{ marginBottom: 'var(--space-4)', background: 'var(--brand-surface)', border: `1px solid ${TONE_VARS[confidenceTone(extracted.confidence)].border}`, borderLeft: `3px solid ${TONE_VARS[confidenceTone(extracted.confidence)].text}`, padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-xs)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.clients.prefilled}</p>
-                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: confidenceColor[extracted.confidence], background: `${confidenceColor[extracted.confidence]}22`, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[confidenceTone(extracted.confidence)].text, background: TONE_VARS[confidenceTone(extracted.confidence)].bg, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
                       {confidenceLabel[extracted.confidence]}
                     </span>
                   </div>

@@ -47,6 +47,14 @@ export function Reveal({
     // Respect reduced-motion preference, skip animation entirely
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    // Already on screen when the effect runs? Then leave it alone. The
+    // observer callback is asynchronous, so hiding an element that is already
+    // visible and waiting to be told to show it again costs at least one frame
+    // of the content disappearing — which is most likely above the fold, on a
+    // fast connection, for the first thing a visitor looks at.
+    const box = el.getBoundingClientRect()
+    if (box.top < window.innerHeight && box.bottom > 0) return
+
     const initialTransform =
       direction === 'up' ? 'translateY(24px)' : 'translateX(-16px)'
 

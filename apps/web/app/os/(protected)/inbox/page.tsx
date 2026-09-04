@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -21,13 +22,15 @@ interface LogEntry {
   ref?: string
 }
 
-const TYPE_COLOR: Record<LogType, string> = {
-  invoice_sent:  'var(--semantic-success)',
-  angebot_sent:  'var(--semantic-info)',
-  lead_enquiry:  'var(--brand-primary)',
-  newsletter:    'var(--semantic-info)',
-  other:         'var(--brand-text-muted)',
-}
+const typeTone = toneMap<LogType>({
+  invoice_sent: 'positive',
+  angebot_sent: 'info',
+  // An enquiry in the log is something waiting for a person, not a brand
+  // moment. It was --brand-primary, which is a fill and is not a status.
+  lead_enquiry: 'caution',
+  newsletter:   'info',
+  other:        'neutral',
+})
 
 interface Lead { id: string; name: string; email: string; source: string; created_at: string; company: string }
 interface Invoice { id: string; invoice_number: string; client_name: string; sent_at: string; client_email: string }
@@ -131,7 +134,7 @@ export default function InboxPage() {
                     {entry.subject}
                   </td>
                   <td style={{ padding: '11px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TYPE_COLOR[entry.type], background: TYPE_COLOR[entry.type] + '20', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[typeTone(entry.type)].text, background: TONE_VARS[typeTone(entry.type)].bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
                       {typeLabel[entry.type]}
                     </span>
                   </td>

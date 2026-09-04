@@ -30,7 +30,8 @@ interface ConversionProps {
  * strongest point on the page"): section padding increased to
  * SECTION_PADDING.cta (7rem, the single largest padding value on the
  * page — deliberately, this section should feel like arriving somewhere,
- * not just another block). Heading now uses HEADING_SIZE.cta (the
+ * not just another block). The heading is a plain <h2> on the platform
+ * scale (the
  * second-largest type on the page, after the hero) instead of a
  * one-off clamp(). Both CTA buttons get explicit hover/active/focus
  * feedback via the shared interactive tokens, previously absent.

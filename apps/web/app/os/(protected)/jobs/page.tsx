@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
-import { Icon } from '@maxpromo/ui'
+import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -17,7 +17,7 @@ interface Job {
   value: number | null; due_date: string | null; notes: string; description: string
 }
 
-const PRIORITY_COLOR: Record<string, string> = { high: 'var(--semantic-danger)', medium: 'var(--brand-primary)', low: 'var(--brand-text-muted)' }
+const priorityTone = toneMap<string>({ high: 'critical', medium: 'caution', low: 'neutral' })
 
 interface NewJobForm { title: string; client_name: string; stage: Stage; priority: string; value: string; notes: string }
 const BLANK_FORM: NewJobForm = { title: '', client_name: '', stage: 'lead', priority: 'medium', value: '', notes: '' }
@@ -180,7 +180,7 @@ export default function JobsPage() {
                     style={{
                       background: dragId === job.id ? 'color-mix(in srgb, var(--brand-primary) 10%, transparent)' : 'var(--brand-surface)',
                       border: `1px solid ${dragId === job.id ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`,
-                      borderLeft: `3px solid ${PRIORITY_COLOR[job.priority] ?? 'var(--brand-text-muted)'}`,
+                      borderLeft: `3px solid ${TONE_VARS[priorityTone(job.priority)].text}`,
                       padding: 'var(--space-3)',
                       cursor: 'grab',
                       userSelect: 'none',
@@ -190,7 +190,7 @@ export default function JobsPage() {
                     {job.client_name && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: '0 0 6px', letterSpacing: '0.04em' }}>{job.client_name}</p>}
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       {job.value && <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)' }}>{fmtEur(Number(job.value))}</span>}
-                      <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: PRIORITY_COLOR[job.priority] ?? 'var(--brand-text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(job.priority)}</span>
+                      <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[priorityTone(job.priority)].text, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(job.priority)}</span>
                     </div>
                     {job.due_date && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 'var(--space-1) 0 0', letterSpacing: '0.06em' }}>{fmtDate(job.due_date)}</p>}
                   </div>
@@ -214,7 +214,7 @@ export default function JobsPage() {
 
             <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: '20px', flexWrap: 'wrap' }}>
               <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{stageLabel(selected.stage)}</span>
-              <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: PRIORITY_COLOR[selected.priority], background: (PRIORITY_COLOR[selected.priority] ?? 'var(--brand-text-muted)') + '20', padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(selected.priority)}</span>
+              <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[priorityTone(selected.priority)].text, background: TONE_VARS[priorityTone(selected.priority)].bg, padding: '4px 10px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{priorityLabel(selected.priority)}</span>
               {selected.value && <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', padding: '4px 10px', background: 'var(--brand-surface-subtle)', letterSpacing: '0.06em' }}>{fmtEur(Number(selected.value))}</span>}
             </div>
 

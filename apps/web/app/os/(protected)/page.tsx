@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -25,16 +26,22 @@ interface Lead    { id: string; name: string; company: string; source: string; s
 interface Job     { id: string; title: string; client_name: string; stage: string; value: number; created_at: string }
 interface Client  { id: string }
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: 'var(--brand-text-muted)', sent: 'var(--semantic-info)', paid: 'var(--semantic-success)', overdue: 'var(--semantic-danger)',
-  new: 'var(--brand-primary)', contacted: 'var(--semantic-info)', qualified: 'var(--semantic-info)', converted: 'var(--semantic-success)', lost: 'var(--semantic-danger)',
-  lead: 'var(--brand-text-muted)', discovery: 'var(--semantic-info)', proposal: 'var(--semantic-info)', 'in progress': 'var(--brand-primary)',
-  review: 'var(--semantic-warning)', completed: 'var(--semantic-success)', invoiced: 'var(--semantic-success)',
-}
+// Three domains — invoice, lead and job status — shared one flat lookup.
+// The vocabularies stay their own; the styling comes from the tone system,
+// which is where it lives for every other surface on the platform (ADR-0002).
+// `new` and `in progress` were the brand accent, which is a fill measuring
+// 1.51:1 as text and which the token file forbids as a status by name. The
+// leads page already called a new lead amber; this screen called it lime.
+const statusTone = toneMap<string>({
+  draft: 'neutral', sent: 'info', paid: 'positive', overdue: 'critical',
+  new: 'caution', contacted: 'info', qualified: 'info', converted: 'positive', lost: 'critical',
+  lead: 'neutral', discovery: 'info', proposal: 'info', 'in progress': 'accent',
+  review: 'caution', completed: 'positive', invoiced: 'positive',
+})
 
 /** `label` is the already-translated display string; `status` only drives the colour. */
 function Badge({ status, label }: { status: string; label: string }) {
-  const color = STATUS_COLORS[status?.toLowerCase()] ?? 'var(--brand-text-muted)'
+  const color = TONE_VARS[statusTone(status?.toLowerCase() ?? '')].text
   return (
     <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color, background: color + '22', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
       {label}

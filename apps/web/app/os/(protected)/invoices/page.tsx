@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -13,15 +14,10 @@ interface Invoice {
 
 /** Raw DB status values — the filter identity. Display text comes from t.status.invoice. */
 const STATUS_TABS = ['all', 'draft', 'sent', 'paid', 'overdue']
-const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
-  draft:   { text: 'var(--brand-text-secondary)', bg: 'var(--brand-surface-sunken)' },
-  sent:    { text: 'var(--semantic-info)', bg: 'color-mix(in srgb, var(--semantic-info) 12%, transparent)' },
-  paid:    { text: 'var(--semantic-success)', bg: 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' },
-  overdue: { text: 'var(--semantic-danger)', bg: 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)' },
-}
+const statusTone = toneMap<string>({ draft: 'neutral', sent: 'info', paid: 'positive', overdue: 'critical' })
 
 function StatusBadge({ status, label }: { status: string; label: string }) {
-  const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'var(--brand-surface-sunken)' }
+  const c = TONE_VARS[statusTone(status)]
   return (
     <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
       {label}

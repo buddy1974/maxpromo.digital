@@ -757,3 +757,57 @@ keeping.
 
 Nothing pushed. Nothing merged to main.
 
+## 2026-09-04 - v10.0: enterprise readiness sprint
+
+Branch feature/track-b. Full certification green - eight gates, accessibility
+across 36 rendered routes, cross-application consistency, clean crawl.
+
+Most of this sprint's work packages were closed in v7.0 through v9.6, so this
+pass went at the three items on the risk register that were still real
+component debt rather than business decisions.
+
+### Nine status maps, and the reason the shared one went unused
+
+ADR-0002 replaced eleven status maps in Agent Bureau with a tone system, and
+concluded that an abstraction callers ignore is wrong. The internal OS then
+accumulated **nine of its own** - dashboard, quotations and invoices in list
+and detail form, leads, job priority, inbox log type, document-scan confidence.
+
+The reason is worth recording: `TONE_TEXT` and `TONE_BADGE` are Tailwind class
+strings, and the OS styles with inline objects and custom properties. **It
+could not consume the shared abstraction, which has the same effect as
+ignoring it.** So the drift arrived exactly as before - the dashboard coloured
+a new lead with the brand accent while the leads page coloured it amber. One
+status, two colours, two screens.
+
+Five of the nine used `--brand-primary` as a status, forbidden twice over:
+brand colours are never semantic colours, and Brand Lime as text is 1.51:1.
+Four appended a hex alpha pair to a `var()` reference - `${color}20` - which is
+not a colour, so those backgrounds never rendered. Same defect class as the two
+found in v7.0, in four more places.
+
+`TONE_VARS` is the same six tones as custom properties. All nine migrated.
+
+### A heading scale documented as removed, and still there
+
+`showcaseTokens.ts` opened by saying the heading scale "has moved to the
+platform type scale - showcase headings are the same headings". Directly below
+that sentence sat `HEADING_SIZE`, five entries, two with no consumers, one of
+them the 4rem display size the design system retired by name: *"64px headings
+are landing-page size."*
+
+Its two live consumers were paragraphs used as section headings - so two
+showcase sections, on nine public domains, had no heading element in the
+outline at all. One is now an `h2` and inherits the platform scale; the other
+is a standfirst and joins it explicitly. The constant is deleted.
+
+### Content hidden and re-shown
+
+`Reveal` sets `opacity: 0` after hydration and waits for an IntersectionObserver
+callback, which is asynchronous - so an element already on screen when the
+effect runs disappears for at least a frame before fading back in. Most likely
+above the fold, on a fast connection, for the first thing a visitor looks at.
+It now leaves visible elements alone.
+
+Nothing pushed. Nothing merged to main.
+
