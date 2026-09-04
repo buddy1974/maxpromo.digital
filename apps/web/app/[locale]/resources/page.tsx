@@ -65,14 +65,6 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
         ? 'Ein Verzeichnis der Entscheidungs-, Koordinations- und Kommunikationssysteme, die wir installieren, und wofür jedes gedacht ist.'
         : 'A catalogue of the decision, coordination and communication runtimes we install, and what each one is for.',
     },
-    {
-      href: '/pricing',
-      label: isDE ? 'Preise' : 'Pricing',
-      title: isDE ? 'Was eine Arbeit kostet' : 'What a piece of work costs',
-      desc: isDE
-        ? 'Rahmen für Umfang und Kosten, damit ein Gespräch nicht mit einer Zahl beginnen muss, die niemand kennt.'
-        : 'Ranges for scope and cost, so a conversation does not have to start with a number nobody knows.',
-    },
   ]
 
   return (

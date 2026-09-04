@@ -82,6 +82,12 @@ const nextConfig: NextConfig = {
         permanent: true,
       })),
 
+      // Public pricing was retired in v9.6. Maxpromo does not sell predefined
+      // packages, so there is no price list to land on — the question "what
+      // does this cost" is answered in the business check, and that is where
+      // the old address now leads.
+      { source: `${L}/pricing`, destination: '/:locale/contact', permanent: true },
+
       // /ai-websites served the same page as /solutions/websites-platforms —
       // identical H1, identical body, no canonical tag, no inbound link, and
       // both submitted in the sitemap. It was a duplicate address for a page

@@ -21,10 +21,10 @@ const TARGETS = [
     '/en/industries', '/en/industries/healthcare', '/en/industries/construction',
     '/en/industries/property', '/en/industries/hospitality', '/en/industries/publishing',
     '/en/industries/professional-services',
-    '/en/resources', '/en/about', '/en/pricing', '/en/contact', '/en/case-studies',
+    '/en/resources', '/en/about', '/en/contact', '/en/case-studies',
     '/en/agent-bureau', '/en/blog', '/en/impressum', '/en/privacy', '/en/agb',
     '/en/automation-lab', '/en/ai-websites', '/en/data-deletion',
-    '/de/solutions', '/de/industries/healthcare', '/de/about', '/de/pricing', '/de/contact',
+    '/de/solutions', '/de/industries/healthcare', '/de/about', '/de/contact',
   ]],
   ['bureau', 'http://localhost:3021', ['/', '/impressum', '/datenschutz', '/login']],
 ]

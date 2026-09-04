@@ -60,6 +60,32 @@ const CATALOGUES = (() => {
   return out
 })()
 
+/**
+ * Published articles. ADR-0007 recorded "copy written outside the message
+ * catalogues" as a known limit of this check; v9.6 found what that was hiding.
+ * One article gives the same project's hosting cost as "from £89/month to
+ * £19/month" in English and "von 89 Euro/Monat auf 19 Euro/Monat" in German,
+ * four lines above the sentence "those are documented outcomes from a real
+ * project". The figures agree. The currency does not.
+ */
+const ARTICLES = (() => {
+  const out = []
+  const walk = (dir) => {
+    let entries
+    try { entries = readdirSync(dir) } catch { return }
+    for (const e of entries) {
+      const full = join(dir, e)
+      if (statSync(full).isDirectory()) walk(full)
+      else if (e.endsWith('.mdx') || e.endsWith('.md')) out.push(full)
+    }
+  }
+  const appsDir = join(ROOT, 'apps')
+  if (existsSync(appsDir)) {
+    for (const app of readdirSync(appsDir)) walk(join(appsDir, app, 'content'))
+  }
+  return out
+})()
+
 if (CATALOGUES.length === 0) {
   console.error('claims: no message catalogue found under ' + ROOT + '/apps/*/messages')
   console.error('Refusing to report clean without having checked anything.')
@@ -98,7 +124,7 @@ const HEDGES = [
 
 /** Currency markers, and the magnitudes they attach to. */
 const CURRENCY = [
-  ['€', /(?:€\s?([\d.,]+\s?k?)|([\d.,]+\s?k?)\s?€)/gi],
+  ['€', /(?:€\s?([\d.,]+\s?k?)|([\d.,]+\s?k?)\s?(?:€|EUR|Euro))/gi],
   ['£', /(?:£\s?([\d.,]+\s?k?)|([\d.,]+\s?k?)\s?£)/gi],
   ['$', /(?:\$\s?([\d.,]+\s?k?)|([\d.,]+\s?k?)\s?\$)/gi],
 ]
@@ -155,6 +181,26 @@ for (const file of CATALOGUES) {
       }
     }
   }
+}
+
+// Articles take the currency rule only. A hedge needs a key that presents the
+// sentence as a result, and prose has no keys.
+for (const file of ARTICLES) {
+  const rel = relative(ROOT, file).split(sep).join('/')
+  const text = readFileSync(file, 'utf8')
+  for (const [symbol, re] of CURRENCY) {
+    re.lastIndex = 0
+    let m
+    while ((m = re.exec(text)) !== null) {
+      const mag = magnitude(m[1] ?? m[2])
+      if (mag === null || mag === 0) continue
+      if (!money.has(mag)) money.set(mag, new Map())
+      const bySymbol = money.get(mag)
+      if (!bySymbol.has(symbol)) bySymbol.set(symbol, [])
+      if (!bySymbol.get(symbol).includes(rel)) bySymbol.get(symbol).push(rel)
+    }
+  }
+  stringsChecked++
 }
 
 const currencyConflicts = [...money.entries()].filter(([, bySymbol]) => bySymbol.size > 1)
@@ -312,7 +358,7 @@ const commitmentConflicts = [...commitments.entries()].filter(([, byValue]) => b
 
 console.log('='.repeat(74))
 console.log('CLAIMS')
-console.log(`${CATALOGUES.length} catalogue(s), ${stringsChecked} string(s) checked\n`)
+console.log(`${CATALOGUES.length} catalogue(s), ${ARTICLES.length} article(s), ${stringsChecked} item(s) checked\n`)
 
 if (currencyConflicts.length) {
   console.log(`Same figure, more than one currency — ${currencyConflicts.length}\n`)

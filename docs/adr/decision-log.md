@@ -288,3 +288,39 @@ makes no public promise. Two carried claims - a customer quote and a "60-90
 days payback" - that one wire-up would have published unevidenced. Git keeps
 them.
 
+## 2026-09-04 - v9.6: public pricing retired (Marcel's decision)
+
+**Decision:** The website no longer displays prices. Maxpromo does not sell
+predefined packages; every engagement begins with understanding the business.
+The page, its route, its 64 strings per locale, its nav and footer links and
+its sitemap entry are removed. `/pricing` redirects permanently to `/contact`.
+**Why:** Marcel's, on the commercial question v9.5 put to him. It resolves
+known-risks 38, 39, 42 and 45 in one decision.
+**How to apply:** There is no price list, so nothing may quote one - including
+the surfaces that are not pages.
+
+## 2026-09-04 - A conversational surface is a publishing surface
+
+**Decision:** The chat agent, its offline fallback, the shared prompt module
+and the internal OS assistant are treated as public commercial copy.
+**Why:** Retiring the page found four price models nothing had ever reviewed.
+Max's system prompt carried "Starter from GBP 2,500, Growth from GBP 6,500,
+payment plans over GBP 3,000" and the instruction "Give specific numbers. Do
+not be vague." lib/ai.ts repeated it offline, lib/prompts.ts held a third copy
+and the OS assistant a fourth at EUR 799-6,000+. Pounds sterling, on a
+German-market site, none of it matching the published page, none of it visible
+to any page audit. The agent also linked to two retired routes, offered an ROI
+calculator that does not exist and quoted a 60-90 day payback nothing
+evidences.
+**How to apply:** A prompt that speaks to prospects is copy. It is reviewed
+when copy is reviewed.
+
+## 2026-09-04 - audit:claims reads articles
+
+**Decision:** The currency rule scans content/**/*.mdx as well as the message
+catalogues.
+**Why:** ADR-0007 recorded copy outside the catalogues as a known limit. It was
+hiding three currency conflicts in one published article, which gives a
+migration's hosting cost in pounds in English and euros in German, four lines
+above the sentence "those are documented outcomes from a real project".
+

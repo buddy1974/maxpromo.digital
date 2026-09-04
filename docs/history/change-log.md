@@ -691,3 +691,69 @@ a business fact. That is the test this pass applied throughout.
 
 Nothing pushed. Nothing merged to main.
 
+## 2026-09-04 - v9.6: public pricing retired
+
+Branch feature/track-b. Marcel's decision on the commercial question v9.5 put
+to him: the website no longer displays prices, because Maxpromo does not sell
+predefined packages. Full certification green.
+
+### The page
+
+Route deleted, 64 strings per locale removed, nav link, footer link, sitemap
+entry and the Resources card gone. /pricing redirects permanently to /contact,
+so an old link or a search result lands where the answer now lives. Resolves
+known-risks 38, 39, 42 and 45.
+
+### What the page was hiding
+
+Removing it meant sweeping every surface for prices, and the sweep found that
+the page was not the only place the company published them.
+
+Max, the chat agent on every page of the site, carried a full price list in its
+system prompt - Starter from GBP 2,500, Growth from GBP 6,500, payment plans
+over GBP 3,000 - under the instruction "Give specific numbers. Do not be
+vague." The offline fallback in lib/ai.ts repeated it. lib/prompts.ts held a
+third copy. The internal OS assistant held a fourth model at EUR 799-6,000+.
+
+Four price models. One of them in pounds sterling, on a site selling to German
+SMEs. None matching the page that was published. None visible to any audit,
+because none of them is a page.
+
+The same prompt pointed at /services and /pricing, both retired routes, offered
+an ROI calculator that does not exist, and quoted a "60-90 day payback" that
+nothing evidences - the same figure removed from the catalogue one release
+earlier, still live in the agent.
+
+All four now say the same thing: there is no price list, scope decides cost,
+the business check is free and a fixed quote follows it. The agent is
+instructed not to produce a figure it was not given.
+
+### The claims audit reads articles now
+
+ADR-0007 recorded "copy outside the message catalogues" as a known limit. It
+was hiding three currency conflicts in one published article, which gives a
+migration's hosting cost as "from GBP 89/month to GBP 19/month" in English and
+"von 89 Euro/Monat auf 19 Euro/Monat" in German - four lines above "those are
+documented outcomes from a real project". Update cost is "GBP 50-200" and
+"50-200 Euro". The figures agree; the currency does not.
+
+Recorded as risk 47 rather than corrected, for the same reason as risk 33: one
+of the two is wrong and only Marcel knows which.
+
+### Kept, deliberately
+
+The AGB's "orders above EUR 500 require written form" is a legal threshold, not
+a price. Invoice and quotation documents carry prices because they are client
+documents. The estimate email builder produces a per-engagement quote, which is
+the model Marcel has just chosen - though nothing currently calls it. The
+portfolio's agency-cost figure sits behind a password.
+
+### Noted
+
+The whole message catalogue is serialised into the payload of every page, so
+the case-study figures ship on routes that never display them. Not a pricing
+issue - and a reason the discipline of removing copy nothing renders is worth
+keeping.
+
+Nothing pushed. Nothing merged to main.
+

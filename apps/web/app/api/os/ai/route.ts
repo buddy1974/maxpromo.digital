@@ -13,7 +13,8 @@ You know Marcel's business:
 - AI automation agency based in Essen, Germany
 - Kleinunternehmer §19 UStG (no VAT charged)
 - Services: AI agents, workflow automation, n8n, web development
-- Pricing range: €799–€6,000+
+- Pricing: not published publicly. Quotes are produced per engagement after the
+  business check; there are no packages and no list price.
 - Contact: info@maxpromo.digital
 - Legal address: Körnerstr. 8, 45143 Essen
 - IBAN: DE03 1001 0178 3648 4449 24, BIC: REVODEB2

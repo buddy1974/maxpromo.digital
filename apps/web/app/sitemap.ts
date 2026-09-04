@@ -40,7 +40,6 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataR
   { path: '/resources',                      priority: 0.8, changeFrequency: 'monthly' },
   { path: '/blog',                           priority: 0.6, changeFrequency: 'weekly'  },
   { path: '/case-studies',                   priority: 0.6, changeFrequency: 'monthly' },
-  { path: '/pricing',                        priority: 0.6, changeFrequency: 'monthly' },
 
   // Agent Bureau is the one product marketed publicly from the hub. The
   // operating systems are protected products and are deliberately absent:

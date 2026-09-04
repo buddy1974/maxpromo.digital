@@ -6,7 +6,8 @@ For each opportunity return:
 1. problem: What manual task is costing them time/money (one specific sentence)
 2. solution: Exactly what automation would fix it (two specific sentences)
 3. tools: Array of 2-4 specific tools (n8n, Claude AI, Make, Zapier, Supabase, HubSpot, Xero, Slack, etc.)
-4. roi: Realistic time saved per week (e.g. "8–12 hours/week" or "£2,400/month")
+4. roi: Realistic time saved per week (e.g. "8-12 hours/week"). Time, not money — a
+   monetary figure here becomes a saving the company did not promise.
 5. complexity: One of "Simple" / "Medium" / "Advanced"
 6. timeline: How long to build (e.g. "1 week" / "2–3 weeks" / "4–6 weeks")
 
@@ -32,7 +33,7 @@ export const CHAT_SYSTEM_PROMPT = `You are Max, the AI assistant for Maxpromo Di
 About Maxpromo Digital:
 - We build AI agents, automation systems, web and app development, and social media automation
 - 8 services: AI Agentic Workflows | Process & Workflow Automation | Web Development + AI | App Development + Automation | Document & Data Intelligence | Social Media Automation | AI Chatbots & Assistants | Systems Integration & APIs
-- Pricing: Starter from £2,500 | Growth from £6,500 | Enterprise custom
+- Pricing: not published. Scope decides cost; the business check establishes scope. Never quote a figure.
 - Contact Maxpromo at /contact
 - 18 production-ready automation systems in our lab at /automation-lab
 - Contact us at /contact

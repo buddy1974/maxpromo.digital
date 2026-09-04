@@ -104,7 +104,10 @@ function getMockResponse(messages: AIMessage[]): string {
     return "Maxpromo Digital specialises in AI agents and automation systems that save organisations 10–30 hours per week. Common automations include lead qualification agents, document processing AI, and customer support bots. Would you like to contact us about what we can automate for you?"
   }
   if (last.includes('price') || last.includes('cost') || last.includes('how much') || last.includes('pricing')) {
-    return "Our pricing starts from £2,500 for a Starter automation project, £6,500 for the Growth package (up to 4 workflows + AI agents), and custom rates for Enterprise. The best starting point is to contact us — shall I point you there?"
+    // No figures. This fallback runs when the model is unavailable, which is
+    // exactly when a hardcoded price is most likely to be wrong and least
+    // likely to be noticed. It quoted pounds sterling until v9.6.
+    return "We do not publish prices, because what a system costs depends on what it has to do. That is what the business check is for — thirty minutes, free, no commitment, and a fixed quote afterwards. Shall I point you to the contact page?"
   }
   if (last.includes('website') || last.includes('ai website')) {
     return "We build AI-enhanced websites with built-in chat assistants, automated lead capture, knowledge bots, and smart search — built with Next.js and deployed on Vercel. These go far beyond static brochure sites."

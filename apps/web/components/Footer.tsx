@@ -37,7 +37,6 @@ const COLUMNS = [
       { key: 'resources',   href: '/resources' },
       { key: 'blog',        href: '/blog' },
       { key: 'caseStudies', href: '/case-studies' },
-      { key: 'pricing',     href: '/pricing' },
     ],
   },
   {
