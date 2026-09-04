@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--brand-font-mono)'
-const grotesk = 'var(--brand-font-body)'
 const sans    = 'var(--brand-font-body)'
 
 // Inbox shows a communication log built from the os_leads table (recent activity)
@@ -89,33 +88,33 @@ export default function InboxPage() {
   return (
     <div style={{ padding: '32px 40px' }}>
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.inbox.heading}</h1>
+        <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 var(--space-1)' }}>{t.inbox.heading}</h1>
         <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>
           {t.inbox.subtitle} &nbsp;·&nbsp; {log.length} {t.inbox.entries}
         </p>
       </div>
 
-      <div style={{ background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '12px 18px', marginBottom: '24px' }}>
+      <div style={{ background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '12px 18px', marginBottom: 'var(--space-5)' }}>
         <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.06em', lineHeight: 1.6 }}>
           {t.inbox.note1}<br />
           {t.inbox.note2} <code style={{ color: 'var(--brand-primary-text)' }}>/api/os/inbox</code>
         </p>
       </div>
 
-      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={5} style={{ padding: '24px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
+              <tr><td colSpan={5} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
             ) : log.length === 0 ? (
-              <tr><td colSpan={5} style={{ padding: '24px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.inbox.empty}</td></tr>
+              <tr><td colSpan={5} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.inbox.empty}</td></tr>
             ) : (
               log.map(entry => (
                 <tr key={entry.id} style={{ borderBottom: '1px solid var(--brand-border)' }}>
@@ -132,7 +131,7 @@ export default function InboxPage() {
                     {entry.subject}
                   </td>
                   <td style={{ padding: '11px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TYPE_COLOR[entry.type], background: TYPE_COLOR[entry.type] + '20', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TYPE_COLOR[entry.type], background: TYPE_COLOR[entry.type] + '20', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
                       {typeLabel[entry.type]}
                     </span>
                   </td>

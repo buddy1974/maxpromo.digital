@@ -52,7 +52,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '1rem',
+          gap: 'var(--space-4)',
         }}
       >
         <a

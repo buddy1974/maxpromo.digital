@@ -61,7 +61,7 @@ export default async function CaseStudiesPage() {
 
       {/* Case studies */}
       <section style={{ background: 'var(--brand-surface-subtle)', padding: 'var(--section-y) var(--section-x)' }}>
-        <div style={{ maxWidth: '64rem', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ maxWidth: '64rem', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
           {CASE_STUDY_REFS.map((cs) => (
             <div
               key={cs.id}
@@ -71,13 +71,13 @@ export default async function CaseStudiesPage() {
                 borderLeft: '3px solid var(--brand-primary-edge)',
                 borderRadius: 'var(--radius-lg)',
                 boxShadow: 'var(--shadow-sm)',
-                padding: '48px',
+                padding: 'var(--space-8)',
               }}
             >
-              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--space-4)', marginBottom: 'var(--space-6)' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <span style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', padding: '4px 12px', letterSpacing: '0.05em', borderRadius: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-3)' }}>
+                    <span style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)', padding: 'var(--space-1) var(--space-3)', letterSpacing: '0.05em', borderRadius: 'var(--radius-sm)' }}>
                       {t(`${cs.id}Tag`)}
                     </span>
                   </div>
@@ -92,9 +92,9 @@ export default async function CaseStudiesPage() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gap: '3rem', marginBottom: '2rem' }} className="grid-cols-1 lg:grid-cols-2">
+              <div style={{ display: 'grid', gap: 'var(--space-8)', marginBottom: 'var(--space-6)' }} className="grid-cols-1 lg:grid-cols-2">
                 <div>
-                  <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
                     {t('challengeLabel')}
                   </p>
                   <p style={{ ...sans, fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.8 }}>
@@ -102,7 +102,7 @@ export default async function CaseStudiesPage() {
                   </p>
                 </div>
                 <div>
-                  <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 'var(--space-3)' }}>
                     {t('solutionLabel')}
                   </p>
                   <p style={{ ...sans, fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.8 }}>
@@ -111,8 +111,8 @@ export default async function CaseStudiesPage() {
                 </div>
               </div>
 
-              <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', padding: '24px', marginBottom: '20px' }}>
-                <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '16px' }}>
+              <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-5)', marginBottom: '20px' }}>
+                <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 'var(--space-4)' }}>
                   {t('resultsLabel')}
                 </p>
                 <div style={{ display: 'grid', gap: '10px' }} className="grid-cols-1 sm:grid-cols-2">
@@ -127,9 +127,9 @@ export default async function CaseStudiesPage() {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
                 {cs.tools.map((tool) => (
-                  <span key={tool} style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', padding: '3px 10px', letterSpacing: '0.05em', borderRadius: '4px' }}>
+                  <span key={tool} style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', padding: '3px 10px', letterSpacing: '0.05em', borderRadius: 'var(--radius-sm)' }}>
                     {tool}
                   </span>
                 ))}
@@ -142,7 +142,7 @@ export default async function CaseStudiesPage() {
       {/* CTA */}
       <section style={{ background: 'var(--brand-background)', padding: 'var(--section-y) var(--section-x)' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 'var(--space-4)' }}>
             {t('ctaEyebrow')}
           </p>
           <h2 style={{ marginBottom: '20px' }}>
@@ -151,7 +151,7 @@ export default async function CaseStudiesPage() {
           <p style={{ ...sans, fontSize: '18px', color: 'var(--brand-text-secondary)', marginBottom: '2.5rem', lineHeight: 1.8 }}>
             {t('ctaDesc')}
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', justifyContent: 'center' }}>
             <Link href="/contact" className="btn btn-primary">
               {t('ctaPrimary')}
             </Link>

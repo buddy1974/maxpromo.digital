@@ -28,7 +28,7 @@ function Section({ para, label, children }: { para: string; label: string; child
         borderLeft: '3px solid var(--brand-primary-edge)',
         borderRadius: 'var(--radius-lg)',
         padding: '1.75rem 2.25rem',
-        marginBottom: '1.5rem',
+        marginBottom: 'var(--space-5)',
       }}
     >
       <p
@@ -38,7 +38,7 @@ function Section({ para, label, children }: { para: string; label: string; child
           color: 'var(--brand-text-secondary)',
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
-          marginBottom: '4px',
+          marginBottom: 'var(--space-1)',
         }}
       >
         {para}
@@ -49,7 +49,7 @@ function Section({ para, label, children }: { para: string; label: string; child
           fontSize: 'var(--text-body)',
           fontWeight: 600,
           color: 'var(--brand-text)',
-          marginBottom: '12px',
+          marginBottom: 'var(--space-3)',
         }}
       >
         {label}
@@ -70,8 +70,8 @@ function Section({ para, label, children }: { para: string; label: string; child
 
 export default function AgbPage() {
   return (
-    <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: '7rem', paddingBottom: '7rem' }}>
-      <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 1.5rem' }}>
+    <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--space-20)', paddingBottom: 'var(--space-20)' }}>
+      <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 var(--space-5)' }}>
 
         <p
           style={{
@@ -80,14 +80,14 @@ export default function AgbPage() {
             color: 'var(--brand-text-secondary)',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
-            marginBottom: '12px',
+            marginBottom: 'var(--space-3)',
           }}
         >
           Rechtliches / Legal
         </p>
-        <h1 style={{ marginBottom: '8px' }}>
+        <h1 style={{ marginBottom: 'var(--space-2)' }}>
           Allgemeine Geschäftsbedingungen
-          <span style={{ display: 'block', fontSize: '0.55em', color: 'var(--brand-text-secondary)', fontWeight: 400, marginTop: '4px' }}>
+          <span style={{ display: 'block', fontSize: '0.55em', color: 'var(--brand-text-secondary)', fontWeight: 400, marginTop: 'var(--space-1)' }}>
             General Terms &amp; Conditions
           </span>
         </h1>
@@ -96,7 +96,7 @@ export default function AgbPage() {
             fontFamily: 'var(--brand-font-body)',
             fontSize: '16px',
             color: 'var(--brand-text-secondary)',
-            marginBottom: '3rem',
+            marginBottom: 'var(--space-8)',
           }}
         >
           Maxpromo Digital · Marcel Tabit Akwe · Stand: April 2026
@@ -238,7 +238,7 @@ export default function AgbPage() {
             fontFamily: 'var(--brand-font-mono)',
             fontSize: 'var(--text-label)',
             color: 'var(--brand-text-secondary)',
-            marginTop: '3rem',
+            marginTop: 'var(--space-8)',
             textAlign: 'center',
           }}
         >

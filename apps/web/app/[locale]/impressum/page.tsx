@@ -14,7 +14,7 @@ function Section({ label, children }: { label: string; children: React.ReactNode
         borderLeft: '3px solid var(--brand-primary-edge)',
         borderRadius: 'var(--radius-lg)',
         padding: '1.75rem 2.25rem',
-        marginBottom: '1.5rem',
+        marginBottom: 'var(--space-5)',
       }}
     >
       <p
@@ -24,7 +24,7 @@ function Section({ label, children }: { label: string; children: React.ReactNode
           color: 'var(--brand-text-secondary)',
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
-          marginBottom: '12px',
+          marginBottom: 'var(--space-3)',
         }}
       >
         {label}
@@ -45,8 +45,8 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 
 export default function ImpressumPage() {
   return (
-    <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: '7rem', paddingBottom: '7rem' }}>
-      <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 1.5rem' }}>
+    <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--space-20)', paddingBottom: 'var(--space-20)' }}>
+      <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 var(--space-5)' }}>
 
         <p
           style={{
@@ -55,12 +55,12 @@ export default function ImpressumPage() {
             color: 'var(--brand-text-secondary)',
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
-            marginBottom: '12px',
+            marginBottom: 'var(--space-3)',
           }}
         >
           Rechtliches / Legal
         </p>
-        <h1 style={{ marginBottom: '8px' }}>
+        <h1 style={{ marginBottom: 'var(--space-2)' }}>
           Impressum
         </h1>
         <p
@@ -68,7 +68,7 @@ export default function ImpressumPage() {
             fontFamily: 'var(--brand-font-body)',
             fontSize: '16px',
             color: 'var(--brand-text-secondary)',
-            marginBottom: '3rem',
+            marginBottom: 'var(--space-8)',
           }}
         >
           Angaben gemäß § 5 DDG · Mandatory information per § 5 DDG
@@ -181,7 +181,7 @@ export default function ImpressumPage() {
             fontFamily: 'var(--brand-font-mono)',
             fontSize: 'var(--text-label)',
             color: 'var(--brand-text-secondary)',
-            marginTop: '3rem',
+            marginTop: 'var(--space-8)',
             textAlign: 'center',
           }}
         >

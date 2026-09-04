@@ -507,13 +507,13 @@ export default function EditAngebotPage() {
       {aiOpen && (
         <div
           onClick={e => e.target === e.currentTarget && setAiOpen(false)}
-          style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}
+          style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' }}
         >
-          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', borderRadius: '4px', width: '100%', maxWidth: '560px', padding: '24px' }}>
+          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', borderRadius: 'var(--radius-sm)', width: '100%', maxWidth: '560px', padding: 'var(--space-5)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
               <div>
                 <h2 style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', fontSize: '18px', color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>{t.forms.aiAngebotAddTitle}</h2>
-                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: '4px 0 0', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 'var(--space-1) 0 0', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   {t.forms.aiModalSub}
                 </p>
               </div>
@@ -533,7 +533,7 @@ export default function EditAngebotPage() {
                     border: `1px solid ${aiMode === m ? 'color-mix(in srgb, var(--brand-primary) 50%, transparent)' : 'var(--brand-border)'}`,
                     color: aiMode === m ? 'var(--brand-primary-text)' : 'var(--brand-text-secondary)',
                     fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', textTransform: 'uppercase',
-                    padding: '8px 10px', cursor: 'pointer', borderRadius: '3px',
+                    padding: '8px 10px', cursor: 'pointer', borderRadius: 'var(--radius-xs)',
                   }}
                 >
                   {m === 'merge' ? t.forms.aiModeMerge : t.forms.aiModeReplace}
@@ -552,9 +552,9 @@ export default function EditAngebotPage() {
               style={{
                 border: `2px dashed ${aiDragOver ? 'var(--brand-primary)' : 'var(--brand-border)'}`,
                 background: aiDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : 'var(--brand-background)',
-                borderRadius: '4px', padding: '14px', marginBottom: '12px',
+                borderRadius: 'var(--radius-sm)', padding: '14px', marginBottom: 'var(--space-3)',
                 minHeight: '72px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                transition: 'border-color 0.2s ease, background 0.2s ease',
+                transition: 'border-color var(--duration-base) var(--ease), background var(--duration-base) var(--ease)',
               }}
             >
               {aiLoading && aiPreview ? (
@@ -585,17 +585,17 @@ export default function EditAngebotPage() {
               onChange={e => setAiRawText(e.target.value)}
               rows={5}
               placeholder={t.forms.aiPlaceholderAddData}
-              style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }}
+              style={{ ...inp, resize: 'vertical', marginBottom: 'var(--space-3)', lineHeight: 1.7, fontSize: '12px' }}
             />
 
             {aiError && <p role="alert" style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {aiError}</p>}
 
-            <div style={{ display: 'flex', gap: '8px' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
               <button
                 type="button"
                 onClick={aiExtractFromText}
                 disabled={aiLoading || !aiRawText.trim()}
-                style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '11px 18px', cursor: aiLoading || !aiRawText.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: aiLoading || !aiRawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
+                style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '11px 18px', cursor: aiLoading || !aiRawText.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: aiLoading || !aiRawText.trim() ? 0.5 : 1, borderRadius: 'var(--radius-xs)' }}
               >
                 {aiLoading && !aiPreview ? t.forms.aiExtracting : (aiMode === 'merge' ? t.forms.aiMergeButton : t.forms.aiReplaceButton)}
               </button>
@@ -603,7 +603,7 @@ export default function EditAngebotPage() {
                 type="button"
                 onClick={() => aiFileRef.current?.click()}
                 disabled={aiLoading}
-                style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label)', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: '2px' }}
+                style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label)', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: 'var(--radius-xs)' }}
               >
                 {t.forms.aiBrowseFile}
               </button>
@@ -611,7 +611,7 @@ export default function EditAngebotPage() {
                 type="button"
                 onClick={() => setAiOpen(false)}
                 disabled={aiLoading}
-                style={{ background: 'transparent', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label)', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: '2px', marginLeft: 'auto' }}
+                style={{ background: 'transparent', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label)', padding: '11px 14px', cursor: aiLoading ? 'wait' : 'pointer', borderRadius: 'var(--radius-xs)', marginLeft: 'auto' }}
               >
                 {t.common.cancel}
               </button>
@@ -630,7 +630,7 @@ export default function EditAngebotPage() {
       />
 
       {/* Breadcrumb */}
-      <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', marginBottom: '16px', letterSpacing: '0.1em' }}>
+      <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', marginBottom: 'var(--space-4)', letterSpacing: '0.1em' }}>
         <Link href="/os/angebote" style={{ color: 'var(--brand-text-muted)', textDecoration: 'none' }}>{t.angebotDetail.breadcrumb}</Link>
         {' / '}
         <Link href={`/os/angebote/${id}`} style={{ color: 'var(--brand-text-muted)', textDecoration: 'none' }}>{angebotNumber}</Link>
@@ -638,14 +638,14 @@ export default function EditAngebotPage() {
         <span style={{ color: 'var(--brand-text)' }}>{t.forms.editBreadcrumb}</span>
       </p>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', gap: '12px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
         <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>
           {t.angebotForm.editHeading} {angebotNumber}
         </h1>
         <button
           type="button"
           onClick={() => { setAiOpen(true); setAiError(''); setAiPreview('') }}
-          style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label)', fontWeight: 700, letterSpacing: '0.1em', padding: '9px 16px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '4px' }}
+          style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label)', fontWeight: 700, letterSpacing: '0.1em', padding: '9px 16px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-sm)' }}
           title={t.forms.aiAddDataTooltip}
         >
           {t.angebotForm.aiAddData}
@@ -653,7 +653,7 @@ export default function EditAngebotPage() {
       </div>
 
       {aiAppliedMsg && (
-        <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 25%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: '16px', borderRadius: '3px' }}>
+        <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 25%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '10px 14px', marginBottom: 'var(--space-4)', borderRadius: 'var(--radius-xs)' }}>
           <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.04em' }}><Icon name="check" size="xs" /> {aiAppliedMsg}</p>
         </div>
       )}
@@ -694,7 +694,7 @@ export default function EditAngebotPage() {
           </Field>
         </div>
 
-        <div style={{ height: '1px', background: 'var(--brand-border)', margin: '4px 0' }} />
+        <div style={{ height: '1px', background: 'var(--brand-border)', margin: 'var(--space-1) 0' }} />
 
         <Field label={t.angebotForm.fieldClientName}>
           <input value={clientName} onChange={e => setClientName(e.target.value)} style={inp} />
@@ -706,14 +706,14 @@ export default function EditAngebotPage() {
           <textarea value={clientAddress} onChange={e => setClientAddress(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical', lineHeight: 1.6 }} />
         </Field>
 
-        <div style={{ height: '1px', background: 'var(--brand-border)', margin: '4px 0' }} />
+        <div style={{ height: '1px', background: 'var(--brand-border)', margin: 'var(--space-1) 0' }} />
 
         {/* Line items */}
         <div>
           <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
           {lineItems.map((item, i) => (
-            <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px' }}>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'flex-start' }}>
+            <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: 'var(--space-3)', marginBottom: '6px', borderRadius: 'var(--radius-xs)' }}>
+              <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', alignItems: 'flex-start' }}>
                 <textarea
                   value={item.description}
                   onChange={e => updateItem(i, 'description', e.target.value)}
@@ -730,7 +730,7 @@ export default function EditAngebotPage() {
                     color: item.isFixedPrice ? 'var(--brand-primary-text)' : 'var(--brand-text-muted)',
                     fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em',
                     textTransform: 'uppercase', padding: '8px 10px', cursor: 'pointer',
-                    whiteSpace: 'nowrap', borderRadius: '2px', alignSelf: 'flex-start',
+                    whiteSpace: 'nowrap', borderRadius: 'var(--radius-xs)', alignSelf: 'flex-start',
                   }}
                 >
                   {item.isFixedPrice ? t.angebotForm.pauschal : t.angebotForm.perUnit}
@@ -764,25 +764,25 @@ export default function EditAngebotPage() {
           <button
             type="button"
             onClick={() => setLineItems(prev => [...prev, blankItem()])}
-            style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}
+            style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: 'var(--space-1)', letterSpacing: '0.1em', width: '100%', borderRadius: 'var(--radius-xs)' }}
           >
             {t.angebotForm.addItem}
           </button>
         </div>
 
         {/* Anzahlung + total */}
-        <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '16px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+        <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: 'var(--space-4)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-3)' }}>
             <span style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.angebotForm.subtotal}</span>
             <span style={{ fontFamily: mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
           </div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: 'var(--space-3)' }}>
             <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }} />
             <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.angebotForm.depositReceived}</span>
           </label>
           {hasAnzahlung && (
             <>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-2)', marginBottom: '10px' }}>
                 <Field label={t.angebotForm.depositAmount}><input type="number" value={anzahlung} onChange={e => setAnzahlung(Number(e.target.value))} style={{ ...inp, textAlign: 'right' }} /></Field>
                 <Field label={t.angebotForm.depositDate}><input type="date" value={anzahlungDate} onChange={e => setAnzahlungDate(e.target.value)} style={inp} /></Field>
                 <Field label={t.angebotForm.depositMethod}>
@@ -823,10 +823,10 @@ export default function EditAngebotPage() {
         <Field label={t.angebotForm.fieldNotes}><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} style={{ ...inp, resize: 'vertical' }} /></Field>
 
         {saveError && (
-          <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: '4px 0 0' }}><Icon name="warning" size="xs" /> {saveError}</p>
+          <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: 'var(--space-1) 0 0' }}><Icon name="warning" size="xs" /> {saveError}</p>
         )}
 
-        <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-3)' }}>
           <button
             type="button"
             onClick={handleSave}
@@ -836,7 +836,7 @@ export default function EditAngebotPage() {
               fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)',
               letterSpacing: '0.1em', padding: '12px 20px',
               cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer',
-              textTransform: 'uppercase', borderRadius: '2px',
+              textTransform: 'uppercase', borderRadius: 'var(--radius-xs)',
               opacity: saving || !clientName.trim() ? 0.5 : 1,
             }}
           >
@@ -849,7 +849,7 @@ export default function EditAngebotPage() {
               border: '1px solid var(--brand-border)',
               color: 'var(--brand-text-secondary)', textDecoration: 'none',
               fontFamily: mono, fontSize: 'var(--text-label)',
-              padding: '12px 20px', borderRadius: '2px',
+              padding: '12px 20px', borderRadius: 'var(--radius-xs)',
               letterSpacing: '0.1em', textTransform: 'uppercase',
               display: 'inline-block',
             }}

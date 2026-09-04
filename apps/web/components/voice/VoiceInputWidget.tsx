@@ -144,7 +144,7 @@ function MicButton({
         touchAction: 'none',
         userSelect: 'none',
         WebkitUserSelect: 'none',
-        transition: 'background 120ms ease, border-color 120ms ease, color 120ms ease',
+        transition: 'background var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease)',
         animation: listening ? 'voicePulse 1.2s ease-in-out infinite' : 'none',
       }}
       aria-label={listening ? 'Recording, release to stop' : 'Press and hold to record'}
@@ -207,7 +207,7 @@ export default function VoiceInputWidget({
     lineHeight: 1.75,
     minHeight: '120px',
     boxSizing: 'border-box',
-    borderRadius: '2px',
+    borderRadius: 'var(--radius-xs)',
     ...textareaStyle,
   }
 
@@ -218,7 +218,7 @@ export default function VoiceInputWidget({
     letterSpacing: '0.1em',
     textTransform: 'uppercase',
     border: 'none',
-    borderRadius: '2px',
+    borderRadius: 'var(--radius-xs)',
     padding: '10px 16px',
     cursor: 'pointer',
     whiteSpace: 'nowrap',
@@ -249,7 +249,7 @@ export default function VoiceInputWidget({
         />
 
         {/* Mic button, right of textarea */}
-        <div style={{ paddingTop: '4px' }}>
+        <div style={{ paddingTop: 'var(--space-1)' }}>
           <MicButton
             listening={voice.phase === 'listening'}
             supported={voice.supported}
@@ -263,11 +263,11 @@ export default function VoiceInputWidget({
       {voice.phase === 'listening' && (
         <div
           style={{
-            marginTop: '8px',
+            marginTop: 'var(--space-2)',
             padding: '10px 14px',
             background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)',
             border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
-            borderRadius: '2px',
+            borderRadius: 'var(--radius-xs)',
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
@@ -303,7 +303,7 @@ export default function VoiceInputWidget({
           style={{
             marginTop: '10px',
             border: '1px solid var(--brand-border)',
-            borderRadius: '2px',
+            borderRadius: 'var(--radius-xs)',
             overflow: 'hidden',
           }}
         >
@@ -333,7 +333,7 @@ export default function VoiceInputWidget({
 
           {/* Raw transcript, editable */}
           <div style={{ padding: '14px' }}>
-            <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '8px' }}>
+            <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 'var(--space-2)' }}>
               Raw transcript, edit if needed
             </p>
             <textarea
@@ -366,7 +366,7 @@ export default function VoiceInputWidget({
                 style={{
                   background: 'color-mix(in srgb, var(--brand-primary) 5%, transparent)',
                   border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)',
-                  borderRadius: '2px',
+                  borderRadius: 'var(--radius-xs)',
                   padding: '12px 14px',
                   fontFamily: sans,
                   fontSize: 'var(--text-micro)',
@@ -387,7 +387,7 @@ export default function VoiceInputWidget({
               borderTop: '1px solid var(--brand-border)',
               display: 'flex',
               flexWrap: 'wrap',
-              gap: '8px',
+              gap: 'var(--space-2)',
               alignItems: 'center',
             }}
           >

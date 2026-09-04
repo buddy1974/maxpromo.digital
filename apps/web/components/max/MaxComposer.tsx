@@ -86,7 +86,7 @@ export function MaxComposer() {
   }
 
   return (
-    <div style={{ padding: '12px 16px', borderTop: '1px solid var(--brand-surface-sunken)', display: 'flex', gap: '8px', alignItems: 'flex-end', background: 'var(--brand-surface)' }}>
+    <div style={{ padding: 'var(--space-3) var(--space-4)', borderTop: '1px solid var(--brand-surface-sunken)', display: 'flex', gap: 'var(--space-2)', alignItems: 'flex-end', background: 'var(--brand-surface)' }}>
       <textarea
         ref={taRef}
         value={text}
@@ -99,7 +99,7 @@ export function MaxComposer() {
           flex:         1,
           background:   'var(--brand-surface-sunken)',
           border:       '1px solid var(--brand-surface-sunken)',
-          borderRadius: '8px',
+          borderRadius: 'var(--radius-lg)',
           color:        'var(--brand-text)',
           fontFamily:   'var(--font-body, system-ui, sans-serif)',
           fontSize:     '14px',
@@ -109,7 +109,7 @@ export function MaxComposer() {
           minHeight:    '40px',
           maxHeight:    '100px',
           outline:      'none',
-          transition:   'border-color 150ms ease',
+          transition:   'border-color var(--duration-fast) var(--ease)',
         }}
         onFocus={e  => (e.currentTarget.style.borderColor = 'color-mix(in srgb, var(--brand-primary) 40%, transparent)')}
         onBlur={e   => (e.currentTarget.style.borderColor = 'var(--brand-border)')}
@@ -121,7 +121,7 @@ export function MaxComposer() {
         style={{
           width:        '40px',
           height:       '40px',
-          borderRadius: '8px',
+          borderRadius: 'var(--radius-lg)',
           background:   text.trim() && !isLoading ? 'var(--brand-primary)' : 'color-mix(in srgb, var(--brand-primary) 25%, transparent)',
           border:       'none',
           cursor:       text.trim() && !isLoading ? 'pointer' : 'not-allowed',
@@ -129,7 +129,7 @@ export function MaxComposer() {
           alignItems:   'center',
           justifyContent: 'center',
           flexShrink:   0,
-          transition:   'background 150ms ease',
+          transition:   'background var(--duration-base) var(--ease)',
         }}
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">

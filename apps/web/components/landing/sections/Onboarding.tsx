@@ -45,17 +45,17 @@ export function Onboarding({ locale, contactHref }: OnboardingProps) {
   return (
     <section style={{ padding: SECTION_PADDING.base, borderTop: SECTION_DIVIDER }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-        <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-3)' }}>
           {eyebrow}
         </p>
-        <h2 style={{ marginBottom: '2rem' }}>
+        <h2 style={{ marginBottom: 'var(--space-6)' }}>
           {heading}
         </h2>
 
-        <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 md:grid-cols-3">
+        <div style={{ display: 'grid', gap: 'var(--space-3)' }} className="grid-cols-1 md:grid-cols-3">
           {steps.map((s) => (
-            <div key={s.n} style={{ padding: '1.5rem', border: CARD_BORDER, borderRadius: RADIUS.md }}>
-              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--showcase-accent)', background: 'color-mix(in srgb, var(--showcase-accent) 12%, transparent)', borderRadius: '4px', padding: '3px 8px' }}>
+            <div key={s.n} style={{ padding: 'var(--space-5)', border: CARD_BORDER, borderRadius: RADIUS.md }}>
+              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--showcase-accent)', background: 'color-mix(in srgb, var(--showcase-accent) 12%, transparent)', borderRadius: 'var(--radius-sm)', padding: '3px 8px' }}>
                 {s.n}
               </span>
               <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: 'var(--text-small)', color: 'var(--showcase-fg)', margin: '12px 0 6px' }}>

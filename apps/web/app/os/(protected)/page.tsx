@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--brand-font-mono)'
-const grotesk = 'var(--brand-font-body)'
 const sans    = 'var(--brand-font-body)'
 
 interface MetricCardProps { label: string; value: string | number; sub?: string }
@@ -15,7 +14,7 @@ function MetricCard({ label, value, sub }: MetricCardProps) {
       border: '1px solid var(--brand-border)', padding: '20px 24px', flex: 1,
     }}>
       <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{label}</p>
-      <p style={{ fontFamily: grotesk, fontSize: '30px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', margin: '0 0 4px', letterSpacing: '-0.03em' }}>{value}</p>
+      <p style={{ fontFamily: sans, fontSize: '30px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', margin: '0 0 var(--space-1)', letterSpacing: '-0.03em' }}>{value}</p>
       {sub && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0 }}>{sub}</p>}
     </div>
   )
@@ -37,7 +36,7 @@ const STATUS_COLORS: Record<string, string> = {
 function Badge({ status, label }: { status: string; label: string }) {
   const color = STATUS_COLORS[status?.toLowerCase()] ?? 'var(--brand-text-muted)'
   return (
-    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color, background: color + '22', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color, background: color + '22', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
       {label}
     </span>
   )
@@ -104,7 +103,7 @@ export default function DashboardPage() {
     <div style={{ padding: '32px 40px', maxWidth: '1200px' }}>
       {/* Header */}
       <div style={{ marginBottom: '36px' }}>
-        <h1 style={{ fontFamily: grotesk, fontSize: '28px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
+        <h1 style={{ fontFamily: sans, fontSize: '28px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
           {greeting}, {t.dashboard.ownerName}
         </h1>
         <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', margin: 0, textTransform: 'uppercase' }}>
@@ -113,7 +112,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Metrics */}
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '36px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: '36px', flexWrap: 'wrap' }}>
         <MetricCard label={t.dashboard.metricClients}     value={loading ? '—' : clients.length}      sub={t.dashboard.metricClientsSub} />
         <MetricCard label={t.dashboard.metricActiveJobs}  value={loading ? '—' : activeJobs}          sub={t.dashboard.metricActiveJobsSub} />
         <MetricCard label={t.dashboard.metricOutstanding} value={loading ? '—' : fmtEur(outstanding)} sub={t.dashboard.metricOutstandingSub} />
@@ -121,7 +120,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick actions */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '40px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: '40px', flexWrap: 'wrap' }}>
         <QuickAction href="/os/invoices/new"  label={t.dashboard.actionNewInvoice} />
         <QuickAction href="/os/angebote/new"  label={t.dashboard.actionNewAngebot} />
         <QuickAction href="/os/clients"       label={t.dashboard.actionNewClient} />
@@ -129,7 +128,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Activity feed */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-5)' }}>
 
         {/* Recent invoices */}
         <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)' }}>

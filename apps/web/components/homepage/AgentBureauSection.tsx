@@ -163,7 +163,7 @@ const STYLES = `
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     width: 108px; height: 108px; border-radius: 50%;
     background: var(--brand-primary);
-    text-align: center; padding: 8px; z-index: 2;
+    text-align: center; padding: var(--space-2); z-index: 2;
   }
   .hab-node {
     position: absolute; transform: translate(-50%, -50%);
@@ -171,21 +171,21 @@ const STYLES = `
     width: 92px; text-align: center; z-index: 2;
   }
   .hab-node-icon {
-    width: 40px; height: 40px; border-radius: 10px;
+    width: 40px; height: 40px; border-radius: var(--radius-lg);
     background: var(--brand-background); border: 1px solid ${BORDER};
     box-shadow: var(--shadow-sm);
     display: flex; align-items: center; justify-content: center;
-    transition: border-color 200ms ease, transform 200ms ease;
+    transition: border-color var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);
   }
   .hab-node:hover .hab-node-icon { border-color: color-mix(in srgb, var(--brand-primary) 50%, transparent); transform: translateY(-2px); }
 
   .hab-workflow { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
   .hab-workflow::-webkit-scrollbar { height: 4px; }
-  .hab-workflow::-webkit-scrollbar-thumb { background: var(--brand-border); border-radius: 4px; }
+  .hab-workflow::-webkit-scrollbar-thumb { background: var(--brand-border); border-radius: var(--radius-sm); }
   .hab-step {
-    scroll-snap-align: start; flex: 0 0 auto; display: flex; align-items: center; gap: 8px;
+    scroll-snap-align: start; flex: 0 0 auto; display: flex; align-items: center; gap: var(--space-2);
     background: var(--brand-background);
-    border: 1px solid var(--brand-border); border-radius: 999px;
+    border: 1px solid var(--brand-border); border-radius: var(--radius-full);
     padding: 10px 16px; white-space: nowrap;
   }
   .hab-step-gate {
@@ -197,11 +197,11 @@ const STYLES = `
   .hab-tag {
     display: inline-block; font-family: var(--brand-font-mono); font-size: 11px; letter-spacing: 0.02em;
     color: var(--brand-text-secondary); background: var(--brand-surface-subtle); border: 1px solid var(--brand-border);
-    border-radius: 5px; padding: 2px 7px; margin: 8px 6px 0 0;
+    border-radius: var(--radius-md); padding: 2px 7px; margin: 8px 6px 0 0;
   }
   .hab-panel-featured .hab-tag { color: var(--brand-primary-text); background: color-mix(in srgb, var(--brand-primary) 8%, transparent); border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent); }
 
-  .hab-panel { transition: transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out; }
+  .hab-panel { transition: transform var(--duration-base) var(--ease), border-color var(--duration-base) var(--ease), box-shadow var(--duration-base) var(--ease); }
   .hab-panel:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
   .hab-panel-featured { border-width: 2px !important; }
 
@@ -250,11 +250,11 @@ export function AgentBureauSection({ locale }: { locale: string }) {
       <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
 
         {/* ─────────────────────────────────────────── HERO, two columns */}
-        <div className="hab-hero" style={{ marginBottom: '4rem' }}>
+        <div className="hab-hero" style={{ marginBottom: 'var(--space-10)' }}>
 
           {/* LEFT — headline, copy, CTAs, trust note */}
           <div>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '1rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 'var(--space-4)' }}>
               {'Max Agent Bureau'}
             </p>
             <h2 style={{ marginBottom: '1.25rem', maxWidth: '30rem' }}>
@@ -262,7 +262,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 ? <>Ein KI-Team, das Arbeit <span>vorbereitet, koordiniert und ausführt.</span></>
                 : <>An AI team that <span>prepares, coordinates and executes work.</span></>}
             </h2>
-            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, marginBottom: '2rem', maxWidth: '30rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, marginBottom: 'var(--space-6)', maxWidth: '30rem' }}>
               {isDE
                 ? 'Agent Bureau prüft Abläufe, verteilt Aufgaben, bereitet Entscheidungen vor und führt freigegebene Aktionen über Ihre Systeme hinweg aus.'
                 : 'Agent Bureau audits your workflows, assigns tasks, prepares decisions, and executes approved actions across your business systems.'}
@@ -271,7 +271,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
             {/* Routing correction 2026-07-25: this homepage hero is an entry point,
                 not the dedicated page — both CTAs now route to /systems/agent-bureau
                 first. That page carries its own external product / contact CTA pair. */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', alignItems: 'center', marginBottom: 'var(--space-5)' }}>
               <Link href="/agent-bureau" className="btn btn-primary">
                 {isDE ? 'System ansehen →' : 'View system →'}
               </Link>
@@ -332,7 +332,7 @@ export function AgentBureauSection({ locale }: { locale: string }) {
         <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
           {isDE ? 'Der Ablauf' : 'The workflow'}
         </p>
-        <div className="hab-workflow" style={{ marginBottom: '3rem' }}>
+        <div className="hab-workflow" style={{ marginBottom: 'var(--space-8)' }}>
           {flow.map((step, i) => (
             <div key={step.name} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div className={`hab-step${'gate' in step && step.gate ? ' hab-step-gate' : ''}`}>
@@ -374,16 +374,16 @@ export function AgentBureauSection({ locale }: { locale: string }) {
                 {group.title}
               </h3>
               {group.items.map((item) => (
-                <div key={item.key} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                <div key={item.key} style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'flex-start' }}>
                   <span style={{
                     width: group.featured ? '40px' : '36px', height: group.featured ? '40px' : '36px',
-                    borderRadius: '9px', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
+                    borderRadius: 'var(--radius-lg)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)',
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
                     <CapabilityIcon name={item.icon} />
                   </span>
                   <div>
-                    <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: group.featured ? '18px' : 'var(--text-body)', color: 'var(--brand-text)', letterSpacing: '-0.01em', margin: '0 0 4px 0', lineHeight: 1.3 }}>
+                    <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: group.featured ? '18px' : 'var(--text-body)', color: 'var(--brand-text)', letterSpacing: '-0.01em', margin: '0 0 var(--space-1) 0', lineHeight: 1.3 }}>
                       {item.title}
                     </p>
                     <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.6, margin: 0 }}>

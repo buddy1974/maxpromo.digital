@@ -67,7 +67,7 @@ export function ProductHero({
   const line2 = dotAt > -1 ? headline.slice(dotAt + 2)    : null
 
   return (
-    <section id="top" style={{ padding: '3rem 2rem 4.5rem' }}>
+    <section id="top" style={{ padding: 'var(--space-8) var(--space-6) var(--space-12)' }}>
       <div
         style={{ maxWidth: '80rem', margin: '0 auto', width: '100%', display: 'grid', gap: '2.5rem', alignItems: 'center' }}
         className="grid-cols-1 lg:grid-cols-2"
@@ -117,16 +117,16 @@ export function ProductHero({
             </p>
           )}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '0.15rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', marginTop: '0.15rem' }}>
             {bullets.map((b, i) => (
-              <span key={i} style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--showcase-fg)' }}>
+              <span key={i} style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', display: 'flex', alignItems: 'center', gap: 'var(--space-2)', color: 'var(--showcase-fg)' }}>
                 <span style={{ color: 'var(--showcase-muted)', flexShrink: 0 }}>→</span>
                 {b}
               </span>
             ))}
           </div>
 
-          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '0.6rem' }}>
+          <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', marginTop: '0.6rem' }}>
             <a
               href={ctaPrimaryHref}
               className={INTERACTIVE_PRIMARY_CLASSES}

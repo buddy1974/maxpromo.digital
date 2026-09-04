@@ -46,14 +46,14 @@ export function ProductGallery({ seeInAction, locale }: ProductGalleryProps) {
   return (
     <section id="gallery" data-section="gallery" style={{ padding: SECTION_PADDING.base, borderTop: SECTION_DIVIDER }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-        <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-3)' }}>
           {eyebrow}
         </p>
         <h2 style={{ marginBottom: '2.5rem' }}>
           {heading}
         </h2>
 
-        <div style={{ display: 'grid', gap: '2rem' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div style={{ display: 'grid', gap: 'var(--space-6)' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {captured.map((tab, i) => (
             <ScreenshotSlot
               key={i}

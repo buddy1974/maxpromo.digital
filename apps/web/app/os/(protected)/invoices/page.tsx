@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--brand-font-mono)'
-const grotesk = 'var(--brand-font-body)'
 const sans    = 'var(--brand-font-body)'
 
 interface Invoice {
@@ -24,7 +23,7 @@ const STATUS_COLOR: Record<string, { text: string; bg: string }> = {
 function StatusBadge({ status, label }: { status: string; label: string }) {
   const c = STATUS_COLOR[status] ?? { text: 'var(--brand-text-secondary)', bg: 'var(--brand-surface-sunken)' }
   return (
-    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
+    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
       {label}
     </span>
   )
@@ -72,9 +71,9 @@ export default function InvoicesPage() {
 
   return (
     <div style={{ padding: '32px 40px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-5)' }}>
         <div>
-          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.invoiceList.heading}</h1>
+          <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 var(--space-1)' }}>{t.invoiceList.heading}</h1>
           <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>
             {t.invoiceList.outstanding}: <span style={{ color: 'var(--brand-primary-text)' }}>{fmtEur(totals.outstanding)}</span>
             &nbsp;·&nbsp; {t.invoiceList.paid}: <span style={{ color: 'var(--semantic-success)' }}>{fmtEur(totals.paid)}</span>
@@ -86,7 +85,7 @@ export default function InvoicesPage() {
       </div>
 
       {/* Status tabs */}
-      <div style={{ display: 'flex', gap: '4px', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-1)', marginBottom: '20px' }}>
         {STATUS_TABS.map(key => (
           <button
             key={key}
@@ -104,40 +103,40 @@ export default function InvoicesPage() {
         ))}
       </div>
 
-      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
-                <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={h} style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
+              <tr><td colSpan={7} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.invoiceList.empty}</td></tr>
+              <tr><td colSpan={7} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.invoiceList.empty}</td></tr>
             ) : (
               filtered.map(inv => (
                 <tr key={inv.id} style={{ borderBottom: '1px solid var(--brand-border)' }}>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <Link href={`/os/invoices/${inv.id}`} style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)', textDecoration: 'none' }}>{inv.invoice_number}</Link>
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)' }}>{inv.client_name}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)' }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)' }}>{inv.client_name}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)' }}>
                     {fmtDate(inv.created_at)}
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: inv.status === 'overdue' ? 'var(--semantic-danger)' : 'var(--brand-text-muted)' }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-label)', color: inv.status === 'overdue' ? 'var(--semantic-danger)' : 'var(--brand-text-muted)' }}>
                     {fmtDate(inv.due_date)}
                   </td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', fontWeight: 700 }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', fontWeight: 700 }}>
                     {fmtEur(Number(inv.total))}
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <StatusBadge status={inv.status} label={t.status.invoice[inv.status] ?? inv.status} />
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                       <a
                         href={`/os/invoices/${inv.id}/print`}
@@ -149,14 +148,14 @@ export default function InvoicesPage() {
                       {inv.status !== 'paid' && (
                         <button
                           onClick={() => markPaid(inv.id)}
-                          style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                          style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.06em' }}
                         >
                           {t.invoiceList.markPaid}
                         </button>
                       )}
                       <button
                         onClick={() => deleteInvoice(inv.id, inv.invoice_number)}
-                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.06em' }}
                       >
                         {t.invoiceList.delete}
                       </button>

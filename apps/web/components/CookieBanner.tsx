@@ -75,7 +75,7 @@ export default function CookieBanner() {
         zIndex: 9999,
         display: 'flex',
         alignItems: 'flex-start',
-        gap: '1rem',
+        gap: 'var(--space-4)',
       }}
     >
       <div style={{ flex: 1 }}>

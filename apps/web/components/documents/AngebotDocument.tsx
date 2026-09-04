@@ -66,7 +66,7 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
     >
       {/* Letter intro */}
       <div style={{ padding: '24px 40px 8px' }}>
-        <p style={{ fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', margin: '0 0 12px', ...mono }}>{salutation}</p>
+        <p style={{ fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', margin: '0 0 var(--space-3)', ...mono }}>{salutation}</p>
         <p style={{ fontSize: '14px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.7 }}>
           {t.quoteIntro(angebot.angebot_number, date)}
         </p>
@@ -89,7 +89,7 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
         />
 
         {includedItems.length > 0 && (
-          <div style={{ marginBottom: '16px' }}>
+          <div style={{ marginBottom: 'var(--space-4)' }}>
             <p style={{ ...mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px' }}>
               {t.includedFree}
             </p>
@@ -107,12 +107,12 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
           </p>
         )}
 
-        <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', margin: '0 0 4px' }}>
+        <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', margin: '0 0 var(--space-1)' }}>
           {BUSINESS.vatClause[angebot.language ?? 'de']} {t.quoteValidUntilNote(validTo)}
         </p>
 
         {angebot.notes && (
-          <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '8px 0 0', whiteSpace: 'pre-wrap' }}>{angebot.notes}</p>
+          <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: 'var(--space-2) 0 0', whiteSpace: 'pre-wrap' }}>{angebot.notes}</p>
         )}
 
         <p style={{ fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', margin: '20px 0 0', lineHeight: 1.5 }}>
@@ -138,7 +138,7 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
         <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 20px', lineHeight: 1.6 }}>
           {t.quoteAcceptanceBody}
         </p>
-        <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-6)', flexWrap: 'wrap' }}>
           <div style={{ flex: '1 1 200px' }}>
             <div style={{ borderBottom: `1px solid ${BRAND_COLORS.borderStrong}`, height: '36px' }} />
             <p style={{ ...mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: '6px 0 0' }}>{t.placeDate}</p>

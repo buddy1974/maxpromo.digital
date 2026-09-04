@@ -46,7 +46,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
             right: 24px;
             bottom: 90px;
             width: 380px;
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
           }
         }
       `}</style>
@@ -80,7 +80,7 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
           <button
             onClick={onClose}
             aria-label="Close"
-            style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', padding: '6px', fontSize: '18px', lineHeight: 1, borderRadius: '6px', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', padding: '6px', fontSize: '18px', lineHeight: 1, borderRadius: 'var(--radius-md)', minWidth: '32px', minHeight: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <Icon name="close" size="sm" label="Close" />
           </button>
@@ -89,17 +89,17 @@ export function MaxPanel({ open, onClose }: MaxPanelProps) {
         {/* Messages */}
         <div
           ref={scrollRef}
-          style={{ flex: 1, overflowY: 'auto', padding: '16px 0', display: 'flex', flexDirection: 'column', gap: '10px', minHeight: '120px' }}
+          style={{ flex: 1, overflowY: 'auto', padding: 'var(--space-4) 0', display: 'flex', flexDirection: 'column', gap: '10px', minHeight: '120px' }}
           className="chat-scroll"
         >
           {isEmpty && !isLoading && (
-            <p style={{ fontFamily: 'var(--font-body, system-ui, sans-serif)', fontSize: 'var(--text-small)', color: 'var(--brand-text-muted)', textAlign: 'center', padding: '2rem 2rem 0', lineHeight: 1.6 }}>
+            <p style={{ fontFamily: 'var(--font-body, system-ui, sans-serif)', fontSize: 'var(--text-small)', color: 'var(--brand-text-muted)', textAlign: 'center', padding: 'var(--space-6) var(--space-6) 0', lineHeight: 1.6 }}>
               {lang === 'de' ? 'Frage stellen. Echte Antwort.' : 'Ask a question. Real answer.'}
             </p>
           )}
           {messages.map(m => <MaxMessage key={m.id} message={m} />)}
           {isLoading && (
-            <div style={{ paddingLeft: '16px', display: 'flex', gap: '4px', alignItems: 'center' }}>
+            <div style={{ paddingLeft: 'var(--space-4)', display: 'flex', gap: 'var(--space-1)', alignItems: 'center' }}>
               <span className="typing-dot" />
               <span className="typing-dot" style={{ animationDelay: '0.15s' }} />
               <span className="typing-dot" style={{ animationDelay: '0.30s' }} />

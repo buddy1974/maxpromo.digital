@@ -127,7 +127,8 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   transition: color var(--duration-fast) var(--ease),
               text-decoration-color var(--duration-fast) var(--ease);
 }
-.link:hover {
+.link:hover,
+.link:focus-visible {
   color: var(--brand-primary-text);
   text-decoration-color: currentColor;
 }
@@ -138,7 +139,8 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   text-decoration: none;
   transition: color var(--duration-fast) var(--ease);
 }
-.nav-link:hover { color: var(--brand-text); }
+.nav-link:hover,
+.nav-link:focus-visible { color: var(--brand-text); }
 
 .footer-link {
   color: var(--brand-text-inverted-secondary);
@@ -149,7 +151,8 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   align-items: center;
   transition: color var(--duration-fast) var(--ease);
 }
-.footer-link:hover { color: var(--brand-text-inverted); }
+.footer-link:hover,
+.footer-link:focus-visible { color: var(--brand-text-inverted); }
 
 
 /* ─── Surfaces ────────────────────────────────────────────────────────────── */
@@ -205,14 +208,6 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 .section-compact  { padding-block: var(--section-y-compact); }
 .section-feature  { padding-block: var(--section-y-feature); }
 
-.cs-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-}
-@media (max-width: 768px) { .cs-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .cs-grid { grid-template-columns: 1fr; } }
-
 
 /* ─── Motion ──────────────────────────────────────────────────────────────────
    Functional only. Entrance cascade, image and card micro-interactions. The
@@ -234,29 +229,24 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 .mp-img-wrap { overflow: hidden; }
 .mp-img-wrap img {
   display: block;
-  transition: transform 500ms var(--ease);
+  transition: transform var(--duration-base) var(--ease);
 }
-.mp-img-wrap:hover img { transform: scale(1.02); }
+.mp-img-wrap:hover img,
+.mp-img-wrap:focus-visible img { transform: scale(1.02); }
 
-.mp-card-hover {
-  transition: border-color var(--duration-base) var(--ease);
-}
-.mp-card-hover:hover { border-color: var(--brand-border-strong); }
-
+/* One behaviour, two names, declared four lines apart until v7.1. A card that
+   lifts its border on hover does the same on keyboard focus: a mouse user and a
+   keyboard user should be told the same thing about what is interactive. The
+   focus ring from :focus-visible in the reset still draws on top; this is the
+   affordance underneath it. */
+.mp-card-hover,
 .service-card {
   transition: border-color var(--duration-base) var(--ease);
 }
-.service-card:hover { border-color: var(--brand-border-strong); }
-
-.pain-card-img { transition: transform 500ms var(--ease); }
-.pain-card:hover .pain-card-img { transform: scale(1.03); }
-
-/* Live-status indicator — functional, not decorative. */
-@keyframes status-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.25; }
-}
-.status-pulse { animation: status-pulse 2s ease-in-out infinite; }
+.mp-card-hover:hover,
+.mp-card-hover:focus-visible,
+.service-card:hover,
+.service-card:focus-visible { border-color: var(--brand-border-strong); }
 
 /* Chat widget typing indicator. */
 @keyframes typingDot {
@@ -285,8 +275,8 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
     transform: none;
   }
   .mp-img-wrap:hover img,
-  .pain-card:hover .pain-card-img { transform: none; }
-  .status-pulse, .typing-dot { animation: none; }
+  .mp-img-wrap:focus-visible img { transform: none; }
+  .typing-dot { animation: none; }
 }
 
 /* Touch feedback on devices without hover. */
@@ -337,7 +327,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   height: 40px;
   background: var(--brand-surface-subtle);
   border: 1px solid var(--brand-border-strong);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -350,7 +340,7 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   width: 18px;
   height: 2px;
   background: var(--brand-text-secondary);
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
 }
 
 .os-backdrop {
@@ -378,16 +368,17 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   gap: 10px;
   padding: 10px 16px;
   margin: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
   border-left: 2px solid transparent;
   width: calc(100% - 16px);
   box-sizing: border-box;
   background: transparent;
-  transition: background 0.15s ease;
+  transition: background var(--duration-fast) var(--ease);
   cursor: pointer;
 }
-.os-nav-item:hover { background: var(--brand-surface-subtle); }
+.os-nav-item:hover,
+.os-nav-item:focus-visible { background: var(--brand-surface-subtle); }
 .os-nav-item:hover .os-nav-icon  { color: var(--brand-text) !important; }
 .os-nav-item:hover .os-nav-label { color: var(--brand-text) !important; }
 .os-nav-item.active {
@@ -414,32 +405,33 @@ button.os-nav-item {
   width: 20px;
   color: var(--brand-text-secondary);
   flex-shrink: 0;
-  transition: color 0.15s ease;
+  transition: color var(--duration-fast) var(--ease);
 }
 .os-nav-label {
   font-family: var(--brand-font-sans);
   font-size: 14px;
   font-weight: 500;
   color: var(--brand-text-secondary);
-  transition: color 0.15s ease;
+  transition: color var(--duration-fast) var(--ease);
   white-space: nowrap;
 }
 
 .os-logout-btn {
   width: 100%;
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   background: transparent;
   border: 1px solid var(--brand-border);
   color: var(--brand-text-secondary);
   font-family: var(--brand-font-sans);
   font-size: 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
-  margin-top: 12px;
+  transition: border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+  margin-top: var(--space-3);
   text-align: left;
 }
-.os-logout-btn:hover {
+.os-logout-btn:hover,
+.os-logout-btn:focus-visible {
   border-color: var(--brand-text);
   color: var(--brand-primary-text);
 }
@@ -448,7 +440,7 @@ button.os-nav-item {
   .os-hamburger { display: flex; }
   .os-sidebar {
     transform: translateX(-260px);
-    transition: transform 0.25s ease;
+    transition: transform var(--duration-base) var(--ease);
     z-index: 500;
   }
   .os-sidebar.open { transform: translateX(0); }
@@ -512,7 +504,8 @@ button.os-nav-item {
   text-decoration: none;
   transition: background-color var(--duration-base) var(--ease);
 }
-.pain-cell:hover { background: var(--brand-surface-subtle); }
+.pain-cell:hover,
+.pain-cell:focus-visible { background: var(--brand-surface-subtle); }
 
 .pain-cell-label {
   margin: 0 0 var(--space-4);
@@ -592,7 +585,8 @@ button.os-nav-item {
   white-space: nowrap;
   transition: color var(--duration-fast) var(--ease);
 }
-.site-nav-link:hover { color: var(--brand-text-inverted); }
+.site-nav-link:hover,
+.site-nav-link:focus-visible { color: var(--brand-text-inverted); }
 
 .site-nav-actions {
   display: none;
@@ -607,7 +601,7 @@ button.os-nav-item {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 4px;
+  gap: var(--space-1);
   width: 40px;
   height: 40px;
   padding: 0 10px;
@@ -620,7 +614,7 @@ button.os-nav-item {
   display: block;
   height: 1.5px;
   background: var(--brand-text-inverted);
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
 }
 
 @media (min-width: 900px) {
@@ -684,6 +678,10 @@ button.os-nav-item {
    up down the column.
    ══════════════════════════════════════════════════════════════════════════ */
 
+/* Wide data tables scroll rather than clip. Eight of them sat in wrappers with
+   overflow:hidden until v7.1, so on a phone the far columns were unreachable
+   rather than merely off-screen — invisible to the responsive audit, which
+   looks for fixed widths and collapsing grids and finds neither here. */
 .table-wrap { overflow-x: auto; }
 
 .table {
@@ -721,13 +719,6 @@ button.os-nav-item {
    ══════════════════════════════════════════════════════════════════════════ */
 
 .field { display: flex; flex-direction: column; gap: var(--space-2); }
-.field-row {
-  display: grid;
-  gap: var(--space-5);
-  grid-template-columns: 1fr;
-}
-@media (min-width: 640px) { .field-row { grid-template-columns: 1fr 1fr; } }
-
 .hint {
   font-size: var(--text-micro);
   color: var(--brand-text-muted);
@@ -847,7 +838,8 @@ button.os-nav-item {
   text-decoration: none;
   transition: color var(--duration-fast) var(--ease);
 }
-.site-footer-link:hover { color: var(--brand-text-inverted); }
+.site-footer-link:hover,
+.site-footer-link:focus-visible { color: var(--brand-text-inverted); }
 
 .site-footer-legal {
   margin-top: var(--space-10);
@@ -964,7 +956,8 @@ button.os-nav-item {
     align-items: start;
   }
 }
-.industry-row:hover { opacity: 0.62; }
+.industry-row:hover,
+.industry-row:focus-visible { opacity: 0.62; }
 .industry-row-body {
   display: flex;
   flex-direction: column;
@@ -1003,7 +996,8 @@ button.os-nav-item {
   transition: border-color var(--duration-fast) var(--ease),
               color var(--duration-fast) var(--ease);
 }
-.chip:hover {
+.chip:hover,
+.chip:focus-visible {
   border-color: var(--brand-text);
   color: var(--brand-text);
 }
@@ -1026,7 +1020,8 @@ button.os-nav-item {
   text-decoration: none;
   transition: background-color var(--duration-base) var(--ease);
 }
-.route-cell:hover { background: var(--brand-surface-subtle); }
+.route-cell:hover,
+.route-cell:focus-visible { background: var(--brand-surface-subtle); }
 .route-cell-label {
   margin: 0 0 var(--space-4);
   font-size: var(--text-micro);
@@ -1066,22 +1061,13 @@ button.os-nav-item {
   color: var(--brand-text);
   line-height: var(--leading-ui);
 }
-.link-list-item:hover .link-list-title { color: var(--brand-primary-text); }
+.link-list-item:hover .link-list-title,
+.link-list-item:focus-visible .link-list-title { color: var(--brand-primary-text); }
 .link-list-meta {
   flex-shrink: 0;
   font-family: var(--brand-font-mono);
   font-size: var(--text-micro);
   color: var(--brand-text-muted);
-}
-
-/* Inline error panel — semantic, not a raw red palette class. */
-.error-panel {
-  border: 1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent);
-  background: var(--semantic-danger-soft);
-  color: var(--semantic-danger);
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  font-size: var(--text-small);
 }
 
 /* Scope: what is included beside what is not. Equal weight, because the
@@ -1172,27 +1158,6 @@ button.os-nav-item {
   font-size: var(--text-micro);
   color: var(--brand-text-muted);
   max-width: none;
-}
-
-/* Skip link. Off-screen until focused, then anchored top-left. Without it a
-   keyboard user tabs through the whole navigation on every page. */
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  z-index: 400;
-  padding: 12px 20px;
-  background: var(--brand-surface);
-  color: var(--brand-text);
-  border: 1px solid var(--brand-text);
-  border-radius: var(--radius-md);
-  font-size: var(--text-small);
-  font-weight: 600;
-  text-decoration: none;
-}
-.skip-link:focus {
-  left: var(--space-4);
-  top: var(--space-4);
 }
 
 /* main should not introduce its own box; it is a landmark, not a layer. */

@@ -110,6 +110,36 @@
   margin: 0 0 var(--space-3);
 }
 
+/* ─── Skip link ───────────────────────────────────────────────────────────────
+   Off-screen until focused, then anchored top-left.
+
+   It lived in the website's own stylesheet, so the website had one and Agent
+   Bureau did not — a keyboard visitor to agents.maxpromo.digital tabbed the
+   whole navigation on every page, and no audit reported it, because a skip
+   link is not a landmark, a heading or a label. It is the first thing in the
+   tab order and the first thing a keyboard user learns about whether a site
+   was built with them in mind.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 400;
+  padding: var(--space-3) var(--space-5);
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border: 1px solid var(--brand-text);
+  border-radius: var(--radius-md);
+  font-size: var(--text-small);
+  font-weight: var(--weight-subhead);
+  text-decoration: none;
+}
+.skip-link:focus {
+  left: var(--space-4);
+  top: var(--space-4);
+}
+
 /* ─── Focus ───────────────────────────────────────────────────────────────────
    Defined here rather than only in each application's stylesheet, so a shared
    component carries its own focus treatment. A component that depends on its

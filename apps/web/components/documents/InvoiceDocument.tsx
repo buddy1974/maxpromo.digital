@@ -72,7 +72,7 @@ export function InvoiceDocument({ invoice, withFilename, toolbar }: InvoiceDocum
         )}
 
         <p style={{ ...mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', margin: '14px 0 0' }}>{BUSINESS.vatClause[invoice.language ?? 'de']}</p>
-        {invoice.notes && <p style={{ fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)', margin: '12px 0 0', fontStyle: 'italic' }}>{invoice.notes}</p>}
+        {invoice.notes && <p style={{ fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)', margin: 'var(--space-3) 0 0', fontStyle: 'italic' }}>{invoice.notes}</p>}
       </div>
 
       {/* Payment */}

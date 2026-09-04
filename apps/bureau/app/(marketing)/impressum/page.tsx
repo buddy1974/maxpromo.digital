@@ -12,8 +12,9 @@ export const metadata: Metadata = {
 export default function ImpressumPage() {
   return (
     <>
+      <a href="#content" className="skip-link">Zum Inhalt springen</a>
       <Nav />
-      <main className="mx-auto max-w-2xl px-6 py-20">
+      <main id="content" className="mx-auto max-w-2xl px-6 py-20">
         <Link
           href="/"
           className="font-mono text-xs uppercase tracking-[0.16em] text-ink-secondary hover:text-accent-text"

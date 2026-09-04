@@ -270,6 +270,12 @@
      Subtle only. No glow, no heavy shadow (v4.0).
      ======================================================================== */
 
+  /* The internal OS and the dashboards draw data surfaces at 2px — a corner
+     just soft enough not to be a hairline, on tables, badges and toolbars where
+     8px would read as a card. It is 73 declarations, the most used radius in
+     the platform, and it had no name; the scale started at 4px and described
+     the marketing site. Same finding as --text-label and --weight-bold. */
+  --radius-xs:   2px;
   --radius-sm:   4px;
   --radius-md:   6px;
   --radius-lg:   8px;
@@ -280,7 +286,14 @@
   --shadow-md: 0 1px 3px rgba(17, 17, 17, 0.06), 0 1px 2px rgba(17, 17, 17, 0.04);
   --shadow-lg: 0 4px 12px rgba(17, 17, 17, 0.07);
 
-  --duration-fast: 120ms;
-  --duration-base: 180ms;
+  /* Two durations and one curve, and nothing else.
+     Before v7.1 the platform wrote nine durations and four curves across 41
+     transitions — 0.15s and 150ms in the same codebase, 0.2s and 200ms and
+     220ms and 0.25s all meaning "about a fifth of a second". None of that was
+     chosen; it is what accumulates when each call site types a number. Motion
+     that varies by 30ms between two adjacent controls does not read as a
+     decision, it reads as a build. */
+  --duration-fast: 120ms;   /* state change on a control: colour, border */
+  --duration-base: 180ms;   /* a surface moving: background, transform, opacity */
   --ease: cubic-bezier(0.2, 0, 0.2, 1);
 }

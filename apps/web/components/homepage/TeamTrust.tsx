@@ -17,7 +17,7 @@ export async function TeamTrust() {
 
         {/* Header */}
         <div
-          style={{ display: 'grid', gap: '3rem', marginBottom: '3.5rem' }}
+          style={{ display: 'grid', gap: 'var(--space-8)', marginBottom: '3.5rem' }}
           className="grid-cols-1 lg:grid-cols-2"
         >
           {/* Left: eyebrow + title */}
@@ -43,7 +43,7 @@ export async function TeamTrust() {
             </p>
 
             {/* Pain list, mono chips inline */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
               {(['pain1', 'pain2', 'pain3', 'pain4'] as const).map((k) => (
                 <span
                   key={k}
@@ -54,7 +54,7 @@ export async function TeamTrust() {
                     background: 'var(--brand-background)',
                     border: '1px solid var(--brand-border)',
                     padding: '5px 12px',
-                    borderRadius: '6px',
+                    borderRadius: 'var(--radius-md)',
                     letterSpacing: '0.02em',
                   }}
                 >

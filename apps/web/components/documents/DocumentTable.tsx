@@ -103,10 +103,10 @@ export function DocumentTable({
       <div data-keep-together style={{ marginBottom: '20px' }}>
         {hasAnz ? (
           <>
-            <div style={{ padding: '8px 12px', textAlign: 'right', borderBottom: '1px solid var(--brand-border)' }}>
+            <div style={{ padding: 'var(--space-2) var(--space-3)', textAlign: 'right', borderBottom: '1px solid var(--brand-border)' }}>
               <span style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-muted)' }}>{t.subtotal}: {fmtCurrency(subtotal || total, currency)}</span>
             </div>
-            <div style={{ padding: '8px 12px', textAlign: 'right', borderBottom: '1px solid var(--brand-border)', marginBottom: '10px' }}>
+            <div style={{ padding: 'var(--space-2) var(--space-3)', textAlign: 'right', borderBottom: '1px solid var(--brand-border)', marginBottom: '10px' }}>
               <span style={{ ...mono, fontSize: '12px', color: 'var(--brand-text-muted)' }}>{t.deposit} ({anzahlungMethod || t.bankTransfer}): −{fmtCurrency(Number(anzahlung), currency)}</span>
             </div>
             <TotalBar label={t.remainingBalance} amount={fmtCurrency(remaining, currency)} strong />

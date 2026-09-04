@@ -17,7 +17,7 @@ const SENSITIVITY_LABEL: Record<DataSensitivity, string> = {
 
 export function DataSensitivityMatrix({ rows }: { rows: DataSensitivityRow[] }) {
   return (
-    <div className="overflow-hidden rounded-lg border border-hairline bg-surface shadow-sm">
+    <div className="overflow-x-auto rounded-lg border border-hairline bg-surface shadow-sm">
       <table className="w-full text-left text-sm">
         <thead className="border-b border-hairline text-ink-muted">
           <tr>

@@ -53,20 +53,20 @@ export function FeatureArchitecture({ bullets, featureBenefits, locale }: Featur
   return (
     <section style={{ padding: SECTION_PADDING.base, borderTop: SECTION_DIVIDER }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-        <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-3)' }}>
           {eyebrow}
         </p>
         <h2 style={{ marginBottom: '2.5rem' }}>
           {heading}
         </h2>
 
-        <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 sm:grid-cols-3">
+        <div style={{ display: 'grid', gap: 'var(--space-3)' }} className="grid-cols-1 sm:grid-cols-3">
           {cols.map((col, i) => (
             <div key={i} style={{ padding: '1.75rem', border: CARD_BORDER, borderRadius: RADIUS.lg, background: 'var(--showcase-bg)' }}>
-              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '20px', color: 'var(--showcase-muted)', display: 'block', marginBottom: '1rem' }}>
+              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '20px', color: 'var(--showcase-muted)', display: 'block', marginBottom: 'var(--space-4)' }}>
                 <Icon name={col.icon} size="md" />
               </span>
-              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label-dense)', color: 'var(--showcase-muted)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', marginBottom: '8px' }}>
+              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label-dense)', color: 'var(--showcase-muted)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', marginBottom: 'var(--space-2)' }}>
                 {col.cat}
               </p>
               <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: '16px', lineHeight: 1.35, margin: 0, color: 'var(--showcase-fg)' }}>

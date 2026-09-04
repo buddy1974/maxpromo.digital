@@ -69,7 +69,7 @@ export function ScreenshotSlot({
           aspectRatio:  `${width} / ${height}`,
           background:   'var(--brand-background)',
           border:       `1px solid ${BORDER}`,
-          borderRadius: '10px',
+          borderRadius: 'var(--radius-lg)',
           overflow:     'hidden',
         }}
       >

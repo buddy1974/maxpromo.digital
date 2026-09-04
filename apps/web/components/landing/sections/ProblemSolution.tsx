@@ -41,16 +41,16 @@ export function ProblemSolution({ problemStatement, description, domainBrand, pa
   return (
     <section data-section="problem-solution" style={{ padding: SECTION_PADDING.relaxed, borderTop: SECTION_DIVIDER }}>
       <div
-        style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: '3rem', alignItems: 'start' }}
+        style={{ maxWidth: '80rem', margin: '0 auto', display: 'grid', gap: 'var(--space-8)', alignItems: 'start' }}
         className="grid-cols-1 lg:grid-cols-2"
       >
         <div>
-          <p style={{ ...EYEBROW_STYLE, marginBottom: '1rem' }}>
+          <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-4)' }}>
             {eyebrow}
           </p>
 
           {problemStatement && (
-            <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: HEADING_SIZE.narrative, letterSpacing: '-0.02em', lineHeight: 1.4, color: 'var(--showcase-muted)', margin: 0, marginBottom: '1.5rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: HEADING_SIZE.narrative, letterSpacing: '-0.02em', lineHeight: 1.4, color: 'var(--showcase-muted)', margin: 0, marginBottom: 'var(--space-5)' }}>
               {problemStatement}
             </p>
           )}
@@ -63,7 +63,7 @@ export function ProblemSolution({ problemStatement, description, domainBrand, pa
         {painImages && (
           <div style={{ display: 'grid', gap: '10px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {painImages.map((src, i) => (
-              <div key={i} style={{ position: 'relative', aspectRatio: '3 / 4', borderRadius: '10px', overflow: 'hidden', background: 'var(--brand-border)' }}>
+              <div key={i} style={{ position: 'relative', aspectRatio: '3 / 4', borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--brand-border)' }}>
                 <Image
                   src={src}
                   alt={`${domainBrand} — problem illustration ${i + 1}`}

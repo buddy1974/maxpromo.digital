@@ -92,7 +92,7 @@ export function DocumentPage({
           <div style={{ borderTop: `2px solid ${BRAND_COLORS.accent}`, margin: '0 40px' }} />
 
           {/* FROM / TO / DETAILS */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px', padding: '24px 40px', borderBottom: '1px solid var(--brand-border)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-5)', padding: '24px 40px', borderBottom: '1px solid var(--brand-border)' }}>
             <div>
               <p style={colLabel}>{t.from}</p>
               <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--brand-text)', margin: '0 0 2px' }}>{BUSINESS.legalName}</p>
@@ -147,7 +147,7 @@ export function DocumentToolbar({ children }: { children: ReactNode }) {
 export function SectionHeading({ n, title, subtitle }: { n: number; title: string; subtitle?: string }) {
   return (
     <div style={{ margin: '4px 0 14px' }}>
-      <h2 style={{ fontFamily: 'Arial,sans-serif', fontSize: '16px', fontWeight: 700, color: BRAND_COLORS.ink, margin: '0 0 8px' }}>
+      <h2 style={{ fontFamily: 'Arial,sans-serif', fontSize: '16px', fontWeight: 700, color: BRAND_COLORS.ink, margin: '0 0 var(--space-2)' }}>
         {n}. {title}
       </h2>
       <div style={{ borderTop: `1px solid ${BRAND_COLORS.border}`, marginBottom: subtitle ? '8px' : 0 }} />

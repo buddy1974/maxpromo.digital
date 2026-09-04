@@ -220,7 +220,7 @@ export default async function AutomationLabPage({
           <h1 style={{ marginBottom: '20px' }}>
             {t(locale, 'Operations-Engineering-Referenz', 'Operations Engineering Reference')}
           </h1>
-          <p style={{ ...sans, fontSize: '18px', color: 'var(--brand-text-secondary)', maxWidth: '46rem', margin: '0 auto 2rem', lineHeight: 1.7 }}>
+          <p style={{ ...sans, fontSize: '18px', color: 'var(--brand-text-secondary)', maxWidth: '46rem', margin: '0 auto var(--space-6)', lineHeight: 1.7 }}>
             {t(locale,
               'Achtzehn produktionsreife Runtimes, die wir auf dem Betrieb unserer Kunden aufsetzen. Jede davon ist ein System, das wir konzipiert, installiert haben und weiterhin betreiben, kein Katalog von Standard-Bausteinen zur Auswahl.',
               'Eighteen production-grade runtimes we deploy on top of client operations. Each one is a system we have architected, installed, and continue to operate, not a catalogue of off-the-shelf widgets to choose from.')}
@@ -262,11 +262,11 @@ export default async function AutomationLabPage({
             <p style={{ ...mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>
               {`// ${cat.heading}`}
             </p>
-            <h2 style={{ marginBottom: '2rem', paddingBottom: '16px', borderBottom: '2px solid var(--brand-primary-edge)', display: 'inline-block' }}>
+            <h2 style={{ marginBottom: 'var(--space-6)', paddingBottom: 'var(--space-4)', borderBottom: '2px solid var(--brand-primary-edge)', display: 'inline-block' }}>
               {cat.heading}
             </h2>
             <div
-              style={{ display: 'grid', gap: '16px' }}
+              style={{ display: 'grid', gap: 'var(--space-4)' }}
               className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
             >
               {cat.automations.map((a) => (
@@ -280,7 +280,7 @@ export default async function AutomationLabPage({
       {/* CTA */}
       <section style={{ background: 'var(--brand-surface-subtle)', padding: 'var(--section-y) var(--section-x)' }}>
         <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-          <p style={{ ...mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '16px' }}>
+          <p style={{ ...mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 'var(--space-4)' }}>
             {t(locale, 'Eine individuelle Ebene entwickeln', 'Architect a custom layer')}
           </p>
           <h2 style={{ marginBottom: '20px' }}>
@@ -291,7 +291,7 @@ export default async function AutomationLabPage({
               'Jeder Betrieb hat mindestens eine Ebene, die nicht in ein Standardmuster passt. Wir entwickeln maßgeschneiderte Runtimes von Grund auf, installiert, betrieben, wiederherstellbar.',
               "Every operation has at least one layer that doesn't fit a standard pattern. We architect bespoke runtimes from the ground up, installed, operated, recoverable.")}
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', justifyContent: 'center' }}>
             <Link href="/contact" className="btn btn-primary">
               {t(locale, 'Kontakt aufnehmen →', 'Contact us →')}
             </Link>

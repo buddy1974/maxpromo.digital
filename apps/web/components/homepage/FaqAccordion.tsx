@@ -45,8 +45,8 @@ export function FaqAccordion() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    gap: '1rem',
-                    padding: '1.5rem 0',
+                    gap: 'var(--space-4)',
+                    padding: 'var(--space-5) 0',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
@@ -61,7 +61,7 @@ export function FaqAccordion() {
                       color: isOpen ? 'var(--brand-text)' : 'var(--brand-text-secondary)',
                       letterSpacing: '-0.01em',
                       lineHeight: 1.4,
-                      transition: 'color 200ms ease',
+                      transition: 'color var(--duration-base) var(--ease)',
                     }}
                   >
                     {item.q}
@@ -72,7 +72,7 @@ export function FaqAccordion() {
                       fontSize: '18px',
                       color: isOpen ? 'var(--brand-primary-text)' : 'var(--brand-text-secondary)',
                       flexShrink: 0,
-                      transition: 'transform 200ms ease, color 200ms ease',
+                      transition: 'transform var(--duration-base) var(--ease), color var(--duration-base) var(--ease)',
                       display: 'inline-block',
                       transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
                     }}
@@ -88,7 +88,7 @@ export function FaqAccordion() {
                       fontSize: '16px',
                       color: 'var(--brand-text-secondary)',
                       lineHeight: 1.8,
-                      paddingBottom: '1.5rem',
+                      paddingBottom: 'var(--space-5)',
                       margin: 0,
                     }}
                   >

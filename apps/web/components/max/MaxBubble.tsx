@@ -25,7 +25,7 @@ export function MaxBubble({ onClick }: MaxBubbleProps) {
         alignItems:   'center',
         justifyContent: 'center',
         boxShadow:    '0 4px 24px color-mix(in srgb, var(--brand-primary) 45%, transparent), 0 2px 8px color-mix(in srgb, var(--brand-text) 40%, transparent)',
-        transition:   'transform 150ms ease, box-shadow 150ms ease',
+        transition:   'transform var(--duration-base) var(--ease), box-shadow var(--duration-base) var(--ease)',
         flexShrink:   0,
       }}
       onMouseEnter={e => {

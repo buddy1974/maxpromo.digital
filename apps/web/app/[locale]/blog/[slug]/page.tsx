@@ -82,31 +82,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 const mdxComponents = {
   h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h2 style={{ marginTop: '2.5rem', marginBottom: '0.75rem' }} {...props} />
+    <h2 style={{ marginTop: '2.5rem', marginBottom: 'var(--space-3)' }} {...props} />
   ),
   h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h3 className="h-card" style={{ marginTop: '2rem', marginBottom: '0.5rem' }} {...props} />
+    <h3 className="h-card" style={{ marginTop: 'var(--space-6)', marginBottom: 'var(--space-2)' }} {...props} />
   ),
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '18px', color: 'var(--brand-text-secondary)', lineHeight: 1.75, marginBottom: '1.25rem', marginTop: 0 }} {...props} />
   ),
   ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul style={{ paddingLeft: '1.5rem', marginBottom: '1.25rem', color: 'var(--brand-text-secondary)' }} {...props} />
+    <ul style={{ paddingLeft: 'var(--space-5)', marginBottom: '1.25rem', color: 'var(--brand-text-secondary)' }} {...props} />
   ),
   ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol style={{ paddingLeft: '1.5rem', marginBottom: '1.25rem', color: 'var(--brand-text-secondary)' }} {...props} />
+    <ol style={{ paddingLeft: 'var(--space-5)', marginBottom: '1.25rem', color: 'var(--brand-text-secondary)' }} {...props} />
   ),
   li: (props: React.HTMLAttributes<HTMLLIElement>) => (
     <li style={{ fontFamily: 'var(--brand-font-body)', fontSize: '18px', lineHeight: 1.75, marginBottom: '0.35rem' }} {...props} />
   ),
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
-    <blockquote style={{ borderLeft: '2px solid var(--brand-primary-edge)', paddingLeft: '1.25rem', marginLeft: 0, marginRight: 0, marginBottom: '1.5rem', color: 'var(--brand-text-secondary)', fontStyle: 'italic' }} {...props} />
+    <blockquote style={{ borderLeft: '2px solid var(--brand-primary-edge)', paddingLeft: '1.25rem', marginLeft: 0, marginRight: 0, marginBottom: 'var(--space-5)', color: 'var(--brand-text-secondary)', fontStyle: 'italic' }} {...props} />
   ),
   code: (props: React.HTMLAttributes<HTMLElement>) => (
-    <code style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', background: 'var(--brand-surface-subtle)', padding: '2px 6px', color: 'var(--brand-text)', borderRadius: '4px' }} {...props} />
+    <code style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', background: 'var(--brand-surface-subtle)', padding: '2px 6px', color: 'var(--brand-text)', borderRadius: 'var(--radius-sm)' }} {...props} />
   ),
   pre: (props: React.HTMLAttributes<HTMLPreElement>) => (
-    <pre style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', overflow: 'auto', marginBottom: '1.5rem' }} {...props} />
+    <pre style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', overflow: 'auto', marginBottom: 'var(--space-5)' }} {...props} />
   ),
   a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }} {...props} />
@@ -124,7 +124,7 @@ const mdxComponents = {
         : 'Hi, I would like to contact Maxpromo.'
     )
     return (
-      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: 'var(--radius-lg)', padding: '2rem', margin: '2.5rem 0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 20%, transparent)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', margin: '2.5rem 0', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
           {l === 'de' ? 'Kontakt' : 'Contact'}
         </p>
@@ -136,7 +136,7 @@ const mdxComponents = {
             ? 'Zeigen Sie uns Ihre aktuelle Website, Ihr CMS, Ihren Workflow oder manuellen Prozess. Wir identifizieren, was modernisiert, automatisiert oder transformiert werden kann.'
             : 'Show us your current website, CMS, workflow, online shop or manual process. We identify what can be modernized, automated or transformed.'}
         </p>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '4px' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: 'var(--space-1)' }}>
           <Link href="/contact" className="btn btn-primary">
             {l === 'de' ? 'Kontakt aufnehmen →' : 'Contact us →'}
           </Link>
@@ -217,12 +217,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--section-y)', paddingBottom: '6rem' }}>
+      <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--section-y)', paddingBottom: 'var(--space-16)' }}>
 
         {/* ─────────────────────────────────────────────── */}
         {/* 1. HERO                                         */}
         {/* ─────────────────────────────────────────────── */}
-        <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 2rem' }}>
+        <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 var(--space-6)' }}>
 
           <Link
             href="/blog"
@@ -239,12 +239,12 @@ export default async function BlogDetailPage({ params }: PageProps) {
           )}
 
           {/* H1 */}
-          <h1 style={{ marginBottom: '1.5rem', marginTop: 0 }}>
+          <h1 style={{ marginBottom: 'var(--space-5)', marginTop: 0 }}>
             {post.title}
           </h1>
 
           {/* Meta row: date · read time · author */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap', paddingBottom: '2rem', borderBottom: '1px solid var(--brand-border)', marginBottom: '2.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap', paddingBottom: 'var(--space-6)', borderBottom: '1px solid var(--brand-border)', marginBottom: '2.5rem' }}>
             <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
               {t('publishedOn')} {post.publishedAt}
             </span>
@@ -265,7 +265,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {/* ─────────────────────────────────────────────── */}
         {/* 2. INTRO, excerpt + featured image             */}
         {/* ─────────────────────────────────────────────── */}
-        <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 2rem' }}>
+        <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 var(--space-6)' }}>
 
           {post.excerpt && (
             <p
@@ -274,7 +274,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 fontSize: '18px',
                 color: 'var(--brand-text-secondary)',
                 lineHeight: 1.7,
-                marginBottom: '2rem',
+                marginBottom: 'var(--space-6)',
                 borderLeft: '2px solid var(--brand-primary-edge)',
                 paddingLeft: '1.25rem',
                 marginTop: 0,
@@ -311,20 +311,20 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {/* ─────────────────────────────────────────────── */}
         {/* 3. ARTICLE BODY, MDX                           */}
         {/* ─────────────────────────────────────────────── */}
-        <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 2rem', marginBottom: '4rem' }}>
+        <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 var(--space-6)', marginBottom: 'var(--space-10)' }}>
           <MDXContent components={mdxComponents} />
         </div>
 
         {/* ─────────────────────────────────────────────── */}
         {/* 4. CTA BLOCK, audit                            */}
         {/* ─────────────────────────────────────────────── */}
-        <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 2rem', marginBottom: '5rem' }}>
+        <div style={{ maxWidth: '48rem', margin: '0 auto', padding: '0 var(--space-6)', marginBottom: '5rem' }}>
           <div
             className="card"
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '16px',
+              gap: 'var(--space-4)',
               alignItems: 'flex-start',
             }}
           >
@@ -337,7 +337,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
             <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.65, margin: 0 }}>
               {t('ctaBlockBody')}
             </p>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '4px' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', marginTop: 'var(--space-1)' }}>
               <Link href="/contact" className="btn btn-primary">
                 {t('bottomCtaPrimary')}
               </Link>
@@ -351,9 +351,9 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {/* ─────────────────────────────────────────────── */}
         {/* 5. RELATED SERVICES, 3 service tiles           */}
         {/* ─────────────────────────────────────────────── */}
-        <section style={{ borderTop: '1px solid var(--brand-border)', paddingTop: '4rem', paddingBottom: '4rem' }}>
-          <div style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '0 2rem' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px', marginTop: 0 }}>
+        <section style={{ borderTop: '1px solid var(--brand-border)', paddingTop: 'var(--space-10)', paddingBottom: 'var(--space-10)' }}>
+          <div style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '0 var(--space-6)' }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 'var(--space-2)', marginTop: 0 }}>
               {t('relatedServicesEyebrow')}
             </p>
             <h2 style={{ marginBottom: '2.5rem', marginTop: 0 }}>
@@ -373,7 +373,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     className="service-card"
                     style={{
                       background: 'var(--brand-background)',
-                      padding: '2rem',
+                      padding: 'var(--space-6)',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '10px',
@@ -400,9 +400,9 @@ export default async function BlogDetailPage({ params }: PageProps) {
         {/* ─────────────────────────────────────────────── */}
         {/* 7. WHATSAPP CTA                                 */}
         {/* ─────────────────────────────────────────────── */}
-        <section style={{ background: 'var(--brand-surface-subtle)', borderTop: '1px solid var(--brand-border)', padding: '4rem 2rem' }}>
+        <section style={{ background: 'var(--brand-surface-subtle)', borderTop: '1px solid var(--brand-border)', padding: 'var(--space-10) var(--space-6)' }}>
           <div style={{ maxWidth: '48rem', margin: '0 auto', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '12px', marginTop: 0 }}>
+            <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 'var(--space-3)', marginTop: 0 }}>
               {t('whatsappEyebrow')}
             </p>
             <h2 style={{ marginBottom: '1.75rem', marginTop: 0 }}>

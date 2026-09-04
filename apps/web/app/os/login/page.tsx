@@ -71,7 +71,7 @@ function LoginForm() {
         style={{
           background: 'var(--brand-surface)',
           border: `1px solid ${error ? 'var(--semantic-danger)' : 'var(--brand-border)'}`,
-          borderRadius: '4px',
+          borderRadius: 'var(--radius-sm)',
           color: 'var(--brand-text)',
           fontFamily: mono,
           fontSize: '14px',
@@ -79,12 +79,12 @@ function LoginForm() {
           outline: 'none',
           width: '100%',
           boxSizing: 'border-box',
-          transition: 'border-color 0.15s ease',
+          transition: 'border-color var(--duration-fast) var(--ease)',
         }}
       />
 
       {error && (
-        <p role="alert" style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', margin: '4px 0 0' }}>
+        <p role="alert" style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', margin: 'var(--space-1) 0 0' }}>
           {error}
         </p>
       )}
@@ -93,10 +93,10 @@ function LoginForm() {
         type="submit"
         disabled={loading || !password}
         style={{
-          marginTop: '12px',
+          marginTop: 'var(--space-3)',
           background: 'var(--brand-primary)',
           border: 'none',
-          borderRadius: '4px',
+          borderRadius: 'var(--radius-sm)',
           color: 'var(--brand-on-primary)',
           fontFamily: sans,
           fontWeight: 700,
@@ -105,13 +105,13 @@ function LoginForm() {
           cursor: loading || !password ? 'not-allowed' : 'pointer',
           opacity: loading || !password ? 0.6 : 1,
           width: '100%',
-          transition: 'opacity 0.15s ease',
+          transition: 'opacity var(--duration-fast) var(--ease)',
         }}
       >
         {loading ? t.login.entering : t.login.enter}
       </button>
 
-      <div style={{ marginTop: '4px' }}>
+      <div style={{ marginTop: 'var(--space-1)' }}>
         <LanguageSwitcher />
       </div>
     </form>
@@ -133,7 +133,7 @@ function LoginShell({ children }: { children: React.ReactNode }) {
         <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: 0 }}>
           {t.login.brand}
         </p>
-        <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)', margin: '8px 0 0' }}>
+        <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)', margin: 'var(--space-2) 0 0' }}>
           {t.login.tagline}
         </p>
       </div>

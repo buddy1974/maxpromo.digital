@@ -21,14 +21,14 @@ export default async function BlogIndexPage() {
 
   return (
     <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--section-y)', paddingBottom: 'var(--section-y)' }}>
-      <div style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '0 2rem' }}>
+      <div style={{ maxWidth: 'var(--container)', margin: '0 auto', padding: '0 var(--space-6)' }}>
 
         {/* Header */}
-        <div style={{ marginBottom: '4rem', maxWidth: '640px' }}>
+        <div style={{ marginBottom: 'var(--space-10)', maxWidth: '640px' }}>
           <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '14px' }}>
             {t('indexEyebrow')}
           </p>
-          <h1 style={{ marginBottom: '1rem' }}>
+          <h1 style={{ marginBottom: 'var(--space-4)' }}>
             {t('indexTitle')}{' '}
             <span>{t('indexTitleAccent')}</span>
           </h1>
@@ -39,7 +39,7 @@ export default async function BlogIndexPage() {
 
         {/* Tag filters, only render if posts exist */}
         {tags.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '3rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', marginBottom: 'var(--space-8)' }}>
             <span
               style={{
                 fontFamily: 'var(--brand-font-mono)',
@@ -48,7 +48,7 @@ export default async function BlogIndexPage() {
                 background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)',
                 border: '1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent)',
                 padding: '6px 14px',
-                borderRadius: '6px',
+                borderRadius: 'var(--radius-md)',
                 letterSpacing: '0.04em',
               }}
             >
@@ -64,7 +64,7 @@ export default async function BlogIndexPage() {
                   border: '1px solid var(--brand-border)',
                   background: 'var(--brand-background)',
                   padding: '6px 14px',
-                  borderRadius: '6px',
+                  borderRadius: 'var(--radius-md)',
                   letterSpacing: '0.04em',
                   cursor: 'pointer',
                 }}
@@ -78,16 +78,16 @@ export default async function BlogIndexPage() {
         {/* Article grid or placeholder cards */}
         {posts.length === 0 ? (
           <>
-            <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.08em', marginBottom: '2rem' }}>
+            <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.08em', marginBottom: 'var(--space-6)' }}>
               {t('emptyTitle')}
             </p>
             <div
-              style={{ display: 'grid', gap: '1.5rem' }}
+              style={{ display: 'grid', gap: 'var(--space-5)' }}
               className="grid-cols-1 md:grid-cols-2"
             >
               {placeholders.map((card, i) => (
                 <article key={i} className="card" style={{ display: 'flex', flexDirection: 'column', opacity: 0.7, padding: 0 }}>
-                  <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+                  <div style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', flex: 1 }}>
                     <span style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase', alignSelf: 'flex-start' }}>
                       {card.tag}
                     </span>
@@ -97,7 +97,7 @@ export default async function BlogIndexPage() {
                     <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
                       {card.excerpt}
                     </p>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--brand-border)', marginTop: 'auto' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--brand-border)', marginTop: 'auto' }}>
                       <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                         {card.readTime}
                       </span>
@@ -109,7 +109,7 @@ export default async function BlogIndexPage() {
                 </article>
               ))}
             </div>
-            <div style={{ marginTop: '3rem', textAlign: 'center' }}>
+            <div style={{ marginTop: 'var(--space-8)', textAlign: 'center' }}>
               <Link href="/contact" className="btn btn-primary">
                 {t('bottomCtaPrimary')}
               </Link>
@@ -117,7 +117,7 @@ export default async function BlogIndexPage() {
           </>
         ) : (
           <div
-            style={{ display: 'grid', gap: '1.5rem' }}
+            style={{ display: 'grid', gap: 'var(--space-5)' }}
             className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
           >
             {posts.map((post) => (
@@ -140,7 +140,7 @@ export default async function BlogIndexPage() {
                     </div>
                   )}
 
-                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', flex: 1, gap: '10px' }}>
+                  <div style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', flex: 1, gap: '10px' }}>
                     {/* Tags */}
                     {post.tags.length > 0 && (
                       <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -175,7 +175,7 @@ export default async function BlogIndexPage() {
                     </p>
 
                     {/* Footer row */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid var(--brand-border)', marginTop: 'auto' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--brand-border)', marginTop: 'auto' }}>
                       <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
                         {post.publishedAt}
                       </span>

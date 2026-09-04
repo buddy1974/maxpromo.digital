@@ -34,7 +34,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
         background: 'var(--brand-surface-subtle)',
         borderTop: '2px solid var(--brand-primary-edge)',
         borderRadius: 'var(--radius-lg)',
-        padding: '32px',
+        padding: 'var(--space-6)',
         marginBottom: '20px',
       }}
     >
@@ -45,7 +45,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
           color: 'var(--brand-text-secondary)',
           letterSpacing: '0.15em',
           textTransform: 'uppercase' as const,
-          margin: '0 0 16px',
+          margin: '0 0 var(--space-4)',
         }}
       >
         {title}
@@ -111,7 +111,7 @@ export default async function DataDeletionPage({
             color: 'var(--brand-text-secondary)',
             letterSpacing: '0.2em',
             textTransform: 'uppercase' as const,
-            margin: '0 0 12px',
+            margin: '0 0 var(--space-3)',
           }}
         >
           Maxpromo Digital
@@ -179,7 +179,7 @@ export default async function DataDeletionPage({
               border: '1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent)',
               borderRadius: 'var(--radius-lg)',
               padding: '18px 20px',
-              marginBottom: '16px',
+              marginBottom: 'var(--space-4)',
             }}
           >
             <p
@@ -297,7 +297,7 @@ export default async function DataDeletionPage({
             fontSize: 'var(--text-label)',
             color: 'var(--brand-text-secondary)',
             lineHeight: 1.7,
-            margin: '32px 0 24px',
+            margin: 'var(--space-6) 0 var(--space-5)',
             letterSpacing: '0.04em',
           }}
         >

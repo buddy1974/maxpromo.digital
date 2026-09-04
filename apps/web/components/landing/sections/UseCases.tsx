@@ -33,17 +33,17 @@ export function UseCases({ seeInAction, locale }: UseCasesProps) {
   return (
     <section style={{ padding: SECTION_PADDING.base, borderTop: SECTION_DIVIDER }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-        <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-3)' }}>
           {eyebrow}
         </p>
-        <h2 style={{ marginBottom: '2rem' }}>
+        <h2 style={{ marginBottom: 'var(--space-6)' }}>
           {heading}
         </h2>
 
-        <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div style={{ display: 'grid', gap: 'var(--space-3)' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {seeInAction.map((tab, i) => (
-            <div key={i} style={{ padding: '1.5rem', border: CARD_BORDER, borderRadius: RADIUS.md }}>
-              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label-dense)', color: 'var(--showcase-muted)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', marginBottom: '8px' }}>
+            <div key={i} style={{ padding: 'var(--space-5)', border: CARD_BORDER, borderRadius: RADIUS.md }}>
+              <p style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label-dense)', color: 'var(--showcase-muted)', letterSpacing: 'var(--tracking-label)', textTransform: 'uppercase', marginBottom: 'var(--space-2)' }}>
                 {tab.tab}
               </p>
               <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: 'var(--text-small)', color: 'var(--showcase-fg)', margin: '0 0 6px', lineHeight: 1.35 }}>

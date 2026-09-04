@@ -61,11 +61,11 @@ export default function LocaleSwitcher({ variant = 'light' }: LocaleSwitcherProp
         color: colors.text,
         background: 'transparent',
         border: `1px solid ${colors.border}`,
-        borderRadius: '6px',
+        borderRadius: 'var(--radius-md)',
         padding: '7px 11px',
         cursor: isPending ? 'wait' : 'pointer',
         opacity: isPending ? 0.5 : 1,
-        transition: 'border-color 150ms ease, color 150ms ease',
+        transition: 'border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease)',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.color = colors.hoverText
@@ -77,7 +77,7 @@ export default function LocaleSwitcher({ variant = 'light' }: LocaleSwitcherProp
       }}
     >
       <span aria-hidden="true">{locale.toUpperCase()}</span>
-      <span style={{ opacity: 0.4, margin: '0 4px' }} aria-hidden="true">·</span>
+      <span style={{ opacity: 0.4, margin: '0 var(--space-1)' }} aria-hidden="true">·</span>
       <span aria-hidden="true">{target.toUpperCase()}</span>
     </button>
   )

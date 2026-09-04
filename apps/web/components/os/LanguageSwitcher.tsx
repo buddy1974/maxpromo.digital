@@ -17,7 +17,7 @@ export function LanguageSwitcher() {
   const { locale, setLocale } = useOsLocale()
 
   return (
-    <div style={{ display: 'flex', gap: '4px', marginTop: '10px' }} role="group" aria-label="OS language">
+    <div style={{ display: 'flex', gap: 'var(--space-1)', marginTop: '10px' }} role="group" aria-label="OS language">
       {(['de', 'en'] as const).map(l => (
         <button
           key={l}
@@ -29,7 +29,7 @@ export function LanguageSwitcher() {
             border: `1px solid ${locale === l ? 'var(--brand-primary-dark)' : 'var(--brand-border)'}`,
             color: locale === l ? 'var(--brand-text)' : 'var(--brand-text-muted)',
             fontFamily: mono, fontSize: 'var(--text-label-dense)', fontWeight: 700, letterSpacing: '0.1em',
-            padding: '6px 8px', cursor: 'pointer', borderRadius: '2px', textTransform: 'uppercase',
+            padding: '6px 8px', cursor: 'pointer', borderRadius: 'var(--radius-xs)', textTransform: 'uppercase',
           }}
         >
           {l === 'de' ? '🇩🇪 DE' : '🇬🇧 EN'}

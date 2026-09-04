@@ -26,14 +26,14 @@ export default function AutomationCard({ title, description, tools, locale }: Au
         background: hovered ? 'var(--brand-surface-subtle)' : 'var(--brand-background)',
         border: `1px solid ${hovered ? 'color-mix(in srgb, var(--brand-primary) 30%, transparent)' : 'var(--brand-border)'}`,
         borderRadius: 'var(--radius-lg)',
-        padding: '32px',
+        padding: 'var(--space-6)',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
         overflow: 'hidden',
         transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
         boxShadow: hovered ? 'var(--shadow-lg)' : 'var(--shadow-sm)',
-        transition: 'all 0.25s ease',
+        transition: 'border-color var(--duration-base) var(--ease), background-color var(--duration-base) var(--ease)',
         cursor: 'default',
       }}
     >
@@ -63,7 +63,7 @@ export default function AutomationCard({ title, description, tools, locale }: Au
               fontFamily: 'var(--brand-font-mono)',
               fontSize: 'var(--text-label)',
               padding: '3px 10px',
-              borderRadius: '5px',
+              borderRadius: 'var(--radius-md)',
             }}
           >
             {tool}

@@ -30,7 +30,7 @@ export function WorkflowTimeline({ workflow, locale }: WorkflowTimelineProps) {
   return (
     <section style={{ padding: SECTION_PADDING.base, borderTop: SECTION_DIVIDER }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-        <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-3)' }}>
           {eyebrow}
         </p>
         <h2 style={{ marginBottom: '2.5rem' }}>
@@ -46,7 +46,7 @@ export function WorkflowTimeline({ workflow, locale }: WorkflowTimelineProps) {
               <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: '2rem', lineHeight: 1, color: 'var(--showcase-muted)', marginBottom: '0.6rem' }}>
                 {STEP_NUMS[i]}
               </p>
-              <h3 className="h-card" style={{ color: 'var(--showcase-fg)', marginBottom: '0.5rem' }}>
+              <h3 className="h-card" style={{ color: 'var(--showcase-fg)', marginBottom: 'var(--space-2)' }}>
                 {step.label}
               </h3>
               <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-micro)', color: 'var(--showcase-muted)', lineHeight: 1.6, margin: 0 }}>

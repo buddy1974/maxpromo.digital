@@ -4,7 +4,7 @@ import { MOCK_CONTACTS } from "@/lib/mock/contacts";
 export default function ContactsPage() {
   return (
     <DashboardShell title="Kontakte">
-      <div className="overflow-hidden rounded-lg border border-hairline bg-surface shadow-sm">
+      <div className="overflow-x-auto rounded-lg border border-hairline bg-surface shadow-sm">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-hairline text-ink-muted">
             <tr>

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
 
 const mono    = 'var(--brand-font-mono)'
-const grotesk = 'var(--brand-font-body)'
 const sans    = 'var(--brand-font-body)'
 
 interface Subscriber {
@@ -102,7 +101,7 @@ export default function NewsletterPage() {
     <div style={{ padding: '32px 40px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
-          <h1 style={{ fontFamily: grotesk, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.newsletter.heading}</h1>
+          <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 var(--space-1)' }}>{t.newsletter.heading}</h1>
           <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>
             {subs.length} {t.newsletter.statTotal} &nbsp;·&nbsp; <span style={{ color: 'var(--semantic-success)' }}>{activeCount} {t.newsletter.statActive}</span>
           </p>
@@ -113,9 +112,9 @@ export default function NewsletterPage() {
       </div>
 
       {/* Compose */}
-      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', padding: '24px', marginBottom: '28px' }}>
-        <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 16px' }}>{t.newsletter.compose}</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', padding: 'var(--space-5)', marginBottom: '28px' }}>
+        <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 var(--space-4)' }}>{t.newsletter.compose}</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
           <div>
             <label style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>{t.newsletter.fieldSubject}</label>
             <input value={subject} onChange={e => setSubject(e.target.value)} style={{ width: '100%', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: '14px', padding: '10px 14px', outline: 'none', boxSizing: 'border-box' }} />
@@ -127,7 +126,7 @@ export default function NewsletterPage() {
         </div>
 
         {sendResult && (
-          <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '10px 16px', marginBottom: '12px' }}>
+          <div style={{ background: 'color-mix(in srgb, var(--semantic-success) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '10px 16px', marginBottom: 'var(--space-3)' }}>
             <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.06em' }}>
               {t.newsletter.sendResult(sendResult.sent, sendResult.failed)}
             </p>
@@ -145,10 +144,10 @@ export default function NewsletterPage() {
 
         {preview && subject && body && (
           <div style={{ marginTop: '20px', border: '1px solid var(--brand-border)', padding: '0', overflow: 'hidden' }}>
-            <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '8px 16px', borderBottom: '1px solid var(--brand-border)', margin: 0 }}>{t.newsletter.emailPreview}</p>
+            <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', padding: 'var(--space-2) var(--space-4)', borderBottom: '1px solid var(--brand-border)', margin: 0 }}>{t.newsletter.emailPreview}</p>
             <div style={{ padding: '20px', background: 'var(--brand-surface-subtle)' }}>
               <div style={{ background: 'var(--brand-background)', padding: '20px 24px', borderBottom: '3px solid var(--brand-primary)', marginBottom: '0' }}>
-                <p style={{ fontFamily: 'monospace', fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 4px' }}>Maxpromo Digital</p>
+                <p style={{ fontFamily: 'monospace', fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 var(--space-1)' }}>Maxpromo Digital</p>
                 <p style={{ color: 'var(--brand-text)', margin: 0, fontSize: 'var(--text-body)', fontWeight: 'var(--weight-heading)' }}>{subject}</p>
               </div>
               <div style={{ background: 'var(--brand-surface)', padding: '20px 24px' }}>
@@ -160,7 +159,7 @@ export default function NewsletterPage() {
       </div>
 
       {/* Subscriber list */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-4)', alignItems: 'center' }}>
         {STATUS_TABS.map(key => (
           <button key={key} onClick={() => setStatusTab(key)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '7px 12px', border: 'none', cursor: 'pointer', background: statusTab === key ? 'var(--brand-primary)' : 'transparent', color: statusTab === key ? 'var(--brand-text)' : 'var(--brand-text-muted)' }}>
             {tabLabel(key)}
@@ -169,20 +168,20 @@ export default function NewsletterPage() {
         <input placeholder={t.common.searchPlaceholder} value={search} onChange={e => setSearch(e.target.value)} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '7px 14px', outline: 'none', width: '220px', marginLeft: 'auto' }} />
       </div>
 
-      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflowX: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map((h, i) => (
-                <th key={i} style={{ padding: '12px 16px', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+                <th key={i} style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={6} style={{ padding: '24px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
+              <tr><td colSpan={6} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={6} style={{ padding: '24px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.newsletter.empty}</td></tr>
+              <tr><td colSpan={6} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.newsletter.empty}</td></tr>
             ) : (
               filtered.map(sub => (
                 <tr key={sub.id} style={{ borderBottom: '1px solid var(--brand-border)' }}>
@@ -191,12 +190,12 @@ export default function NewsletterPage() {
                   <td style={{ padding: '11px 16px' }}><span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', background: 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{sub.source || t.common.notAvailable}</span></td>
                   <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)' }}>{fmtDate(sub.created_at)}</td>
                   <td style={{ padding: '11px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: sub.status === 'active' ? 'var(--semantic-success)' : 'var(--semantic-danger)', background: sub.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' : 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '2px' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: sub.status === 'active' ? 'var(--semantic-success)' : 'var(--semantic-danger)', background: sub.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 12%, transparent)' : 'color-mix(in srgb, var(--semantic-danger) 12%, transparent)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
                       {t.status.subscriber[sub.status] ?? sub.status}
                     </span>
                   </td>
                   <td style={{ padding: '11px 16px' }}>
-                    <button onClick={() => updateStatus(sub.id, sub.status === 'active' ? 'unsubscribed' : 'active')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.04em' }}>
+                    <button onClick={() => updateStatus(sub.id, sub.status === 'active' ? 'unsubscribed' : 'active')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
                       {sub.status === 'active' ? t.newsletter.unsub : t.newsletter.reactivate}
                     </button>
                   </td>

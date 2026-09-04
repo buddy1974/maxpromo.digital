@@ -38,7 +38,7 @@ export function PainSlider() {
           margin: '0 auto',
           display: 'flex',
           alignItems: 'center',
-          gap: '1.5rem',
+          gap: 'var(--space-5)',
           flexWrap: 'wrap',
         }}
       >
@@ -62,7 +62,7 @@ export function PainSlider() {
             fontFamily: 'var(--brand-font-mono)',
             fontSize: '14px',
             opacity: visible ? 1 : 0,
-            transition: 'opacity 220ms ease',
+            transition: 'opacity var(--duration-base) var(--ease)',
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
@@ -89,12 +89,12 @@ export function PainSlider() {
               style={{
                 width: i === active ? '18px' : '5px',
                 height: '5px',
-                borderRadius: '3px',
+                borderRadius: 'var(--radius-xs)',
                 background: i === active ? 'var(--brand-primary)' : 'var(--brand-border)',
                 border: 'none',
                 padding: 0,
                 cursor: 'pointer',
-                transition: 'width 300ms ease, background 300ms ease',
+                transition: 'width var(--duration-base) var(--ease), background var(--duration-base) var(--ease)',
               }}
             />
           ))}

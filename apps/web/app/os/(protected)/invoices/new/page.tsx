@@ -9,7 +9,6 @@ import { useOsLocale } from '@/lib/os-i18n/context'
 import { Icon } from '@maxpromo/ui'
 
 const mono    = 'var(--brand-font-mono)'
-const grotesk = 'var(--brand-font-body)'
 const sans    = 'var(--brand-font-body)'
 
 interface LineItem {
@@ -479,15 +478,15 @@ export default function NewInvoicePage() {
     <>
       {/* ── UNIFIED AI MODAL ── */}
       {aiModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: '4px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' }}>
+          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '580px', padding: '28px', borderRadius: 'var(--radius-sm)' }}>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
               <div>
-                <h2 style={{ fontFamily: grotesk, fontWeight: 'var(--weight-heading)', fontSize: '18px', color: 'var(--brand-text)', margin: '0 0 4px', letterSpacing: '-0.02em' }}>{t.forms.aiInvoiceTitle}</h2>
+                <h2 style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', fontSize: '18px', color: 'var(--brand-text)', margin: '0 0 var(--space-1)', letterSpacing: '-0.02em' }}>{t.forms.aiInvoiceTitle}</h2>
                 <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', margin: 0 }}>{t.forms.aiModalSub}</p>
               </div>
-              <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: '4px' }}>×</button>
+              <button onClick={() => { setAiModalOpen(false); setAiError(''); setPastePreview(''); setRawText('') }} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '20px', cursor: 'pointer', lineHeight: 1, padding: 'var(--space-1)' }}>×</button>
             </div>
 
             {/* Paste / drop zone */}
@@ -498,20 +497,20 @@ export default function NewInvoicePage() {
               style={{
                 border: `2px dashed ${isDragOver ? 'var(--brand-primary)' : 'var(--brand-border)'}`,
                 background: isDragOver ? 'color-mix(in srgb, var(--brand-primary) 6%, transparent)' : 'var(--brand-background)',
-                borderRadius: '4px',
-                padding: '16px',
-                marginBottom: '16px',
+                borderRadius: 'var(--radius-sm)',
+                padding: 'var(--space-4)',
+                marginBottom: 'var(--space-4)',
                 minHeight: '80px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'border-color 0.2s ease, background 0.2s ease',
+                transition: 'border-color var(--duration-base) var(--ease), background var(--duration-base) var(--ease)',
                 position: 'relative',
               }}
             >
               {aiLoading && pastePreview ? (
                 <div role="status" style={{ textAlign: 'center' }}>
-                  <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: '0 0 8px' }}>
+                  <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: '0 0 var(--space-2)' }}>
                     <Icon name="running" size="xs" /> {t.forms.aiReading}
                   </p>
                   {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs and offers no benefit for a transient upload preview */}
@@ -529,7 +528,7 @@ export default function NewInvoicePage() {
             </div>
 
             {/* Divider */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-3)' }}>
               <div style={{ flex: 1, height: '1px', background: 'var(--brand-border)' }} />
               <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em' }}>{t.forms.aiOrPasteText}</span>
               <div style={{ flex: 1, height: '1px', background: 'var(--brand-border)' }} />
@@ -541,11 +540,11 @@ export default function NewInvoicePage() {
               onChange={e => setRawText(e.target.value)}
               rows={6}
               placeholder={t.forms.aiPlaceholderInvoice}
-              style={{ ...inp, resize: 'vertical', marginBottom: '12px', lineHeight: 1.7, fontSize: '12px' }}
+              style={{ ...inp, resize: 'vertical', marginBottom: 'var(--space-3)', lineHeight: 1.7, fontSize: '12px' }}
             />
 
             {aiError && (
-              <p role="alert" style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}>
+              <p role="alert" style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 var(--space-3)', letterSpacing: '0.06em' }}>
                 <Icon name="warning" size="xs" /> {aiError}
               </p>
             )}
@@ -554,13 +553,13 @@ export default function NewInvoicePage() {
               <button
                 onClick={handleGenerateAI}
                 disabled={aiLoading || !rawText.trim()} aria-busy={aiLoading}
-                style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: '2px' }}
+                style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: aiLoading || !rawText.trim() ? 0.5 : 1, borderRadius: 'var(--radius-xs)' }}
               >
                 {aiLoading && !pastePreview ? t.forms.aiExtracting : t.forms.aiGenerateButton}
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label)', padding: '12px 16px', cursor: 'pointer', borderRadius: '2px' }}
+                style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label)', padding: 'var(--space-3) var(--space-4)', cursor: 'pointer', borderRadius: 'var(--radius-xs)' }}
               >
                 {t.forms.aiBrowseFile}
               </button>
@@ -577,20 +576,20 @@ export default function NewInvoicePage() {
         <div style={{ width: '50%', height: '100vh', overflowY: 'auto', padding: '28px 32px', borderRight: '1px solid var(--brand-border)' }}>
 
           {/* Header row */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-4)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <h1 style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>{t.invoiceForm.newHeading}</h1>
+              <h1 style={{ fontFamily: sans, fontSize: '20px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', margin: 0, letterSpacing: '-0.02em' }}>{t.invoiceForm.newHeading}</h1>
               {aiEnhanced && (
-                <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 20%, transparent)', padding: '3px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
                   {t.invoiceForm.aiEnhanced}
                 </span>
               )}
             </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label-dense)', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>
+            <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+              <button onClick={() => { setAiModalOpen(true); setAiError(''); setPastePreview('') }} style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label-dense)', fontWeight: 700, letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
                 {t.invoiceForm.aiGenerate}
               </button>
-              <button onClick={() => fileInputRef.current?.click()} style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}>
+              <button onClick={() => fileInputRef.current?.click()} style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
                 {t.invoiceForm.scanImage}
               </button>
             </div>
@@ -598,7 +597,7 @@ export default function NewInvoicePage() {
 
           {/* Confidence banner */}
           {aiEnhanced && overallConfidence && (
-            <div style={{ background: confBg[overallConfidence], border: `1px solid ${confBorder[overallConfidence]}`, padding: '10px 14px', marginBottom: '14px', borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ background: confBg[overallConfidence], border: `1px solid ${confBorder[overallConfidence]}`, padding: '10px 14px', marginBottom: '14px', borderRadius: 'var(--radius-xs)', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: confColor[overallConfidence], margin: 0, letterSpacing: '0.06em' }}>
                 <Icon name={confIcon[overallConfidence]} size="xs" /> {confMsg[overallConfidence]}
               </p>
@@ -607,7 +606,7 @@ export default function NewInvoicePage() {
 
           {/* Extraction notes */}
           {aiEnhanced && extractionNotes && (
-            <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '10px 14px', marginBottom: '14px', borderRadius: '2px' }}>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '10px 14px', marginBottom: '14px', borderRadius: 'var(--radius-xs)' }}>
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.04em' }}>
                 ℹ️  {extractionNotes}
               </p>
@@ -661,7 +660,7 @@ export default function NewInvoicePage() {
                 onClick={e => { const inp = (e.currentTarget as HTMLDivElement).querySelector('input'); inp?.focus() }}
               >
                 {clientEmails.map((e, i) => (
-                  <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'color-mix(in srgb, var(--brand-primary) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 35%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label)', padding: '2px 8px', borderRadius: '2px' }}>
+                  <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'color-mix(in srgb, var(--brand-primary) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 35%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label)', padding: '2px 8px', borderRadius: 'var(--radius-xs)' }}>
                     {e}
                     <button onClick={() => setClientEmails(prev => prev.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'var(--brand-primary-text)', cursor: 'pointer', fontSize: 'var(--text-micro)', padding: '0', lineHeight: 1 }}>×</button>
                   </span>
@@ -675,11 +674,11 @@ export default function NewInvoicePage() {
                   style={{ flex: '1', minWidth: '180px', background: 'none', border: 'none', outline: 'none', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '0' }}
                 />
               </div>
-              {emailError && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '4px 0 0', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {emailError}</p>}
+              {emailError && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: 'var(--space-1) 0 0', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {emailError}</p>}
             </Field>
 
             {/* Send copy checkbox */}
-            <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer' }}>
               <input type="checkbox" checked={sendCopy} onChange={e => setSendCopy(e.target.checked)}
                 style={{ width: '14px', height: '14px', accentColor: 'var(--brand-primary)', cursor: 'pointer' }} />
               <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.08em' }}>
@@ -710,23 +709,23 @@ export default function NewInvoicePage() {
             <div>
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.invoiceForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
-                <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: '12px', marginBottom: '6px', borderRadius: '2px', position: 'relative' }}>
+                <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: 'var(--space-3)', marginBottom: '6px', borderRadius: 'var(--radius-xs)', position: 'relative' }}>
                   {item.aiConfidence === 'low' && (
                     <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}>
                       <Icon name="warning" size="xs" /> {t.forms.verifyBadge}
                     </span>
                   )}
-                  <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
                     <input
                       value={item.description}
                       onChange={e => updateItem(i, 'description', e.target.value)}
                       placeholder={aiEnhanced && !item.description ? t.forms.notFoundFill : t.forms.descriptionPlaceholder}
                       style={{ ...inp, flex: 1, border: aiEnhanced && !item.description ? '1px dashed color-mix(in srgb, var(--brand-primary) 50%, transparent)' : inp.border as string }}
                     />
-                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'var(--brand-border)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`, color: item.isFixedPrice ? 'var(--brand-primary-text)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: '2px' }}>
+                    <button onClick={() => { const items = [...lineItems]; items[i] = { ...items[i], isFixedPrice: !items[i].isFixedPrice }; setLineItems(items) }} style={{ background: item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 15%, transparent)' : 'var(--brand-border)', border: `1px solid ${item.isFixedPrice ? 'color-mix(in srgb, var(--brand-primary) 40%, transparent)' : 'var(--brand-border)'}`, color: item.isFixedPrice ? 'var(--brand-primary-text)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '0 10px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: 'var(--radius-xs)' }}>
                       {item.isFixedPrice ? t.invoiceForm.pauschal : t.invoiceForm.perUnit}
                     </button>
-                    <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '18px', padding: '0 4px', lineHeight: 1 }}>×</button>
+                    <button onClick={() => setLineItems(prev => prev.filter((_, idx) => idx !== i))} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '18px', padding: '0 var(--space-1)', lineHeight: 1 }}>×</button>
                   </div>
                   {item.isFixedPrice ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -746,24 +745,24 @@ export default function NewInvoicePage() {
                   )}
                 </div>
               ))}
-              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: '4px', letterSpacing: '0.1em', width: '100%', borderRadius: '2px' }}>
+              <button onClick={() => setLineItems(prev => [...prev, blankItem()])} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', background: 'none', border: '1px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', padding: '7px 16px', cursor: 'pointer', marginTop: 'var(--space-1)', letterSpacing: '0.1em', width: '100%', borderRadius: 'var(--radius-xs)' }}>
                 {t.invoiceForm.addItem}
               </button>
             </div>
 
             {/* Totals */}
-            <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: 'var(--space-4)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-3)' }}>
                 <span style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.invoiceForm.subtotal}</span>
                 <span style={{ fontFamily: mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', fontWeight: 700 }}>{fmtEur(subtotal)}</span>
               </div>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: 'var(--space-3)' }}>
                 <input type="checkbox" checked={hasAnzahlung} onChange={e => setHasAnzahlung(e.target.checked)} style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }} />
                 <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.invoiceForm.depositReceived}</span>
               </label>
               {hasAnzahlung && (
-                <div style={{ marginBottom: '12px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+                <div style={{ marginBottom: 'var(--space-3)' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-2)', marginBottom: '10px' }}>
                     <Field label={t.invoiceForm.depositAmount}><input type="number" value={anzahlung} onChange={e => setAnzahlung(Number(e.target.value))} style={{ ...inp, textAlign: 'right' }} /></Field>
                     <Field label={t.invoiceForm.depositDate}><input type="date" value={anzahlungDate} onChange={e => setAnzahlungDate(e.target.value)} style={inp} /></Field>
                     <Field label={t.invoiceForm.depositMethod}>
@@ -777,7 +776,7 @@ export default function NewInvoicePage() {
                     </Field>
                   </div>
                   <div style={{ borderTop: '1px solid var(--brand-border)', paddingTop: '10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-1)' }}>
                       <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)' }}>{t.invoiceForm.deposit}</span>
                       <span style={{ fontFamily: mono, fontSize: '12px', color: 'var(--brand-primary-text)' }}>−{fmtEur(Number(anzahlung))}</span>
                     </div>
@@ -791,8 +790,8 @@ export default function NewInvoicePage() {
               )}
               {!hasAnzahlung && (
                 <div style={{ borderTop: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', paddingTop: '10px', textAlign: 'right' }}>
-                  <span style={{ fontFamily: grotesk, fontSize: '20px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)' }}>{fmtEur(subtotal)}</span>
-                  <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: '4px 0 0', letterSpacing: '0.06em' }}>{t.invoiceForm.vatNote}</p>
+                  <span style={{ fontFamily: sans, fontSize: '20px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)' }}>{fmtEur(subtotal)}</span>
+                  <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 'var(--space-1) 0 0', letterSpacing: '0.06em' }}>{t.invoiceForm.vatNote}</p>
                 </div>
               )}
             </div>
@@ -802,17 +801,17 @@ export default function NewInvoicePage() {
             </Field>
 
             {sendError && (
-              <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 40%, transparent)', padding: '10px 14px', borderRadius: '2px' }}>
+              <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 40%, transparent)', padding: '10px 14px', borderRadius: 'var(--radius-xs)' }}>
                 <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: 0, letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {sendError}</p>
                 <button onClick={() => setSendError('')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', background: 'none', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: '4px 10px', cursor: 'pointer', marginTop: '6px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{t.forms.retry}</button>
               </div>
             )}
 
-            <div style={{ display: 'flex', gap: '10px', paddingBottom: '24px' }}>
+            <div style={{ display: 'flex', gap: '10px', paddingBottom: 'var(--space-5)' }}>
               <button onClick={handleSaveDraft} disabled={saving} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1 }}>
                 {saving ? t.invoiceForm.savingDraft : t.invoiceForm.saveDraft}
               </button>
-              <button onClick={handleSend} disabled={sending} style={{ background: sending ? 'var(--brand-primary-dark)' : 'var(--brand-primary)', border: 'none', color: 'var(--brand-on-primary)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: sending ? 'wait' : 'pointer', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <button onClick={handleSend} disabled={sending} style={{ background: sending ? 'var(--brand-primary-dark)' : 'var(--brand-primary)', border: 'none', color: 'var(--brand-on-primary)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: sending ? 'wait' : 'pointer', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                 {sending && <span style={{ display: 'inline-block', width: '10px', height: '10px', border: '2px solid color-mix(in srgb, var(--brand-text) 45%, transparent)', borderTopColor: 'var(--brand-text)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
                 {sending ? t.invoiceForm.sendingInvoice : t.invoiceForm.sendInvoice}
               </button>
@@ -826,7 +825,7 @@ export default function NewInvoicePage() {
              a third hand-rolled copy — so what you see here is exactly
              what "Als PDF speichern" will produce. */}
         <div style={{ flex: 1, height: '100vh', overflowY: 'auto', background: 'var(--brand-surface-subtle)', padding: '28px' }}>
-          <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
+          <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 'var(--space-3)', textAlign: 'center' }}>{t.invoiceForm.livePreview}</p>
           <div style={{ maxWidth: '520px', margin: '0 auto', transform: 'scale(0.94)', transformOrigin: 'top center' }}>
             <InvoiceDocument
               invoice={{
@@ -855,17 +854,17 @@ export default function NewInvoicePage() {
 
       {/* ── SEND SUCCESS OVERLAY ── */}
       {sent && sentData && (
-        <div style={{ position: 'fixed', inset: 0, background: 'var(--brand-background)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--brand-background)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' }}>
           <div style={{ textAlign: 'center', maxWidth: '440px', width: '100%' }}>
             {/* Checkmark */}
             <div style={{ width: '72px', height: '72px', borderRadius: '50%', background: 'color-mix(in srgb, var(--semantic-success) 12%, transparent)', border: '2px solid var(--semantic-success)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <span style={{ color: 'var(--semantic-success)', fontSize: '32px', lineHeight: 1 }}><Icon name="check" size="sm" /></span>
             </div>
-            <h2 style={{ color: 'var(--brand-text)', fontSize: '22px', fontWeight: 'var(--weight-heading)', margin: '0 0 8px', fontFamily: grotesk }}>{t.invoiceForm.sentHeading}</h2>
-            <p style={{ color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '12px', margin: '0 0 4px', letterSpacing: '0.04em' }}>{t.forms.invoiceNoPrefix} {sentData.number} {t.invoiceForm.sentSubheading}</p>
+            <h2 style={{ color: 'var(--brand-text)', fontSize: '22px', fontWeight: 'var(--weight-heading)', margin: '0 0 var(--space-2)', fontFamily: sans }}>{t.invoiceForm.sentHeading}</h2>
+            <p style={{ color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: '12px', margin: '0 0 var(--space-1)', letterSpacing: '0.04em' }}>{t.forms.invoiceNoPrefix} {sentData.number} {t.invoiceForm.sentSubheading}</p>
             <p style={{ color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: '12px', margin: '0 0 28px', letterSpacing: '0.04em', wordBreak: 'break-all' }}>{sentData.emails.join(', ')}</p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               <button
                 onClick={() => window.open(`/os/invoices/${sentData.id}/print`, '_blank')}
                 style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '14px 20px', cursor: 'pointer', textTransform: 'uppercase', width: '100%' }}

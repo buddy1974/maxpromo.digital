@@ -41,13 +41,13 @@ const BLANK = {
 
 const inp: React.CSSProperties = {
   width: '100%', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)',
-  borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontSize: '14px', padding: '10px 14px',
+  borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontSize: '14px', padding: '10px 14px',
   outline: 'none', boxSizing: 'border-box',
 }
 
 const sectionLbl: React.CSSProperties = {
   fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em',
-  textTransform: 'uppercase', margin: '20px 0 14px', paddingBottom: '8px',
+  textTransform: 'uppercase', margin: '20px 0 14px', paddingBottom: 'var(--space-2)',
   borderBottom: '1px solid var(--brand-border)', display: 'block',
 }
 
@@ -341,12 +341,12 @@ export default function ClientsPage() {
       {/* ── Header ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px' }}>
         <div>
-          <h1 style={{ fontFamily: sans, fontSize: '28px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 4px' }}>{t.clients.heading}</h1>
+          <h1 style={{ fontFamily: sans, fontSize: '28px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 var(--space-1)' }}>{t.clients.heading}</h1>
           <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>{clients.length} {t.common.total}</p>
         </div>
         <button
           onClick={() => { setEditId(null); setForm({ ...BLANK }); setShowForm(true); resetScan() }}
-          style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 20px', cursor: 'pointer' }}
+          style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 20px', cursor: 'pointer' }}
         >
           {t.clients.newClient}
         </button>
@@ -362,12 +362,12 @@ export default function ClientsPage() {
 
       {/* ── New / Edit Client MODAL ── */}
       {showForm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' }}>
           <div style={{
             background: 'var(--brand-surface-subtle)',
             border: '1px solid var(--brand-border)',
             borderTop: '2px solid var(--brand-primary)',
-            borderRadius: '4px',
+            borderRadius: 'var(--radius-sm)',
             width: '100%',
             maxWidth: '560px',
             maxHeight: 'calc(100vh - 48px)',
@@ -381,22 +381,22 @@ export default function ClientsPage() {
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
                 {editId ? t.clients.editClient : t.clients.newClientModal}
               </p>
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
                 <button
                   onClick={() => { setScanTab('scan'); fileRef.current?.click() }}
-                  style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label-dense)', fontWeight: 700, letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
+                  style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label-dense)', fontWeight: 700, letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}
                 >
                   {t.clients.scanButton}
                 </button>
                 <button
                   onClick={() => { setScanTab('paste'); setExtracted(null); setScanPreview('') }}
-                  style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: '2px' }}
+                  style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}
                 >
                   {t.clients.pasteButton}
                 </button>
                 <button
                   onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
-                  style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '22px', cursor: 'pointer', lineHeight: 1, padding: '0 0 0 8px' }}
+                  style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '22px', cursor: 'pointer', lineHeight: 1, padding: '0 0 0 var(--space-2)' }}
                 >
                   ×
                 </button>
@@ -408,18 +408,18 @@ export default function ClientsPage() {
 
               {/* Image preview */}
               {scanTab === 'scan' && scanPreview && !extracted && (
-                <div style={{ marginBottom: '16px', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '12px', borderRadius: '2px' }}>
-                  <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+                <div style={{ marginBottom: 'var(--space-4)', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: 'var(--space-3)', borderRadius: 'var(--radius-xs)' }}>
+                  <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'flex-start' }}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview of a scanned business card; next/image cannot optimize runtime data URLs */}
-                    <img src={scanPreview} alt={t.clients.imageAlt} style={{ width: '120px', height: '80px', objectFit: 'cover', border: '1px solid var(--brand-border)', borderRadius: '2px' }} />
+                    <img src={scanPreview} alt={t.clients.imageAlt} style={{ width: '120px', height: '80px', objectFit: 'cover', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-xs)' }} />
                     <div style={{ flex: 1 }}>
                       <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: '0 0 10px', letterSpacing: '0.08em' }}>{t.clients.imageReady}</p>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={runExtract} disabled={extracting} aria-busy={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: '2px' }}>
+                      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                        <button onClick={runExtract} disabled={extracting} aria-busy={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: 'var(--radius-xs)' }}>
                           {extracting && <Icon name="running" size="xs" />}
                           {extracting ? t.clients.extracting : t.clients.extract}
                         </button>
-                        <button onClick={() => { setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
+                        <button onClick={() => { setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '8px 10px', cursor: 'pointer', borderRadius: 'var(--radius-xs)' }}>
                           {t.clients.remove}
                         </button>
                       </div>
@@ -430,20 +430,20 @@ export default function ClientsPage() {
 
               {/* Paste text */}
               {scanTab === 'paste' && !extracted && (
-                <div style={{ marginBottom: '16px' }}>
+                <div style={{ marginBottom: 'var(--space-4)' }}>
                   <textarea
                     value={pasteText}
                     onChange={e => setPasteText(e.target.value)}
                     rows={4}
                     placeholder={t.clients.pastePlaceholder}
-                    style={{ ...inp, resize: 'vertical', lineHeight: 1.6, marginBottom: '8px' }}
+                    style={{ ...inp, resize: 'vertical', lineHeight: 1.6, marginBottom: 'var(--space-2)' }}
                   />
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button onClick={runExtract} disabled={extracting || !pasteText.trim()} aria-busy={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: '2px' }}>
+                  <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                    <button onClick={runExtract} disabled={extracting || !pasteText.trim()} aria-busy={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: 'var(--radius-xs)' }}>
                       {extracting && <Icon name="running" size="xs" />}
                       {extracting ? t.clients.extractingAi : t.clients.extractWithAi}
                     </button>
-                    <button onClick={() => { setScanTab('scan'); setPasteText('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '8px 10px', cursor: 'pointer', borderRadius: '2px' }}>
+                    <button onClick={() => { setScanTab('scan'); setPasteText('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '8px 10px', cursor: 'pointer', borderRadius: 'var(--radius-xs)' }}>
                       {t.common.cancel}
                     </button>
                   </div>
@@ -451,20 +451,20 @@ export default function ClientsPage() {
               )}
 
               {extractError && (
-                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 12px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {extractError}</p>
+                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 var(--space-3)', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {extractError}</p>
               )}
 
               {/* Extracted preview banner */}
               {extracted && (
-                <div style={{ marginBottom: '16px', background: 'var(--brand-surface)', border: `1px solid ${confidenceColor[extracted.confidence]}33`, borderLeft: `3px solid ${confidenceColor[extracted.confidence]}`, padding: '12px 16px', borderRadius: '2px' }}>
+                <div style={{ marginBottom: 'var(--space-4)', background: 'var(--brand-surface)', border: `1px solid ${confidenceColor[extracted.confidence]}33`, borderLeft: `3px solid ${confidenceColor[extracted.confidence]}`, padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-xs)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.clients.prefilled}</p>
-                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: confidenceColor[extracted.confidence], background: `${confidenceColor[extracted.confidence]}22`, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: '2px' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: confidenceColor[extracted.confidence], background: `${confidenceColor[extracted.confidence]}22`, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
                       {confidenceLabel[extracted.confidence]}
                     </span>
                   </div>
                   {extracted.confidence === 'low' && (
-                    <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '8px 0 0', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> {t.clients.lowConfidenceWarning}</p>
+                    <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: 'var(--space-2) 0 0', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> {t.clients.lowConfidenceWarning}</p>
                   )}
                   <button onClick={resetScan} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
                     {t.clients.rescan}
@@ -518,7 +518,7 @@ export default function ClientsPage() {
 
               {/* Additional */}
               <span style={sectionLbl}>{t.clients.sectionAdditional}</span>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: '4px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: 'var(--space-1)' }}>
                 <Field label={t.clients.fieldWebsite}>
                   <input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder="https://" style={inp} />
                 </Field>
@@ -529,20 +529,20 @@ export default function ClientsPage() {
             </div>
 
             {/* ── MODAL FOOTER — always visible ── */}
-            <div style={{ padding: '16px 24px', borderTop: '1px solid var(--brand-border)', background: 'var(--brand-surface-subtle)', flexShrink: 0 }}>
-              <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ padding: 'var(--space-4) var(--space-5)', borderTop: '1px solid var(--brand-border)', background: 'var(--brand-surface-subtle)', flexShrink: 0 }}>
+              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
                 <button
                   type="button"
                   onClick={editId ? updateClient : save}
                   disabled={saving || !form.name.trim()}
-                  style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 24px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
+                  style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 24px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
                 >
                   {saving ? t.common.saving : editId ? t.clients.updateClient : t.clients.saveClient}
                 </button>
                 <button
                   type="button"
                   onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
-                  style={{ background: 'none', border: '1px solid var(--brand-border)', borderRadius: '4px', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 18px', cursor: 'pointer' }}
+                  style={{ background: 'none', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 18px', cursor: 'pointer' }}
                 >
                   {t.common.cancel}
                 </button>
@@ -559,7 +559,7 @@ export default function ClientsPage() {
       <input ref={fileRef} type="file" accept="image/*,.pdf" capture="environment" style={{ display: 'none' }} onChange={handleFileSelect} />
 
       {/* ── TABLE ── */}
-      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflow: 'hidden', borderRadius: '4px' }}>
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflowX: 'auto', borderRadius: 'var(--radius-sm)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: 'var(--brand-surface)', borderBottom: '1px solid var(--brand-border)' }}>
@@ -570,9 +570,9 @@ export default function ClientsPage() {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
+              <tr><td colSpan={7} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
             ) : filtered.length === 0 ? (
-              <tr><td colSpan={7} style={{ padding: '24px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{t.clients.empty}</td></tr>
+              <tr><td colSpan={7} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{t.clients.empty}</td></tr>
             ) : (
               filtered.map(c => (
                 <tr
@@ -581,27 +581,27 @@ export default function ClientsPage() {
                   onMouseEnter={e => (e.currentTarget.style.background = 'var(--brand-border)')}
                   onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                 >
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)' }}>{c.name}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-secondary)' }}>{c.company || t.common.notAvailable}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.email || t.common.notAvailable}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.phone || t.common.notAvailable}</td>
-                  <td style={{ padding: '12px 16px', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{c.city || t.common.notAvailable}</td>
-                  <td style={{ padding: '12px 16px' }}>
-                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.status === 'active' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', background: c.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 15%, transparent)' : 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: '3px', border: `1px solid ${c.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 20%, transparent)' : 'var(--brand-text-secondary)'}` }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)' }}>{c.name}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-secondary)' }}>{c.company || t.common.notAvailable}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.email || t.common.notAvailable}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.phone || t.common.notAvailable}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{c.city || t.common.notAvailable}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.status === 'active' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', background: c.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 15%, transparent)' : 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)', border: `1px solid ${c.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 20%, transparent)' : 'var(--brand-text-secondary)'}` }}>
                       {t.status.client[c.status] ?? c.status}
                     </span>
                   </td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <div style={{ display: 'flex', gap: '10px' }}>
                       <button
                         onClick={() => startEdit(c)}
-                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.06em' }}
                       >
                         {t.common.edit}
                       </button>
                       <button
                         onClick={() => deleteClient(c.id, c.name)}
-                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, letterSpacing: '0.06em' }}
+                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.06em' }}
                       >
                         {t.common.delete}
                       </button>
@@ -616,7 +616,7 @@ export default function ClientsPage() {
 
       {/* ── Success toast ── */}
       {toast && (
-        <div style={{ position: 'fixed', bottom: '80px', right: '24px', background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--semantic-success) 30%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '12px 20px', borderRadius: '4px', zIndex: 500 }}>
+        <div style={{ position: 'fixed', bottom: '80px', right: '24px', background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--semantic-success) 30%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '12px 20px', borderRadius: 'var(--radius-sm)', zIndex: 500 }}>
           <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.06em' }}>{toast}</p>
         </div>
       )}

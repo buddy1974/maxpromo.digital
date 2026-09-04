@@ -53,14 +53,14 @@ export function TrustAndSecurity({ complianceNote, locale }: TrustAndSecurityPro
   return (
     <section style={{ padding: SECTION_PADDING.base, borderTop: SECTION_DIVIDER }}>
       <div style={{ maxWidth: '80rem', margin: '0 auto' }}>
-        <p style={{ ...EYEBROW_STYLE, marginBottom: '0.75rem' }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-3)' }}>
           {eyebrow}
         </p>
-        <h2 style={{ marginBottom: '2rem' }}>
+        <h2 style={{ marginBottom: 'var(--space-6)' }}>
           {heading}
         </h2>
 
-        <div style={{ display: 'grid', gap: '12px' }} className="grid-cols-1 md:grid-cols-3">
+        <div style={{ display: 'grid', gap: 'var(--space-3)' }} className="grid-cols-1 md:grid-cols-3">
           {points.map((p, i) => (
             <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', padding: '1.25rem', border: CARD_BORDER, borderRadius: RADIUS.md }}>
               <span style={{ color: 'var(--showcase-muted)', flexShrink: 0, fontSize: '14px', marginTop: '2px' }}><Icon name="check" size="sm" /></span>
@@ -70,7 +70,7 @@ export function TrustAndSecurity({ complianceNote, locale }: TrustAndSecurityPro
         </div>
 
         {complianceNote && (
-          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--showcase-muted)', marginTop: '1.5rem', lineHeight: 1.7 }}>
+          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--showcase-muted)', marginTop: 'var(--space-5)', lineHeight: 1.7 }}>
             → {complianceNote}
           </p>
         )}

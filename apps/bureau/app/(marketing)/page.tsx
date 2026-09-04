@@ -18,8 +18,11 @@ import { Footer } from "@/components/marketing/Footer";
 export default function LandingPage() {
   return (
     <>
+      {/* First in the tab order, visible only on focus. Without it a keyboard
+          visitor tabs the whole navigation before reaching the page. */}
+      <a href="#content" className="skip-link">Zum Inhalt springen</a>
       <Nav />
-      <main>
+      <main id="content">
         <Hero />
         <AgentBureau />
         {/* Supervised operation explained right after the team. */}

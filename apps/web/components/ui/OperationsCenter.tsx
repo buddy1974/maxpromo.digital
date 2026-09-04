@@ -200,7 +200,7 @@ export function OperationsCenter({
           <div style={{ padding: '12px 14px', background: 'var(--brand-surface-subtle)' }}>
             <p
               style={{
-                margin: '0 0 8px',
+                margin: '0 0 var(--space-2)',
                 fontSize: 'var(--text-label-dense)',
                 fontWeight: 600,
                 letterSpacing: 'var(--tracking-label)',

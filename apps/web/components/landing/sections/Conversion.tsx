@@ -60,17 +60,17 @@ export function Conversion({ name, bookDemoUrl, domain, ctaPrimary, locale, brid
   return (
     <section style={{ padding: SECTION_PADDING.cta, borderTop: '1px solid var(--brand-border)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
       <div style={{ maxWidth: '600px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <p style={{ ...EYEBROW_STYLE, marginBottom: '1rem' }}>
+        <p style={{ ...EYEBROW_STYLE, marginBottom: 'var(--space-4)' }}>
           {eyebrow}
         </p>
-        <h2 style={{ marginBottom: '1rem', color: 'var(--showcase-fg)' }}>
+        <h2 style={{ marginBottom: 'var(--space-4)', color: 'var(--showcase-fg)' }}>
           {heading}
         </h2>
         <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', color: 'var(--showcase-muted)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
           {sub}
         </p>
 
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
             href={primaryHref}
             className={INTERACTIVE_PRIMARY_CLASSES}
