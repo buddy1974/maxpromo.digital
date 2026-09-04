@@ -186,3 +186,47 @@ and finds neither in a table of auto-width columns, and `.table-wrap {
 overflow-x: auto }` had been sitting unused in the stylesheet the whole time -
 the third "orphan" in this repository that was a gap rather than dead code.
 
+## 2026-09-04 - v8.0: the homepage introduces, the page educates
+
+**Decision:** The homepage Agent Bureau section drops the six-step lifecycle
+and the six capability panels that /agent-bureau already carries (405 lines to
+234), and the philosophy section drops the five-step list that "Five steps.
+Then it runs." states two sections later with durations attached.
+**Why:** The homepage told a reader how the work runs four times in four
+consecutive sections, and reproduced a dedicated page inside itself. A section
+earns its place by answering a question no other section answers.
+**How to apply:** Before adding a section to the homepage, name the business
+question it answers and check no other section answers it.
+
+## 2026-09-04 - One dominant call to action, and secondaries that go elsewhere
+
+**Decision:** A secondary CTA must have a different destination from the
+primary. Two pages carried a second name for the same action pointing at the
+same page; both are now single actions.
+**Why:** "Contact us" beside "Talk to Maxpromo", both to /contact, asks the
+reader to work out whether they differ. The site now shows one dominant label
+(15 uses per language), plus contextual actions that carry real context - a
+pricing tier, a product demo with ?system=.
+
+## 2026-09-04 - Business before technology, in the headline as well as the body
+
+**Decision:** Three headlines that led with the technology now lead with the
+outcome: the hub's Agent Bureau page H1, the homepage section H2, and the
+Agent Bureau site's H1.
+**Why:** The core memory's permanent rule is "never sell AI, sell business
+outcomes", and in every one of the three the sentence directly underneath
+already led with the outcome - the order was inverted, not the content wrong.
+The Agent Bureau site made it plainest: an H1 selling KI, three sections above
+an H2 reading "Wir verkaufen keine KI. Wir verkaufen Ergebnisse."
+
+## 2026-09-04 - Two claims escalated rather than corrected
+
+**Decision:** The currency contradiction in the case study, and the two
+framings of the proof numbers, are recorded as known-risks 33 and 34 and left
+in place.
+**Why:** Both are public commercial claims. Picking a currency changes a
+stated client saving by seventeen per cent; deciding whether the figures are
+"results" or "examples" states something about delivered work. Neither is a
+formatting fix, and CLAUDE.md makes a public claim the infrastructure does not
+support a stop-and-escalate condition.
+

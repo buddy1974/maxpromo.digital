@@ -426,3 +426,102 @@ except the terminal mock - three periods are what a CLI prints.
 
 Nothing pushed. Nothing merged to main.
 
+## 2026-09-04 - v8.0: the site as a prospect reads it
+
+Branch feature/track-b. Two batches, full gate green after each; both live
+audits run against both applications, and the site crawled before and after.
+
+v7.0 and v7.1 were about what the code contained. This pass walked the site as
+a visitor, then crawled it, and the two disagreed in ways neither an audit nor
+a reviewer of one page at a time would see.
+
+### The link graph
+
+A published article offered exactly one "Continue reading" and it was a 404 -
+the target is still `status: draft`. Two articles carried the link, in both
+languages.
+
+/ai-websites served the same 74 lines as /solutions/websites-platforms:
+identical H1, identical body, no canonical tag, no inbound link, and both
+submitted in the sitemap. One page, one address; it is now a permanent
+redirect.
+
+/automation-lab was in the sitemap and linked from nowhere, so its only
+possible visitor arrived cold from a search result onto the most technical
+page the company publishes. It now sits on Resources, where a reference
+belongs.
+
+Agent Bureau - the one product marketed publicly from the hub, and the largest
+section on the homepage - had one inbound link on the whole site. It is in the
+footer now.
+
+The crawl reports no 404, no dead end, nothing in the sitemap that cannot be
+reached, and nothing reachable that is missing from it.
+
+### The homepage told the same story four times
+
+"Why Maxpromo" said we start from your daily operation. "Built by operators"
+said it again. "How Maxpromo thinks" listed Observe / Understand / Design /
+Install / Support. Two sections later "Five steps. Then it runs." listed the
+same sequence - with durations and commitments attached, which is the version
+a buyer can act on. The duplicate list is gone and the positioning prose it
+sat beside stays.
+
+The Agent Bureau section reproduced the dedicated page: the same lifecycle,
+the same six capability panels, 405 lines. The homepage introduces and the
+page educates. 405 to 234, with the CSS the removed markup owned.
+
+### One call to action
+
+  Contact / Kontakt                   16   utility, nav and footer
+  Start a conversation / Gespräch …   15   the dominant action
+  Request demo → / Demo anfragen →     2   contextual, carries ?system=
+  Talk about your existing system      1   contextual, the legacy section
+
+Identical counts in both languages. What it had instead was a second name for
+the dominant action on two pages, each pair pointing at the same page. A
+secondary earns its place by going somewhere else, which /about and the hero
+already do.
+
+Correcting the homepage close caught one introduced in the same session: it
+read "Gespräch beginnen" against eighteen existing "Gespräch vereinbaren".
+
+### Business before technology
+
+Three headlines led with the technology while the sentence underneath them
+already led with the outcome. The Agent Bureau site made it plainest: an H1
+reading "Ein KI-Team, das Ihren Betrieb führt", three sections above an H2
+reading "Wir verkaufen keine KI. Wir verkaufen Ergebnisse." The page contained
+the rule its own headline broke - and "führt Ihren Betrieb" claims the agents
+run the business, which the rest of the page exists to deny.
+
+### Crossing between the two properties
+
+Agent Bureau's footer linked to /de/systems, a route the hub retired. Its one
+link offering a look at the product pointed at /dashboard, behind
+authentication, so a prospect following "System-Vorschau ansehen" arrived at a
+login form.
+
+### Not corrected: two claims
+
+The same client saving is quoted as €14k/mo on the homepage and £14,000/month
+on the case-studies page - in both languages, to a German market. And the
+three proof figures are introduced as outcomes the systems are "designed to
+improve" and closed as "results from live production systems", four lines
+apart, on a site whose Resources page promises case studies "without numbers
+we cannot evidence".
+
+Both are public commercial claims. Picking a currency changes a stated client
+saving; deciding whether the numbers are results or examples states something
+about delivered work. Recorded as known-risks 33 and 34.
+
+### Verified, not changed
+
+The six industry pages are the strongest work on the site - specific,
+operator-voiced, a different closing offer per sector - and needed nothing.
+German and English are structurally identical page for page: same headings,
+same link counts, same CTA counts, same quality. 1,418 strings, no marketing
+or AI cliché in either.
+
+Nothing pushed. Nothing merged to main.
+
