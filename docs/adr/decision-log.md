@@ -253,3 +253,38 @@ than rewrite where confirmation is required.
 **How to apply:** The test is whether correcting the finding requires knowing a
 business fact. Two names for one CTA does not; what maintenance costs does.
 
+## 2026-09-04 - v9.5: a commitment is a claim, and gets the same treatment
+
+**Decision:** `audit:claims` gains a third rule - one commitment, one value. It
+groups durations by what they commit to and reports any commitment carrying
+more than one value, in either language.
+**Why:** A duration stated publicly is a promise a buyer plans around, and the
+site stated two of them twice: the first conversation as 30 and 45 minutes, and
+building and going live as 1-4 and 2-6 weeks. Neither is visible from one page.
+**Method:** Three attempts at "which keys describe the same thing" - key stem
+found two of three conflicts, whole-parent found all three plus a case study's
+invoice-processing time read as a meeting length, shared-prefix is what shipped.
+Then two at German morphology: plurals in -n/-en, and "und" as a range
+separator. Both failures are recorded in the file, because a rule that reports
+the English half of a translated pair looks correct in every English review.
+
+## 2026-09-04 - Case-study timelines are evidence, not commitments
+
+**Decision:** `audit:claims` excludes `caseStudies.*` from the commitments rule.
+**Why:** "Delivered in 8 weeks" describes one project. Comparing it with "1-4
+weeks" on the process section compares what happened once with what is promised
+generally, and a script should not draw that conclusion. A human should, and
+did - known-risk 40 records that all three published projects took longer than
+the process section promises.
+
+## 2026-09-04 - Copy that renders nowhere is removed; copy that renders is not
+
+**Decision:** `proof.*`, `roi.*` and `faq.*` deleted - 49 strings per locale.
+`pricing.ctaSecondary` with them.
+**Why:** v9 recorded them rather than removing them, on the grounds they looked
+planned rather than retired. v9.5's instruction is to resolve everything that
+can be resolved without changing a business fact, and copy no component reads
+makes no public promise. Two carried claims - a customer quote and a "60-90
+days payback" - that one wire-up would have published unevidenced. Git keeps
+them.
+

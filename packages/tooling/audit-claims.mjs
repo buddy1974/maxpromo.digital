@@ -159,6 +159,157 @@ for (const file of CATALOGUES) {
 
 const currencyConflicts = [...money.entries()].filter(([, bySymbol]) => bySymbol.size > 1)
 
+/**
+ * Rule C — one commitment, one value.
+ *
+ * A duration the site states publicly is a commitment, and the site states
+ * several of them more than once. The first conversation is "30 minutes" on
+ * the homepage and "around 45 minutes" on /about and all six industry pages,
+ * in sentences whose second halves are identical word for word. Building and
+ * going live is "1-4 weeks" in the homepage process and "2 to 6 weeks" in the
+ * homepage FAQ four sections below it.
+ *
+ * Neither is visible from one page, and neither is a formatting error: they
+ * are two answers to a question a buyer plans around.
+ *
+ * Durations often sit in a sibling key rather than in the sentence itself —
+ * `process.p4Time` is "1-4 wks" and the subject is in `process.p4Title`. So a
+ * value with no subject of its own borrows one from its siblings.
+ */
+const COMMITMENT_KINDS = [
+  {
+    kind: 'the first conversation',
+    subject: /(conversation|call\b|meeting|business check|gespr[äa]ch|erstgespr[äa]ch|termin)/i,
+    unit: /(minute|\bmin\b|stunde|\bhour)/i,
+  },
+  {
+    kind: 'building and going live',
+    subject: /(build|install|go live|launch|deploy|aufbau|installation|umsetzung|\blive\b)/i,
+    unit: /(week|\bwks?\b|woche)/i,
+  },
+  {
+    kind: 'replying to an enquiry',
+    subject: /(repl(y|ies)|respond|answer|antwort|melden|r[üu]ckmeldung)/i,
+    unit: /(business day|working day|werktag)/i,
+  },
+]
+
+const WORD_NUMBER = {
+  one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, ten: 10, fifteen: 15,
+  twenty: 20, thirty: 30, forty: 40, fortyfive: 45, sixty: 60,
+  ein: 1, eine: 1, zwei: 2, drei: 3, vier: 4, f\u00fcnf: 5, sechs: 6, zehn: 10,
+  zwanzig: 20, drei\u00dfig: 30, vierzig: 40, sechzig: 60,
+}
+
+/** "30 min", "Thirty minutes", "1-4 wks", "2 and 6 weeks" -> a comparable form. */
+function durations(text) {
+  const out = []
+  // German pluralises with -n and -en, not -s: "Minuten", "Wochen",
+  // "Werktagen". A trailing `s?` matches every English duration on the site
+  // and no German one, so the rule found the English half of each conflicting
+  // pair and reported it as though it were the whole finding. Same shape as
+  // the hedge rule's missing participle, one release earlier.
+  const numeric = /(\d+)\s*(?:[-\u2013\u2014]|to|and|und|bis)?\s*(\d+)?\s*(minute|min|hour|stunde|week|wks?|wo\.?|woche|business day|working day|werktag)(?:s|n|en)?\b/gi
+  let m
+  while ((m = numeric.exec(text)) !== null) {
+    const unit = m[3].toLowerCase()
+      .replace(/^wks?$/, 'week').replace(/^wo\.?$/, 'week').replace(/^min$/, 'minute')
+      .replace(/^woche$/, 'week').replace(/^stunde$/, 'hour')
+      .replace(/^(werktag|working day)$/, 'business day')
+    out.push(m[2] ? `${m[1]}-${m[2]} ${unit}` : `${m[1]} ${unit}`)
+  }
+  const worded = /\b([a-z\u00e4\u00f6\u00fc\u00df]+)\s+(minute|hour|stunde|week|woche|business day|werktag)(?:s|n|en)?\b/gi
+  while ((m = worded.exec(text)) !== null) {
+    const n = WORD_NUMBER[m[1].toLowerCase()]
+    if (!n) continue
+    const unit = m[2].toLowerCase()
+      .replace(/^woche$/, 'week').replace(/^stunde$/, 'hour').replace(/^werktag$/, 'business day')
+    out.push(`${n} ${unit}`)
+  }
+  return out
+}
+
+/**
+ * Keys describing the same thing. `ctaDesc` and `ctaTitle` group; a `q`/`a`
+ * pair with nothing to strip groups on its parent object, which for a FAQ item
+ * is exactly the question and its answer.
+ */
+function groupOf(parent, leaf) {
+  const stripped = leaf.replace(/\d+$/, '').replace(/[A-Z][a-z]*$/, '')
+  return stripped && stripped !== leaf ? parent + '.' + stripped : parent
+}
+
+/**
+ * A case study is evidence, not a commitment. "Delivered in 8 weeks" describes
+ * one project; comparing it with "1-4 weeks" on the process section would be
+ * comparing what happened once with what is promised generally, and a script
+ * should not draw that conclusion. A human should — and did, in known-risk 40.
+ */
+const NOT_A_COMMITMENT = /^caseStudies\./
+
+const commitments = new Map()   // kind -> Map(value -> [where])
+
+for (const file of CATALOGUES) {
+  const rel = relative(ROOT, file).split(sep).join('/')
+  let data
+  try { data = JSON.parse(readFileSync(file, 'utf8')) } catch { continue }
+  const entries = flatten(data, '', [])
+  const byKey = new Map(entries)
+
+  for (const [key, text] of entries) {
+    const found = durations(text)
+    if (found.length === 0) continue
+
+    // The subject is in this string, or in a sibling that describes the same
+    // thing. Getting "sibling" right took three attempts and the failures are
+    // the useful part:
+    //
+    //   key stem only  — finds `p4Time` beside `p4Title` and nothing else. It
+    //                    missed the FAQ (duration in `items[0].a`, question in
+    //                    `items[0].q`) and /about (duration in `ctaDesc`, the
+    //                    word "conversation" in `ctaTitle`): two of the three
+    //                    real conflicts.
+    //   whole parent   — found all three, and also read a case study's
+    //                    "90 minutes" of invoice processing as a commitment
+    //                    about the length of a first meeting, because forty
+    //                    unrelated strings shared one parent object.
+    //   shared prefix  — this. `ctaDesc` and `ctaTitle` group; `cs2Headline`
+    //                    and `cs2Result2` do not group with a `cs2Challenge`
+    //                    paragraph forty keys away.
+    //
+    // Case-study timelines drop out of the rule entirely, and that is correct:
+    // a project that took eight weeks is evidence, not a commitment, and the
+    // two should not be compared by a script.
+    const parent = key.replace(/(\.[^.\[\]]+|\[\d+\])$/, '')
+    const leaf = key.slice(parent.length).replace(/^[.\[]/, '').replace(/\]$/, '')
+    const group = groupOf(parent, leaf)
+    let context = text
+    for (const [k, v] of entries) {
+      if (k === key || typeof v !== 'string') continue
+      const p2 = k.replace(/(\.[^.\[\]]+|\[\d+\])$/, '')
+      const l2 = k.slice(p2.length).replace(/^[.\[]/, '').replace(/\]$/, '')
+      if (groupOf(p2, l2) === group) context += ' ' + v
+    }
+
+    if (NOT_A_COMMITMENT.test(key)) continue
+
+    for (const { kind, subject, unit } of COMMITMENT_KINDS) {
+      if (!subject.test(context)) continue
+      for (const d of found) {
+        if (!unit.test(d)) continue
+        if (!commitments.has(kind)) commitments.set(kind, new Map())
+        const byValue = commitments.get(kind)
+        if (!byValue.has(d)) byValue.set(d, [])
+        byValue.get(d).push(rel + ' \u00b7 ' + key)
+      }
+    }
+  }
+}
+
+const commitmentConflicts = [...commitments.entries()].filter(([, byValue]) => byValue.size > 1)
+
+
+
 console.log('='.repeat(74))
 console.log('CLAIMS')
 console.log(`${CATALOGUES.length} catalogue(s), ${stringsChecked} string(s) checked\n`)
@@ -174,6 +325,18 @@ if (currencyConflicts.length) {
   console.log('')
 }
 
+if (commitmentConflicts.length) {
+  console.log(`One commitment, more than one value — ${commitmentConflicts.length}
+`)
+  for (const [kind, byValue] of commitmentConflicts) {
+    console.log(`  ${kind} is committed to as ${[...byValue.keys()].join(' and ')}`)
+    for (const [value, wheres] of byValue) {
+      for (const w of wheres) console.log(`      ${value.padEnd(16)} ${w}`)
+    }
+  }
+  console.log('')
+}
+
 if (hedged.length) {
   console.log(`Results stated as estimates — ${hedged.length}\n`)
   for (const f of hedged) {
@@ -184,9 +347,10 @@ if (hedged.length) {
   console.log('')
 }
 
-const total = currencyConflicts.length + hedged.length
+const total = currencyConflicts.length + hedged.length + commitmentConflicts.length
 if (total === 0) {
-  console.log('CLAIMS: clean — every figure agrees with itself, no result is stated as an estimate')
+  console.log('CLAIMS: clean — every figure agrees with itself, every commitment has one value,')
+  console.log('        and no result is stated as an estimate')
 } else {
   console.log(`CLAIMS: ${total} finding(s)`)
   console.log('')

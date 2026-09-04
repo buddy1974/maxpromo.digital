@@ -73,6 +73,17 @@ must agree with itself across every page and both languages, and it must not
 hedge where the page presents it as a result. `audit:claims` reports;
 a human answers. An AI agent does not decide what was delivered.
 
+**Commitments.** A duration stated publicly — how long the first conversation
+runs, how long a build takes, how fast an enquiry is answered — has one value,
+and every page inherits it. The framework is
+`docs/governance/delivery-commitments.md`; `audit:claims` reports any page that
+disagrees with it, in either language.
+
+**Positioning.** Every commercial surface describes the same company. A service
+that cannot be placed on the ladder the site already describes — discovery,
+assessment, design, build, managed operations, support — does not belong on the
+pricing page. See `docs/governance/pricing-alignment-review.md`.
+
 ---
 
 ## Design rules the audit enforces
@@ -173,7 +184,7 @@ whichever port was free, and the two live audits address `:3021` by name. A
 | `audit:a11y` | Landmarks, heading order, alt text, accessible names, labels, titles — on rendered output across every public route | needs both apps running |
 | `audit:consistency` | Do both applications resolve the same tokens, type scale and component classes? | needs both apps running |
 | `audit:platform` | Dead code, unused assets, unused exports, dependency direction | report only |
-| `audit:claims` | Does the same figure carry two currencies? Is a result stated as an estimate? | report only |
+| `audit:claims` | Does the same figure carry two currencies? Does one commitment carry two values? Is a result stated as an estimate? | report only |
 
 `audit:a11y` and `audit:consistency` read **rendered HTML and emitted CSS**, not
 source. That distinction matters: a landmark that exists in a layout but never

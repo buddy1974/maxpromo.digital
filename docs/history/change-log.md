@@ -617,3 +617,77 @@ and a claim about delivery practice has to come from Marcel.
 
 Nothing pushed. Nothing merged to main.
 
+## 2026-09-04 - v9.5: commercial alignment
+
+Branch feature/track-b. Full certification green - eight gates, accessibility
+across 38 rendered routes, cross-application consistency, a clean crawl - and
+the claims audit reporting seven findings it is meant to report.
+
+v9 flagged nine things and fixed none. v9.5's instruction is different:
+*resolve everything that can be resolved without changing a business fact.* So
+this pass sorted the list by that test rather than by severity.
+
+### A commitment is a claim, and now gets the same treatment
+
+`audit-claims` gains a third rule: one commitment, one value. It groups
+durations by what they commit to and reports any commitment carrying more than
+one value, in either language. It found both live conflicts:
+
+    the first conversation      30 minutes  ×6      45 minutes  ×2
+    building and going live     1-4 weeks   ×2      2-6 weeks   ×2
+
+The first two sentences end identically - "afterwards you will know where the
+time is going, whether or not we work together" - after "thirty minutes" in one
+and "around 45 minutes" in the other. The second pair are both on the homepage,
+four sections apart.
+
+Getting "which keys describe the same thing" right took three attempts, and the
+failures are in the file because they are the useful part. Key-stem grouping
+found two of the three conflicts. Whole-parent grouping found all three and
+also read a case study's 90 minutes of invoice processing as a commitment about
+meeting length. Shared-prefix grouping is what shipped.
+
+Then German, twice. Plurals in -n and -en rather than -s, so every English
+duration matched and no German one. And "und" missing from the range
+separators, so "zwischen 2 und 6 Wochen" read as "6 weeks". Both the same shape
+as the participle that got past the hedge rule one release earlier: **a rule
+that reports the English half of a translated pair looks correct in every
+English review it will ever get.**
+
+Case-study timelines are excluded by name. "Delivered in 8 weeks" is evidence
+about one project, and comparing it with a general promise is a conclusion a
+human draws, not a script.
+
+### Resolved
+
+Three content sets - a testimonial block, an ROI calculator and a six-question
+FAQ - written, translated and read by nothing. 49 strings per locale, removed.
+v9 recorded them on the grounds they looked planned; copy no component reads
+makes no public promise, and two of them carried claims - a customer quote and
+a "60-90 days payback" - that one wire-up would have published unevidenced.
+
+It also cleaned the audit: a dead string had been contributing a third build
+duration, so the tool was reporting a conflict the public site does not have.
+
+### Recommended, not implemented
+
+**`docs/governance/pricing-alignment-review.md`** - every pricing item
+classified KEEP / RETIRE / RESTRUCTURE / MOVE against the company identity,
+and the observation that matters more than the classification: the site already
+describes a full commercial ladder - discovery, assessment, design, build,
+managed operations, support - with a page for every rung and a price on one.
+The monthly plans that should price the last rung price social posts and Google
+Ads instead. The recommendation is not to invent a pricing model but to price
+the one the site already describes.
+
+**`docs/governance/delivery-commitments.md`** - one value per commitment, the
+two that conflict, and every page that has to inherit each once they are set.
+
+### Unchanged, deliberately
+
+Both conflicting durations, the currency, the hedged results, the maintenance
+wording, "full account team", and the pricing model. Every one requires knowing
+a business fact. That is the test this pass applied throughout.
+
+Nothing pushed. Nothing merged to main.
+
