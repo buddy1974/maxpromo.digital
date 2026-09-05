@@ -350,3 +350,34 @@ describes a removal is not a removal.
 **Also found:** two showcase sections had no heading element at all - their
 headings were paragraphs sized from that constant.
 
+## 2026-09-05 - The merge gate has one definition, and it is checked
+
+**Decision:** `verify` is defined once, in the root package.json. No workspace
+redefines it, CI calls it rather than restating its steps, and
+`check:governance` - the first gate in the chain - fails the build if any of
+those three stops being true.
+**Why:** Three things claimed to be the merge gate. The root ran eight gates,
+each application defined a four-gate script under the same name, and the CI
+workflow enumerated six steps by hand. The workflow enumerated them for a good
+reason - a named failing check is legible without opening a log - and the cost
+was that every gate added afterwards had to be remembered in a second place.
+Three were not: `check:token-inputs`, `check:icons` and `audit:typography` were
+in the developer's gate and had never run in CI. **The workflow that exists to
+enforce the standard was enforcing a stale subset of it and reporting green.**
+**How to apply:** Anything that describes the gate calls it or is compared
+against it. The standards table now names each gate's script so the comparison
+is exact rather than a guess at prose.
+
+## 2026-09-05 - A rule that cannot fail is not a rule
+
+**Decision:** Recorded as method, not policy: every rule in
+`check-governance.mjs` was watched failing on a reintroduced defect before the
+check was believed.
+**Why:** It needed the discipline. Rule 2 searched the whole workflow file for
+`npm run verify`, and the file explains at length why it calls it - so the rule
+was satisfied by a comment about the rule, and would have passed a workflow
+that had stopped calling the gate. Rule 3 searched the whole standards
+document, and the script names also appear in the audit-suite table further
+down, so removing a gate from the gate table still passed. Both looked correct.
+Both were verified only by deliberately breaking the thing they check.
+

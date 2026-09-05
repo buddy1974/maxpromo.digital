@@ -811,3 +811,54 @@ It now leaves visible elements alone.
 
 Nothing pushed. Nothing merged to main.
 
+## 2026-09-05 - Architecture certification: the gate that was not enforcing itself
+
+Branch feature/track-b. Full certification green - nine gates now, plus the
+three live audits.
+
+The brief was to prove the ecosystem behaves as one governed platform. Measured
+first: dependency versions across six workspaces showed **zero drift**, and the
+package boundary rule (no package depends on an application) was already clean.
+
+Then the gate itself, which turned out to be the drift.
+
+### Three definitions of `verify`
+
+    package.json              eight gates
+    apps/<app>/package.json   four gates, same script name
+    .github/workflows         six steps, listed by hand
+
+The workflow enumerated the gates deliberately, so a failure would be legible
+in the checks list without opening a log. That is a real benefit, and its cost
+was that every gate added afterwards had to be remembered in a second place.
+Three were not: `check:token-inputs`, `check:icons` and `audit:typography` had
+been in the developer's gate since v7.0 and **had never run in CI**.
+
+So the workflow that exists to enforce the standard was enforcing a stale
+subset of it, and reporting green. And an engineer running `npm run verify`
+inside `apps/web` got a four-gate pass under the same command name.
+
+One definition now. The applications define no `verify`; CI calls it; the
+standards table names each gate's script so the documentation can be compared
+to the chain rather than read alongside it.
+
+### The check that keeps it that way
+
+`check:governance` is the first gate in the chain, because it checks that the
+rest of the chain is what the standards say it is. Three rules: one definition
+of `verify`, CI calls it, every gate is in the table.
+
+**Two of the three did not work when first written, and both looked right.**
+Rule 2 searched the whole workflow file for `npm run verify` - and the file
+explains at length why it calls it, so the rule was satisfied by a comment
+about the rule and would have passed a workflow that had stopped calling the
+gate. Rule 3 searched the whole standards document, and the script names also
+appear in the audit-suite table further down, so removing a gate from the gate
+table still passed.
+
+Each rule was then watched failing on a reintroduced defect and passing after
+it was restored. That is ADR-0004's fourth rule, and it has now caught a dead
+rule in four consecutive releases.
+
+Nothing pushed. Nothing merged to main.
+

@@ -11,18 +11,27 @@ It is enforced in CI, not by memory — see `.github/workflows/verify.yml`.
 npm run verify
 ```
 
-From the workspace root. It runs, in order:
+**Defined once, in the root `package.json`.** No application defines a script
+of that name, and the CI workflow calls it rather than restating its steps —
+both checked by `check:governance`, because for a while all three disagreed and
+CI was the weakest of them. It runs, in order:
+
+Each row names the script it runs. `check-governance.mjs` matches this table
+against the verify chain by that name, so a gate added to one and not the other
+fails the build rather than going unnoticed — which is how three gates came to
+run on developer machines and never in CI.
 
 | # | Gate | What it catches |
 |---|---|---|
-| 1 | **Design token audit** | Hex literals, raw Tailwind palette classes, rgba literals, and the brand accent used as a text colour — directly, through a conditional, aliased to a local name, or bound to a field named as text. Anywhere outside the token package |
-| 2 | **Token input audit** | A custom property the token package reads that an application never defines, and any `var()` an application uses that nothing defines at all. An undefined `var()` does not warn: with a fallback it silently uses it, without one the whole declaration is dropped — see ADR-0006 |
-| 3 | **Icon audit** | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
-| 4 | **Responsive audit** | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
-| 5 | **Typography audit** | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
-| 6 | **TypeScript** | `tsc --noEmit` in every workspace |
-| 7 | **ESLint** | Zero errors in every workspace. Warnings are allowed; errors are not |
-| 8 | **Production build** | Every application builds |
+| 1 | **Governance audit** `check:governance` | A second definition of `verify`, a CI workflow that restates the gate instead of calling it, or a gate missing from this table. It runs first because it checks that the rest of this table is true |
+| 2 | **Design token audit** `check:tokens` | Hex literals, raw Tailwind palette classes, rgba literals, and the brand accent used as a text colour — directly, through a conditional, aliased to a local name, or bound to a field named as text. Anywhere outside the token package |
+| 3 | **Token input audit** `check:token-inputs` | A custom property the token package reads that an application never defines, and any `var()` an application uses that nothing defines at all. An undefined `var()` does not warn: with a fallback it silently uses it, without one the whole declaration is dropped — see ADR-0006 |
+| 4 | **Icon audit** `check:icons` | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
+| 5 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
+| 6 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
+| 7 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
+| 8 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
+| 9 | **Production build** `build` | Every application builds |
 
 The static audits run first on purpose: they are the fastest and they catch the
 classes of regression this platform has had most often.

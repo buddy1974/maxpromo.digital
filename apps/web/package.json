@@ -9,8 +9,7 @@
     "start": "next start --port 3020",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "check:tokens": "node ../../packages/tooling/check-design-tokens.mjs",
-    "verify": "npm run check:tokens && npm run typecheck && npm run lint && npm run build"
+    "check:tokens": "node ../../packages/tooling/check-design-tokens.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",
