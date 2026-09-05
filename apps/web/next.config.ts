@@ -22,6 +22,19 @@ const nextConfig: NextConfig = {
    */
   turbopack: { root: join(fileURLToPath(new URL('.', import.meta.url)), '..', '..') },
 
+  /**
+   * Stated rather than inherited, and stated in both applications.
+   *
+   * Agent Bureau set these two and this application set neither, so the
+   * deployment serving ten public domains answered every request with
+   * `X-Powered-By: Next.js` while the one serving a single domain did not —
+   * one platform, two security postures, and the looser one on the larger
+   * surface. Relying on a framework default is not a decision; it is a
+   * decision the framework gets to change in a minor release.
+   */
+  reactStrictMode: true,
+  poweredByHeader: false,
+
   pageExtensions: ['ts', 'tsx', 'mdx'],
 
   // 2026-07-25: six system pages moved from /products/<slug> to /systems/<slug>

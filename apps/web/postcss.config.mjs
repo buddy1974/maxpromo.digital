@@ -1,7 +1,1 @@
-const config = {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
-
-export default config;
+export { maxpromoPostcssBase as default } from '../../packages/tooling/postcss.base.mjs'

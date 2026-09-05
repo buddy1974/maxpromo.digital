@@ -65,18 +65,6 @@ function OrbitIcon({ name }: { name: string }) {
   }
 }
 
-function CapabilityIcon({ name }: { name: string }) {
-  const common = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--brand-primary-text)', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true }
-  switch (name) {
-    case 'audit':    return <svg {...common}><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /><path d="M11 8v6M8 11h6" /></svg>
-    case 'waiting':  return <svg {...common}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>
-    case 'approval': return <svg {...common}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="m9 12 2 2 4-4" /></svg>
-    case 'intake':   return <svg {...common}><path d="M14 3v5h5" /><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M9 13h6M9 17h4" /></svg>
-    case 'shadow':   return <svg {...common}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></svg>
-    case 'logs':     return <svg {...common}><path d="M4 6h16M4 12h16M4 18h10" /></svg>
-    default: return null
-  }
-}
 
 // =============================================================================
 // SCOPED STYLES — radial diagram positioning is easier to express in real

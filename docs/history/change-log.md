@@ -862,3 +862,54 @@ rule in four consecutive releases.
 
 Nothing pushed. Nothing merged to main.
 
+## 2026-09-05 - v12.0: platform freeze preparation
+
+Branch feature/track-b. Full certification green: nine gates, accessibility
+across 36 rendered routes, cross-application consistency against both running
+applications, a clean crawl, and the two report-only audits.
+
+### Governance audit
+
+One definition confirmed for each governed thing. Lint and TypeScript already
+extended a shared base; dependency versions showed zero drift across six
+workspaces; the merge gate was collapsed to one definition the release before.
+Three findings:
+
+**The two applications had different security postures.** Agent Bureau set
+`poweredByHeader: false` and `reactStrictMode: true`; the web application set
+neither, so the deployment serving ten public domains answered every request
+with `X-Powered-By: Next.js` and the one serving a single domain did not. Both
+are now stated in both, rather than one relying on a framework default that a
+minor release is free to change.
+
+**Two PostCSS configurations** declared the same single plugin and had already
+drifted to different quote conventions. One definition now, imported by both.
+
+**No formatter exists** — no Prettier, no Biome, no editorconfig. Recorded as
+risk 50 and deliberately not fixed: adding one reformats the whole repository,
+which is the largest possible diff at the moment the objective is to stop
+changing things.
+
+### Documentation audit
+
+46 file paths and 9 audit scripts named across the documentation, checked
+against the tree. Every script exists. Every missing path is either explicitly
+marked planned (`apps/os`, `packages/shared`) or lives in `docs/history`, which
+`docs/README.md` defines as describing how things were. Seven ADRs on disk,
+seven referenced, none orphaned in either direction.
+
+### Repository hygiene
+
+Two one-off scripts removed — `alignment-i18n.mjs` and `update-i18n.mjs` — and
+they were not merely clutter. Both overwrite the message catalogues wholesale
+with copy from three brand generations ago, and one of them reintroduces the
+`//` label motif the design system lists under "retired, and not to be
+reintroduced". The July phase-1 audit had already flagged them and they were
+still executable.
+
+Also removed: `CapabilityIcon`, six hand-drawn icons left behind when the
+homepage Agent Bureau section was trimmed in v8.0. It was the only lint warning
+in the workspace.
+
+Nothing pushed. Nothing merged to main.
+
