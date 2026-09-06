@@ -554,3 +554,45 @@ individually certified — traceability that reads better and is less true.
 **How to apply:** Commit at the end of a sprint. Four sprints of uncommitted
 work is how a repository ends up unable to describe its own history honestly.
 
+
+---
+
+## 2026-09-06 — Merge a release branch to `main` with `--no-ff`
+
+**Decision:** Track A was merged to `main` as a merge commit, not fast-forwarded.
+
+**Why:** `apps/web/vercel.json` gates the build on
+`git diff --quiet HEAD^ HEAD -- ../../apps/web ../../packages`. The certified
+commit is docs-only, so after a fast-forward that diff is empty and Vercel
+skips the production build — leaving production on the old commit while the
+merge reports success. A merge commit's first parent is the previous production
+commit, so the diff spans the whole release.
+
+Verified before merging by simulating both diffs, and confirmed independently:
+the git-triggered preview of the docs-only commit was recorded `CANCELED`.
+
+**How to apply:** Any release whose final commit touches only `docs/` must be
+merged with `--no-ff`, or the pipeline will skip it. Check
+`main^{tree}` against the release tag's tree afterwards — a `--no-ff` merge
+must change no content.
+
+---
+
+## 2026-09-06 — Scan history for secrets before a first push to a public remote
+
+**Decision:** Before pushing 78 previously-unpublished commits to the public
+`buddy1974/maxpromo.digital`, every object in the push was scanned for secret
+material — 2,312 blobs, 80.5 MB, ten patterns.
+
+**Why:** History contained 1,007 committed `.next` build blobs. Build output can
+carry inlined configuration, and a push to a public repository cannot be taken
+back. The scan self-tests every pattern against canary input first and refuses
+to report clean if it read nothing — a secret scanner that matches nothing
+because its patterns are broken is worse than no scanner, because it grants
+confidence.
+
+**Result:** the only matches were the Neon driver's own error-message template
+and `.env.example` placeholders. Nothing real.
+
+**How to apply:** Any first push of accumulated history to a public remote gets
+this treatment. `git log` is not evidence about what is in the objects.

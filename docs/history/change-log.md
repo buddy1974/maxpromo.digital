@@ -1269,3 +1269,44 @@ in the workspace.
 
 Nothing pushed. Nothing merged to main.
 
+
+---
+
+## 2026-09-06 — Track A reaches production
+
+The first deployment of the consolidated platform. Production moved from
+`7bd892e` (2026-08-12) to `a44a563`, carrying v13.0 domain identity, v14.0
+brand registry and constitution, v15.0 observability and v15.1 dependency
+security remediation.
+
+**Merged `--no-ff`, deliberately.** The certified commit changes only `docs/`,
+so a fast-forward would have left `HEAD^..HEAD` touching neither `apps/web` nor
+`packages/`, and `apps/web/vercel.json`'s `ignoreCommand` would have skipped
+the production build — a merge that looks successful and deploys nothing. The
+merge commit's first parent is the previous production commit, so the pipeline
+sees the release. `main^{tree}` equals the tag's tree exactly.
+
+**What shipped is what was certified.** `/api/health` reports
+`release.commit: a44a563`; the production build log reports Next.js 16.3.4.
+Neither was inferred from a green deployment.
+
+**RC1-01 and RC1-02 are closed in production.** Nine product domains carried
+the Maxpromo title, canonicalised to maxpromo.digital, named it in
+`robots.txt`, and served the consultancy's `/about`. All nine now serve their
+own identity, and all ten web domains answer `/api/health`.
+
+**Agent Bureau did not ship.** `maxpromo-agents` is connected to the
+pre-consolidation repository, so the merge never reached it. The artefact is
+proven good on a preview; the pipeline linkage is not.
+
+Three things were found on the way that the release brief did not know about:
+the 78 commits had never been pushed to GitHub at all; the fast-forward skip
+above; and 1,007 committed `.next` build blobs in history, which were scanned
+for secret material before the first push to a public remote and carried none.
+
+Also closed: the two Lighthouse questions that could not be answered from a
+local harness. Production scores best-practices 100 and seo 100, and the
+unexplained `canonical` failure was a localhost artefact.
+
+Track A is **not** closed and the foundation freeze is **not** active. One
+registered production surface is undeployed.

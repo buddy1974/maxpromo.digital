@@ -1,8 +1,119 @@
 # Known Risks — Maxpromo Platform
 
-## OPEN — BLOCKING RELEASE — Vercel projects are configured for the pre-consolidation layout
+## OPEN — BLOCKING RELEASE — `maxpromo-agents` is connected to the wrong repository
 
-Both Vercel projects have **Root Directory `.`**, set when they were created
+Found 2026-09-06 during the Track A production release, by reading the Vercel
+project record rather than by inferring from a failure.
+
+`ADR-0001` named three settings that the consolidation required: *"root
+directory, **repository**, and include files outside root directory"*. Two of
+the three were corrected on 2026-09-06. The repository was not.
+
+| Project | Connected repository | Root Directory | Correct? |
+|---|---|---|---|
+| `maxpromo-digital` | `buddy1974/maxpromo.digital` | `apps/web` | yes |
+| `maxpromo-agents` | `buddy1974/maxpromo-agent-bureau` | `apps/bureau` | **no** |
+
+`maxpromo-agent-bureau` is the pre-consolidation standalone repository. Its
+Next application sits at its root; it has no `apps/` directory at all
+(GitHub contents API returns 404 for both `apps/` and `apps/bureau`). So the
+project now watches a repository in which its Root Directory does not exist.
+
+**Two consequences, both live:**
+
+1. Merging the monorepo to `main` deploys `maxpromo-digital` and does not
+   touch `maxpromo-agents` — the two projects no longer share a source. That is
+   why `agents.maxpromo.digital` is still serving a build from 2026-07-24 and
+   fails seven of the fourteen production verification rules: no
+   `/api/health`, no manifest, no sitemap, no `x-mp-trace`, no `/contact`, and
+   a `robots.txt` naming another host.
+2. A push to `maxpromo-agent-bureau` would now fail to build, because
+   `apps/bureau` is not there.
+
+**The artefact itself is proven good.** A CLI preview deployed from the
+monorepo with the corrected Root Directory built `apps/bureau` cleanly
+(Next 16.3.4), served its pages, and answered `/api/health` with `database:
+ok` in 7–9 ms against the live Neon database. Only the pipeline linkage is
+missing.
+
+**The fix** — Vercel dashboard, `maxpromo-agents` → Settings → Git: disconnect
+`buddy1974/maxpromo-agent-bureau`, connect `buddy1974/maxpromo.digital`,
+production branch `main`. Root Directory is already `apps/bureau`. Then
+redeploy. This changes which repository owns a production surface, so it is
+Marcel's decision, not a tool's.
+
+**Owner:** Marcel. **Blocks:** the closure of Track A.
+
+---
+
+## OPEN — The platform logger has no call sites
+
+Found 2026-09-06 while verifying production observability.
+
+`packages/observability/logger.ts` provides five levels, a required `surface`,
+`redact()` applied by the logger, and `newTrace()`. Across both applications
+there are **zero calls to `log.debug`/`info`/`warn`/`error`/`critical`**. The
+only things imported from the package anywhere are `runHealth`,
+`healthStatus`, `newTrace` and `TRACE_HEADER`.
+
+The consequence is specific and worth stating plainly: `x-mp-trace` is stamped
+on every response, and **no log line anywhere carries it**. A correlation id
+that appears in exactly one place correlates nothing — you cannot take a trace
+id from a response header and find the request behind it.
+
+`redact()` likewise never runs, because nothing logs.
+
+This qualifies the v15.0 observability claim. The facility is built and
+correct; adoption is the part that was never done. It also revises the entry
+below which says errors "are structured, redacted and carry a correlation id" —
+they would be, if anything called the logger.
+
+**Verified rather than assumed:** production request logs for the deployed
+build contain only Vercel's own request records — domain, method, path,
+status. No email address, telephone number, name or token appears in any line.
+That is a true statement about log hygiene and a weak one about observability,
+because the application writes no log lines of its own.
+
+**Owner:** a dedicated change, alongside the 77 `console.*` calls and the 37
+silent `catch {}` blocks below — they are the same piece of work.
+
+---
+
+## OPEN — Build output is committed in the repository's history
+
+`apps/web/.next/` was committed in `1b4c73f` (the workspace restructure) and
+removed later. **Nothing is tracked at HEAD** — the working tree is clean — but
+1,007 build-output blobs, about 24 MB, remain reachable in history and are now
+on the public GitHub remote. The packed repository is 180 MiB.
+
+**Scanned before pushing, not after.** Every object in the push (2,312 blobs,
+80.5 MB) was checked against ten secret patterns, each demonstrated firing on
+canary input first. The only matches were the Neon driver's own error-message
+template and `.env.example` placeholders of the form
+`postgresql://USER:PASSWORD@HOST...`. **No secret material.**
+
+So this is bloat and clone time, not exposure. Removing it means rewriting
+history on a public repository, which is a destructive operation and needs its
+own decision.
+
+**Owner:** Marcel, if it is worth doing at all. **Blocks:** nothing.
+
+---
+
+## RESOLVED 2026-09-06 — Vercel projects were configured for the pre-consolidation layout
+
+**Marcel set both projects' Root Directory (`apps/web`, `apps/bureau`) and
+enabled "include files outside the root directory" on 2026-09-06.** Confirmed
+by reading each project record back from the Vercel API before deploying, and
+then proven: the production build at `a44a563` completed and the
+`routes-manifest.json` failure below did not recur.
+
+The third setting ADR-0001 named — the **repository** — is still wrong on
+`maxpromo-agents`. See the first entry in this file.
+
+The original record follows.
+
+Both Vercel projects had **Root Directory `.`**, set when they were created
 before the two repositories merged and the applications moved to `apps/web` and
 `apps/bureau`.
 
@@ -50,7 +161,33 @@ These are the RC1 blockers, fixed in v13.0 and certified locally, waiting on the
 deployment above. They are not new findings; they are the reason the release
 matters.
 
-**Owner:** closes with the Track A release.
+**RESOLVED 2026-09-06** by the production deployment of `a44a563`. Re-measured
+against real production over HTTPS after the deploy, with the same harness:
+
+| | before | after |
+|---|---|---|
+| product domains carrying the Maxpromo `<title>` | 9 of 9 | **0 of 9** |
+| product domains canonicalising to `maxpromo.digital` | 9 of 9 | **0 of 9** |
+| `robots.txt` naming another host | 9 of 9 | **0 of 9** |
+| consultancy `/about` served on a product domain | 9 of 9 | **0 of 9** |
+| web domains exposing `/api/health` | 0 of 10 | **10 of 10** |
+
+Each product domain now serves its own `<title>`, canonicalises to its own
+origin, names its own origin in `robots.txt` and `sitemap.xml`, and redirects
+`/about` to `www.maxpromo.digital`.
+
+**One correction to the "before" row.** The first production smoke test
+reported *"0 consultancy routes leaked"*. It compared the response's final host
+against the registry's bare `host` key while production redirects bare → `www`,
+so every leaking domain scored as "redirected away". Nine were leaking. The
+harness now treats a domain's own hosts as both the registry key and
+`new URL(origin).hostname`. A checker that reports clean because it compared
+the wrong strings is the failure mode ADR-0004 exists for, and this one was in
+the release tooling itself.
+
+**Owner:** closed for the nine product domains and the hub.
+`agents.maxpromo.digital` is not covered — it was never deployed. See the first
+entry in this file.
 
 ---
 
@@ -227,7 +364,30 @@ full Lighthouse report before anything is edited.
 
 ---
 
-## OPEN — `best-practices` and one SEO score cannot be measured locally
+## RESOLVED 2026-09-06 — `best-practices` and one SEO score could not be measured locally
+
+One Lighthouse run against the production deployment over HTTPS, exactly as
+this entry predicted would close it. `https://www.maxpromo.digital/de`, mobile,
+against `a44a563`:
+
+| | local build | production |
+|---|---|---|
+| performance | 79 | **90** |
+| accessibility | 93 | 93 |
+| best-practices | 78 | **100** |
+| seo | 92 | **100** |
+
+`is-on-https` and `redirects-http` both pass on Vercel, as expected. The
+unexplained SEO 92 was a localhost artefact: the `canonical` audit scores 1 on
+production against a structurally identical tag. LCP 2.6 s, CLS 0, TBT 130 ms
+— all better than the recorded mobile baseline.
+
+Accessibility is unchanged at 93 and is covered by the entry above; production
+reproduces the recorded number exactly rather than revealing anything new.
+
+The original record follows.
+
+## (original) OPEN — `best-practices` and one SEO score cannot be measured locally
 
 Every domain scores `best-practices` 78, and the two failing audits are
 `is-on-https` and `redirects-http`. The local harness serves over HTTP; on
