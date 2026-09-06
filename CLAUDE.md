@@ -1,88 +1,84 @@
-# REPOSITORY GOVERNANCE
+# Maxpromo Platform — Repository Governance
 
-This repository is governed by the AI Operating System.
+One repository. Three applications. One design system, one component library,
+one documentation tree, one set of standards.
 
-MASTER OPERATING SYSTEM
+```
+apps/web      maxpromo.digital + 9 product showcase domains + the internal OS
+apps/bureau   agents.maxpromo.digital
+packages/     design-tokens · ui · config · tooling
+docs/         architecture · adr · governance · deployment · brand · openclaw
+```
 
-C:\Users\loneb\Documents\AI-OPERATING-SYSTEM\MASTER-AI-OPERATING-SYSTEM.md
+---
 
-## REQUIRED STARTUP PROCEDURE
+## Before doing anything
 
-Before performing any work:
+1. `docs/architecture/platform.md` — how the platform is put together
+2. `docs/governance/standards.md` — what every change must satisfy
+3. `docs/openclaw/core-memory.md` — the company's operating memory
+4. `docs/adr/` — why things are the way they are
 
-1. Read MASTER-AI-OPERATING-SYSTEM.md
-2. Run repository preflight
-3. Confirm:
+Do not code before understanding the repository. Do not repeat work that
+`packages/` already does.
 
-   * Repository name
-   * Repository owner
-   * Lifecycle stage
-   * Repository class
-   * Current task
-4. Read repository documentation
-5. Produce implementation plan
-6. Await approval for material changes
-7. Implement approved plan
-8. Run verification
-9. Update documentation
-10. Produce handover summary
+---
 
-Do not skip preflight.
+## The one command
 
-Do not code before understanding the repository.
+```bash
+npm run verify        # token audit → typecheck → lint → build, all workspaces
+npm run dev:web       # maxpromo.digital on :3020
+npm run dev:bureau    # Agent Bureau
+```
 
-## REPOSITORY DOCUMENTS
+Never say "should work". Only say **passed** after `npm run verify` has
+actually run. For anything with live behaviour — login, a deploy, a generated
+document — "done" means it was demonstrated, not that files were written.
 
-Read before implementation:
+---
 
-docs/repository-map.md
-docs/product-brief.md
-docs/architecture.md
-docs/workflow-map.md
-docs/decision-log.md
-docs/known-risks.md
-docs/data-ownership.md
-docs/production-readiness.md
+## Rules that are not negotiable
 
-If a required document is missing:
+**Never two implementations.** If two applications need the same thing it goes
+in `packages/` and neither keeps a copy. This is the rule this platform has
+broken most expensively: two design systems from one brief, two token files
+synced by hand, eleven status maps in one dashboard, two legal identity modules
+disagreeing on the tax office.
 
-* Report it
-* Create it from the AI Operating System templates
-* Continue only after repository context is established
+**No hardcoded colours.** Components use `--brand-*` and `--semantic-*` only.
+The build enforces it.
 
-## SAFETY RULES
+**The accent is a fill.** Brand Lime as text is 1.51:1. Text on it is black.
+Brand colours are never semantic colours.
 
-Stop immediately if:
+**Legal identity is locked.** `@maxpromo/config`. The §19 UStG clause is
+required on every commercial surface and VAT is never calculated or displayed.
 
-* Repository is unclear
-* Working directory is unclear
-* Documentation conflicts with code
-* Security controls must be bypassed
-* A material architecture decision is required
+**Protected products stay protected.** The operating systems are marketed on
+their own domains, never from the consultancy site.
 
-Escalate to repository owner.
+---
 
-## HUMAN APPROVAL REQUIRED
+## Stop and escalate
 
-AI agents must not:
+- A legal or compliance question, including any public claim the infrastructure
+  does not support
+- A production data operation, or moving personal data between regions
+- An architecture change not already recorded in an ADR
+- Anything requiring a security control to be bypassed
+- Documentation that contradicts the code
 
-* Approve their own work
-* Approve releases
-* Approve security exceptions
-* Approve architecture changes
-* Approve production deployment
+AI agents do not approve their own work, releases, security exceptions,
+architecture changes, or production deploys. Marcel does.
 
-Human approval is required.
+---
 
-## MEMORY RULE
+## Before ending a session
+
+Update `docs/adr/` if a decision was made · `docs/governance/known-risks.md` if
+a risk was found · `docs/history/change-log.md` if something shipped.
 
 Chat history is not a source of truth.
 
-Durable facts must be written to repository documentation.
-
-Before ending a session:
-
-* Update decision-log.md if decisions were made
-* Update known-risks.md if risks were discovered
-* Update change-log.md if changes were implemented
-* Update lessons learned if applicable
+_Maxpromo Digital — Gemäß §19 UStG wird keine Umsatzsteuer berechnet._

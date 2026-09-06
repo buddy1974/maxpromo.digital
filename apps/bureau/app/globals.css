@@ -1,0 +1,190 @@
+@import "tailwindcss";
+@import "@maxpromo/design-tokens/brand.css";
+@import "@maxpromo/ui/components.css";
+
+/* =============================================================================
+   AGENT BUREAU — application stylesheet
+   =============================================================================
+   Agent Bureau inherits the Maxpromo platform design system. Every colour,
+   type size, space and radius below resolves to a token from
+   @maxpromo/design-tokens. This file adds nothing of its own.
+
+   v5.0 Sprint 7. Replaces the Tailwind v3 setup, in which this repository
+   carried an independent implementation of the same design brief:
+   tailwind.config.ts declared its own surface/footer/accent colours, its own
+   fluid type scale and its own container width. Those values matched
+   maxpromo.digital by hand rather than by construction, and had already
+   drifted — accent-hover lightened here (#FB8B3D) while the website darkened
+   (#EA580C), and the container was 1500px against the website's own 1500px
+   with a 1280px variant in the showcase engine.
+
+   The synchronised-copy note that stood here is gone: as of Track B there is
+   one token package, imported by name, and no copy to keep in step.
+   ========================================================================== */
+
+/* Tailwind v4 is CSS-first: the theme lives here rather than in a JS config.
+   `inline` makes each utility resolve to the token's own custom property, so
+   changing a token changes every utility built from it. */
+@theme inline {
+  /* Surfaces */
+  --color-surface:        var(--brand-surface);
+  --color-surface-subtle: var(--brand-surface-subtle);
+  --color-surface-sunken: var(--brand-surface-sunken);
+  --color-inverted:       var(--brand-surface-inverted);
+
+  /* Text */
+  --color-ink:            var(--brand-text);
+  --color-ink-secondary:  var(--brand-text-secondary);
+  --color-ink-muted:      var(--brand-text-muted);
+  --color-ink-inverted:   var(--brand-text-inverted);
+
+  /* Borders */
+  --color-hairline:       var(--brand-border);
+  --color-hairline-strong: var(--brand-border-strong);
+
+  /* Brand accent. `accent` is a FILL; `accent-text` is the accessible text
+     colour. Lime as small text measures 1.51:1, so the distinction is not
+     stylistic — see the token file. */
+  --color-accent:         var(--brand-primary);
+  --color-accent-hover:   var(--brand-primary-hover);
+  --color-accent-dark:    var(--brand-primary-dark);
+  --color-accent-text:    var(--brand-primary-text);
+  --color-accent-soft:    var(--brand-primary-soft);
+  --color-on-accent:      var(--brand-on-primary);
+
+  /* Semantic status. Independent of the brand by rule: these carry meaning,
+     the brand carries identity. Success is blue-shifted emerald so it cannot
+     be read as the green brand. */
+  --color-success:        var(--semantic-success);
+  --color-success-soft:   var(--semantic-success-soft);
+  --color-warning:        var(--semantic-warning);
+  --color-warning-soft:   var(--semantic-warning-soft);
+  --color-danger:         var(--semantic-danger);
+  --color-danger-soft:    var(--semantic-danger-soft);
+  --color-info:           var(--semantic-info);
+  --color-info-soft:      var(--semantic-info-soft);
+
+  /* Type */
+  --font-sans: var(--brand-font-sans);
+  --font-mono: var(--brand-font-mono);
+
+  /* The v3 config named these hero / section-title / card-title and they are
+     used throughout the markup. They now resolve to the platform scale, so
+     Agent Bureau headings are the same size as the website's. */
+  --text-hero:          var(--text-h1);
+  --text-section-title: var(--text-h2);
+  --text-card-title:    var(--text-h3);
+
+  /* Tailwind generates a `text-*` utility only from a key declared here, and a
+     key cannot reference the platform token of the same name without recursing
+     — so these six repeat the platform's values as literals. They are not a
+     second scale: audit-consistency resolves both applications' computed
+     values and fails on any difference between them.
+
+     --text-body was 1.125rem here until v7.0. Because @theme lands in :root it
+     shadowed the platform token for the whole application, including the
+     `body` rule below, and Agent Bureau ran at 18px body text against the
+     website's 17px. One platform, two reading sizes, and neither stylesheet
+     said so — the kind of drift that is invisible in either application alone
+     and obvious the moment a visitor crosses between them. */
+  --text-lede:          1.1875rem;   /* 19 — platform --text-lede */
+  --text-body:          1.0625rem;   /* 17 — platform --text-body */
+  --text-small:         0.9375rem;   /* 15 — platform --text-small */
+  --text-micro:         0.8125rem;   /* 13 — platform --text-micro */
+  --text-label:         0.6875rem;   /* 11 — platform --text-label */
+  --text-label-dense:   0.625rem;    /* 10 — platform --text-label-dense */
+
+  --container-content: var(--container);
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
+
+:root { color-scheme: light; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--brand-background);
+  color: var(--brand-text);
+  font-family: var(--brand-font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* One family; hierarchy from weight and size. Matches the website exactly. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--brand-font-heading);
+  color: var(--brand-text);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); }
+h2 { font-size: var(--text-h2); font-weight: var(--weight-subhead); line-height: var(--leading-snug); }
+h3 { font-size: var(--text-h3); font-weight: var(--weight-subhead); line-height: var(--leading-heading); }
+h4 { font-size: var(--text-h4); font-weight: var(--weight-subhead); line-height: var(--leading-heading); letter-spacing: 0; }
+
+p { text-wrap: pretty; }
+
+code, pre, .mono { font-family: var(--brand-font-mono); }
+
+::selection { background: var(--brand-primary); color: var(--brand-on-primary); }
+
+:focus-visible {
+  outline: 2px solid var(--brand-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Was a radial accent glow plus grid-line texture. Flat surface now. */
+.bg-grid {
+  background-color: var(--brand-surface-subtle);
+  background-image: none;
+}
+
+/* ─── Components ──────────────────────────────────────────────────────────────
+   Same definitions as the website's, so a card here and a card there are the
+   same card. These move to packages/ui in the consolidation.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.field-label {
+  display: block;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--brand-text-secondary);
+  margin-bottom: var(--space-2);
+}
+.field-input {
+  width: 100%;
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border: 1px solid var(--brand-border-control);
+  border-radius: var(--radius-md);
+  padding: 11px 14px;
+  font-family: var(--brand-font-body);
+  font-size: var(--text-small);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+.field-input::placeholder { color: var(--brand-text-muted); }
+.field-input:focus { border-color: var(--brand-text); }
+
+/* ─── Motion ──────────────────────────────────────────────────────────────── */
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-ticker { animation: ticker 40s linear infinite; }
+
+@keyframes fade-up {
+  0%   { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.5s var(--ease) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker,
+  .animate-fade-up { animation: none !important; }
+}

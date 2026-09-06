@@ -1,0 +1,159 @@
+'use client'
+import { Suspense, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { OsLocaleProvider, useOsLocale } from '@/lib/os-i18n/context'
+import { LanguageSwitcher } from '@/components/os/LanguageSwitcher'
+
+const mono = 'var(--brand-font-mono)'
+const sans = 'var(--brand-font-body)'
+
+/**
+ * Inner form component — uses useSearchParams() to read the ?returnTo
+ * param. Next.js 15+ requires any client component using useSearchParams
+ * to be wrapped in a <Suspense> boundary at its import site, otherwise
+ * static generation bails out with "missing-suspense-with-csr-bailout".
+ *
+ * The export below provides that Suspense wrapper so the page itself can
+ * still pre-render at build time.
+ *
+ * Login sits OUTSIDE app/os/(protected), so it does not inherit that
+ * layout's OsLocaleProvider — it mounts its own. Both read the same
+ * `os_locale` cookie (path=/os), so the language chosen on the login
+ * screen is the language the OS opens in.
+ */
+function LoginForm() {
+  const { t } = useOsLocale()
+  const router = useRouter()
+  const search = useSearchParams()
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/os/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
+      if (!res.ok) {
+        // The API's error string is not localised; a rejected password has
+        // exactly one meaning here, so render the dictionary's message
+        // rather than leaking an English server string into a German UI.
+        setError(t.login.incorrectCode)
+        setLoading(false)
+        return
+      }
+      const returnTo = search.get('returnTo')
+      router.replace(returnTo && returnTo.startsWith('/os') ? returnTo : '/os')
+    } catch {
+      setError(t.login.networkError)
+      setLoading(false)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '320px' }}>
+      <label style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>
+        {t.login.accessCode}
+      </label>
+
+      <input
+        type="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        autoFocus
+        autoComplete="current-password"
+        style={{
+          background: 'var(--brand-surface)',
+          border: `1px solid ${error ? 'var(--semantic-danger)' : 'var(--brand-border)'}`,
+          borderRadius: 'var(--radius-sm)',
+          color: 'var(--brand-text)',
+          fontFamily: mono,
+          fontSize: '14px',
+          padding: '10px 14px',
+          outline: 'none',
+          width: '100%',
+          boxSizing: 'border-box',
+          transition: 'border-color var(--duration-fast) var(--ease)',
+        }}
+      />
+
+      {error && (
+        <p role="alert" style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', margin: 'var(--space-1) 0 0' }}>
+          {error}
+        </p>
+      )}
+
+      <button
+        type="submit"
+        disabled={loading || !password}
+        style={{
+          marginTop: 'var(--space-3)',
+          background: 'var(--brand-primary)',
+          border: 'none',
+          borderRadius: 'var(--radius-sm)',
+          color: 'var(--brand-on-primary)',
+          fontFamily: sans,
+          fontWeight: 700,
+          fontSize: 'var(--text-micro)',
+          padding: '10px 20px',
+          cursor: loading || !password ? 'not-allowed' : 'pointer',
+          opacity: loading || !password ? 0.6 : 1,
+          width: '100%',
+          transition: 'opacity var(--duration-fast) var(--ease)',
+        }}
+      >
+        {loading ? t.login.entering : t.login.enter}
+      </button>
+
+      <div style={{ marginTop: 'var(--space-1)' }}>
+        <LanguageSwitcher />
+      </div>
+    </form>
+  )
+}
+
+function LoginShell({ children }: { children: React.ReactNode }) {
+  const { t } = useOsLocale()
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      background: 'var(--brand-background)',
+      flexDirection: 'column',
+    }}>
+      <div style={{ marginBottom: '40px', textAlign: 'center' }}>
+        <p style={{ fontFamily: mono, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-primary-text)', letterSpacing: '0.1em', margin: 0 }}>
+          {t.login.brand}
+        </p>
+        <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)', margin: 'var(--space-2) 0 0' }}>
+          {t.login.tagline}
+        </p>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+export default function OsLoginPage() {
+  return (
+    <OsLocaleProvider>
+      <LoginShell>
+        <Suspense
+          fallback={
+            <div style={{ width: '320px', height: '160px' }} aria-hidden="true" />
+          }
+        >
+          <LoginForm />
+        </Suspense>
+      </LoginShell>
+    </OsLocaleProvider>
+  )
+}

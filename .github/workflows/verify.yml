@@ -1,0 +1,57 @@
+name: verify
+
+# Governance gate. Nothing merges without this passing.
+#
+# ONE DEFINITION OF THE GATE
+#
+# This workflow used to enumerate the gates by hand — token audit, responsive
+# audit, typecheck, lint, build — so that a failure was legible in the checks
+# list without opening a log. That was a real benefit and it came with a cost
+# nobody paid attention to: every gate added after the file was written had to
+# be remembered here too, and three were not. check:token-inputs, check:icons
+# and audit:typography were in `npm run verify` and had never run in CI.
+#
+# So the gate has one definition now, in package.json, and this file calls it.
+# Legibility is preserved a different way: the chain is `&&`-sequenced and each
+# audit prints its own labelled section, so the failure is the last thing in
+# the log. That is worth slightly less than a named check, and it is worth a
+# great deal more than a CI job that silently checks less than the developer's
+# machine does.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install workspace
+        run: npm ci
+
+      # Every gate. Adding one to package.json adds it here.
+      - name: Verify
+        run: npm run verify
+
+      # Reporting only — a review signal, not a merge blocker. They run so
+      # nobody has to remember to run them.
+      - name: Platform audit (report only)
+        run: npm run audit:platform
+        continue-on-error: true
+
+      - name: Claims audit (report only)
+        run: npm run audit:claims
+        continue-on-error: true

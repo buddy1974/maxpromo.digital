@@ -1,0 +1,11 @@
+{
+  "name": "@maxpromo/config",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Company-level constants shared by every application: legal identity and the mandatory VAT clause.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  }
+}

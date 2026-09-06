@@ -93,17 +93,33 @@ default. The demo CTA is not the primary CTA on the landing page.
 | Max chat | ✓ (hub mode) | ✓ (product mode) |
 | Blog / SEO articles | ✓ | — |
 | Case studies | ✓ | ✓ (linked) |
+| Impressum / Datenschutz | ✓ | ✓ (operator's, on the product's domain) |
+
+Since v13.0 this table is enforced rather than described: a product domain's
+`routes` allowlist in the Domain Registry is `/`, `/contact`, `/impressum` and
+`/privacy`, and the middleware redirects everything else to the hub. The
+version of this table written before that was accurate about the intent and
+silent about the fact that all fifteen consultancy routes answered on every
+product domain.
 
 ---
 
-## Host Resolution (implemented — Phase 1)
+## Host Resolution (superseded by ADR-0008 — v13.0)
 
-Each product domain resolves to a slug and locale via `lib/host/HOST_MAP.ts`.
-The middleware stamps `x-mp-mode`, `x-mp-slug`, `x-mp-default-locale` on
-every request. Pages read these headers and dispatch accordingly.
+Each host resolves to a record in the **Domain Registry**,
+`packages/config/domains.ts`. The middleware stamps `x-mp-domain`, `x-mp-mode`,
+`x-mp-slug`, `x-mp-default-locale` and `x-mp-locale`; server components read
+the registry key and look the full record up.
 
-Showcase hosts render `LandingEngine`. Hub host renders the hub homepage.
-Max is mounted in both.
+The four-field host map this section originally described
+(`lib/host/HOST_MAP.ts`) is deleted. It resolved enough to dispatch the page
+body and nothing else, so metadata, route availability, languages, robots and
+sitemap each decided for themselves and each decided wrong — see ADR-0008 and
+the RC1 report.
+
+Showcase hosts render `LandingEngine` inside `ShowcaseChrome`, which supplies
+the navigation, footer and legal links every page on the domain wears. Hub host
+renders the hub homepage. Max is mounted in both.
 
 ---
 
@@ -112,9 +128,16 @@ Max is mounted in both.
 There is one Max. It adapts by mode and context — it does not split into
 product-specific chatbots.
 
-Max on `restaurant-os.de` knows it is in the RestaurantOS context via the
-`x-mp-slug` header injected by Phase 1 middleware. It uses that context in
-its system prompt. It does not become a different agent.
+Max on `restaurant-os.de` is *intended* to know it is in the RestaurantOS
+context via the `x-mp-slug` header, and to use that context in its system
+prompt without becoming a different agent.
+
+**It does not receive it.** The middleware matcher excludes `/api/*` except
+`/api/os`, so the chat routes never see the header and record
+`productSlug: null` on every session. Recorded in
+`docs/governance/known-risks.md`; owned by Track B, the Chat Assistant Forensic
+Audit. The Domain Registry names the identity each domain reports under
+(`chatIdentity`) so Track B has one place to read it from.
 
 See `lead-flow-architecture.md` for how lead context is tracked.
 See `walkaround-architecture.md` for how Max escalates post-walkaround.

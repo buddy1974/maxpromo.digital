@@ -1,0 +1,313 @@
+'use client'
+import { Icon, FormStatus } from '@maxpromo/ui'
+
+import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import VoiceInputWidget from '@/components/voice/VoiceInputWidget'
+import {
+  CONTACT_PAIN_POINTS,
+  type ContactPainPoint,
+  type PreferredContactMethod,
+} from '@/lib/contact-options'
+
+interface FormData {
+  name: string
+  company: string
+  email: string
+  phone: string
+  preferredContactMethod: PreferredContactMethod
+  painPoints: ContactPainPoint[]
+  message: string
+  system: string
+}
+
+/**
+ * Known ?system= values, each maps to a `contact.systems.<slug>` entry in
+ * messages/{de,en}.json (eyebrow/title/subtitle). Keep in sync with the
+ * `contactSlug` field on every ProductEntry in lib/registry/products.ts.
+ *
+ * When the query param matches, the contact page swaps its generic hero
+ * copy for this small contextual banner, it does not render full product
+ * content (bullets, screenshots, workflow), that lives on the system's own
+ * /systems/<slug> page.
+ */
+const KNOWN_CONTACT_SYSTEMS = [
+  'agent-bureau', 'restaurant-os', 'handwerk-os', 'praxis-os', 'printshop-os',
+  'care-os', 'real-estate-os', 'publishing-os', 'taxkontrol', 'drive24',
+] as const
+
+type Status = 'idle' | 'loading' | 'success' | 'error'
+
+const initialForm: FormData = {
+  name: '',
+  company: '',
+  email: '',
+  phone: '',
+  preferredContactMethod: 'email',
+  painPoints: [],
+  message: '',
+  system: '',
+}
+
+const SECTION_PADDING = 'var(--section-y) var(--section-x)'
+
+export default function ContactPage() {
+  const t = useTranslations('contact')
+  // ?system= preselects the enquiry subject. Read with useSearchParams rather
+  // than in an effect: the value is known on the first render, so seeding
+  // initial state directly avoids the extra render pass the effect caused.
+  const searchParams = useSearchParams()
+  const presetSystem = searchParams.get('system') ?? ''
+
+  const [form, setForm] = useState<FormData>(() =>
+    presetSystem ? { ...initialForm, system: presetSystem } : initialForm,
+  )
+  const [status, setStatus] = useState<Status>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+
+
+  // Only render the contextual banner for a recognised system slug, an
+  // unknown or malformed ?system= value silently falls back to the
+  // generic contact copy rather than throwing on a missing translation key.
+  const contextSystem = KNOWN_CONTACT_SYSTEMS.find((slug) => slug === form.system)
+
+  const update = <K extends keyof FormData>(field: K, value: FormData[K]) => {
+    setForm((current) => ({ ...current, [field]: value }))
+  }
+
+  const togglePainPoint = (painPoint: ContactPainPoint) => {
+    update(
+      'painPoints',
+      form.painPoints.includes(painPoint)
+        ? form.painPoints.filter((item) => item !== painPoint)
+        : [...form.painPoints, painPoint],
+    )
+  }
+
+  const isValid =
+    form.name.trim() !== '' &&
+    form.company.trim() !== '' &&
+    form.email.trim() !== '' &&
+    form.message.trim() !== ''
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!isValid) return
+
+    setStatus('loading')
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const result = (await response.json()) as { error?: string; code?: string }
+      if (!response.ok) {
+        throw new Error(
+          result.code === 'CONTACT_DELIVERY_UNAVAILABLE'
+            ? t('errorDeliveryUnavailable')
+            : t('errorGeneric'),
+        )
+      }
+      setStatus('success')
+    } catch (error) {
+      setStatus('error')
+      setErrorMessage(error instanceof Error ? error.message : t('errorGeneric'))
+    }
+  }
+
+  if (status === 'success') {
+    return (
+      <main className="min-h-[70vh] bg-[var(--brand-background)]" style={{ padding: SECTION_PADDING }}>
+        <div role="status" className="mx-auto max-w-xl border border-[var(--brand-border)] bg-[var(--brand-background)] p-12 text-center rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)]">
+          <p className="mb-4 text-[var(--semantic-success)]"><Icon name="check" size="lg" /></p>
+          <h1 className="mb-3">{t('successTitle')}</h1>
+          <p className="mb-8 text-[var(--brand-text-secondary)]">{t('successDesc')}</p>
+          <button
+            type="button"
+            onClick={() => {
+              setForm({ ...initialForm, system: form.system })
+              setStatus('idle')
+            }}
+            className="link text-sm"
+          >
+            {t('successAnother')}
+          </button>
+        </div>
+      </main>
+    )
+  }
+
+  return (
+    <main className="bg-[var(--brand-background)]">
+      <section className="border-b border-[var(--brand-border)] text-center bg-[var(--brand-background)]" style={{ padding: SECTION_PADDING }}>
+        {contextSystem ? (
+          <>
+            {/* Small contextual banner only, no product bullets, workflow or screenshots here.
+                Full product content lives on the dedicated /systems/<slug> page. */}
+            <p className="section-label">
+              {t(`systems.${contextSystem}.eyebrow`)}
+            </p>
+            <h1 className="mb-5">
+              {t(`systems.${contextSystem}.title`)}
+            </h1>
+            <p className="mx-auto max-w-2xl text-body leading-7 text-[var(--brand-text-secondary)]">
+              {t(`systems.${contextSystem}.subtitle`)}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="section-label">
+              {t('eyebrow')}
+            </p>
+            <h1 className="mb-5">
+              {t('title')}
+            </h1>
+            <p className="mx-auto max-w-2xl text-body leading-7 text-[var(--brand-text-secondary)]">{t('subtitle')}</p>
+          </>
+        )}
+      </section>
+
+      <section className="bg-[var(--brand-surface-subtle)]" style={{ padding: SECTION_PADDING }}>
+        <form
+          onSubmit={handleSubmit}
+          className="mx-auto flex max-w-2xl flex-col gap-6 border border-[var(--brand-border)] bg-[var(--brand-background)] p-6 md:p-12 rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)]"
+        >
+          <FormStatus tone="critical">
+            {status === 'error' ? errorMessage : null}
+          </FormStatus>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label={t('formName')} required>
+              <input
+                required
+                value={form.name}
+                onChange={(event) => update('name', event.target.value)}
+                className="input"
+                autoComplete="name"
+              />
+            </Field>
+            <Field label={t('formCompany')} required>
+              <input
+                required
+                value={form.company}
+                onChange={(event) => update('company', event.target.value)}
+                className="input"
+                autoComplete="organization"
+              />
+            </Field>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label={t('formEmail')} required>
+              <input
+                required
+                type="email"
+                value={form.email}
+                onChange={(event) => update('email', event.target.value)}
+                className="input"
+                autoComplete="email"
+              />
+            </Field>
+            <Field label={`${t('formPhone')} ${t('formOptional')}`}>
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(event) => update('phone', event.target.value)}
+                className="input"
+                autoComplete="tel"
+              />
+            </Field>
+          </div>
+
+          <Field label={t('formPreferredContact')}>
+            <select
+              value={form.preferredContactMethod}
+              onChange={(event) =>
+                update('preferredContactMethod', event.target.value as PreferredContactMethod)
+              }
+              className="select"
+            >
+              <option value="email">{t('contactMethodEmail')}</option>
+              <option value="phone">{t('contactMethodPhone')}</option>
+              <option value="whatsapp">{t('contactMethodWhatsApp')}</option>
+            </select>
+          </Field>
+
+          <fieldset>
+            <legend className="mb-1 h-card">
+              {t('painPointsTitle')}
+            </legend>
+            <p className="mb-4 text-sm text-[var(--brand-text-secondary)]">{t('painPointsOptional')}</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {CONTACT_PAIN_POINTS.map((painPoint) => (
+                <label
+                  key={painPoint}
+                  className="flex cursor-pointer items-start gap-3 text-sm text-[var(--brand-text-secondary)]"
+                >
+                  <input
+                    type="checkbox"
+                    checked={form.painPoints.includes(painPoint)}
+                    onChange={() => togglePainPoint(painPoint)}
+                    className="mt-0.5 accent-[var(--brand-primary)]"
+                  />
+                  {t(`painPoints.${painPoint}`)}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <Field label={t('formMessage')} required>
+            <VoiceInputWidget
+              value={form.message}
+              onChange={(value) => update('message', value)}
+              rows={6}
+              placeholder={t('formMessagePlaceholder')}
+              context="Contact message"
+              textareaStyle={{
+                width: '100%',
+                border: '1px solid var(--brand-border)',
+                background: 'var(--brand-background)',
+                borderRadius: 'var(--radius-lg)',
+                padding: '14px 16px',
+                color: 'var(--brand-text)',
+              }}
+            />
+          </Field>
+
+          <button
+            type="submit"
+            disabled={!isValid || status === 'loading'}
+            aria-busy={status === 'loading'}
+            className="btn btn-primary disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {status === 'loading' ? t('formCtaSending') : t('formCta')}
+          </button>
+          <p className="text-center font-mono text-[12px] text-[var(--brand-text-secondary)]">{t('formPrivacy')}</p>
+        </form>
+      </section>
+    </main>
+  )
+}
+
+function Field({
+  label,
+  required = false,
+  children,
+}: {
+  label: string
+  required?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <label className="block">
+      <span className="label">
+        {label} {required && <span className="text-[var(--semantic-danger)]" aria-hidden="true">*</span>}
+      </span>
+      {children}
+    </label>
+  )
+}

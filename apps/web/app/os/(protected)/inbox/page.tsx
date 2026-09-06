@@ -1,0 +1,154 @@
+'use client'
+import { useEffect, useState } from 'react'
+import { useOsLocale } from '@/lib/os-i18n/context'
+import { TONE_VARS, toneMap } from '@maxpromo/ui'
+
+const mono    = 'var(--brand-font-mono)'
+const sans    = 'var(--brand-font-body)'
+
+// Inbox shows a communication log built from the os_leads table (recent activity)
+// and a manual log of key sent communications.
+
+type LogType = 'invoice_sent' | 'angebot_sent' | 'lead_enquiry' | 'newsletter' | 'other'
+type LogStatus = 'received' | 'sent'
+
+interface LogEntry {
+  id: string
+  date: string
+  from: string
+  subject: string
+  type: LogType
+  status: LogStatus
+  ref?: string
+}
+
+const typeTone = toneMap<LogType>({
+  invoice_sent: 'positive',
+  angebot_sent: 'info',
+  // An enquiry in the log is something waiting for a person, not a brand
+  // moment. It was --brand-primary, which is a fill and is not a status.
+  lead_enquiry: 'caution',
+  newsletter:   'info',
+  other:        'neutral',
+})
+
+interface Lead { id: string; name: string; email: string; source: string; created_at: string; company: string }
+interface Invoice { id: string; invoice_number: string; client_name: string; sent_at: string; client_email: string }
+
+export default function InboxPage() {
+  const { t, intlLocale, fmtDate } = useOsLocale()
+  const [leads,    setLeads]    = useState<Lead[]>([])
+  const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [loading,  setLoading]  = useState(true)
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/os/leads').then(r => r.json()),
+      fetch('/api/os/invoices').then(r => r.json()),
+    ]).then(([lds, invs]) => {
+      setLeads(Array.isArray(lds) ? lds : [])
+      setInvoices(Array.isArray(invs) ? invs.filter((i: Invoice) => i.sent_at) : [])
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
+
+  const typeLabel: Record<LogType, string> = {
+    invoice_sent: t.inbox.typeInvoiceSent,
+    angebot_sent: t.inbox.typeAngebotSent,
+    lead_enquiry: t.inbox.typeLeadEnquiry,
+    newsletter:   t.inbox.typeNewsletter,
+    other:        t.inbox.typeOther,
+  }
+  const statusLabel: Record<LogStatus, string> = {
+    received: t.inbox.statusReceived,
+    sent:     t.inbox.statusSent,
+  }
+
+  // Build unified log from leads + sent invoices
+  const log: LogEntry[] = [
+    ...leads.map(l => ({
+      id: l.id,
+      date: l.created_at,
+      from: l.email || l.name || l.company || t.inbox.unknown,
+      subject: `${t.status.leadSource[l.source] ?? l.source?.replace(/_/g, ' ') ?? ''} — ${l.name || l.company || t.inbox.anonymous}`,
+      type: 'lead_enquiry' as const,
+      status: 'received' as const,
+      ref: l.id,
+    })),
+    ...invoices.map(i => ({
+      id: i.id,
+      date: i.sent_at,
+      from: 'info@maxpromo.digital',
+      subject: t.inbox.invoiceSubject(i.invoice_number, i.client_name),
+      type: 'invoice_sent' as const,
+      status: 'sent' as const,
+      ref: i.id,
+    })),
+  ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  const columns = [t.inbox.colDate, t.inbox.colFromTo, t.inbox.colSubject, t.inbox.colType, t.inbox.colStatus]
+
+  return (
+    <div style={{ padding: '32px 40px' }}>
+      <div style={{ marginBottom: '28px' }}>
+        <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 var(--space-1)' }}>{t.inbox.heading}</h1>
+        <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>
+          {t.inbox.subtitle} &nbsp;·&nbsp; {log.length} {t.inbox.entries}
+        </p>
+      </div>
+
+      <div style={{ background: 'color-mix(in srgb, var(--brand-primary) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '12px 18px', marginBottom: 'var(--space-5)' }}>
+        <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.06em', lineHeight: 1.6 }}>
+          {t.inbox.note1}<br />
+          {t.inbox.note2} <code style={{ color: 'var(--brand-primary-text)' }}>/api/os/inbox</code>
+        </p>
+      </div>
+
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
+              {columns.map(h => (
+                <th key={h} style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={5} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
+            ) : log.length === 0 ? (
+              <tr><td colSpan={5} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.inbox.empty}</td></tr>
+            ) : (
+              log.map(entry => (
+                <tr key={entry.id} style={{ borderBottom: '1px solid var(--brand-border)' }}>
+                  <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', whiteSpace: 'nowrap' }}>
+                    {fmtDate(entry.date)}<br />
+                    <span style={{ fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)' }}>
+                      {new Date(entry.date).toLocaleTimeString(intlLocale, { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </td>
+                  <td style={{ padding: '11px 16px', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {entry.from}
+                  </td>
+                  <td style={{ padding: '11px 16px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)' }}>
+                    {entry.subject}
+                  </td>
+                  <td style={{ padding: '11px 16px' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[typeTone(entry.type)].text, background: TONE_VARS[typeTone(entry.type)].bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
+                      {typeLabel[entry.type]}
+                    </span>
+                  </td>
+                  <td style={{ padding: '11px 16px' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: entry.status === 'sent' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                      {statusLabel[entry.status]}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}

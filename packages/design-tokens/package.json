@@ -1,0 +1,12 @@
+{
+  "name": "@maxpromo/design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Maxpromo design system. The single source of colour, typography, spacing, radius and elevation for every application.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./brand.css": "./brand.css"
+  }
+}

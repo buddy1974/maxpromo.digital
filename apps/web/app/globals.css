@@ -1,0 +1,1216 @@
+@import "tailwindcss";
+@import "@maxpromo/design-tokens/brand.css";
+@import "@maxpromo/ui/components.css";
+
+/* =============================================================================
+   MAXPROMO — application stylesheet
+   =============================================================================
+   All design values come from @maxpromo/design-tokens/brand.css. This file contains only
+   the reset, base element styling, and the small set of component classes that
+   are genuinely shared. It defines no colours, sizes or spacing of its own.
+
+   Batch B3 of the v4.0 platform transformation. Replaces the v2.1 stylesheet,
+   which carried 26 raw hex values, 12 rules hardcoding rgba(249,115,22,…), and
+   22 CSS classes with zero remaining consumers.
+   ========================================================================== */
+
+
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TAILWIND THEME
+
+   Tailwind v4 is CSS-first: a utility exists because a theme name exists. Only
+   the three font names are declared, because only the three font utilities
+   (font-sans, font-mono, font-display) are used. Every colour, size and space
+   is referenced as its token, so there is one name for each value.
+
+   What stood here until v7.0 was a second namespace: twenty-four --color-*,
+   --font-*, --text-*, --radius-* and --shadow-* aliases repointed at the token
+   package, written in v4.0 to spare a large find-and-replace and expected to
+   "shrink over time". It did not shrink; it grew to 507 call sites, and the
+   platform spent a year with two names for every value — --color-bg and
+   --brand-background, --radius-card and --radius-lg — appearing side by side
+   in the same style object on the homepage. Aliases were also where the accent
+   hid: fifteen contrast failures lived behind a name that still said "orange"
+   three brand generations after that colour was retired.
+
+   Adding a name here again means adding a second name for something that
+   already has one. See "Never two implementations" in
+   docs/governance/standards.md.
+   ───────────────────────────────────────────────────────────────────────── */
+@theme inline {
+  --font-sans:    var(--brand-font-sans);
+  --font-mono:    var(--brand-font-mono);
+  --font-display: var(--brand-font-heading);
+}
+
+
+/* ─── Reset ───────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--brand-background);
+  color: var(--brand-text);
+  font-family: var(--brand-font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* One family. Hierarchy comes from weight and size, not typeface. */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--brand-font-heading);
+  color: var(--brand-text);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); max-width: 22ch; }
+h2 { font-size: var(--text-h2); font-weight: var(--weight-subhead); line-height: var(--leading-snug);  max-width: 26ch; }
+h3 { font-size: var(--text-h3); font-weight: var(--weight-subhead); line-height: var(--leading-heading); letter-spacing: -0.01em; }
+h4 { font-size: var(--text-h4); font-weight: var(--weight-subhead); line-height: var(--leading-heading); letter-spacing: 0; }
+
+/* A heading wider than about 22 characters stops reading as a heading and
+   starts reading as a sentence set large. The cap is on the element rather
+   than left to each caller, because it was left to each caller before and
+   half of them forgot. Callers that genuinely need a wider measure opt out
+   with .h-wide. */
+.h-wide { max-width: none; }
+
+/* Body copy has a measure too. */
+p { max-width: var(--measure); }
+p.h-wide, .prose-wide p, td p, li p { max-width: none; }
+
+/* Headings inside cards and grid tiles. The section scale is too loud at card
+   size — a 3-up grid of 32px headings reads as a pricing page, not a document.
+   Applied from the size each heading actually carried before the scale landed. */
+.h-card {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  letter-spacing: 0;
+}
+
+p { text-wrap: pretty; }
+
+/* Mono is for code, data and document reference numbers. Not for labels. */
+code, pre, .mono { font-family: var(--brand-font-mono); }
+
+::selection {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+
+/* ─── Links ───────────────────────────────────────────────────────────────────
+   Black with an underline, not accent-coloured. The accent appears on hover
+   only. This is the documentation convention every reference company uses, and
+   it is the single largest reduction in accent surface across the platform.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.link {
+  color: var(--brand-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--brand-border-strong);
+  transition: color var(--duration-fast) var(--ease),
+              text-decoration-color var(--duration-fast) var(--ease);
+}
+.link:hover,
+.link:focus-visible {
+  color: var(--brand-primary-text);
+  text-decoration-color: currentColor;
+}
+
+/* Navigational links inside chrome — no underline, no accent. */
+.nav-link {
+  color: var(--brand-text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease);
+}
+.nav-link:hover,
+.nav-link:focus-visible { color: var(--brand-text); }
+
+.footer-link {
+  color: var(--brand-text-inverted-secondary);
+  text-decoration: none;
+  font-size: var(--text-small);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  transition: color var(--duration-fast) var(--ease);
+}
+.footer-link:hover,
+.footer-link:focus-visible { color: var(--brand-text-inverted); }
+
+
+/* ─── Surfaces ────────────────────────────────────────────────────────────── */
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--brand-border);
+  margin: 0;
+}
+
+
+/* ─── Forms ───────────────────────────────────────────────────────────────── */
+
+.input, .textarea, .select {
+  width: 100%;
+  background: var(--brand-surface);
+  color: var(--brand-text);
+  border: 1px solid var(--brand-border-control);
+  border-radius: var(--radius-md);
+  padding: 11px 14px;
+  font-family: var(--brand-font-body);
+  font-size: var(--text-small);
+  transition: border-color var(--duration-fast) var(--ease);
+}
+.input:focus, .textarea:focus, .select:focus {
+  outline: none;
+  border-color: var(--brand-text);
+}
+.label {
+  display: block;
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  color: var(--brand-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+
+/* ─── Layout helpers ──────────────────────────────────────────────────────── */
+
+.container {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--section-x);
+}
+.container-narrow {
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--section-x);
+}
+
+/* Exactly three section rhythms. Anything else fails review. */
+.section          { padding-block: var(--section-y); }
+.section-compact  { padding-block: var(--section-y-compact); }
+.section-feature  { padding-block: var(--section-y-feature); }
+
+
+/* ─── Motion ──────────────────────────────────────────────────────────────────
+   Functional only. Entrance cascade, image and card micro-interactions. The
+   decorative Ken Burns, glow-pulse, marquee and terminal animations from the
+   pre-facelift system had no remaining consumers and are gone.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@keyframes mp-fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mp-hero-1 { animation: mp-fade-up 0.5s var(--ease) 0ms   both; }
+.mp-hero-2 { animation: mp-fade-up 0.5s var(--ease) 80ms  both; }
+.mp-hero-3 { animation: mp-fade-up 0.5s var(--ease) 160ms both; }
+.mp-hero-4 { animation: mp-fade-up 0.5s var(--ease) 240ms both; }
+.mp-hero-5 { animation: mp-fade-up 0.5s var(--ease) 320ms both; }
+
+.mp-img-wrap { overflow: hidden; }
+.mp-img-wrap img {
+  display: block;
+  transition: transform var(--duration-base) var(--ease);
+}
+.mp-img-wrap:hover img,
+.mp-img-wrap:focus-visible img { transform: scale(1.02); }
+
+/* One behaviour, two names, declared four lines apart until v7.1. A card that
+   lifts its border on hover does the same on keyboard focus: a mouse user and a
+   keyboard user should be told the same thing about what is interactive. The
+   focus ring from :focus-visible in the reset still draws on top; this is the
+   affordance underneath it. */
+.mp-card-hover,
+.service-card {
+  transition: border-color var(--duration-base) var(--ease);
+}
+.mp-card-hover:hover,
+.mp-card-hover:focus-visible,
+.service-card:hover,
+.service-card:focus-visible { border-color: var(--brand-border-strong); }
+
+/* Chat widget typing indicator. */
+@keyframes typingDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30%           { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--brand-text-muted);
+  border-radius: var(--radius-full);
+  animation: typingDot 1s ease-in-out infinite;
+  display: inline-block;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.30s; }
+
+.chat-scroll::-webkit-scrollbar       { width: 4px; }
+.chat-scroll::-webkit-scrollbar-track { background: transparent; }
+.chat-scroll::-webkit-scrollbar-thumb { background: var(--brand-border-strong); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-hero-1, .mp-hero-2, .mp-hero-3, .mp-hero-4, .mp-hero-5 {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .mp-img-wrap:hover img,
+  .mp-img-wrap:focus-visible img { transform: none; }
+  .typing-dot { animation: none; }
+}
+
+/* Touch feedback on devices without hover. */
+@media (hover: none) {
+  a:active, button:active { opacity: 0.72; }
+}
+
+@media (max-width: 768px) {
+  section { padding-inline: var(--section-x); }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   OS LAYOUT SYSTEM
+   Migrates to the token system in batch B5, together with the /os pages. Its
+   hardcoded dark palette is deliberately untouched here so that B3 produces no
+   visual change anywhere.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.os-sidebar {
+  width: 260px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  background: var(--brand-surface);
+  border-right: 1px solid var(--brand-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.os-main {
+  margin-left: 260px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--brand-background);
+}
+
+.os-hamburger {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 600;
+  width: 40px;
+  height: 40px;
+  background: var(--brand-surface-subtle);
+  border: 1px solid var(--brand-border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0;
+}
+.os-hamburger-line {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--brand-text-secondary);
+  border-radius: var(--radius-xs);
+}
+
+.os-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--brand-text) 45%, transparent);
+  z-index: 400;
+}
+
+.os-section-label {
+  display: block;
+  padding: 16px 20px 8px;
+  font-family: var(--brand-font-mono);
+  font-size: 9px;
+  color: var(--brand-text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.os-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  margin: 2px 8px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  width: calc(100% - 16px);
+  box-sizing: border-box;
+  background: transparent;
+  transition: background var(--duration-fast) var(--ease);
+  cursor: pointer;
+}
+.os-nav-item:hover,
+.os-nav-item:focus-visible { background: var(--brand-surface-subtle); }
+.os-nav-item:hover .os-nav-icon  { color: var(--brand-text) !important; }
+.os-nav-item:hover .os-nav-label { color: var(--brand-text) !important; }
+.os-nav-item.active {
+  background: var(--brand-surface-subtle);
+  border-left-color: var(--brand-primary);
+  padding-left: 14px;
+}
+.os-nav-item.active .os-nav-icon  { color: var(--brand-text) !important; }
+.os-nav-item.active .os-nav-label { color: var(--brand-text) !important; font-weight: 600; }
+
+button.os-nav-item {
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+}
+
+/* Holds an <Icon>, which draws itself at 20px and inherits this colour.
+   `font-size` and `text-align` were here to wrangle a Unicode glyph whose size
+   depended on whichever font happened to cover it; an SVG needs neither. */
+.os-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  color: var(--brand-text-secondary);
+  flex-shrink: 0;
+  transition: color var(--duration-fast) var(--ease);
+}
+.os-nav-label {
+  font-family: var(--brand-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--brand-text-secondary);
+  transition: color var(--duration-fast) var(--ease);
+  white-space: nowrap;
+}
+
+.os-logout-btn {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 1px solid var(--brand-border);
+  color: var(--brand-text-secondary);
+  font-family: var(--brand-font-sans);
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+  margin-top: var(--space-3);
+  text-align: left;
+}
+.os-logout-btn:hover,
+.os-logout-btn:focus-visible {
+  border-color: var(--brand-text);
+  color: var(--brand-primary-text);
+}
+
+@media (max-width: 768px) {
+  .os-hamburger { display: flex; }
+  .os-sidebar {
+    transform: translateX(-260px);
+    transition: transform var(--duration-base) var(--ease);
+    z-index: 500;
+  }
+  .os-sidebar.open { transform: translateX(0); }
+  .os-backdrop.open { display: block; }
+  .os-main { margin-left: 0 !important; }
+  .os-nav-item { padding: 14px 20px; }
+  .os-nav-item.active { padding-left: 18px; }
+  .os-nav-label { font-size: 15px; }
+}
+
+
+/* ─── Hero ────────────────────────────────────────────────────────────────────
+   Copy and Operations Center share one grid and one baseline. Below 1024px the
+   panel moves under the copy rather than shrinking into illegibility.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+  align-items: start;
+}
+@media (min-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: center;
+  }
+}
+
+/* Operations Center: the module rail is meaningful context on a wide screen
+   and noise on a phone, so it collapses rather than compressing. */
+@media (max-width: 560px) {
+  .oc-body { grid-template-columns: 1fr !important; }
+  .oc-rail { display: none !important; }
+}
+
+
+/* ─── Problem grid (homepage) ─────────────────────────────────────────────────
+   A hairline reference grid, not a card deck: the 1px gaps let the border
+   colour show through as separators, so there are no card boxes, no shadows
+   and no tinted icon tiles. Hover moves the whole cell to the subtle surface
+   rather than lighting up a border.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+}
+@media (max-width: 900px) { .pain-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .pain-grid { grid-template-columns: 1fr; } }
+
+.pain-cell {
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-surface);
+  padding: var(--space-6);
+  text-decoration: none;
+  transition: background-color var(--duration-base) var(--ease);
+}
+.pain-cell:hover,
+.pain-cell:focus-visible { background: var(--brand-surface-subtle); }
+
+.pain-cell-label {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+}
+
+.pain-cell-desc {
+  margin: 0 0 var(--space-5);
+  flex: 1;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+
+.pain-cell-cta {
+  font-size: var(--text-small);
+  color: var(--brand-text);
+  border-bottom: 1px solid var(--brand-border-strong);
+  padding-bottom: 2px;
+  align-self: flex-start;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+.pain-cell:hover .pain-cell-cta { border-color: var(--brand-text); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   SITE CHROME — navigation
+   The bar sits on the inverted surface. Links take the inverted text tokens,
+   never literal white and never the accent: the accent's only job in the
+   chrome is the primary action.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--brand-surface-inverted);
+  border-bottom: 1px solid var(--brand-border-inverted);
+}
+
+.site-nav-inner {
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--section-x);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.site-nav-logo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--brand-text-inverted);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.site-nav-logo-dim { color: var(--brand-text-inverted-secondary); }
+
+.site-nav-links {
+  display: none;
+  align-items: center;
+  gap: var(--space-6);
+  margin-right: auto;
+}
+.site-nav-link {
+  font-size: var(--text-small);
+  font-weight: 500;
+  color: var(--brand-text-inverted-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease);
+}
+.site-nav-link:hover,
+.site-nav-link:focus-visible { color: var(--brand-text-inverted); }
+
+.site-nav-actions {
+  display: none;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+/* Burger */
+.site-nav-burger {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-1);
+  width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid var(--brand-border-inverted);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.site-nav-burger span {
+  display: block;
+  height: 1.5px;
+  background: var(--brand-text-inverted);
+  border-radius: var(--radius-xs);
+}
+
+@media (min-width: 900px) {
+  .site-nav-links,
+  .site-nav-actions { display: flex; }
+  .site-nav-burger  { display: none; }
+}
+
+/* Mobile sheet */
+.site-nav-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--brand-surface-inverted);
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--section-x) var(--space-8);
+  overflow-y: auto;
+}
+.site-nav-sheet-head {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--brand-border-inverted);
+  margin-bottom: var(--space-6);
+}
+.site-nav-close {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid var(--brand-border-inverted);
+  border-radius: var(--radius-md);
+  color: var(--brand-text-inverted);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+}
+.site-nav-sheet-links { display: flex; flex-direction: column; }
+.site-nav-sheet-link {
+  padding: var(--space-4) 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand-text-inverted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--brand-border-inverted);
+}
+.site-nav-sheet-foot {
+  margin-top: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   TABLES
+   Reference tables, not styled data grids: hairline rules, no zebra striping,
+   no rounded container, no shadow. Numeric columns are tabular so figures line
+   up down the column.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Wide data tables scroll rather than clip. Eight of them sat in wrappers with
+   overflow:hidden until v7.1, so on a phone the far columns were unreachable
+   rather than merely off-screen — invisible to the responsive audit, which
+   looks for fixed widths and collapsing grids and finds neither here. */
+.table-wrap { overflow-x: auto; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-small);
+}
+.table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-secondary);
+  border-bottom: 1px solid var(--brand-border-strong);
+  white-space: nowrap;
+}
+.table td {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--brand-border);
+  vertical-align: top;
+  line-height: var(--leading-ui);
+}
+.table tr:last-child td { border-bottom: 0; }
+.table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FORMS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.field { display: flex; flex-direction: column; gap: var(--space-2); }
+.hint {
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+}
+.error {
+  font-size: var(--text-micro);
+  color: var(--semantic-danger);
+}
+.input[aria-invalid='true'],
+.textarea[aria-invalid='true'] { border-color: var(--semantic-danger); }
+
+.input::placeholder,
+.textarea::placeholder { color: var(--brand-text-muted); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   DEFINITION LIST — the documentation pattern for stating facts in pairs.
+   Used for specs, scope statements and "what you get" blocks in place of the
+   tick-list-with-icons pattern.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.spec {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--brand-border);
+}
+.spec > div {
+  display: grid;
+  gap: var(--space-2);
+  grid-template-columns: 1fr;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--brand-border);
+}
+@media (min-width: 720px) {
+  .spec > div { grid-template-columns: minmax(0, 14rem) 1fr; gap: var(--space-6); }
+}
+.spec dt {
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--brand-text);
+}
+.spec dd {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   SITE CHROME — footer
+   Reads like the colophon of a technical document: plain link columns, one
+   rule, then the legal line. No display heading, no marketing block.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.site-footer {
+  background: var(--brand-surface-inverted);
+  color: var(--brand-text-inverted-secondary);
+  padding-block: var(--section-y) var(--space-8);
+  margin-top: var(--space-16);
+}
+
+.site-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+@media (min-width: 640px) { .site-footer-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1000px) {
+  .site-footer-grid {
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    gap: var(--space-10);
+  }
+}
+
+.site-footer-brand {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--brand-text-inverted);
+}
+.site-footer-desc {
+  margin: 0 0 var(--space-5);
+  max-width: 30ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+.site-footer-address {
+  margin: 0 0 var(--space-3);
+  font-style: normal;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+
+.site-footer-coltitle {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-inverted);
+}
+.site-footer-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.site-footer-link {
+  font-size: var(--text-small);
+  color: var(--brand-text-inverted-secondary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease);
+}
+.site-footer-link:hover,
+.site-footer-link:focus-visible { color: var(--brand-text-inverted); }
+
+.site-footer-legal {
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--brand-border-inverted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.site-footer-legal p {
+  margin: 0;
+  font-size: var(--text-micro);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-muted);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   EDITORIAL PATTERNS
+   The page shapes the Solutions and Industries sections are built from. All
+   typographic: no icons, no cards, no tinted tiles.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Opening paragraph under an h1. Larger than body, never as large as a heading. */
+.lede {
+  margin: 0;
+  font-size: var(--text-lede);
+  line-height: 1.65;
+  color: var(--brand-text-secondary);
+  max-width: var(--measure);
+}
+
+/* Label column beside content. The documentation two-column, where the left
+   column names the section and the right column carries it. */
+.prose-two-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+@media (min-width: 900px) {
+  .prose-two-col {
+    grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+    gap: var(--space-10);
+  }
+}
+
+/* A heading in the label column is a section marker, not a page heading: at
+   the full h2 size it wrapped to four lines in a 17rem column, which reads as
+   a mistake rather than as hierarchy. It steps down one level here, and the
+   hierarchy comes from position instead — which is the point of the layout. */
+.prose-two-col > :first-child h2 {
+  font-size: var(--text-h3);
+  line-height: var(--leading-heading);
+  max-width: 18ch;
+}
+
+/* Numbered method. The number is a reference mark, not a decorated badge. */
+.step-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--brand-border);
+}
+.step-list li {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: var(--space-4);
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--brand-border);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.step-list-num {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+  padding-top: 0.45em;
+}
+
+/* Outcomes. A rule per item rather than a tick icon per item — the claim
+   carries itself, and a green tick beside every line is the SaaS pattern. */
+.outcome-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.outcome-list li {
+  padding: var(--space-4) 0 var(--space-4) var(--space-5);
+  border-left: 2px solid var(--brand-border-strong);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.outcome-list li + li { margin-top: var(--space-3); }
+
+/* Industries index: a reference list, not a card grid. */
+.industry-list {
+  border-top: 1px solid var(--brand-border);
+}
+.industry-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--brand-border);
+  text-decoration: none;
+  transition: opacity var(--duration-base) var(--ease);
+}
+@media (min-width: 900px) {
+  .industry-row {
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+}
+.industry-row:hover,
+.industry-row:focus-visible { opacity: 0.62; }
+.industry-row-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+.industry-row-summary {
+  margin: 0;
+  max-width: 52ch;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.industry-row-cta {
+  font-size: var(--text-small);
+  color: var(--brand-text);
+  border-bottom: 1px solid var(--brand-border-strong);
+  padding-bottom: 2px;
+}
+
+/* Lateral navigation between sibling pages. */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 14px;
+  border: 1px solid var(--brand-border-strong);
+  border-radius: var(--radius-md);
+  font-size: var(--text-small);
+  color: var(--brand-text-secondary);
+  text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+.chip:hover,
+.chip:focus-visible {
+  border-color: var(--brand-text);
+  color: var(--brand-text);
+}
+
+/* Homepage route grid — the two doors into the site (sector, or problem). */
+.route-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+}
+@media (min-width: 720px) { .route-grid { grid-template-columns: 1fr 1fr; } }
+
+.route-cell {
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-surface);
+  padding: var(--space-8);
+  text-decoration: none;
+  transition: background-color var(--duration-base) var(--ease);
+}
+.route-cell:hover,
+.route-cell:focus-visible { background: var(--brand-surface-subtle); }
+.route-cell-label {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+}
+.route-cell-desc {
+  margin: 0 0 var(--space-5);
+  flex: 1;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.route-cell-cta {
+  font-size: var(--text-small);
+  color: var(--brand-text);
+  border-bottom: 1px solid var(--brand-border-strong);
+  padding-bottom: 2px;
+  align-self: flex-start;
+}
+
+/* Plain link list — recent articles, related pages. Rows, not cards. */
+.link-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--brand-border); }
+.link-list-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--brand-border);
+  text-decoration: none;
+}
+.link-list-title {
+  font-size: var(--text-body);
+  color: var(--brand-text);
+  line-height: var(--leading-ui);
+}
+.link-list-item:hover .link-list-title,
+.link-list-item:focus-visible .link-list-title { color: var(--brand-primary-text); }
+.link-list-meta {
+  flex-shrink: 0;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+}
+
+/* Scope: what is included beside what is not. Equal weight, because the
+   boundary is the half a buyer actually needs. */
+.scope-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+@media (min-width: 720px) { .scope-grid { grid-template-columns: 1fr 1fr; gap: var(--space-10); } }
+
+.scope-heading {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-secondary);
+}
+
+/* A list that reads as a list, without a tick beside every line. */
+.plain-list { margin: 0; padding: 0; list-style: none; }
+.plain-list li {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--brand-border);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.plain-list li:first-child { padding-top: 0; }
+.plain-list li:last-child { border-bottom: 0; }
+.plain-list-muted li { color: var(--brand-text-muted); }
+
+/* ─── Plans ───────────────────────────────────────────────────────────────────
+   A comparison, not a card deck. Hairline columns, no shadows, no featured
+   tint, no "most popular" badge, and a price set at reading size rather than
+   at 48px — the number is information, not a headline.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+}
+@media (min-width: 900px) { .plan-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  background: var(--brand-surface);
+  padding: var(--space-6);
+}
+.plan-name {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-secondary);
+}
+.plan-price {
+  margin: 0 0 var(--space-3);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--brand-text);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+.plan-period {
+  font-size: var(--text-small);
+  font-weight: 400;
+  color: var(--brand-text-muted);
+}
+.plan-desc {
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.plan-includes { flex: 1; margin-bottom: var(--space-6); }
+.plan-cta { align-self: flex-start; }
+.plan-footnote {
+  margin: var(--space-5) 0 0;
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+
+/* main should not introduce its own box; it is a landmark, not a layer. */
+main { display: block; }
+
+/* ─── Metric grid ─────────────────────────────────────────────────────────────
+   Sourced figures in a hairline grid. The entrance is a CSS animation with a
+   per-cell delay set inline, which replaced the last framer-motion usage in
+   the platform: a 110 KB runtime to fade three numbers in did not earn its
+   place. Reduced-motion users get the final state immediately.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+@media (min-width: 640px) { .metric-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.metric-cell {
+  background: var(--brand-surface);
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  animation: mp-fade-up 0.5s var(--ease) both;
+}
+
+.metric-value {
+  margin: 0 0 var(--space-3);
+  font-family: var(--brand-font-heading);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: var(--weight-subhead);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+  color: var(--brand-text);
+  max-width: none;
+}
+.metric-label {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text);
+  max-width: none;
+}
+.metric-source {
+  margin: 0;
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-cell { animation: none; }
+}

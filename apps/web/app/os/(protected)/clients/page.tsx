@@ -1,0 +1,627 @@
+'use client'
+import { useEffect, useRef, useState } from 'react'
+import { useOsLocale } from '@/lib/os-i18n/context'
+import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
+
+const mono = 'var(--brand-font-mono)'
+const sans = 'var(--brand-font-body)'
+
+interface Client {
+  id: string; name: string; company: string; email: string
+  phone: string; address: string; city: string; country: string; status: string; created_at: string
+}
+
+interface Extracted {
+  name: string; company: string; email: string; phone: string
+  address: string; city: string; postcode: string; country: string
+  website: string; notes: string; confidence: 'high' | 'medium' | 'low'
+}
+
+interface NominatimResult {
+  display_name: string
+  address: {
+    road?: string; house_number?: string
+    city?: string; town?: string; village?: string; postcode?: string
+  }
+}
+
+/**
+ * Country values are PERSISTED STRINGS, not display strings — they are what
+ * lands in os_clients.country and, downstream, on invoice address blocks.
+ * The value list is therefore frozen in its original (German) form; only the
+ * option's visible label follows the OS language.
+ */
+const COUNTRY_VALUES = ['Deutschland', 'Österreich', 'Schweiz', 'United Kingdom', 'France', 'Other'] as const
+
+const BLANK = {
+  name: '', company: '', email: '', phone: '',
+  address: '', postcode: '', city: '', country: 'Deutschland',
+  website: '', notes: '', status: 'active',
+}
+
+const inp: React.CSSProperties = {
+  width: '100%', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)',
+  borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontSize: '14px', padding: '10px 14px',
+  outline: 'none', boxSizing: 'border-box',
+}
+
+const sectionLbl: React.CSSProperties = {
+  fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em',
+  textTransform: 'uppercase', margin: '20px 0 14px', paddingBottom: 'var(--space-2)',
+  borderBottom: '1px solid var(--brand-border)', display: 'block',
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>
+        {label}
+      </label>
+      {children}
+    </div>
+  )
+}
+
+function StreetInput({ value, onChange, onFill }: {
+  value: string
+  onChange: (v: string) => void
+  onFill?: (street: string, postcode: string, city: string) => void
+}) {
+  const [suggestions, setSuggestions] = useState<NominatimResult[]>([])
+  const [open, setOpen] = useState(false)
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function handleChange(v: string) {
+    onChange(v)
+    if (timer.current) clearTimeout(timer.current)
+    if (v.length < 3) { setSuggestions([]); setOpen(false); return }
+    timer.current = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v)}&countrycodes=de,at,ch&addressdetails=1&format=json&limit=6`,
+          { headers: { 'User-Agent': 'MaxpromoDigitalOS/1.0 info@maxpromo.digital' } }
+        )
+        const data = await res.json() as NominatimResult[]
+        const withStreet = data.filter(r => r.address?.road)
+        setSuggestions(withStreet)
+        setOpen(withStreet.length > 0)
+      } catch { /* ignore */ }
+    }, 400)
+  }
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <input
+        value={value}
+        onChange={e => handleChange(e.target.value)}
+        placeholder="Musterstraße 12"
+        style={inp}
+        onBlur={() => setTimeout(() => setOpen(false), 200)}
+      />
+      {open && suggestions.length > 0 && (
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', zIndex: 50, maxHeight: '180px', overflowY: 'auto', borderRadius: '0 0 4px 4px' }}>
+          {suggestions.map((s, i) => {
+            const road      = s.address.road || ''
+            const num       = s.address.house_number || ''
+            const streetStr = [road, num].filter(Boolean).join(' ')
+            const city      = s.address.city || s.address.town || s.address.village || ''
+            const postcode  = s.address.postcode || ''
+            return (
+              <button
+                key={i}
+                onMouseDown={() => { onChange(streetStr); onFill?.(streetStr, postcode, city); setOpen(false) }}
+                style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '9px 14px', cursor: 'pointer', borderBottom: '1px solid var(--brand-border)' }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'color-mix(in srgb, var(--brand-primary) 8%, transparent)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+              >
+                {streetStr || s.display_name.split(',').slice(0, 2).join(',')}
+                {(postcode || city) && (
+                  <span style={{ color: 'var(--brand-text-muted)', marginLeft: '10px', fontSize: '12px' }}>
+                    {[postcode, city].filter(Boolean).join(' ')}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function ClientsPage() {
+  const { t } = useOsLocale()
+  const [clients,   setClients]   = useState<Client[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [showForm,  setShowForm]  = useState(false)
+  const [editId,    setEditId]    = useState<string | null>(null)
+  const [form,      setForm]      = useState({ ...BLANK })
+  const [saving,    setSaving]    = useState(false)
+  const [saveError, setSaveError] = useState('')
+  const [toast,     setToast]     = useState('')
+  const [search,    setSearch]    = useState('')
+
+  const [scanTab,      setScanTab]      = useState<'scan' | 'paste'>('scan')
+  const [pasteText,    setPasteText]    = useState('')
+  const [extracting,   setExtracting]   = useState(false)
+  const [extracted,    setExtracted]    = useState<Extracted | null>(null)
+  const [extractError, setExtractError] = useState('')
+  const [scanPreview,  setScanPreview]  = useState('')
+  const [scanBase64,   setScanBase64]   = useState('')
+  const [scanMime,     setScanMime]     = useState('image/jpeg')
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const countryLabel: Record<string, string> = {
+    'Deutschland': t.clients.countryDE,
+    'Österreich': t.clients.countryAT,
+    'Schweiz': t.clients.countryCH,
+    'United Kingdom': t.clients.countryUK,
+    'France': t.clients.countryFR,
+    'Other': t.clients.countryOther,
+  }
+
+  const confidenceLabel: Record<Extracted['confidence'], string> = {
+    high:   t.clients.confidenceHigh,
+    medium: t.clients.confidenceMedium,
+    low:    t.clients.confidenceLow,
+  }
+
+  useEffect(() => {
+    fetch('/api/os/clients')
+      .then(r => r.json())
+      .then(d => { setClients(Array.isArray(d) ? d : []); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [])
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = ev => {
+      const dataUrl = ev.target?.result as string
+      const [header, b64] = dataUrl.split(',')
+      setScanPreview(dataUrl)
+      setScanBase64(b64)
+      setScanMime(header.match(/:(.*?);/)?.[1] ?? 'image/jpeg')
+    }
+    reader.readAsDataURL(file)
+    e.target.value = ''
+  }
+
+  async function runExtract() {
+    setExtracting(true); setExtractError(''); setExtracted(null)
+    try {
+      const body = scanTab === 'scan' && scanBase64
+        ? { image: scanBase64, mediaType: scanMime }
+        : { text: pasteText }
+      const res = await fetch('/api/os/ai/scan-client', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+      })
+      if (!res.ok) throw new Error('extract-failed')
+      const d = await res.json() as Extracted
+      setExtracted(d)
+      setForm({
+        name:     d.name     || '',
+        company:  d.company  || '',
+        email:    d.email    || '',
+        phone:    d.phone    || '',
+        address:  d.address  || '',
+        postcode: d.postcode || '',
+        city:     d.city     || '',
+        country:  d.country  || 'Deutschland',
+        website:  d.website  || '',
+        notes:    d.notes    || '',
+        status:   'active',
+      })
+    } catch {
+      setExtractError(t.clients.extractError)
+    } finally {
+      setExtracting(false)
+    }
+  }
+
+  function resetScan() {
+    setScanPreview(''); setScanBase64(''); setPasteText('')
+    setExtracted(null); setExtractError('')
+  }
+
+  async function save() {
+    if (!form.name.trim()) return
+    setSaving(true)
+    setSaveError('')
+    try {
+      const res = await fetch('/api/os/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:    form.name.trim(),
+          company: form.company  || undefined,
+          email:   form.email    || undefined,
+          phone:   form.phone    || undefined,
+          address: form.address  || undefined,
+          city:    [form.postcode, form.city].filter(Boolean).join(' ') || undefined,
+          country: form.country  || 'Deutschland',
+          notes:   form.notes    || undefined,
+        }),
+      })
+      if (!res.ok) throw new Error(t.clients.serverError(res.status))
+      const newClient = await res.json() as Client
+      setClients(prev => [newClient, ...prev])
+      setForm({ ...BLANK })
+      setShowForm(false)
+      resetScan()
+      setToast(t.clients.savedToast(newClient.name))
+      setTimeout(() => setToast(''), 4000)
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : t.clients.saveError)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function updateClient() {
+    if (!form.name.trim() || !editId) return
+    setSaving(true)
+    setSaveError('')
+    try {
+      const res = await fetch('/api/os/clients', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id:      editId,
+          name:    form.name.trim(),
+          company: form.company  || null,
+          email:   form.email    || null,
+          phone:   form.phone    || null,
+          address: form.address  || null,
+          city:    [form.postcode, form.city].filter(Boolean).join(' ') || null,
+          country: form.country  || 'Deutschland',
+          notes:   form.notes    || null,
+        }),
+      })
+      if (!res.ok) throw new Error(t.clients.serverError(res.status))
+      const updated = await res.json() as Client
+      setClients(prev => prev.map(c => c.id === editId ? updated : c))
+      setEditId(null)
+      setShowForm(false)
+      setForm({ ...BLANK })
+      setToast(t.clients.updatedToast(updated.name))
+      setTimeout(() => setToast(''), 4000)
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : t.clients.updateError)
+    } finally { setSaving(false) }
+  }
+
+  async function deleteClient(id: string, name: string) {
+    if (!confirm(t.clients.deleteConfirm(name))) return
+    const res = await fetch(`/api/os/clients?id=${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      setClients(prev => prev.filter(c => c.id !== id))
+      setToast(t.clients.deletedToast(name))
+      setTimeout(() => setToast(''), 3000)
+    }
+  }
+
+  function startEdit(c: Client) {
+    const [postcode, ...cityParts] = (c.city || '').trim().split(/\s+/)
+    const hasPostcode = /^\d{4,5}$/.test(postcode ?? '')
+    setEditId(c.id)
+    setForm({
+      name:     c.name     || '',
+      company:  c.company  || '',
+      email:    c.email    || '',
+      phone:    c.phone    || '',
+      address:  c.address  || '',
+      postcode: hasPostcode ? postcode : '',
+      city:     hasPostcode ? cityParts.join(' ') : (c.city || ''),
+      country:  c.country  || 'Deutschland',
+      website:  '',
+      notes:    '',
+      status:   c.status   || 'active',
+    })
+    setShowForm(true)
+    setSaveError('')
+    resetScan()
+  }
+
+  const filtered = clients.filter(c =>
+    `${c.name} ${c.company} ${c.email}`.toLowerCase().includes(search.toLowerCase())
+  )
+
+  // The ninth status map in the internal OS, and the third to colour a
+  // middle value with the brand accent — which is a fill, and is not a status.
+  const confidenceTone = toneMap<string>({ high: 'positive', medium: 'caution', low: 'critical' })
+
+  const columns = [
+    t.clients.colName, t.clients.colCompany, t.clients.colEmail, t.clients.colPhone,
+    t.clients.colCity, t.clients.colStatus, t.clients.colActions,
+  ]
+
+  return (
+    <div style={{ padding: '32px 40px' }}>
+
+      {/* ── Header ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px' }}>
+        <div>
+          <h1 style={{ fontFamily: sans, fontSize: '28px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 var(--space-1)' }}>{t.clients.heading}</h1>
+          <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>{clients.length} {t.common.total}</p>
+        </div>
+        <button
+          onClick={() => { setEditId(null); setForm({ ...BLANK }); setShowForm(true); resetScan() }}
+          style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 20px', cursor: 'pointer' }}
+        >
+          {t.clients.newClient}
+        </button>
+      </div>
+
+      {/* ── Search ── */}
+      <input
+        placeholder={t.clients.searchPlaceholder}
+        value={search}
+        onChange={e => setSearch(e.target.value)}
+        style={{ width: '300px', ...inp, marginBottom: '20px', display: 'block' }}
+      />
+
+      {/* ── New / Edit Client MODAL ── */}
+      {showForm && (
+        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' }}>
+          <div style={{
+            background: 'var(--brand-surface-subtle)',
+            border: '1px solid var(--brand-border)',
+            borderTop: '2px solid var(--brand-primary)',
+            borderRadius: 'var(--radius-sm)',
+            width: '100%',
+            maxWidth: '560px',
+            maxHeight: 'calc(100vh - 48px)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}>
+
+            {/* ── MODAL HEADER — fixed top ── */}
+            <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--brand-border)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>
+                {editId ? t.clients.editClient : t.clients.newClientModal}
+              </p>
+              <div style={{ display: 'flex', gap: 'var(--space-2)', alignItems: 'center' }}>
+                <button
+                  onClick={() => { setScanTab('scan'); fileRef.current?.click() }}
+                  style={{ background: 'color-mix(in srgb, var(--brand-primary) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label-dense)', fontWeight: 700, letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}
+                >
+                  {t.clients.scanButton}
+                </button>
+                <button
+                  onClick={() => { setScanTab('paste'); setExtracted(null); setScanPreview('') }}
+                  style={{ background: 'var(--brand-border)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.08em', padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}
+                >
+                  {t.clients.pasteButton}
+                </button>
+                <button
+                  onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
+                  style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '22px', cursor: 'pointer', lineHeight: 1, padding: '0 0 0 var(--space-2)' }}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            {/* ── MODAL BODY — scrollable ── */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
+
+              {/* Image preview */}
+              {scanTab === 'scan' && scanPreview && !extracted && (
+                <div style={{ marginBottom: 'var(--space-4)', background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: 'var(--space-3)', borderRadius: 'var(--radius-xs)' }}>
+                  <div style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'flex-start' }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview of a scanned business card; next/image cannot optimize runtime data URLs */}
+                    <img src={scanPreview} alt={t.clients.imageAlt} style={{ width: '120px', height: '80px', objectFit: 'cover', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-xs)' }} />
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: '0 0 10px', letterSpacing: '0.08em' }}>{t.clients.imageReady}</p>
+                      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                        <button onClick={runExtract} disabled={extracting} aria-busy={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting ? 0.6 : 1, borderRadius: 'var(--radius-xs)' }}>
+                          {extracting && <Icon name="running" size="xs" />}
+                          {extracting ? t.clients.extracting : t.clients.extract}
+                        </button>
+                        <button onClick={() => { setScanPreview(''); setScanBase64('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '8px 10px', cursor: 'pointer', borderRadius: 'var(--radius-xs)' }}>
+                          {t.clients.remove}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Paste text */}
+              {scanTab === 'paste' && !extracted && (
+                <div style={{ marginBottom: 'var(--space-4)' }}>
+                  <textarea
+                    value={pasteText}
+                    onChange={e => setPasteText(e.target.value)}
+                    rows={4}
+                    placeholder={t.clients.pastePlaceholder}
+                    style={{ ...inp, resize: 'vertical', lineHeight: 1.6, marginBottom: 'var(--space-2)' }}
+                  />
+                  <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+                    <button onClick={runExtract} disabled={extracting || !pasteText.trim()} aria-busy={extracting} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', padding: '8px 14px', cursor: 'pointer', textTransform: 'uppercase', opacity: extracting || !pasteText.trim() ? 0.5 : 1, borderRadius: 'var(--radius-xs)' }}>
+                      {extracting && <Icon name="running" size="xs" />}
+                      {extracting ? t.clients.extractingAi : t.clients.extractWithAi}
+                    </button>
+                    <button onClick={() => { setScanTab('scan'); setPasteText('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '8px 10px', cursor: 'pointer', borderRadius: 'var(--radius-xs)' }}>
+                      {t.common.cancel}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {extractError && (
+                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 var(--space-3)', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {extractError}</p>
+              )}
+
+              {/* Extracted preview banner */}
+              {extracted && (
+                <div style={{ marginBottom: 'var(--space-4)', background: 'var(--brand-surface)', border: `1px solid ${TONE_VARS[confidenceTone(extracted.confidence)].border}`, borderLeft: `3px solid ${TONE_VARS[confidenceTone(extracted.confidence)].text}`, padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-xs)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.clients.prefilled}</p>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[confidenceTone(extracted.confidence)].text, background: TONE_VARS[confidenceTone(extracted.confidence)].bg, padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
+                      {confidenceLabel[extracted.confidence]}
+                    </span>
+                  </div>
+                  {extracted.confidence === 'low' && (
+                    <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: 'var(--space-2) 0 0', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> {t.clients.lowConfidenceWarning}</p>
+                  )}
+                  <button onClick={resetScan} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '6px 0 0', display: 'block' }}>
+                    {t.clients.rescan}
+                  </button>
+                </div>
+              )}
+
+              {/* Contact Info */}
+              <span style={sectionLbl}>{t.clients.sectionContact}</span>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <Field label={t.clients.fieldName}>
+                  <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={inp} />
+                </Field>
+                <Field label={t.clients.fieldCompany}>
+                  <input value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} style={inp} />
+                </Field>
+                <Field label={t.clients.fieldEmail}>
+                  <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} style={inp} />
+                </Field>
+                <Field label={t.clients.fieldPhone}>
+                  <input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={inp} />
+                </Field>
+              </div>
+
+              {/* Address */}
+              <span style={sectionLbl}>{t.clients.sectionAddress}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <Field label={t.clients.fieldStreet}>
+                  <StreetInput
+                    value={form.address}
+                    onChange={v => setForm(f => ({ ...f, address: v }))}
+                    onFill={(street, postcode, city) => setForm(f => ({ ...f, address: street, postcode, city }))}
+                  />
+                </Field>
+                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '14px' }}>
+                  <Field label={t.clients.fieldPostcode}>
+                    <input value={form.postcode} onChange={e => setForm(f => ({ ...f, postcode: e.target.value }))} placeholder="40210" maxLength={10} style={inp} />
+                  </Field>
+                  <Field label={t.clients.fieldCity}>
+                    <input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="Düsseldorf" style={inp} />
+                  </Field>
+                </div>
+                <Field label={t.clients.fieldCountry}>
+                  <select value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} style={{ ...inp, appearance: 'none' }}>
+                    {COUNTRY_VALUES.map(v => (
+                      <option key={v} value={v}>{countryLabel[v] ?? v}</option>
+                    ))}
+                  </select>
+                </Field>
+              </div>
+
+              {/* Additional */}
+              <span style={sectionLbl}>{t.clients.sectionAdditional}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', paddingBottom: 'var(--space-1)' }}>
+                <Field label={t.clients.fieldWebsite}>
+                  <input value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} placeholder="https://" style={inp} />
+                </Field>
+                <Field label={t.clients.fieldNotes}>
+                  <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={3} placeholder={t.clients.notesPlaceholder} style={{ ...inp, resize: 'vertical', lineHeight: 1.6 }} />
+                </Field>
+              </div>
+            </div>
+
+            {/* ── MODAL FOOTER — always visible ── */}
+            <div style={{ padding: 'var(--space-4) var(--space-5)', borderTop: '1px solid var(--brand-border)', background: 'var(--brand-surface-subtle)', flexShrink: 0 }}>
+              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+                <button
+                  type="button"
+                  onClick={editId ? updateClient : save}
+                  disabled={saving || !form.name.trim()}
+                  style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 24px', cursor: saving || !form.name.trim() ? 'not-allowed' : 'pointer', opacity: saving || !form.name.trim() ? 0.5 : 1 }}
+                >
+                  {saving ? t.common.saving : editId ? t.clients.updateClient : t.clients.saveClient}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowForm(false); setEditId(null); resetScan(); setSaveError(''); setForm({ ...BLANK }) }}
+                  style={{ background: 'none', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 18px', cursor: 'pointer' }}
+                >
+                  {t.common.cancel}
+                </button>
+              </div>
+              {saveError && (
+                <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {saveError}</p>
+              )}
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      <input ref={fileRef} type="file" accept="image/*,.pdf" capture="environment" style={{ display: 'none' }} onChange={handleFileSelect} />
+
+      {/* ── TABLE ── */}
+      <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflowX: 'auto', borderRadius: 'var(--radius-sm)' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ background: 'var(--brand-surface)', borderBottom: '1px solid var(--brand-border)' }}>
+              {columns.map(h => (
+                <th key={h} style={{ padding: '10px 16px', textAlign: 'left', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr><td colSpan={7} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>{t.common.loading}</td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td colSpan={7} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{t.clients.empty}</td></tr>
+            ) : (
+              filtered.map(c => (
+                <tr
+                  key={c.id}
+                  style={{ borderBottom: '1px solid var(--brand-border)' }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'var(--brand-border)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                >
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)' }}>{c.name}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-secondary)' }}>{c.company || t.common.notAvailable}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.email || t.common.notAvailable}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: mono, fontSize: '12px', color: 'var(--brand-text-secondary)' }}>{c.phone || t.common.notAvailable}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)', fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-muted)' }}>{c.city || t.common.notAvailable}</td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.status === 'active' ? 'var(--semantic-success)' : 'var(--brand-text-secondary)', background: c.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 15%, transparent)' : 'var(--brand-border)', padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)', border: `1px solid ${c.status === 'active' ? 'color-mix(in srgb, var(--semantic-success) 20%, transparent)' : 'var(--brand-text-secondary)'}` }}>
+                      {t.status.client[c.status] ?? c.status}
+                    </span>
+                  </td>
+                  <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button
+                        onClick={() => startEdit(c)}
+                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.06em' }}
+                      >
+                        {t.common.edit}
+                      </button>
+                      <button
+                        onClick={() => deleteClient(c.id, c.name)}
+                        style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.06em' }}
+                      >
+                        {t.common.delete}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ── Success toast ── */}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: '80px', right: '24px', background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--semantic-success) 30%, transparent)', borderLeft: '3px solid var(--semantic-success)', padding: '12px 20px', borderRadius: 'var(--radius-sm)', zIndex: 500 }}>
+          <p style={{ fontFamily: mono, fontSize: '12px', color: 'var(--semantic-success)', margin: 0, letterSpacing: '0.06em' }}>{toast}</p>
+        </div>
+      )}
+    </div>
+  )
+}

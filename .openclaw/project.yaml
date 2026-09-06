@@ -1,0 +1,21 @@
+# Generated and maintained by OpenClaw Workspace Intelligence.
+# This is a one-way export of the Workspace Registry, not a sync
+# target — hand-edits here are not read back, and will be replaced on
+# the next scan. Change values via OpenClaw's Open Project page.
+
+name: "maxpromo.digital"
+description: ""
+owner: "unassigned"
+type: "web-app"
+status: "active"
+priority: "unset"
+stack: 
+  - "TypeScript"
+  - "Tailwind CSS"
+  - "Anthropic Claude"
+deployment: ""
+related_projects: 
+  - "maxpromo-agent-bureau"
+documentation: "documented"
+health: 73
+next_milestone: ""
