@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { getPublishedPosts } from '@/lib/blog/posts'
+import { canonicalUrl } from '@maxpromo/config'
+import { currentDomain } from '@/lib/domains/server'
 
 const SITE_URL = 'https://www.maxpromo.digital'
 const LOCALES = ['de', 'en'] as const
@@ -60,7 +62,62 @@ function languageAlternates(path: string): Record<string, string> {
   return Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}${path}`]))
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+/**
+ * The product domains' sitemap.
+ *
+ * A product domain publishes what it serves and nothing else: its product
+ * page, the consultation about it, and the operator's legal pages — the same
+ * list the middleware admits, so the sitemap cannot drift from route
+ * isolation without one of them being edited alone.
+ *
+ * Priorities say what they mean: the product page is the domain's reason to
+ * exist, the contact page is the action, the legal pages are required rather
+ * than promoted.
+ */
+const PRODUCT_ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }> = [
+  { path: '',           priority: 1.0, changeFrequency: 'weekly'  },
+  { path: '/contact',   priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/impressum', priority: 0.2, changeFrequency: 'yearly'  },
+  { path: '/privacy',   priority: 0.2, changeFrequency: 'yearly'  },
+]
+
+/**
+ * sitemap.xml — served per domain.
+ *
+ * Before v13.0 every one of the ten public hosts served the consultancy's
+ * 62-URL sitemap, all of them maxpromo.digital addresses. A product domain
+ * submitting the consultancy's URLs is submitting nothing about itself.
+ */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const domain = await currentDomain()
+
+  if (domain.sitemap === 'none') return []
+
+  if (domain.mode === 'showcase') {
+    const entries: MetadataRoute.Sitemap = []
+    for (const route of PRODUCT_ROUTES) {
+      for (const locale of domain.languages) {
+        entries.push({
+          url: canonicalUrl(domain, locale, route.path === '' ? '/' : route.path),
+          lastModified: new Date(),
+          changeFrequency: route.changeFrequency,
+          priority: route.priority,
+          // Only the languages this domain actually serves. A single-language
+          // product advertising an hreflang it redirects away from is the same
+          // defect as the mixed-language page, one layer out.
+          alternates: domain.languages.length > 1
+            ? {
+                languages: Object.fromEntries(
+                  domain.languages.map((l) => [l, canonicalUrl(domain, l, route.path === '' ? '/' : route.path)]),
+                ),
+              }
+            : undefined,
+        })
+      }
+    }
+    return entries
+  }
+
   const entries: MetadataRoute.Sitemap = []
 
   for (const route of ROUTES) {

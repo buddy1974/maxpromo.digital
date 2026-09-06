@@ -175,8 +175,10 @@ one is a decision, not a detail.
 
 ## Enforcement
 
-`npm run verify` — eight gates, five of them static audits. See
-`docs/governance/standards.md` for the table.
+`npm run verify` — 12 gates, eight of them static audits. See
+`docs/governance/standards.md` for the table, which `check:docs` holds this
+sentence to: it said eight while the gate ran ten, and it was correct on the
+day it was written.
 
 The colour rule is `check:tokens`: hex literals, raw Tailwind palette classes,
 rgba literals, and the accent used as text — including the accent reached

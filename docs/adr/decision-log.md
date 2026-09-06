@@ -2,7 +2,7 @@
 
 ## 2026-07-10 — Build on existing uncommitted product-page WIP rather than discard it
 
-**Decision:** The 7 generic product pages and `messages/*.json` had pre-existing uncommitted changes using a client-side `useLocale()` pattern flagged as architecturally wrong by the sprint brief. Rather than `git stash` and rewrite from scratch, the existing bilingual copy was kept and the pages were refactored in place to the server `params.locale` pattern (matching `taxkontrol/page.tsx`).
+**Decision:** The 7 generic product pages and `messages/*.json` had pre-existing uncommitted changes using a client-side `useLocale()` pattern flagged as architecturally wrong by the sprint brief. Rather than `git stash` and rewrite from scratch, the existing bilingual copy was kept and the pages were refactored in place to the server `params.locale` pattern (matching the TaxKontrol page, since retired — those routes are now served by the LandingEngine from the product registry).
 **Why:** Marcel confirmed this explicitly when asked. The copy itself was high quality; only the locale-threading mechanism was wrong.
 **Owner:** Marcel (confirmed via clarifying question at sprint start).
 
@@ -380,4 +380,154 @@ that had stopped calling the gate. Rule 3 searched the whole standards
 document, and the script names also appear in the audit-suite table further
 down, so removing a gate from the gate table still passed. Both looked correct.
 Both were verified only by deliberately breaking the thing they check.
+
+## 2026-09-05 - A product has one identity, and empty slots are declared
+
+**Decision:** ADR-0009. One brand record per product in
+`packages/config/brands.ts`: names, accent, accent-as-text, theme colours, and
+every asset slot — declared even when empty, with the reason it is empty.
+**Why:** Identity was spread across four files and none of them held it. Two
+products had a *semantic* token as their brand accent, which the design system
+forbids and no check could see. Four of eleven accents fail contrast as text and
+two components colour text with them — the platform has enforced exactly that
+rule for its own accent since v3, and product accents were never in scope
+because the check knows one token name.
+**How to apply:** `check:brands` is gate 3 and holds the registry to the
+repository. A slot that is not `own` and has no note is a finding: an empty slot
+with no reason is indistinguishable from an oversight, which is what the audit
+found in its own registry on its first run.
+
+## 2026-09-05 - A custom property that travels is as undefined as one that does not
+
+**Decision:** No `var()` in output read outside the browser. `lib/email.ts` and
+`lib/documents/emailHtml.ts` use the token package's TypeScript mirror; the rule
+is in `check:token-inputs`.
+**Why:** Ninety-five custom properties were written into transactional email
+markup — seventy-one spacing values in `email.ts` and twenty-four colours in
+`emailHtml.ts`, including the company name on the invoice letterhead set to
+`var(--brand-surface)` on a near-black band. Email clients implement no custom
+properties, so each resolves to nothing with the same silence as an undefined
+one. ADR-0006's check could not see them: they are all correctly defined by the
+web application. They simply travel somewhere that cannot read them.
+**How to apply:** The mirror (`token`, `space`, `type`) exists for exactly these
+surfaces. `printCss.ts` is deliberately exempt — it renders in a browser page.
+
+## 2026-09-05 - The documentation tree has one index and one authority per fact
+
+**Decision:** `docs/PLATFORM-CONSTITUTION.md` indexes the tree and restates none
+of it. `audit:docs` enforces the mechanical part: named files exist, gate counts
+beside `npm run verify` are current, every document is reachable.
+**Why:** `design-system.md` said the merge gate had eight gates while it ran
+ten — correct when written, which is why nobody re-read it. Thirteen documents
+named files that had moved or been deleted. Twenty-six had no inbound reference
+at all.
+**How to apply:** Two of the audit's own rules were wrong before they were
+right, and both failures are recorded in the file: the first draft checked
+Markdown links in a repository that uses none, and reported clean on zero
+targets; the second matched historical narration and reported five findings
+against documentation that was correct. A rule that fires on the wrong thing is
+as useless as one that fires on nothing.
+
+## 2026-09-05 - A domain is an identity, not a routing hint
+
+**Decision:** ADR-0008. One record per public host in
+`packages/config/domains.ts`; metadata, route availability, languages, legal
+chrome, robots and sitemap are all derived from it. `apps/web/lib/host/` is
+deleted.
+**Why:** A host resolved to four facts, and everything else about a domain was
+decided downstream by code written when there was only one site. RC1 measured
+the result: nine product domains served the consultancy's title, social card
+and canonical URL; their robots.txt named the consultancy as their host; all
+fifteen consultancy pages answered 200 on every one of them, chrome-less, with
+the contact form that collects personal data carrying no Impressum link and no
+links at all; and two domains served English product copy inside German page
+furniture. Five symptoms, one missing concept.
+**How to apply:** Nothing outside the registry names a domain. `check:domains`
+is gate 2 and checks the registry against the repository, because a registry
+that can lie is worse than no registry.
+
+## 2026-09-05 - The registry declares the languages a domain has, not the ones it wants
+
+**Decision:** `languages` on a domain record is the set the middleware will
+serve. `publishers24.org` and `drive24.live` declare `['en']`; `/de` redirects
+to `/`, the locale switcher does not render, and no hreflang is published for a
+language the domain redirects away from.
+**Why:** `pickLocale` returns the English value whenever the German one is
+absent, silently, field by field. PublishingOS has German for 1 of 16 localised
+fields and Drive24 for none. There is no point after rendering at which a
+mixed-language page can be detected — the fallback leaves no trace — so the only
+place to prevent one is before it is built.
+**How to apply:** When the German copy is written, add `'de'` to one array. The
+domain audit fails the build if that array claims a language the product does
+not have.
+
+## 2026-09-05 - Chrome belongs to the domain, not to one page on it
+
+**Decision:** ProductNav and ProductFooter moved out of `LandingEngine` into
+`ShowcaseChrome`, rendered from `app/[locale]/layout.tsx`.
+**Why:** They lived inside the landing page, which renders only at the domain's
+root, while the locale layout suppressed all Maxpromo chrome on a showcase
+host. Every other page a product domain served therefore had no navigation and
+no footer — including `/contact`, the destination of every call to action,
+which collected a name, a company, an email address and a telephone number and
+contained no links whatsoever. §5 DDG and Article 13 GDPR both attach at the
+point of collection.
+**How to apply:** Anything every page on a domain must wear lives in the layout,
+not in a page component.
+
+## 2026-09-06 - Nothing fails silently
+
+**Decision:** ADR-0010. One logging standard, error boundaries at both levels
+in both applications, a correlation id on every response, `/api/health` in one
+shape, performance budgets with a gate, and a Lighthouse baseline across every
+public domain.
+**Why:** The platform's most common way of failing was to say nothing. No error
+boundary anywhere; 77 `console.*` calls with no shared shape; 37 `catch {}`
+blocks that swallow; no health endpoint on the application serving ten domains;
+eight security advisories surfaced by nothing.
+**How to apply:** A check that cannot see something must say so rather than
+report clean — the dependency audit prints ADVISORIES: UNKNOWN when it cannot
+run `npm audit`, and the Lighthouse harness refuses a dev server rather than
+recording a meaningless score.
+
+## 2026-09-06 - A number nobody can defend is not a budget
+
+**Decision:** Every entry in `packages/config/budgets.ts` carries three numbers
+and a sentence: what it measured when written, what it may become, and what it
+protects. `measured` is never edited to make a check pass; raising a `limit` is
+a decision for the change log.
+**Why:** A budget pinned to today's value fails on the next legitimate change
+and gets raised without thought, which is how a budget becomes a formality. The
+headroom is the space a real change may take; crossing it should be a decision.
+**How to apply:** The Lighthouse floors were set to industry norms and six
+domains fall below them on mobile. That gap is the finding — lowering the floor
+would have made the check incapable of saying anything, which is ADR-0004's
+definition of a rule that cannot fail.
+
+## 2026-09-06 - An advisory is blocked or accepted, never ignored
+
+**Decision:** ADR-0011. `audit:dependencies` blocks a release on a CRITICAL
+advisory reaching production, and on a HIGH one unless
+`packages/config/security.ts` carries a live acceptance naming the exposure, the
+mitigation, an owner and a review date.
+**Why:** "Fail on any advisory" would have blocked this platform on four
+development-only findings in a deprecated transitive of a migration CLI, whose
+only published fix is a downgrade. A gate that fires on something nobody can fix
+is a gate people route around, and that converts a real signal into a habit of
+ignoring one.
+**How to apply:** Reach is computed by walking npm's `effects` graph up to the
+direct dependency and reading *its* section — the vulnerable package has none of
+its own. A root that cannot be identified counts as production.
+
+## 2026-09-06 - The smallest secure version is not always the one to ship
+
+**Decision:** `next` went to 16.3.4, not to 16.3.0, and the reason is written
+down. 16.3.0 is the smallest version clearing all three HIGH findings — it is
+where the pinned postcss becomes 8.5.23 and sharp becomes ^0.35.3. 16.3.4 is the
+same minor with four patch releases of fixes and no additional feature surface.
+**Why:** Shipping the `.0` of a minor to ten production domains is the larger
+risk. "Smallest secure" should not be read as "least tested".
+**How to apply:** State the security minimum and the shipped version separately,
+so the gap is a decision someone can disagree with rather than a number nobody
+questioned.
 

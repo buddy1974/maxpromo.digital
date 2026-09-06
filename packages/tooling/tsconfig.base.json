@@ -4,7 +4,13 @@
     "Shared TypeScript configuration for every Maxpromo application.",
     "Applications extend this and add only what is genuinely app-specific:",
     "their own `paths` and `include`. Before this file each repository kept",
-    "its own copy and the two had already drifted on target, lib and strictness."
+    "its own copy and the two had already drifted on target, lib and strictness.",
+    "",
+    "allowImportingTsExtensions: relative imports inside packages/* carry the",
+    ".ts extension so Node can load those files directly. The audit tooling",
+    "imports the Domain and Brand registries as modules rather than re-parsing",
+    "them, and a check that reads its own second reading of the source is",
+    "checking its parser. Valid only with noEmit, which every workspace uses."
   ],
   "compilerOptions": {
     "target": "ES2017",
@@ -17,6 +23,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,

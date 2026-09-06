@@ -26,6 +26,7 @@ import type {
   BulletTuple,
   WorkflowTuple,
 } from '@/lib/registry/types'
+import { resolveBrand } from '@maxpromo/config'
 import { PUBLIC_PRODUCTS, PROTECTED_PRODUCTS } from '@/lib/registry/products'
 import {
   resolveString,
@@ -136,7 +137,7 @@ export function toSystemsCard(
     workflow:    resolveWorkflow(product.workflow, locale),
 
     // ── Visual
-    brandColor:     product.brandColor,
+    brandColor:     resolveBrand(product.slug).colours.accent,
     layoutVariant:  product.layoutVariant,
     media: {
       card:  resolveCardImage(product, locale),

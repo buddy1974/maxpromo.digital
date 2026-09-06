@@ -30,9 +30,13 @@ The OS is **not** a separate application today. It is a route group inside
 deployment as the ten public domains. `os.maxpromo.digital` and an `apps/os`
 workspace are **planned** — see §6.
 
-`web` is not one site. `lib/host/HOST_MAP.ts` classifies every request as `hub`
-or `showcase` and `middleware.ts` stamps `x-mp-mode`; on a showcase host the
-root route renders that product's landing page instead of the marketing home.
+`web` is not one site. The **Domain Registry**
+(`packages/config/domains.ts`) holds one record per public host, and
+`middleware.ts` resolves every request against it before anything else happens.
+Identity comes first; metadata, route availability, languages, legal chrome,
+robots and sitemap are all derived from that record (ADR-0008). On a showcase
+host the root route renders that product's landing page, the domain's own
+metadata and canonical, and nothing the domain does not serve.
 **One deployment therefore serves ten public domains**, which is the single most
 important operational fact about this platform:
 
@@ -55,6 +59,14 @@ The ten operating systems are **protected products**. They are marketed on
 their own domains and are deliberately absent from the consultancy site: no
 `/systems` section, no entries in its sitemap, no naming on public pages. Agent
 Bureau is the one product marketed publicly from the hub, at `/agent-bureau`.
+
+The separation runs both ways, which until v13.0 it did not. A product domain
+serves its product, its contact page and the operator's legal pages; every other
+path answers `308` to the same path on the hub. Before that rule existed all
+sixteen public routes answered `200` on every product domain, rendering the
+consultancy's pages stripped of the navigation and footer that carry the legal
+links. `check:domains` holds the allowlist to real pages;
+`audit:domain-experience` walks the live domains and checks the redirect.
 
 ---
 

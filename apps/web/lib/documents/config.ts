@@ -75,6 +75,10 @@ export const BRAND_COLORS = {
   borderStrong: token.borderStrong,
   surfaceSubtle: token.surfaceSubtle,
   white: token.surface,
+  /** Text on the inked letterhead band. Added v14.0 — emailHtml.ts was
+   *  reaching for `var(--brand-text-inverted)`, which no email client
+   *  resolves. */
+  textInverted: token.textInverted,
 } as const
 
 /** Every payment method the document system knows how to render. */

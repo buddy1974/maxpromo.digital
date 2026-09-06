@@ -479,4 +479,36 @@ Future approved decisions, lessons learned, architectural changes, and strategic
 
 Never delete historical decisions.
 
+---
+
+# APPENDED 2026-09-05 — THE PRODUCT LIST HAS AN AUTHORITY
+
+The CURRENT ECOSYSTEM list above is kept as written, per this document's own
+rule. It is no longer the authority for which products exist.
+
+**The authority is the Brand Registry**, `packages/config/brands.ts`, with the
+Domain Registry beside it. Twelve brand records, eleven public domains, checked
+against the repository on every merge by `check:brands` and `check:domains`.
+
+The two disagree, and the disagreement is recorded rather than resolved:
+
+**The list above does not name four products that exist and are live:** CareOS
+(pflege-care24.de), RealEstateOS (easy-immo24.de), PublishingOS
+(publishers24.org), and Max Agent Bureau (agents.maxpromo.digital).
+
+**The list above names two the registries do not have.** *CreatorOS* has no
+product entry, no brand record and no domain. *DriveMe* is the name this
+document uses for what the registry, the product entry and the live domain all
+call **Drive24** (drive24.live) — one product, two names, and the second one is
+in the company's own memory.
+
+Both are business questions for Marcel, not drift to be silently corrected:
+whether CreatorOS is a plan or a lapsed idea, and which name Drive24 goes to
+market under. `check:docs` reports the difference on every run so it stays
+visible until it is answered.
+
+Same shape as the Agent Bureau naming question recorded in
+`governance/known-risks.md`: the platform now notices when the company's words
+and the company's registries disagree, and says so rather than choosing.
+
 Append new knowledge chronologically so OpenClaw can understand not only the current state, but also how the company evolved over time.

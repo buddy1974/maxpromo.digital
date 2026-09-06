@@ -40,7 +40,19 @@ function getServerSnapshot(): boolean {
   return true
 }
 
-export default function CookieBanner() {
+interface CookieBannerProps {
+  /**
+   * Where the privacy link points.
+   *
+   * The hub uses next-intl's typed Link, which always writes the locale
+   * prefix. A product domain shows no prefix for its own language, so that
+   * link would resolve through a redirect. Passing the address explicitly
+   * keeps it one hop on every domain.
+   */
+  privacyHref?: string
+}
+
+export default function CookieBanner({ privacyHref }: CookieBannerProps = {}) {
   const t = useTranslations('cookieBanner')
   const accepted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
 
@@ -89,12 +101,18 @@ export default function CookieBanner() {
           }}
         >
           {t('text')}{' '}
-          <Link
-            href="/privacy"
-            style={{ color: 'var(--brand-primary-text)', textDecoration: 'none' }}
-          >
-            {t('privacyLink')}
-          </Link>
+          {privacyHref ? (
+            <a href={privacyHref} style={{ color: 'var(--brand-primary-text)', textDecoration: 'none' }}>
+              {t('privacyLink')}
+            </a>
+          ) : (
+            <Link
+              href="/privacy"
+              style={{ color: 'var(--brand-primary-text)', textDecoration: 'none' }}
+            >
+              {t('privacyLink')}
+            </Link>
+          )}
           .
         </p>
       </div>

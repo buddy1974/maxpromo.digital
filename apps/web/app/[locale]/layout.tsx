@@ -1,7 +1,8 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { headers } from 'next/headers'
+import { currentDomain } from '@/lib/domains/server'
+import { ShowcaseChrome } from '@/components/landing/ShowcaseChrome'
 import { routing } from '@/i18n/routing'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -40,9 +41,12 @@ export default async function LocaleLayout({
   // Opt into static rendering for this locale segment.
   setRequestLocale(locale)
 
-  // Showcase product domains own their full visual identity-  // suppress Maxpromo chrome (Navbar, Footer, ChatAgent, etc.)
-  const h          = await headers()
-  const isShowcase = h.get('x-mp-mode') === 'showcase'
+  // Showcase product domains own their full visual identity — the Maxpromo
+  // chrome (Navbar, Footer, CookieBanner) is suppressed and the product's own
+  // nav and footer take its place, on every page the domain serves rather than
+  // only on its home page. See components/landing/ShowcaseChrome.tsx.
+  const domain     = await currentDomain()
+  const isShowcase = domain.mode === 'showcase'
 
   // Site-wide Organization + WebSite JSON-LD, Maxpromo hub only, never on
   // white-labeled showcase product domains. Address/contact are taken
@@ -80,7 +84,9 @@ export default async function LocaleLayout({
     <NextIntlClientProvider>
       {isShowcase ? (
         <>
-          <main id="content">{children}</main>
+          <ShowcaseChrome domain={domain} locale={locale}>
+            {children}
+          </ShowcaseChrome>
           <Max />
         </>
       ) : (

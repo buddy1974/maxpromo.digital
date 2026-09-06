@@ -1,0 +1,452 @@
+{
+  "measuredAt": "2026-09-06T08:48:10.894Z",
+  "note": "Lab measurements from Lighthouse against a local production build. Not field data — see governance/known-risks.md.",
+  "minimums": {
+    "performance": 85,
+    "accessibility": 95,
+    "best-practices": 75,
+    "seo": 95
+  },
+  "results": [
+    {
+      "host": "maxpromo.digital",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 93,
+        "best-practices": 78,
+        "seo": 92
+      },
+      "vitals": {
+        "lcp": 770.2058000000001,
+        "cls": 0,
+        "tbt": 0,
+        "ttfb": 58,
+        "si": 474.2617131636535
+      },
+      "bytes": {
+        "total": 330777,
+        "script": 168716,
+        "image": 0
+      }
+    },
+    {
+      "host": "maxpromo.digital",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 79,
+        "accessibility": 93,
+        "best-practices": 78,
+        "seo": 92
+      },
+      "vitals": {
+        "lcp": 3610.254000000001,
+        "cls": 0,
+        "tbt": 446.1865,
+        "ttfb": 42,
+        "si": 1248.0042000044227
+      },
+      "bytes": {
+        "total": 323593,
+        "script": 168716,
+        "image": 0
+      }
+    },
+    {
+      "host": "restaurant-os.de",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 717.9323499999998,
+        "cls": 0,
+        "tbt": 9,
+        "ttfb": 35,
+        "si": 447.73378292158134
+      },
+      "bytes": {
+        "total": 373025,
+        "script": 168716,
+        "image": 73828
+      }
+    },
+    {
+      "host": "restaurant-os.de",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 84,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3415.4263,
+        "cls": 0,
+        "tbt": 345,
+        "ttfb": 22,
+        "si": 1062.1534100107813
+      },
+      "bytes": {
+        "total": 354632,
+        "script": 168716,
+        "image": 55435
+      }
+    },
+    {
+      "host": "superhandwerk.de",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 712.6732999999999,
+        "cls": 0,
+        "tbt": 11.945549999999912,
+        "ttfb": 26,
+        "si": 418.2864068276824
+      },
+      "bytes": {
+        "total": 344262,
+        "script": 168716,
+        "image": 47463
+      }
+    },
+    {
+      "host": "superhandwerk.de",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 86,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3397.946799999999,
+        "cls": 0,
+        "tbt": 267.99999999999955,
+        "ttfb": 25,
+        "si": 1036.3156
+      },
+      "bytes": {
+        "total": 356556,
+        "script": 168716,
+        "image": 59757
+      }
+    },
+    {
+      "host": "super-praxis.de",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 695.5025,
+        "cls": 0,
+        "tbt": 9.5,
+        "ttfb": 22,
+        "si": 318.3474536563109
+      },
+      "bytes": {
+        "total": 333182,
+        "script": 168716,
+        "image": 35435
+      }
+    },
+    {
+      "host": "super-praxis.de",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 81,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3441.7229500000003,
+        "cls": 0,
+        "tbt": 413.0923500000001,
+        "ttfb": 20,
+        "si": 909.8153
+      },
+      "bytes": {
+        "total": 343232,
+        "script": 168716,
+        "image": 45485
+      }
+    },
+    {
+      "host": "smartprintshop.de",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 691.8494999999998,
+        "cls": 0,
+        "tbt": 17,
+        "ttfb": 24,
+        "si": 378.58733498907384
+      },
+      "bytes": {
+        "total": 334972,
+        "script": 168716,
+        "image": 36966
+      }
+    },
+    {
+      "host": "smartprintshop.de",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 87,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3431.1003499999993,
+        "cls": 0,
+        "tbt": 234.99999999999977,
+        "ttfb": 20,
+        "si": 1059.03345
+      },
+      "bytes": {
+        "total": 344388,
+        "script": 168716,
+        "image": 46382
+      }
+    },
+    {
+      "host": "easy-immo24.de",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 727.90155,
+        "cls": 0,
+        "tbt": 24,
+        "ttfb": 25,
+        "si": 339.62786742019125
+      },
+      "bytes": {
+        "total": 341224,
+        "script": 168716,
+        "image": 43912
+      }
+    },
+    {
+      "host": "easy-immo24.de",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 86,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3411.160949999999,
+        "cls": 0,
+        "tbt": 273.9999999999998,
+        "ttfb": 22,
+        "si": 1030.0536499999998
+      },
+      "bytes": {
+        "total": 352968,
+        "script": 168716,
+        "image": 55656
+      }
+    },
+    {
+      "host": "pflege-care24.de",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 713.44835,
+        "cls": 0,
+        "tbt": 11,
+        "ttfb": 20,
+        "si": 337.47509375473646
+      },
+      "bytes": {
+        "total": 338912,
+        "script": 168716,
+        "image": 41757
+      }
+    },
+    {
+      "host": "pflege-care24.de",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 80,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3438.0868499999992,
+        "cls": 0,
+        "tbt": 471.9999999999998,
+        "ttfb": 18,
+        "si": 1086.9750819863245
+      },
+      "bytes": {
+        "total": 349392,
+        "script": 168716,
+        "image": 52237
+      }
+    },
+    {
+      "host": "taxkontrol.de",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 713.7525500000002,
+        "cls": 0,
+        "tbt": 24,
+        "ttfb": 21,
+        "si": 376.9691130083886
+      },
+      "bytes": {
+        "total": 331100,
+        "script": 168716,
+        "image": 32956
+      }
+    },
+    {
+      "host": "taxkontrol.de",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 81,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3434.1207000000004,
+        "cls": 0,
+        "tbt": 439.0000000000002,
+        "ttfb": 20,
+        "si": 1111.7069000000001
+      },
+      "bytes": {
+        "total": 340100,
+        "script": 168716,
+        "image": 41956
+      }
+    },
+    {
+      "host": "publishers24.org",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 714.1959999999998,
+        "cls": 0,
+        "tbt": 11.999999999999943,
+        "ttfb": 20,
+        "si": 310.2485303270285
+      },
+      "bytes": {
+        "total": 341031,
+        "script": 168716,
+        "image": 44469
+      }
+    },
+    {
+      "host": "publishers24.org",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 82,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3407.8728499999997,
+        "cls": 0,
+        "tbt": 395.70905000000016,
+        "ttfb": 19,
+        "si": 1044.9009140053438
+      },
+      "bytes": {
+        "total": 354059,
+        "script": 168716,
+        "image": 57497
+      }
+    },
+    {
+      "host": "drive24.live",
+      "formFactor": "desktop",
+      "scores": {
+        "performance": 100,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 716.1786500000001,
+        "cls": 0,
+        "tbt": 14,
+        "ttfb": 17,
+        "si": 335.35340349992873
+      },
+      "bytes": {
+        "total": 337831,
+        "script": 168716,
+        "image": 44731
+      }
+    },
+    {
+      "host": "drive24.live",
+      "formFactor": "mobile",
+      "scores": {
+        "performance": 90,
+        "accessibility": 96,
+        "best-practices": 78,
+        "seo": 100
+      },
+      "vitals": {
+        "lcp": 3354.33025,
+        "cls": 0,
+        "tbt": 177.5,
+        "ttfb": 21,
+        "si": 1059.77675
+      },
+      "bytes": {
+        "total": 349971,
+        "script": 168716,
+        "image": 56871
+      }
+    }
+  ]
+}

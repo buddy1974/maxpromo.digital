@@ -8,6 +8,16 @@ interface ProductNavProps {
   domain:      string
   ctaLabel:    string
   ctaHref:     string
+  /**
+   * Whether this domain speaks more than one language.
+   *
+   * PublishingOS and Drive24 have English copy only, and the switcher offered
+   * a German page that was English product text inside German section
+   * headings. The domain registry now lists one language for both, the
+   * middleware redirects the other away, and the control that pointed at it
+   * comes off with them.
+   */
+  showLocaleSwitcher?: boolean
 }
 
 /**
@@ -31,7 +41,7 @@ interface ProductNavProps {
  * both interactive elements get explicit hover/focus-visible feedback —
  * previously neither had any state feedback at all.
  */
-export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNavProps) {
+export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref, showLocaleSwitcher = true }: ProductNavProps) {
   return (
     <header
       style={{
@@ -78,7 +88,7 @@ export function ProductNav({ domainBrand, domain, ctaLabel, ctaHref }: ProductNa
           >
             {domain}
           </span>
-          <LocaleSwitcher />
+          {showLocaleSwitcher && <LocaleSwitcher />}
           <a href={ctaHref} className={INTERACTIVE_PRIMARY_CLASSES} style={BUTTON_PRIMARY_COMPACT} {...externalLinkProps(ctaHref)}>
             {ctaLabel}
           </a>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Roboto_Mono } from 'next/font/google'
 import { getLocale } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
+import { currentDomain, currentLocale, domainRootMetadata } from '@/lib/domains/server'
 import './globals.css'
 
 /**
@@ -52,7 +53,17 @@ const robotoMono = Roboto_Mono({
 
 const SITE_URL = 'https://www.maxpromo.digital'
 
-export const metadata: Metadata = {
+/**
+ * The consultancy's own site-wide metadata.
+ *
+ * Kept as a plain object rather than exported directly: since v13.0 the
+ * exported metadata is built per domain, and this is the hub's branch of that
+ * decision. A product domain never sees any of it.
+ *
+ * Everything below is unchanged from before v13.0 — this sprint moved it, it
+ * did not rewrite it.
+ */
+const HUB_METADATA: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: 'Maxpromo Digital',
   title: {
@@ -93,20 +104,49 @@ export const metadata: Metadata = {
   },
 }
 
-interface RootLayoutProps {
-  children: React.ReactNode
+/**
+ * Site-wide metadata, resolved from the Domain Registry.
+ *
+ * This is the single most load-bearing change of v13.0. Ten public domains are
+ * served by this application, and until now all ten inherited one static
+ * object: the same `metadataBase`, the same `og:site_name`, and the same
+ * `%s | Maxpromo Digital` title template. RC1 measured what that produced —
+ * restaurant-os.de announcing itself in the browser tab as
+ * "Business-Systeme aus Essen | Maxpromo Digital".
+ *
+ * The title template matters more than it looks: every child page that sets a
+ * bare title inherits the suffix, so fixing the home page alone would still
+ * have left "Kontakt | Maxpromo Digital" on a product domain's contact page.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const domain = await currentDomain()
+  return domainRootMetadata(domain, await resolveLocale(), HUB_METADATA)
 }
 
-export default async function RootLayout({ children }: RootLayoutProps) {
-  // getLocale() throws on routes that don't pass through next-intl
-  // middleware (notably /os/* and /api/*). Catch and fall back to the
-  // default locale so the OS panel renders with a valid <html lang>.
+/**
+ * The locale for this request, in the order of things that actually know.
+ *
+ * The middleware's stamp is authoritative — see currentLocale(). getLocale()
+ * is the fallback for anything the middleware did not match, and it throws on
+ * routes that never pass through next-intl (notably /os/* and /api/*), so the
+ * catch is load-bearing rather than defensive.
+ */
+async function resolveLocale(): Promise<string> {
   let locale: string = routing.defaultLocale
   try {
     locale = await getLocale()
   } catch {
     // intentionally swallowed — non-localized route
   }
+  return currentLocale(locale)
+}
+
+interface RootLayoutProps {
+  children: React.ReactNode
+}
+
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const locale = await resolveLocale()
   return (
     <html lang={locale}>
       <body

@@ -18,6 +18,7 @@
  */
 
 import type { ProductEntry, ProductLayout } from '@/lib/registry/types'
+import { resolveBrand } from '@maxpromo/config'
 import { HOMEPAGE_PRODUCTS } from '@/lib/registry/products'
 import {
   resolveString,
@@ -91,7 +92,7 @@ export function toHomepageCard(
     name:          product.name,
     headline:      resolveString(product.headline, locale),
     subline:       resolveString(product.subline, locale),
-    brandColor:    product.brandColor,
+    brandColor:    resolveBrand(product.slug).colours.accent,
     layoutVariant: product.layoutVariant,
     media: {
       card:  resolveCardImage(product, locale),

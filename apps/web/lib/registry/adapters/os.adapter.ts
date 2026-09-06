@@ -34,6 +34,7 @@ import type {
   RevenueModel,
   ProductIndustry,
 } from '@/lib/registry/types'
+import { resolveBrand } from '@maxpromo/config'
 import { PRODUCTS } from '@/lib/registry/products'
 
 // =============================================================================
@@ -156,7 +157,7 @@ export function toOSRegistryRow(product: ProductEntry): OSRegistryRow {
     demoCredentials: product.demoCredentials,
 
     // ── Visual
-    brandColor:    product.brandColor,
+    brandColor:    resolveBrand(product.slug).colours.accent,
     layoutVariant: product.layoutVariant,
 
     // ── Analytics

@@ -462,7 +462,8 @@ export interface ProductEntry {
    * Primary headline. Governance rule VG-04.
    * Pattern: 2-line contrast pair ("Orders move. Staff doesn't.")
    *       or 3-word outcome ("More time. Better care.")
-   * Max 6 words total. One word takes brandColor in the rendered component.
+   * Max 6 words total. One word takes the product accent in the rendered
+   * component — see the Brand Registry.
    */
   readonly headline: LocalisedString
 
@@ -596,7 +597,14 @@ export interface ProductEntry {
   readonly media: MediaAssets
 
 
-  readonly brandColor: string
+  /*
+   * `brandColor` moved to the Brand Registry (packages/config/brands.ts) in
+   * v14.0. A product's accent is identity, not content, and it sat here beside
+   * the FAQ answers — where two products set it to a semantic token
+   * (`var(--semantic-success)`, `var(--semantic-info)`), which the design
+   * system forbids because identity and meaning must not share a namespace.
+   * The adapters read it from `resolveBrand(slug).colours.accent`.
+   */
 
   /**
    * Visual layout variant. Governance rule VG-07.

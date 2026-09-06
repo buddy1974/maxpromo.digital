@@ -24,14 +24,17 @@ run on developer machines and never in CI.
 | # | Gate | What it catches |
 |---|---|---|
 | 1 | **Governance audit** `check:governance` | A second definition of `verify`, a CI workflow that restates the gate instead of calling it, or a gate missing from this table. It runs first because it checks that the rest of this table is true |
-| 2 | **Design token audit** `check:tokens` | Hex literals, raw Tailwind palette classes, rgba literals, and the brand accent used as a text colour — directly, through a conditional, aliased to a local name, or bound to a field named as text. Anywhere outside the token package |
-| 3 | **Token input audit** `check:token-inputs` | A custom property the token package reads that an application never defines, and any `var()` an application uses that nothing defines at all. An undefined `var()` does not warn: with a fallback it silently uses it, without one the whole declaration is dropped — see ADR-0006 |
-| 4 | **Icon audit** `check:icons` | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
-| 5 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
-| 6 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
-| 7 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
-| 8 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
-| 9 | **Production build** `build` | Every application builds |
+| 2 | **Domain audit** `check:domains` | A Domain Registry entry the repository cannot honour: a duplicate or unnormalised host key, an origin that disagrees with its host, a language declared for a product that has no copy in it, an OpenGraph image or favicon that is not on disk or is not the dimensions the registry states, and a route allowlist or contact path naming a page that does not exist |
+| 3 | **Brand asset audit** `check:brands` | A Brand Registry entry the repository cannot honour: a duplicate or unreachable product, an accent that is a token reference rather than a colour, an accent-as-text form below 4.5:1 on white, an asset that is declared and not on disk or not the dimensions stated, an empty slot with no stated reason, or a product declaring its own typography. It also classifies every asset slot KEEP / REPLACE / CREATE / REMOVE and prints the counts |
+| 4 | **Design token audit** `check:tokens` | Hex literals, raw Tailwind palette classes, rgba literals, and the brand accent used as a text colour — directly, through a conditional, aliased to a local name, or bound to a field named as text. Anywhere outside the token package |
+| 5 | **Token input audit** `check:token-inputs` | A custom property the token package reads that an application never defines, and any `var()` an application uses that nothing defines at all. An undefined `var()` does not warn: with a fallback it silently uses it, without one the whole declaration is dropped — see ADR-0006. Since v14.0 it also rejects any `var()` written into output that leaves the browser: an email client resolves no custom property, so `var(--space-2)` in an email is no padding at all |
+| 6 | **Icon audit** `check:icons` | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
+| 7 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
+| 8 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
+| 9 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
+| 10 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
+| 11 | **Production build** `build` | Every application builds |
+| 12 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS and CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built |
 
 The static audits run first on purpose: they are the fastest and they catch the
 classes of regression this platform has had most often.
@@ -50,6 +53,18 @@ rules it imposes apply to anything added to `packages/tooling/`:
   rule whose pattern contained a literal backspace byte where `` should have
   been, and a second whose escape was eaten by a template literal. Both looked
   correct in the source and matched nothing.
+
+Since v13.0 one audit's demonstration is checked in rather than performed by
+hand: `npm run prove:domains` breaks the Domain Registry fourteen ways, one at a
+time, and asserts that `check:domains` reports each one. It edits
+`packages/config/domains.ts` in place and restores it, so it is deliberately not
+part of `verify` — run it on a clean tree.
+
+The reason it exists is that a demonstration nobody can re-run is a claim rather
+than evidence. This standard has been honoured by hand since ADR-0004, and in
+that time nine rules in this repository's own tooling were found to look correct
+and examine nothing — two of them written in the sprint that introduced the
+discipline.
 
 ---
 
@@ -72,10 +87,32 @@ redirect updated in the same change.
 was found, `docs/governance/known-risks.md`. If something shipped,
 `docs/history/change-log.md`. Chat history is not a source of truth.
 
+`docs/PLATFORM-CONSTITUTION.md` is the index for the whole tree and every fact
+has one authoritative location there. `audit:docs` enforces the mechanical part
+of that: every file a document names exists, every gate count stated beside
+`npm run verify` is current, and every document is reachable from another one.
+A document nothing references is a document nobody updates.
+
 **Security.** No secret in the repository. No new public API route without a
 rate limit and an explicit auth decision recorded. Personal data must not
 change region or provider without a legal review — see the open item in
 `known-risks.md`.
+
+**Dependency advisories.** `audit:dependencies` classifies every advisory by
+severity, by whether the vulnerable package can reach a served request, and by
+whether a remediation exists. A CRITICAL advisory reaching production blocks a
+release and cannot be excused. A HIGH advisory reaching production blocks unless
+`packages/config/security.ts` carries a live acceptance naming it, with the
+actual exposure, the mitigation, an owner and a review date. Everything else is
+reported, on every run, including what has been accepted — an acceptance is
+excluded from blocking and from nothing else.
+
+The rule is shaped this way because "fail on any advisory" would have failed
+this platform on four development-only findings in a deprecated transitive of a
+migration CLI, and a gate that fires on something nobody can fix is a gate
+people route around. `prove:security` exercises the decision against a truth
+table, because a gate that has only ever been seen passing is not known to
+block.
 
 **Claims.** A number stated publicly about a client outcome is a commitment. It
 must agree with itself across every page and both languages, and it must not
@@ -92,6 +129,63 @@ disagrees with it, in either language.
 that cannot be placed on the ladder the site already describes — discovery,
 assessment, design, build, managed operations, support — does not belong on the
 pricing page. See `docs/governance/pricing-alignment-review.md`.
+
+**Naming.** A product has one slug and it is the same string in the product
+registry, the Brand Registry and the Domain Registry. Where a fourth surface
+needs a different one — the contact page's `?system=` value for RealEstateOS —
+it is declared explicitly, never derived, and `check:domains` compares it
+against that surface's own list. A name that is derived in one place and typed
+in another will diverge.
+
+**Folders.** Shared code lives in `packages/`; an application keeps only what
+only it uses. A directory under `components/` is a section family, not a
+dumping ground. Route groups carry no URL segment and are used to share a
+layout, not to hide a page.
+
+**Components.** A component every page on a surface must wear lives in that
+surface's layout, never inside one page's engine. A component renders nothing
+rather than a placeholder when its data is absent.
+
+**Styling.** Inline style objects are the platform's convention for one-off
+composition; anything reused is a class or a component. No colour, size,
+spacing, radius or duration outside the token system, in either form.
+
+**Tokens.** `--brand-*` and `--semantic-*` are separate namespaces and a brand
+colour is never a semantic one — including a *product's* brand colour, which
+until v14.0 could be `var(--semantic-success)` because nothing looked. Any
+surface that cannot resolve a custom property — email, PDF, a web manifest —
+reads the TypeScript mirror instead, and `check:token-inputs` fails on a `var()`
+that travels there.
+
+**Translations.** A domain declares the languages it has, and serves no others.
+Silent field-level fallback is the failure mode: it produces a page in two
+languages under one `lang` attribute and leaves no trace to detect afterwards.
+
+**Metadata.** Every domain owns its title, canonical, social card, robots,
+sitemap and manifest, resolved from its registry record. Naming the parent
+company in a title is a per-domain decision the registry records, not a default.
+
+**Brand assets.** Every asset slot is declared even when empty, and every empty
+slot states why. `check:brands` classifies each KEEP / REPLACE / CREATE / REMOVE
+and prints the counts, so the asset backlog is a number in a report rather than
+something to remember.
+
+**Testing.** There is no unit-test suite, and this is stated rather than
+implied. What exists instead: eleven merge gates, five report-only audits, two
+harnesses that prove their audits can fail, and a live domain walk
+(`audit:domain-experience`). Adding a test framework is an architecture decision
+and needs an ADR; adding a gate for a defect class that has recurred does not.
+
+**Certification.** `npm run verify` before any claim that something works;
+`npm run certify` before a release. "Should work" is not a state.
+
+**Release.** Per application, per Vercel project, independent rollback. Marcel
+approves. No agent approves its own work.
+
+**AI readiness.** Prompts, business rules, assistant policies, memory and
+evaluation each have an intended home, mapped in
+`docs/architecture/ai-governance-readiness.md`. None of it is built. Until
+Track B, no change may alter assistant behaviour, a prompt, or model selection.
 
 ---
 

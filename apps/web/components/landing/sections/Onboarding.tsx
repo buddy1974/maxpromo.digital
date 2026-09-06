@@ -55,7 +55,7 @@ export function Onboarding({ locale, contactHref }: OnboardingProps) {
         <div style={{ display: 'grid', gap: 'var(--space-3)' }} className="grid-cols-1 md:grid-cols-3">
           {steps.map((s) => (
             <div key={s.n} style={{ padding: 'var(--space-5)', border: CARD_BORDER, borderRadius: RADIUS.md }}>
-              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--showcase-accent)', background: 'color-mix(in srgb, var(--showcase-accent) 12%, transparent)', borderRadius: 'var(--radius-sm)', padding: '3px 8px' }}>
+              <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--showcase-accent-text)', background: 'color-mix(in srgb, var(--showcase-accent) 12%, transparent)', borderRadius: 'var(--radius-sm)', padding: '3px 8px' }}>
                 {s.n}
               </span>
               <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: 'var(--text-small)', color: 'var(--showcase-fg)', margin: '12px 0 6px' }}>

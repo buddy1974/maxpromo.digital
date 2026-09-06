@@ -35,11 +35,30 @@
  * Reads the token package, collects every custom property it *references* but
  * does not *define*, and requires each application to define all of them.
  *
+ * It also checks the other direction, added v14.0: a `var()` written into
+ * output that leaves the browser. An email client does not implement CSS
+ * custom properties, and neither does most PDF tooling, so a custom property
+ * in an email's inline style resolves to nothing — with exactly the same
+ * silence as an undefined one. The colour is simply not applied and the
+ * element inherits; the padding is simply not applied and the layout collapses.
+ *
+ * This is not hypothetical. `lib/email.ts` wrote `var(--space-2)` and friends
+ * seventy-one times into transactional email markup, and `emailHtml.ts` set
+ * the company name on the invoice letterhead to `var(--brand-surface)` — white
+ * text on a near-black band, which without the variable renders as the
+ * inherited colour on that band. Every one of those variables is correctly
+ * defined by the web application, so the rule above could not see them: they
+ * do not dangle, they travel.
+ *
+ * @maxpromo/design-tokens exports a TypeScript mirror (`token`, `space`,
+ * `type`) for precisely these surfaces. That mirror is the answer.
+ *
  *   node packages/tooling/check-token-inputs.mjs
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
+import { stripComments } from './strip-comments.mjs'
 
 const ROOT = process.cwd()
 const TOKENS = join(ROOT, 'packages', 'design-tokens', 'brand.css')
@@ -157,7 +176,13 @@ for (const dir of DEFINE_SOURCES) {
 for (const app of APPS) {
   for (const f of walk(join(ROOT, 'apps', app))) {
     const rel = relative(ROOT, f).split(sep).join('/')
-    const lines = readFileSync(f, 'utf8').split('\n')
+    // Comments stripped first. This rule read raw source, so a doc comment
+    // explaining that a component avoids `var(--brand-*)` registered as a
+    // reference to a custom property named `--brand-` and was reported as
+    // dangling. Prose about a rule is not an instance of it — the standards
+    // have required strip-comments.mjs for exactly this since ADR-0004, and
+    // this check had not been using it.
+    const lines = stripComments(readFileSync(f, 'utf8')).split('\n')
     lines.forEach((line, i) => {
       for (const m of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
         if (!REFERENCED.has(m[1])) REFERENCED.set(m[1], rel + ':' + (i + 1))
@@ -169,14 +194,57 @@ const dangling = [...REFERENCED.entries()]
   .filter(([name]) => !DEFINED.has(name) && !FRAMEWORK.test(name))
   .sort()
 
+/**
+ * Files whose output is read somewhere that has no CSS engine of ours.
+ *
+ * Listed rather than inferred, and each with its reason, because the
+ * distinction is about where the bytes end up and nothing in the path says so.
+ * `lib/documents/printCss.ts` is deliberately absent: it is injected into a
+ * page in the browser via <style>, where custom properties resolve normally.
+ */
+const NO_CUSTOM_PROPERTIES = [
+  { file: /lib[\/]email\.ts$/,                 why: 'transactional email markup' },
+  { file: /lib[\/]documents[\/]emailHtml\.ts$/, why: 'invoice and quotation email markup' },
+]
+
+let travellingChecked = 0
+const travelling = []
+for (const app of APPS) {
+  const base = join(ROOT, 'apps', app)
+  if (!existsSync(base)) continue
+  for (const f of walk(base)) {
+    const rel = relative(ROOT, f).split(sep).join('/')
+    const rule = NO_CUSTOM_PROPERTIES.find((r) => r.file.test(rel))
+    if (!rule) continue
+    travellingChecked++
+    stripComments(readFileSync(f, 'utf8')).split('\n').forEach((line, i) => {
+      for (const m of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
+        travelling.push({ where: rel + ':' + (i + 1), name: m[1], why: rule.why })
+      }
+    })
+  }
+}
+
+// A rule that examines no files reports nothing and looks identical to a rule
+// that examines many and finds nothing. ADR-0004.
+if (travellingChecked === 0) {
+  console.error('token inputs: no file matched the no-custom-properties list.')
+  console.error('Either the list is stale or the files moved. Refusing to report clean.')
+  process.exit(1)
+}
+
 console.log('='.repeat(74))
 console.log(`token inputs: ${inputs.length} expected by the token package — ${inputs.join(', ')}`)
 console.log(`${APPS.length} application(s), ${filesChecked} file(s) checked`)
 
 console.log(`custom properties: ${DEFINED.size} defined, ${REFERENCED.size} referenced by an application`)
+console.log(`${travellingChecked} file(s) whose output leaves the browser checked for custom properties`)
 
 for (const [name, where] of dangling) {
   findings.push({ app: where, name, dangling: true })
+}
+for (const t of travelling) {
+  findings.push({ app: t.where, name: t.name, travelling: true, why: t.why })
 }
 
 if (findings.length === 0) {
@@ -185,7 +253,13 @@ if (findings.length === 0) {
 } else {
   console.log(`\nTOKEN INPUTS: ${findings.length} finding(s)\n`)
   for (const f of findings) {
-    if (f.dangling) {
+    if (f.travelling) {
+      console.log(`  ${f.name} at ${f.app} is written into ${f.why}`)
+      console.log(`      Email clients do not implement custom properties. The declaration is`)
+      console.log(`      dropped and the element inherits — silently, exactly as an undefined`)
+      console.log(`      var() would. Use the TypeScript mirror: token, space, type from`)
+      console.log(`      @maxpromo/design-tokens.`)
+    } else if (f.dangling) {
       console.log(`  ${f.name} is referenced at ${f.app} and defined nowhere`)
       console.log(`      An undefined var() does not warn. With a fallback it silently uses it;`)
       console.log(`      without one the whole declaration is dropped and the element inherits.`)

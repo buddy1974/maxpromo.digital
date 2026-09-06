@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { getTranslations, getLocale } from 'next-intl/server'
-import { headers } from 'next/headers'
+import { currentDomain, showcaseRootMetadata } from '@/lib/domains/server'
 import { notFound } from 'next/navigation'
 import { getLandingData } from '@/lib/registry/adapters/landing.adapter'
 import { LandingEngine } from '@/components/landing/LandingEngine'
@@ -21,6 +21,17 @@ import { AgentBureauSection } from '@/components/homepage/AgentBureauSection'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
+
+  // ── Showcase dispatch ─────────────────────────────────────────────────
+  // The page body has dispatched on the domain since the host map was built;
+  // this function never did. So nine product domains rendered their own
+  // product under the consultancy's <title>, the consultancy's OpenGraph card
+  // and a canonical URL pointing at the consultancy's home page — which asks
+  // Google to show the consultancy in their place.
+  const showcaseDomain = await currentDomain()
+  const showcase = showcaseRootMetadata(showcaseDomain, locale)
+  if (showcase) return showcase
+
   const isDE = locale === 'de'
   // Bare page title, root layout's `%s | Maxpromo Digital` template appends
   // the brand suffix. Previously this string already included the brand
@@ -49,6 +60,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       },
     },
     openGraph: {
+      // Next replaces the openGraph object rather than merging it, so a page
+      // that sets any of it sets all of it. The root layout's siteName was
+      // being dropped here — the consultancy's own home page has been serving
+      // no og:site_name at all, on both locales.
+      siteName: 'Maxpromo Digital',
       title: ogTitle,
       description,
       url: `https://www.maxpromo.digital/${locale}`,
@@ -75,15 +91,13 @@ export default async function HomePage() {
   const locale = await getLocale()
 
   // ── Showcase dispatch ─────────────────────────────────────────────────
-  // Middleware stamps x-mp-mode + x-mp-slug for every request.
-  // When a product domain hits this page (e.g. restaurant-os.de/),
-  // render LandingEngine instead of the hub homepage.
-  const h    = await headers()
-  const mode = h.get('x-mp-mode')
-  const slug = h.get('x-mp-slug')
+  // Resolved from the Domain Registry rather than from two loose headers, so
+  // the body and the metadata above are answering the same question from the
+  // same record. They were not: generateMetadata had no showcase branch at all.
+  const domain = await currentDomain()
 
-  if (mode === 'showcase' && slug) {
-    const data = getLandingData(slug, locale)
+  if (domain.mode === 'showcase' && domain.productSlug) {
+    const data = getLandingData(domain.productSlug, locale)
     if (!data) return notFound()
     return <LandingEngine data={data} />
   }

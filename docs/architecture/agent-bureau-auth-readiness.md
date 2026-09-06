@@ -44,11 +44,16 @@ These columns do NOT exist yet. Must be added via Drizzle migration in Auth-1, a
 
 ## 4. Required Helpers to Create (future sprints)
 
+None of these files exist yet; this table is the plan for them, not a map of
+the tree. Their paths are written plainly rather than as code references for
+exactly that reason — a backticked path in this repository means "go and read
+this", and `check:docs` holds every one of them to a file that is there.
+
 | File | Sprint | Purpose |
 |------|--------|---------|
-| `lib/auth/session.ts` | Auth-2 | Session read helpers, `requireUser()` guard |
-| `lib/auth/tenancy.ts` | Auth-3 | `requireBusinessAccess(businessId)`, ownership checks |
-| `lib/auth/rate-limit.ts` | Auth-4 | Upstash Redis rate limit wrapper |
+| lib/auth/session.ts | Auth-2 | Session read helpers, `requireUser()` guard |
+| lib/auth/tenancy.ts | Auth-3 | `requireBusinessAccess(businessId)`, ownership checks |
+| lib/auth/rate-limit.ts | Auth-4 | Upstash Redis rate limit wrapper |
 | `middleware.ts` | Auth-2 | Next.js edge middleware; protects `/dashboard/**` and `/api/**` (except `/api/leads`) |
 
 ---

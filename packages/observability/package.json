@@ -1,0 +1,13 @@
+{
+  "name": "@maxpromo/observability",
+  "version": "1.0.0",
+  "private": true,
+  "description": "One logging standard, one error contract, one health contract. Dependency-free and emits to stdout; choosing a destination is a business decision.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./logger": "./logger.ts",
+    "./health": "./health.ts"
+  }
+}

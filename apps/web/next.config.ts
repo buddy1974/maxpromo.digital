@@ -62,8 +62,14 @@ const nextConfig: NextConfig = {
    * top-level /agent-bureau route.
    *
    * Every redirect is permanent because these paths were indexed. The showcase
-   * domains are unaffected: they render the product at their own root via
-   * lib/host/HOST_MAP.ts, never through /systems/*.
+   * domains are unaffected: they render the product at their own root via the
+   * Domain Registry (packages/config/domains.ts), never through /systems/*.
+   *
+   * v13.0: these redirects are hub-shaped — they all carry a /:locale prefix,
+   * which only the hub's URLs have. On a product domain the middleware's route
+   * isolation runs first and sends every one of these paths to the hub before
+   * a redirect here could match, so there is exactly one place that decides
+   * what a product domain serves.
    */
   async redirects() {
     const L = '/:locale(de|en)'

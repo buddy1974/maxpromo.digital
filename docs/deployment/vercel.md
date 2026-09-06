@@ -13,8 +13,8 @@ One repository, separate projects. Deploy independently, govern together.
 
 ### Why not one project
 
-- **The web project serves ten public domains.** `lib/host/HOST_MAP.ts`
-  classifies each request as hub or showcase and the root route renders the
+- **The web project serves ten public domains.** The Domain Registry
+  (`packages/config/domains.ts`) classifies each request and the root route renders the
   matching product. A bad deploy there is a ten-domain outage, and no other
   application should be able to cause it.
 - **The applications hold different `DATABASE_URL` values** pointing at

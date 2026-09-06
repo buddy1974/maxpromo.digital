@@ -1,5 +1,354 @@
 # Known Risks — Maxpromo Platform
 
+## RESOLVED 2026-09-06 (v15.1) — Four HIGH security advisories
+
+All four are remediated. `next` 16.1.6 → 16.3.4 and `drizzle-orm` 0.38.4 →
+0.45.2; `postcss` and `sharp` moved with Next, which pinned them.
+
+The v15.0 record understated it: npm collapses `next`'s advisories into one
+line, and underneath were **28**, including five Middleware/Proxy bypasses and
+an SSRF in rewrites — the exact mechanism this platform's route isolation and
+staff gate are built on. One of them names Turbopack with a single locale, which
+is `apps/web` and the two English-only product domains precisely.
+
+Verified: typecheck, lint and build on both applications; `drizzle-kit check`
+against the existing migration journal; 175/175 multi-domain checks; 20
+Lighthouse runs against the v15.0 baseline. See **ADR-0011**.
+
+---
+
+## OPEN — Four MODERATE advisories with no published fix, accepted until 2026-12-06
+
+One chain: `drizzle-kit` → `@esbuild-kit/*` → `esbuild@0.18.20`.
+
+**Exposure is nil in practice.** The advisory is that esbuild's *development
+server* answers cross-origin requests; drizzle-kit never starts one, using
+esbuild only to transpile `drizzle.config.ts` when invoked. `drizzle-kit` is a
+devDependency, in no build output, running on no server. The root `esbuild` is
+0.25.12, outside the affected range — only the copy nested under
+`@esbuild-kit/core-utils` is 0.18.20.
+
+**There is no fix to take.** `drizzle-kit@0.31.10` is the latest published
+version and still depends on the deprecated `@esbuild-kit/esm-loader`. npm
+suggests `drizzle-kit@0.18.1`, which is a downgrade three minor versions below
+what this schema needs.
+
+Recorded in `packages/config/security.ts` with exposure, mitigation, upgrade
+path, owner and review date. The acceptance **expires on 2026-12-06**, after
+which `audit:dependencies` blocks on it again.
+
+**Owner:** Marcel. **Resolves when:** drizzle-kit drops `@esbuild-kit`.
+
+---
+
+## RESOLVED 2026-09-06 (v15.1) — the domain proof harness had never run
+
+`prove-domains.mjs` carried a shebang on line four, which is a syntax error in
+an ES module. It had not executed since it was written in v13.0, so the
+fourteen demonstrations it records were a claim rather than evidence for two
+sprints.
+
+Repaired. Five of its cases also pointed at asset declarations that moved to
+the Brand Registry in v14.0 — those reported ANCHOR MISSING rather than passing
+quietly, which is what that guard is for. Repointed; 14/14 fire.
+
+**Worth keeping in mind:** the proof harnesses are not part of `verify`,
+deliberately, because they mutate registry files. Nothing therefore notices when
+one stops working. Running all three before a release is now part of the
+security-release routine.
+
+---
+
+## OPEN — `/api/health` carries no correlation id
+
+The middleware matcher excludes `/api/*` except `/api/os`, so the health
+endpoint — the one a monitor calls — is the one response with no `x-mp-trace`.
+
+Pre-existing rather than a regression: it is the same matcher exclusion that
+leaves the chat routes without product context (recorded separately). Noted here
+because Phase 6 of v15.1 checked correlation explicitly and this is where it
+stops.
+
+**Owner:** whoever next changes the matcher — likely Track B, which has to fix
+it for the chat routes anyway.
+
+---
+
+## SUPERSEDED — the v15.0 advisory record
+
+`npm audit` reports 8 advisories across 730 packages: 4 high, 4 moderate.
+
+| Severity | Package | | Fix |
+|---|---|---|---|
+| HIGH | `next` 16.1.6 | HTTP request smuggling **in rewrites** | `next@16.3.4` — not a major |
+| HIGH | `drizzle-orm` 0.38.4 | SQL injection via improperly escaped identifiers | `drizzle-orm@0.45.2` — major |
+| HIGH | `postcss` | XSS via unescaped `</style>` in stringify output | carried by `next@16.3.4` |
+| HIGH | `sharp` 0.34.5 | inherited libvips CVEs | carried by `next@16.3.4` |
+| MODERATE ×4 | `esbuild`, `drizzle-kit`, `@esbuild-kit/*` | dev-server request exposure | `drizzle-kit@0.31.10` — major |
+
+The `next` advisory is the one to read twice: this platform's entire host
+architecture is middleware rewrites across ten public domains.
+
+**Not acted on, deliberately.** The v15.0 brief asked for a recommendation;
+upgrading the framework that routes ten domains deserves its own change with
+its own verification, and `drizzle-orm` and `drizzle-kit` are major versions
+with migration surface. `PLATFORM-CONSTITUTION.md` §19 puts security decisions
+with Marcel.
+
+**Recommended order:** `next@16.3.4` first — one patch bump closes three of the
+four HIGH findings and is the one that matters most here. Then `drizzle-orm`
+0.45.2 against the Agent Bureau schema. Then `drizzle-kit`, which is dev-only.
+
+**Owner:** Marcel. `audit:dependencies` prints all eight on every run.
+
+---
+
+## OPEN — Mobile performance is below the floor on six of ten domains
+
+Measured 2026-09-06, Lighthouse against a local production build, every public
+domain, desktop and mobile. Recorded in
+`docs/governance/performance-baseline.json`.
+
+```
+desktop   performance 100 on all nine product domains
+mobile    79–90, floor is 85
+          below: maxpromo.digital 79 · pflege-care24.de 80
+                 super-praxis.de 81 · taxkontrol.de 81
+                 publishers24.org 82 · restaurant-os.de 84
+mobile    LCP ~3.4s on every domain — above the 2.5s "good" line,
+          below the 4.0s "poor" line. Uniform, so structural.
+```
+
+CLS is 0.000 everywhere, which is the hard one and it is already right.
+
+The uniformity is the finding: the same hero composition on every domain, so
+this is one fix rather than six. Lighthouse names `lcp-discovery-insight`,
+`render-blocking-insight` and `image-delivery-insight` on the product pages.
+
+**Not fixed in v15.0:** the brief was to make performance measurable, not to
+optimise. Optimising the hero is a change to a page, with a visual consequence,
+and it belongs in a change that says so.
+
+**Owner:** a dedicated change. **Blocks:** nothing today.
+
+---
+
+## OPEN — Accessibility findings Lighthouse sees and the in-repo audit does not
+
+`audit:a11y` reports clean across 36 routes. Lighthouse, on the same build,
+scores accessibility 93 on the hub and 96 on every product domain, and names:
+
+- `color-contrast` — on the hub and on every product domain
+- `target-size` — hub only, touch targets under 24×24 with insufficient spacing
+- `label-content-name-mismatch` — a visible text label whose accessible name
+  does not match it (WCAG 2.5.3)
+
+Neither tool is wrong. `audit:a11y` checks token pairs and document structure;
+Lighthouse renders the page and measures computed styles, which is where these
+live. The gap is that the in-repo audit cannot see a contrast failure produced
+by composition rather than by a token pair.
+
+**Owner:** a dedicated change. The specific elements need identifying from a
+full Lighthouse report before anything is edited.
+
+---
+
+## OPEN — `best-practices` and one SEO score cannot be measured locally
+
+Every domain scores `best-practices` 78, and the two failing audits are
+`is-on-https` and `redirects-http`. The local harness serves over HTTP; on
+Vercel neither can be true. **The real production score is almost certainly
+100, and this is recorded rather than corrected** because a number that cannot
+be measured where it is measured should say so.
+
+Separately: `maxpromo.digital` scores SEO 92 against 100 on every product
+domain, failing the `canonical` audit — while emitting a structurally identical
+canonical tag. Unexplained from the local harness.
+
+**What closes both:** one Lighthouse run against the production deployment over
+HTTPS. **Owner:** whoever next deploys.
+
+---
+
+## OPEN — Thirty-seven `catch {}` blocks swallow their error
+
+Counted 2026-09-06 across both applications. Each is a place where something
+failed and the platform decided not to mention it. Some are deliberate and say
+so in a comment; they have never been reviewed as a group.
+
+Now that `@maxpromo/observability` exists, the fix for a non-deliberate one is
+a single `log.warn`. The review is the work, not the edit.
+
+Related: 77 `console.*` calls predate the logging standard and have not been
+migrated. Mechanical, touches almost every file, belongs in its own change.
+
+**Owner:** a dedicated change.
+
+---
+
+## OPEN — There is no field data, and no destination for anything logged
+
+Every performance number the platform has is a **lab** measurement from
+Lighthouse on one machine. What real visitors on real connections experience is
+unmeasured, and needs traffic plus a collector.
+
+Nothing is shipped off-platform either: no error reporting service, no log
+drain, no uptime monitoring. Errors are structured, redacted and carry a
+correlation id — they are ready to be sent somewhere, and nowhere is chosen.
+
+Each option is a paid service and a data-processing relationship, which
+`PLATFORM-CONSTITUTION.md` §19 puts with Marcel rather than with a tool.
+
+**Owner:** Marcel. **Blocks:** any claim about real-world performance, and any
+response to an error nobody was watching for.
+
+---
+
+## OPEN — No product has a mark of its own
+
+Thirty-five asset slots are empty across twelve brands: eleven product logos,
+twelve monochrome logos, twelve Apple touch icons. Forty-two more carry
+something that is not right: every product domain shows the company favicon in
+the browser tab, and every social card is a 1536×1024 product image where a
+1200×630 card belongs.
+
+Nothing is broken — products are identified typographically, which is coherent,
+and social platforms crop rather than reject. But a visitor cannot tell one
+open tab from another, and a saved iOS home-screen shortcut gets a screenshot of
+the page.
+
+`check:brands` prints the KEEP / REPLACE / CREATE / REMOVE counts on every run,
+so this is a number rather than a memory. Nothing was invented: an asset that
+would look designed is worse than one that is declared absent.
+
+**What closes it:** design work — a mark per product, a monochrome variant, a
+180×180 icon, a 1200×630 card. **Owner:** Marcel.
+
+---
+
+## OPEN — The company's memory and its registries name different products
+
+`openclaw/core-memory.md` lists *CreatorOS*, which has no product entry, no
+brand record and no domain; and *DriveMe*, which is what the product registry,
+the brand record and the live domain all call **Drive24**. It also omits four
+products that exist and are live: CareOS, RealEstateOS, PublishingOS and Max
+Agent Bureau.
+
+The memory was not rewritten — that document's own rule is that history is
+appended to, never deleted — so a note below it names the Brand Registry as the
+authority and records the disagreement. `audit:docs` reports it every run.
+
+**Two questions:** is CreatorOS a plan or a lapsed idea, and which name does
+Drive24 go to market under? **Owner:** Marcel.
+
+---
+
+## OPEN — There are two AI stacks and only one has a safety layer
+
+`apps/web` and `apps/bureau` each have their own provider abstraction, prompt
+file and types. `apps/bureau/lib/ai/safety.ts` bounds input length and raises a
+risk floor for tax, finance, invoicing, legal and contract topics. `apps/web`,
+which serves the public chat on ten domains, has no equivalent.
+
+The model `claude-sonnet-4-6` is named in ten files, so a model change is a
+ten-file edit and a partial one is silent. Nothing checks what an assistant says
+about the company — `audit:claims` covers authored copy only.
+
+Mapped in `architecture/ai-governance-readiness.md`. Nothing was changed in
+v14.0: the sprint's non-goals forbade touching assistants, prompts and chatbot
+behaviour.
+
+**Owner:** Track B, the AI Governance Programme.
+
+---
+
+## OPEN — Next 16 deprecates the `middleware` file convention
+
+The production build warns: *"The `middleware` file convention is deprecated.
+Please use `proxy` instead."* `apps/web/middleware.ts` is where host resolution,
+route isolation and language governance all live, so the rename is a change to
+the platform's most load-bearing file and belongs in its own change with its own
+verification, not as a rider.
+
+Not urgent — the convention still works — but it will stop working.
+
+**Owner:** a dedicated change before the next major Next upgrade.
+
+---
+
+## OPEN — Two product domains have no German copy
+
+`publishers24.org` (PublishingOS) and `drive24.live` (Drive24) are declared
+English-only in the Domain Registry, because that is the only language they have
+copy in: PublishingOS carries German for 1 of its 16 localised fields and
+Drive24 for none. Every other product in the registry is complete in both.
+
+Until v13.0 this was invisible and worse: the registry falls back from German to
+English field by field with no warning, so both domains served a German route
+that rendered English product copy inside German section headings, under
+`<html lang="de">` — and a visitor sending no `Accept-Language` was redirected
+there by default. The domains now serve English only, `/de` redirects, and the
+language switcher does not render.
+
+**What closes it:** German copy for the two products, written by Marcel — 15
+fields and 8 fields. Adding `'de'` to one array in `packages/config/domains.ts`
+is the whole of the code change, and `check:domains` fails the build if that
+array claims a language the product does not have.
+
+**Owner:** Marcel. **Blocks:** German-market launch of those two products only.
+
+---
+
+## OPEN — Nine domains share the company favicon and use product cards as social images
+
+Every product domain declares `/favicon.ico` — the Maxpromo mark — and a
+1536×1024 product card where a purpose-built 1.91:1 social card belongs.
+Social platforms crop a 3:2 image rather than reject it, so nothing is broken;
+the domains simply look less like independent properties than they now are.
+
+`check:domains` reports both counts on every run, so this is a number in a
+report rather than something to remember.
+
+**What closes it:** design assets — a mark and a 1200×630 card per product.
+**Owner:** Marcel.
+
+---
+
+## OPEN — Agent Bureau names itself differently from every other surface
+
+`agents.maxpromo.digital` titles itself "Max Agent — Ihr KI-Betriebsteam |
+Maxpromo Digital". `products.ts`, the hub's homepage section and the Domain
+Registry all call the product **Max Agent Bureau**. Three surfaces against one.
+
+Left unchanged deliberately: which name the product goes to market under is a
+brand decision, not a drift fix. `audit:domain-experience` reports it on every
+run against the bureau.
+
+**Owner:** Marcel.
+
+---
+
+## OPEN — Chat sessions never learn which product the visitor is on
+
+`apps/web/app/api/chat/session/route.ts` and
+`apps/web/app/api/chat/message/route.ts` read `x-mp-slug` and
+`x-mp-default-locale` to record product context. The middleware matcher excludes
+`/api/*` except `/api/os`, so those headers never arrive: `productSlug` is
+recorded as `null` on every session and the locale always defaults to `de`. A
+chat opened on `drive24.live` is stored as German, with no product.
+
+`docs/architecture/sprint-correction/domain-strategy.md` states that Max knows
+it is in the RestaurantOS context "via the `x-mp-slug` header injected by
+Phase 1 middleware". It does not receive it.
+
+The Domain Registry now names the identity each domain reports under
+(`chatIdentity`). Wiring it up is Track B, the Chat Assistant Forensic Audit,
+and was deliberately not touched in v13.0.
+
+**Owner:** Track B.
+
+---
+
 ## OPEN — Agent Bureau claims EU hosting; its database is in us-east-1
 
 `agents.maxpromo.digital` states publicly, in its hero: "DSGVO-konform, in der
@@ -38,7 +387,7 @@ Rate limiting added this sprint (`newsletter/subscribe`, `estimate`, `estimate/s
 
 ## 2026-07-10 — Newsletter honeypot is backend-only
 
-A honeypot field check was added to `app/api/newsletter/subscribe/route.ts`, but no frontend form currently sends a hidden `website`/`company_url` field, so it's currently a no-op. Needs `components/NewsletterSignup.tsx` (or equivalent) updated with a hidden field to activate.
+A honeypot field check was added to `app/api/newsletter/subscribe/route.ts`, but no frontend form currently sends a hidden `website`/`company_url` field, so it's currently a no-op. Needs whichever component renders the newsletter form updated with a hidden field to activate; there is no dedicated NewsletterSignup component today.
 
 ## 2026-07-10 — Open Graph image is an interim fallback
 
@@ -141,8 +490,8 @@ verifying tenant scoping on each.
 
 # Agent Bureau — risks carried over
 
-These were recorded in `maxpromo-agent-bureau/docs/known-risks.md` before the
-repositories merged. They are reproduced verbatim; nothing has been re-assessed.
+These were recorded in the Agent Bureau repository's own known-risks document
+before the repositories merged; that repository is archived. They are reproduced verbatim; nothing has been re-assessed.
 
 Last updated: 2026-09-04 (v7.0 — enterprise polish)
 
@@ -193,9 +542,9 @@ Last updated: 2026-09-04 (v7.0 — enterprise polish)
 | # | Risk | Detail |
 |---|------|--------|
 | 16 | ~~Design direction conflict, unresolved~~ | **RESOLVED — 2026-08-11.** Product Owner confirmed full supersession via explicit execution plan; ADR-002 updated. Phases 1–6 (tokens, Nav/Footer/forms, homepage, Agent Bureau, remaining marketing pages, dashboard) are all implemented. `PLAN.md` §7–8 lock language still needs a follow-up edit so it stops contradicting `decision-log.md` (tracked, not yet done — see risk 19). Phases 7–8 (content/copy review, final QA sign-off) remain open. |
-| 18 | ~~Phase 1 not verified against a full project build~~ | **RESOLVED for Phases 1–6 — 2026-08-11.** `npx tsc --noEmit` and `npm run build` both ran clean (21/21 routes compiled and prerendered) in this session. Live-browser visual QA could **not** be completed — this machine has an unrelated project already bound to ports 3000/3001, and a local networking layer routes `localhost` traffic on those ports to that project's dev server regardless of which process owns the socket (confirmed via `netstat` + direct `curl` to both `127.0.0.1` and `[::1]`). This is a local machine/networking issue, not a code defect. **Marcel: run `npm run dev` locally (or free up ports 3000/3001) and do a visual pass against `docs/visual-facelift-v2.1.md` before treating this as fully verified.** |
-| 17 | Governance docs incomplete | CLAUDE.md's required-reading list (`docs/repository-map.md`, `product-brief.md`, `architecture.md`, `workflow-map.md`, `data-ownership.md`, `production-readiness.md`) is only partially present — `decision-log.md` and `known-risks.md` exist, the other five do not. The AI Operating System template source (`C:\Users\loneb\Documents\AI-OPERATING-SYSTEM\MASTER-AI-OPERATING-SYSTEM.md`) is outside the folders connected to this session, so templates couldn't be pulled. |
-| 19 | ~~`PLAN.md` §7–8 still states the old dark-premium lock~~ | **RESOLVED — 2026-08-11.** `PLAN.md` §7 and §8 now carry a superseded-note pointing to `docs/visual-facelift-v2.1.md` / ADR-002; historical text struck through, not deleted. |
+| 18 | ~~Phase 1 not verified against a full project build~~ | **RESOLVED for Phases 1–6 — 2026-08-11.** `npx tsc --noEmit` and `npm run build` both ran clean (21/21 routes compiled and prerendered) in this session. Live-browser visual QA could **not** be completed — this machine has an unrelated project already bound to ports 3000/3001, and a local networking layer routes `localhost` traffic on those ports to that project's dev server regardless of which process owns the socket (confirmed via `netstat` + direct `curl` to both `127.0.0.1` and `[::1]`). This is a local machine/networking issue, not a code defect. **Marcel: run `npm run dev` locally (or free up ports 3000/3001) and do a visual pass against `docs/brand/visual-facelift-v2.1-superseded.md` before treating this as fully verified.** |
+| 17 | ~~Governance docs incomplete~~ | **RESOLVED — 2026-09-05 (v14.0).** `docs/PLATFORM-CONSTITUTION.md` is now the single highest-level document and indexes the whole tree; `docs/README.md` maps every directory. The July required-reading list named six documents that were only partially present — `decision-log.md` and `known-risks.md` exist, the other five do not. The AI Operating System template source (`C:\Users\loneb\Documents\AI-OPERATING-SYSTEM\MASTER-AI-OPERATING-SYSTEM.md`) is outside the folders connected to this session, so templates couldn't be pulled. |
+| 19 | ~~`PLAN.md` §7–8 still states the old dark-premium lock~~ | **RESOLVED — 2026-08-11.** `PLAN.md` §7 and §8 now carry a superseded-note pointing to `docs/brand/visual-facelift-v2.1-superseded.md` / ADR-002; historical text struck through, not deleted. |
 | 20 | Visual Facelift Phases 7–8 (content/copy review, final QA sign-off) not started | Phases 1–6 are implemented and build-clean; nobody has done a content/copy pass (v2.1 §15 "remove every vibe-coded signal" applies to copy too, not just visuals) or a final cross-page QA sweep. Recommend Marcel do a visual pass locally first (this also closes risk 18), then decide if a dedicated content-review phase is still wanted. |
 
 ---

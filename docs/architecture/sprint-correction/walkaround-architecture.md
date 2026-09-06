@@ -124,6 +124,9 @@ interface StoryStep {
 Phase 5 implementation target:
 
 - `components/landing/walkaround/` — section family
-- `components/landing/sections/SeeInAction.tsx` — story renderer (replaces InAction.tsx)
+- story renderer — planned as `SeeInAction.tsx`, never built under that name;
+  the V2 engine renders `seeInAction` data through
+  `components/landing/sections/ProductGallery.tsx` and
+  `components/landing/sections/UseCases.tsx`
 - `lib/registry/types.ts` — `walkaround`, `storySequence` fields added to `ProductEntry`
 - `lib/registry/adapters/landing.adapter.ts` — `WalkaroundData`, `StoryData` in `LandingData`

@@ -8,8 +8,8 @@
     "packages/*"
   ],
   "scripts": {
-    "certify": "npm run verify && npm run audit:a11y && npm run audit:consistency && npm run audit:platform && npm run audit:claims",
-    "verify": "npm run check:governance && npm run check:tokens && npm run check:token-inputs && npm run check:icons && npm run check:responsive && npm run audit:typography && npm run typecheck && npm run lint && npm run build",
+    "certify": "npm run verify && npm run audit:a11y && npm run audit:consistency && npm run audit:platform && npm run audit:claims && npm run audit:docs && npm run audit:dependencies",
+    "verify": "npm run check:governance && npm run check:domains && npm run check:brands && npm run check:tokens && npm run check:token-inputs && npm run check:icons && npm run check:responsive && npm run audit:typography && npm run typecheck && npm run lint && npm run build && npm run check:budgets",
     "audit:a11y": "node packages/tooling/audit-a11y.mjs",
     "audit:consistency": "node packages/tooling/audit-consistency.mjs",
     "audit:platform": "node packages/tooling/audit-platform.mjs",
@@ -24,7 +24,19 @@
     "check:icons": "node packages/tooling/check-icons.mjs",
     "check:governance": "node packages/tooling/check-governance.mjs",
     "check:token-inputs": "node packages/tooling/check-token-inputs.mjs",
-    "audit:typography": "node packages/tooling/audit-typography.mjs"
+    "audit:typography": "node packages/tooling/audit-typography.mjs",
+    "check:domains": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/audit-domains.mjs",
+    "audit:domain-experience": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/audit-domain-experience.mjs",
+    "prove:domains": "node packages/tooling/prove-domains.mjs",
+    "check:brands": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/audit-brand-assets.mjs",
+    "prove:brands": "node packages/tooling/prove-brand-assets.mjs",
+    "audit:docs": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/audit-docs.mjs",
+    "check:budgets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/audit-budgets.mjs",
+    "audit:dependencies": "node packages/tooling/audit-dependencies.mjs",
+    "start:web": "npm run start --workspace @maxpromo/web",
+    "audit:lighthouse": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/audit-lighthouse.mjs",
+    "release:report": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/release-report.mjs",
+    "prove:security": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/prove-security-gate.mjs"
   },
   "engines": {
     "node": ">=20"

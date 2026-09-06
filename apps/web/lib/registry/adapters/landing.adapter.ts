@@ -22,6 +22,7 @@ import type {
   DemoAccess,
 } from '@/lib/registry/types'
 import { PRODUCTS } from '@/lib/registry/products'
+import { resolveBrand } from '@maxpromo/config'
 import {
   resolveString,
   resolveBullets,
@@ -91,7 +92,17 @@ export interface LandingData {
   readonly demoAccess:     DemoAccess | null
 
   // Visual
+  /**
+   * The product's accent, a FILL. From the Brand Registry since v14.0 — it
+   * used to live on the product entry beside the FAQ copy, and two products
+   * set it to a semantic token.
+   */
   readonly brandColor:    string
+  /**
+   * The same accent at 5:1 or better on white, for the two places the accent
+   * is used as text. Four of the eleven accents cannot legally be text.
+   */
+  readonly brandColorText: string
   readonly layoutVariant: ProductLayout
   readonly cardImageSrc:  string   // /public-relative path with leading slash
   /** Pain section images — leading-slash paths, maps 1:1 with bullets[]. Absent when not yet provided. */
@@ -146,7 +157,8 @@ function toLandingData(product: ProductEntry, locale: string): LandingData {
     complianceNote: product.complianceNote ? resolveString(product.complianceNote, locale) : null,
     finalCta,
     demoAccess:    product.demoAccess ?? null,
-    brandColor:    product.brandColor,
+    brandColor:     resolveBrand(product.slug).colours.accent,
+    brandColorText: resolveBrand(product.slug).colours.accentText,
     layoutVariant: product.layoutVariant,
     cardImageSrc:  `/${resolveCardImage(product, locale)}`,
     painImages:    product.media.pain

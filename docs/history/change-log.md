@@ -1,5 +1,306 @@
 # Change Log
 
+## 2026-09-06 - Platform v15.1: dependency security remediation
+
+Branch feature/track-b. ADR-0011 records the decision. A narrowly scoped
+security maintenance release: no redesign, no refactor, no unrelated upgrades.
+
+**The v15.0 record understated the problem.** `npm audit` collapses a package's
+advisories into one line. Underneath `next` were **28**, five of them
+Middleware/Proxy bypasses and one an SSRF in rewrites — the exact mechanism this
+platform's route isolation and staff gate are built on. One names Turbopack with
+a single locale, which is `apps/web` and the two English-only product domains
+precisely.
+
+**Packages changed — four, all for a stated security reason.**
+
+```
+next               16.1.6  -> 16.3.4   28 advisories, incl. 5 middleware bypasses
+eslint-config-next 16.1.6  -> 16.3.4   versioned in lockstep with next
+drizzle-orm        0.38.4  -> 0.45.2   SQL injection via unescaped identifiers
+drizzle-kit        0.30.6  -> 0.31.10  moves with the ORM; latest published
+```
+
+`postcss` 8.4.31 → 8.5.23 and `sharp` 0.34.5 → 0.35.4 came with Next, which
+pinned both; they were flagged only because of that pin.
+
+**The smallest secure version was not the one shipped, and the reason is
+written down.** `next@16.3.0` is the first release clearing all three HIGH
+findings — where the pinned postcss becomes 8.5.23 and sharp ^0.35.3. 16.3.4 is
+the same minor with four patch releases of fixes and no additional feature
+surface; shipping a `.0` to ten production domains is the larger risk.
+
+**HIGH advisories: 4 → 0. Total: 8 → 4.**
+
+**The four remaining MODERATE have no published fix and are accepted with
+records.** One chain — `drizzle-kit` → `@esbuild-kit/*` → `esbuild@0.18.20`.
+Development-only; the advisory needs esbuild's dev server, which drizzle-kit
+never starts; `drizzle-kit@0.31.10` is the latest published version and still
+carries the deprecated dependency; npm's suggested fix is a downgrade to 0.18.1.
+Recorded in `packages/config/security.ts` with exposure, mitigation, upgrade
+path, owner and a review date of 2026-12-06, after which they block again.
+
+**A security gate that distinguishes.** `audit:dependencies` now classifies by
+severity, by whether the package can reach a served request, and by whether a
+remediation exists. CRITICAL reaching production blocks and cannot be excused;
+HIGH reaching production blocks unless a live acceptance names it. Reach is
+computed by walking npm's `effects` graph to the direct dependency and reading
+*its* section — an unidentifiable root counts as production.
+
+`blocksRelease()` is a pure function so `prove:security` can exercise it against
+a truth table: the gate has been green since it was written, because everything
+the platform carries is development-only, and a gate only ever seen passing is
+not known to block. 11/11 demonstrated.
+
+**Regression: nothing moved that should not have.**
+
+```
+multi-domain    175/175 across 10 hosts · 404, rewrites and the /os gate
+                verified on every host separately
+observability   health 7 checks both apps · correlation on 200 and 308 ·
+                boundaries in both build outputs · release report · budgets
+bundle          web shared +28 KB (511->539) · bureau +27 KB (511->538)
+                web total JS +39 KB · CSS +1 KB · all inside budget
+```
+
+**Performance: the upgrade made the platform faster, not slower.**
+
+```
+mobile   perf 84 -> 88 · LCP 3434ms -> 3292ms · TBT 347ms -> 252ms
+desktop  perf 100 -> 100 · LCP 717ms -> 725ms · TBT 13ms -> 11ms
+CLS      0.000 on all twenty runs, before and after
+a11y and SEO scores identical on every one of the twenty
+```
+
+No run regressed: not one lost a point of accessibility or SEO, and no
+performance score fell by three or more.
+
+**Two tools were found broken and repaired.** `prove-domains.mjs` had a shebang
+on line four — a syntax error since v13.0, so the harness had not run since it
+was written. And five of its fourteen cases pointed at asset declarations that
+moved to the Brand Registry in v14.0; those reported ANCHOR MISSING rather than
+passing quietly, which is what that guard exists for. Repaired and repointed:
+14/14 firing again.
+
+**One observation, pre-existing rather than a regression:** `/api/health`
+carries no correlation id, because the middleware matcher excludes `/api/*`
+except `/api/os` — the same exclusion that leaves the chat routes without
+product context. Recorded, not fixed: changing that matcher is not a security
+maintenance release's work.
+
+## 2026-09-06 - Platform v15.0: nothing fails silently
+
+Branch feature/track-b. ADR-0010 records the decision. The v14.0 scorecard gave
+performance 1 out of 5 because nothing measured it; measuring it showed
+performance was not the only thing nobody could see.
+
+**What was found by looking.**
+
+- **No error boundary existed in either application.** No `error.tsx`, no
+  `global-error.tsx`, on ten public domains. A runtime failure rendered the
+  framework's blank default and wrote nothing anywhere.
+- **77 `console.*` calls**, 57 of them `console.error`, none carrying a
+  surface, a severity anything could filter on, or a correlation id.
+- **37 `catch {}` blocks** swallow their error entirely.
+- **No health endpoint** in `apps/web`; three of three different shapes in
+  `apps/bureau`.
+- **8 open security advisories**, 4 HIGH — including HTTP request smuggling
+  *in rewrites*, on a platform whose host architecture is middleware rewrites.
+
+**Observability.** `packages/observability` — a logger whose type will not
+compile without a surface, five levels with `warn` and `error` meaning
+different things, redaction applied by the logger rather than by the caller,
+and one stream via `console.log` because the middleware runs on Edge and has no
+`process.stdout`. A health runner with three states, timeouts, and probes that
+never write and never cost money. Error boundaries at both levels in both
+applications; `global-error.tsx` reads the token package's TypeScript mirror
+rather than `var(--brand-*)`, because it renders when the stylesheet may never
+have loaded. `x-mp-trace` minted in the middleware and stamped on every
+response path — the first version stamped only the two paths that were tested,
+and the most-served route on the platform left without one.
+
+**Performance, measured for the first time.** `packages/config/budgets.ts`
+holds nine budgets, each with what it measured, what it may become, and what it
+protects. `check:budgets` is gate 12. `audit:lighthouse` runs every public
+domain on desktop and mobile against a **production** build — it refuses a dev
+server, and reaches ten hosts from one port by launching Chrome with
+`--host-resolver-rules`, since Host cannot be set from script.
+
+Twenty measurements, in `docs/governance/performance-baseline.json`:
+desktop performance **100 on all nine product domains**; mobile **79–90**
+against an 85 floor, with mobile LCP ~3.4s uniformly. CLS is 0.000 everywhere.
+
+**Dependencies.** `audit:dependencies` — declared-and-unused, imported-and-
+undeclared, specifier disagreement, and advisories. It found `packages/ui`
+importing React without declaring it and `packages/tooling` importing ESLint
+without declaring it; both fixed. `@mdx-js/react` is declared and imported by
+nothing; recommended for removal rather than removed, per the brief. All eight
+advisories reported and none acted on — §19 puts that with Marcel.
+
+**Releases.** `release:report` produces files by class, routes affected,
+domains affected through the Domain Registry, bundle delta against baseline,
+certification state and rollback readiness — including whether the release
+contains a schema change a code rollback would not undo.
+
+**Documented, not built.** `architecture/observability.md` covers errors,
+logging, health and performance in one place.
+`architecture/engineering-dashboard.md` specifies twelve panels and marks which
+nine already have a real source — the gap between that document and a working
+page is a `--json` flag on four audits, not a rendering problem. No monitoring
+service, no log drain, no alerting: each is a paid service and a
+data-processing relationship, and none is a tool's decision.
+
+**Honest about what could not be measured.** `best-practices` scores 78 on
+every domain because the local harness serves over HTTP — the two failing
+audits are `is-on-https` and `redirects-http`, neither of which can be true on
+Vercel. Recorded rather than corrected. The Lighthouse floors were set to
+industry norms and the platform does not meet all of them; lowering one to make
+the first report green was available and rejected.
+
+## 2026-09-05 - Platform v14.0: constitution, Brand Registry, and the checks that hold them
+
+Branch feature/track-b. ADR-0009 records the decision; the constitution indexes
+everything.
+
+**The Platform Constitution.** `docs/PLATFORM-CONSTITUTION.md` — twenty-seven
+sections covering purpose through future product onboarding, each one short and
+ending in the document that holds the detail. It restates no architecture: a
+constitution that explains the platform twice becomes the second copy of it.
+
+**The Brand Registry.** `packages/config/brands.ts` — one record per product,
+twelve of them. Names, tagline, description; accent, accent-as-text, theme and
+dark-theme colours; and every asset slot that carries the identity, declared
+even when empty and always with the reason it is empty. `brandColor` is gone
+from `products.ts`; the four adapters read `resolveBrand(slug).colours.accent`,
+and the Domain Registry derives its social card and favicon from the brand
+rather than restating them.
+
+**Two products had a semantic token as their brand accent.**
+`var(--semantic-success)` and `var(--semantic-info)` — the design system's third
+rule, broken in the one place nothing looked. They now carry the literal colours
+those tokens resolve to, so nothing renders differently.
+
+**Four accents cannot legally be text, and two components colour text with
+them.** Brand Lime 1.51:1, CareOS 2.49:1, Drive24 3.68:1, PrintShopOS 4.25:1.
+Each brand now declares an accent-as-text form at 5:1 or better, published as
+`--showcase-accent-text`; `Faq.tsx` and `Onboarding.tsx` use it. The platform
+has had this rule for its own accent since v3 — product accents were never in
+scope because `check:tokens` knows one token name.
+
+**Ninety-five CSS custom properties were travelling into email.** Seventy-one
+spacing values in `lib/email.ts` and twenty-four colours in
+`lib/documents/emailHtml.ts`, including the company name on the invoice
+letterhead set to `var(--brand-surface)` on a near-black band. No email client
+implements custom properties, so every one resolved to nothing — silently, and
+invisibly to ADR-0006's check, because they are all correctly defined by the web
+application. They now read the token package's TypeScript mirror, and
+`check:token-inputs` fails on any that return.
+
+**Two new gates, two new proofs, one new report.** `check:brands` (gate 3) and
+`audit:docs` (report-only, in `certify`); `prove:brands` demonstrates all eleven
+brand rules failing, beside `prove:domains`. The merge gate is 11 gates.
+
+**Documentation.** Thirteen documents named files that had moved or been
+deleted; `design-system.md` claimed eight gates while eleven ran; twenty-six
+documents had no inbound reference. All corrected. `openclaw/core-memory.md`
+gained an appended note — per its own rule about never editing history — naming
+the Brand Registry as the authority for which products exist, and recording the
+two places the company's memory and its registries disagree: *CreatorOS*, which
+has no product, brand or domain, and *DriveMe*, which is what the memory calls
+Drive24.
+
+**Ten architecture diagrams.** `docs/architecture/diagrams.md` — repository
+layout, domain registry, request lifecycle, routing, package dependencies,
+tokens, the two registries, deployment, certification, governance.
+
+**Track B prepared, not begun.** `docs/architecture/ai-governance-readiness.md`
+maps where prompts, business rules, knowledge, memory, assistant policies and
+evaluation belong, and records the finding that shapes the programme: there are
+two AI stacks, one has a safety layer and the other does not, and the model is
+named in ten files. No prompt was edited, no assistant behaviour changed, and
+`packages/ai/` was deliberately not created.
+
+**The audit's own near-misses, recorded because they are the method.** The brand
+audit found thirty-five unexplained slots in its own registry on its first run.
+The documentation audit's first draft checked Markdown links in a repository
+that uses none — zero targets, reported clean — and its second matched
+historical narration, reporting five findings against documentation that was
+correct. Its removal-marker pattern then shipped with a literal backspace byte
+where `` should have been, matching nothing: the exact ADR-0004 failure this
+repository has recorded before, reproduced and caught by testing the pattern
+rather than reading it.
+
+## 2026-09-05 - Platform v13.0: domain identity and host architecture
+
+Branch feature/track-b. One idea, applied everywhere: a domain is an identity,
+and presentation inherits from it. Full reasoning in ADR-0008.
+
+**The Domain Registry.** `packages/config/domains.ts` holds one record per
+public host — eleven of them — carrying identity, language set, canonical
+strategy, social card, favicon, manifest, robots and sitemap policy, navigation
+and footer mode, contact destination, route allowlist, and the analytics and
+chat keys the property reports under. It lives in the shared package because
+`agents.maxpromo.digital` is served by `apps/bureau` and the other ten by
+`apps/web`; both read the same records. `apps/web/lib/host/` and its four-field
+map are deleted.
+
+**Metadata.** The root layout's static `metadata` export became
+`generateMetadata`, resolved per domain: `metadataBase`, `applicationName`,
+`og:site_name`, the `%s | …` title template, favicon and manifest all come from
+the record. The product home page adds its own title, description, OpenGraph
+card in the language being served, and a canonical that is its own address.
+Nine domains previously canonicalised to `https://www.maxpromo.digital/de`.
+
+**Route isolation.** A product domain serves its product, its contact page and
+the operator's legal pages. Every other path answers 308 to the same path on the
+hub. `/os` and `/api/os` are hub-only — the staff login answered on all ten
+public domains before this.
+
+**Legal chrome.** ProductNav and ProductFooter moved from `LandingEngine` to
+`ShowcaseChrome` in the locale layout, so every page a product domain serves
+carries navigation, footer, Impressum, Datenschutz and a skip link. The footer's
+legal links now point at the domain's own pages rather than off to the hub. The
+cookie notice renders on product domains, which it did not.
+
+**Language.** `publishers24.org` and `drive24.live` declare English only; `/de`
+redirects, the switcher does not render, and no hreflang advertises a language
+the domain redirects away from. Both had been serving German section headings
+around English product copy under `lang="de"`. The middleware now stamps the
+locale it resolved, because next-intl's `getLocale()` returns the routing
+default on an internally rewritten URL — which is why both English-led domains
+rendered every page as `<html lang="de">`.
+
+**robots, sitemap, manifest.** Per domain. A product domain's robots.txt names
+itself and points at its own sitemap of its own four to eight URLs; it had been
+serving the consultancy's 62-URL sitemap and declaring
+`Host: https://www.maxpromo.digital`. `apps/bureau` published none of the three
+and now publishes all of them; its `metadataBase` was
+`process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"` and is now the
+registry origin, it emits a canonical and an og:image where it emitted neither,
+and it has a `public/` directory and a favicon, which it did not.
+
+**Gates.** `check:domains` is gate 2 of `verify`
+(`packages/tooling/audit-domains.mjs`): it checks the registry against the
+repository — host keys, origins, language claims against real product copy,
+social assets against files on disk and their true pixel dimensions, route
+allowlists and contact paths against real pages. All thirteen rules were
+demonstrated failing against a deliberately broken registry (ADR-0004). Its
+first draft skipped any domain whose application had no public directory, and
+`apps/bureau` had none — so the one host it never examined was the one with the
+problem.
+
+`audit:domain-experience` is a review tool rather than a gate: it walks every
+registered domain over HTTP and scores what comes back. 175/175 on the ten
+`apps/web` domains, 10/11 on the bureau — the remaining one is a naming question
+for Marcel, recorded in the v13.0 report.
+
+**Two things fixed that predate this sprint.** The consultancy's own home page
+emitted no `og:site_name` in either locale, because Next replaces the OpenGraph
+object rather than merging it. The manifest files' first draft hardcoded
+`#FFFFFF` twice and the token gate rejected them; they read `token.background`
+from the design-token package's TypeScript mirror, the mechanism this repository
+already built for email and PDF.
+
 ## 2026-07-10 — Public MVP completion sprint (Sonnet implementation)
 
 Full report: see `public-mvp-completion-sprint-report.md` delivered alongside this session (not checked into the repo automatically — copy it into `docs/` if you want it version-controlled).

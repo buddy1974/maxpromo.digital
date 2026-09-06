@@ -1,5 +1,4 @@
 import { LandingThemeProvider } from './LandingThemeProvider'
-import { ProductNav }            from './sections/ProductNav'
 import { ProductHero }           from './sections/ProductHero'
 import { AudienceFit }           from './sections/AudienceFit'
 import { OutcomeStrip }          from './sections/OutcomeStrip'
@@ -14,7 +13,6 @@ import { TrustAndSecurity }      from './sections/TrustAndSecurity'
 import { Onboarding }            from './sections/Onboarding'
 import { Faq }                   from './sections/Faq'
 import { Conversion }            from './sections/Conversion'
-import { ProductFooter }         from './sections/ProductFooter'
 import type { LandingData } from '@/lib/registry/adapters/landing.adapter'
 
 interface LandingEngineProps {
@@ -31,10 +29,14 @@ interface LandingEngineProps {
  * been left on disk unused since then.
  *
  * showcase mode (bridge=false, default):
- *   Full page: nav, hero, and every content block, footer. Used on
- *   dedicated product domains (superhandwerk.de, etc.) — this is where
- *   app/[locale]/layout.tsx suppresses ALL Maxpromo chrome, so ProductNav
- *   and ProductFooter here are the page's ONLY navigation and footer.
+ *   Hero and every content block. Used on dedicated product domains
+ *   (superhandwerk.de, etc.).
+ *
+ *   v13.0: ProductNav and ProductFooter are no longer rendered here. They
+ *   belong to the domain rather than to this one page, and living here meant
+ *   every other page a product domain served — its contact page above all —
+ *   had no navigation and no footer at all. They now render in
+ *   components/landing/ShowcaseChrome.tsx, from app/[locale]/layout.tsx.
  *
  * bridge mode (bridge=true):
  *   ProductHero + Conversion only, no nav/footer (the surrounding hub
@@ -103,16 +105,7 @@ export function LandingEngine({ data, bridge = false }: LandingEngineProps) {
   const ctaSecondaryHref  = hasDistinctSecondary ? data.finalCta!.secondaryUrl!   : null
 
   return (
-    <LandingThemeProvider brandColor={data.brandColor}>
-
-      {!bridge && (
-        <ProductNav
-          domainBrand={data.domainBrand}
-          domain={data.domain}
-          ctaLabel={ctaPrimaryLabel}
-          ctaHref={ctaPrimaryHref}
-        />
-      )}
+    <LandingThemeProvider brandColor={data.brandColor} brandColorText={data.brandColorText}>
 
       <ProductHero
         domainBrand={data.domainBrand}
@@ -227,14 +220,6 @@ export function LandingEngine({ data, bridge = false }: LandingEngineProps) {
         bridge={bridge}
         finalCta={data.finalCta}
       />
-
-      {!bridge && (
-        <ProductFooter
-          domainBrand={data.domainBrand}
-          locale={data.locale}
-          contactHref={data.bookDemoUrl}
-        />
-      )}
 
     </LandingThemeProvider>
   )

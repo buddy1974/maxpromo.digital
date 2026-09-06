@@ -267,7 +267,7 @@ You should see additions in: `app/api/os/ai/enhance/`, `app/api/os/login/`,
 `app/api/os/clients/route.ts`, `app/api/os/invoices/route.ts`,
 `app/api/os/angebote/route.ts`, `app/api/contact/route.ts`,
 `app/api/audit/route.ts`, `app/api/chat/route.ts`,
-`app/api/estimate/send/route.ts`, `lib/auth.ts`, `lib/env.ts`,
+`lib/auth.ts`, `lib/env.ts`,
 `lib/rate-limit.ts`, `lib/prompts.ts`, `middleware.ts`, `db/`, `docs/`,
 `.gitignore`, `.env.local.example`.
 
@@ -321,8 +321,8 @@ If anything goes sideways in production:
   lose the lockdown but regain access.
 - **Enhancer broken**: forms fall back to the legacy
   `/api/os/ai/generate-invoice` and `/api/os/ai/scan-invoice` routes
-  — switch the fetch URLs back in `angebote/new/page.tsx` and
-  `invoices/new/page.tsx`. Both old endpoints still exist.
+  — switch the fetch URLs back in the OS quotation and invoice creation
+  pages under `apps/web/app/os/(protected)/`. Both old endpoints still exist.
 - **Migration regret**: `0001` and `0002` are additive only — nothing
   to undo. `0003` adds NOT NULL `owner_id` columns; if you need to
   back out, set them nullable again and you're back to single-tenant

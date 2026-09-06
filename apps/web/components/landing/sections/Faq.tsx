@@ -50,7 +50,7 @@ export function Faq({ faq, locale }: FaqProps) {
                   <span style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 600, fontSize: '16px', color: isOpen ? 'var(--showcase-fg)' : 'var(--showcase-muted)', letterSpacing: '-0.01em', lineHeight: 1.4, transition: 'color var(--duration-base) var(--ease)' }}>
                     {item.question}
                   </span>
-                  <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '16px', color: isOpen ? 'var(--showcase-accent)' : 'var(--showcase-muted)', flexShrink: 0, display: 'inline-block', transform: isOpen ? 'rotate(45deg)' : 'none', transition: 'transform var(--duration-base) var(--ease), color var(--duration-base) var(--ease)' }}>
+                  <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '16px', color: isOpen ? 'var(--showcase-accent-text)' : 'var(--showcase-muted)', flexShrink: 0, display: 'inline-block', transform: isOpen ? 'rotate(45deg)' : 'none', transition: 'transform var(--duration-base) var(--ease), color var(--duration-base) var(--ease)' }}>
                     +
                   </span>
                 </button>

@@ -4,22 +4,35 @@ interface ProductFooterProps {
   domainBrand: string
   locale:      string
   contactHref: string
+  /**
+   * This domain's own legal pages.
+   *
+   * They used to be hardcoded to the Maxpromo hub, because a product domain
+   * had no legal pages of its own — it had the whole consultancy site instead,
+   * with no footer on any of it. Since v13.0 a product domain serves exactly
+   * its product, its contact page and the operator's legal pages, so these
+   * links stay on the domain the visitor is already on.
+   */
+  impressumHref: string
+  privacyHref:   string
 }
 
 /**
- * Minimal footer for external showcase product domains.
+ * The footer every page on a product domain wears.
+ *
+ * Rendered from ShowcaseChrome in app/[locale]/layout.tsx since v13.0, not
+ * from LandingEngine — it belongs to the domain, and living inside the landing
+ * page meant the contact page had no footer, no legal links and no way back.
  *
  * Added 2026-07-25 — same gap as ProductNav.tsx: showcase pages had no
  * footer at all before this. Kept intentionally small (legal links back
  * to the Maxpromo hub + attribution + a contact link) — this is a
  * one-page product site, not a full sitemap.
  *
- * Legal links point at the Maxpromo hub's own Impressum/Datenschutz
- * pages (app/[locale]/impressum, app/[locale]/privacy) — these showcase
- * domains don't have their own legal pages, and Maxpromo (owner of every
- * product in the registry) is the operating entity, so this is the
- * correct legally-relevant destination rather than a dead link or an
- * invented one. Still flagged for Marcel to confirm.
+ * Legal content is the operating entity's — Maxpromo Digital owns every
+ * product in the registry — and it is now served on the product's own domain
+ * rather than linked away to the hub, so a visitor reading the Impressum for
+ * restaurant-os.de never leaves restaurant-os.de.
  *
  * Visual-polish pass 2026-07-25: tokens from showcaseTokens.ts. Mobile
  * layout: the nav row now stacks with clearer spacing at narrow widths
@@ -27,7 +40,7 @@ interface ProductFooterProps {
  * against the copyright line) and every link gets explicit hover/focus
  * feedback, previously absent.
  */
-export function ProductFooter({ domainBrand, locale, contactHref }: ProductFooterProps) {
+export function ProductFooter({ domainBrand, locale, contactHref, impressumHref, privacyHref }: ProductFooterProps) {
   const isDE = locale === 'de'
   const year = '2026'
 
@@ -60,14 +73,14 @@ export function ProductFooter({ domainBrand, locale, contactHref }: ProductFoote
             {isDE ? 'Kontakt' : 'Contact'}
           </a>
           <a
-            href={`https://www.maxpromo.digital/${locale}/impressum`}
+            href={impressumHref}
             className={INTERACTIVE_LINK_CLASSES}
             style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--showcase-muted)', textDecoration: 'none' }}
           >
             {isDE ? 'Impressum' : 'Legal notice'}
           </a>
           <a
-            href={`https://www.maxpromo.digital/${locale}/privacy`}
+            href={privacyHref}
             className={INTERACTIVE_LINK_CLASSES}
             style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--showcase-muted)', textDecoration: 'none' }}
           >

@@ -85,11 +85,18 @@ const ALLOW = [
     files: [/(?:^|\/)lib\/third-party-brands\.ts$/],
   },
   {
-    // Per-product brand accents are DATA, not styling: the registry stores the
-    // accent each product shows on its own domain, and the two-tier brand
-    // reads it at render time. A token cannot express "this product's colour".
+    // Per-product brand accents are DATA, not styling — but since v14.0 they
+    // are data in the Brand Registry (packages/config/brands.ts), not in the
+    // product entry beside the FAQ copy. This entry covers the registry.
+    //
+    // Colours here are audited more strictly than this check can: every accent
+    // is measured against white by audit-brand-assets, which requires a text
+    // form at 5:1 and rejects a semantic token used as an identity. Two
+    // products had `var(--semantic-success)` and `var(--semantic-info)` as
+    // their brand accent, which this allowlist could not see because it looks
+    // for hex.
     match: /^#/,
-    files: [/(?:^|\/)lib\/registry\/products\.ts$/],
+    files: [/packages[\/]config[\/]brands\.ts$/],
   },
   {
     // WhatsApp's own brand colour on a WhatsApp button. A third-party button

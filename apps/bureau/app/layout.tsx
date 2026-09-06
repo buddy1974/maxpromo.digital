@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { resolveDomain } from "@maxpromo/config";
 import { Inter, Roboto_Mono } from "next/font/google";
 import Providers from "@/components/auth/Providers";
 import "./globals.css";
@@ -32,11 +33,26 @@ const mono = Roboto_Mono({
   display: "swap",
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+/**
+ * This property's own address, from the Domain Registry.
+ *
+ * It used to be `process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"`.
+ * A deployment that forgot the variable resolved every OpenGraph URL and every
+ * relative image against localhost — silently, because the page still rendered
+ * and only a social crawler would ever have noticed. A domain's own address is
+ * not configuration; it is the first thing the registry knows about it.
+ */
+const BUREAU = resolveDomain("agents.maxpromo.digital");
+const siteUrl = BUREAU.origin;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  applicationName: BUREAU.siteName,
+  manifest: "/manifest.webmanifest",
+  // This page emitted no canonical at all. A property with no canonical leaves
+  // the choice of address to the crawler, which is the same class of problem
+  // as naming the wrong one.
+  alternates: { canonical: siteUrl },
   title: "Max Agent — Ihr KI-Betriebsteam | Maxpromo Digital",
   description:
     "Kein Chatbot. Ein überwachtes KI-Betriebsteam, das Anfragen, Follow-ups und Abläufe führt — Sie behalten die Kontrolle. Installiert von Maxpromo Digital, Essen.",
@@ -47,13 +63,25 @@ export const metadata: Metadata = {
     type: "website",
     locale: "de_DE",
     url: siteUrl,
-    siteName: "Max Agent",
+    // The registry names this property once; "Max Agent" and "Max Agent
+    // Bureau" were two names for it in two files.
+    siteName: BUREAU.siteName,
+    // This page carried no og:image at all, so every share of
+    // agents.maxpromo.digital rendered a bare link. The registry declares one;
+    // declaring an image nothing emits is a registry that is true and useless.
+    images: [{
+      url: BUREAU.openGraph.path,
+      width: BUREAU.openGraph.width,
+      height: BUREAU.openGraph.height,
+      alt: BUREAU.product,
+    }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Max Agent — Ihr KI-Betriebsteam",
     description:
       "Ein überwachtes KI-Betriebsteam für Ihren Betrieb. Sie genehmigen, die Agenten führen aus.",
+    images: [BUREAU.openGraph.path],
   },
 };
 

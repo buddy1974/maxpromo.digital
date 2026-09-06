@@ -6,9 +6,9 @@ import { headers } from 'next/headers'
  * Establishes the showcase surface for the product landing engine.
  *
  * ── TWO-TIER BRAND (v4.0) ──────────────────────────────────────────────────
- * The mechanism for this already existed and was never used for colour:
- * lib/host/HOST_MAP.ts classifies every domain as `hub` or `showcase`, and
- * middleware.ts stamps x-mp-mode on every request. This component now reads it.
+ * The mechanism for this already existed and was never used for colour: the
+ * Domain Registry (packages/config/domains.ts) classifies every host, and
+ * middleware.ts stamps x-mp-mode on every request. This component reads it.
  *
  *   hub      — maxpromo.digital, including /systems/*. Renders in the Maxpromo
  *              accent, always. A visitor here is a Maxpromo prospect and must
@@ -37,12 +37,25 @@ import { headers } from 'next/headers'
 
 interface LandingThemeProviderProps {
   /** Product accent from the registry. Honoured on showcase domains only. */
+  /** The product's accent. A fill. */
   brandColor: string
+  /**
+   * The accent as text, at 5:1 or better on white.
+   *
+   * Two components colour text with the accent — the FAQ toggle and the
+   * onboarding step label — and four of the eleven product accents fail
+   * contrast as text: Brand Lime at 1.51:1, CareOS teal at 2.49:1, Drive24
+   * green at 3.68:1, PrintShopOS magenta at 4.25:1. The platform's own accent
+   * has had a separate text form since v3; product accents were never held to
+   * the same rule because check:tokens only knew about --brand-primary.
+   */
+  brandColorText: string
   children: React.ReactNode
 }
 
 export async function LandingThemeProvider({
   brandColor,
+  brandColorText,
   children,
 }: LandingThemeProviderProps) {
   const h = await headers()
@@ -53,6 +66,7 @@ export async function LandingThemeProvider({
       style={
         {
           '--showcase-accent': isShowcase ? brandColor : 'var(--brand-primary)',
+          '--showcase-accent-text': isShowcase ? brandColorText : 'var(--brand-primary-text)',
           '--showcase-bg': 'var(--brand-background)',
           '--showcase-fg': 'var(--brand-text)',
           '--showcase-muted': 'var(--brand-text-secondary)',

@@ -1,4 +1,4 @@
-import { token } from '@maxpromo/design-tokens'
+import { token, space } from '@maxpromo/design-tokens'
 
 export interface EmailPayload {
   to: string | string[]
@@ -70,26 +70,26 @@ export function buildContactEmailHtml(fields: {
 }): string {
   const systemRow = fields.system
     ? `<tr>
-        <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.primaryText}; width: 160px; vertical-align: top;">System:</td>
-        <td style="padding: var(--space-2) 0; color: ${token.text}; font-weight: bold;">${escapeHtml(fields.system)}</td>
+        <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.primaryText}; width: 160px; vertical-align: top;">System:</td>
+        <td style="padding: ${space[2]} 0; color: ${token.text}; font-weight: bold;">${escapeHtml(fields.system)}</td>
       </tr>
       <tr>
-        <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary}; width: 160px; vertical-align: top;">Source:</td>
-        <td style="padding: var(--space-2) 0; color: ${token.text};">${escapeHtml(fields.system)}_consultation_request</td>
+        <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary}; width: 160px; vertical-align: top;">Source:</td>
+        <td style="padding: ${space[2]} 0; color: ${token.text};">${escapeHtml(fields.system)}_consultation_request</td>
       </tr>`
     : ''
 
   const phoneRow = fields.phone
     ? `<tr>
-        <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary};">Phone:</td>
-        <td style="padding: var(--space-2) 0; color: ${token.text};">${escapeHtml(fields.phone)}</td>
+        <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary};">Phone:</td>
+        <td style="padding: ${space[2]} 0; color: ${token.text};">${escapeHtml(fields.phone)}</td>
       </tr>`
     : ''
 
   const painPointsRow = fields.painPoints.length
     ? `<tr>
-        <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary}; vertical-align: top;">Help requested:</td>
-        <td style="padding: var(--space-2) 0; color: ${token.text};">${fields.painPoints.map(escapeHtml).join('<br>')}</td>
+        <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary}; vertical-align: top;">Help requested:</td>
+        <td style="padding: ${space[2]} 0; color: ${token.text};">${fields.painPoints.map(escapeHtml).join('<br>')}</td>
       </tr>`
     : ''
 
@@ -99,45 +99,45 @@ export function buildContactEmailHtml(fields: {
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: ${token.surface};">
-      <div style="background: ${token.text}; padding: var(--space-5); border-bottom: 3px solid ${token.primary};">
+      <div style="background: ${token.text}; padding: ${space[5]}; border-bottom: 3px solid ${token.primary};">
         <h2 style="color: ${token.surface}; margin: 0; font-size: 20px; font-weight: 700;">
           ${headingLabel}
         </h2>
-        <p style="color: ${token.textMuted}; margin: var(--space-1) 0 0; font-size: 13px;">
+        <p style="color: ${token.textMuted}; margin: ${space[1]} 0 0; font-size: 13px;">
           Submitted: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}
         </p>
       </div>
-      <div style="padding: var(--space-5);">
+      <div style="padding: ${space[5]};">
         <table style="width: 100%; border-collapse: collapse;">
           ${systemRow}
           <tr>
-            <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary}; width: 160px;">Name:</td>
-            <td style="padding: var(--space-2) 0; color: ${token.text};">${escapeHtml(fields.name)}</td>
+            <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary}; width: 160px;">Name:</td>
+            <td style="padding: ${space[2]} 0; color: ${token.text};">${escapeHtml(fields.name)}</td>
           </tr>
           <tr>
-            <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary};">Email:</td>
-            <td style="padding: var(--space-2) 0; color: ${token.text};">
+            <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary};">Email:</td>
+            <td style="padding: ${space[2]} 0; color: ${token.text};">
               <a href="mailto:${escapeHtml(fields.email)}" style="color: ${token.primaryText};">${escapeHtml(fields.email)}</a>
             </td>
           </tr>
           <tr>
-            <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary};">Organisation:</td>
-            <td style="padding: var(--space-2) 0; color: ${token.text};">${escapeHtml(fields.company)}</td>
+            <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary};">Organisation:</td>
+            <td style="padding: ${space[2]} 0; color: ${token.text};">${escapeHtml(fields.company)}</td>
           </tr>
           ${phoneRow}
           <tr>
-            <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary};">Preferred contact:</td>
-            <td style="padding: var(--space-2) 0; color: ${token.text};">${escapeHtml(fields.preferredContactMethod)}</td>
+            <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary};">Preferred contact:</td>
+            <td style="padding: ${space[2]} 0; color: ${token.text};">${escapeHtml(fields.preferredContactMethod)}</td>
           </tr>
           ${painPointsRow}
         </table>
         <div style="margin-top: 20px; border-top: 1px solid ${token.border}; padding-top: 20px;">
           <p style="font-weight: bold; color: ${token.textSecondary}; margin-bottom: 10px;">Message:</p>
-          <div style="background: ${token.surfaceSubtle}; border-left: 4px solid ${token.primary}; padding: var(--space-4); color: ${token.text}; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">
+          <div style="background: ${token.surfaceSubtle}; border-left: 4px solid ${token.primary}; padding: ${space[4]}; color: ${token.text}; white-space: pre-wrap; font-size: 14px; line-height: 1.6;">
             ${escapeHtml(fields.message)}
           </div>
         </div>
-        <p style="margin-top: var(--space-5); font-size: 12px; color: ${token.textMuted}; border-top: 1px solid ${token.border}; padding-top: var(--space-4);">
+        <p style="margin-top: ${space[5]}; font-size: 12px; color: ${token.textMuted}; border-top: 1px solid ${token.border}; padding-top: ${space[4]};">
           Sent via Maxpromo Digital contact form · maxpromo.digital
         </p>
       </div>
@@ -166,37 +166,37 @@ export function buildAuditLeadEmailHtml(fields: {
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: ${token.surface};">
-      <div style="background: ${token.text}; padding: var(--space-5); border-bottom: 3px solid ${token.primary};">
+      <div style="background: ${token.text}; padding: ${space[5]}; border-bottom: 3px solid ${token.primary};">
         <h2 style="color: ${token.surface}; margin: 0; font-size: 20px; font-weight: 700;">
           New Automation Audit Lead
         </h2>
-        <p style="color: ${token.textMuted}; margin: var(--space-1) 0 0; font-size: 13px;">
+        <p style="color: ${token.textMuted}; margin: ${space[1]} 0 0; font-size: 13px;">
           Submitted: ${new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' })}
         </p>
       </div>
-      <div style="padding: var(--space-5);">
-        <h3 style="color: ${token.primaryText}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--space-3);">Lead Details</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: var(--space-5);">
+      <div style="padding: ${space[5]};">
+        <h3 style="color: ${token.primaryText}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: ${space[3]};">Lead Details</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: ${space[5]};">
           <tr>
-            <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary}; width: 160px;">Name:</td>
-            <td style="padding: var(--space-2) 0; color: ${token.text};">${escapeHtml(fields.name)}</td>
+            <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary}; width: 160px;">Name:</td>
+            <td style="padding: ${space[2]} 0; color: ${token.text};">${escapeHtml(fields.name)}</td>
           </tr>
           <tr>
-            <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary};">Email:</td>
-            <td style="padding: var(--space-2) 0; color: ${token.text};">
+            <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary};">Email:</td>
+            <td style="padding: ${space[2]} 0; color: ${token.text};">
               <a href="mailto:${escapeHtml(fields.email)}" style="color: ${token.primaryText};">${escapeHtml(fields.email)}</a>
             </td>
           </tr>
           <tr>
-            <td style="padding: var(--space-2) 0; font-weight: bold; color: ${token.textSecondary};">Company:</td>
-            <td style="padding: var(--space-2) 0; color: ${token.text};">${escapeHtml(fields.company)}</td>
+            <td style="padding: ${space[2]} 0; font-weight: bold; color: ${token.textSecondary};">Company:</td>
+            <td style="padding: ${space[2]} 0; color: ${token.text};">${escapeHtml(fields.company)}</td>
           </tr>
         </table>
-        <h3 style="color: ${token.primaryText}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: var(--space-3);">Questionnaire</h3>
+        <h3 style="color: ${token.primaryText}; font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: ${space[3]};">Questionnaire</h3>
         <table style="width: 100%; border-collapse: collapse;">
           ${questionnaireRows}
         </table>
-        <p style="margin-top: var(--space-5); font-size: 12px; color: ${token.textMuted}; border-top: 1px solid ${token.border}; padding-top: var(--space-4);">
+        <p style="margin-top: ${space[5]}; font-size: 12px; color: ${token.textMuted}; border-top: 1px solid ${token.border}; padding-top: ${space[4]};">
           Sent via Maxpromo Digital Automation Audit · maxpromo.digital
         </p>
       </div>
@@ -259,8 +259,8 @@ export function buildFullReportEmailHtml(fields: {
     .map(
       (r, i) => `
       <tr>
-        <td style="padding: var(--space-3); border-bottom: 1px solid ${token.border}; vertical-align: top; width: 30px; color: ${token.primaryText}; font-weight: bold; font-family: monospace;">${String(i + 1).padStart(2, '0')}</td>
-        <td style="padding: var(--space-3); border-bottom: 1px solid ${token.border}; vertical-align: top;">
+        <td style="padding: ${space[3]}; border-bottom: 1px solid ${token.border}; vertical-align: top; width: 30px; color: ${token.primaryText}; font-weight: bold; font-family: monospace;">${String(i + 1).padStart(2, '0')}</td>
+        <td style="padding: ${space[3]}; border-bottom: 1px solid ${token.border}; vertical-align: top;">
           <strong style="color: ${token.text};">${escapeHtml(r.title ?? `Opportunity ${i + 1}`)}</strong>
           ${r.roi ? `<span style="float: right; background: ${token.primarySoft}; color: ${token.primaryText}; padding: 2px 8px; font-size: 12px; font-family: monospace;">${escapeHtml(r.roi)}</span>` : ''}
           <div style="margin-top: 6px; font-size: 13px; color: ${token.textSecondary};">${escapeHtml(r.solution)}</div>
@@ -277,7 +277,7 @@ export function buildFullReportEmailHtml(fields: {
     .map(
       (group) => `
       <tr>
-        <td colspan="2" style="padding: var(--space-3) var(--space-3) var(--space-1); background: ${token.surfaceSubtle}; font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.1em; color: ${token.textMuted};">
+        <td colspan="2" style="padding: ${space[3]} ${space[3]} ${space[1]}; background: ${token.surfaceSubtle}; font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.1em; color: ${token.textMuted};">
           ${escapeHtml(group.category)}
         </td>
       </tr>
@@ -308,11 +308,11 @@ export function buildFullReportEmailHtml(fields: {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 680px; margin: 0 auto; background: ${token.surface};">
       <!-- Header -->
-      <div style="background: ${token.text}; padding: var(--space-6); border-bottom: 3px solid ${token.primary};">
-        <p style="font-family: monospace; font-size: 10px; color: ${token.primaryText}; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 var(--space-2);">
+      <div style="background: ${token.text}; padding: ${space[6]}; border-bottom: 3px solid ${token.primary};">
+        <p style="font-family: monospace; font-size: 10px; color: ${token.primaryText}; letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 ${space[2]};">
           Maxpromo Digital — Full Report
         </p>
-        <h1 style="color: ${token.surface}; margin: 0 0 var(--space-2); font-size: 22px; font-weight: 700;">
+        <h1 style="color: ${token.surface}; margin: 0 0 ${space[2]}; font-size: 22px; font-weight: 700;">
           ${escapeHtml(fields.estimate.estimateTitle)}
         </h1>
         <p style="color: ${token.textMuted}; margin: 0; font-size: 13px;">
@@ -322,8 +322,8 @@ export function buildFullReportEmailHtml(fields: {
       </div>
 
       <!-- Audit Results -->
-      <div style="padding: var(--space-6) var(--space-6) 0;">
-        <h2 style="color: ${token.primaryText}; font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; font-family: monospace; margin: 0 0 var(--space-4);">
+      <div style="padding: ${space[6]} ${space[6]} 0;">
+        <h2 style="color: ${token.primaryText}; font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; font-family: monospace; margin: 0 0 ${space[4]};">
           Automation Opportunities
         </h2>
         <table style="width: 100%; border-collapse: collapse; border: 1px solid ${token.border};">
@@ -332,24 +332,24 @@ export function buildFullReportEmailHtml(fields: {
       </div>
 
       <!-- Cost Estimate -->
-      <div style="padding: var(--space-6);">
-        <h2 style="color: ${token.primaryText}; font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; font-family: monospace; margin: 0 0 var(--space-1);">
+      <div style="padding: ${space[6]};">
+        <h2 style="color: ${token.primaryText}; font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; font-family: monospace; margin: 0 0 ${space[1]};">
           Kostenvoranschlag / Cost Estimate
         </h2>
-        <p style="font-size: 12px; color: ${token.textMuted}; margin: 0 0 var(--space-4);">Scope: ${escapeHtml(fields.estimate.estimateScope)}</p>
+        <p style="font-size: 12px; color: ${token.textMuted}; margin: 0 0 ${space[4]};">Scope: ${escapeHtml(fields.estimate.estimateScope)}</p>
         <table style="width: 100%; border-collapse: collapse; border: 1px solid ${token.border};">
           ${lineItemRows}
         </table>
 
         <!-- Totals -->
-        <table style="width: 100%; border-collapse: collapse; margin-top: var(--space-4); border: 1px solid ${token.primary};">
+        <table style="width: 100%; border-collapse: collapse; margin-top: ${space[4]}; border: 1px solid ${token.primary};">
           <tr style="background: ${token.text};">
-            <td style="padding: var(--space-3) var(--space-4); color: ${token.textMuted}; font-size: 12px; font-family: monospace;">One-time total</td>
-            <td style="padding: var(--space-3) var(--space-4); text-align: right; color: ${token.surface}; font-weight: bold;">${fmt(fields.estimate.totals.oneTimeMin)} – ${fmt(fields.estimate.totals.oneTimeMax)}</td>
+            <td style="padding: ${space[3]} ${space[4]}; color: ${token.textMuted}; font-size: 12px; font-family: monospace;">One-time total</td>
+            <td style="padding: ${space[3]} ${space[4]}; text-align: right; color: ${token.surface}; font-weight: bold;">${fmt(fields.estimate.totals.oneTimeMin)} – ${fmt(fields.estimate.totals.oneTimeMax)}</td>
           </tr>
           <tr style="background: ${token.text};">
-            <td style="padding: var(--space-3) var(--space-4); color: ${token.textMuted}; font-size: 12px; font-family: monospace;">Monthly recurring</td>
-            <td style="padding: var(--space-3) var(--space-4); text-align: right; color: ${token.surface}; font-weight: bold;">${fmt(fields.estimate.totals.monthlyMin)} – ${fmt(fields.estimate.totals.monthlyMax)}/mo</td>
+            <td style="padding: ${space[3]} ${space[4]}; color: ${token.textMuted}; font-size: 12px; font-family: monospace;">Monthly recurring</td>
+            <td style="padding: ${space[3]} ${space[4]}; text-align: right; color: ${token.surface}; font-weight: bold;">${fmt(fields.estimate.totals.monthlyMin)} – ${fmt(fields.estimate.totals.monthlyMax)}/mo</td>
           </tr>
           <tr style="background: ${token.primary};">
             <td style="padding: 14px 16px; color: ${token.onPrimary}; font-size: 13px; font-weight: bold; font-family: monospace;">Year 1 Total</td>
@@ -358,10 +358,10 @@ export function buildFullReportEmailHtml(fields: {
         </table>
 
         <!-- Scope note -->
-        <p style="font-size: 13px; color: ${token.textSecondary}; margin: var(--space-4) 0; font-style: italic;">${escapeHtml(fields.estimate.scopeNote)}</p>
+        <p style="font-size: 13px; color: ${token.textSecondary}; margin: ${space[4]} 0; font-style: italic;">${escapeHtml(fields.estimate.scopeNote)}</p>
 
         <!-- Included in all -->
-        <div style="background: ${token.surfaceSubtle}; border-left: 3px solid ${token.primary}; padding: var(--space-4); margin-top: var(--space-4);">
+        <div style="background: ${token.surfaceSubtle}; border-left: 3px solid ${token.primary}; padding: ${space[4]}; margin-top: ${space[4]};">
           <p style="font-family: monospace; font-size: 11px; color: ${token.primaryText}; letter-spacing: 0.1em; text-transform: uppercase; margin: 0 0 10px;">Included in all packages</p>
           <ul style="margin: 0; padding-left: 20px;">
             ${includedList}
@@ -369,22 +369,22 @@ export function buildFullReportEmailHtml(fields: {
         </div>
 
         <!-- Legal notices -->
-        <div style="margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid ${token.border};">
-          <p style="font-size: 12px; color: ${token.textMuted}; margin: var(--space-1) 0;">${escapeHtml(fields.estimate.vatNotice)}</p>
-          <p style="font-size: 12px; color: ${token.textMuted}; margin: var(--space-1) 0;">${escapeHtml(fields.estimate.paymentTerms)}</p>
-          <p style="font-size: 12px; color: ${token.textMuted}; margin: var(--space-1) 0;">${escapeHtml(fields.estimate.validityNote)}</p>
+        <div style="margin-top: ${space[5]}; padding-top: ${space[4]}; border-top: 1px solid ${token.border};">
+          <p style="font-size: 12px; color: ${token.textMuted}; margin: ${space[1]} 0;">${escapeHtml(fields.estimate.vatNotice)}</p>
+          <p style="font-size: 12px; color: ${token.textMuted}; margin: ${space[1]} 0;">${escapeHtml(fields.estimate.paymentTerms)}</p>
+          <p style="font-size: 12px; color: ${token.textMuted}; margin: ${space[1]} 0;">${escapeHtml(fields.estimate.validityNote)}</p>
         </div>
       </div>
 
       <!-- Footer -->
-      <div style="background: ${token.text}; padding: var(--space-5) var(--space-6); text-align: center;">
-        <p style="color: ${token.textSecondary}; font-size: 12px; margin: 0 0 var(--space-2);">
+      <div style="background: ${token.text}; padding: ${space[5]} ${space[6]}; text-align: center;">
+        <p style="color: ${token.textSecondary}; font-size: 12px; margin: 0 0 ${space[2]};">
           Questions? Reply to this email or book a call.
         </p>
         <a href="https://maxpromo.digital/contact" style="color: ${token.primaryText}; font-size: 13px; font-family: monospace;">
           maxpromo.digital/contact
         </a>
-        <p style="color: ${token.text}; font-size: 11px; margin: var(--space-4) 0 0; font-family: monospace;">
+        <p style="color: ${token.text}; font-size: 11px; margin: ${space[4]} 0 0; font-family: monospace;">
           Maxpromo Digital · Körnerstr. 8 · 45143 Essen · info@maxpromo.digital
         </p>
       </div>

@@ -22,6 +22,12 @@
       ],
       "@maxpromo/ui/*": [
         "../../packages/ui/*"
+      ],
+      "@maxpromo/observability": [
+        "../../packages/observability/index.ts"
+      ],
+      "@maxpromo/observability/*": [
+        "../../packages/observability/*"
       ]
     }
   },

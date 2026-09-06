@@ -2,8 +2,12 @@
   "name": "@maxpromo/tooling",
   "version": "1.0.0",
   "private": true,
-  "description": "Platform checks and shared configuration. The design-token audit lives here so every application runs the same one.",
+  "description": "Platform checks and shared configuration. The audits live here so every application runs the same ones, and the ESLint, TypeScript and PostCSS bases live here so every application extends the same ones.",
   "bin": {
     "check-design-tokens": "./check-design-tokens.mjs"
+  },
+  "devDependencies": {
+    "eslint": "^9.18.0",
+    "eslint-config-next": "16.3.4"
   }
 }

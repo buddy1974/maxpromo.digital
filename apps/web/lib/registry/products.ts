@@ -126,7 +126,6 @@ const AGENT_BUREAU = {
       de: 'images/systems/agent-bureau/card/agent-bureau-de.png',
     },
   },
-  brandColor:     '#A3E635',
   layoutVariant:  'B',
 
   // ── Links
@@ -381,7 +380,6 @@ const RESTAURANT_OS = {
       'images/systems/restaurant-os/pain/p3.png',
     ],
   },
-  brandColor:     '#A3E635',
   layoutVariant:  'A',
 
   // ── Links
@@ -591,7 +589,6 @@ const HANDWERK_OS = {
       de: 'images/systems/handwerk-os/card/handwerk-os-de.png',
     },
   },
-  brandColor:     'var(--semantic-success)',
   layoutVariant:  'B',
 
   // ── Links
@@ -859,7 +856,6 @@ const PRAXIS_OS = {
       de: 'images/systems/praxis-os/card/praxis-os-de.png',
     },
   },
-  brandColor:     'var(--semantic-info)',
   layoutVariant:  'A',
 
   // ── Links
@@ -1109,7 +1105,6 @@ const PRINTSHOP_OS = {
       de: 'images/systems/printshop-os/card/printshop-os-de.png',
     },
   },
-  brandColor:     '#EC008C',
   layoutVariant:  'B',
 
   // ── Links
@@ -1344,7 +1339,6 @@ const CARE_OS = {
       de: 'images/systems/care-os/card/care-os-de.png',
     },
   },
-  brandColor:     '#14B8A6',
   layoutVariant:  'A',
 
   // ── Links
@@ -1573,7 +1567,6 @@ const REAL_ESTATE_OS = {
       de: 'images/systems/real-estate-os/card/real-estate-os-de.png',
     },
   },
-  brandColor:     '#7C3AED',
   layoutVariant:  'A',
 
   // ── Links
@@ -1793,7 +1786,6 @@ const PUBLISHING_OS = {
     },
   },
   // TODO: confirm exact brand hex — design card uses brown/maroon/beige palette
-  brandColor:     '#8B5E3C',
   layoutVariant:  'B', // Books LEFT, dashboard RIGHT per spec
 
   // ── Links
@@ -2033,7 +2025,6 @@ const TAXKONTROL = {
     },
   },
   // Dashboard navy — matches the TaxKontrol UI color scheme
-  brandColor:     '#1E3A5F',
   layoutVariant:  'B', // Salon owner LEFT, dashboard RIGHT
 
   // ── Links
@@ -2121,7 +2112,6 @@ const DRIVE24 = {
       // No DE card — single locale product
     },
   },
-  brandColor:     '#009A44', // Cameroon flag green
   layoutVariant:  'C',       // Full-scene centered — consumer platform
 
   // ── Links
@@ -2198,7 +2188,6 @@ const MAXPROMO_OS = {
       en: 'images/systems/maxpromo-os/card/maxpromo-os-en.png',
     },
   },
-  brandColor:     '#A3E635',
   layoutVariant:  'B',
 
   // ── Links
