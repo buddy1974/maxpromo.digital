@@ -531,3 +531,26 @@ risk. "Smallest secure" should not be read as "least tested".
 so the gap is a decision someone can disagree with rather than a number nobody
 questioned.
 
+## 2026-09-06 - Track A is certified at a tag, and closed only by production
+
+**Decision:** `track-a-foundation-v15.1` records the certified foundation.
+Track A's *status* is CERTIFIED, NOT CLOSED, until the release is verified in
+production.
+**Why:** A foundation that has only ever run on a laptop is not a foundation
+anything should be built on. Production is four sprints behind and still serves
+the two RC1 blockers this release fixes; calling Track A closed before that
+changes would be recording an outcome that has not happened.
+**How to apply:** The freeze rules (constitution §24c) take effect at closure.
+Until then the tag is the checkpoint and `deployment/track-a-release.md` is the
+path.
+
+## 2026-09-06 - Four sprints, one commit, and the reason said out loud
+
+**Decision:** v13.0 through v15.1 are recorded as a single commit rather than
+reconstructed into four.
+**Why:** They were developed as one uncommitted stream. Splitting them
+afterwards would produce intermediate commits that never existed and were never
+individually certified — traceability that reads better and is less true.
+**How to apply:** Commit at the end of a sprint. Four sprints of uncommitted
+work is how a repository ends up unable to describe its own history honestly.
+

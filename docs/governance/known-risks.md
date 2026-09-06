@@ -1,5 +1,79 @@
 # Known Risks — Maxpromo Platform
 
+## OPEN — BLOCKING RELEASE — Vercel projects are configured for the pre-consolidation layout
+
+Both Vercel projects have **Root Directory `.`**, set when they were created
+before the two repositories merged and the applications moved to `apps/web` and
+`apps/bureau`.
+
+`ADR-0001` recorded this as required work at the time of the merge — *"Vercel
+needs reconfiguring... this is the one step that requires the dashboard"* — and
+it was never done.
+
+**Verified, not inferred.** A preview deployment on 2026-09-06 built both
+applications successfully and then failed:
+
+```
+Error: The file "/vercel/path0/.next/routes-manifest.json" couldn't be found.
+```
+
+The build put its output in `apps/web/.next`; the project looked for `.next` at
+the repository root.
+
+**The fix is two settings per project** — Root Directory, and "include files
+outside the root directory" so `packages/` is available. There is no CLI for
+Root Directory; `vercel project` does not expose it. Exact steps in
+`deployment/track-a-release.md`.
+
+**Consequence while it is open:** production runs `main` at `7bd892e`, last
+deployed 25 days ago. Everything from v13.0 onward is undeployed, including the
+fixes for the two RC1 blockers below.
+
+**Owner:** Marcel. **Blocks:** the Track A production release, and therefore the
+closure of Track A.
+
+---
+
+## OPEN — RC1-01 and RC1-02 are live in production
+
+Measured against real production over HTTPS on 2026-09-06, before this release:
+
+| | |
+|---|---|
+| product domains carrying the Maxpromo `<title>` | **9 of 9** |
+| product domains canonicalising to `maxpromo.digital` | **9 of 9** |
+| `robots.txt` naming `maxpromo.digital` as `Host` | **9 of 9** |
+| consultancy pages served on product domains | **9 of 9** — `taxkontrol.de/about` and `restaurant-os.de/about` both return "Über Maxpromo" |
+| domains exposing `/api/health` | **0 of 11** |
+
+These are the RC1 blockers, fixed in v13.0 and certified locally, waiting on the
+deployment above. They are not new findings; they are the reason the release
+matters.
+
+**Owner:** closes with the Track A release.
+
+---
+
+## OPEN — the Agent Bureau database has not seen the new ORM
+
+`drizzle-orm` moved 0.38.4 → 0.45.2 in v15.1 — seven minor versions of a 0.x
+library. Verified by typecheck, lint, production build and `drizzle-kit check`
+against the existing migration journal. **Not** verified against a live
+database, because this environment has no connection to one and should not.
+
+No migration is required: the schema is unchanged, only the ORM version moved.
+Do not run `drizzle-kit push` or `migrate` as part of the release.
+
+The non-destructive verification sequence is in
+`deployment/track-a-release.md` — health endpoint, sign-in, dashboard reads,
+`/api/demo/status`, then the deployment logs for `DrizzleError`,
+`PostgresError` or `relation ... does not exist`.
+
+**Owner:** whoever runs the release. **If it regresses:** roll back; nothing in
+this release changes a schema, so a code rollback is complete.
+
+---
+
 ## RESOLVED 2026-09-06 (v15.1) — Four HIGH security advisories
 
 All four are remediated. `next` 16.1.6 → 16.3.4 and `drizzle-orm` 0.38.4 →

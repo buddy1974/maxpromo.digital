@@ -1,8 +1,53 @@
 # AI Governance Readiness
 
 **Status:** Preparation only. Nothing here has been built.
-**For:** Track B — the AI Governance Programme
-**Written:** 2026-09-05 (v14.0)
+**For:** Track B — AI Governance and Assistant Forensics
+**Written:** 2026-09-05 (v14.0) · Track B scope added 2026-09-06 at the Track A release
+
+---
+
+## Track B — AI Governance and Assistant Forensics
+
+**Status: not started.** This is the handoff package, prepared at the close of
+Track A. Nothing here has been built and nothing may be modified until Track B
+formally begins.
+
+**The first mission is DISCOVERY, not modification.** Inventory comes first.
+The reason is in the finding below: there are two AI stacks that do not know
+about each other, so any fix applied to one silently leaves the other. A
+programme that starts by editing a prompt will patch one assistant and miss
+three.
+
+### What the first mission must inventory
+
+Every AI and conversational surface across Maxpromo, without changing any of
+them:
+
+| | |
+|---|---|
+| Surfaces | Max assistant · Agent Bureau · OS assistants · internal assistants · public assistants |
+| Model layer | API model calls · model and provider configuration · fallback behaviour |
+| Instructions | system prompts · fallback prompts · duplicated prompts · business rules embedded in prose |
+| Knowledge | knowledge sources · memory · retrieval |
+| Behaviour | tools and actions · guardrails · human escalation · assistant identity · versioning |
+| Statements | pricing statements · claims |
+| Data and evidence | PII handling · logging · evaluation |
+
+### P0 governance finding, carried into Track B
+
+**Pricing.** Maxpromo has decided there is no public website pricing —
+engagements are arranged individually, and the public pricing page was retired
+in v9.6. Earlier forensic work found **hardcoded or fabricated Maxpromo prices
+inside assistant prompts**.
+
+That is not fixed here, deliberately. Fixing one assistant's prompt while three
+other surfaces carry the same figures is exactly the failure this programme
+exists to end. It is carried as a **P0 finding for the discovery mission**: find
+every instance, across every surface, then decide once.
+
+The platform already checks authored copy for this class of problem
+(`audit:claims`, ADR-0007). Generated copy is unexamined, and that gap is the
+shape of the whole programme.
 
 ---
 

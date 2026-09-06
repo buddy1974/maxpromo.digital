@@ -547,6 +547,59 @@ A change is done when:
 
 ---
 
+## 24b. Programmes, and where Track A stands
+
+**Track A — Platform Foundation.** Engineering complete and certified at tag
+`track-a-foundation-v15.1` (commit `8e700a2`, 2026-09-06).
+
+It covers: repository architecture · governance · design-token governance ·
+domain identity · brand identity · documentation governance · accessibility
+governance · observability · performance baselines · dependency governance ·
+the security release gate · the certification pipeline.
+
+**Status: CERTIFIED, NOT YET CLOSED.** Closure requires production
+verification, and production verification requires a deployment that is
+currently blocked on two Vercel project settings — see
+`deployment/track-a-release.md`. Track A closes when that release is verified
+in production, not before; a foundation that has only ever run on a laptop is
+not a foundation anything should be built on.
+
+**Track B — AI Governance and Assistant Forensics.** Not started. Its first
+mission is discovery, not modification. Scope and starting findings:
+`architecture/ai-governance-readiness.md`.
+
+---
+
+## 24c. The Track A freeze
+
+Once Track A closes, the foundation is frozen. These are governed platform
+changes, not ordinary work:
+
+- the Domain Registry and the Brand Registry
+- the design token system
+- the governance gates and the certification pipeline
+- the observability contracts
+- the security policy and the accepted-risk register
+- this constitution
+- host resolution and the middleware
+- the performance budgets
+
+A change to any of them needs a stated justification and an ADR, in that
+order. Track B consumes these foundations; it does not reinvent them.
+
+**What being frozen does not mean.** A defect in a foundation is still a
+defect and is still fixed. Freezing is about deliberate change, not about
+pretending the platform is finished.
+
+**Carried forward, and not grounds for reopening Track A:** mobile LCP
+optimisation · the hub's canonical Lighthouse anomaly, pending one production
+run · product brand assets (35 to create, 42 to replace) · core-memory and
+Brand Registry product naming · the four accepted development-toolchain
+advisories · the EU hosting claim · German copy for the two English-only
+products. Each has an owner in `governance/known-risks.md`.
+
+---
+
 ## 25. Platform freeze rules
 
 During a freeze, only these merge:
