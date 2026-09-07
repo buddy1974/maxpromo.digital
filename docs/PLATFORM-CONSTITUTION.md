@@ -570,18 +570,24 @@ rules pass on all eleven hosts, including every identity, canonical, robots,
 sitemap, manifest, legal, 404 and health rule. RC1-01 and RC1-02 are closed in
 production.
 
-**Three things still hold closure open**, all found *by* this verification and
-none caused by the release. Two are pre-existing gaps in what was certified:
+**The closure patch `5ea0b02` (2026-09-07) fixed both foundation defects** that
+production verification found, rather than accepting them as residual risk:
 
-1. The Domain Registry declares `contactPath: '/kontakt'` for
-   `agents.maxpromo.digital`, which that application does not serve — and
-   `audit-domains.mjs` skips non-web apps, so the rule that exists for exactly
-   this never examined the one host where the claim is false.
-2. `apps/bureau` does not stamp `x-mp-trace`. A correlation-id contract that
-   holds on one of two applications is not a platform contract.
-3. The drizzle-orm 0.45.2 verification against a live database is
-   **Marcel-only** — every Drizzle-backed route correctly returns 401 to an
-   anonymous caller, so it cannot be automated.
+1. The Domain Registry gained `contactStrategy` and a `contactUrl()` resolver;
+   `agents.maxpromo.digital` now declares the destination its footer has always
+   used, and `audit-domains.mjs` validates the contract for every application
+   instead of skipping non-web apps.
+2. `apps/bureau` stamps `x-mp-trace` through the shared contract, and a
+   thirteenth merge gate, `check:trace`, enforces it across applications.
+
+Both are demonstrated failing before being believed — `prove:domains` 17/17,
+`prove:trace` 5/5 — and production now passes 16 of 16 rules on 11 of 11 hosts.
+
+**One thing still holds closure open:** the drizzle-orm 0.45.2 verification
+against a live database is **Marcel-only**. Every Drizzle-backed route correctly
+returns 401 to an anonymous caller, and — separately — every read path swallows
+its own failure, so no HTTP check of it can fail. It needs an authenticated
+session plus the production runtime log. See `deployment/track-a-release.md`.
 
 Track A closes when those are settled, not before. Both gaps are recorded with
 owners in `governance/known-risks.md`; the release record is

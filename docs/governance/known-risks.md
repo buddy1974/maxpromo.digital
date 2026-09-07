@@ -1,5 +1,39 @@
 # Known Risks — Maxpromo Platform
 
+## OPEN — every Agent Bureau database read swallows its own failure
+
+Found 2026-09-07 while designing the authenticated drizzle-orm verification.
+
+`lib/db/queries/_shared.ts` wraps reads in `safeRead(fn, fallback)`, which
+catches, writes `[db/queries] read failed:` to `console.error`, and returns the
+fallback. Every query module uses it. `dashboard.ts` does not — it composes the
+others, and says so in a comment: *"Each underlying query is already resilient
+(returns empty on no-DB / no-seed), so this never throws."*
+
+**The consequence is a verifiability problem, not just a logging one.** A total
+database failure and an empty workspace produce the same HTTP response: 200,
+`{"ok":true,...}`, empty arrays. No endpoint on this application can tell the
+two apart, which means *no HTTP check of the Agent Bureau's database can fail*.
+
+That is why the drizzle-orm production verification is not "open an endpoint and
+look for `ok:true`". Two things can actually distinguish the cases: rows
+rendering (a fallback cannot fabricate data), and the absence of
+`[db/queries] read failed:` in the production runtime log while reads are being
+exercised.
+
+The resilience itself is deliberate and defensible — an unseeded workspace
+should render, not 500. What is missing is the distinction between "nothing
+there" and "could not look".
+
+Related: the 37 silent `catch {}` blocks and the logger with no call sites,
+below. Same family, and the fix is the same piece of work — a swallowed error
+that reached `log.warn` with a trace id would be visible instead of inferred.
+
+**Owner:** the dedicated observability change. **Blocks:** nothing today; it
+raises the cost of every future database verification.
+
+---
+
 ## RESOLVED 2026-09-07 — `agents.maxpromo.digital` declared a contact path it did not serve
 
 **Fixed in the Track A closure patch.** The Domain Registry gained

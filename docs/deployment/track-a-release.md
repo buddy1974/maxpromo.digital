@@ -2,10 +2,11 @@
 
 **Release candidate:** tag `track-a-foundation-v15.1`, commit `0337f2d`
 **Merged to `main` as:** `a44a563` (`--no-ff`), tree identical to the tag
-**Deployed:** 2026-09-06 `maxpromo-digital` · 2026-09-07 `maxpromo-agents` — both `READY`
-**Status:** released. All eleven registered hosts run this release.
-**Track A:** not closed — two pre-existing foundation gaps and one Marcel-only
-verification remain. See *Outcome* below.
+**Closure patch:** `5ea0b02` — both projects redeployed 2026-09-07, both `READY`
+**Status:** released. All eleven registered hosts run `5ea0b02`.
+**Verification:** 16 of 16 rules pass on 11 of 11 hosts.
+**Track A:** not closed. Both foundation defects are fixed and gated; one
+Marcel-only verification remains — see *Still Marcel-only* below.
 
 ---
 
@@ -400,6 +401,28 @@ hardcoded `/contact` while the registry declares the bureau's path as
 `/kontakt` genuinely does not exist. The finding survived the fix to the
 finder, which is the only reason it is reported.
 
+### Closure patch — 2026-09-07, commit `5ea0b02`
+
+Both defects fixed rather than accepted. Deployed to both projects: the diff
+touched `packages/config`, so both ignore commands correctly triggered a build —
+determined from the diff, not assumed.
+
+| | |
+|---|---|
+| web | `dpl_3ay7p3xwYfhDbeSrbRDdmup6eRJ6` — READY |
+| bureau | `dpl_GBQQxp3gz5tm9qwg4bReHqnRgBqU` — READY, git-triggered from `main` |
+
+**Eleven-host production verification: 16 of 16 rules pass on 11 of 11 hosts.**
+Every artefact reports `release.commit: 5ea0b02`. `x-mp-trace` is now present on
+a served page and on a 404 across all eleven. The contact contract resolves to a
+served page on all eleven — hub-bound off-domain, self-bound on-domain.
+
+Agent Bureau specifics: repository `buddy1974/maxpromo.digital`, Root Directory
+`apps/bureau`, Next.js 16.3.4, `database: ok` at 7–59 ms, `authentication: ok`,
+`/dashboard/*` still 307 to `/login?callbackUrl=…`, every Drizzle-backed API
+route still 401 to an anonymous caller, and `/`, `/login`, `/impressum`,
+`/datenschutz` all 200. No old standalone-repository artefact holds any alias.
+
 ### Still Marcel-only: drizzle-orm 0.45.2
 
 `/api/health` proves the database is reachable — but it uses
@@ -412,12 +435,25 @@ Every route that does read through Drizzle — `/api/dashboard/summary`,
 `/api/waiting-room` — returns 401 to an anonymous caller. That is correct
 behaviour and it is why this check cannot be automated from here.
 
-**What Marcel does:** sign in at `https://agents.maxpromo.digital/login`, open
-the dashboard (activity, agents, approvals, waiting room, documents — all
-Drizzle reads), then `GET /api/demo/status`, the one route using `sql`
-template literals. Then read the deployment logs for `DrizzleError`,
-`PostgresError`, `syntax error at or near`, `relation … does not exist`, or
-connection failures. If any appear, roll back before investigating.
+**And an HTTP check of it cannot fail.** Every query module wraps its reads in
+`safeRead`, which catches, logs `[db/queries] read failed:` and returns a
+fallback; `dashboard.ts` composes those and states that it *"never throws"*. So
+a total database failure and an empty workspace both render as 200,
+`{"ok":true,...}` with empty arrays. Telling anyone to "open the endpoint and
+look for `ok:true`" would be handing them a check with no failing case —
+recorded at the top of `governance/known-risks.md`.
+
+**Two things can actually distinguish the cases**, and the procedure uses both:
+
+1. **Rows rendering.** A fallback cannot fabricate data. If real agents,
+   proposals, activity or audit rows appear, Drizzle 0.45.2 executed those
+   queries against Neon successfully.
+2. **The runtime log.** `[db/queries] read failed:` is written on every
+   swallowed failure. Its absence, while reads are being exercised, is the
+   evidence an empty screen cannot give — and it is readable without any
+   credential, so that half does not need Marcel.
+
+The click-by-click procedure is in the release report.
 
 No migration was run. No schema was modified. The ORM version moved; the
 schema did not.
