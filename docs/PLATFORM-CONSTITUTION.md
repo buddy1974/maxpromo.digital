@@ -383,6 +383,7 @@ made to Marcel, not implemented).
 `brand/visual-facelift-v2.1-superseded.md`.
 
 **Deployment**: `deployment/vercel.md`, `deployment/deploy-verify.md`,
+`deployment/agent-bureau-owner-access.md`,
 `deployment/social-automation/README.md`.
 
 **History**, kept because decisions are only legible with it:
@@ -517,6 +518,14 @@ independent rollback. A bad deploy on `web` is a ten-domain outage, which is
 why no other application can cause one.
 
 Detail: `deployment/vercel.md`, `deployment/deploy-verify.md`.
+
+**Operator access to Agent Bureau** is provisioned from a developer machine
+against the production database — there is no signup, no password reset and no
+invitation flow, and that is deliberate. The procedure, including why seeding
+demo data is never an authentication recovery path, is
+`deployment/agent-bureau-owner-access.md`. It was written on 2026-09-07 after
+the owner could not sign in and the only description of the mechanism lived in
+`history/`, which this constitution defines as describing how things were.
 
 ---
 

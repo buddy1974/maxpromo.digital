@@ -17,6 +17,7 @@ these documents; none keeps its own copy.
 
 - **New to the platform?** `architecture/platform.md`
 - **Making a change?** `governance/standards.md`
+- **Locked out of Agent Bureau?** `deployment/agent-bureau-owner-access.md`
 - **Wondering why something is the way it is?** `adr/`
 - **Writing copy or building UI?** `brand/`
 
