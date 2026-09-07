@@ -50,6 +50,9 @@ const ORIGINALS = Object.fromEntries(
   Object.entries(FILES).map(([k, f]) => [k, readFileSync(f, 'utf8')]),
 )
 
+/** Built rather than typed, so no tool between here and disk can rewrite it. */
+const EOL = String.fromCharCode(10)
+
 const CASES = [
   {
     rule: '1a duplicate host',
@@ -140,6 +143,48 @@ const CASES = [
     to:   "    contactPath:       `/about?system=${e.contactSlug ?? e.slug}`,",
     expect: 'which it does not serve',
   },
+
+  // -- The contact contract, on the app the rule used to skip ---------------
+  //
+  // Until 2026-09-07 the loop containing the contact rules opened with
+  // `if (d.app !== 'web') continue`, so agents.maxpromo.digital -- the one
+  // host whose declaration was false -- was the one host never examined.
+  // These cases exist so that cannot silently return.
+  //
+  // `from`/`to` may be an array of lines; the runner joins them. Written that
+  // way because the first attempt embedded newline escapes in a string and a
+  // heredoc turned them into real newlines, producing a file that would not
+  // parse. The shape that cannot be mangled is the one to use.
+  {
+    rule: '4d bureau contact page is not served by apps/bureau',
+    from: "    contactStrategy:   'hub',",
+    to:   "    contactStrategy:   'self',",
+    expect: 'is not a page in apps/bureau',
+  },
+  {
+    rule: '4e bureau names a hub page the hub does not serve',
+    from: [
+      "    contactPath:       '/contact',",
+      "    contactStrategy:   'hub',",
+    ],
+    to: [
+      "    contactPath:       '/kontakt',",
+      "    contactStrategy:   'hub',",
+    ],
+    expect: 'is not a page in apps/web',
+  },
+  {
+    rule: '4f hub-bound domain also admits the contact path locally',
+    from: [
+      "    routes:            ['*'],",
+      "    analyticsId:       'agent-bureau',",
+    ],
+    to: [
+      "    routes:            ['/contact'],",
+      "    analyticsId:       'agent-bureau',",
+    ],
+    expect: 'but also admits /contact locally',
+  },
 ]
 
 const results = []
@@ -148,11 +193,17 @@ try {
     const which = c.file ?? 'domains'
     const file = FILES[which]
     const original = ORIGINALS[which]
-    if (!original.includes(c.from)) {
-      results.push([c.rule, 'ANCHOR MISSING', c.from.slice(0, 50)])
+    // A case may give `from`/`to` as an array of lines. Multi-line anchors
+    // written as one string with escaped newlines do not survive every editor
+    // and shell that touches this file; an array cannot be mangled that way.
+    const join = (v) => (Array.isArray(v) ? v.join(EOL) : v)
+    const from = join(c.from)
+    const to = join(c.to)
+    if (!original.includes(from)) {
+      results.push([c.rule, 'ANCHOR MISSING', from.slice(0, 50)])
       continue
     }
-    writeFileSync(file, original.replace(c.from, c.to), 'utf8')
+    writeFileSync(file, original.replace(from, to), 'utf8')
     let out = ''
     try {
       out = execFileSync('node', ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON', 'packages/tooling/audit-domains.mjs'], { encoding: 'utf8' })

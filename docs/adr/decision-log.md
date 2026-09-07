@@ -624,3 +624,73 @@ the deployed artefact was made to report its own commit through `/api/health`.
 
 **Do not** relax the ignore command to force the build. It is correct; it was
 being asked a question it does not answer.
+
+---
+
+## 2026-09-07 - A contact destination is a property, not a path
+
+**Decision:** `DomainEntry` gains `contactStrategy: 'self' | 'hub'`, and
+`contactUrl(domain, locale)` resolves it. `agents.maxpromo.digital` declares
+`contactPath: '/contact'` with `contactStrategy: 'hub'`.
+
+**Why:** `contactPath` was typed as a path and documented as "the path every
+call to action on this domain arrives at" - same-origin by construction. The
+Agent Bureau's calls to action have always gone to the consultancy, so the
+registry had no way to say what was true and said something false instead:
+`/kontakt`, a page that application has never served. Meanwhile the real
+destination lived as a hardcoded absolute URL in the bureau's footer.
+
+Three answers to one question, and the registry held the only wrong one.
+
+**Alternatives considered.** Creating a `/kontakt` page in `apps/bureau` would
+have satisfied the field and built a second contact desk for a product that
+deliberately routes its conversations to the consultancy - a product decision
+smuggled in as a lint fix. Allowing `contactPath` to hold an absolute URL would
+have made the type stringly and left "whose path is this?" unanswerable without
+parsing.
+
+`contactStrategy` mirrors `canonicalStrategy`, which already solves exactly this
+shape for canonical URLs. Same vocabulary, same resolver shape, nothing new to
+learn.
+
+**How to apply:** Read the destination with `contactUrl()`, never `contactPath`
+alone. The bureau footer now does, so the declaration is load-bearing - a field
+nothing reads is a field that drifts, which is how this one came to be wrong
+for four sprints without a single failing check.
+
+---
+
+## 2026-09-07 - The correlation id is a platform contract, so it is gated
+
+**Decision:** `apps/bureau` stamps `x-mp-trace` using the shared
+`TRACE_HEADER`/`newTrace` from `@maxpromo/observability`, and a new merge gate
+`check:trace` enforces that every application with a middleware does the same.
+
+**Why:** v15.0 built the observability package and wired it into `apps/web`
+only. Nothing said so, and the platform was described as observable. Production
+verification found `agents.maxpromo.digital` returning no correlation id on a
+served page or a 404.
+
+**The middleware change is the part that needed care.** The old matcher was
+`["/dashboard/:path*"]` passed straight to `withAuth`, so every matched path
+was an authenticated path. Widening that matcher would have put the landing
+page, `/login` and the two legally required pages behind a session - a redirect
+loop on the login page, and a German legal requirement made unreachable.
+
+So `withAuth` is no longer the exported middleware. It is constructed once and
+invoked only for `/dashboard/**`; every other matched path is stamped and
+passed through. The authenticated set is now decided by an explicit
+`startsWith`, not by the matcher, and it is the same set as before - verified
+against a local production build before deployment: `/`, `/login`,
+`/impressum`, `/datenschutz` all 200; every `/dashboard/*` still 307 to
+`/login?callbackUrl=...`; `/api/*` still outside the matcher entirely.
+
+**How to apply:** Never widen a matcher that is passed directly to an auth
+helper. Separate "which requests this middleware sees" from "which requests it
+authenticates" first, then widen the former.
+
+**On the gate itself:** its own first run reported the middleware that
+satisfies the contract as violating it, because the doc comment explaining the
+contract names the header. It reads comment-stripped source now, the way the
+standards have required since ADR-0004 - the same defect `check-token-inputs`
+had, found the same way.

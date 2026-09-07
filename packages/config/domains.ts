@@ -92,6 +92,24 @@ export type ChromeMode = 'hub' | 'product' | 'bureau'
  */
 export type CtaScope = 'product' | 'consultancy'
 
+/**
+ * Which property serves this domain's contact page.
+ *
+ * self  this domain serves `contactPath` itself
+ * hub   the conversation happens on the consultancy, and `contactPath` is a
+ *       path on the hub rather than on this domain
+ *
+ * This exists because `contactPath` alone cannot say *whose* path it is, and a
+ * registry that cannot express a cross-domain destination will instead express
+ * a false local one. `agents.maxpromo.digital` declared `/kontakt`, served no
+ * such page, and linked its own footer to the hub — three answers to one
+ * question, and the audit that should have caught it skipped the app.
+ *
+ * It mirrors `CanonicalStrategy` deliberately: same shape, same resolver
+ * shape, one thing to learn.
+ */
+export type ContactStrategy = 'self' | 'hub'
+
 export interface DomainOpenGraph {
   /**
    * Where the social card lives: a path under the serving application's own
@@ -205,8 +223,12 @@ export interface DomainEntry {
   /**
    * Path, without locale prefix, that every call to action on this domain
    * arrives at. Carries the product context the contact form reads.
+   *
+   * Read it with `contactUrl()`, never on its own: whether this path belongs
+   * to this domain or to the hub is `contactStrategy`, not this field.
    */
   readonly contactPath: string
+  readonly contactStrategy: ContactStrategy
   readonly ctaScope: CtaScope
 
   /**
@@ -319,6 +341,7 @@ function productDomain(e: {
     navigation:        'product',
     footer:            'product',
     contactPath:       `/contact?system=${e.contactSlug ?? e.slug}`,
+    contactStrategy:   'self',
     ctaScope:          'product',
     routes:            PRODUCT_ROUTES,
     analyticsId:       e.slug,
@@ -355,6 +378,7 @@ export const DOMAIN_REGISTRY: readonly DomainEntry[] = [
     navigation:        'hub',
     footer:            'hub',
     contactPath:       '/contact',
+    contactStrategy:   'self',
     ctaScope:          'consultancy',
     routes:            ['*'],
     analyticsId:       'maxpromo-hub',
@@ -391,7 +415,11 @@ export const DOMAIN_REGISTRY: readonly DomainEntry[] = [
     sitemap:           'own',
     navigation:        'bureau',
     footer:            'bureau',
-    contactPath:       '/kontakt',
+    // The Agent Bureau does not run its own contact desk: its footer sends the
+    // conversation to the consultancy, which is where it has always gone. The
+    // registry now says so instead of declaring a page this app never served.
+    contactPath:       '/contact',
+    contactStrategy:   'hub',
     ctaScope:          'product',
     routes:            ['*'],
     analyticsId:       'agent-bureau',
@@ -533,6 +561,28 @@ export function canonicalUrl(domain: DomainEntry, locale: string, pathname: stri
   const needsPrefix = target.useLocalePrefix || locale !== target.primaryLanguage
   const prefix = needsPrefix ? `/${locale}` : ''
   return `${target.origin}${prefix}${path}` || target.origin
+}
+
+/**
+ * The absolute URL every call to action on this domain arrives at.
+ *
+ * Resolves `contactPath` against whichever property actually serves it, so a
+ * caller cannot accidentally build `agents.maxpromo.digital/contact` — a page
+ * that does not exist — out of a field that only says `/contact`.
+ *
+ * Shaped exactly like `canonicalUrl` above, and for the same reason: the
+ * question "whose URL is this?" has one answer per domain, declared once.
+ */
+export function contactUrl(domain: DomainEntry, locale: string): string {
+  const target = domain.contactStrategy === 'hub' ? FALLBACK_DOMAIN : domain
+  // A hub-bound contact page is served in the hub's own languages; a domain
+  // may lead in a language the hub does not prefix the same way.
+  const wanted = target.languages.includes(locale as DomainLocale)
+    ? (locale as DomainLocale)
+    : target.primaryLanguage
+  const needsPrefix = target.useLocalePrefix || wanted !== target.primaryLanguage
+  const prefix = needsPrefix ? `/${wanted}` : ''
+  return `${target.origin}${prefix}${domain.contactPath}`
 }
 
 /** Every public URL this domain publishes, one per supported language. */

@@ -30,6 +30,7 @@ export {
   servesRoute,
   servesLocale,
   canonicalUrl,
+  contactUrl,
   domainUrls,
 } from './domains.ts'
 
@@ -55,6 +56,7 @@ export type {
   DomainEntry,
   DomainOpenGraph,
   CanonicalStrategy,
+  ContactStrategy,
   RobotsPolicy,
   SitemapPolicy,
   ChromeMode,

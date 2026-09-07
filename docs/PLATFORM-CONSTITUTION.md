@@ -91,7 +91,10 @@ releases, security exceptions, architecture changes or production deploys.
    Decisions go in `adr/`, risks in `governance/known-risks.md`, changes in
    `history/change-log.md`.
 3. **Enforced, not reviewed.** Anything that has regressed twice becomes a
-   gate. Ten of the eleven gates exist because something silently broke.
+   gate. Almost every one of the thirteen exists because something silently
+   broke — the newest, `check:trace`, because a correlation-id contract held in
+   one of two applications for four sprints while the platform was described as
+   observable.
 4. **Fail loudly.** A check that finds nothing must prove it looked. Every one
    exits non-zero rather than reporting clean on zero targets.
 5. **State the trade-off.** A decision recorded without its alternatives is not
@@ -445,7 +448,7 @@ applied to every change.
 ## 20. Certification pipeline
 
 ```
-npm run verify     12 gates — the merge gate
+npm run verify     13 gates — the merge gate
 npm run certify    verify + a11y + consistency + platform + claims + docs
 ```
 

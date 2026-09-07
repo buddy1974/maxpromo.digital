@@ -59,7 +59,7 @@ if (!existsSync(registryPath)) {
   console.error('Refusing to report clean without having checked anything.')
   process.exit(1)
 }
-const { DOMAIN_REGISTRY, normaliseHost } = await import(pathToFileURL(registryPath).href)
+const { DOMAIN_REGISTRY, normaliseHost, FALLBACK_DOMAIN, contactUrl } = await import(pathToFileURL(registryPath).href)
 
 if (!Array.isArray(DOMAIN_REGISTRY) || DOMAIN_REGISTRY.length === 0) {
   console.error('domains: the registry is empty.')
@@ -69,6 +69,18 @@ if (!Array.isArray(DOMAIN_REGISTRY) || DOMAIN_REGISTRY.length === 0) {
 
 const APP_PUBLIC = { web: join(ROOT, 'apps', 'web', 'public'), bureau: join(ROOT, 'apps', 'bureau', 'public') }
 const WEB_ROUTES_DIR = join(ROOT, 'apps', 'web', 'app', '[locale]')
+/**
+ * Where each application's public pages live.
+ *
+ * apps/web nests every page under the [locale] segment; apps/bureau serves
+ * unprefixed paths straight off app/. This map exists because the contact rule
+ * below used to assume apps/web for every domain and therefore skipped the one
+ * host whose declaration was false.
+ */
+const APP_ROUTES_DIR = {
+  web: WEB_ROUTES_DIR,
+  bureau: join(ROOT, 'apps', 'bureau', 'app'),
+}
 const PRODUCTS_PATH = join(ROOT, 'apps', 'web', 'lib', 'registry', 'products.ts')
 
 const findings = []
@@ -137,13 +149,13 @@ function pngSize(file) {
   return { width: b.readUInt32BE(16), height: b.readUInt32BE(20) }
 }
 
-// ── Which paths apps/web actually serves ────────────────────────────────────
-function webRoutePaths() {
+// ── Which paths each application actually serves ────────────────────────────
+function routePaths(dir) {
   const paths = new Set()
-  if (!existsSync(WEB_ROUTES_DIR)) return paths
-  const walk = (dir, prefix) => {
-    for (const name of readdirSync(dir)) {
-      const full = join(dir, name)
+  if (!existsSync(dir)) return paths
+  const walk = (d, prefix) => {
+    for (const name of readdirSync(d)) {
+      const full = join(d, name)
       if (!statSync(full).isDirectory()) {
         if (/^page\.(tsx|mdx)$/.test(name)) paths.add(prefix === '' ? '/' : prefix)
         continue
@@ -155,14 +167,32 @@ function webRoutePaths() {
       walk(full, `${prefix}/${name}`)
     }
   }
-  walk(WEB_ROUTES_DIR, '')
+  walk(dir, '')
   return paths
 }
-const servedPaths = webRoutePaths()
-if (servedPaths.size === 0) {
-  console.error('domains: found no pages under apps/web/app/[locale]')
-  console.error('Refusing to report clean without having checked anything.')
-  process.exit(1)
+
+/** app name → the set of literal paths it serves. */
+const SERVED_BY_APP = Object.fromEntries(
+  Object.entries(APP_ROUTES_DIR).map(([app, dir]) => [app, routePaths(dir)]),
+)
+for (const [app, paths] of Object.entries(SERVED_BY_APP)) {
+  if (paths.size === 0) {
+    console.error(`domains: found no pages under ${APP_ROUTES_DIR[app]}`)
+    console.error('Refusing to report clean without having checked anything.')
+    process.exit(1)
+  }
+}
+// Kept for the rules that are genuinely about apps/web's own route surface.
+const servedPaths = SERVED_BY_APP.web
+
+/**
+ * Which application serves a domain's contact page, and the paths it has.
+ * A `hub` strategy means the path belongs to the fallback domain's app, not to
+ * this domain's — that distinction is the whole point of the field.
+ */
+function contactSurface(d) {
+  const target = d.contactStrategy === 'hub' ? FALLBACK_DOMAIN : d
+  return { target, paths: SERVED_BY_APP[target.app] ?? new Set() }
 }
 
 // ── 1. Registry integrity ───────────────────────────────────────────────────
@@ -337,8 +367,9 @@ if (!contactSystems || contactSystems.size === 0) {
 }
 
 for (const d of DOMAIN_REGISTRY) {
-  if (d.app !== 'web') continue
-  if (!d.routes.includes('*')) {
+  // Route-allowlist integrity is an apps/web concern: only that application
+  // has an isolation matcher comparing literal paths against `routes`.
+  if (d.app === 'web' && !d.routes.includes('*')) {
     for (const r of d.routes) {
       if (!servedPaths.has(r)) {
         add(`${d.host} admits ${r}, which apps/web does not serve`, 'A route in the allowlist that has no page is a 404 the isolation rule protects.')
@@ -346,18 +377,51 @@ for (const d of DOMAIN_REGISTRY) {
     }
   }
 
+  // ── Contact contract — every registered domain, whichever app serves it ──
+  //
+  // This used to sit behind `if (d.app !== 'web') continue`, so the one host
+  // whose declaration was false was the one host it never examined:
+  // agents.maxpromo.digital declared /kontakt, served no such page, and linked
+  // its footer to the hub. The rule was correct and looked at nothing.
   const contactPath = d.contactPath.split('?')[0]
-  const admitted = d.routes.includes('*') || d.routes.includes(contactPath)
-  if (!admitted) {
+  const { target, paths: contactPaths } = contactSurface(d)
+
+  if (!contactPaths.has(contactPath)) {
     add(
-      `${d.host} sends every call to action to ${d.contactPath}, which it does not serve`,
-      'Route isolation would redirect the domain’s own conversion path to the hub.',
+      `${d.host}: contact path ${contactPath} is not a page in apps/${target.app}`,
+      d.contactStrategy === 'hub'
+        ? `Declared contactStrategy 'hub', so it must be a page on ${target.host}.`
+        : 'Every CTA on the domain points at it.',
     )
   }
-  if (!servedPaths.has(contactPath)) {
-    add(`${d.host}: contact path ${contactPath} is not a page`, 'Every CTA on the domain points at it.')
+
+  // A self-served contact page must also survive route isolation on its own
+  // domain. A hub-bound one is a different origin and is not isolated here.
+  if (d.contactStrategy === 'self') {
+    const admitted = d.routes.includes('*') || d.routes.includes(contactPath)
+    if (!admitted) {
+      add(
+        `${d.host} sends every call to action to ${d.contactPath}, which it does not serve`,
+        'Route isolation would redirect the domain’s own conversion path to the hub.',
+      )
+    }
+  } else if (d.routes.includes(contactPath) && !d.routes.includes('*')) {
+    add(
+      `${d.host} declares contactStrategy 'hub' but also admits ${contactPath} locally`,
+      'Two destinations for one call to action. Pick the one the footer uses.',
+    )
   }
 
+  // The resolver must produce a URL on the property that actually serves it.
+  const resolved = contactUrl(d, d.primaryLanguage)
+  if (!resolved.startsWith(target.origin)) {
+    add(
+      `${d.host}: contactUrl() resolves to ${resolved}, which is not on ${target.origin}`,
+      'The resolver and the declared strategy disagree.',
+    )
+  }
+
+  // ?system= is an apps/web contact-form concern; only that page reads it.
   const system = (d.contactPath.split('system=')[1] ?? '').split('&')[0]
   if (system && !contactSystems.has(system)) {
     add(
@@ -378,7 +442,8 @@ console.log(
 )
 console.log(
   `${assetsChecked} social asset(s) checked, ` +
-  `${servedPaths.size} page path(s) in apps/web, ` +
+  Object.entries(SERVED_BY_APP).map(([app, p]) => `${p.size} page path(s) in apps/${app}`).join(', ') + ', ' +
+  `${DOMAIN_REGISTRY.length} contact contract(s) resolved, ` +
   `${coverage.size} product(s) measured for locale coverage`,
 )
 

@@ -28,13 +28,14 @@ run on developer machines and never in CI.
 | 3 | **Brand asset audit** `check:brands` | A Brand Registry entry the repository cannot honour: a duplicate or unreachable product, an accent that is a token reference rather than a colour, an accent-as-text form below 4.5:1 on white, an asset that is declared and not on disk or not the dimensions stated, an empty slot with no stated reason, or a product declaring its own typography. It also classifies every asset slot KEEP / REPLACE / CREATE / REMOVE and prints the counts |
 | 4 | **Design token audit** `check:tokens` | Hex literals, raw Tailwind palette classes, rgba literals, and the brand accent used as a text colour — directly, through a conditional, aliased to a local name, or bound to a field named as text. Anywhere outside the token package |
 | 5 | **Token input audit** `check:token-inputs` | A custom property the token package reads that an application never defines, and any `var()` an application uses that nothing defines at all. An undefined `var()` does not warn: with a fallback it silently uses it, without one the whole declaration is dropped — see ADR-0006. Since v14.0 it also rejects any `var()` written into output that leaves the browser: an email client resolves no custom property, so `var(--space-2)` in an email is no padding at all |
-| 6 | **Icon audit** `check:icons` | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
-| 7 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
-| 8 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
-| 9 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
-| 10 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
-| 11 | **Production build** `build` | Every application builds |
-| 12 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS and CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built |
+| 6 | **Trace contract** `check:trace` | Every application with a middleware imports `TRACE_HEADER` and `newTrace` from `@maxpromo/observability`, actually sets the header on a response, and declares a matcher with a catch-all entry so a public page and a 404 both carry a correlation id. No application may hardcode the header name or mint its own trace id. Added 2026-09-07 after production verification found `apps/bureau` stamping nothing for four sprints while the platform was described as observable — a contract that held in one of two applications. Proven by `prove:trace` |
+| 7 | **Icon audit** `check:icons` | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
+| 8 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
+| 9 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
+| 10 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
+| 11 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
+| 12 | **Production build** `build` | Every application builds |
+| 13 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS and CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built |
 
 The static audits run first on purpose: they are the fastest and they catch the
 classes of regression this platform has had most often.

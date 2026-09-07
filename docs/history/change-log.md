@@ -1347,3 +1347,46 @@ One verification remains Marcel-only: drizzle-orm 0.45.2 against a live
 database needs an authenticated session, because every Drizzle-backed route
 correctly returns 401 to an anonymous caller. `/api/health` proves reachability
 via `@neondatabase/serverless` and must not be read as a Drizzle check.
+
+---
+
+## 2026-09-07 - Track A closure patch: two foundation contracts repaired
+
+Production verification found two gaps in what had been certified. Neither was
+caused by the release; both were fixed rather than accepted as residual risk.
+
+**The contact contract.** `DomainEntry` gained `contactStrategy: 'self' | 'hub'`
+and a `contactUrl()` resolver, mirroring the `canonicalStrategy`/`canonicalUrl`
+pair that already solves this shape. `agents.maxpromo.digital` now declares
+`contactPath: '/contact'` with `contactStrategy: 'hub'`, resolving to the
+consultancy's contact page - the destination its footer has always used. The
+footer reads the resolver instead of a hardcoded URL, so the field is
+load-bearing instead of decorative.
+
+No `/kontakt` page was created. Building a second contact desk to satisfy a
+registry field would have been a product decision smuggled in as a lint fix.
+
+**The audit that skipped the app.** `audit-domains.mjs` opened its contact loop
+with `if (d.app !== 'web') continue`, so the one host whose declaration was
+false was the one host it never examined. It now reads each application's own
+route surface: 23 page paths in `apps/bureau` where it previously saw none, and
+11 contact contracts resolved where it previously checked 10.
+
+**The trace contract.** `apps/bureau` now stamps `x-mp-trace` through the shared
+`TRACE_HEADER`/`newTrace`. The middleware change needed care: the old matcher
+went straight to `withAuth`, so widening it would have put the landing page,
+`/login` and the two legally required pages behind a session. `withAuth` is now
+invoked only for `/dashboard/**` and the authenticated set is decided by an
+explicit prefix check - the same set as before, verified against a local
+production build before anything was pushed.
+
+**A thirteenth gate.** `check:trace` requires every application with a
+middleware to import the shared contract, actually set the header, declare a
+catch-all matcher, and never hardcode the header name or mint its own id. Its
+own first run reported the middleware that satisfies the contract as violating
+it, because the doc comment explaining the contract names the header - the same
+defect `check-token-inputs` had. It reads comment-stripped source now.
+
+**Proven, not asserted.** `prove:domains` 17/17 (three new bureau cases),
+`prove:trace` 5/5, `prove:brands` 11/11, `prove:security` 11/11. `certify`
+exit 0 across 13 gates; 0 critical, 0 high, the same four accepted moderates.

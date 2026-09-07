@@ -1,4 +1,11 @@
-import { BUSINESS } from "@maxpromo/config";
+import { BUSINESS, resolveDomain, contactUrl } from "@maxpromo/config";
+
+/**
+ * The contact destination is the Domain Registry's to state, not this
+ * component's. It used to be a hardcoded absolute URL here while the registry
+ * declared "/kontakt" — two answers, and the registry's was the false one.
+ */
+const BUREAU = resolveDomain("agents.maxpromo.digital");
 
 export function Footer() {
   return (
@@ -26,7 +33,7 @@ export function Footer() {
               {[
                 ["Website", "https://www.maxpromo.digital/de"],
                 ["Leistungen", "https://www.maxpromo.digital/de/solutions"],
-                ["Kontakt", "https://www.maxpromo.digital/de/contact"],
+                ["Kontakt", contactUrl(BUREAU, BUREAU.primaryLanguage)],
               ].map(([label, href]) => (
                 <a
                   key={label}

@@ -1,6 +1,31 @@
 # Known Risks — Maxpromo Platform
 
-## OPEN — `agents.maxpromo.digital` declares a contact path it does not serve
+## RESOLVED 2026-09-07 — `agents.maxpromo.digital` declared a contact path it did not serve
+
+**Fixed in the Track A closure patch.** The Domain Registry gained
+`contactStrategy: 'self' | 'hub'` and a `contactUrl()` resolver mirroring
+`canonicalStrategy`/`canonicalUrl`. The bureau now declares
+`contactPath: '/contact'` with `contactStrategy: 'hub'`, which resolves to
+`https://www.maxpromo.digital/de/contact` — the destination its footer has
+always used. The footer reads the resolver instead of a hardcoded URL, so the
+declaration is load-bearing rather than decorative.
+
+`audit-domains.mjs` no longer opens its contact loop with
+`if (d.app !== 'web') continue`. It reads each application's own route surface
+and validates the contract for all eleven hosts — it now reports
+`23 page path(s) in apps/bureau` and `11 contact contract(s) resolved`, where
+before it examined neither.
+
+**Demonstrated failing before being believed.** `prove:domains` gained three
+cases that break the bureau's contact contract three ways: 17/17 rules now fire.
+
+No `/kontakt` page was created. Building a second contact desk to satisfy a
+field would have been a product decision smuggled in as a lint fix. See the
+decision log, 2026-09-07.
+
+The original record follows.
+
+## (original) OPEN — `agents.maxpromo.digital` declares a contact path it does not serve
 
 Found 2026-09-07 by production verification, immediately after the Agent Bureau
 reached production for the first time.
@@ -44,7 +69,34 @@ frozen foundation artefact. **Blocks:** the closure of Track A.
 
 ---
 
-## OPEN — `x-mp-trace` is stamped by `apps/web` only
+## RESOLVED 2026-09-07 — `x-mp-trace` was stamped by `apps/web` only
+
+**Fixed in the Track A closure patch.** `apps/bureau/middleware.ts` now mints or
+inherits the id through the shared `TRACE_HEADER`/`newTrace` from
+`@maxpromo/observability` — no second implementation — and its matcher covers
+every path a visitor can reach, so a served page and a 404 both carry one.
+
+**Authentication is unchanged, and that was the risky part.** The old matcher
+went straight to `withAuth`, making every matched path authenticated; widening
+it would have put the landing page, `/login`, `/impressum` and `/datenschutz`
+behind a session. `withAuth` is now invoked only for `/dashboard/**`. Verified
+against a local production build: public pages 200, every `/dashboard/*` still
+307 to `/login?callbackUrl=…`, `/api/*` still outside the matcher, and an
+inbound trace inherited rather than replaced.
+
+**Gated so it cannot regress.** New merge gate `check:trace` (gate 6 of 13)
+requires every application with a middleware to import the shared contract,
+actually set the header, declare a catch-all matcher, and never hardcode the
+header name or mint its own id. `prove:trace` demonstrates all five rules
+failing: 5/5.
+
+**Still open, and deliberately untouched:** the structured logger has zero
+`log.*` call sites. Wiring the trace header does not wire the logger, and this
+patch did not turn into an observability redesign. See the entry below.
+
+The original record follows.
+
+## (original) OPEN — `x-mp-trace` is stamped by `apps/web` only
 
 Found 2026-09-07 verifying the Agent Bureau in production.
 

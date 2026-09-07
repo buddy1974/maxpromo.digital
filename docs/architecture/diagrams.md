@@ -275,7 +275,7 @@ Authority: `packages/config/domains.ts`, `packages/config/brands.ts`.
 
 ```mermaid
 flowchart LR
-  BR["branch"] --> V["npm run verify<br/>12 gates"]
+  BR["branch"] --> V["npm run verify<br/>13 gates"]
   V --> C["npm run certify<br/>+ a11y · consistency · platform · claims · docs"]
   C --> REV["review — the 7 questions"]
   REV --> APP{"Marcel approves"}
