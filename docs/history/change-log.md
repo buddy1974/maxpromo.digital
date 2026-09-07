@@ -1310,3 +1310,40 @@ unexplained `canonical` failure was a localhost artefact.
 
 Track A is **not** closed and the foundation freeze is **not** active. One
 registered production surface is undeployed.
+
+---
+
+## 2026-09-07 — Agent Bureau reaches production
+
+`agents.maxpromo.digital` deployed from the monorepo for the first time, after
+Marcel reconnected `maxpromo-agents` from the pre-consolidation repository to
+`buddy1974/maxpromo.digital`. All eleven registered hosts now run this release.
+
+The deployment had to be triggered explicitly. `apps/bureau/vercel.json`'s
+ignore command compares `HEAD^..HEAD` against `apps/bureau` and `packages/`,
+and `main`'s last commit is docs-only — so a git-driven deploy would have been
+skipped and left the July build serving while reporting success. The ignore
+command cannot express "this project has never built from this repository".
+Every later bureau change will build normally.
+
+Verified: built from `apps/bureau` (50 routes, including the `/api/health` the
+old build did not have), Next.js 16.3.4, `database: ok` at 6–33 ms warm,
+authenticated routes still 401, and the artefact reports `release.commit:
+9263ac2` itself rather than being assumed correct from a green deployment.
+
+**Track A did not close.** Production verification found two pre-existing gaps
+in the certified foundation — neither caused by the release, both now recorded:
+
+- The Domain Registry declares `contactPath: '/kontakt'` for the bureau, and
+  that route does not exist. The gate that would catch it opens with
+  `if (d.app !== 'web') continue`, so it skips the one host where the claim is
+  false. Nothing is visibly broken — the field has no consumers and the
+  homepage links to the hub's contact page — but the registry is inaccurate and
+  a rule reported clean without examining anything.
+- `apps/bureau` does not stamp `x-mp-trace`. The correlation-id contract holds
+  on one application, not on the platform.
+
+One verification remains Marcel-only: drizzle-orm 0.45.2 against a live
+database needs an authenticated session, because every Drizzle-backed route
+correctly returns 401 to an anonymous caller. `/api/health` proves reachability
+via `@neondatabase/serverless` and must not be read as a Drizzle check.

@@ -557,12 +557,32 @@ domain identity · brand identity · documentation governance · accessibility
 governance · observability · performance baselines · dependency governance ·
 the security release gate · the certification pipeline.
 
-**Status: CERTIFIED, NOT YET CLOSED.** Closure requires production
-verification, and production verification requires a deployment that is
-currently blocked on two Vercel project settings — see
-`deployment/track-a-release.md`. Track A closes when that release is verified
-in production, not before; a foundation that has only ever run on a laptop is
-not a foundation anything should be built on.
+**Status: DEPLOYED AND VERIFIED IN PRODUCTION — NOT YET CLOSED.**
+
+The release shipped. `maxpromo-digital` on 2026-09-06 (`a44a563`) and
+`maxpromo-agents` on 2026-09-07 (`9263ac2`); all eleven registered hosts run
+this release, and each deployed artefact reports its own commit rather than
+being assumed correct from a green deployment. Twelve of fifteen production
+rules pass on all eleven hosts, including every identity, canonical, robots,
+sitemap, manifest, legal, 404 and health rule. RC1-01 and RC1-02 are closed in
+production.
+
+**Three things still hold closure open**, all found *by* this verification and
+none caused by the release. Two are pre-existing gaps in what was certified:
+
+1. The Domain Registry declares `contactPath: '/kontakt'` for
+   `agents.maxpromo.digital`, which that application does not serve — and
+   `audit-domains.mjs` skips non-web apps, so the rule that exists for exactly
+   this never examined the one host where the claim is false.
+2. `apps/bureau` does not stamp `x-mp-trace`. A correlation-id contract that
+   holds on one of two applications is not a platform contract.
+3. The drizzle-orm 0.45.2 verification against a live database is
+   **Marcel-only** — every Drizzle-backed route correctly returns 401 to an
+   anonymous caller, so it cannot be automated.
+
+Track A closes when those are settled, not before. Both gaps are recorded with
+owners in `governance/known-risks.md`; the release record is
+`deployment/track-a-release.md`.
 
 **Track B — AI Governance and Assistant Forensics.** Not started. Its first
 mission is discovery, not modification. Scope and starting findings:

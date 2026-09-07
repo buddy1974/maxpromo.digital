@@ -1,6 +1,82 @@
 # Known Risks — Maxpromo Platform
 
-## OPEN — BLOCKING RELEASE — `maxpromo-agents` is connected to the wrong repository
+## OPEN — `agents.maxpromo.digital` declares a contact path it does not serve
+
+Found 2026-09-07 by production verification, immediately after the Agent Bureau
+reached production for the first time.
+
+The Domain Registry declares `contactPath: '/kontakt'` for
+`agents.maxpromo.digital`. **That route does not exist.** The bureau's only
+public pages are `/`, `/login`, `/impressum`, `/datenschutz` — `/kontakt`
+returns 404 in production.
+
+**Nothing is visibly broken.** `contactPath` has zero consumers in application
+code, and the bureau's homepage sends its contact call to action to
+`https://www.maxpromo.digital/de/contact`, which works. So this is an
+inaccurate field in the platform's central registry rather than a broken link.
+
+**The part that matters is why no gate caught it.** `audit-domains.mjs` has
+exactly the right rule —
+
+```js
+if (!servedPaths.has(contactPath)) {
+  add(`${d.host}: contact path ${contactPath} is not a page`, …)
+}
+```
+
+— and it never runs for this host, because the loop above it opens with
+`if (d.app !== 'web') continue`. The one domain whose `contactPath` is wrong is
+the one domain the rule skips. `servedPaths` is built from `apps/web` routes
+only, so the rule could not be extended to the bureau without also teaching it
+where the bureau's pages live.
+
+This is the pattern ADR-0004 exists for, found again in the foundation's own
+tooling: a rule that looks correct, reports clean, and examines nothing on the
+host that needed it.
+
+**Two ways to close it**, and they are not equivalent — one is a content
+decision: either give the bureau a `/kontakt` page, or correct the registry to
+point at the hub's contact page as the homepage already does. Then extend the
+gate to cover non-web apps so it can fail.
+
+**Owner:** Marcel — it is a Domain Registry change, and the registry is a
+frozen foundation artefact. **Blocks:** the closure of Track A.
+
+---
+
+## OPEN — `x-mp-trace` is stamped by `apps/web` only
+
+Found 2026-09-07 verifying the Agent Bureau in production.
+
+`apps/bureau/middleware.ts` does not import `TRACE_HEADER` or `newTrace`, and
+its matcher is `["/dashboard/:path*"]`. No response from
+`agents.maxpromo.digital` carries a correlation id — not on a 200, not on a
+404.
+
+The correlation-id contract is therefore **one application's, not the
+platform's**. That is the same v15.0 adoption gap recorded below under *"The
+platform logger has no call sites"*: the observability facilities were built in
+`packages/observability` and wired into `apps/web` only.
+
+Not a regression. The bureau never had it, and this release deployed the
+certified code faithfully — the gap is in what was certified.
+
+**Owner:** the same dedicated change as the logger adoption below; they are one
+piece of work. **Blocks:** the closure of Track A, because a platform
+observability contract that holds on one of two applications is not a platform
+contract.
+
+---
+
+## RESOLVED 2026-09-07 — `maxpromo-agents` was connected to the wrong repository
+
+**Marcel reconnected `maxpromo-agents` to `buddy1974/maxpromo.digital` on
+2026-09-07.** Verified by reading the project record back: both projects now
+carry the same `repoId` (1173436051), production branch `main`, Root Directory
+`apps/bureau` / `apps/web`, files-outside-root enabled.
+
+`agents.maxpromo.digital` was deployed the same day and now serves
+`release.commit: 9263ac2` with `database: ok`. The original record follows.
 
 Found 2026-09-06 during the Track A production release, by reading the Vercel
 project record rather than by inferring from a failure.

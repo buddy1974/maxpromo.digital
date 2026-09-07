@@ -596,3 +596,31 @@ and `.env.example` placeholders. Nothing real.
 
 **How to apply:** Any first push of accumulated history to a public remote gets
 this treatment. `git log` is not evidence about what is in the objects.
+
+---
+
+## 2026-09-07 — Trigger a project's first deployment from a new repository explicitly
+
+**Decision:** The Agent Bureau's first production deployment from the monorepo
+was triggered explicitly rather than by a push to `main`.
+
+**Why:** `apps/bureau/vercel.json` gates the build on
+`git diff --quiet HEAD^ HEAD -- ../../apps/bureau ../../packages`. `main`'s
+head is a docs-only commit, so that diff is empty — a git-driven deploy would
+have exited 0, been skipped, and left the July build serving while the
+deployment reported success. The same rule had already skipped a
+`maxpromo-digital` deployment the day before, which is how the behaviour was
+confirmed rather than assumed.
+
+The ignore command answers "did anything this project cares about change since
+the last commit". It cannot answer "has this project ever built from this
+repository", which was the actual question on the day a project is repointed.
+
+**How to apply:** When a Vercel project is connected to a different repository,
+its first deployment needs an explicit trigger. Verify provenance instead of
+trusting the trigger: the working tree matched `origin/main` exactly, the
+`apps/bureau` and `packages` trees hashed identically to the web release, and
+the deployed artefact was made to report its own commit through `/api/health`.
+
+**Do not** relax the ignore command to force the build. It is correct; it was
+being asked a question it does not answer.

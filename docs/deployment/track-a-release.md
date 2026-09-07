@@ -2,8 +2,10 @@
 
 **Release candidate:** tag `track-a-foundation-v15.1`, commit `0337f2d`
 **Merged to `main` as:** `a44a563` (`--no-ff`), tree identical to the tag
-**Deployed:** 2026-09-06 — `maxpromo-digital` production, `READY`
-**Status:** the web platform is released and verified. **Agent Bureau is not.**
+**Deployed:** 2026-09-06 `maxpromo-digital` · 2026-09-07 `maxpromo-agents` — both `READY`
+**Status:** released. All eleven registered hosts run this release.
+**Track A:** not closed — two pre-existing foundation gaps and one Marcel-only
+verification remain. See *Outcome* below.
 
 ---
 
@@ -15,17 +17,24 @@ production. `/api/health` reports `state: ok` with `release.commit: a44a563`,
 which is how the deployed artefact was matched to the certified release rather
 than assumed from a green deployment.
 
-**`maxpromo-agents`: not released.** The project is connected to
-`buddy1974/maxpromo-agent-bureau`, the pre-consolidation repository, so merging
-the monorepo to `main` does not reach it. `agents.maxpromo.digital` still
-serves its 2026-07-24 build. Recorded as the first entry in
-`governance/known-risks.md`; the fix is Marcel's, because it changes which
-repository owns a production surface.
+**`maxpromo-agents`: released 2026-09-07.** Marcel reconnected the project to
+`buddy1974/maxpromo.digital`; the Agent Bureau then deployed from the monorepo
+for the first time. `agents.maxpromo.digital` serves `release.commit: 9263ac2`
+with `database: ok`. All eleven registered hosts now run this release.
 
-**Consequence:** Track A is **not closed** and the foundation freeze is **not
-active**. The brief's condition was that all required production verification
-pass; one registered production surface was never deployed, and the Agent
-Bureau live-database verification below therefore remains unrun.
+**Consequence:** Track A is **still not closed** and the foundation freeze is
+**not active** — but for different and much smaller reasons than before. The
+release itself is complete. Two pre-existing gaps in the certified foundation,
+both found *by* this production verification and neither caused by it, are
+recorded in `governance/known-risks.md`:
+
+- `agents.maxpromo.digital` declares `contactPath: '/kontakt'`, a route it does
+  not serve — and the gate that would catch it skips non-web apps.
+- `apps/bureau` does not stamp `x-mp-trace`, so the correlation-id contract
+  holds on one application rather than on the platform.
+
+One verification also remains **Marcel-only**: the drizzle-orm 0.45.2 check
+needs an authenticated Agent Bureau session.
 
 ### Three things this release had to discover before it could ship
 
@@ -329,6 +338,88 @@ Two limits on that, stated rather than glossed:
   credentials.
 
 **No migration was run. No schema was modified.** The ORM version moved; the
+schema did not.
+
+---
+
+## Agent Bureau production release — 2026-09-07
+
+### Why the first deployment had to be triggered explicitly
+
+`apps/bureau/vercel.json`'s ignore command is
+`git diff --quiet HEAD^ HEAD -- ../../apps/bureau ../../packages`. Between
+`a44a563` and `main` at `9263ac2` those paths are unchanged, so a git-driven
+deploy of `main` would have exited 0 and been **skipped** — leaving the July
+build live while the deployment reported success. Simulated before deploying,
+and already demonstrated once: the docs-only commit `9263ac2` was recorded
+`CANCELED` on `maxpromo-digital` for exactly this reason.
+
+The ignore command cannot express *"this project has never built from this
+repository"*, which was true for the bureau until today. So the first
+deployment was triggered explicitly, through the same project and the same
+build settings — Root Directory `apps/bureau`, files-outside-root enabled.
+Every later bureau change touches `apps/bureau` or `packages/` and will build
+normally.
+
+**Provenance was checked rather than assumed:** the working tree was byte
+identical to `origin/main`, and `apps/bureau` (`004e4e4`) and `packages`
+(`5590d34`) hashed identically at `HEAD` and at the web release `a44a563`.
+Because both projects now point at the same repository, the deployment carried
+git metadata, and the deployed artefact reports `release.commit: 9263ac2`
+itself.
+
+### Verified
+
+| | |
+|---|---|
+| built from | `apps/bureau` — 50 routes, including `/api/health`, which the July build had not got |
+| framework | Next.js 16.3.4, read from the build log |
+| dependency posture | the four accepted `@esbuild-kit` development-only moderates, unchanged from v15.1 |
+| alias | `agents.maxpromo.digital`, `READY` |
+| identity | `https://agents.maxpromo.digital`, ok |
+| database | **ok** — 6–33 ms warm; one 778 ms first call, which is a cold Neon start |
+| authentication secret | present |
+| legal routes | `/impressum` 200 · `/datenschutz` 200 |
+| robots · sitemap · manifest | all 200, all naming its own origin |
+| authenticated API routes | still 401 to an anonymous caller |
+| `ai-provider` | `degraded` — no key is configured in either environment; non-critical, so the surface reports 200 |
+
+### Eleven-host verification, after the bureau release
+
+Fifteen rules. **Twelve pass on all eleven hosts**, including every identity,
+canonical, robots, sitemap, manifest, legal, 404 and health rule, and the new
+rule that the deployed artefact must report an expected release commit.
+
+Three fail, all on `agents.maxpromo.digital`, all pre-existing and recorded:
+the declared `/kontakt` path (one rule) and the missing `x-mp-trace` (two).
+
+**One of those three was my harness, not the platform.** The contact rule
+hardcoded `/contact` while the registry declares the bureau's path as
+`/kontakt`; it was asking the wrong question of that host. Corrected to read
+`contactPath` from the registry — at which point it still fails, because
+`/kontakt` genuinely does not exist. The finding survived the fix to the
+finder, which is the only reason it is reported.
+
+### Still Marcel-only: drizzle-orm 0.45.2
+
+`/api/health` proves the database is reachable — but it uses
+`@neondatabase/serverless` directly (`select 1`). **It does not exercise
+Drizzle**, and must not be read as if it did.
+
+Every route that does read through Drizzle — `/api/dashboard/summary`,
+`/api/agents`, `/api/audit`, `/api/demo/status`, `/api/activity`,
+`/api/approvals`, `/api/documents`, `/api/leads`, `/api/playbooks`,
+`/api/waiting-room` — returns 401 to an anonymous caller. That is correct
+behaviour and it is why this check cannot be automated from here.
+
+**What Marcel does:** sign in at `https://agents.maxpromo.digital/login`, open
+the dashboard (activity, agents, approvals, waiting room, documents — all
+Drizzle reads), then `GET /api/demo/status`, the one route using `sql`
+template literals. Then read the deployment logs for `DrizzleError`,
+`PostgresError`, `syntax error at or near`, `relation … does not exist`, or
+connection failures. If any appear, roll back before investigating.
+
+No migration was run. No schema was modified. The ORM version moved; the
 schema did not.
 
 ---
