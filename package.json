@@ -38,7 +38,8 @@
     "release:report": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/release-report.mjs",
     "prove:security": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/prove-security-gate.mjs",
     "check:trace": "node packages/tooling/check-trace-contract.mjs",
-    "prove:trace": "node packages/tooling/prove-trace-contract.mjs"
+    "prove:trace": "node packages/tooling/prove-trace-contract.mjs",
+    "prove:provisioning": "node packages/tooling/prove-provisioning-guards.mjs"
   },
   "engines": {
     "node": ">=20"

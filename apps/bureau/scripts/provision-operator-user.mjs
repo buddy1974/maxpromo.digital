@@ -12,8 +12,10 @@
  *   npm run auth:provision-operator
  *   (or: node --env-file=.env.local scripts/provision-operator-user.mjs)
  *
- * REQUIRED ENV:
- *   DATABASE_URL      — Neon connection string
+ * REQUIRED:
+ *   DATABASE_URL      — Neon connection string. If unset, or present-but-empty
+ *                       because it was pulled from Vercel as a *sensitive*
+ *                       variable, the script asks for it with the echo off.
  *
  * CREDENTIALS — asked for, or taken from the environment:
  *   OPERATOR_EMAIL    — if unset, the script asks for it
@@ -54,16 +56,10 @@ const MIN_PASSWORD_LENGTH = 12;
 
 // ── Environment validation ────────────────────────────────────────────────────
 
-const DATABASE_URL = process.env.DATABASE_URL;
 const OPERATOR_NAME = process.env.OPERATOR_NAME ?? "Marcel Tabit Akwe";
 
 const DEMO_BUSINESS_NAME = "Maxpromo Demo Operations";
 const OPERATOR_ROLE = "owner";
-
-if (!DATABASE_URL) {
-  console.error("[provision] ERROR: DATABASE_URL is not set. Aborting — no DB touched.");
-  process.exit(1);
-}
 
 // A password supplied through the environment is validated here, before the
 // database is contacted at all. The prompt path cannot be checked this early —
@@ -160,6 +156,70 @@ function promptVisible(question) {
   });
 }
 
+/**
+ * Was this key present in an env file but empty?
+ *
+ * Vercel stores an environment variable as `sensitive` when it should be
+ * write-only. Sensitive values are never returned by the API, so
+ * `vercel env pull` writes the key with an empty value — and reports success
+ * while doing it. The resulting file lists `DATABASE_URL=""` and looks, to a
+ * person reading the CLI output, exactly like a successful pull.
+ *
+ * That happened on 2026-09-07: every one of the five Agent Bureau variables is
+ * sensitive, the pull "succeeded", and this script then said "DATABASE_URL is
+ * not set" — true, but not the sentence that explains it. Distinguishing
+ * *absent* from *present but unfillable* is the difference between a message
+ * that ends the investigation and one that starts it.
+ */
+function presentButEmpty(key) {
+  return Object.prototype.hasOwnProperty.call(process.env, key) && process.env[key] === "";
+}
+
+async function resolveDatabaseUrl() {
+  const fromEnv = process.env.DATABASE_URL;
+  if (fromEnv) return fromEnv;
+
+  const interactive = process.stdin.isTTY && process.stdout.isTTY;
+
+  if (presentButEmpty("DATABASE_URL")) {
+    console.error("");
+    console.error("[provision] DATABASE_URL is present but EMPTY.");
+    console.error("[provision] That is the signature of a `vercel env pull` of a *sensitive*");
+    console.error("[provision] variable. Vercel never returns a sensitive value — not to the CLI,");
+    console.error("[provision] not to the API, not to the project owner. The pull reports success");
+    console.error("[provision] and writes KEY=\"\". Nothing is wrong with your file or with Node.");
+    console.error("");
+    console.error("[provision] The connection string's source of truth is Neon, not Vercel.");
+    console.error("");
+  } else if (!interactive) {
+    console.error("[provision] ERROR: DATABASE_URL is not set. Aborting — no DB touched.");
+    process.exit(1);
+  }
+
+  if (!interactive) {
+    console.error("[provision] No terminal attached, so it cannot be asked for here.");
+    console.error("[provision] Aborting — no DB touched.");
+    process.exit(1);
+  }
+
+  console.log("[provision] Paste the Neon connection string for the Agent Bureau database.");
+  console.log("[provision] It is not echoed, not logged, and not written anywhere by this script.");
+  console.log("[provision] Neon console -> your project -> Connection string (pooled).");
+  console.log("");
+  const url = await promptHidden("  database url (hidden) : ");
+  if (!url) {
+    console.error("[provision] ERROR: nothing entered. Aborting — no DB touched.");
+    process.exit(1);
+  }
+  if (!/^postgres(ql)?:\/\//.test(url)) {
+    console.error("[provision] ERROR: that does not look like a postgres connection string.");
+    console.error("[provision] Aborting — no DB touched. (Nothing about it has been logged.)");
+    process.exit(1);
+  }
+  console.log("");
+  return url;
+}
+
 async function resolveCredentials() {
   let email = process.env.OPERATOR_EMAIL;
   let password = process.env.OPERATOR_PASSWORD;
@@ -219,7 +279,7 @@ async function resolveCredentials() {
 
 // ── DB client (same pattern as run-demo-seed.mjs) ────────────────────────────
 
-const sql = neon(DATABASE_URL);
+let sql = null;
 
 /**
  * Parameterized query bridge.
@@ -227,6 +287,7 @@ const sql = neon(DATABASE_URL);
  * sql.query(text, params) calls into the tagged-template form neon expects.
  */
 function query(text, params = []) {
+  if (!sql) throw new Error("database client not initialised");
   const parts = text.split(/\$\d+/g);
   const tpl = Object.assign(parts, { raw: parts });
   return sql(tpl, ...params);
@@ -236,6 +297,12 @@ function query(text, params = []) {
 
 async function main() {
   console.log("[provision] Starting operator user provisioning...");
+
+  // 0. The connection string — from the environment, or asked for. Resolved
+  //    before anything else, because without it there is nothing to check.
+  const databaseUrl = await resolveDatabaseUrl();
+  sql = neon(databaseUrl);
+
   console.log(`[provision] Target business: ${DEMO_BUSINESS_NAME}`);
 
   // 1. Find the business — fail safely if not found.

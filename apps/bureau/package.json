@@ -2,7 +2,7 @@
   "name": "@maxpromo/bureau",
   "version": "0.1.0",
   "private": true,
-  "description": "agents.maxpromo.digital \u2014 Max Agent Bureau: public offer page and the supervised-agent dashboard.",
+  "description": "agents.maxpromo.digital — Max Agent Bureau: public offer page and the supervised-agent dashboard.",
   "scripts": {
     "dev": "next dev --port 3021",
     "build": "next build",
@@ -12,7 +12,7 @@
     "db:generate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs generate",
     "db:push": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs push",
     "db:seed:demo": "node --env-file=.env.local lib/seed/run-demo-seed.mjs",
-    "auth:provision-operator": "node --env-file=.env.local scripts/provision-operator-user.mjs",
+    "auth:provision-operator": "node --env-file-if-exists=.env.local scripts/provision-operator-user.mjs",
     "check:tokens": "node ../../packages/tooling/check-design-tokens.mjs"
   },
   "dependencies": {

@@ -58,8 +58,10 @@ establish an operator account, and nobody else can.
 
 `apps/bureau/scripts/provision-operator-user.mjs` — `npm run auth:provision-operator`
 
+- Asks for the database connection string if it is not in the environment,
+  with the terminal echo off.
 - Finds the business record. **Never creates one.**
-- Asks for an email and a password, twice, with the terminal echo off.
+- Asks for an email, then a password twice, with the terminal echo off.
 - Hashes the password with argon2id.
 - Inserts the operator row, or updates the existing one.
 - Prints a summary with **no secret in it**.
@@ -86,33 +88,81 @@ It is idempotent, and the word it prints tells you which case you were in:
 - **Parameterised SQL only**, and it never runs `db:push`, a migration, or any
   schema change.
 
+### Where the connection string comes from — read this first
+
+**Not from Vercel.** All five Agent Bureau environment variables are stored
+there as **sensitive**, which means write-only: Vercel never returns the value
+to the CLI, to the API, or to the project owner. There is no flag and no
+permission that changes this. It is a deliberate Vercel security property and
+the right setting for these variables.
+
+The consequence is a trap, and it caught us on 2026-09-07:
+
+```
+$ npx vercel env pull --environment=production .env.local
+Downloading `production` Environment Variables …
++ DATABASE_URL
++ AUTH_SECRET
+Updated .env.local file
+```
+
+That output is a success message. The file it wrote contains
+`DATABASE_URL=""` — every key present, every value empty. Nothing warns you.
+
+**The connection string's source of truth is Neon**, which is where the
+database actually lives. Get it from the Neon console: your project →
+**Connection string** → the pooled string.
+
 ### Steps
 
-From the repository root:
+From `apps/bureau`:
 
 ```bash
-cd apps/bureau
-
-# 1. Link this directory to the Agent Bureau Vercel project (once).
-npx vercel link            # scope: buddy1974's projects → maxpromo-agents
-
-# 2. Pull the production environment. Writes .env.local, which is gitignored.
-#    You never need to read this file or copy anything out of it.
-npx vercel env pull --environment=production .env.local
-
-# 3. Provision. It will ask for the email and the password.
 npm run auth:provision-operator
+```
 
-# 4. Remove the pulled secrets when you are done.
+That is the whole command. It asks, in order, and echoes none of the secrets:
+
+1. **database url** — paste the pooled Neon connection string
+2. **operator email**
+3. **password**, then **confirm**
+
+It must run in a real terminal, because it needs a keyboard. In a
+non-interactive context it refuses rather than hanging.
+
+**You do not need `vercel env pull` for this, and it will not help.** If you
+already have an `.env.local` with empty values from an earlier attempt, the
+script recognises that exact case and says so rather than repeating
+"DATABASE_URL is not set".
+
+The environment form (`DATABASE_URL`, `OPERATOR_EMAIL`, `OPERATOR_PASSWORD`)
+still works for automation, but prompting is preferred: it keeps production
+secrets out of files, out of shell history, and out of the environment.
+
+### Delete a pulled `.env.local` — it breaks the local build
+
+If you already pulled one, remove it. This is not tidiness; an env file whose
+values are all empty **stops `npm run verify` from passing**:
+
+```
+Error occurred prerendering page "/_not-found"
+TypeError: Invalid URL
+    at module evaluation (components/auth/Providers.tsx)
+  { code: 'ERR_INVALID_URL', input: '' }
+```
+
+`next-auth/react` builds its base URL from `NEXTAUTH_URL` or `VERCEL_URL`. A
+variable that is *absent* falls back correctly; one that is *present and empty*
+is used, and `new URL("")` throws. The pulled file sets `VERCEL_URL=""`, so the
+bureau build fails at prerender — with an error naming neither the file nor the
+variable.
+
+```bash
 rm .env.local
 ```
 
-Step 3 must run in a real terminal — it needs a keyboard. Run in a
-non-interactive context with no credentials set, it refuses rather than hangs.
-
-The environment form (`OPERATOR_EMAIL` / `OPERATOR_PASSWORD`) still works for
-automation, but prompting is preferred: it keeps the production operator
-password out of files, out of shell history, and out of the environment.
+Verified 2026-09-07: the build fails with the file present and passes without
+it, on identical source.
 
 ---
 
@@ -152,12 +202,14 @@ and guessing is not a diagnostic.
 
 ## Required configuration
 
-Names and purpose only — values live in Vercel and nowhere else.
+Names and purpose only. The values live in Vercel as **sensitive** entries and
+cannot be read back from there by anyone; `DATABASE_URL`'s source of truth is
+the Neon console.
 
 | Variable | Purpose | Production |
 |---|---|---|
-| `AUTH_SECRET` | Signs and verifies the session JWT | present |
-| `DATABASE_URL` | Neon connection for `app_users` and everything else | present |
+| `AUTH_SECRET` | Signs and verifies the session JWT | present, **sensitive** — cannot be read back |
+| `DATABASE_URL` | Neon connection for `app_users` and everything else | present, **sensitive** — cannot be read back |
 | `NEXTAUTH_URL` | Callback base URL | absent — NextAuth resolves it from the request host, verified working |
 | `UPSTASH_REDIS_REST_URL` / `_TOKEN` | Shared login rate limiting | absent — falls back to an in-memory limiter, which is per-instance and resets on deploy. Recorded in `governance/known-risks.md` |
 
