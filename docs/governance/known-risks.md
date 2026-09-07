@@ -1,5 +1,74 @@
 # Known Risks — Maxpromo Platform
 
+## OPEN — the owner-access procedure for Agent Bureau exists in code but not in operating documentation
+
+Found 2026-09-07, when Marcel reported he does not know the production login.
+
+**Authentication itself is sound and working.** NextAuth v4, Credentials only,
+argon2id hashes in `app_users`, JWT sessions, login rate-limited by email. No
+public signup — deliberate, recorded in `auth.ts`: *"accounts are provisioned by
+Maxpromo during client onboarding."* Verified live: `/api/auth/providers` and
+`/api/auth/csrf` answer correctly on `agents.maxpromo.digital`.
+
+**There is exactly one way in, and it is a local script.**
+`apps/bureau/scripts/provision-operator-user.mjs`, run as
+`npm run auth:provision-operator`, hashes a chosen password with argon2id and
+inserts or updates the operator row. It is idempotent, parameterised, never
+logs the password or the hash, refuses a password under 12 characters, never
+creates a business, and never touches the schema. As a design it is
+defensible: access requires the production database URL, which is the correct
+trust boundary for a single-operator internal tool.
+
+**What is missing is that nobody outside the code knows it exists.** There is
+no signup, no password reset, no forgot-password link, no invitation flow — and
+the script is referenced only in `docs/history/agent-bureau-plan.md` and
+`docs/history/agent-bureau-decision-log.md`. `docs/README.md` defines
+`docs/history/` as describing *how things were*. So the platform's only
+owner-access procedure is documented exclusively in the one directory the
+repository defines as historical narration, and the owner did not know it was
+there.
+
+That is a governance gap, not a security hole. The fix is an operating runbook
+under `docs/deployment/`, not new code.
+
+**Also absent, and worth deciding separately:** `UPSTASH_REDIS_REST_URL` and
+`UPSTASH_REDIS_REST_TOKEN` are not set on `maxpromo-agents`, so login rate
+limiting falls back to the in-memory store — per-instance and reset on every
+deploy. Already recorded from 2026-07-10; this confirms it is still true in
+production.
+
+**Owner:** Marcel. **Blocks:** the drizzle-orm production verification, and
+therefore the closure of Track A — not because authentication is broken, but
+because nobody can currently sign in to exercise it.
+
+---
+
+## CORRECTED 2026-09-07 — "the Agent Bureau dashboard renders from mock data" is now only partly true
+
+The entry further down states *"Every page under `/dashboard` reads from
+`lib/mock/*` (14 files) … nothing calls them."* Re-measured 2026-09-07: **five
+dashboard pages now query the database directly as server components**, each
+scoped to `user.businessId` from the session —
+
+| page | query |
+|---|---|
+| `/dashboard` | `getDashboardData` |
+| `/dashboard/approvals` | `getProposals` |
+| `/dashboard/audit` | `getAuditOverview` |
+| `/dashboard/documents` | `getDocuments` |
+| `/dashboard/waiting-room` | `getWaitingRoom` |
+
+Ten surfaces still read `lib/mock` (four pages, six API routes), and
+`/dashboard/agents` renders from the static `lib/registry/agents`.
+
+This matters beyond bookkeeping: it is what makes the drizzle-orm production
+verification possible at all. Had the original claim still been true, signing in
+and browsing would have exercised no database code, and the planned check would
+have proven nothing. The stale entry was believed for one step before being
+measured.
+
+---
+
 ## OPEN — every Agent Bureau database read swallows its own failure
 
 Found 2026-09-07 while designing the authenticated drizzle-orm verification.
