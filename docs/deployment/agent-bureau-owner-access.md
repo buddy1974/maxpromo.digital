@@ -1,9 +1,16 @@
 # Agent Bureau — owner and operator access
 
-**Status:** Current operating procedure.
+**Status:** Current operating procedure. **Exercised end-to-end 2026-09-16.**
 **Applies to:** `agents.maxpromo.digital` (`apps/bureau`).
 **Written:** 2026-09-07, after the platform owner had no way to sign in and the
 only existing procedure was buried in `history/`.
+
+**Proven 2026-09-16.** Marcel ran `npm run auth:provision-operator` from
+`apps/bureau`, entered the Neon pooled connection string and the credentials at
+the hidden prompts, and signed in to production unaided — `provisioned: true`,
+`action: updated`, `role: owner`, `business: Maxpromo Demo Operations`. No
+value was written to a file, printed, or shared. That session was what closed
+the drizzle-orm production verification and, with it, Track A.
 
 This document contains no secrets and never will. Nothing here asks anyone to
 send a password to anybody.

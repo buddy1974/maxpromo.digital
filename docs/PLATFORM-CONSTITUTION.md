@@ -569,7 +569,7 @@ domain identity · brand identity · documentation governance · accessibility
 governance · observability · performance baselines · dependency governance ·
 the security release gate · the certification pipeline.
 
-**Status: DEPLOYED AND VERIFIED IN PRODUCTION — NOT YET CLOSED.**
+**Status: CLOSED 2026-09-16. The foundation is frozen.**
 
 The release shipped. `maxpromo-digital` on 2026-09-06 (`a44a563`) and
 `maxpromo-agents` on 2026-09-07 (`9263ac2`); all eleven registered hosts run
@@ -592,17 +592,27 @@ production verification found, rather than accepting them as residual risk:
 Both are demonstrated failing before being believed — `prove:domains` 17/17,
 `prove:trace` 5/5 — and production now passes 16 of 16 rules on 11 of 11 hosts.
 
-**One thing still holds closure open:** the drizzle-orm 0.45.2 verification
-against a live database is **Marcel-only**. Every Drizzle-backed route correctly
-returns 401 to an anonymous caller, and — separately — every read path swallows
-its own failure, so no HTTP check of it can fail. It needs an authenticated
-session plus the production runtime log. See `deployment/track-a-release.md`.
+**The last thing holding closure open was settled on 2026-09-16:** the
+drizzle-orm 0.45.2 verification against a live database. It was Marcel-only
+because every Drizzle-backed route correctly returns 401 to an anonymous caller,
+and — separately — because every read path swallows its own failure, so no HTTP
+check of it can fail.
 
-Track A closes when those are settled, not before. Both gaps are recorded with
-owners in `governance/known-risks.md`; the release record is
-`deployment/track-a-release.md`.
+It was closed the only way it could be: Marcel provisioned the operator account
+with the interactive script, signed in himself, and an authenticated read-only
+pass over the five Drizzle-backed dashboard routes was observed in his browser.
+**All five returned persisted rows**, which a `safeRead` fallback cannot
+fabricate — that is what eliminates the ambiguity, not the HTTP status. Each was
+a live serverless render, and the correlated production window carried no
+`[db/queries] read failed:` and no Drizzle, SQL, Neon, schema, relation or
+connection error. Method and limits: `deployment/track-a-release.md`.
 
-**Track B — AI Governance and Assistant Forensics.** Not started. Its first
+The remaining residual risks are carried forward under §24c and owned in
+`governance/known-risks.md`. **Closure is an engineering verdict about this
+foundation. It is not a legal, privacy or hosting certification** — see §24d.
+
+**Track B — AI Governance and Assistant Forensics.** Not started, and now the
+next authorised track. Its first
 mission is discovery, not modification. Scope and starting findings:
 `architecture/ai-governance-readiness.md`.
 
@@ -610,8 +620,8 @@ mission is discovery, not modification. Scope and starting findings:
 
 ## 24c. The Track A freeze
 
-Once Track A closes, the foundation is frozen. These are governed platform
-changes, not ordinary work:
+**Active since 2026-09-16.** The foundation is frozen. These are governed
+platform changes, not ordinary work:
 
 - the Domain Registry and the Brand Registry
 - the design token system
@@ -629,12 +639,41 @@ order. Track B consumes these foundations; it does not reinvent them.
 defect and is still fixed. Freezing is about deliberate change, not about
 pretending the platform is finished.
 
+**What the freeze does not prohibit.** Governed work continues: Track B, a
+defect fix, a legal or security correction, a documentation correction, and
+product onboarding through §26. The freeze constrains deliberate change to the
+eight foundations listed above — it is not a stop-work order on the platform.
+
 **Carried forward, and not grounds for reopening Track A:** mobile LCP
 optimisation · the hub's canonical Lighthouse anomaly, pending one production
 run · product brand assets (35 to create, 42 to replace) · core-memory and
 Brand Registry product naming · the four accepted development-toolchain
 advisories · the EU hosting claim · German copy for the two English-only
 products. Each has an owner in `governance/known-risks.md`.
+
+---
+
+## 24d. Engineering closure is not commercial clearance
+
+Track A closure is an **engineering verdict**: the foundation met its defined
+closure contract, every gate passes, and each closure claim has evidence behind
+it. It is deliberately narrower than it sounds.
+
+It is **not** a legal certification, a GDPR certification, a data-protection
+sign-off, or clearance to onboard further personal data or to market without
+review. Two things in particular are unresolved and are Marcel's:
+
+- **The EU-hosting claim.** `agents.maxpromo.digital` states publicly that it is
+  hosted in the EU; its Neon database is in `us-east-1`, holding personal data
+  of German business contacts. GDPR Chapter V implications. Recorded in
+  `governance/known-risks.md`, owner Marcel, and it **blocks onboarding further
+  personal data into Agent Bureau**.
+- **Rate-limit durability on Agent Bureau.** Upstash is unset there, so login
+  rate limiting falls back to a per-instance in-memory store that resets on
+  every deploy.
+
+Freezing the engineering foundation settles neither. A frozen foundation with an
+unresolved public claim is exactly that, and saying so is the point.
 
 ---
 

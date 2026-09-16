@@ -694,3 +694,34 @@ satisfies the contract as violating it, because the doc comment explaining the
 contract names the header. It reads comment-stripped source now, the way the
 standards have required since ADR-0004 - the same defect `check-token-inputs`
 had, found the same way.
+
+---
+
+## 2026-09-16 — Track A is closed on observed rows, not on a green status code
+
+**Decision:** Track A is closed and the foundation frozen, on the strength of an
+authenticated read-only pass over the five Drizzle-backed Agent Bureau routes in
+which **all five returned persisted production rows**. The correlated runtime
+log — clean of `[db/queries] read failed:` and of every Drizzle, SQL, Neon,
+schema, relation and connection error — is recorded as corroboration, not as the
+verdict.
+
+**Why:** `safeRead` catches, logs and returns a fallback, so a total database
+failure and an empty workspace produce the identical HTTP response. Any closure
+resting on `200` or on `{"ok":true}` would have been a check with no failing
+case. Rows cannot be fabricated by a fallback; that is the only evidence
+available that distinguishes the two states, and it is the evidence used. The
+verification was attempted three times from an isolated browser profile and
+correctly reported **incomplete** each time rather than inferring success from a
+redirect to `/login` — the first two attempts produced clean logs too, and clean
+logs from an anonymous session prove nothing.
+
+**Also decided:** closure is recorded as an *engineering* verdict. The
+EU-hosting claim on `agents.maxpromo.digital` and the unset Upstash credentials
+remain open and are not settled by a frozen foundation. Constitution §24d exists
+so the two are never read as one.
+
+**How to apply:** When a resilience layer makes a failure invisible, do not
+verify through it. Find the observation the fallback cannot imitate, and say out
+loud which half of the evidence carries the verdict and which half only agrees
+with it.

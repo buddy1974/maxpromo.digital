@@ -1,6 +1,70 @@
 # Known Risks — Maxpromo Platform
 
-## OPEN — the owner-access procedure for Agent Bureau exists in code but not in operating documentation
+## RESOLVED 2026-09-16 — the drizzle-orm 0.45.2 production verification
+
+The last blocker on Track A closure. Settled by authenticated observation of
+production, not by inference.
+
+**What was done.** Marcel provisioned the operator account with
+`npm run auth:provision-operator` (result: `provisioned: true`, `action:
+updated`, `role: owner`, `business: Maxpromo Demo Operations`), signed in to
+`agents.maxpromo.digital` himself, and an authenticated read-only pass over the
+five Drizzle-backed dashboard routes was observed in his browser between
+**2026-09-16T16:20:18Z and 16:21:05Z**. No control was clicked; navigation was
+by URL only.
+
+| route | evidence |
+|---|---|
+| `/dashboard` | 6 open approvals, 5 agents, 5 waiting clients, 5 findings, 8 activity entries |
+| `/dashboard/approvals` | 7 proposals, one carrying persisted status `approved` |
+| `/dashboard/audit` | audit session (score 76, *Maxpromo Demo Operations*) **and** 5 findings — the findings query only runs when a session row returns |
+| `/dashboard/documents` | 7 intake items, each with its joined required action |
+| `/dashboard/waiting-room` | 5 waiting-room items |
+
+**Why this resolves it and an HTTP check could not.** Every route returned
+**persisted rows**, and a `safeRead` fallback cannot fabricate data. That is the
+positive evidence; the 200 is not. Each was a `serverless` render with
+`cache: MISS` — a live function invocation, not a cached response. The
+correlated production window carried no `[db/queries] read failed:` and no
+Drizzle, SQL, Neon, schema, relation, connection or database exception, and no
+status ≥ 400.
+
+**Limits, stated rather than rounded off.** No entry in the correlated window
+carried console output at all, so the log channel's ability to surface a
+`console.error` remains undemonstrated — the clean scan corroborates, it does
+not carry the verdict. Business scoping to *Maxpromo Demo Operations* is shown
+in the UI; the `owner` role is not rendered on any of the five routes and rests
+on the provisioning output. `/dashboard/agents` was excluded throughout: it
+renders from the static `lib/registry/agents` and proves nothing about Drizzle.
+
+Method and full record: `deployment/track-a-release.md`.
+
+---
+
+## RESOLVED 2026-09-16 — the owner-access procedure for Agent Bureau
+
+**The runbook exists and has been exercised.**
+`deployment/agent-bureau-owner-access.md` (added 2026-09-07, `73c27c6`) is the
+operating procedure, referenced from `docs/README.md` rather than only from
+`history/`. The provisioning script was made interactive in the same change and
+corrected in `c81cab2` after Vercel proved unable to return a sensitive
+environment variable to `vercel env pull`.
+
+Proven on 2026-09-16: Marcel provisioned the operator account and signed in to
+production unaided. The gap was that nobody outside the code knew the procedure
+existed; the procedure is now documented, current, and demonstrated.
+
+**Still true and deliberately left open:** `UPSTASH_REDIS_REST_URL` and
+`UPSTASH_REDIS_REST_TOKEN` are unset on `maxpromo-agents`, so login rate
+limiting uses the per-instance in-memory store and resets on every deploy. That
+is a separate decision, recorded from 2026-07-10 and confirmed still true in
+production. It is **not** resolved by this entry.
+
+The original record follows.
+
+---
+
+## (original) OPEN — the owner-access procedure for Agent Bureau exists in code but not in operating documentation
 
 Found 2026-09-07, when Marcel reported he does not know the production login.
 
@@ -100,6 +164,13 @@ that reached `log.warn` with a trace id would be visible instead of inferred.
 
 **Owner:** the dedicated observability change. **Blocks:** nothing today; it
 raises the cost of every future database verification.
+
+**Still open after Track A closure.** The 2026-09-16 verification worked
+*around* this, it did not fix it: the ambiguity was resolved by observing
+persisted rows in a browser, which is not a check anything can run
+automatically. The next database verification will cost exactly as much. The
+fix remains the observability change — a swallowed error reaching `log.warn`
+with a trace id.
 
 ---
 
@@ -422,7 +493,19 @@ entry in this file.
 
 ---
 
-## OPEN — the Agent Bureau database has not seen the new ORM
+## RESOLVED 2026-09-16 — the Agent Bureau database has now seen the new ORM
+
+`drizzle-orm` 0.45.2 executed against the live Neon database on 2026-09-16, on
+all five Drizzle-backed dashboard routes, returning persisted rows with no
+Drizzle, SQL, schema, relation or connection error in the correlated production
+window. Full evidence at the top of this file. No migration was run and no
+schema was modified — the ORM version moved; the schema did not.
+
+The original record follows.
+
+---
+
+## (original) OPEN — the Agent Bureau database has not seen the new ORM
 
 `drizzle-orm` moved 0.38.4 → 0.45.2 in v15.1 — seven minor versions of a 0.x
 library. Verified by typecheck, lint, production build and `drizzle-kit check`

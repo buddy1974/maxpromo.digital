@@ -1,5 +1,37 @@
 # Change Log
 
+## 2026-09-16 — Track A closed, foundation frozen
+
+Documentation and governance only. No application code changed, no schema
+changed, no production data touched, no deployment forced.
+
+**What closed it.** The drizzle-orm 0.45.2 verification against the live
+database — the last open Track A condition. Marcel provisioned the operator
+account with the interactive script and signed in himself; an authenticated
+read-only pass over `/dashboard`, `/dashboard/approvals`, `/dashboard/audit`,
+`/dashboard/documents` and `/dashboard/waiting-room` between
+2026-09-16T16:20:18Z and 16:21:05Z returned **persisted rows on all five**, each
+from a live `serverless` render. The correlated production window carried no
+`[db/queries] read failed:` and no Drizzle, SQL, Neon, schema, relation or
+connection error.
+
+**What was updated.** `PLATFORM-CONSTITUTION.md` (§24b status, §24c freeze
+active, new §24d separating engineering closure from commercial clearance) ·
+`governance/known-risks.md` (two entries resolved with their originals
+preserved, one annotated) · `deployment/track-a-release.md` (outcome recorded) ·
+`deployment/agent-bureau-owner-access.md` (procedure proven) ·
+`adr/decision-log.md`.
+
+**What did not change.** Every other open risk stays open, including the
+logger with no call sites, the swallowed-failure read layer, committed build
+output, the four accepted MODERATE advisories, the accessibility gaps, the
+missing product brand assets, mobile performance, and the EU-hosting claim —
+which still blocks onboarding further personal data into Agent Bureau.
+
+**Local hygiene.** The stale `bureau` git remote pointing at the retired
+standalone repository was removed. The repository directory itself was not
+touched.
+
 ## 2026-09-06 - Track A release checkpoint: tagged, certified, not deployed
 
 Tag `track-a-foundation-v15.1`, commit `8e700a2`.

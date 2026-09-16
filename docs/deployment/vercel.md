@@ -8,8 +8,10 @@ One repository, separate projects. Deploy independently, govern together.
 
 | Project | Root Directory | Domains | Database |
 |---|---|---|---|
-| `maxpromo-web` | `apps/web` | maxpromo.digital + 9 product domains | Neon `eu-central-1` |
-| `maxpromo-agent-bureau` | `apps/bureau` | agents.maxpromo.digital | Neon `us-east-1` |
+| `maxpromo-digital` | `apps/web` | maxpromo.digital + 9 product domains | Neon `eu-central-1` |
+| `maxpromo-agents` | `apps/bureau` | agents.maxpromo.digital | Neon `us-east-1` |
+
+Both build from `buddy1974/maxpromo.digital`, production branch `main`.
 
 ### Why not one project
 
@@ -24,27 +26,28 @@ One repository, separate projects. Deploy independently, govern together.
 
 ---
 
-## Settings to change when the monorepo lands
+## Settings changed when the monorepo landed — done
 
-Both projects currently point at their old single-application repositories and
-build from the repository root. Until these are updated, **deploys from the
-merged repository will fail**. This is the one step that requires the Vercel
-dashboard.
+Both projects pointed at their old single-application repositories and built
+from the repository root, which is why deploys from the merged repository
+failed. Corrected in the Vercel dashboard — `maxpromo-digital` on 2026-09-06,
+`maxpromo-agents` on 2026-09-07:
 
 | Project | Setting | From | To |
 |---|---|---|---|
-| maxpromo-web | Git repository | `maxpromo.digital` | `maxpromo-platform` |
-| maxpromo-web | Root Directory | *(empty)* | `apps/web` |
-| maxpromo-agent-bureau | Git repository | `maxpromo-agent-bureau` | `maxpromo-platform` |
-| maxpromo-agent-bureau | Root Directory | *(empty)* | `apps/bureau` |
+| maxpromo-digital | Git repository | `maxpromo.digital` (standalone) | `buddy1974/maxpromo.digital` |
+| maxpromo-digital | Root Directory | *(empty)* | `apps/web` |
+| maxpromo-agents | Git repository | `buddy1974/maxpromo-agent-bureau` | `buddy1974/maxpromo.digital` |
+| maxpromo-agents | Root Directory | *(empty)* | `apps/bureau` |
 | both | **Include files outside root directory** | off | **on** |
 
 That last setting is not optional. Both applications import from `packages/`,
 which sits above their root directory; without it the build cannot resolve
 `@maxpromo/design-tokens` and fails at compile time.
 
-**Do this against a preview deployment before merging to `main`.** The branch
-carries the new layout; confirm the preview builds and serves, then merge.
+Verified by reading the project records back: both carry the same `repoId`
+(1173436051) and production branch `main`. Recorded in
+`governance/known-risks.md` as resolved.
 
 ---
 
@@ -93,11 +96,13 @@ separate is what keeps the two databases separate.
 |---|---|---|
 | 1 | Vercel instant rollback to the previous deployment | seconds |
 | 2 | `git revert` of the offending commit | minutes |
-| 3 | Tag `pre-track-b` on both original repositories | one settings change |
+| 3 | Tag `pre-track-b` on both original repositories | **no longer a live path** |
 
-The two original repositories remain in place and deployable until Track B is
-signed off. Agent Bureau's repository should be archived rather than deleted,
-so its issue history stays readable.
+**Layer 3 is historical.** Both original repositories still exist, but neither
+is a usable rollback target: `maxpromo-agent-bureau` predates the consolidation,
+and a push to it would now fail to build. Rollback is layer 1 or layer 2.
+Agent Bureau's repository should be archived rather than deleted, so its issue
+history stays readable — it is not authoritative for anything.
 
 ---
 

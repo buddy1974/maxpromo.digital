@@ -5,8 +5,10 @@
 **Closure patch:** `5ea0b02` — both projects redeployed 2026-09-07, both `READY`
 **Status:** released. All eleven registered hosts run `5ea0b02`.
 **Verification:** 16 of 16 rules pass on 11 of 11 hosts.
-**Track A:** not closed. Both foundation defects are fixed and gated; one
-Marcel-only verification remains — see *Still Marcel-only* below.
+**Track A: CLOSED 2026-09-16.** Both foundation defects are fixed and gated, and
+the last Marcel-only verification — drizzle-orm 0.45.2 against the live database
+— was completed on 2026-09-16. See *The drizzle-orm verification, completed*
+below. The foundation is frozen (constitution §24c).
 
 ---
 
@@ -23,19 +25,20 @@ than assumed from a green deployment.
 for the first time. `agents.maxpromo.digital` serves `release.commit: 9263ac2`
 with `database: ok`. All eleven registered hosts now run this release.
 
-**Consequence:** Track A is **still not closed** and the foundation freeze is
-**not active** — but for different and much smaller reasons than before. The
-release itself is complete. Two pre-existing gaps in the certified foundation,
-both found *by* this production verification and neither caused by it, are
-recorded in `governance/known-risks.md`:
+**Consequence at the time of writing:** Track A was **still not closed** and the
+foundation freeze was **not active** — but for different and much smaller
+reasons than before. The release itself was complete. Two pre-existing gaps in
+the certified foundation, both found *by* this production verification and
+neither caused by it, were recorded in `governance/known-risks.md`:
 
 - `agents.maxpromo.digital` declares `contactPath: '/kontakt'`, a route it does
   not serve — and the gate that would catch it skips non-web apps.
 - `apps/bureau` does not stamp `x-mp-trace`, so the correlation-id contract
   holds on one application rather than on the platform.
 
-One verification also remains **Marcel-only**: the drizzle-orm 0.45.2 check
-needs an authenticated Agent Bureau session.
+One verification also remained **Marcel-only** at that point: the drizzle-orm
+0.45.2 check needs an authenticated Agent Bureau session. It was completed on
+2026-09-16 — see the end of this document.
 
 ### Three things this release had to discover before it could ship
 
@@ -423,7 +426,7 @@ Agent Bureau specifics: repository `buddy1974/maxpromo.digital`, Root Directory
 route still 401 to an anonymous caller, and `/`, `/login`, `/impressum`,
 `/datenschutz` all 200. No old standalone-repository artefact holds any alias.
 
-### Still Marcel-only: drizzle-orm 0.45.2
+### The drizzle-orm verification — why it could not be automated
 
 `/api/health` proves the database is reachable — but it uses
 `@neondatabase/serverless` directly (`select 1`). **It does not exercise
@@ -457,6 +460,51 @@ The click-by-click procedure is in the release report.
 
 No migration was run. No schema was modified. The ORM version moved; the
 schema did not.
+
+---
+
+### Outcome — 2026-09-16: the verification passed, and Track A closed
+
+**Window:** 2026-09-16T16:20:18Z → 16:21:05Z, against `agents.maxpromo.digital`.
+
+Marcel provisioned the operator account with `npm run auth:provision-operator`
+— `provisioned: true`, `action: updated`, `role: owner`, `business: Maxpromo
+Demo Operations` — and signed in himself. An authenticated read-only pass over
+the five Drizzle-backed routes was then observed in his browser. Navigation was
+by URL only; no create, edit, delete, approve, reject, submit, upload, trigger
+or settings control was touched, and no production data was modified.
+
+| route | rendered | persisted rows observed | production log |
+|---|---|---|---|
+| `/dashboard` | authenticated | 6 approvals · 5 agents · 5 waiting · 5 findings · 8 activity | `serverless` 200 MISS 16:21:00.153Z |
+| `/dashboard/approvals` | authenticated | 7 proposals, one persisted as `approved` | `serverless` 200 MISS 16:21:00.206Z |
+| `/dashboard/audit` | authenticated | session (score 76, *Maxpromo Demo Operations*) + 5 findings | `serverless` 200 MISS 16:21:00.153Z |
+| `/dashboard/documents` | authenticated | 7 intake items with joined required actions | `serverless` 200 MISS 16:21:00.153Z |
+| `/dashboard/waiting-room` | authenticated | 5 waiting-room items | `serverless` 200 MISS 16:20:59.639Z |
+
+**No route was empty**, so the `safeRead` ambiguity never had to be argued: the
+rows are the evidence. Every render was a live `serverless` invocation with
+`cache: MISS`. The correlated window contained no `[db/queries] read failed:`,
+no Drizzle, SQL, Neon, schema, relation, connection or database exception, and
+no status ≥ 400.
+
+**What this does not establish, stated plainly:**
+
+- No entry in the window carried console output, so it is not demonstrated that
+  this log channel *would* surface a `console.error`. The clean scan
+  corroborates the verdict; the persisted rows carry it.
+- Business scoping to *Maxpromo Demo Operations* is visible in the UI. The
+  `owner` role is not rendered on any of the five routes and rests on the
+  provisioning output.
+- `/dashboard/agents` was excluded throughout — it renders from the static
+  `lib/registry/agents` and is not Drizzle evidence.
+- Two earlier attempts from an isolated Chrome profile were redirected `307` to
+  `/login`; that traffic is anonymous test traffic and is not part of this
+  window.
+
+With this, the last Track A closure condition is met. Track A is **closed**, the
+foundation is **frozen** (constitution §24c), and Track B is the next authorised
+track. Closure is an engineering verdict only — §24d.
 
 ---
 
