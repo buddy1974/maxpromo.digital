@@ -6,16 +6,12 @@ import { getLandingData } from '@/lib/registry/adapters/landing.adapter'
 import { LandingEngine } from '@/components/landing/LandingEngine'
 import Hero from '@/components/Hero'
 import { Link } from '@/i18n/navigation'
-import { Icon, SectionHeader } from '@maxpromo/ui'
-import Image from 'next/image'
-import { getLatestPosts } from '@/lib/blog/posts'
-import { PainSlider } from '@/components/ui/PainSlider'
-import { PainCards } from '@/components/homepage/PainCards'
+import { SectionHeader } from '@maxpromo/ui'
 import { ProofMetrics } from '@/components/homepage/ProofMetrics'
 import type { ProofMetric } from '@/components/homepage/ProofMetrics'
-import { TeamTrust } from '@/components/homepage/TeamTrust'
-import { FaqAccordion } from '@/components/homepage/FaqAccordion'
-import { AgentBureauSection } from '@/components/homepage/AgentBureauSection'
+import { CapabilityRail } from '@/components/ui/CapabilityRail'
+import { ArchitectureMap } from '@/components/ui/ArchitectureMap'
+import { CAPABILITIES, INTEGRATIONS } from '@/lib/capabilities'
 
 /* ─── METADATA ─── */
 
@@ -40,9 +36,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const title = isDE
     ? 'Business-Systeme aus Essen'
     : 'Business Systems, Built in Essen'
+  // The description no longer leads with website modernisation. That is a
+  // capability, sold on /solutions/websites-platforms; leading with it told a
+  // search result the company is a web agency.
   const description = isDE
-    ? 'Eine Software-Beratung aus Essen. Wir modernisieren veraltete Websites, verbinden Abläufe und bauen Betriebssysteme für Restaurants, Handwerk, Praxen und mehr.'
-    : 'A software consultancy in Essen. We modernise legacy websites, connect workflows and build the operating systems that restaurants, trades and practices run on.'
+    ? 'Wir entwerfen und bauen die Systeme, auf denen Unternehmen laufen, und halten sie danach am Laufen. Von der Anfrage bis zur Freigabe.'
+    : 'We design and build the systems businesses run on, and keep them running afterwards. From the first request to the final approval.'
   // og:title / twitter:title are shown as-is by social crawlers (no template
   // applied), og:site_name already carries the brand there, but keeping the
   // full framing here matches the page's prior social-facing copy.
@@ -79,13 +78,56 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-/* ─── HELPERS ─── */
+/* ─── PAGE ─────────────────────────────────────────────────────────────────
+   Rebuilt in the homepage presentation pass. Fourteen sections became seven,
+   and the page is a route rather than a catalogue: the problem, the model
+   that answers it, what it is built from, what it delivered, how the work is
+   done, the one product marketed from here, and the single next step.
 
-/* SectionLabel and SectionTitle were local wrappers duplicating what
-   @maxpromo/ui already exports. They are gone; the shared SectionHeader is
-   used directly at each call site. */
+   What was removed, and where it lives instead:
 
-/* ─── PAGE ─── */
+     Legacy modernisation (five cards)  → /solutions/websites-platforms, which
+       already states the same thing better. Leading the homepage with Joomla
+       and WordPress told every visitor this was a web agency.
+     Latest insights (three cards)      → /blog. The images were the last
+       generated artwork on the site and all three posts were about Joomla.
+     The rotating pain strip            → deleted. A four-second carousel of
+       six one-liners is a device, not an argument, and it was client
+       JavaScript for a decoration.
+     Six pain cards                     → three ruled columns, in prose.
+     FAQ accordion                      → deleted. It also carried the second
+       of two different build durations this page stated (see below).
+     Why Maxpromo / team / philosophy /
+       five-step process (four sections)→ one "How we work" section.
+     The Agent Bureau orbit diagram     → deleted; the section stays. The
+       wrapper computed to 0×0 in production, so all six of its labels stacked
+       on top of the centre node.
+
+   The capability pass then changed what the third section is for. "Three kinds
+   of work. One operating model." described the work in the company's own
+   vocabulary — operating systems, workflow, supervision — which is accurate
+   and answers a question a first-time visitor has not asked yet. The five
+   names a business actually uses (lib/capabilities.ts) now carry that slot,
+   as a rail under the hero and a hub diagram here; the three operating
+   families keep their home on /solutions. Nothing was added on top: one
+   section was replaced, and the two new strips are compact.
+
+   Two public claims were changed rather than carried over, and both were
+   changes by subtraction because the alternative was inventing a fact:
+
+     The process panels stated "1–4 wks" for build-and-go-live while the FAQ
+     four sections below stated "2 to 6 weeks". Both are gone with the panels
+     and the accordion; the commitment is stated on /pricing, once.
+
+     The proof strip stated "€14k/mo saved" for a project whose own case study
+     states £14,000. Which symbol is right is a fact about a client, so this
+     states a different documented result from the same project — 94% of
+     invoices processed without human intervention — instead of guessing.
+
+   The <main> element that used to wrap this page is gone too: the locale
+   layout already renders <main id="content">, so every page of the hub had
+   two main landmarks nested inside one another.
+   ───────────────────────────────────────────────────────────────────────── */
 
 export default async function HomePage() {
   const locale = await getLocale()
@@ -101,301 +143,228 @@ export default async function HomePage() {
     if (!data) return notFound()
     return <LandingEngine data={data} />
   }
-  // ── Hub homepage (unchanged below) ───────────────────────────────────
 
-  const t            = await getTranslations('home')
-  const tProcess     = await getTranslations('home.process')
-  const tWhyUs       = await getTranslations('home.whyUs')
-  const tProof       = await getTranslations('home.proof')
-  const tRoutes = await getTranslations('home.routes')
-  const tLegacy      = await getTranslations('home.legacy')
-  const tPhilosophy  = await getTranslations('home.philosophy')
-  const tBlog        = await getTranslations('blog')
+  // ── Hub homepage ──────────────────────────────────────────────────────
+  const tProblem = await getTranslations('home.problem')
+  const tCap     = await getTranslations('capabilities')
+  const tProof   = await getTranslations('home.proof')
+  const tMethod  = await getTranslations('home.method')
+  const tBureau  = await getTranslations('home.bureau')
+  const tClose   = await getTranslations('home.closing')
 
-  const latestPosts = getLatestPosts(locale, 3)
-
-  const WHY_REFS   = ['w1', 'w2', 'w3', 'w4'] as const
-  const PROOF_REFS = ['p1', 'p2', 'p3'] as const
-  const PROCESS_REFS = ['p1', 'p2', 'p3', 'p4', 'p5'] as const
-
-  const SECTION_PADDING = 'var(--section-y) var(--section-x)'
+  const PROBLEMS = ['i1', 'i2', 'i3'] as const
+  const PROOF    = ['p1', 'p2', 'p3'] as const
+  const RULES    = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6'] as const
+  const STEPS    = ['st1', 'st2', 'st3', 'st4', 'st5'] as const
 
   return (
     <>
-      <main>
-
-      {/* 1, Hero (LOCKED) */}
+      {/* ── 1. Hero ─────────────────────────────────────── white, editorial */}
       <Hero />
 
-      {/* Pain Slider, rotating problem strip below hero */}
-      <PainSlider />
+      {/* ── 1b. What we build, in five words each ──────────────── compact rail
+          The hero explains the operating model. Somebody who arrived looking
+          for a web developer needs to see the word before they decide this
+          site is about something else. Each item is a link into the matching
+          section of Solutions. */}
+      <CapabilityRail
+        label={tCap('railLabel')}
+        items={CAPABILITIES.map((c) => ({
+          id: c.id,
+          icon: c.icon,
+          name: tCap(`${c.key}Name`),
+        }))}
+      />
 
-      {/* 2, Pain Cards */}
-      <PainCards />
-
-      {/* 3, Proof strip */}
-      <section data-section="proof" style={{ background: 'var(--brand-background)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
-        <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 'var(--space-5)', marginBottom: 'var(--space-5)', flexWrap: 'wrap' }}>
-            <div>
-              <SectionHeader label={tProof('eyebrow')}>
-                {tProof('title')}
-              </SectionHeader>
-            </div>
-            <Link href="/case-studies" style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
-              {tProof('viewAll')}
-            </Link>
+      {/* ── 2. The operational problem ───────────────────── white, editorial */}
+      <section data-section="problem" className="section surface-plain">
+        <div className="container">
+          <div className="sec-head">
+            <SectionHeader label={tProblem('eyebrow')}>{tProblem('title')}</SectionHeader>
+            <p className="sec-lede">{tProblem('lede')}</p>
           </div>
-          <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, marginBottom: '2.5rem', maxWidth: '44rem' }}>
-            {tProof('subtitle')}
+
+          <div className="ruled-grid">
+            {PROBLEMS.map((id, i) => (
+              <div key={id} className="ruled-item">
+                <p className="ruled-index">{String(i + 1).padStart(2, '0')}</p>
+                <h3 className="ruled-title">{tProblem(`${id}Title`)}</h3>
+                <p className="ruled-desc">{tProblem(`${id}Desc`)}</p>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ margin: 'var(--space-8) 0 0', maxWidth: '46rem', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
+            {tProblem('closing')}
           </p>
+        </div>
+      </section>
+
+      {/* ── 3. How the five connect ───────────────── off-white, architecture
+          Replaces "Three kinds of work, one operating model", which grouped
+          the work the way the company thinks about it rather than the way a
+          business asks for it. Nobody searches for a business operating
+          system. The five names a business does use are now the diagram, and
+          the operating families keep their home on /solutions, where a reader
+          has already decided to understand how the work fits together. */}
+      <section data-section="capabilities" className="section surface-operational">
+        <div className="container">
+          <div className="sec-head">
+            <SectionHeader label={tCap('bridgeEyebrow')}>{tCap('bridgeTitle')}</SectionHeader>
+            <p className="sec-lede">{tCap('bridgeLede')}</p>
+          </div>
+
+          <ArchitectureMap
+            layout="hub"
+            centre={{ label: tCap('bridgeCentre') }}
+            nodes={CAPABILITIES.map((c) => ({ label: tCap(`${c.key}Name`), icon: c.icon }))}
+            caption={tCap('bridgeCaption')}
+            a11yIntro={tCap('bridgeA11y')}
+          />
+        </div>
+      </section>
+
+      {/* ── 3b. The tools already in the building ───────────── compact, white
+          The most common objection this company meets is "we already have
+          systems". Answering it here costs a strip. */}
+      <section data-section="tools" className="section-compact surface-plain">
+        <div className="container">
+          <div className="sec-split">
+            <div>
+              <p className="section-label">{tCap('toolsEyebrow')}</p>
+              <h2 style={{ margin: 0, fontSize: 'var(--text-h3)' }}>{tCap('toolsTitle')}</h2>
+            </div>
+            <div>
+              <p style={{ margin: '0 0 var(--space-6)', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
+                {tCap('toolsLede')}
+              </p>
+              {/* Words, not logos. See the note below the list, and the comment
+                  on INTEGRATIONS in lib/capabilities.ts. */}
+              <ul className="tool-list">
+                {INTEGRATIONS.map((tool) => (
+                  <li key={tool} className="tool-chip">{tool}</li>
+                ))}
+              </ul>
+              <p className="tool-note">{tCap('toolsNote')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4. Proof ──────────────────────────── pale green, measured claims */}
+      <section data-section="proof" className="section surface-evidence">
+        <div className="container">
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 'var(--space-5)', flexWrap: 'wrap', marginBottom: 'var(--space-5)' }}>
+            <SectionHeader label={tProof('eyebrow')}>{tProof('title')}</SectionHeader>
+            <Link href="/case-studies" className="quiet-link">{tProof('viewAll')}</Link>
+          </div>
+
+          <p style={{ margin: '0 0 var(--space-8)', maxWidth: '46rem', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
+            {tProof('lede')}
+          </p>
+
           <ProofMetrics
-            metrics={PROOF_REFS.map((id): ProofMetric => ({
+            metrics={PROOF.map((id): ProofMetric => ({
               id,
-              value:  tProof(`${id}Value`),
-              label:  tProof(`${id}Label`),
+              value: tProof(`${id}Value`),
+              label: tProof(`${id}Label`),
               source: tProof(`${id}Source`),
             }))}
           />
-          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', marginTop: 'var(--space-4)', letterSpacing: '0.05em' }}>
-            {tProof('note')}
-          </p>
         </div>
       </section>
 
-      {/* 4a, Legacy modernization */}
-      <section data-section="legacy" style={{ background: 'var(--brand-surface-subtle)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
-        <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
-          <div style={{ maxWidth: '52rem', marginBottom: 'var(--space-8)' }}>
-            <SectionHeader label={tLegacy('eyebrow')}>
-                {tLegacy('title')}
-              </SectionHeader>
-            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.75, marginTop: 'var(--space-4)' }}>
-              {tLegacy('subtitle')}
-            </p>
-          </div>
-          <div style={{ display: 'grid', gap: 'var(--space-4)' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {(['c1', 'c2', 'c3', 'c4', 'c5'] as const).map((id) => (
-              <div key={id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-                <h3 className="h-card" style={{ margin: 0 }}>
-                  {tLegacy(`${id}Title`)}
-                </h3>
-                <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0 }}>
-                  {tLegacy(`${id}Pain`)}
-                </p>
-                <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', lineHeight: 1.6, margin: 0, paddingTop: '10px', borderTop: '1px solid var(--brand-border)' }}>
-                  → {tLegacy(`${id}System`)}
-                </p>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginTop: 'var(--space-8)', display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center' }}>
-            <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '16px', color: 'var(--brand-text-secondary)', lineHeight: 1.7, maxWidth: '52rem', margin: 0 }}>
-              {tLegacy('closing')}
-            </p>
-            <Link href="/contact" className="btn btn-primary" style={{ flexShrink: 0 }}>
-              {tLegacy('cta')}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. Where we work — the two ways into the site. Replaces the former
-          systems showcase: the operating systems are protected products
-          marketed on their own domains, not a public section of the
-          consultancy site. A visitor arrives knowing either their sector or
-          their problem, so those are the two doors offered. */}
-      <section data-section="routes" className="section" style={{ background: 'var(--brand-background)', borderTop: '1px solid var(--brand-border)' }}>
+      {/* ── 5. How we work ───────────────────────────────── white, editorial */}
+      <section data-section="method" className="section surface-plain">
         <div className="container">
-          <div style={{ maxWidth: '44rem', marginBottom: 'var(--space-8)' }}>
-            <SectionHeader label={tRoutes('eyebrow')}>
-                {tRoutes('title')}
-              </SectionHeader>
-            <p style={{ margin: 'var(--space-4) 0 0', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
-              {tRoutes('lede')}
+          <div className="sec-split" style={{ marginBottom: 'var(--space-8)' }}>
+            <div>
+              <SectionHeader label={tMethod('eyebrow')}>{tMethod('title')}</SectionHeader>
+            </div>
+            <div>
+              <p style={{ margin: 0, fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
+                {tMethod('body')}
+              </p>
+              <p style={{ margin: 'var(--space-5) 0 0', fontSize: 'var(--text-small)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
+                {tMethod('closing')}
+              </p>
+            </div>
+          </div>
+
+          <div className="rules-grid">
+            {RULES.map((id) => (
+              <div key={id} className="rule-item">
+                <p className="rule-title">{tMethod(`${id}Title`)}</p>
+                <p className="rule-desc">{tMethod(`${id}Desc`)}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 'var(--space-8)' }}>
+            <p className="section-label">{tMethod('stepsLabel')}</p>
+            <ol className="steps-line">
+              {STEPS.map((id) => <li key={id}>{tMethod(id)}</li>)}
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6. Max Agent Bureau ───────────────────────── off-white, a product
+          The one product the hub markets publicly. The operating systems are
+          protected products, marketed on their own domains. See
+          docs/architecture/platform.md §1. */}
+      <section id="agent-bureau" data-section="agent-bureau" className="section surface-operational">
+        <div className="container">
+          <div className="sec-split">
+            <div>
+              <p className="section-label">{tBureau('label')}</p>
+              <h2 style={{ margin: 0 }}>{tBureau('title')}</h2>
+            </div>
+            <div>
+              <p style={{ margin: '0 0 var(--space-6)', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
+                {tBureau('desc')}
+              </p>
+              <Link href="/agent-bureau" className="btn btn-secondary">{tBureau('cta')}</Link>
+              <p className="bureau-guarantee">{tBureau('guarantee')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. Closing ──────────────────────────────── black, the conclusion */}
+      <section data-section="closing" className="section surface-authority">
+        <div className="container">
+          <div style={{ maxWidth: '40rem', margin: '0 auto', textAlign: 'center' }}>
+            <p className="section-label">{tClose('eyebrow')}</p>
+            <h2 style={{ margin: '0 auto var(--space-4)' }}>{tClose('title')}</h2>
+            <p style={{ margin: '0 auto var(--space-8)', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
+              {tClose('desc')}
+            </p>
+            <Link href="/contact" className="btn btn-primary">{tClose('cta')}</Link>
+            <p style={{ margin: 'var(--space-5) auto 0', fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', letterSpacing: 'var(--tracking-label)' }}>
+              {tClose('footnote')}
             </p>
           </div>
 
-          <div className="route-grid">
-            <Link href="/industries" className="route-cell">
-              <p className="route-cell-label">{tRoutes('industriesLabel')}</p>
-              <h3 className="h-card" style={{ margin: '0 0 var(--space-3)' }}>{tRoutes('industriesTitle')}</h3>
-              <p className="route-cell-desc">{tRoutes('industriesDesc')}</p>
-              <span className="route-cell-cta">{tRoutes('industriesCta')} &rarr;</span>
-            </Link>
-
-            <Link href="/solutions" className="route-cell">
-              <p className="route-cell-label">{tRoutes('solutionsLabel')}</p>
-              <h3 className="h-card" style={{ margin: '0 0 var(--space-3)' }}>{tRoutes('solutionsTitle')}</h3>
-              <p className="route-cell-desc">{tRoutes('solutionsDesc')}</p>
-              <span className="route-cell-cta">{tRoutes('solutionsCta')} &rarr;</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 4b, Max Agent Bureau — redesigned two-column hero + orchestration
-          diagram + compact workflow + grouped capability panels, extracted
-          into its own component (see components/homepage/AgentBureauSection.tsx) */}
-      <AgentBureauSection locale={locale} />
-
-      {/* 5, Why Maxpromo */}
-      <section style={{ background: 'var(--brand-surface-subtle)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
-        <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
-          <div style={{ marginBottom: '3.5rem', maxWidth: '44rem' }}>
-            <SectionHeader label={tWhyUs('eyebrow')}>
-                {tWhyUs('title')}{' '}
-              <span style={{ color: 'var(--brand-text-secondary)' }}>{tWhyUs('titleAccent')}</span>
-              </SectionHeader>
-          </div>
-          <div style={{ display: 'grid', gap: 'var(--space-4)' }} className="grid-cols-1 sm:grid-cols-2">
-            {WHY_REFS.map((id) => (
-              <div key={id} className="card" style={{ display: 'flex', gap: 'var(--space-4)', alignItems: 'flex-start' }}>
-                <span style={{ color: 'var(--brand-text-secondary)', fontFamily: 'var(--brand-font-mono)', fontSize: '18px', flexShrink: 0, paddingTop: '2px' }}><Icon name="check" size="sm" /></span>
-                <div>
-                  <h3 className="h-card" style={{ marginBottom: 'var(--space-2)' }}>
-                    {tWhyUs(`${id}Title`)}
-                  </h3>
-                  <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.75, margin: 0 }}>
-                    {tWhyUs(`${id}Desc`)}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6, Team trust */}
-      <TeamTrust />
-
-      {/* 6a, Philosophy */}
-      <section data-section="philosophy" style={{ background: 'var(--brand-background)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
-        <div style={{ maxWidth: 'var(--container-narrow)', margin: '0 auto' }}>
-          <SectionHeader label={tPhilosophy('eyebrow')}>
-            {tPhilosophy('title')}
-          </SectionHeader>
-          <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-body)', color: 'var(--brand-text-secondary)', lineHeight: 1.85, marginTop: 'var(--space-5)', whiteSpace: 'pre-line' }}>
-            {tPhilosophy('body')}
-          </p>
-          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '14px', color: 'var(--brand-text-secondary)', marginTop: 'var(--space-6)', letterSpacing: '0.03em' }}>
-            → {tPhilosophy('closing')}
-          </p>
-        </div>
-      </section>
-
-      {/* 7, How we work */}
-      <section style={{ background: 'var(--brand-surface-subtle)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
-        <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
-          <div style={{ marginBottom: '3.5rem' }}>
-            <SectionHeader label={tProcess('processEyebrow')}>
-                {tProcess('processTitle')}
-              </SectionHeader>
-          </div>
-          <div style={{ display: 'grid', gap: '1px', background: 'var(--brand-border)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
-            {PROCESS_REFS.map((id, i) => (
-              <div key={id} style={{ background: 'var(--brand-background)', padding: '2rem 1.75rem', position: 'relative' }}>
-                <p style={{ fontFamily: 'var(--brand-font-heading)', fontWeight: 'var(--weight-heading)', fontSize: '48px', lineHeight: 1, marginBottom: 'var(--space-3)', color: 'var(--brand-text-secondary)' }}>
-                  {tProcess(`${id}Num`)}
-                </p>
-                <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', padding: '2px 7px', display: 'inline-block', marginBottom: '10px', letterSpacing: '0.05em' }}>
-                  {tProcess(`${id}Time`)}
-                </span>
-                <h3 className="h-card" style={{ marginBottom: 'var(--space-2)' }}>
-                  {tProcess(`${id}Title`)}
-                </h3>
-                <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: '14px', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0 }}>
-                  {tProcess(`${id}Desc`)}
-                </p>
-                {i < PROCESS_REFS.length - 1 && (
-                  <span className="hidden lg:block" style={{ position: 'absolute', right: '-8px', top: '50%', transform: 'translateY(-50%)', color: 'var(--brand-text-secondary)', fontSize: '14px', zIndex: 1 }}>
-                    →
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 8, FAQ */}
-      <FaqAccordion />
-
-      {/* 9, Latest insights (only when posts exist) */}
-      {latestPosts.length > 0 && (
-        <section style={{ background: 'var(--brand-background)', padding: SECTION_PADDING, borderTop: '1px solid var(--brand-border)' }}>
-          <div style={{ maxWidth: 'var(--container)', margin: '0 auto' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 'var(--space-5)', marginBottom: 'var(--space-8)', flexWrap: 'wrap' }}>
-              <div>
-                <SectionHeader label={tBlog('homepageEyebrow')}>
-                {tBlog('homepageTitle')}{' '}
-                  <span style={{ color: 'var(--brand-text-secondary)' }}>{tBlog('homepageTitleAccent')}</span>
-              </SectionHeader>
-              </div>
-              <Link href="/blog" style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', textDecoration: 'none', letterSpacing: '0.05em', flexShrink: 0 }}>
-                {tBlog('homepageViewAll')} →
+          {/* The two doors deeper into the site, for a reader not ready to
+              talk. Folded into the close rather than given a section. */}
+          <div style={{ maxWidth: 'var(--container-narrow)', margin: 'var(--space-10) auto 0' }}>
+            <p className="section-label" style={{ textAlign: 'center' }}>{tClose('routesLede')}</p>
+            <div className="route-grid route-grid-inverted">
+              <Link href="/industries" className="route-cell">
+                <p className="route-cell-label">{tClose('route1')}</p>
+                <p className="route-cell-desc">{tClose('route1Desc')}</p>
+                <span className="route-cell-cta">{tClose('route1Cta')} &rarr;</span>
+              </Link>
+              <Link href="/solutions" className="route-cell">
+                <p className="route-cell-label">{tClose('route2')}</p>
+                <p className="route-cell-desc">{tClose('route2Desc')}</p>
+                <span className="route-cell-cta">{tClose('route2Cta')} &rarr;</span>
               </Link>
             </div>
-            <div style={{ display: 'grid', gap: 'var(--space-5)' }} className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {latestPosts.map((post) => (
-                <Link key={post.slug} href={`/blog/${post.slug}`} style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}>
-                  <article className="card mp-card-hover" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden', padding: 0 }}>
-                    {post.featuredImage && (
-                      <div className="mp-img-wrap" style={{ position: 'relative', aspectRatio: '16/9' }}>
-                        <Image src={post.featuredImage} alt={post.title} fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" />
-                      </div>
-                    )}
-                    <div style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
-                      {post.tags.length > 0 && (
-                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                          {post.tags.map((tag) => (
-                            <span key={tag} style={{ fontFamily: 'var(--brand-font-sans)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', background: 'color-mix(in srgb, var(--brand-primary) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--brand-primary) 15%, transparent)', padding: '2px 8px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      <h3 className="h-card" style={{ margin: 0 }}>
-                        {post.title}
-                      </h3>
-                      <p style={{ fontFamily: 'var(--brand-font-body)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', lineHeight: 1.7, margin: 0, flex: 1 }}>
-                        {post.excerpt}
-                      </p>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 'var(--space-3)', borderTop: '1px solid var(--brand-border)', marginTop: 'auto' }}>
-                        <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>{post.publishedAt}</span>
-                        <span style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>{tBlog('readArticle')}</span>
-                      </div>
-                    </div>
-                  </article>
-                </Link>
-              ))}
-            </div>
           </div>
-        </section>
-      )}
-
-      {/* 10, Final CTA */}
-      <section style={{ background: 'var(--brand-surface-subtle)', padding: 'var(--section-y-feature) var(--section-x)', borderTop: '1px solid var(--brand-border)' }}>
-        <div style={{ maxWidth: '640px', margin: '0 auto', textAlign: 'center' }}>
-          <p className="section-label">{t('finalCtaEyebrow')}</p>
-          <h2 style={{ marginBottom: 'var(--space-4)', marginTop: 'var(--space-2)' }}>
-            {t('finalCtaTitle')}
-          </h2>
-          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', marginBottom: '2.5rem', letterSpacing: '0.02em' }}>
-            {t('finalCtaDesc')}
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', justifyContent: 'center', marginBottom: '1.25rem' }}>
-            <Link href="/contact" className="btn btn-primary">
-              {t('finalCtaPrimary')}
-            </Link>
-          </div>
-          <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)', letterSpacing: '0.05em' }}>
-            {t('finalCtaFootnote')}
-          </p>
         </div>
       </section>
-
-      </main>
     </>
   )
 }

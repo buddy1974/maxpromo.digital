@@ -217,7 +217,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--section-y)', paddingBottom: 'var(--space-16)' }}>
+      <div style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--section-y)', paddingBottom: 'var(--space-16)' }}>
 
         {/* ─────────────────────────────────────────────── */}
         {/* 1. HERO                                         */}
@@ -420,7 +420,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-      </main>
+      </div>
     </>
   )
 }/*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/

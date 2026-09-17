@@ -52,8 +52,24 @@ The build enforces it.
 **The accent is a fill.** Brand Lime as text is 1.51:1. Text on it is black.
 Brand colours are never semantic colours.
 
-**Legal identity is locked.** `@maxpromo/config`. The §19 UStG clause is
-required on every commercial surface and VAT is never calculated or displayed.
+**Legal identity is locked.** `@maxpromo/config`. VAT is never calculated or
+displayed, anywhere, without exception. Where the §19 UStG clause belongs
+depends on the surface, and the three are not the same:
+
+- **Commercial documents** — invoices, quotations, anything stating money owed.
+  The clause is **required**. This is where §19 actually does its work.
+- **Legal and disclosure pages** — the Impressum, and any legal document whose
+  own substance calls for it, such as a fees clause. The clause is **required**
+  on the Impressum and **kept** wherever a document already relies on it.
+- **Repeated website chrome** — the global footer, navigation, and anything
+  else printed on every page. The clause does **not** belong there. Neither
+  does the proprietor's personal name, the tax number or the tax office. The
+  Impressum is the authoritative public location and is one click from every
+  page.
+
+The website footer carries `© {year} Maxpromo Digital` and nothing further.
+Marcel's decision, 2026-09-16; reasoning in `docs/adr/decision-log.md`. Do not
+restore tax wording to the footer on the strength of the first bullet.
 
 **Protected products stay protected.** The operating systems are marketed on
 their own domains, never from the consultancy site.

@@ -67,6 +67,11 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--brand-text);
   letter-spacing: var(--tracking-tight);
   text-wrap: balance;
+  /* German compounds are frequently longer than a phone viewport at heading
+     size. "Allgemeine Geschäftsbedingungen" overflowed the terms page at
+     390px, which is a horizontal scrollbar on a legal document. A heading is
+     allowed to break rather than to push the page sideways. */
+  overflow-wrap: break-word;
 }
 
 h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); max-width: 22ch; }
@@ -77,13 +82,12 @@ h4 { font-size: var(--text-h4); font-weight: var(--weight-subhead); line-height:
 /* A heading wider than about 22 characters stops reading as a heading and
    starts reading as a sentence set large. The cap is on the element rather
    than left to each caller, because it was left to each caller before and
-   half of them forgot. Callers that genuinely need a wider measure opt out
-   with .h-wide. */
-.h-wide { max-width: none; }
+   half of them forgot. */
 
-/* Body copy has a measure too. */
+/* Body copy has a measure too. A paragraph inside a table cell or a list item
+   is already inside a measure and must not get a second one. */
 p { max-width: var(--measure); }
-p.h-wide, .prose-wide p, td p, li p { max-width: none; }
+td p, li p { max-width: none; }
 
 /* Headings inside cards and grid tiles. The section scale is too loud at card
    size — a 3-up grid of 32px headings reads as a pricing page, not a document.
@@ -224,27 +228,15 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 .mp-hero-2 { animation: mp-fade-up 0.5s var(--ease) 80ms  both; }
 .mp-hero-3 { animation: mp-fade-up 0.5s var(--ease) 160ms both; }
 .mp-hero-4 { animation: mp-fade-up 0.5s var(--ease) 240ms both; }
-.mp-hero-5 { animation: mp-fade-up 0.5s var(--ease) 320ms both; }
 
-.mp-img-wrap { overflow: hidden; }
-.mp-img-wrap img {
-  display: block;
-  transition: transform var(--duration-base) var(--ease);
-}
-.mp-img-wrap:hover img,
-.mp-img-wrap:focus-visible img { transform: scale(1.02); }
+/* A card that lifts its border on hover does the same on keyboard focus: a
+   mouse user and a keyboard user should be told the same thing about what is
+   interactive. The focus ring from :focus-visible in the reset still draws on
+   top; this is the affordance underneath it.
 
-/* One behaviour, two names, declared four lines apart until v7.1. A card that
-   lifts its border on hover does the same on keyboard focus: a mouse user and a
-   keyboard user should be told the same thing about what is interactive. The
-   focus ring from :focus-visible in the reset still draws on top; this is the
-   affordance underneath it. */
-.mp-card-hover,
-.service-card {
-  transition: border-color var(--duration-base) var(--ease);
-}
-.mp-card-hover:hover,
-.mp-card-hover:focus-visible,
+   The image-zoom wrapper and the second name for this behaviour went with the
+   generated artwork and the card decks that used them. */
+.service-card { transition: border-color var(--duration-base) var(--ease); }
 .service-card:hover,
 .service-card:focus-visible { border-color: var(--brand-border-strong); }
 
@@ -269,13 +261,11 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 .chat-scroll::-webkit-scrollbar-thumb { background: var(--brand-border-strong); }
 
 @media (prefers-reduced-motion: reduce) {
-  .mp-hero-1, .mp-hero-2, .mp-hero-3, .mp-hero-4, .mp-hero-5 {
+  .mp-hero-1, .mp-hero-2, .mp-hero-3, .mp-hero-4 {
     animation: none;
     opacity: 1;
     transform: none;
   }
-  .mp-img-wrap:hover img,
-  .mp-img-wrap:focus-visible img { transform: none; }
   .typing-dot { animation: none; }
 }
 
@@ -452,88 +442,6 @@ button.os-nav-item {
 }
 
 
-/* ─── Hero ────────────────────────────────────────────────────────────────────
-   Copy and Operations Center share one grid and one baseline. Below 1024px the
-   panel moves under the copy rather than shrinking into illegibility.
-   ───────────────────────────────────────────────────────────────────────── */
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-10);
-  align-items: start;
-}
-@media (min-width: 1024px) {
-  .hero-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: var(--space-8);
-    align-items: center;
-  }
-}
-
-/* Operations Center: the module rail is meaningful context on a wide screen
-   and noise on a phone, so it collapses rather than compressing. */
-@media (max-width: 560px) {
-  .oc-body { grid-template-columns: 1fr !important; }
-  .oc-rail { display: none !important; }
-}
-
-
-/* ─── Problem grid (homepage) ─────────────────────────────────────────────────
-   A hairline reference grid, not a card deck: the 1px gaps let the border
-   colour show through as separators, so there are no card boxes, no shadows
-   and no tinted icon tiles. Hover moves the whole cell to the subtle surface
-   rather than lighting up a border.
-   ───────────────────────────────────────────────────────────────────────── */
-
-.pain-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--brand-border);
-  border: 1px solid var(--brand-border);
-}
-@media (max-width: 900px) { .pain-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .pain-grid { grid-template-columns: 1fr; } }
-
-.pain-cell {
-  display: flex;
-  flex-direction: column;
-  background: var(--brand-surface);
-  padding: var(--space-6);
-  text-decoration: none;
-  transition: background-color var(--duration-base) var(--ease);
-}
-.pain-cell:hover,
-.pain-cell:focus-visible { background: var(--brand-surface-subtle); }
-
-.pain-cell-label {
-  margin: 0 0 var(--space-4);
-  font-size: var(--text-micro);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-muted);
-}
-
-.pain-cell-desc {
-  margin: 0 0 var(--space-5);
-  flex: 1;
-  font-size: var(--text-small);
-  line-height: var(--leading-body);
-  color: var(--brand-text-secondary);
-}
-
-.pain-cell-cta {
-  font-size: var(--text-small);
-  color: var(--brand-text);
-  border-bottom: 1px solid var(--brand-border-strong);
-  padding-bottom: 2px;
-  align-self: flex-start;
-  transition: border-color var(--duration-fast) var(--ease);
-}
-.pain-cell:hover .pain-cell-cta { border-color: var(--brand-text); }
-
 
 /* ═════════════════════════════════════════════════════════════════════════════
    SITE CHROME — navigation
@@ -560,10 +468,17 @@ button.os-nav-item {
   gap: var(--space-8);
 }
 
+/* The wordmark.
+   Was 17px at weight 700 in mixed case, which is a product logo. This is a
+   corporate mark: uppercase, set small, held open by tracking rather than by
+   size or weight, so the two words read as one identity while both stay
+   readable. "DIGITAL" keeps the secondary inverted tone, which groups the mark
+   without hiding half the company's name. */
 .site-nav-logo {
-  font-size: 1.0625rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   color: var(--brand-text-inverted);
   text-decoration: none;
   white-space: nowrap;
@@ -577,9 +492,14 @@ button.os-nav-item {
   gap: var(--space-6);
   margin-right: auto;
 }
+/* Navigation labels follow the wordmark into uppercase, at a size and weight
+   chosen so the row reads as structure rather than as shouting: 11px, weight
+   500, and the label tracking the rest of the platform already uses. */
 .site-nav-link {
-  font-size: var(--text-small);
+  font-size: var(--text-label);
   font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
   color: var(--brand-text-inverted-secondary);
   text-decoration: none;
   white-space: nowrap;
@@ -593,6 +513,24 @@ button.os-nav-item {
   align-items: center;
   gap: var(--space-4);
   flex-shrink: 0;
+}
+
+/* The navigation action, on both the bar and the mobile sheet.
+   Lime, per the approved hero reference, which shows the bar's call to action
+   as the accent. An earlier pass made it a white fill and recorded the
+   reasoning as ADR-0012 (the accent belongs to an action, not to the chrome).
+   Marcel's reference supersedes that. ADR-0012 is still Proposed and has not
+   been accepted; its status needs answering rather than leaving as a document
+   that contradicts what the site does. Flagged, not edited: governance is out
+   of scope for this correction. */
+.site-nav-cta {
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  border-color: var(--brand-primary-edge);
+}
+.site-nav-cta:hover:not(:disabled) {
+  background: var(--brand-primary-hover);
+  border-color: var(--brand-primary-edge);
 }
 
 /* Burger */
@@ -775,11 +713,15 @@ button.os-nav-item {
    rule, then the legal line. No display heading, no marketing block.
    ══════════════════════════════════════════════════════════════════════════ */
 
+/* No external margin. The footer already opens on the section rhythm, so a
+   96px margin on top of it was a second gap — invisible on a page ending in
+   white and a white band across the page on any page ending on the subtle
+   surface, which the homepage now does. The footer ends the page; it does not
+   float below it. */
 .site-footer {
   background: var(--brand-surface-inverted);
   color: var(--brand-text-inverted-secondary);
-  padding-block: var(--section-y) var(--space-8);
-  margin-top: var(--space-16);
+  padding-block: var(--section-y-compact) var(--space-6);
 }
 
 .site-footer-grid {
@@ -791,22 +733,17 @@ button.os-nav-item {
 @media (min-width: 1000px) {
   .site-footer-grid {
     grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
-    gap: var(--space-10);
+    gap: var(--space-8);
   }
 }
 
 .site-footer-brand {
-  margin: 0 0 var(--space-3);
-  font-size: var(--text-small);
+  font-size: var(--text-micro);
   font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   color: var(--brand-text-inverted);
-}
-.site-footer-desc {
-  margin: 0 0 var(--space-5);
-  max-width: 30ch;
-  font-size: var(--text-small);
-  line-height: var(--leading-body);
-  color: var(--brand-text-inverted-secondary);
+  margin: 0 0 var(--space-4);
 }
 .site-footer-address {
   margin: 0 0 var(--space-3);
@@ -830,10 +767,10 @@ button.os-nav-item {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 .site-footer-link {
-  font-size: var(--text-small);
+  font-size: var(--text-micro);
   color: var(--brand-text-inverted-secondary);
   text-decoration: none;
   transition: color var(--duration-fast) var(--ease);
@@ -842,18 +779,15 @@ button.os-nav-item {
 .site-footer-link:focus-visible { color: var(--brand-text-inverted); }
 
 .site-footer-legal {
-  margin-top: var(--space-10);
-  padding-top: var(--space-6);
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
   border-top: 1px solid var(--brand-border-inverted);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
 }
 .site-footer-legal p {
   margin: 0;
   font-size: var(--text-micro);
   line-height: var(--leading-ui);
-  color: var(--brand-text-muted);
+  color: var(--brand-text-inverted-secondary);
 }
 
 
@@ -937,46 +871,7 @@ button.os-nav-item {
 .outcome-list li + li { margin-top: var(--space-3); }
 
 /* Industries index: a reference list, not a card grid. */
-.industry-list {
-  border-top: 1px solid var(--brand-border);
-}
-.industry-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-3);
-  padding: var(--space-6) 0;
-  border-bottom: 1px solid var(--brand-border);
-  text-decoration: none;
-  transition: opacity var(--duration-base) var(--ease);
-}
-@media (min-width: 900px) {
-  .industry-row {
-    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
-    gap: var(--space-10);
-    align-items: start;
-  }
-}
-.industry-row:hover,
-.industry-row:focus-visible { opacity: 0.62; }
-.industry-row-body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  align-items: flex-start;
-}
-.industry-row-summary {
-  margin: 0;
-  max-width: 52ch;
-  font-size: var(--text-body);
-  line-height: var(--leading-body);
-  color: var(--brand-text-secondary);
-}
-.industry-row-cta {
-  font-size: var(--text-small);
-  color: var(--brand-text);
-  border-bottom: 1px solid var(--brand-border-strong);
-  padding-bottom: 2px;
-}
+
 
 /* Lateral navigation between sibling pages. */
 .chip-row {
@@ -1045,30 +940,7 @@ button.os-nav-item {
   align-self: flex-start;
 }
 
-/* Plain link list — recent articles, related pages. Rows, not cards. */
-.link-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--brand-border); }
-.link-list-item {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-5);
-  padding: var(--space-4) 0;
-  border-bottom: 1px solid var(--brand-border);
-  text-decoration: none;
-}
-.link-list-title {
-  font-size: var(--text-body);
-  color: var(--brand-text);
-  line-height: var(--leading-ui);
-}
-.link-list-item:hover .link-list-title,
-.link-list-item:focus-visible .link-list-title { color: var(--brand-primary-text); }
-.link-list-meta {
-  flex-shrink: 0;
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-micro);
-  color: var(--brand-text-muted);
-}
+
 
 /* Scope: what is included beside what is not. Equal weight, because the
    boundary is the half a buyer actually needs. */
@@ -1101,64 +973,10 @@ button.os-nav-item {
 .plain-list li:last-child { border-bottom: 0; }
 .plain-list-muted li { color: var(--brand-text-muted); }
 
-/* ─── Plans ───────────────────────────────────────────────────────────────────
-   A comparison, not a card deck. Hairline columns, no shadows, no featured
-   tint, no "most popular" badge, and a price set at reading size rather than
-   at 48px — the number is information, not a headline.
-   ───────────────────────────────────────────────────────────────────────── */
-
-.plan-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--brand-border);
-  border: 1px solid var(--brand-border);
-}
-@media (min-width: 900px) { .plan-grid { grid-template-columns: repeat(3, 1fr); } }
-
-.plan {
-  display: flex;
-  flex-direction: column;
-  background: var(--brand-surface);
-  padding: var(--space-6);
-}
-.plan-name {
-  margin: 0 0 var(--space-4);
-  font-size: var(--text-micro);
-  font-weight: 600;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-secondary);
-}
-.plan-price {
-  margin: 0 0 var(--space-3);
-  font-size: 1.75rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--brand-text);
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-}
-.plan-period {
-  font-size: var(--text-small);
-  font-weight: 400;
-  color: var(--brand-text-muted);
-}
-.plan-desc {
-  margin: 0 0 var(--space-5);
-  font-size: var(--text-small);
-  line-height: var(--leading-body);
-  color: var(--brand-text-secondary);
-}
-.plan-includes { flex: 1; margin-bottom: var(--space-6); }
-.plan-cta { align-self: flex-start; }
-.plan-footnote {
-  margin: var(--space-5) 0 0;
-  font-size: var(--text-micro);
-  color: var(--brand-text-muted);
-  max-width: none;
-}
+/* The plan columns were removed with the dead CSS sweep in this release. They
+   styled a public pricing table this site does not have and has decided not to
+   publish; nothing rendered them. If public pricing is ever taken, the styling
+   is a smaller decision than the pricing. */
 
 /* main should not introduce its own box; it is a landmark, not a layer. */
 main { display: block; }
@@ -1213,4 +1031,1812 @@ main { display: block; }
 
 @media (prefers-reduced-motion: reduce) {
   .metric-cell { animation: none; }
+}
+
+
+
+
+
+/* =============================================================================
+   THE PUBLIC PRESENTATION SYSTEM
+   =============================================================================
+   One visual language for every public page. Four surfaces, chosen by what a
+   section is doing rather than alternated for variety:
+
+     .surface-authority    black. An opening statement, or a conclusion the
+                           reader is meant to act on. Carries weight, used once
+                           or twice per page and never for ordinary copy.
+     (default)             white. Editorial explanation. Reading surface.
+     .surface-operational  off-white. Structure, architecture, process: the
+                           parts of a page that describe how something works.
+     .surface-evidence     pale green. Measured outcomes only. The accent
+                           family earns a whole surface exactly where the page
+                           is making a claim it can support.
+
+   Zebra striping is what this replaces. Before this, a page alternated white
+   and off-white by position, which made the rhythm decorative and meant the
+   reader learned nothing from a background change.
+
+   No class name is written with its leading dot in a comment in this file
+   below this point. check:responsive matches selectors against raw CSS, so a
+   dotted name in a comment is read as a selector and the next rule's body is
+   attributed to it. See governance/known-risks.md.
+   ========================================================================== */
+
+.surface-authority {
+  background: var(--brand-surface-inverted);
+  color: var(--brand-text-inverted);
+}
+.surface-authority h1,
+.surface-authority h2,
+.surface-authority h3,
+.surface-authority h4 { color: var(--brand-text-inverted); }
+.surface-authority .section-label,
+.surface-authority .eyebrow { color: var(--brand-text-inverted-secondary); }
+.surface-authority p { color: var(--brand-text-inverted-secondary); }
+.surface-authority hr,
+.surface-authority .rule { border-color: var(--brand-border-inverted); }
+
+.surface-operational {
+  background: var(--brand-surface-subtle);
+  border-top: 1px solid var(--brand-border);
+}
+
+.surface-evidence {
+  background: var(--brand-surface-accent);
+  border-top: 1px solid var(--brand-border);
+}
+
+.surface-plain { border-top: 1px solid var(--brand-border); }
+
+
+/* ─── Section header ──────────────────────────────────────────────────────────
+   Every section opens the same way: label, statement, one supporting line. The
+   measure is capped so a heading stays a heading; the section itself is free
+   to run full width beneath it.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.sec-head { max-width: 46rem; margin-bottom: var(--space-8); }
+.sec-head-wide { max-width: 58rem; }
+.sec-lede {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-lede);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.surface-authority .sec-lede { color: var(--brand-text-inverted-secondary); }
+
+/* A section header beside its own content rather than above it. Used where the
+   body is a list or a table and the heading would otherwise float alone over a
+   wide empty band, which is the single most common source of dead space on
+   this site. */
+.sec-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+@media (min-width: 900px) {
+  .sec-split { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: var(--space-10); align-items: start; }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   THE OPERATING FLOW — the signature visual
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.of { margin: 0; }
+
+/* The track. Seven columns with a 1px gap rather than a gutter, which puts the
+   centre of column n at (2n-1)/14 of the width — the fractions the return path
+   below draws its verticals at. */
+.of-track {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.of-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background: var(--brand-surface);
+}
+.of-stage-index {
+  margin: 0;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+.of-stage-name {
+  margin: 0;
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text);
+  max-width: none;
+}
+.of-stage-detail {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+  max-width: none;
+}
+
+/* The last stage is the one a person acts at, and the accent marks it. */
+.of-stage:last-child { box-shadow: inset 3px 0 0 0 var(--brand-primary); }
+
+.of-return { display: none; }
+.of-caption {
+  margin: var(--space-5) 0 0;
+  font-size: var(--text-micro);
+  line-height: var(--leading-body);
+  color: var(--brand-text-muted);
+  max-width: 52rem;
+}
+
+/* Wide enough for seven columns to hold a sentence each: the track goes
+   horizontal and the return path appears. Below this the flow is a vertical
+   list and the path is removed rather than squashed, because it would be
+   drawing a shape the layout no longer has. */
+@media (min-width: 1024px) {
+  .of-track { grid-template-columns: repeat(7, 1fr); }
+
+  .of-return {
+    display: block;
+    position: relative;
+    height: var(--space-10);
+    margin-bottom: var(--space-2);
+  }
+  .of-return-line {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: var(--brand-primary-dark);
+    stroke-width: 1;
+    stroke-dasharray: 4 3;
+  }
+  .of-return-line path { vector-effect: non-scaling-stroke; }
+
+  /* Positioned, not drawn: a triangle inside a non-uniformly scaled viewBox
+     would be sheared. 5/14 is the centre of the third column. */
+  .of-return-head {
+    position: absolute;
+    left: 35.714%;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    transform: translateX(-50%);
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid var(--brand-primary-dark);
+  }
+  .of-return-label {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    padding: 0 var(--space-3);
+    max-width: none;
+    background: var(--brand-surface-subtle);
+    font-family: var(--brand-font-mono);
+    font-size: var(--text-label);
+    letter-spacing: 0.04em;
+    color: var(--brand-text-secondary);
+    white-space: nowrap;
+  }
+}
+
+/* On the inverted surface the same figure, inverted. */
+.of-dark .of-track { background: var(--brand-border-inverted); border-color: var(--brand-border-inverted); }
+.of-dark .of-stage { background: var(--brand-surface-inverted); }
+.of-dark .of-stage-name { color: var(--brand-text-inverted); }
+.of-dark .of-stage-detail,
+.of-dark .of-stage-index,
+.of-dark .of-caption { color: var(--brand-text-inverted-secondary); }
+.of-dark .of-return-label { background: var(--brand-surface-inverted); color: var(--brand-text-inverted-secondary); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   EDITORIAL PATTERNS
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* Ruled columns. A rule, an index, a statement. No card. */
+.ruled-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+@media (min-width: 900px) {
+  .ruled-grid { grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+}
+.ruled-grid-2 { display: grid; grid-template-columns: 1fr; gap: var(--space-8); }
+@media (min-width: 900px) {
+  .ruled-grid-2 { grid-template-columns: repeat(2, 1fr); gap: var(--space-10); }
+}
+.ruled-item {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--brand-text);
+}
+.surface-authority .ruled-item { border-top-color: var(--brand-text-inverted); }
+.ruled-index {
+  margin: 0 0 var(--space-4);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+.surface-authority .ruled-index { color: var(--brand-text-inverted-secondary); }
+.ruled-title { margin: 0 0 var(--space-3); }
+.ruled-desc {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  max-width: none;
+}
+.surface-authority .ruled-desc { color: var(--brand-text-inverted-secondary); }
+
+/* Two-column ruled list. Principles, rules, short pairs. */
+.rules-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid var(--brand-border);
+}
+@media (min-width: 760px) {
+  .rules-grid { grid-template-columns: repeat(2, 1fr); column-gap: var(--space-10); }
+}
+.rule-item {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--brand-border);
+}
+.rule-title {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-small);
+  font-weight: 600;
+  color: var(--brand-text);
+  max-width: none;
+}
+.rule-desc {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  max-width: none;
+}
+
+/* A sequence stated as one line of text rather than as numbered panels. */
+.steps-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.steps-line li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-micro);
+  color: var(--brand-text-secondary);
+}
+.steps-line li + li::before {
+  content: '→';
+  color: var(--brand-text-muted);
+}
+.surface-authority .steps-line li { color: var(--brand-text-inverted-secondary); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   CAPABILITY FAMILIES — the solutions architecture
+   A family is a heading, a claim, what it covers, and what it is called when a
+   business asks for it. Numbered, ruled, no cards.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.family {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  padding: var(--space-8) 0;
+  border-top: 1px solid var(--brand-border-strong);
+}
+@media (min-width: 900px) {
+  .family { grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: var(--space-10); align-items: start; }
+}
+.family-index {
+  margin: 0 0 var(--space-3);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+.family-claim {
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+  max-width: none;
+}
+.family-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.family-example {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-full);
+  background: var(--brand-surface);
+  font-size: var(--text-micro);
+  color: var(--brand-text-secondary);
+  text-decoration: none;
+  transition: border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+}
+a.family-example:hover,
+a.family-example:focus-visible { border-color: var(--brand-text); color: var(--brand-text); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   OPERATIONAL PATTERN MATRIX — industries
+   Sectors down the side, the recurring operational breakdowns across the top.
+   The argument of the page is that the columns repeat, so the columns are the
+   structure and the sectors are the rows.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.matrix-wrap { overflow-x: auto; }
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-small);
+}
+.matrix th,
+.matrix td {
+  padding: var(--space-4);
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--brand-border);
+}
+.matrix thead th {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+  border-bottom-color: var(--brand-text);
+  white-space: nowrap;
+}
+.matrix tbody th {
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--brand-text);
+  white-space: nowrap;
+}
+.matrix tbody td {
+  color: var(--brand-text-secondary);
+  line-height: var(--leading-ui);
+  min-width: 13rem;
+}
+.matrix tbody tr:hover { background: var(--brand-surface); }
+.matrix-link {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--brand-border-strong);
+}
+.matrix-link:hover,
+.matrix-link:focus-visible { border-bottom-color: var(--brand-text); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   EDITORIAL INDEX — written work
+   Numbered rows. Topic, title, abstract, date, reading time. No thumbnails:
+   the article images are generated promotional graphics and belong to the
+   social card, not to the company's own index.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.idx { border-top: 1px solid var(--brand-text); }
+.idx-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--brand-border);
+  text-decoration: none;
+  transition: background-color var(--duration-base) var(--ease);
+}
+@media (min-width: 860px) {
+  .idx-row {
+    grid-template-columns: 3rem minmax(0, 1fr) minmax(0, 20rem);
+    gap: var(--space-6);
+    align-items: baseline;
+  }
+}
+.idx-row:hover,
+.idx-row:focus-visible { background: var(--brand-surface-subtle); }
+.idx-num {
+  margin: 0;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+.idx-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-h4);
+  font-weight: 600;
+  line-height: var(--leading-heading);
+  color: var(--brand-text);
+  max-width: none;
+}
+.idx-abstract {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+  max-width: 60ch;
+}
+.idx-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: 0.04em;
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+.idx-theme {
+  margin: var(--space-10) 0 0;
+  padding-bottom: var(--space-3);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+.idx-theme-note {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+  max-width: 60ch;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   TRANSFORMATION — case studies
+   Before, what the system does, after. Three columns with the middle one
+   carrying the intervention, so the page shows a change rather than listing a
+   result twice.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.case { padding: var(--space-10) 0; border-top: 1px solid var(--brand-text); }
+.case-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+.case-meta {
+  margin: 0;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+/* The three-column before/system/after grid this label belonged to was
+   replaced by the comparison panel further down: two panels and a middle
+   list, which says the same thing with one fewer column and without the
+   middle one having to carry a different background to be read as different.
+   The label survived the swap and is still used above each comparison. */
+.transform-label {
+  margin: 0 0 var(--space-4);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+  max-width: none;
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   LEGAL DOCUMENTS
+   A legal page is a document. It gets a document's typography: a contents
+   list, numbered sections, a readable measure and hairline separators.
+
+   What this replaces: every clause rendered as a rounded pale panel with a
+   green left border, repeated forty times down a page, which made an
+   obligation look like a marketing feature and made the page impossible to
+   scan. No legal wording changed with it.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.legal { max-width: 46rem; margin-inline: auto; hyphens: auto; }
+.legal-toc {
+  margin: 0 0 var(--space-10);
+  padding: var(--space-5) 0;
+  border-top: 1px solid var(--brand-text);
+  border-bottom: 1px solid var(--brand-border);
+  list-style: none;
+  columns: 1;
+}
+@media (min-width: 720px) { .legal-toc { columns: 2; column-gap: var(--space-8); } }
+.legal-toc li { margin-bottom: var(--space-2); break-inside: avoid; }
+.legal-toc a {
+  font-size: var(--text-small);
+  color: var(--brand-text-secondary);
+  text-decoration: none;
+}
+.legal-toc a:hover,
+.legal-toc a:focus-visible { color: var(--brand-text); text-decoration: underline; }
+.legal-toc-num {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  color: var(--brand-text-muted);
+  margin-right: var(--space-2);
+}
+
+.legal-section { padding: var(--space-8) 0 0; scroll-margin-top: var(--space-16); }
+.legal-section + .legal-section { border-top: 1px solid var(--brand-border); }
+.legal-h {
+  display: flex;
+  gap: var(--space-4);
+  align-items: baseline;
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-h4);
+  font-weight: 600;
+  line-height: var(--leading-heading);
+  color: var(--brand-text);
+}
+.legal-h-num {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  color: var(--brand-text-muted);
+  flex-shrink: 0;
+}
+.legal-body {
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.legal-body p { max-width: none; margin: 0 0 var(--space-4); }
+.legal-body p:last-child { margin-bottom: 0; }
+.legal-body ul,
+.legal-body ol { margin: 0 0 var(--space-4); padding-left: var(--space-5); }
+.legal-body li { margin-bottom: var(--space-2); }
+.legal-body strong { color: var(--brand-text); font-weight: 600; }
+.legal-body a { color: var(--brand-text); }
+
+@media print {
+  .site-nav, .site-footer, .max-bubble, .legal-toc { display: none; }
+  .legal-section { break-inside: avoid; }
+}
+
+
+/* ─── Small utilities used across the public pages ───────────────────────── */
+
+/* The quiet "see all" link that sits beside a section heading. It was an
+   inline style object repeated on four pages with three different sizes. */
+.quiet-link {
+  flex-shrink: 0;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-micro);
+  letter-spacing: 0.04em;
+  color: var(--brand-text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease);
+}
+.quiet-link:hover,
+.quiet-link:focus-visible { color: var(--brand-text); border-bottom-color: var(--brand-border-strong); }
+.surface-authority .quiet-link { color: var(--brand-text-inverted-secondary); }
+.surface-authority .quiet-link:hover,
+.surface-authority .quiet-link:focus-visible { color: var(--brand-text-inverted); border-bottom-color: var(--brand-border-inverted); }
+
+/* Route cells on the inverted surface.
+   The first version recoloured the text and the borders and left both
+   backgrounds alone, so inverted text landed on a white cell inside a black
+   section: invisible, and a contrast failure rather than only an ugly one.
+   The surfaces have to be inverted with the type. */
+.route-grid-inverted { background: var(--brand-border-inverted); }
+.route-grid-inverted .route-cell { background: var(--brand-surface-inverted); border-color: var(--brand-border-inverted); }
+.route-grid-inverted .route-cell:hover,
+.route-grid-inverted .route-cell:focus-visible { background: var(--mp-gray-900); }
+.route-grid-inverted .route-cell-label { color: var(--brand-text-inverted); }
+.route-grid-inverted .route-cell-desc { color: var(--brand-text-inverted-secondary); }
+.route-grid-inverted .route-cell-cta { color: var(--brand-text-inverted); border-bottom-color: var(--brand-border-inverted); }
+
+/* The human-approval note under the Agent Bureau action. */
+.bureau-guarantee {
+  margin: var(--space-5) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--brand-border);
+  font-size: var(--text-micro);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  max-width: none;
+}
+
+
+/* ─── Form layout ─────────────────────────────────────────────────────────── */
+
+.field-row { display: grid; grid-template-columns: 1fr; gap: var(--space-5); }
+@media (min-width: 640px) { .field-row { grid-template-columns: repeat(2, 1fr); } }
+
+/* A small set of exclusive choices, as chips rather than as a checkbox
+   column. The input stays in the markup and stays focusable; only its own box
+   is hidden, so the control remains a real radio for a keyboard and a screen
+   reader. */
+.chip-set { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--brand-border-control);
+  border-radius: var(--radius-full);
+  background: var(--brand-surface);
+  font-size: var(--text-small);
+  color: var(--brand-text-secondary);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease),
+              background-color var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+.chip:hover { border-color: var(--brand-text); color: var(--brand-text); }
+.chip:has(:focus-visible) { outline: 2px solid var(--brand-focus); outline-offset: 2px; }
+.chip-on {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary-edge);
+  color: var(--brand-on-primary);
+}
+
+
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   THE HERO — reproduction of the approved reference
+   ═════════════════════════════════════════════════════════════════════════════
+   A wide, shallow landscape panel inset on white, beneath the black bar:
+
+       BLACK NAV  →  white gap  →  WIDE ROUNDED BLACK HERO  →  white gap
+
+   Two rules govern everything below.
+
+   One: the panel is wide. It does not use the 1280px content container, which
+   is what produced a medium-width card floating in several hundred pixels of
+   empty desktop. The gutters are a percentage, so the hero keeps the same
+   share of the page at every width instead of shrinking into the middle of
+   large screens.
+
+   Two: the panel is shallow, about 2.15:1 at desktop, and internal layout is
+   solved by sizing elements rather than by growing the panel. A hero that
+   grows to fit its contents is how the previous version became a tall block.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.hero-band {
+  background: var(--brand-background);
+  padding-block: var(--space-5) var(--space-8);
+  /* Percentage gutters, so the hero holds its share of the page. */
+  padding-inline: clamp(1rem, 4vw, 4rem);
+}
+@media (min-width: 900px) { .hero-band { padding-block: var(--space-6) var(--space-12); } }
+
+.hero-panel {
+  position: relative;
+  overflow: hidden;
+  background: var(--brand-surface-inverted);
+  color: var(--brand-text-inverted);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-5) var(--space-5);
+}
+@media (min-width: 760px)  { .hero-panel { padding: var(--space-8) var(--space-8) var(--space-6); } }
+@media (min-width: 1100px) { .hero-panel { padding: var(--space-10) var(--space-10) var(--space-5); } }
+
+.hero-panel h1 { color: var(--brand-text-inverted); }
+.hero-panel .section-label { color: var(--brand-text-inverted-secondary); }
+
+/* ─── Upper left: the statement ──────────────────────────────────────────── */
+
+.hero-copy { position: relative; z-index: 2; max-width: 46rem; }
+
+/* 22ch holds the reference's three-line break at desktop. */
+/* The reference breaks this "We design and build / the systems a company /
+   runs on." — a greedy wrap, not a balanced one. The base h1 rule sets
+   text-wrap: balance, which redistributes the lines evenly and produced a
+   two-line headline at every measure that fit the words. Overridden here for
+   the one heading whose line breaks are part of an approved composition. */
+.hero-headline {
+  margin: 0 0 var(--space-4);
+  /* Measured, not guessed. At the hero size "We design and build" is 465px,
+     "…build the" is 552px and "the systems a company" is 527px, so a measure
+     anywhere in [527, 552) produces the reference's three lines exactly.
+     19ch is 549px here, and ch tracks the font size as it clamps down. */
+  max-width: 19ch;
+  /* `wrap`, not `normal`: `normal` is not a valid text-wrap keyword, so the
+     declaration was dropped and the base rule's `balance` kept redistributing
+     the lines evenly. An invalid value fails silently, which is the whole
+     reason check:token-inputs exists for var(). Verified in the browser by
+     measuring the rendered line widths, not by reading the CSS. */
+  text-wrap: wrap;
+}
+
+.hero-sub {
+  margin: 0 0 var(--space-5);
+  max-width: 56ch;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+.hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+/* The reference sets an arrow inside both buttons. Drawn, not typed. */
+.hero-cta { gap: var(--space-4); }
+.hero-cta-arrow {
+  position: relative;
+  width: 16px;
+  height: 1px;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.hero-cta-arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+}
+.hero-cta-secondary {
+  background: transparent;
+  color: var(--brand-text-inverted);
+  border-color: var(--brand-border-inverted);
+}
+.hero-cta-secondary:hover:not(:disabled) {
+  border-color: var(--brand-text-inverted);
+  background: var(--mp-gray-900);
+}
+
+/* ─── Upper right: the outcome the flow leads to ─────────────────────────── */
+
+.hero-outcome { display: none; }
+
+@media (min-width: 1100px) {
+  .hero-outcome {
+    position: absolute;
+    z-index: 2;
+    top: var(--space-16);
+    right: var(--space-10);
+    display: block;
+    max-width: 14rem;
+  }
+  .hero-outcome-node {
+    position: absolute;
+    left: -1.25rem;
+    top: 3px;
+    width: 9px;
+    height: 9px;
+    border-radius: var(--radius-full);
+    background: var(--brand-primary);
+  }
+  .hero-outcome-text {
+    margin: 0;
+    max-width: none;
+    font-family: var(--brand-font-sans);
+    font-size: var(--text-micro);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    line-height: 1.7;
+    text-transform: uppercase;
+    color: var(--brand-text-inverted);
+  }
+  .hero-outcome-text span { display: block; }
+  .hero-outcome-rule {
+    display: block;
+    width: 34px;
+    height: 1px;
+    margin-top: var(--space-4);
+    background: var(--brand-primary);
+  }
+}
+
+/* ─── The two architectural curves ───────────────────────────────────────────
+   They rise from the Workflows and Teams area of the flow toward the outcome
+   node. Subtle, behind everything, and decorative: the meaning they carry is
+   said in words by the flow's own accessible description.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.hero-curves { display: none; }
+@media (min-width: 1100px) {
+  .hero-curves {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: var(--brand-border-inverted);
+    stroke-width: 1;
+  }
+  .hero-curves path { vector-effect: non-scaling-stroke; }
+}
+
+/* ─── The flow band ──────────────────────────────────────────────────────── */
+
+.hero-flow { position: relative; z-index: 2; margin-top: var(--space-8); }
+@media (min-width: 1100px) { .hero-flow { margin-top: var(--space-8); } }
+
+/* ─── The foot: scroll cue centred, signature right ──────────────────────── */
+
+.hero-foot {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: end;
+  margin-top: var(--space-8);
+}
+@media (min-width: 1100px) {
+  .hero-foot { grid-template-columns: 1fr auto 1fr; margin-top: var(--space-6); }
+  .hero-foot .hero-scroll { grid-column: 2; }
+  .hero-foot .hero-signature { grid-column: 3; }
+}
+
+.hero-scroll { display: none; }
+@media (min-width: 1100px) {
+  .hero-scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0;
+    max-width: none;
+  }
+  .hero-scroll-mouse {
+    position: relative;
+    width: 20px;
+    height: 30px;
+    border: 1px solid var(--brand-border-inverted);
+    border-radius: var(--radius-full);
+  }
+  .hero-scroll-mouse::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 7px;
+    width: 3px;
+    height: 3px;
+    transform: translateX(-50%);
+    border-radius: var(--radius-full);
+    background: var(--brand-text-inverted-secondary);
+  }
+  .hero-scroll-label {
+    font-size: var(--text-micro);
+    color: var(--brand-text-inverted-secondary);
+  }
+  /* The thin continuation that runs off the foot of the panel. */
+  .hero-scroll-tail {
+    width: 1px;
+    height: var(--space-6);
+    background: var(--brand-border-inverted);
+  }
+}
+
+.hero-signature {
+  margin: var(--space-6) 0 0;
+  max-width: none;
+  justify-self: start;
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  line-height: 1.8;
+  text-transform: uppercase;
+  color: var(--brand-text-inverted-secondary);
+}
+.hero-signature span { display: block; }
+@media (min-width: 1100px) { .hero-signature { margin: 0; justify-self: end; text-align: left; } }
+.hero-signature-rule {
+  display: block;
+  width: 30px;
+  height: 1px;
+  margin-top: var(--space-3);
+  background: var(--brand-primary);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   THE OPERATING FLOW — discrete nodes (the approved hero presentation)
+   ═════════════════════════════════════════════════════════════════════════════
+   Seven boxes that do not touch, joined by a lime route running through the
+   gaps. The row is a flex line of alternating node and link, so a connector is
+   a real element occupying a real gap rather than something positioned into a
+   grid gutter by arithmetic. See ADR-0013.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.ofn { margin: 0; }
+
+.ofn-row { display: flex; flex-direction: column; gap: 0; }
+.ofn-cell { display: flex; flex-direction: column; position: relative; }
+
+.ofn-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3);
+  text-align: center;
+  background: var(--mp-gray-900);
+  border: 1px solid var(--brand-border-inverted);
+  border-radius: var(--radius-lg);
+}
+.ofn-icon { display: flex; color: var(--brand-text-inverted); }
+/* The Decisions icon is lime in the reference.
+   It renders in Dark Green rather than Brand Lime: check:tokens forbids
+   --brand-primary as a `color` OR a `stroke`, and it is right to, because the
+   rule cannot see that this particular line sits on black. --brand-primary-edge
+   is the accent-family token meant for a line, is an official brand colour,
+   and measures 5.94:1 on the panel. It reads a shade deeper than the
+   reference. That difference is visible and is reported rather than hidden. */
+.ofn-icon-human svg { stroke: var(--brand-primary-edge); }
+
+.ofn-name {
+  margin: 0;
+  max-width: none;
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-inverted);
+}
+.ofn-detail {
+  margin: 0;
+  max-width: none;
+  font-size: var(--text-micro);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-inverted-secondary);
+}
+
+/* The two stages a person is answerable for. */
+.ofn-node-human { border-color: var(--brand-primary); }
+
+/* A pill attached beneath the box, overlapping its lower edge. Black on lime,
+   because lime is a fill and the text on it is always black. */
+.ofn-tab {
+  align-self: center;
+  margin-top: -9px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-label-dense);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* The route. Vertical below the horizontal breakpoint. */
+.ofn-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  align-self: center;
+  height: var(--space-6);
+}
+.ofn-link-dot {
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--brand-primary);
+}
+.ofn-link-line { width: 1px; flex: 1; background: var(--brand-primary); }
+.ofn-link-tip {
+  width: 0;
+  height: 0;
+  flex-shrink: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--brand-primary);
+}
+
+/* ─── Horizontal, at the width the reference was drawn for ───────────────── */
+@media (min-width: 1100px) {
+  .ofn-row { flex-direction: row; align-items: flex-start; }
+  .ofn-cell { flex: 1; flex-direction: row; align-items: stretch; min-width: 0; }
+
+  .ofn-node {
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-start;
+    padding: var(--space-5) var(--space-2);
+    gap: var(--space-3);
+  }
+  /* The pill hangs below the box without adding height to the row. */
+  .ofn-tab {
+    position: absolute;
+    left: 50%;
+    bottom: -11px;
+    transform: translateX(-50%);
+    margin-top: 0;
+  }
+
+  .ofn-link {
+    flex-direction: row;
+    align-self: center;
+    width: clamp(1.25rem, 3vw, 3.25rem);
+    height: auto;
+    flex-shrink: 0;
+  }
+  .ofn-link-line { width: auto; height: 1px; flex: 1; }
+  .ofn-link-tip {
+    border-left: 5px solid var(--brand-primary);
+    border-right: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+}
+
+/* Light-surface variant, for reuse away from the hero. */
+.ofn:not(.ofn-dark) .ofn-node { background: var(--brand-surface); border-color: var(--brand-border); }
+.ofn:not(.ofn-dark) .ofn-name { color: var(--brand-text); }
+.ofn:not(.ofn-dark) .ofn-detail { color: var(--brand-text-secondary); }
+.ofn:not(.ofn-dark) .ofn-icon { color: var(--brand-text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-hero-1, .mp-hero-2, .mp-hero-3, .mp-hero-4 { animation: none; }
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   VISUAL SCENES — the shared corporate grammar
+   ═════════════════════════════════════════════════════════════════════════════
+   Three primitives, each proved on at least two real pages before it was
+   abstracted. They carry the same grammar as Agent Bureau — nodes, thin grey
+   connectors, a lime point of human control, a pale-green improved state — and
+   put a different argument on each page.
+
+   Geometry rule throughout, from ADR-0013: connectors meet nodes at clean
+   fractions of a grid, never at a position computed from a gutter, and nothing
+   is sized by aspect-ratio.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+
+/* ─── PROCESS SEQUENCE ───────────────────────────────────────────────────────
+   /about · /resources · /contact
+   ───────────────────────────────────────────────────────────────────────── */
+
+.ps { margin: 0; }
+.ps-row { display: flex; flex-direction: column; }
+.ps-cell { display: flex; flex-direction: column; align-items: center; }
+
+.ps-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  max-width: 18rem;
+}
+.ps-num {
+  margin: 0;
+  max-width: none;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  color: var(--brand-text-muted);
+}
+.ps-disc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--brand-border-strong);
+  background: var(--brand-surface);
+  color: var(--brand-text);
+}
+/* The step where a person decides. A lime fill with black on it, because the
+   accent is a fill and text on it is black. */
+.ps-disc-human {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary-edge);
+  color: var(--brand-on-primary);
+}
+.ps-label {
+  margin: 0;
+  max-width: none;
+  font-size: var(--text-small);
+  font-weight: 600;
+  line-height: var(--leading-ui);
+  color: var(--brand-text);
+}
+.ps-label-human { color: var(--brand-primary-text); }
+.ps-detail {
+  margin: 0;
+  max-width: 24ch;
+  font-size: var(--text-micro);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+}
+.ps-human {
+  margin: var(--space-1) 0 0;
+  max-width: none;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-primary-text);
+}
+
+.ps-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: var(--space-6);
+}
+.ps-link-line { width: 1px; flex: 1; background: var(--brand-border-strong); }
+.ps-link-tip {
+  width: 0; height: 0; flex-shrink: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--brand-border-strong);
+}
+/* The connector leaving the human step carries the accent: it is the one
+   place in the sequence where something only happens because a person said so. */
+.ps-link-human .ps-link-line { background: var(--brand-primary-edge); }
+.ps-link-human .ps-link-tip { border-top-color: var(--brand-primary-edge); }
+
+.ps-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: var(--space-8) 0 0;
+  max-width: none;
+  padding: var(--space-4) var(--space-5);
+  background: var(--brand-surface-accent);
+  border: 1px solid var(--brand-primary-edge);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.ps-note-check {
+  position: relative;
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.ps-note-check::after {
+  content: '';
+  position: absolute;
+  left: 2px; top: 0;
+  width: 6px; height: 11px;
+  border-right: 2px solid var(--brand-primary-edge);
+  border-bottom: 2px solid var(--brand-primary-edge);
+  transform: rotate(45deg);
+}
+
+@media (min-width: 900px) {
+  .ps-row { flex-direction: row; align-items: flex-start; }
+  .ps-cell { flex: 1; flex-direction: row; align-items: flex-start; min-width: 0; }
+  .ps-step { flex: 1; min-width: 0; }
+  .ps-link {
+    flex-direction: row;
+    width: clamp(1rem, 2.5vw, 2.5rem);
+    height: auto;
+    flex-shrink: 0;
+    margin-top: 44px;
+  }
+  .ps-link-line { width: auto; height: 1px; flex: 1; }
+  .ps-link-tip {
+    border-left: 5px solid var(--brand-border-strong);
+    border-right: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+  .ps-link-human .ps-link-tip { border-left-color: var(--brand-primary-edge); border-top-color: transparent; }
+}
+
+
+/* ─── ARCHITECTURE MAP ───────────────────────────────────────────────────────
+   /solutions (fan) · /industries (hub)
+   ───────────────────────────────────────────────────────────────────────── */
+
+.amap { margin: 0; }
+.amap-frame {
+  padding: var(--space-6) var(--space-5);
+  background: var(--brand-surface-subtle);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+}
+@media (min-width: 900px) { .amap-frame { padding: var(--space-8); } }
+
+.amap-centre-row { display: flex; justify-content: center; }
+.amap-centre {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--brand-primary);
+  color: var(--brand-on-primary);
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-align: center;
+}
+.amap-outcome {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--brand-surface-accent);
+  border: 1px solid var(--brand-primary-edge);
+  color: var(--brand-text);
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* The fan connector. Three equal branch columns put their centres at 1/6, 3/6
+   and 5/6, which is where this drops its verticals. */
+.amap-fork {
+  display: none;
+  width: 100%;
+  height: var(--space-8);
+  fill: none;
+  stroke: var(--brand-border-strong);
+  stroke-width: 1;
+}
+.amap-fork path { vector-effect: non-scaling-stroke; }
+.amap-fork-up { transform: rotate(180deg); }
+
+.amap-branches {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin-block: var(--space-5);
+}
+@media (min-width: 900px) {
+  .amap-branches { grid-template-columns: repeat(3, 1fr); gap: var(--space-5); margin-block: 0; }
+  .amap-fork { display: block; }
+}
+
+.amap-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  text-align: center;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+}
+.amap-icon { display: flex; color: var(--brand-text); }
+.amap-label {
+  margin: 0;
+  max-width: none;
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text);
+}
+.amap-detail {
+  margin: 0;
+  max-width: 28ch;
+  font-size: var(--text-micro);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+}
+.amap-caption {
+  margin: var(--space-4) 0 0;
+  max-width: 60ch;
+  font-size: var(--text-micro);
+  line-height: var(--leading-body);
+  color: var(--brand-text-muted);
+}
+
+/* Hub: a 3x3 grid, centre in the middle cell. Below the breakpoint it is an
+   ordered connected list instead, because six spokes at 375px is six
+   unreadable labels. */
+.amap-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+.amap-node-round { border-radius: var(--radius-lg); }
+.amap-hub-centre { display: flex; align-items: center; justify-content: center; }
+.amap-centre-disc { text-align: center; }
+.amap-spokes { display: none; }
+
+@media (min-width: 900px) {
+  .amap-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, auto);
+    gap: var(--space-6) var(--space-8);
+    align-items: center;
+  }
+  /* Explicit placement, because auto-placement does not produce a ring.
+     With only the hub pinned, the fourth node lands in the middle row's left
+     cell and the bottom row ends up with one node instead of three. Markup
+     order is svg, three nodes, hub, three nodes — hence the nth-child offsets. */
+  .amap-hub-centre { grid-area: 2 / 2; }
+  .amap-grid > .amap-node-round:nth-child(2) { grid-area: 1 / 1; }
+  .amap-grid > .amap-node-round:nth-child(3) { grid-area: 1 / 2; }
+  .amap-grid > .amap-node-round:nth-child(4) { grid-area: 1 / 3; }
+  .amap-grid > .amap-node-round:nth-child(6) { grid-area: 3 / 1; }
+  .amap-grid > .amap-node-round:nth-child(7) { grid-area: 3 / 2; }
+  .amap-grid > .amap-node-round:nth-child(8) { grid-area: 3 / 3; }
+
+  /* Five members: the bottom row keeps the two outer cells, so the ring stays
+     symmetric about the centre instead of hanging to the left. */
+  .amap-grid-5 > .amap-node-round:nth-child(7) { grid-area: 3 / 3; }
+
+  /* Equal row heights, so the spokes' 1/6 and 5/6 vertical targets land on the
+     node rows. Without this the hub row is shorter than the card rows and the
+     lines stop short. */
+  .amap-grid > .amap-node-round,
+  .amap-grid > .amap-hub-centre { min-height: 5.5rem; }
+  .amap-spokes {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: var(--brand-border-strong);
+    stroke-width: 1;
+  }
+  .amap-spokes path { vector-effect: non-scaling-stroke; }
+  .amap-grid .amap-node,
+  .amap-grid .amap-hub-centre { position: relative; z-index: 1; }
+}
+
+
+/* ─── COMPARISON PANEL ───────────────────────────────────────────────────────
+   /case-studies
+   ───────────────────────────────────────────────────────────────────────── */
+
+.cmp { display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+@media (min-width: 900px) { .cmp { grid-template-columns: repeat(2, 1fr); gap: var(--space-5); } }
+
+.cmp-panel { padding: var(--space-5); border-radius: var(--radius-lg); border: 1px solid var(--brand-border); }
+.cmp-before { background: var(--brand-surface); }
+.cmp-after { background: var(--brand-surface-accent); border-color: var(--brand-primary-edge); }
+
+.cmp-title {
+  margin: 0 0 var(--space-4);
+  max-width: none;
+  font-family: var(--brand-font-sans);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text);
+}
+.cmp-list { margin: 0; padding: 0; list-style: none; }
+.cmp-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+}
+.cmp-after .cmp-list li { color: var(--brand-text); }
+
+.cmp-mark { position: relative; width: 12px; height: 14px; flex-shrink: 0; }
+.cmp-mark-dash::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 7px;
+  width: 12px; height: 1px;
+  background: var(--brand-border-control);
+}
+.cmp-mark-check::after {
+  content: '';
+  position: absolute;
+  left: 3px; top: 1px;
+  width: 5px; height: 10px;
+  border-right: 2px solid var(--brand-primary-edge);
+  border-bottom: 2px solid var(--brand-primary-edge);
+  transform: rotate(45deg);
+}
+
+
+/* ─── A scene on the authority surface ──────────────────────────────────────
+   The maps are drawn for a pale page. Dropped unchanged onto a black section
+   they would put a near-white slab in the middle of it, so the frame, the
+   nodes and the connectors invert while the grammar stays identical.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.scene-on-dark { margin-top: var(--space-10); }
+
+.scene-on-dark .amap-frame {
+  background: var(--mp-gray-900);
+  border-color: var(--brand-border-inverted);
+}
+.scene-on-dark .amap-node {
+  background: var(--brand-surface-inverted);
+  border-color: var(--brand-border-inverted);
+}
+.scene-on-dark .amap-label { color: var(--brand-text-inverted); }
+.scene-on-dark .amap-detail,
+.scene-on-dark .amap-caption { color: var(--brand-text-inverted-secondary); }
+.scene-on-dark .amap-icon { color: var(--brand-text-inverted); }
+.scene-on-dark .amap-fork,
+.scene-on-dark .amap-spokes { stroke: var(--brand-border-inverted); }
+.scene-on-dark .amap-outcome {
+  background: transparent;
+  border-color: var(--brand-primary-edge);
+  color: var(--brand-text-inverted);
+}
+
+
+/* The middle of a case study: what the system carries between the before and
+   the after. A ruled list rather than a third panel, so the comparison stays
+   a comparison of two things. */
+.case-system { margin-top: var(--space-5); padding-top: var(--space-5); border-top: 1px solid var(--brand-border); }
+.case-system-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2) var(--space-6);
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 900px) { .case-system-list { grid-template-columns: repeat(3, 1fr); } }
+.case-system-list li {
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   THE PRIVATE DEMONSTRATION ROOM
+   ═════════════════════════════════════════════════════════════════════════════
+   Controlled and quiet, not secret-agent theatre. It uses the same tokens as
+   the public site so a prospect who arrives here recognises the company, and
+   carries none of the public chrome, because this is not a page anybody
+   browsed to.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.demo-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-10) var(--section-x);
+  background: var(--brand-surface-inverted);
+}
+.demo-frame {
+  width: 100%;
+  max-width: 46rem;
+  padding: var(--space-8);
+  background: var(--mp-gray-900);
+  border: 1px solid var(--brand-border-inverted);
+  border-radius: var(--radius-xl);
+}
+.demo-brand {
+  margin: 0 0 var(--space-6);
+  max-width: none;
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--brand-text-inverted);
+}
+.demo-title { margin: 0 0 var(--space-5); color: var(--brand-text-inverted); }
+.demo-sub {
+  margin: var(--space-8) 0 var(--space-3);
+  font-size: var(--text-h4);
+  color: var(--brand-text-inverted);
+}
+.demo-body {
+  margin: 0;
+  max-width: 60ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+.demo-meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-8);
+  padding: var(--space-5) 0;
+  border-block: 1px solid var(--brand-border-inverted);
+}
+@media (min-width: 640px) { .demo-meta { grid-template-columns: repeat(3, 1fr); } }
+.demo-meta dt {
+  margin: 0 0 var(--space-1);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-inverted-secondary);
+}
+.demo-meta dd {
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--brand-text-inverted);
+}
+.demo-list { display: grid; grid-template-columns: 1fr; gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+.demo-card {
+  padding: var(--space-5);
+  background: var(--brand-surface-inverted);
+  border: 1px solid var(--brand-border-inverted);
+  border-radius: var(--radius-lg);
+}
+.demo-card-cat {
+  margin: 0 0 var(--space-2);
+  max-width: none;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-inverted-secondary);
+}
+.demo-card-name { margin: 0 0 var(--space-3); font-size: var(--text-h4); color: var(--brand-text-inverted); }
+.demo-card-desc {
+  margin: 0 0 var(--space-5);
+  max-width: 60ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+.demo-link {
+  display: inline-block;
+  margin-top: var(--space-6);
+  font-size: var(--text-small);
+  color: var(--brand-text-inverted-secondary);
+}
+.demo-link:hover, .demo-link:focus-visible { color: var(--brand-text-inverted); }
+
+/* An inner-page hero panel: same shell as the homepage, less internal height,
+   because these heroes carry a statement rather than an architecture. */
+.hero-panel-inner { padding-block: var(--space-8); }
+@media (min-width: 1100px) { .hero-panel-inner { padding-block: var(--space-10); } }
+
+/* Four ruled columns, for pages whose grouping is four rather than three. The
+   single-column base is restated rather than inherited from the grid it
+   modifies: the responsive audit reads each selector on its own, and a
+   modifier that only ever appears inside a media query cannot be told apart
+   from a grid that never collapses. */
+.ruled-grid-4 { grid-template-columns: 1fr; }
+@media (min-width: 900px) { .ruled-grid-4 { grid-template-columns: repeat(4, 1fr); } }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   CAPABILITY RAIL
+   ═════════════════════════════════════════════════════════════════════════════
+   Five named capabilities, immediately under the hero.
+
+   The hero argues how the company works. It does not tell somebody searching
+   for a web developer that this company builds websites. This strip does, in
+   five links, above the fold of the second screen.
+
+   On a narrow viewport the row is scrolled sideways rather than wrapped into
+   three ragged lines. It is pulled out past the container's own gutter so the
+   next item is visibly cut off — a row that stops neatly inside the text
+   column looks complete, and nobody scrolls a row that looks complete. From
+   the wide breakpoint the set wraps instead, and the horizontal scroll is
+   switched off so it cannot trap a trackpad gesture.
+
+   It never moves on its own. An animated strip reads as ornament and people
+   stop reading it.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.rail-wrap {
+  margin-inline: calc(var(--section-x) * -1);
+  padding-inline: var(--section-x);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
+}
+.rail {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: max-content;
+}
+@media (min-width: 1100px) {
+  .rail-wrap { margin-inline: 0; padding-inline: 0; overflow-x: visible; }
+  .rail { min-width: 0; flex-wrap: wrap; gap: var(--space-3); }
+}
+
+.rail-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 10px 14px;
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-full);
+  background: var(--brand-surface);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color var(--duration-fast) var(--ease),
+              background-color var(--duration-fast) var(--ease);
+}
+.rail-item:hover,
+.rail-item:focus-visible { border-color: var(--brand-border-strong); background: var(--brand-surface-subtle); }
+.rail-icon { display: flex; color: var(--brand-text-secondary); }
+.rail-name {
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text);
+}
+
+
+/* Where a contact enquiry came from, stated on the page because it also
+   arrives in the form below as a preselected chip. Sits on the authority
+   surface, so it takes the inverted text colours. */
+.contact-origin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 0;
+  font-size: var(--text-small);
+  color: var(--brand-text-inverted);
+}
+.contact-origin-label {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-inverted-secondary);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   CAPABILITY SECTION
+   ═════════════════════════════════════════════════════════════════════════════
+   One per capability on /solutions, each its own landmark so the rail above
+   can jump to it and so a link shared into a chat lands on the right one.
+
+   The scroll margin is the reason a jump link works at all here: the header is
+   fixed, and without it the heading a visitor jumped to sits underneath the
+   navigation. It matches the rule the legal pages already use.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.cap-section { scroll-margin-top: var(--space-16); }
+
+.cap-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+@media (min-width: 900px) {
+  .cap-head { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: var(--space-10); }
+}
+
+.cap-short {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+}
+
+/* The situation the reader recognises, set apart from the answer by a rule
+   rather than by a colour, so it reads as a quotation of their own operation
+   and not as a warning. */
+.cap-pain {
+  margin: 0 0 var(--space-5);
+  padding-left: var(--space-5);
+  border-left: 2px solid var(--brand-border-strong);
+  max-width: 58ch;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.cap-does {
+  margin: 0 0 var(--space-5);
+  max-width: 58ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.cap-scene { margin-top: var(--space-8); }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   INTEGRATION STRIP
+   ═════════════════════════════════════════════════════════════════════════════
+   The tools Maxpromo connects, as words.
+
+   Set in type rather than in logos on purpose: a wall of trademarks claims a
+   partnership or a certification, and this company has neither with any of
+   them. Naming a tool you integrate is a statement of fact. Reproducing its
+   mark is a statement about a relationship. The note under the strip says the
+   same thing in words, so the page is not relying on the reader inferring it.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.tool-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tool-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-full);
+  background: var(--brand-surface);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-secondary);
+}
+.tool-note {
+  margin: var(--space-6) 0 0;
+  max-width: 46rem;
+  font-size: var(--text-micro);
+  line-height: var(--leading-body);
+  color: var(--brand-text-muted);
 }

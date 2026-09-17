@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { LegalSection as Section } from '@/components/legal/LegalSection'
 
 export const metadata: Metadata = {
   title: 'Impressum / Legal Notice',
@@ -6,47 +7,12 @@ export const metadata: Metadata = {
   robots: { index: true, follow: false },
 }
 
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        background: 'var(--brand-surface-subtle)',
-        borderLeft: '3px solid var(--brand-primary-edge)',
-        borderRadius: 'var(--radius-lg)',
-        padding: '1.75rem 2.25rem',
-        marginBottom: 'var(--space-5)',
-      }}
-    >
-      <p
-        style={{
-          fontFamily: 'var(--brand-font-sans)',
-          fontSize: '12px',
-          color: 'var(--brand-text-secondary)',
-          letterSpacing: '0.15em',
-          textTransform: 'uppercase',
-          marginBottom: 'var(--space-3)',
-        }}
-      >
-        {label}
-      </p>
-      <div
-        style={{
-          color: 'var(--brand-text)',
-          lineHeight: '1.8',
-          fontFamily: 'var(--brand-font-body)',
-          fontSize: '16px',
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  )
-}
 
 export default function ImpressumPage() {
   return (
-    <main style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--space-20)', paddingBottom: 'var(--space-20)' }}>
-      <div style={{ maxWidth: '56rem', margin: '0 auto', padding: '0 var(--space-5)' }}>
+    <section className="section surface-plain">
+      <div className="container">
+       <div className="legal">
 
         <p
           style={{
@@ -187,7 +153,8 @@ export default function ImpressumPage() {
         >
           Stand / Last updated: April 2026
         </p>
+       </div>
       </div>
-    </main>
+    </section>
   )
 }

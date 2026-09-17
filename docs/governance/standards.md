@@ -30,12 +30,13 @@ run on developer machines and never in CI.
 | 5 | **Token input audit** `check:token-inputs` | A custom property the token package reads that an application never defines, and any `var()` an application uses that nothing defines at all. An undefined `var()` does not warn: with a fallback it silently uses it, without one the whole declaration is dropped — see ADR-0006. Since v14.0 it also rejects any `var()` written into output that leaves the browser: an email client resolves no custom property, so `var(--space-2)` in an email is no padding at all |
 | 6 | **Trace contract** `check:trace` | Every application with a middleware imports `TRACE_HEADER` and `newTrace` from `@maxpromo/observability`, actually sets the header on a response, and declares a matcher with a catch-all entry so a public page and a 404 both carry a correlation id. No application may hardcode the header name or mint its own trace id. Added 2026-09-07 after production verification found `apps/bureau` stamping nothing for four sprints while the platform was described as observable — a contract that held in one of two applications. Proven by `prove:trace` |
 | 7 | **Icon audit** `check:icons` | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
-| 8 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
-| 9 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
-| 10 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
-| 11 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
-| 12 | **Production build** `build` | Every application builds |
-| 13 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS and CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built |
+| 8 | **Capability catalogue** `check:capabilities` | A capability whose scene icons and scene labels disagree in length — in either locale, since German and English carry separate label arrays — a scene naming an icon the set does not have, a `humanAt` index past the end of its scene, or a missing capability message key. The five capability families are the commercial doorway: the home page rail, the /solutions anchors and the contact context all read one catalogue, and every failure it catches renders as a broken diagram on a public page rather than as an error |
+| 9 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
+| 10 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
+| 11 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
+| 12 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
+| 13 | **Production build** `build` | Every application builds |
+| 14 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS and CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built |
 
 The static audits run first on purpose: they are the fastest and they catch the
 classes of regression this platform has had most often.
@@ -66,6 +67,19 @@ than evidence. This standard has been honoured by hand since ADR-0004, and in
 that time nine rules in this repository's own tooling were found to look correct
 and examine nothing — two of them written in the sprint that introduced the
 discipline.
+
+`npm run prove:demo-access` is the same discipline applied to an access
+boundary rather than to an audit. The private demonstration room ships empty and
+shut, so the one thing nobody can learn by looking at it is whether its lock
+works. The harness puts fifty cases through the real module — no cookie, a
+forged one, a tampered payload, an expired session, a rotated secret, a revoked
+grant, a grant past its own date, a valid grant reaching for a demonstration it
+was not granted — and requires every one of them to be refused, and the one
+correct case to be allowed, because a lock that refuses everybody is a wall.
+It is not in `verify`: it needs no clean tree, but it is a release step, run
+before the room is ever opened. Its grants are fixtures passed through the
+`lookup` parameter the module accepts for exactly this reason; the registry is
+never edited to make the harness run.
 
 ---
 
@@ -98,6 +112,30 @@ A document nothing references is a document nobody updates.
 rate limit and an explicit auth decision recorded. Personal data must not
 change region or provider without a legal review — see the open item in
 `known-risks.md`.
+
+**Legal identity and the §19 UStG clause.** Legal identity comes from
+`@maxpromo/config` and is never retyped. VAT is never calculated or displayed,
+anywhere, without exception.
+
+Where the §19 clause is *printed* is a different question, and it has three
+answers rather than one. This document previously carried no guidance on it and
+the rule stated elsewhere said "every commercial surface", which a reader could
+correctly take to include the website footer. It does not.
+
+| Surface | §19 clause | Personal name, tax number, tax office |
+|---|---|---|
+| Commercial documents — invoices, quotations, anything stating money owed | **Required.** This is where §19 does its work | Required as the document's issuer details |
+| Impressum | **Required.** Authoritative public location | **Required** |
+| Any other legal document whose own substance relies on it, such as a fees clause | **Kept.** Never removed for consistency with the footer | As the document requires |
+| Repeated website chrome — global footer, navigation, anything printed on every page | **Absent** | **Absent** |
+
+The public website footer carries `© {year} Maxpromo Digital` and nothing
+further. The Impressum is one click from every page, which is what German
+disclosure law asks for.
+
+Marcel's decision of 2026-09-16. The reasoning, and what it deliberately does
+not change, are in `adr/decision-log.md`. A future change that restores tax
+wording to the footer is reversing an owner decision, not enforcing this rule.
 
 **Dependency advisories.** `audit:dependencies` classifies every advisory by
 severity, by whether the vulnerable package can reach a served request, and by
@@ -283,6 +321,7 @@ whichever port was free, and the two live audits address `:3021` by name. A
 | `check:tokens` | Is any colour defined outside the token package? | yes |
 | `check:token-inputs` | Does every application define what the token package reads, and does every `var()` resolve? | yes |
 | `check:icons` | Is any Unicode mark standing in for an icon? | yes |
+| `check:capabilities` | Do the five capability scenes have as many labels as icons, in both locales, naming icons that exist? | yes |
 | `check:responsive` | Does every grid collapse? Does anything exceed a 380px viewport? | yes |
 | `audit:typography` | Is any type below the legibility floor, on a sub-pixel size, or at weight 700 above the label band? | yes |
 | `audit:a11y` | Landmarks, heading order, alt text, accessible names, labels, titles — on rendered output across every public route | needs both apps running |

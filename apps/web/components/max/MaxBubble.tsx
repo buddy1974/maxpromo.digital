@@ -7,7 +7,7 @@ interface MaxBubbleProps {
 }
 
 /**
- * Fixed bottom-right launch bubble.
+ * Fixed bottom-right launch control.
  *
  * The description here read "56px, orange, soft glow" until v7.1 — a colour
  * retired three brand generations ago, and a glow the design system retired
@@ -20,7 +20,18 @@ interface MaxBubbleProps {
  * And it drew its own chat glyph as inline SVG at a stroke weight belonging to
  * no set, next to an icon package that has one (ADR-0003).
  *
- * Hover moved to CSS so keyboard focus gets the same response. A JS-only
+ * The homepage presentation pass took the last of it. A 56px lime circle
+ * floating over the page is the support-widget pattern, and it was the most
+ * prominent accent on every screen of the site — brighter than the page's own
+ * primary action, on pages that have one. It is now a named control on the
+ * inverted surface: the same black the navigation bar uses, a labelled pill
+ * rather than an anonymous bubble, and no accent at all. Discoverability goes
+ * up rather than down, because it now says what it is.
+ *
+ * No status dot. A live indicator would be asserting availability nothing here
+ * measures — the same reason the hero's three uptime pills were removed.
+ *
+ * Hover is CSS so keyboard focus gets the same response. A JS-only
  * onMouseEnter tells a mouse user this is interactive and tells a keyboard
  * user nothing.
  */
@@ -33,34 +44,37 @@ export function MaxBubble({ onClick }: MaxBubbleProps) {
           bottom: var(--space-5);
           right: var(--space-5);
           z-index: 1000;
-          width: 56px;
-          height: 56px;
-          border-radius: var(--radius-full);
-          background: var(--brand-primary);
-          color: var(--brand-on-primary);
-          border: 1px solid var(--brand-primary-edge);
-          cursor: pointer;
-          display: flex;
+          display: inline-flex;
           align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
+          gap: var(--space-2);
+          height: 48px;
+          padding: 0 var(--space-4);
+          border-radius: var(--radius-full);
+          background: var(--brand-surface-inverted);
+          color: var(--brand-text-inverted);
+          border: 1px solid var(--brand-border-inverted);
           box-shadow: var(--shadow-overlay);
-          transition: transform var(--duration-base) var(--ease),
-                      background-color var(--duration-base) var(--ease);
+          cursor: pointer;
+          transition: background-color var(--duration-base) var(--ease),
+                      border-color var(--duration-base) var(--ease);
+        }
+        .max-bubble-label {
+          font-family: var(--brand-font-sans);
+          font-size: var(--text-label);
+          font-weight: 500;
+          letter-spacing: var(--tracking-label);
+          text-transform: uppercase;
         }
         .max-bubble:hover,
         .max-bubble:focus-visible {
-          transform: scale(1.06);
-          background: var(--brand-primary-hover);
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .max-bubble:hover,
-          .max-bubble:focus-visible { transform: none; }
+          background: var(--brand-text);
+          border-color: var(--brand-border-control);
         }
       `}</style>
 
       <button onClick={onClick} aria-label="Open Max" className="max-bubble">
-        <Icon name="message" size="lg" />
+        <Icon name="message" size="sm" />
+        <span className="max-bubble-label" aria-hidden="true">Max</span>
       </button>
     </>
   )

@@ -14,8 +14,11 @@ import { currentDomain } from '@/lib/domains/server'
  * and a domain the registry marks `noindex` says so instead.
  *
  * Public marketing and product routes are crawlable. Internal tooling
- * (/os/*, /api/*), the staff portfolio login and the account-deletion utility
- * page are excluded. Those paths no longer resolve on a product domain at all
+ * (/os/*, /api/*), the staff portfolio login, the account-deletion utility
+ * page and the private demonstration room (/demo/*) are excluded. The demo
+ * room is also behind real server-side authorisation: robots is a request to
+ * well-behaved crawlers, not a security control, and is listed here as the
+ * second of two measures rather than the only one. Those paths no longer resolve on a product domain at all
  * — the middleware redirects them to the hub — but they stay in the list
  * because a disallow that is merely redundant costs nothing, while one that is
  * missing costs an indexed admin panel.
@@ -31,7 +34,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/os', '/os/', '/api/', '/portfolio', '/data-deletion'],
+      disallow: ['/os', '/os/', '/api/', '/portfolio', '/data-deletion', '/demo', '/demo/'],
     },
     sitemap: domain.sitemap === 'none' ? undefined : `${domain.origin}/sitemap.xml`,
     host: domain.origin,

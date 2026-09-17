@@ -47,6 +47,23 @@ export interface Industry {
   readonly next: Localised
   /** Roles we typically work with. Concrete, so the reader recognises themselves. */
   readonly whoWeWorkWith: LocalisedList
+  /**
+   * The operational pattern, in three cells: where work arrives, where the
+   * information about it splits up, and what is holding a decision.
+   *
+   * This is the argument the industries page makes. Every sector has a
+   * different vocabulary for the same three breakdowns, so the page shows the
+   * sectors as rows and the breakdowns as columns, rather than as six
+   * near-identical landing pages stacked on one screen.
+   *
+   * Each cell is distilled from this entry's own `problem` text. Nothing here
+   * claims sector knowledge the rest of the record does not already carry.
+   */
+  readonly pattern: {
+    readonly arrives: Localised
+    readonly fragments: Localised
+    readonly slows: Localised
+  }
 }
 
 export const INDUSTRIES: readonly Industry[] = [
@@ -103,6 +120,11 @@ export const INDUSTRIES: readonly Industry[] = [
       de: 'Ein Gespräch von etwa 45 Minuten, in dem wir Ihren Ablauf durchgehen. Danach wissen Sie, wo die Zeit verloren geht — unabhängig davon, ob wir zusammenarbeiten.',
       en: 'A conversation of about 45 minutes walking through your workflow. Afterwards you will know where the time is going, whether or not we work together.',
     },
+    pattern: {
+      arrives:   { de: 'Anruf, E-Mail und Formular, mitten in der Behandlung', en: 'Call, email and web form, while treatment is happening' },
+      fragments: { de: 'Drei getrennte Terminlisten, dazu Zettel, die abends abgetippt werden', en: 'Three separate appointment lists, plus paper notes typed up in the evening' },
+      slows:     { de: 'Zwischen Anfrage und Termin ist nichts nachvollziehbar festgehalten', en: 'Nothing between the enquiry and the appointment is on the record' },
+    },
   },
 
   {
@@ -157,6 +179,11 @@ export const INDUSTRIES: readonly Industry[] = [
     next: {
       de: 'Schicken Sie uns einen typischen Auftrag mit allem Papier, das dazugehört. Wir zeigen Ihnen, wie viele Schritte davon doppelt sind.',
       en: 'Send us one typical job with all the paperwork that goes with it. We will show you how many of those steps are duplicates.',
+    },
+    pattern: {
+      arrives:   { de: 'WhatsApp-Verläufe mit der Kolonne', en: 'WhatsApp threads with the crew' },
+      fragments: { de: 'Stunden abends aus dem Gedächtnis, Material auf einem Zettel im Bus', en: 'Hours written down from memory, materials on a note in the van' },
+      slows:     { de: 'Die Rechnung wartet drei Tage auf ihre Positionen', en: 'The invoice waits three days for its line items' },
     },
   },
 
@@ -213,6 +240,11 @@ export const INDUSTRIES: readonly Industry[] = [
       de: 'Zeigen Sie uns die Anfragen einer Woche zu einem Objekt. Wir zeigen Ihnen, welche davon eine Maschine hätte vorsortieren können und welche nicht.',
       en: 'Show us one week of enquiries on a single listing. We will show you which of them a machine could have pre-sorted and which it could not.',
     },
+    pattern: {
+      arrives:   { de: 'Vierzig Anfragen auf ein Angebot, sechs davon ernst gemeint', en: 'Forty enquiries on one listing, six of them serious' },
+      fragments: { de: 'Das Sortieren kostet einen halben Tag, der Rest wird nie wieder angesprochen', en: 'Sorting them costs half a day, and the rest are never contacted again' },
+      slows:     { de: 'Wer zuerst antwortet, bekommt die Besichtigung', en: 'Whoever replies first gets the viewing' },
+    },
   },
 
   {
@@ -267,6 +299,11 @@ export const INDUSTRIES: readonly Industry[] = [
     next: {
       de: 'Nennen Sie uns die drei Fragen, die Gäste am häufigsten stellen. Meist lassen sich zwei davon vollständig vorbereiten.',
       en: 'Tell us the three questions guests ask most. Usually two of them can be answered entirely in advance.',
+    },
+    pattern: {
+      arrives:   { de: 'Telefon, Instagram, Google und Portale, mitten im Service', en: 'Phone, Instagram, Google and portals, during service' },
+      fragments: { de: 'Zwei Standorte, und keiner sieht, wie es beim anderen läuft', en: 'Two sites, and neither can see how the other is doing' },
+      slows:     { de: 'Bewertungen bleiben unbeantwortet, weil sich niemand zuständig fühlt', en: 'Reviews go unanswered because nobody owns them' },
     },
   },
 
@@ -323,6 +360,11 @@ export const INDUSTRIES: readonly Industry[] = [
       de: 'Zeigen Sie uns die Tabelle, in der der Produktionsstand steht. Sie erklärt den Prozess meist besser als jedes Handbuch.',
       en: 'Show us the spreadsheet that tracks production status. It usually explains the process better than any handbook.',
     },
+    pattern: {
+      arrives:   { de: 'Freigaben per E-Mail, wiederfindbar nur durch Suchen', en: 'Approvals by email, found again only by searching' },
+      fragments: { de: 'Der Stand eines Titels lebt in einer Tabelle, die jemand pflegen muss', en: 'The status of a title lives in a spreadsheet somebody has to maintain' },
+      slows:     { de: 'Wer zuletzt was geändert hat, ist nicht mehr feststellbar', en: 'Who last changed what is no longer knowable' },
+    },
   },
 
   {
@@ -377,6 +419,11 @@ export const INDUSTRIES: readonly Industry[] = [
     next: {
       de: 'Rechnen Sie eine Woche mit: wie viele Stunden gingen in fachliche Arbeit, wie viele in Verwaltung? Über die Differenz lohnt ein Gespräch.',
       en: 'Track one week: how many hours went into professional work and how many into administration? The gap is worth a conversation.',
+    },
+    pattern: {
+      arrives:   { de: 'Unterlagen kommen unvollständig und müssen mehrfach angefordert werden', en: 'Client documents, arriving incomplete and chased more than once' },
+      fragments: { de: 'Zeiten werden im Nachhinein erfasst und sind entsprechend ungenau', en: 'Time logged after the fact, and therefore inaccurately' },
+      slows:     { de: 'Angebote werden neu gebaut, obwohl sich die Arbeit kaum unterscheidet', en: 'Proposals rebuilt from scratch for work that barely differs' },
     },
   },
 ] as const

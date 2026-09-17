@@ -210,7 +210,7 @@ export default async function AutomationLabPage({
   ]
 
   return (
-    <main style={{ background: 'var(--brand-background)' }}>
+    <div style={{ background: 'var(--brand-background)' }}>
       {/* Header */}
       <section style={{ background: 'var(--brand-background)', padding: 'var(--section-y) var(--section-x)', borderBottom: '1px solid var(--brand-border)' }}>
         <div style={{ maxWidth: '56rem', margin: '0 auto', textAlign: 'center' }}>
@@ -301,6 +301,6 @@ export default async function AutomationLabPage({
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

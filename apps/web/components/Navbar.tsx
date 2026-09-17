@@ -9,7 +9,12 @@ import { Icon } from '@maxpromo/ui'
 /**
  * components/Navbar.tsx
  *
- * Rebuilt in v5.0 Sprint 1.
+ * Rebuilt in v5.0 Sprint 1. Brand treatment reworked in the homepage
+ * presentation pass: the wordmark and the navigation labels are now uppercase
+ * and the bar's action is no longer the accent. The markup is unchanged —
+ * both are typography and colour, in globals.css, so the change lands on every
+ * page of the hub rather than on the homepage alone. Chrome that differed by
+ * route would be two implementations of one bar.
  *
  * Structure follows the approved information architecture: Solutions,
  * Industries, Resources, About, Contact. The former "Systems" entry is gone —
@@ -32,6 +37,7 @@ import { Icon } from '@maxpromo/ui'
 const NAV_LINKS = [
   { href: '/solutions',  key: 'solutions'  },
   { href: '/industries', key: 'industries' },
+  { href: '/work',       key: 'work'       },
   { href: '/resources',  key: 'resources'  },
   { href: '/about',      key: 'about'      },
   { href: '/contact',    key: 'contact'    },
@@ -75,7 +81,7 @@ export default function Navbar() {
 
           <div className="site-nav-actions">
             <LocaleSwitcher variant="dark" />
-            <Link href="/contact" className="btn btn-primary btn-sm">
+            <Link href="/contact" className="btn btn-sm site-nav-cta">
               {t('ctaAudit')}
             </Link>
           </div>
@@ -123,7 +129,7 @@ export default function Navbar() {
 
           <div className="site-nav-sheet-foot">
             <LocaleSwitcher variant="dark" />
-            <Link href="/contact" className="btn btn-primary" onClick={() => setMenuOpen(false)}>
+            <Link href="/contact" className="btn site-nav-cta" onClick={() => setMenuOpen(false)}>
               {t('ctaAudit')}
             </Link>
           </div>

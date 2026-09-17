@@ -213,6 +213,9 @@ export const config = {
     '/os/:path*',
     '/api/os/:path*',
     // All other paths get locale routing, except internals and static
-    '/((?!_next|api/(?!os)|_vercel|.*\\.).*)',
+    // /demo is the private demonstration room. It sits outside the locale
+    // tree on purpose, so it must not be locale-prefixed here either; it
+    // enforces its own authorisation server-side. See lib/demo/access.ts.
+    '/((?!_next|api/(?!os)|_vercel|demo|.*\\.).*)',
   ],
 }

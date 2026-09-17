@@ -125,7 +125,7 @@ export default function PortfolioPage() {
 
   if (unlocked) {
     return (
-      <main style={{ background: 'var(--brand-background)', minHeight: '100vh', padding: 'var(--section-y-feature) var(--section-x) var(--section-y)' }}>
+      <div style={{ background: 'var(--brand-background)', minHeight: '100vh', padding: 'var(--section-y-feature) var(--section-x) var(--section-y)' }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
           <p style={{ ...mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 var(--space-4)' }}>
             {t(locale, 'Portfolio &middot; Vertraulich', 'Portfolio &middot; Confidential')}
@@ -167,12 +167,12 @@ export default function PortfolioPage() {
             </Link>
           </div>
         </div>
-      </main>
+      </div>
     )
   }
 
   return (
-    <main style={{ background: 'var(--brand-background)', minHeight: '100vh', padding: 'var(--section-y-feature) var(--section-x) var(--section-y)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ background: 'var(--brand-background)', minHeight: '100vh', padding: 'var(--section-y-feature) var(--section-x) var(--section-y)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <form onSubmit={submit} style={{ width: '100%', maxWidth: '420px' }}>
         <p style={{ ...mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 var(--space-4)', textAlign: 'center' }}>
           {t(locale, 'Portfolio &middot; Zugang erforderlich', 'Portfolio &middot; Access Required')}
@@ -209,6 +209,6 @@ export default function PortfolioPage() {
           {loading ? t(locale, 'Wird geprüft…', 'Verifying…') : t(locale, 'Portfolio freischalten →', 'Unlock portfolio →')}
         </button>
       </form>
-    </main>
+    </div>
   )
 }

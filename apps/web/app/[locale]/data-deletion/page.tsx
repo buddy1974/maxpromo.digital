@@ -94,7 +94,7 @@ export default async function DataDeletionPage({
   setRequestLocale(locale)
 
   return (
-    <main
+    <div
       style={{
         background: 'var(--brand-background)',
         minHeight: '100vh',
@@ -320,6 +320,6 @@ export default async function DataDeletionPage({
           {t(locale, '← Zurück zur Datenschutzerklärung', '← Return to Privacy Policy')}
         </Link>
       </div>
-    </main>
+    </div>
   )
 }

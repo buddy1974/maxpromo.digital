@@ -14,7 +14,7 @@ export default function LocaleNotFound() {
   const de = params?.locale === 'de'
 
   return (
-    <main
+    <div
       style={{
         background: 'var(--brand-background)',
         minHeight: '70vh',
@@ -72,6 +72,6 @@ export default function LocaleNotFound() {
       >
         {de ? 'Zur Startseite →' : 'Back to home →'}
       </Link>
-    </main>
+    </div>
   )
 }

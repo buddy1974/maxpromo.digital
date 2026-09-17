@@ -1,21 +1,37 @@
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { BUSINESS, UST_CLAUSE } from '@maxpromo/config'
+import { BUSINESS } from '@maxpromo/config'
 
 /**
  * components/Footer.tsx
  *
- * Rebuilt in v5.0 Sprint 1.
+ * Navigation, legal access, and one copyright line.
  *
- * The previous footer was a four-column marketing footer listing every
- * operating system by name — which, under the protected-product split, is
- * exactly the wrong thing for a consultancy site to advertise. It also carried
- * a 32px display heading, its own copy of the business address, and a client
- * component wrapper for markup with no interactivity.
+ * WHAT CAME OUT, AND ON WHOSE AUTHORITY
+ * Until this change the global footer repeated, on every page of the site:
+ * Marcel's personal name, the tax number, the tax office, and the §19 UStG
+ * Kleinunternehmer clause. Marcel directed that these leave the repeated
+ * corporate footer, on the grounds that their authoritative public location is
+ * the Impressum.
  *
- * This one reads like the colophon of a technical document: three columns of
- * plain links, then a rule, then the legal line. Server-rendered. Address and
- * VAT clause come from lib/legal so they exist in one place.
+ * This is a deliberate exception to a standing rule. `docs/governance/
+ * standards.md` and the root CLAUDE.md both say the §19 clause is required on
+ * every commercial surface, and that instruction is older than this one. The
+ * newer decision is the owner's and is recorded in `docs/adr/decision-log.md`
+ * rather than applied silently. Note what it is not: §19 is a statement about
+ * invoicing, and it still appears on every invoice and quotation this platform
+ * generates (components/documents/) and in the Impressum, which is where
+ * German disclosure law actually requires it. Nothing was removed from a
+ * surface that is obliged to carry it.
+ *
+ * WHAT STAYS
+ * The Impressum, Privacy and Terms links, so the disclosure is one click from
+ * every page. The registered address and the contact address, which are
+ * company facts rather than tax status. The wordmark, in the corporate
+ * treatment, from the same tokens the header uses.
+ *
+ * The descriptor sentence is gone: the footer was restating what the company
+ * does directly beneath a page that had just spent eight sections saying it.
  */
 
 const COLUMNS = [
@@ -25,8 +41,7 @@ const COLUMNS = [
       { key: 'about',       href: '/about' },
       { key: 'solutions',   href: '/solutions' },
       { key: 'industries',  href: '/industries' },
-      // The one product marketed publicly from the hub, and until v8.0 it had
-      // exactly one inbound link on the entire site: a homepage section.
+      // The one product marketed publicly from the hub.
       { key: 'agentBureau', href: '/agent-bureau' },
       { key: 'contact',     href: '/contact' },
     ],
@@ -57,10 +72,8 @@ export async function Footer() {
     <footer className="site-footer">
       <div className="container">
         <div className="site-footer-grid">
-          {/* Identity */}
           <div>
             <p className="site-footer-brand">Maxpromo Digital</p>
-            <p className="site-footer-desc">{t('descriptor')}</p>
             <address className="site-footer-address">
               {BUSINESS.street}<br />
               {BUSINESS.city}<br />
@@ -85,13 +98,9 @@ export async function Footer() {
           ))}
         </div>
 
+        {/* One line. The tax disclosures live in the Impressum, linked above. */}
         <div className="site-footer-legal">
-          <p>© {year} {BUSINESS.legalName} · Maxpromo Digital</p>
-          <p>
-            {t('taxNumber')}: {BUSINESS.steuernummer} · {t('taxOffice')}: {BUSINESS.finanzamt}
-          </p>
-          {/* Mandatory on every commercial surface (Kleinunternehmer §19 UStG). */}
-          <p>{UST_CLAUSE.de}</p>
+          <p>© {year} Maxpromo Digital</p>
         </div>
       </div>
     </footer>

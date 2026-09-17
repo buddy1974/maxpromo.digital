@@ -1,5 +1,408 @@
 # Decision Log
 
+## 2026-09-17 — MVP release: capability discovery, the demonstration room, and what was deliberately left undone
+
+---
+
+### Two taxonomies, on purpose, with one of them always first
+
+**Decision.** `lib/capabilities.ts` (five concrete capabilities) and
+`lib/solutions.ts` (three operating families) both stay, and neither is derived
+from the other.
+
+**Why this is not the duplication rule being broken.** Two implementations of
+one thing is the mistake this platform has paid for most often. This is one
+thing described at two depths for two different readers: what the work is
+called when a business asks for it, and how it is grouped once somebody
+understands the company. They would compete if either were given the other's
+job, so the order is fixed everywhere — the concrete five are the door, the
+three families are the room behind it — and the families' section exists to
+answer why the five are one practice rather than five businesses.
+
+**What would make this wrong.** If a capability's copy ever starts restating a
+family's claim, or a family page starts listing capability names as its own
+services, they have stopped being two depths and become two catalogues. That is
+the signal to collapse them.
+
+---
+
+### The demonstration room ships locked, empty, and real
+
+**Decision.** Build the whole Work → request → grant → room path now, ship it
+with `DEMOS` and `GRANTS` empty and no `DEMO_ACCESS_SECRET` set, so every path
+denies until Marcel deliberately opens it.
+
+**Why not one shared password.** Marcel ruled that out, and it is the wrong
+shape anyway: a shared secret cannot be revoked for one recipient, cannot
+expire per recipient, and cannot be scoped to one demonstration. Access is a
+per-person grant naming the demonstrations it opens and the date it stops.
+
+**Why a registry file rather than a table.** A grant is the same shape of fact
+as a Domain Registry or Brand Registry entry: rare, deliberate, decided by
+Marcel, checked by a gate. A table would have meant a schema change and a new
+writable surface to secure in a release where the owner is away and nobody can
+review the migration. The seam for automating grant creation later is open —
+none of the access logic reads the file directly.
+
+**Why authorisation is re-resolved on every request.** The cookie carries an
+identity and nothing else. Revocation and expiry therefore take effect on the
+next request rather than when a session happens to end, and a grant that nobody
+has got round to editing still stops working on its own date.
+
+**What was refused.** No real client data, no production credentials, no real
+invoices, no customer records, no production admin access, and none of the
+protected operating systems listed as a demonstration. Those are marketed on
+their own domains; putting one in a demo inventory is a product-exposure
+decision, not a presentation one.
+
+---
+
+### `lookup` is a parameter on three authorisation functions, and that is a trade
+
+**Decision.** `verifyDemoToken`, `resolveDemoSession` and `sessionAuthorises`
+take an optional grant lookup that defaults to the real registry.
+
+**Why.** The registry ships empty, so the proof harness has no live grant to
+exercise and would otherwise have to edit the registry to run — proving
+something about a file it had just changed. The parameter is the same device
+`grantIsUsable` already uses for `now`.
+
+**Why it is safe.** It cannot widen access: whatever it returns still has to
+survive `grantIsUsable`, and for a specific demonstration `grantAuthorises`.
+Every call site in the application uses the default. If a caller ever passes
+one in production code, that is the thing to reject in review.
+
+---
+
+### A commitment with two values was removed, not chosen
+
+**Decision.** The "45 minutes" in the About call to action is gone; the home
+page's "30 minutes" stands alone.
+
+**Why not pick one.** How long Marcel's first conversation runs is a fact about
+how he works and a promise to a customer. Choosing between two numbers on his
+behalf would have invented one. Subtraction leaves one stated value and no
+false one — the same move this repository made when two different build
+durations were found on the home page.
+
+---
+
+### The CSS budget was not raised
+
+**Decision.** `web.total-css` came in at 81 KB against an 80 KB budget; the
+budget stayed at 80 KB and the stylesheet came down to 78 KB.
+
+**Why.** The budget's own note says a step up is the signal that a component
+has started shipping styles of its own. Here the signal was true in a different
+way: the sheet was carrying rules for a pricing page that does not exist and
+components that had been deleted. Raising the limit would have hidden a real
+finding behind a number that is easy to move.
+
+## 2026-09-16 — Global footer, legacy content governance, and the hero panel
+
+Two locked directives from Marcel, applied inside the public rebuild.
+
+---
+
+### The §19 UStG clause left the global footer, and this contradicts a standing rule
+
+**Decision (Marcel's).** Marcel's personal name, the tax number, the tax office
+and the §19 UStG Kleinunternehmer clause are removed from the repeated global
+footer on every page of `maxpromo.digital`. Their authoritative public location
+is the Impressum. The footer's legal strip is now one line:
+`© {year} Maxpromo Digital`, with the year derived rather than hardcoded.
+
+**This overrode an older instruction, and the older instruction has now been
+corrected.** The rule said the §19 clause was required on "every commercial
+surface". It was left standing at first, deliberately: amending a governance
+document to match a change made in the same pass, by the agent that made it, is
+how a rule quietly becomes whatever was built last. Marcel then reviewed the
+conflict and directed the correction, which was made as its own task.
+
+The rule now distinguishes three surfaces rather than one — commercial
+documents, legal and disclosure pages, and repeated website chrome — in
+`CLAUDE.md`, `PLATFORM-CONSTITUTION.md` §27 and `docs/governance/standards.md`,
+which had carried no guidance on it at all. "VAT is never calculated or
+displayed" is unchanged and unqualified. Closed in
+`governance/known-risks.md`, where the original entry is kept beside the
+resolution, including the fact that it named the wrong second file.
+
+**What the decision is not.** §19 UStG is a statement about invoicing. It still
+appears, untouched, on:
+
+- every invoice and quotation this platform generates
+  (`components/documents/`, `api/os/send-invoice`)
+- `/impressum`, where German disclosure law actually wants it
+- `/agb` §5, where the document's own fees clause requires it
+
+Verified in the browser after the change: **zero** occurrences of the personal
+name, tax number, tax office or §19 wording in the footer of any of nine
+routes; the Impressum still carries all five required items (legal name,
+address, tax number, tax office, §19 clause) in both locales; the AGB still
+carries the clause inside its fees section.
+
+`apps/bureau` was not touched. It is a different application on a different
+domain and its footer never carried any of this.
+
+**Also removed from the footer:** the descriptor sentence, which restated what
+the company does directly beneath a page that had just spent eight sections
+saying it. The registered address and the contact address stay: they are
+company facts rather than tax status, and the directive did not name them.
+
+---
+
+### Joomla is demoted, not deleted
+
+**Decision (Marcel's), now explicit content governance.** No article deleted,
+no URL changed, no redirect added, nothing removed from search. What changed is
+prominence.
+
+Measured in the browser after the change, counting occurrences of Joomla,
+WordPress, Drupal and TYPO3 in the rendered body:
+
+| Surface | Before this pass | Now |
+|---|---:|---:|
+| Homepage | present (a five-card section led with it) | **0** |
+| About | present (the story opened with the platform list) | **0** |
+| Solutions | present (a top-level solution) | **0** |
+| Industries | — | **0** |
+| Resources overview | 6 | 4 |
+| Written work index | 13 | 10 |
+
+Two changes produced the remaining reduction, and both are legitimate rather
+than cosmetic. Resources now shows **one piece from each area** instead of the
+five most recent, because a straight recency list put four legacy pieces on the
+company's overview page, which is an accident of when things were written. And
+the written-work index no longer repeats each article's category beside every
+row, under a theme heading that already said it.
+
+**The floor is honest and it is stated.** Two mentions remain in the first
+screen of `/blog`: the title of a delivered Joomla migration project, filed
+under "Delivered work" because that is what it is. Moving it to the legacy
+theme would empty the delivered theme and would be recategorising an article to
+improve a number. It was left where it belongs.
+
+---
+
+### The hero is a contained panel, and the Operations Center is deleted
+
+**Decision (Marcel's).** The mock product interface in the hero is rejected and
+gone: named systems, "running · 3 locations", an approval queue and a
+`maxpromo.os` chrome bar. `components/ui/OperationsCenter.tsx` is deleted
+rather than left unused. A company arguing that it will tell you the truth
+about your operation should not open with a screenshot of a system nobody is
+running.
+
+**The hero is now a dark rounded panel inset on a white page**, carrying the
+seven-stage operating flow. Measured at 1745px: 48px between the navigation and
+the panel, 96px between the panel and the next section, 12px radius
+(`--radius-xl`), 1216px panel on a 1745px viewport with a visible white
+perimeter. At 375px: 44px gutter, 32px top gap, same radius.
+
+The reason is structural rather than decorative. The navigation bar is black; a
+full-bleed black hero beneath it merges into one dark mass and the page appears
+to begin halfway down. This establishes the rhythm the rest of the site follows
+— bar, pause, statement, pause, content — and it is what makes the white on
+this site negative space rather than emptiness.
+
+**The flow moved into the hero, so the homepage's separate operating-model
+section was deleted.** The same diagram twice on one page is the same diagram
+twice on one page. The homepage went from eight sections to seven.
+
+**Human control** is marked on Decisions and Oversight with a hairline accent
+edge and one small label, not a badge. `check:tokens` rejected the first
+attempt, which coloured that label with the accent: lime on black measures
+about 14:1 and would have been perfectly legible, but the accent is a fill and
+never a text colour, and a rule that holds only where somebody checked the
+surface is not a rule. The label is inverted text with a small lime fill beside
+it.
+
+**Mobile keeps the route.** Below 1024px the flow becomes a vertical sequence
+with connectors and chevrons drawn between the stages, not seven stacked cards.
+The return line is removed there rather than squashed, because it would be
+describing a shape the layout no longer has; the caption carries the same fact
+at every width.
+
+**Owner:** Marcel. Nothing here is approved by the agent that made it.
+
+## 2026-09-16 — Public site rebuild: decisions below ADR level
+
+Continues the entry below it, which covered the homepage only. The two ADRs
+produced by this programme are ADR-0012 (the accent is not chrome) and
+ADR-0013 (a diagram is built, not generated). The rest is here.
+
+**The positioning change is Marcel's, not the agent's.** "Stop defining
+Maxpromo primarily as a software consultancy" was an explicit instruction. It
+was applied to the root metadata, the OpenGraph and Twitter descriptions, the
+footer descriptor and the homepage description. The phrase is not banned: it
+remains available where a legal or contractual context wants it. It is no
+longer the company's public definition.
+
+**Four surfaces, chosen by meaning.** `surface-authority` (black),
+`surface-plain` (white), `surface-operational` (off-white),
+`surface-evidence` (pale green). The rule is that a background change tells the
+reader what kind of section they have entered. Alternating them by position
+would be decoration, and that is what the previous white-page-after-white-page
+rhythm effectively was. Evidence is the narrowest: pale green is only for
+sections making a measured claim, which on the public site is the homepage
+proof band.
+
+**Websites and legacy systems was demoted, not removed.** It is now an example
+inside the Business operating systems family on `/solutions`. Its own page,
+its URL, its copy and its place in the sitemap are unchanged. Website
+modernisation is an implementation capability; presenting it as one sixth of
+the company's identity is what made the site read as a web agency.
+
+**The writing archive was regrouped, never edited.** Nine of thirteen articles
+are legacy web topics. No article was retitled, recategorised, unpublished or
+deleted, no URL changed and nothing was invented. What changed is that the
+index is grouped by theme, the themes are ordered by where the company is now,
+and the legacy theme carries a note stating what it is. Marcel's instruction
+was explicit: demote from the brand narrative, do not destroy the content
+asset. The SEO and topical-cluster question is a later track.
+
+**Article thumbnails are hidden, not deleted.** `featuredImage` is untouched on
+every post and still serves the article page and the social card. Only the
+editorial index stopped displaying them.
+
+**The contact form kept its backend contract.** `/api/contact` requires name,
+email, company, message and a valid `preferredContactMethod`, and treats
+`painPoints` as an optional array whose members must come from
+`CONTACT_PAIN_POINTS`. The five broad choices that replaced the fifteen
+checkboxes are all existing members of that list, sent as a single-element
+array. No API change, no enum change, no migration, and rows already stored
+stay valid. The mapping from label to stored slug is written out explicitly
+rather than derived, per the naming standard.
+
+**Industry cells are derived, not authored.** Each of the eighteen matrix cells
+is a distillation of that sector's own `problem` text in `lib/industries.ts`.
+No sector expertise is claimed that the repository did not already carry.
+
+**Case study "before" and "system" columns are likewise derived** from each
+case's existing `Challenge` and `Solution` prose, both already published on
+that page. Every figure, result line, timeline and the NDA statement are the
+existing strings. The £14,000 stays in pounds on the case studies page, which
+is the page that states the currency.
+
+**Agent Bureau was aligned, not rebuilt.** Its hero moved to the authority
+surface, "AI OFFICE" left the eyebrow, the lede leads with what the system does
+rather than what it is, and the CTA language matches the rest of the site. Its
+workflow panel, module grid, comparison and approval-gate design are untouched:
+it had the best information design on the site and the brief was to learn from
+it, not to flatten it.
+
+**Legal pages: presentation only, and proved.** Three locally defined card
+components became one shared `LegalSection`. Every string on all three pages
+was extracted before and after and compared: 183 strings, zero added, zero
+removed. No wording, obligation, disclosure, retention statement, liability
+term, payment term or jurisdiction clause was touched.
+
+**Dead CSS removed.** `.industry-row` and `.link-list` were the flat directory
+pattern that solutions, industries and resources all used. All three now have
+a structure of their own, so both rule sets have no consumers and were deleted.
+
+**A contrast checker was written for this pass** and run over 23 page and
+locale combinations. It resolves each element's true backdrop by compositing
+translucent layers rather than skipping them, which the first version did — and
+that version invented four failures on tinted backgrounds before it was fixed.
+It is a session tool, not a committed gate: adding a gate is a change to the
+frozen tooling and needs an ADR first. The failures it found are in the change
+log, and two of them predate this work.
+
+**Owner:** Marcel. Nothing here is approved by the agent that made it.
+
+## 2026-09-16 — Homepage presentation pass: what was decided below ADR level
+
+**Decision:** The hub homepage was rebuilt as a presentation pass with Marcel's
+explicit creative authority. Fourteen sections became seven. The decisions with
+platform-wide consequence are ADR-0012 (the accent is not chrome) and ADR-0013
+(a diagram is built, not generated). The rest are recorded here.
+
+**Removed, with the destination for each:**
+
+| Removed | Where that content lives |
+|---|---|
+| Legacy modernisation, five cards | `/solutions/websites-platforms`, which states it better and at length |
+| Latest insights, three cards with generated images | `/blog` and `/resources` |
+| Rotating "pain slider" | nowhere — a four-second carousel of six one-liners, and client JavaScript for a decoration |
+| Six pain cards | rewritten as three ruled columns in prose |
+| FAQ accordion | `/pricing` carries the commercial answers |
+| Why Maxpromo · Team trust · Philosophy · Five-step process | merged into one "How we work" section |
+| Agent Bureau orbit diagram | deleted; the section stays — see ADR-0013 for why the diagram was broken |
+
+**Why the legacy section had to go from the homepage specifically:** it was the
+fourth block on the page and it led with Joomla and WordPress. A visitor who
+read the homepage top to bottom was told this is a web agency, which
+`openclaw/core-memory.md` says the company is explicitly not. The capability is
+real and is sold — on its own page, reached from Solutions.
+
+**Agent Bureau was kept, deliberately.** It is the one product the hub markets
+publicly (`architecture/platform.md` §1); the operating systems are protected
+products on their own domains. Removing it would have been a product-exposure
+decision, which is outside a presentation brief. It was compressed from 700px
+to 468px and lost its diagram, not its place.
+
+**Two public claims were changed by subtraction, never by substitution:**
+
+1. *Build and go live.* The process panels stated **1–4 weeks**; the FAQ four
+   sections below stated **2–6 weeks**. Both were on the homepage and a reader
+   going top to bottom saw both. Both are gone with the panels and the
+   accordion. `delivery-commitments.md` lists this as one of two conflicts
+   needing Marcel's answer — it is now absent from the homepage rather than
+   answered, because choosing a value is a commercial decision.
+
+2. *The €14k/mo proof figure.* `home.proof.p2Value` said **€14k/mo saved** for
+   a project whose own case study (`caseStudies.cs2`) states **£14,000/month**.
+   Which symbol is right is a fact about a client that no agent can establish —
+   see ADR-0007. The homepage now states a different documented result from the
+   same project: **94% of invoices processed without human intervention**
+   (`cs2Result3`). `audit:claims` findings went from 10 to 8 as a result.
+
+**Still open and deliberately untouched:** the first conversation is 30 minutes
+on the homepage and 45 minutes on `/about` and the six industry pages. The
+homepage keeps 30, unchanged. `delivery-commitments.md` says Marcel decides;
+removing the homepage's number would have silently chosen 45.
+
+**Also removed as an unsupported claim:** the homepage FAQ's *"Maintenance,
+adjustments and improvements are included, not billed as extras"*, which
+`delivery-commitments.md` records as contradicting the three monthly plans on
+`/pricing`. The replacement principle says only *"Maintenance and change are
+part of operating the system"* and makes no claim about billing.
+
+**Two defects found and fixed in passing:**
+
+- The homepage rendered its own `<main>` inside the locale layout's
+  `<main id="content">`. Every page of the hub had two nested main landmarks.
+  The page's wrapper is gone.
+- `.site-footer` carried `margin-top: var(--space-16)` on top of its own
+  `--section-y` top padding. Invisible on a page ending in white; a 96px white
+  band on any page ending on the subtle surface, which the rebuilt homepage
+  does. Removed.
+
+**Brand treatment.** The wordmark and navigation labels are now uppercase, set
+small and held open by tracking rather than by size or weight. The change is
+typography and colour in `globals.css`, not markup, so it applies to every page
+of the hub — chrome that differed by route would be two implementations of one
+bar. The navigation architecture is unchanged.
+
+**Measured, before → after** (dev build, cookie banner dismissed):
+
+| | before | after | |
+|---|---:|---:|---|
+| Page height at 1440px | 10,576px | 6,675px | −37% |
+| Page height at 375px | 16,911px | 10,052px | −41% |
+| Sections | 14 | 7 | −50% |
+| Bordered containers | 23 | 13 | −43%, and 8 of the 13 are diagram nodes |
+| Accent-bearing elements | 7 | 3 | two CTAs and the approval gate |
+
+The brief asked for roughly 40–50% and said to use editorial judgement rather
+than treat it as a quota. Desktop landed at 37% because the three section
+rhythms are a frozen foundation and were not touched; the section count and the
+container count moved further than the pixel height did.
+
+**Owner:** Marcel. Nothing here is approved by the agent that made it; the two
+ADRs are Proposed pending his visual review.
+
 ## 2026-07-10 — Build on existing uncommitted product-page WIP rather than discard it
 
 **Decision:** The 7 generic product pages and `messages/*.json` had pre-existing uncommitted changes using a client-side `useLocale()` pattern flagged as architecturally wrong by the sprint brief. Rather than `git stash` and rewrite from scratch, the existing bilingual copy was kept and the pages were refactored in place to the server `params.locale` pattern (matching the TaxKontrol page, since retired — those routes are now served by the LandingEngine from the product registry).

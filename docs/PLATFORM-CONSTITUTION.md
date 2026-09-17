@@ -419,6 +419,8 @@ including what the decision deliberately does not deliver.
 | `adr/0009-a-product-has-one-identity.md` | A product has one identity, and empty slots are declared |
 | `adr/0010-nothing-fails-silently.md` | Nothing fails silently |
 | `adr/0011-an-advisory-is-blocked-or-accepted-never-ignored.md` | An advisory is blocked or accepted, never ignored |
+| `adr/0012-the-accent-is-not-chrome.md` | The accent belongs to an action, not to the chrome |
+| `adr/0013-a-diagram-is-built-not-generated.md` | A diagram is built from the design system, not generated |
 
 The running record of decisions too small for an ADR is `adr/decision-log.md`.
 
@@ -449,7 +451,7 @@ applied to every change.
 ## 20. Certification pipeline
 
 ```
-npm run verify     13 gates — the merge gate
+npm run verify     14 gates — the merge gate
 npm run certify    verify + a11y + consistency + platform + claims + docs
 ```
 
@@ -725,7 +727,14 @@ Stated so it does not have to be re-litigated:
 - **No protected product marketed from the consultancy site.** The operating
   systems live on their own domains.
 - **No second implementation** of anything `packages/` already does.
-- **No VAT calculated or displayed.** §19 UStG, on every commercial surface.
+- **No VAT calculated or displayed.** §19 UStG, anywhere, without exception.
+  Where the *clause* is printed is a separate question with three answers:
+  required on commercial documents (invoices, quotations), required on the
+  Impressum and kept wherever a legal document's own substance relies on it,
+  and deliberately absent from repeated website chrome. The global footer
+  carries `© {year} Maxpromo Digital` and nothing further — Marcel's decision
+  of 2026-09-16, recorded in `adr/decision-log.md`. The rule that VAT is never
+  calculated or displayed is unchanged and is not weakened by this.
 
 ---
 

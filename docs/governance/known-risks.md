@@ -1,5 +1,204 @@
 # Known Risks — Maxpromo Platform
 
+## OPEN 2026-09-17 — the demonstration room has never been opened
+
+`DEMO_ACCESS_SECRET` is unset in production, `DEMOS` and `GRANTS` are empty,
+and every path in `lib/demo/access.ts` therefore denies. The boundary is proven
+against 50 cases by `npm run prove:demo-access`, but proven in a harness is not
+the same as exercised by a real recipient on a real link.
+
+**What is untested in production, specifically.** That the cookie survives the
+hop from `/demo/enter` to `/demo` behind Vercel's edge; that `Path=/demo` and
+`Secure` behave as expected on the real host; that a link forwarded to a phone
+still works inside the 12-hour window.
+
+**What to do before the first real grant.** Set the secret (32 characters
+minimum — a shorter one is treated as absent and the room stays shut), add one
+throwaway grant pointing at something harmless, walk the whole path in a
+browser, then revoke the grant and confirm the room shuts on the next request
+rather than on the next session. Only then issue a grant to a prospect.
+
+**Owner:** Marcel. **Risk if ignored:** a prospect is sent a link that does not
+work, or — the expensive direction — the first time anyone learns how the room
+behaves under the real edge is while a client is watching.
+
+## OPEN 2026-09-17 — seven claims findings nobody can close without a fact
+
+`npm run audit:claims` reports seven, all pre-existing and none introduced by
+the MVP release:
+
+- **Three figures carry two currencies.** 200, 89 and 19 appear as € in
+  `content/blog/de/still-running-joomla-2026.mdx` and as £ in its English twin.
+  One of the two articles is wrong about money.
+- **Four case-study results hedge.** `caseStudies.cs3Result2` and `cs3Result4`,
+  both locales: "approximately 18 days", "increased significantly".
+
+**Why they are still open.** Resolving either means knowing something about
+delivered work — what a client was actually charged, what a satisfaction score
+actually moved to — that no tool in this repository can know. Removing the
+hedge without the figure would overstate a result; picking a currency would
+invent a price.
+
+**Owner:** Marcel. **Risk if ignored:** low and slow — a reader who compares the
+two language versions of one article finds the company quoting two different
+prices for the same thing.
+
+## OPEN 2026-09-17 — the home page hero is four screens tall on a phone
+
+At 375px the hero's seven-stage flow stacks to roughly 1,740px, so the
+capability rail — the thing that tells a visitor what this company builds —
+starts below it. The vertical transformation is the sanctioned one and the
+hero's desktop composition is a locked decision, so nothing was changed here.
+
+**What would resolve it.** A deliberate decision about the hero's mobile
+height: fewer visible stages behind a "show the rest" control, a shorter node
+cell, or accepting it. All three are Marcel's call because all three change an
+approved composition.
+
+**Owner:** Marcel. **Risk if ignored:** a phone visitor who does not scroll past
+the hero never sees the five capabilities.
+
+
+## RESOLVED 2026-09-16 — the governance rule now distinguishes the three surfaces
+
+Opened and closed the same day. The original entry is preserved below it,
+because the reason the rule changed is worth more than the rule.
+
+**What was wrong.** Marcel directed that the personal name, tax number, tax
+office and §19 UStG clause leave the repeated global footer of
+`maxpromo.digital`. That was applied and verified. Two governance documents
+still said the clause was required on *every commercial surface*, which a
+future agent could correctly read as an instruction to put it back.
+
+The original entry named `CLAUDE.md` and `docs/governance/standards.md` as the
+two. **The second was wrong.** `standards.md` carried no such sentence; the
+other copy was in `PLATFORM-CONSTITUTION.md` §27, in the hard-NO list. The
+error is recorded rather than quietly corrected: a risk entry that names the
+wrong file sends the person fixing it to the wrong place, and this one would
+have left the constitution's copy standing.
+
+**What changed.** All three documents now state the same thing, and it is a
+distinction rather than a rule:
+
+| Surface | §19 clause | Name, tax number, tax office |
+|---|---|---|
+| Invoices, quotations, anything stating money owed | required | required |
+| Impressum | required | required |
+| Another legal document whose own substance relies on it | kept | as the document requires |
+| Repeated website chrome | absent | absent |
+
+- `CLAUDE.md` — the "Legal identity is locked" rule, rewritten as the three
+  surfaces.
+- `PLATFORM-CONSTITUTION.md` §27 — the hard-NO line, which now separates *VAT
+  is never calculated or displayed* from *where the clause is printed*.
+- `docs/governance/standards.md` — gained the rule outright. It had none, which
+  is why the conflict was reachable from the document every change is supposed
+  to satisfy.
+
+**What was deliberately not weakened.** "VAT is never calculated or displayed"
+is unchanged, unqualified and applies everywhere. Every invoice and quotation
+this platform generates still carries the clause. The Impressum still carries
+all five required items in both locales. The AGB still carries the clause in
+its fees section. Nothing was removed from a surface obliged to carry it.
+
+**Why this needed saying at all.** The old wording was not wrong when it was
+written; it was written before anyone had asked which surfaces "commercial"
+meant. One word doing two jobs is how a rule outlives the thing it was for.
+
+---
+
+### (original) OPEN — two governance documents still say the §19 UStG clause is required on every commercial surface
+
+Recorded 2026-09-16. Marcel directed that the personal name, tax number, tax
+office and §19 UStG clause leave the repeated global footer of
+`maxpromo.digital`, their authoritative public location being the Impressum.
+That was applied and verified.
+
+**The older rule was not edited to match.** The root `CLAUDE.md` and
+`docs/governance/standards.md` both still state:
+
+> The §19 UStG clause is required on every commercial surface and VAT is never
+> calculated or displayed.
+
+That sentence is now false for the website, and true for everything else it was
+written about: the clause still appears on every invoice and quotation the
+platform generates, in the Impressum, and inside the AGB's own fees clause.
+
+It was deliberately left alone. Amending a governance document to match a
+change made in the same session, by the agent that made the change, is how a
+rule quietly becomes whatever was built last. The correction is Marcel's to
+make, and it is a wording change rather than a decision: the rule needs to say
+which surfaces it means.
+
+**Risk while it stands.** A future session reading the standards will be
+correct to restore the clause to the footer, and will be undoing an owner's
+decision. This entry and the decision log are the only things preventing that.
+
+**Owner:** Marcel. One sentence in two documents.
+
+---
+
+## OPEN — `check:responsive` reads raw CSS, so a class name written in a comment is parsed as a selector
+
+Found 2026-09-16 during the homepage presentation pass. Reported here rather
+than fixed: `packages/tooling/` is a frozen foundation under constitution §24c,
+and changing a merge gate needs a stated justification and an ADR first.
+
+`audit-responsive.mjs` collects selectors with
+
+```js
+const css = readFileSync(f, 'utf8')
+const decls = [...css.matchAll(/([.#][\w-]+)[^{}]*\{([^}]*)\}/g)]
+```
+
+It never strips comments, which `governance/standards.md` requires of anything
+in `packages/tooling/`: *"Use `strip-comments.mjs` for comment state. Never a
+line-by-line flag."* Six checks in this repository have silently passed; this is
+the inverse — a check that **loudly fails on the wrong thing**, which is less
+dangerous and equally misleading.
+
+**What happens.** A dotted class name inside a comment matches as a selector.
+`[^{}]*` then runs forward to the *next* real `{`, so the following rule's body
+is attributed to the name in the comment, and that rule's own selector is never
+registered. A real single-column declaration therefore disappears from the
+audit's view.
+
+**Observed.** A comment in `apps/web/app/globals.css` describing the homepage's
+rhythms mentioned the shared spec list by its dotted class name. Three lines
+below it, `.prob-grid` declared `grid-template-columns: 1fr`. The audit
+attributed that declaration to the name in the comment and reported
+
+```
+grid .prob-grid has no single-column state
+```
+
+for a grid that declared one. Demonstrated by re-running the audit's own regex
+over the file: the third capture for the commented name had `.prob-grid`'s body.
+
+**Why it matters in both directions.** The false positive is visible and
+someone fixes it. The false negative is not: if a comment names a class shortly
+before a genuinely multi-column-only rule, that rule's body is attributed
+elsewhere and the grid is never checked at all. The audit's own count —
+`multi-column grids checked: 13` — cannot distinguish the two.
+
+**Worked around, not fixed.** The comment was reworded to avoid a leading dot,
+and a note beside it explains why so the next author does not reintroduce it.
+That protects this one file and nothing else.
+
+**It happened twice.** The public presentation pass added a second block of
+comments to the same stylesheet and had to observe the same restriction, which
+is now stated at the head of that block. A rule that every future author has to
+know about, in a comment they have to find first, is a workaround rather than a
+fix.
+
+**Owner:** Marcel. The fix is one line — run the CSS through
+`packages/tooling/strip-comments.mjs` before the selector sweep, the way
+`check-icons.mjs` already does — plus a case in a proof harness, since a gate
+that has only been seen reporting is not known to report correctly. It needs an
+ADR first because it changes a merge gate under the freeze.
+
+---
+
 ## RESOLVED 2026-09-16 — the drizzle-orm 0.45.2 production verification
 
 The last blocker on Track A closure. Settled by authenticated observation of

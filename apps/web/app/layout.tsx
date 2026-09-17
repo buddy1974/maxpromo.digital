@@ -71,7 +71,7 @@ const HUB_METADATA: Metadata = {
     template: '%s | Maxpromo Digital',
   },
   description:
-    'Maxpromo Digital is a software consultancy in Essen. We design and build the systems companies run on: replacing manual steps, connecting the tools already in use, and maintaining the result.',
+    'Maxpromo Digital designs and builds the systems businesses run on. We remove operational friction by improving how people, processes and technology work together.',
   keywords: [
     'Business Systems',
     'Software Consultancy',
@@ -88,7 +88,7 @@ const HUB_METADATA: Metadata = {
     siteName: 'Maxpromo Digital',
     title: 'Maxpromo Digital — Business Systems Consultancy',
     description:
-      'A software consultancy in Essen. We design and build the systems companies run on, and maintain them afterwards.',
+      'We design and build the systems businesses run on, and keep them running afterwards.',
     type: 'website',
     url: SITE_URL,
     // Dedicated 1200×630 social-preview asset (public/images/seo/) — used as
@@ -99,7 +99,7 @@ const HUB_METADATA: Metadata = {
     card: 'summary_large_image',
     title: 'Maxpromo Digital — Business Systems Consultancy',
     description:
-      'A software consultancy in Essen. We design and build the systems companies run on, and maintain them afterwards.',
+      'We design and build the systems businesses run on, and keep them running afterwards.',
     images: ['/images/seo/maxpromo-digital-og.png'],
   },
 }

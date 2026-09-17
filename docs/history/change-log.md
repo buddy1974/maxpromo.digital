@@ -1,5 +1,339 @@
 # Change Log
 
+## 2026-09-17 — MVP release: commercial capability discovery, the Work page, and a private demonstration room
+
+The release pass over the facelift, executed end to end on Marcel's standing
+instruction while he was away. Presentation, discovery and one new access
+boundary. No schema, no Track B, no change to any of the frozen foundations.
+
+### The problem this release exists to fix
+
+The rebuilt site explained how this company thinks and never said what it
+sells. Somebody searching for a web developer, an automation, or someone to
+build an internal tool could read the whole estate without meeting the word
+they came for, because every page was organised around the answer — operating
+systems, workflow, supervised operations — rather than around the question.
+Nobody searches for "business operating systems".
+
+### Five capabilities, one catalogue
+
+`apps/web/lib/capabilities.ts` names the five things the work is called when a
+business asks for it: workflow automation, custom application development, web
+development, content and social operations, product and commerce operations.
+Each carries a governed icon, a scene, and the index of the step a person
+performs. The home page rail, the home page hub diagram, the Solutions sections
+and the contact context all read from it.
+
+Two taxonomies now exist on purpose. The concrete one is the door; the three
+operating families are the room behind it. They only compete if they are given
+the same job, so the concrete one always comes first and the families always
+explain why the five are one practice.
+
+**Home page.** A rail of five under the hero, scrollable on a phone and wrapped
+above 1100px, each item linking into its Solutions section. "Three kinds of
+work. One operating model." — three abstract families in the company's own
+vocabulary — was **replaced**, not supplemented, by "Five kinds of work. One
+operation.": the same five names arranged around one business in a hub. A
+compact integration strip states that existing tools are connected rather than
+replaced, in words rather than logos, because a wall of trademarks claims a
+partnership this company does not have. One section removed, two compact strips
+added; the page is the same length.
+
+**Solutions.** Rebuilt around the five. The rail is the page's table of
+contents directly under the statement, then one section each — name, the
+client's situation, what we do, one scene, one next step — on alternating
+surfaces, each its own anchor. Web development is findable in seconds from the
+top, in both locales. The three families keep their section, their fan diagram
+and their six example pages, below the five rather than above them.
+
+**Resources.** The three-step sequence became a map. Numbered steps said these
+were stages of one route — read the writing, then the case studies, then the
+reference — which is not true and is not how the page is used. The hero now
+says "not a blog" in as many words.
+
+**Contact.** Accepts `?capability=<id>` and `?intent=demo`. The origin is shown
+on the page and travels in the existing `system` field, so a demonstration
+request arrives looking like one in the subject line and the lead source. No
+API change, no new enum value, no new lead system. A capability preselects one
+of the five chips the visitor can actually see and change — never one of the
+fifteen stored values with no chip, which would be a preset nobody could
+correct.
+
+### The Work page and the private demonstration room
+
+`/work` is public and ships with an honest empty state: the work exists, the
+permission to publish it does not. No client is named without evidence that the
+attribution is allowed, and no protected product is listed as a demo.
+
+`/demo` is real, reachable and shut. It lives outside the locale tree so it
+cannot be swept into the sitemap or the navigation by a change to either.
+Access is per-person and per-demonstration: Marcel adds a grant to
+`lib/demo/registry.ts` and sends a link carrying an HMAC token, which is
+exchanged for a signed httpOnly cookie scoped to `/demo`. Authorisation is
+never carried in the cookie beyond an identity — every request re-reads the
+registry, so revoking a grant takes effect immediately and an expired one stops
+working on its own date whatever its status says.
+
+It fails closed. With no `DEMO_ACCESS_SECRET` set — which is how this release
+ships — every path denies, and `DEMOS` and `GRANTS` are both empty. Production
+goes live with a room that is real and locked.
+
+`robots.txt` disallows it and the page is `noindex`. Neither is the control.
+The control is the server-side check; robots is a request to well-behaved
+crawlers.
+
+### New gate: `check:capabilities` (13 → 14)
+
+A capability's scene icons live in TypeScript and its scene labels live in two
+message catalogues. They are one thing in three files, and every way they can
+disagree renders as a broken diagram on a public page rather than as an error —
+including in German only, since the locales carry separate arrays. The gate
+checks arity in both locales, that every scene icon exists in the icon set,
+that `humanAt` points inside its own scene, and that no capability has lost a
+message key. Demonstrated failing before it was believed.
+
+`prove:demo-access` is the ADR-0004 harness for the new boundary: 50 cases
+through the real module — no cookie, forged cookie, tampered payload, expired
+session, rotated secret, revoked grant, grant past its date, a valid grant
+reaching for a demonstration it was not granted — every one refused, and the
+one correct case allowed, because a lock that refuses everybody is a wall. It
+was mutation-tested: weakening two cases made it fail loudly.
+
+### Dead CSS, and a budget that was not raised
+
+`web.total-css` measured 81 KB against an 80 KB budget. The stylesheet still
+carried the pricing plan columns for a page this site does not have, the
+three-column before/after grid the comparison panel replaced, an image-zoom
+wrapper from the deleted generated artwork, and three other orphans. Removing
+what nothing renders brought it to **78 KB**. The budget was not raised; the
+number was not edited.
+
+### Two corrections found by the audits
+
+`/agent-bureau` overflowed a 375px viewport by 4px and had been rendering a
+two-column grid at phone width, because a class in a stylesheet cannot override
+an inline `grid-template-columns`. The collapse is now in the inline value.
+
+`audit:claims` found the first conversation committed to as **30 minutes** on
+the home page and **45 minutes** on About. Which is right is a fact about how
+Marcel works, so the number was removed from the weaker surface rather than
+chosen: About now describes the conversation, the home page states the
+duration, once.
+
+### Verification
+
+`npm run certify` exit 0 — fourteen gates, plus accessibility clean across 36
+routes, cross-application consistency clean, documentation clean, dependencies
+clean. `prove:demo-access` 50/50.
+
+Measured in a real browser at 375 / 768 / 1440 in both locales across home,
+solutions, resources, contact, work, industries, about, blog, case studies,
+agent-bureau, impressum and the demonstration room: **no horizontal overflow
+anywhere**. Contrast re-checked by compositing the true backdrop for every new
+class: lowest new value 4.83:1, all of it AA.
+
+`audit:claims` reports seven findings, all pre-existing and none introduced
+here: three figures appearing as € in the German copy of one blog post and £ in
+its English twin, and four case-study results that hedge. Both classes need a
+fact about delivered work that a tool cannot supply, and the wrong fix invents
+one. Carried in `governance/known-risks.md`.
+
+## 2026-09-16 — Locked directives: global footer, legacy content governance, hero panel
+
+Applied inside the public rebuild, on Marcel's instruction, without waiting for
+a further approval as directed.
+
+**Global footer.** Personal name, tax number, tax office and the §19 UStG
+clause are out of the repeated footer on every page. The legal strip is one
+line: `© {year} Maxpromo Digital`, year derived. Verified across nine routes:
+zero occurrences of any of them in any footer. The Impressum still carries all
+five required items in both locales, the AGB still carries the clause in its
+fees section, and every generated invoice and quotation is untouched. **This
+overrides a standing rule in two governance documents, which were left saying
+the opposite on purpose** — see `governance/known-risks.md`.
+
+**Legacy content governance.** Nothing deleted, no URL changed, no redirect
+added, nothing hidden from search. Prominence only. Joomla, WordPress, Drupal
+and TYPO3 now appear **zero** times in the rendered body of the homepage,
+About, Solutions and Industries. Resources went 6 to 4 by showing one piece per
+area instead of the five most recent; the written-work index went 13 to 10 by
+dropping a category chip that repeated its own theme heading. Two mentions
+remain in the first screen of `/blog`: the title of a delivered Joomla
+migration, filed under Delivered work because that is what it is.
+
+**Hero.** The Operations Center mock interface is deleted, not hidden. The hero
+is now a dark rounded panel inset on a white page carrying the seven-stage
+operating flow: 48px below the navigation, 96px above the next section, 12px
+radius, visible white perimeter at every width. The homepage's separate
+operating-model section went with it — the same diagram twice on one page is
+the same diagram twice. Eight sections became seven.
+
+Human control is marked on Decisions and Oversight with a hairline accent edge
+and a small label. `check:tokens` rejected the first version for colouring that
+label with the accent; it is now inverted text with a lime fill beside it.
+
+Below 1024px the flow becomes a vertical route with drawn connectors, not seven
+stacked cards.
+
+**Verification.** `npm run certify` exit 0. Contrast re-swept after both
+directives: clean on every route checked, both locales. No horizontal scroll at
+375, 753 or 1440.
+
+## 2026-09-16 — Public website executive rebuild (supersedes the homepage-only pass earlier the same day)
+
+Presentation, copy and information design across the whole public site. No
+architecture, no schema, no deployment, no Track B. None of the eight frozen
+foundations changed: the registries, the token system, the gates, the
+observability contracts, the security policy, host resolution and the
+performance budgets are untouched, and the only constitution edit remains the
+two rows added to the ADR index.
+
+**Why it widened.** The homepage pass fixed the homepage and, seen beside the
+rest of the estate, made the real problem legible: the corporate pages shared
+a document-like visual language with no rhythm, three separate pages used the
+same flat "Read →" directory row, and old identity was leaking everywhere the
+homepage no longer leaked it.
+
+### The visual system
+
+Four surfaces, chosen by what a section does rather than alternated for
+variety: **authority** (black, an opening or a conclusion), **plain** (white,
+reading), **operational** (off-white, structure and architecture) and
+**evidence** (pale green, measured outcomes only). Every public page now opens
+on authority and closes on it, which is what makes the estate read as one
+company.
+
+### The signature
+
+`components/ui/OperatingFlow.tsx`. Customer, intake, decisions, workflows,
+teams, business record, oversight, and the return from oversight back to
+decisions. Seven stages on a hairline track, built in markup with one stretched
+SVG path, greyscale lines and a single accent mark. It carries the homepage and
+the solutions page and is intended as a reusable motif. It replaces the
+five-stage `OperatingModel` from the earlier pass, which was deleted rather
+than kept beside it — see ADR-0013.
+
+### Page by page
+
+| Route | What changed |
+|---|---|
+| `/` | Eight sections on the four surfaces, built around the seven-stage flow |
+| `/solutions` | Six equal rows became three families, with the six as examples underneath and the flow on the page. Websites and legacy systems is now an example inside "Business operating systems", not a top-level solution |
+| `/industries` | Six rows became an operational-pattern matrix: sectors as rows, the three recurring breakdowns as columns, every cell distilled from that sector's own `problem` text |
+| `/resources` | Three rows became three destinations that each state what they answer |
+| `/blog` | Typographic index grouped by theme. **Every article thumbnail removed from the index**; `featuredImage` is untouched and still serves the article page and the social card |
+| `/case-studies` | Before, what the system does, after. Every figure, result line and timeline is the existing string |
+| `/about` | Rewritten around four steps: keeping systems alive, understanding why they break, redesigning how work moves, building operating systems |
+| `/contact` | Fifteen checkboxes became five broad choices. `/api/contact` unchanged |
+| `/agent-bureau` | Shell alignment only. Its information design is the best on the site and was kept |
+| `/impressum` `/privacy` `/agb` | Typeset legal documents. Three local card components became one shared `LegalSection` |
+
+### Positioning
+
+"A software consultancy in Essen" is gone from the root metadata, the social
+card, the footer and the homepage description. It was accurate and too narrow
+to be the definition. What replaces it is what the company does. The archive of
+legacy-web writing is kept in full, grouped under a named theme that says
+plainly what it is: where the company came from rather than where it is going.
+
+### Five defects found and fixed
+
+1. `/ai-websites` had a permanent redirect to `/services/websites-platforms`.
+   There is no `services` segment and there never was. Every visitor and every
+   crawler following that old URL was 308'd to a 404.
+2. Thirteen pages rendered their own `<main>` inside the layout's
+   `<main id="content">`. Two nested landmarks on every route.
+3. The footer's legal block — the tax number and the mandatory §19 UStG clause
+   — measured **3.91:1** on black, below AA, on every page of the site.
+4. Agent Bureau's workflow gate rows put accent text on an accent tint at
+   **3.79:1**.
+5. A German compound heading overflowed the viewport at 390px, putting a
+   horizontal scrollbar on the terms page.
+
+Items 3 and 4 predate this pass.
+
+### Verification
+
+`npm run certify` exit 0. Thirteen merge gates clean, accessibility clean
+across 36 routes, consistency clean, documentation clean, dependencies clean,
+budgets clean.
+
+Beyond the suite: a compositing contrast checker was run over **23 page and
+locale combinations**, resolving each element's true backdrop through
+translucent layers. It found the failures above; all 23 now pass AA. Every
+route was checked at 375, 753 and 1440 with no horizontal page scroll, every
+grid collapsing and the flow transforming rather than shrinking. Both locales
+rendered and read. `audit:claims` stays at 8 findings, none of them new.
+
+**Not done, and left for Marcel.** The visual acceptance. ADR-0012 and ADR-0013
+are Proposed, not Accepted.
+
+## 2026-09-16 — Homepage executive rebuild
+
+Presentation only. No architecture, no schema, no deployment, no Track B. The
+Track A freeze was respected: none of the eight frozen foundations changed —
+the registries, the token system, the gates, the observability contracts, the
+security policy, host resolution and the performance budgets are untouched, and
+the one constitution edit is two rows added to the ADR index for the ADRs this
+work produced.
+
+**What this was.** Marcel granted explicit creative authority to rebuild the
+public homepage as an editorial and visual pass, with the current page treated
+as raw material rather than as something to preserve section by section.
+
+**Fourteen sections became seven:** hero · the operational problem · the
+operating model · proof · how we work · Max Agent Bureau · the closing step.
+
+**The page's own diagram.** `components/ui/OperatingModel.tsx` — the route one
+request takes through a business, from arrival to the approval a person still
+makes. Built in markup and two small SVG connectors, no image and no generator.
+It replaces three generated article images and a radial "orbit" graphic whose
+wrapper computed to **0×0** in production, stacking all six of its labels on
+the centre node. That defect had shipped and no gate could see it. ADR-0013
+records the construction rules that make the failure unrepeatable; ADR-0012
+records why the accent left the chrome.
+
+**Measured, before → after:** page height 10,576px → 6,675px at 1440 (−37%) and
+16,911px → 10,052px at 375 (−41%); sections 14 → 7; bordered containers 23 → 13;
+accent-bearing elements 7 → 3.
+
+**Two public claims went away rather than being answered**, because answering
+either means asserting a fact about a client — ADR-0007:
+
+- The homepage stated build-and-go-live as **1–4 weeks** in the process panels
+  and **2–6 weeks** in the FAQ four sections below. Both blocks are gone.
+- The proof strip stated **€14k/mo saved** where that project's own case study
+  states **£14,000/month**. The homepage now carries a different documented
+  result from the same project — 94% of invoices processed without human
+  intervention.
+
+`audit:claims` went from **10 findings to 8**. The remaining homepage finding is
+the 30-versus-45-minute first conversation, which `delivery-commitments.md`
+assigns to Marcel and which this pass deliberately did not decide.
+
+**Two defects fixed in passing.** The homepage rendered its own `<main>` inside
+the layout's `<main id="content">` — two nested landmarks on every page of the
+hub. And `.site-footer` added a 96px top margin to its own section padding,
+which drew a white band across any page ending on the subtle surface.
+
+**One risk found and reported rather than fixed.** `check:responsive` reads raw
+CSS and parses a dotted class name inside a comment as a selector, then
+attributes the next real rule's body to it. It reported `.prob-grid` as having
+no single-column state while that rule declared one three lines below a comment.
+The comment was reworded; the gate was not touched, because `packages/tooling/`
+is frozen and changing a merge gate needs an ADR first. Recorded in
+`governance/known-risks.md` with the one-line fix.
+
+**Verification.** `npm run verify` exit 0 — thirteen gates clean. `audit:a11y`
+clean across 36 routes. `audit:consistency` clean. `audit:docs` clean. Both
+locales rendered and read; 375px, 753px and 1440px checked in a browser with no
+horizontal overflow, every grid collapsing, and the diagram transforming its
+layout rather than shrinking.
+
+**Not done, and left for Marcel.** The visual review itself. The eye gets the
+final vote and no agent approves its own work: ADR-0012 and ADR-0013 are
+Proposed, not Accepted.
+
 ## 2026-09-16 — Track A closed, foundation frozen
 
 Documentation and governance only. No application code changed, no schema

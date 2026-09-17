@@ -413,3 +413,81 @@ export const SOLUTION_SLUGS = SOLUTIONS.map((s) => s.slug)
 export function asLocale(locale: string): Locale {
   return locale === 'de' ? 'de' : 'en'
 }
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   SOLUTION FAMILIES
+   ═════════════════════════════════════════════════════════════════════════════
+   The six solutions above are what a business asks for. These three are what
+   Maxpromo builds. The page leads with the families and keeps the six as
+   examples underneath, because a directory of six equal rows said that
+   modernising a website and designing a company's operating system are the
+   same size of thing. They are not: one is a capability, the other is the
+   company's work.
+
+   `stages` names the part of the operating flow each family serves, so the
+   solutions page and the homepage diagram are one argument rather than two
+   vocabularies. See components/ui/OperatingFlow.tsx.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+export interface SolutionFamily {
+  readonly id: string
+  readonly name: Localised
+  /** One sentence. What this family is for, in business terms. */
+  readonly claim: Localised
+  /** What it looks like in practice, two or three lines. */
+  readonly detail: Localised
+  /** Stages of the operating flow this family serves. */
+  readonly stages: Localised
+  /** Slugs from SOLUTIONS above that are examples of this family. */
+  readonly examples: readonly string[]
+}
+
+export const SOLUTION_FAMILIES: readonly SolutionFamily[] = [
+  {
+    id: 'operating-systems',
+    name: { de: 'Betriebssysteme für Unternehmen', en: 'Business operating systems' },
+    claim: {
+      de: 'Ein Stand, auf den sich der ganze Betrieb verlässt, statt fünf Orte, an denen dieselbe Information halb steht.',
+      en: 'One record the whole business relies on, instead of five places where the same information half exists.',
+    },
+    detail: {
+      de: 'Kunden, Aufträge, Dokumente und Zahlen laufen an einer Stelle zusammen. Anfragen aus allen Kanälen landen in einer Ansicht mit sichtbarer Zuständigkeit. Vorhandene Fachsoftware bleibt, wo sie ihre Aufgabe erfüllt. Wir ersetzen sie nicht, wir schließen die Lücke davor.',
+      en: 'Customers, jobs, documents and money come together in one place. Enquiries from every channel arrive in one view with visible ownership. Existing specialist software stays where it does its job. We do not replace it, we close the gap in front of it.',
+    },
+    stages: { de: 'Erfassung · Datenbestand', en: 'Intake · Business record' },
+    examples: ['customer-inquiries', 'websites-platforms'],
+  },
+  {
+    id: 'workflow',
+    name: { de: 'Abläufe und Automatisierung', en: 'Workflow and process automation' },
+    claim: {
+      de: 'Die Schritte zwischen Kontakt und Abschluss laufen jedes Mal gleich, ohne dass jemand etwas abtippt.',
+      en: 'The steps between contact and completion run the same way every time, without anyone retyping anything.',
+    },
+    detail: {
+      de: 'Wir nehmen auf, wie die Arbeit heute tatsächlich läuft, entfernen die Schritte, die niemand braucht, und lassen den Rest von einem Ablauf tragen. Nachfassen, Erinnerungen, Dokumente und wiederkehrende Aufgaben passieren, ohne dass sich jemand daran erinnern muss.',
+      en: 'We record how the work actually runs today, remove the steps nobody needs, and let a workflow carry the rest. Follow-ups, reminders, documents and recurring tasks happen without anyone having to remember them.',
+    },
+    stages: { de: 'Entscheidung · Abläufe', en: 'Decisions · Workflows' },
+    examples: ['workflow-automation', 'reviews', 'social-media'],
+  },
+  {
+    id: 'supervised',
+    name: { de: 'Begleitete Abläufe', en: 'Supervised operations' },
+    claim: {
+      de: 'Das System bereitet die Entscheidung vor. Getroffen wird sie von einem Menschen.',
+      en: 'The system prepares the decision. A person still makes it.',
+    },
+    detail: {
+      de: 'Entwerfen, sortieren, prüfen, zusammenstellen: die Vorbereitung, die heute Stunden kostet und niemandem gefällt. Was den Betrieb verlässt, wird vorgelegt und freigegeben. Nichts Kritisches passiert ohne eine Person, die zugestimmt hat.',
+      en: 'Drafting, sorting, checking, assembling: the preparation that costs hours today and nobody enjoys. Anything that leaves the business is put in front of a person and approved. Nothing critical happens without someone having agreed to it.',
+    },
+    stages: { de: 'Teams · Kontrolle', en: 'Teams · Oversight' },
+    examples: ['ai-agents'],
+  },
+]
+
+export function getFamily(id: string): SolutionFamily | undefined {
+  return SOLUTION_FAMILIES.find((f) => f.id === id)
+}
