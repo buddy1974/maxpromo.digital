@@ -1,5 +1,100 @@
 # Change Log
 
+## 2026-09-17 — Three visual corrections, and the typeface that was never loading
+
+Marcel's corrections from the live page, taken one at a time. The third one
+uncovered something larger.
+
+### The problem section is three cards
+
+Three ruled columns became three cards: neutral, pale green, neutral. Each
+carries its index, a small governed mark, its title and its existing sentence.
+The black rules above each column are gone.
+
+The middle card takes `--brand-surface-accent` — the one lime-tinted surface in
+the system, used the way its own note says it may be: a small callout, never a
+section wash. The rhythm is the point, not a ranking: all three are the same
+size, the same weight and the same structure, and none of them is a button. The
+section grew by 7px.
+
+### Section headings stay on one line where they fit
+
+The rule was set in two numbers that were too tight. `h2 { max-width: 26ch }`
+turned "Five kinds of work. One operation." into two lines on a 1216px page,
+and `text-wrap: balance` then split it neatly at the full stop — which reads as
+a decision somebody made. It is now 30ch and 40ch.
+
+The real cause was one layer further out: the two-column section layout gave
+its heading a **320px** column. Every short statement on the site broke in that
+gutter. The column is now 448px, set from the German measurement — "Wir
+verbinden, was Sie bereits nutzen." needs 428px — because the locale that fits
+is not the one that decides.
+
+Audited by measurement rather than by eye: every `h1` and `h2` on nine pages in
+both locales, comparing its rendered line count against the width the same text
+needs on one line. **Nothing now wraps that could fit.** What still wraps is
+genuinely longer than its container, which the rule allows. The approved hero
+compositions were not touched, and the only editorial `<br>` in a heading is
+the Agent Bureau hero's, which is a hero.
+
+### The existing-tools section is a moving rail
+
+The packed two-row block of pills is gone. In its place, one continuous
+right-to-left rail of lime tokens with black labels and marks, full viewport
+width, travelling at about 19px a second — 72 seconds for a pass.
+
+The loop is seamless by construction: the row holds the set twice and
+translates by exactly -50% of its own width, so nothing is a pixel distance and
+it behaves identically on a phone and on a 4K display. It pauses on hover and
+on focus. Under `prefers-reduced-motion: reduce` there is no animation at all
+and the rail becomes an ordinary scrollable row with the duplicate removed.
+They are list items, not buttons: these are statements of fact, and a focus
+stop that leads nowhere is worse than none.
+
+The intro stays in the container and the rail is a direct child of the section,
+so it reaches the screen edge without any `100vw` arithmetic — which is how a
+full-bleed rail usually ends up causing horizontal page scroll.
+
+### Two defects the corrections uncovered
+
+**The navigation had been overflowing the page since long before this release.**
+The full row switched on at 900px and needs 1122px in German. Every page
+scrolled sideways between those numbers — 167px at 900, 117px at 950, 68px at
+1000, 44px at a 1024 laptop. The link gap is now 24px and the row switches on
+at 1200px; below that the sheet handles it, which is what the sheet is for.
+
+**No page of this site was rendering in Inter.** `@maxpromo/design-tokens`
+defines `--brand-font-body`, `-sans`, `-heading` and `-mono` on `:root`, each
+written as `var(--font-inter), …`. The application had next/font's variables on
+`<body>`, one level down. A custom property that references an undefined custom
+property is invalid at computed-value time, so all four brand font tokens
+computed to *nothing* and every page fell back to the system sans stack. The
+browser reported Inter as `unloaded`: nothing had ever asked for it.
+
+It was invisible to every gate. `check:token-inputs` asks whether the
+application defines what the token package reads, and it did — in a scope the
+token package could not see it from. `audit:consistency` compares emitted
+stylesheets, and the two applications' stylesheets were identical; it was the
+*resolution* that differed. Agent Bureau has always put these on `<html>`, so
+for months the two applications shared a design system and rendered in two
+different typefaces.
+
+The variables moved to `<html>`. Inter and Roboto Mono now load and apply, and
+every measurement in this entry was re-taken afterwards, because the first set
+was measured in the wrong font.
+
+While consolidating the nine copies of the small uppercase mono label into one
+rule — which is what surfaced the mono token — the stylesheet came back under
+budget at 79 KB.
+
+### Verification
+
+`npm run certify` exit 0: fourteen gates, accessibility clean across 36 routes,
+consistency clean, docs clean, dependencies clean. `prove:demo-access` 50/50.
+
+No horizontal overflow on any page, in either locale, at 375 / 768 / 900 /
+1024 / 1200 / 1280 / 1440 / 1920 — the 900-to-1200 band is newly clean.
+
 ## 2026-09-17 — MVP release: commercial capability discovery, the Work page, and a private demonstration room
 
 The release pass over the facelift, executed end to end on Marcel's standing

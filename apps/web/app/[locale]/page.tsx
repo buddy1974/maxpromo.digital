@@ -6,12 +6,13 @@ import { getLandingData } from '@/lib/registry/adapters/landing.adapter'
 import { LandingEngine } from '@/components/landing/LandingEngine'
 import Hero from '@/components/Hero'
 import { Link } from '@/i18n/navigation'
-import { SectionHeader } from '@maxpromo/ui'
+import { SectionHeader, Icon } from '@maxpromo/ui'
 import { ProofMetrics } from '@/components/homepage/ProofMetrics'
 import type { ProofMetric } from '@/components/homepage/ProofMetrics'
 import { CapabilityRail } from '@/components/ui/CapabilityRail'
 import { ArchitectureMap } from '@/components/ui/ArchitectureMap'
-import { CAPABILITIES, INTEGRATIONS } from '@/lib/capabilities'
+import { IntegrationMarquee } from '@/components/ui/IntegrationMarquee'
+import { CAPABILITIES } from '@/lib/capabilities'
 
 /* ─── METADATA ─── */
 
@@ -154,6 +155,11 @@ export default async function HomePage() {
 
   const PROBLEMS = ['i1', 'i2', 'i3'] as const
   const PROOF    = ['p1', 'p2', 'p3'] as const
+
+  /* One governed mark per problem, in the order the copy states them: work
+     arriving and not landing anywhere, the same record typed again, and a
+     decision waiting on a person. Beside their own titles, so decorative. */
+  const PROBLEM_ICONS = ['inbox', 'documents', 'waiting'] as const
   const RULES    = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6'] as const
   const STEPS    = ['st1', 'st2', 'st3', 'st4', 'st5'] as const
 
@@ -184,19 +190,29 @@ export default async function HomePage() {
             <p className="sec-lede">{tProblem('lede')}</p>
           </div>
 
-          <div className="ruled-grid">
+          {/* Three cards, and the middle one is pale green.
+              The rhythm is neutral → accent → neutral, which is the one
+              arrangement that reads as one set of three rather than as three
+              offers competing for a click. The accent is a surface here, never
+              a full lime fill and never a card that looks more important than
+              the two beside it: all three carry the same structure, the same
+              icon weight and the same measure. */}
+          <div className="pcards">
             {PROBLEMS.map((id, i) => (
-              <div key={id} className="ruled-item">
-                <p className="ruled-index">{String(i + 1).padStart(2, '0')}</p>
-                <h3 className="ruled-title">{tProblem(`${id}Title`)}</h3>
-                <p className="ruled-desc">{tProblem(`${id}Desc`)}</p>
+              <div key={id} className={i === 1 ? 'pcard pcard-accent' : 'pcard'}>
+                <div className="pcard-head">
+                  <p className="pcard-index">{String(i + 1).padStart(2, '0')}</p>
+                  <span className="pcard-icon"><Icon name={PROBLEM_ICONS[i]} size="sm" /></span>
+                </div>
+                <h3 className="pcard-title">{tProblem(`${id}Title`)}</h3>
+                <p className="pcard-desc">{tProblem(`${id}Desc`)}</p>
               </div>
             ))}
           </div>
 
-          <p style={{ margin: 'var(--space-8) 0 0', maxWidth: '46rem', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
-            {tProblem('closing')}
-          </p>
+          {/* Tighter to the cards than the section rhythm would put it: this
+              sentence is the conclusion of the three, not a new thought. */}
+          <p className="pcards-close">{tProblem('closing')}</p>
         </div>
       </section>
 
@@ -226,28 +242,30 @@ export default async function HomePage() {
 
       {/* ── 3b. The tools already in the building ───────────── compact, white
           The most common objection this company meets is "we already have
-          systems". Answering it here costs a strip. */}
+          systems". Answering it here costs a strip.
+
+          The intro stays in the container; the rail is a direct child of the
+          section, so it spans the viewport without any negative-margin or
+          100vw arithmetic. That difference is the whole layout. */}
       <section data-section="tools" className="section-compact surface-plain">
         <div className="container">
-          <div className="sec-split">
+          <div className="sec-split" style={{ marginBottom: 'var(--space-6)' }}>
             <div>
               <p className="section-label">{tCap('toolsEyebrow')}</p>
               <h2 style={{ margin: 0, fontSize: 'var(--text-h3)' }}>{tCap('toolsTitle')}</h2>
             </div>
             <div>
-              <p style={{ margin: '0 0 var(--space-6)', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
+              <p style={{ margin: 0, fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
                 {tCap('toolsLede')}
               </p>
-              {/* Words, not logos. See the note below the list, and the comment
-                  on INTEGRATIONS in lib/capabilities.ts. */}
-              <ul className="tool-list">
-                {INTEGRATIONS.map((tool) => (
-                  <li key={tool} className="tool-chip">{tool}</li>
-                ))}
-              </ul>
-              <p className="tool-note">{tCap('toolsNote')}</p>
             </div>
           </div>
+        </div>
+
+        <IntegrationMarquee label={tCap('toolsEyebrow')} />
+
+        <div className="container">
+          <p className="tool-note">{tCap('toolsNote')}</p>
         </div>
       </section>
 

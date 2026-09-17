@@ -1,5 +1,43 @@
 # Known Risks — Maxpromo Platform
 
+## RESOLVED 2026-09-17 — the site was not rendering in its own typeface, and no gate could see it
+
+**What was wrong.** `@maxpromo/design-tokens` defines `--brand-font-body`,
+`--brand-font-sans`, `--brand-font-heading` and `--brand-font-mono` on `:root`,
+each as `var(--font-inter), …` or `var(--font-roboto-mono), …`. `apps/web` put
+next/font's variable classes on `<body>`. A custom property whose value
+references an undefined custom property is invalid at computed-value time — so
+at `:root` all four brand font tokens computed to the empty string, inherited
+empty everywhere, and every page of `maxpromo.digital` rendered in the system
+sans stack. Inter was never fetched; the browser reported it `unloaded`.
+
+**Why no gate caught it, which is the part worth keeping.**
+
+- `check:token-inputs` asks whether the application *defines* the variables the
+  token package reads. It did. The question it does not ask is whether they are
+  defined in a scope the token package can resolve them from.
+- `audit:consistency` compares the two applications' **emitted CSS**. Both
+  emitted `var(--font-inter), …`, identically. The difference was in
+  resolution, not in text, so two applications sharing one design system were
+  rendering in two different typefaces while an audit called them identical.
+- Every visual review, including this session's, was conducted in the wrong
+  font without noticing — the fallback stack is a competent sans and nothing
+  looked broken.
+
+**Fixed** by moving the variable classes to `<html>`, where `apps/bureau` has
+always had them.
+
+**What this should change.** A token check that reads source can only prove a
+variable exists. Proving it *resolves* needs a rendered page — the same lesson
+ADR-0004 records for landmarks and emitted CSS. A computed-value check on the
+brand tokens, run against rendered output beside `audit:a11y`, would have
+caught this on the day it was introduced; it is not built yet.
+
+**Owner:** unassigned. **Risk if ignored:** the next token defined in terms of
+an application-provided variable fails the same way, silently, and the only
+symptom is that the site looks slightly generic.
+
+
 ## OPEN 2026-09-17 — the demonstration room has never been opened
 
 `DEMO_ACCESS_SECRET` is unset in production, `DEMOS` and `GRANTS` are empty,

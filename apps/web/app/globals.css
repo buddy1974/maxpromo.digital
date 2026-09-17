@@ -74,15 +74,23 @@ h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
 }
 
-h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); max-width: 22ch; }
-h2 { font-size: var(--text-h2); font-weight: var(--weight-subhead); line-height: var(--leading-snug);  max-width: 26ch; }
+h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); max-width: 30ch; }
+h2 { font-size: var(--text-h2); font-weight: var(--weight-subhead); line-height: var(--leading-snug);  max-width: 40ch; }
 h3 { font-size: var(--text-h3); font-weight: var(--weight-subhead); line-height: var(--leading-heading); letter-spacing: -0.01em; }
 h4 { font-size: var(--text-h4); font-weight: var(--weight-subhead); line-height: var(--leading-heading); letter-spacing: 0; }
 
-/* A heading wider than about 22 characters stops reading as a heading and
-   starts reading as a sentence set large. The cap is on the element rather
-   than left to each caller, because it was left to each caller before and
-   half of them forgot. */
+/* A heading still gets a measure — a heading run to 1200px reads as a
+   paragraph set large — but the first values were too tight and were breaking
+   headings that fit. 26ch turned "Five kinds of work. One operation." into two
+   lines on a 1216px page, and `text-wrap: balance` then split it at the full
+   stop, which looks deliberate. A section heading that wraps for no reason is
+   theatrical; on a corporate site it should simply sit on one line.
+
+   So: 30ch and 40ch, which hold the common section headings on one line at
+   desktop and still wrap the genuinely long ones. A hero whose composition is
+   a specific set of lines sets its own max-width at the call site — that is a
+   composition, not a default, and it is the only place a narrower cap
+   belongs. */
 
 /* Body copy has a measure too. A paragraph inside a table cell or a list item
    is already inside a measure and must not get a second one. */
@@ -98,6 +106,32 @@ td p, li p { max-width: none; }
   line-height: var(--leading-heading);
   letter-spacing: 0;
 }
+
+/* ─── The mono label ──────────────────────────────────────────────────────────
+   One typographic object, nine call sites: the small uppercase monospace mark
+   that names a thing without competing with it — a table head, a case study's
+   meta line, the human step in a process, a card's category, the origin of a
+   contact enquiry.
+
+   It was written out nine times, four declarations each, and drifted twice
+   before this: two of them had picked up a different size. Each call site now
+   carries only what is actually its own — its colour and its spacing.
+   ───────────────────────────────────────────────────────────────────────── */
+.matrix thead th,
+.matrix-link,
+.idx-theme,
+.case-meta,
+.transform-label,
+.ps-human,
+.demo-meta dt,
+.demo-card-cat,
+.contact-origin-label {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
 
 p { text-wrap: pretty; }
 
@@ -489,7 +523,12 @@ button.os-nav-item {
 .site-nav-links {
   display: none;
   align-items: center;
-  gap: var(--space-6);
+  /* 24px, not 32px. Six links, a language control and a CTA in German need
+     1117px at 32px and 1077px at 24px, and the difference decides whether a
+     1152px laptop gets the navigation or the burger. The row still reads as
+     separated items at 24px; it is uppercase 11px with wide tracking, which
+     does most of the separating itself. */
+  gap: var(--space-5);
   margin-right: auto;
 }
 /* Navigation labels follow the wordmark into uppercase, at a size and weight
@@ -555,7 +594,17 @@ button.os-nav-item {
   border-radius: var(--radius-xs);
 }
 
-@media (min-width: 900px) {
+/* 1200px, not 900px. The full row — wordmark, six links, the language control
+   and the CTA — needs about 1122px of viewport in German, and it was being
+   switched on at 900. Between those two numbers every page on this site
+   scrolled horizontally, worst at exactly the width of a 1024 laptop window:
+   measured 167px, 117px, 68px and 44px of overflow at 900 / 950 / 1000 / 1024.
+
+   The threshold is set from the German measurement, in Inter, with about 30px
+   left over — the locale that fits is not the one that decides, and neither is
+   the typeface that happens to be loaded. Below it the sheet handles the
+   navigation, which is what the sheet is for. */
+@media (min-width: 1200px) {
   .site-nav-links,
   .site-nav-actions { display: flex; }
   .site-nav-burger  { display: none; }
@@ -1115,8 +1164,16 @@ main { display: block; }
   grid-template-columns: 1fr;
   gap: var(--space-6);
 }
+/* 28rem, not 20rem. The label column held the section heading, and at 320px it
+   broke every short statement in two — "We connect what you already use." over
+   two lines in a column that was never sized for a heading. A heading that
+   wraps because its gutter is narrow reads as an editorial decision that
+   nobody made. 448px holds the short statements on one line and the column is
+   still plainly a column against the 1fr beside it. The width is set from the
+   German measurement in Inter — "Wir verbinden, was Sie bereits nutzen."
+   needs 428px — because the locale that fits is not the one that decides. */
 @media (min-width: 900px) {
-  .sec-split { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: var(--space-10); align-items: start; }
+  .sec-split { grid-template-columns: minmax(0, 28rem) minmax(0, 1fr); gap: var(--space-10); align-items: start; }
 }
 
 
@@ -1419,13 +1476,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   vertical-align: top;
   border-bottom: 1px solid var(--brand-border);
 }
-.matrix thead th {
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  font-weight: 500;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-muted);
+.matrix thead th {  font-weight: 500;  color: var(--brand-text-muted);
   border-bottom-color: var(--brand-text);
   white-space: nowrap;
 }
@@ -1443,12 +1494,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 .matrix tbody tr:hover { background: var(--brand-surface); }
 .matrix-link {
   display: inline-block;
-  margin-top: var(--space-2);
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text);
+  margin-top: var(--space-2);  color: var(--brand-text);
   text-decoration: none;
   border-bottom: 1px solid var(--brand-border-strong);
 }
@@ -1517,12 +1563,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 .idx-theme {
   margin: var(--space-10) 0 0;
-  padding-bottom: var(--space-3);
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-muted);
+  padding-bottom: var(--space-3);  color: var(--brand-text-muted);
   max-width: none;
 }
 .idx-theme-note {
@@ -1551,12 +1592,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   margin-bottom: var(--space-6);
 }
 .case-meta {
-  margin: 0;
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-muted);
+  margin: 0;  color: var(--brand-text-muted);
   max-width: none;
 }
 /* The three-column before/system/after grid this label belonged to was
@@ -1565,12 +1601,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
    middle one having to carry a different background to be read as different.
    The label survived the swap and is still used above each comparison. */
 .transform-label {
-  margin: 0 0 var(--space-4);
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-muted);
+  margin: 0 0 var(--space-4);  color: var(--brand-text-muted);
   max-width: none;
 }
 
@@ -2206,12 +2237,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 .ps-human {
   margin: var(--space-1) 0 0;
-  max-width: none;
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-primary-text);
+  max-width: none;  color: var(--brand-primary-text);
 }
 
 .ps-link {
@@ -2609,12 +2635,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 @media (min-width: 640px) { .demo-meta { grid-template-columns: repeat(3, 1fr); } }
 .demo-meta dt {
-  margin: 0 0 var(--space-1);
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-inverted-secondary);
+  margin: 0 0 var(--space-1);  color: var(--brand-text-inverted-secondary);
 }
 .demo-meta dd {
   margin: 0;
@@ -2630,12 +2651,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 .demo-card-cat {
   margin: 0 0 var(--space-2);
-  max-width: none;
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-inverted-secondary);
+  max-width: none;  color: var(--brand-text-inverted-secondary);
 }
 .demo-card-name { margin: 0 0 var(--space-3); font-size: var(--text-h4); color: var(--brand-text-inverted); }
 .demo-card-desc {
@@ -2761,12 +2777,95 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   font-size: var(--text-small);
   color: var(--brand-text-inverted);
 }
-.contact-origin-label {
+.contact-origin-label {  color: var(--brand-text-inverted-secondary);
+}
+
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   PROBLEM CARDS
+   ═════════════════════════════════════════════════════════════════════════════
+   The three things that go wrong in an operation, on the home page.
+
+   They were three ruled columns: a black rule, an index, a title, a paragraph.
+   Correct, and indistinguishable from the rest of the page — a reader scanning
+   found no object to land on.
+
+   Now three cards, neutral · accent · neutral. The middle one takes the one
+   lime-tinted surface in the system. That is a rhythm, not a ranking: all
+   three carry the same structure, the same icon size and the same measure, and
+   the accent card is not larger, not bolder and not a call to action. A full
+   lime fill would make it a button; a third neutral card would make the row
+   flat.
+
+   Restrained on purpose — thin border, small radius, no shadow, no gradient,
+   nothing that moves. This is the Agent Bureau card language, at corporate
+   weight.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.pcards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+@media (min-width: 900px) {
+  .pcards { grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+}
+
+.pcard {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5);
+  background: var(--brand-surface-subtle);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+}
+/* The one lime-tinted surface in the system, used the way its own note in the
+   token package says it may be: a small callout, never a section wash. Its
+   edge is the lightest lime rather than the neutral border, so the card is
+   tinted rather than outlined in green. */
+.pcard-accent {
+  background: var(--brand-surface-accent);
+  border-color: var(--mp-lime-200);
+}
+
+.pcard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.pcard-index {
+  margin: 0;
+  max-width: none;
   font-family: var(--brand-font-mono);
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-inverted-secondary);
+  color: var(--brand-text-muted);
+}
+.pcard-icon { display: flex; color: var(--brand-text-secondary); }
+.pcard-title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  letter-spacing: 0;
+}
+.pcard-desc {
+  margin: 0;
+  max-width: none;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+
+/* The conclusion of the three, so it sits with them rather than at the
+   section's own distance. */
+.pcards-close {
+  margin: var(--space-6) 0 0;
+  max-width: 46rem;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
 }
 
 
@@ -2789,7 +2888,9 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   gap: var(--space-5);
 }
 @media (min-width: 900px) {
-  .cap-head { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: var(--space-10); }
+  /* Same column as .sec-split, for the same reason: a capability name is a
+     heading, and at 320px "Workflow automation" was two words on two lines. */
+  .cap-head { grid-template-columns: minmax(0, 28rem) minmax(0, 1fr); gap: var(--space-10); }
 }
 
 .cap-short {
@@ -2822,38 +2923,108 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 
 
 /* ═════════════════════════════════════════════════════════════════════════════
-   INTEGRATION STRIP
+   INTEGRATION MARQUEE
    ═════════════════════════════════════════════════════════════════════════════
-   The tools Maxpromo connects, as words.
+   The tools a business already has, travelling right to left.
 
-   Set in type rather than in logos on purpose: a wall of trademarks claims a
-   partnership or a certification, and this company has neither with any of
-   them. Naming a tool you integrate is a statement of fact. Reproducing its
-   mark is a statement about a relationship. The note under the strip says the
-   same thing in words, so the page is not relying on the reader inferring it.
+   They were a wrapped block of pills, which read as a tag cloud — twelve names
+   packed into two ragged rows, saying nothing about flow. One slow row says
+   the thing the section is arguing: work already moves through these.
+
+   HOW THE LOOP IS SEAMLESS
+   The row holds the set twice and translates by exactly -50% of its own width.
+   At the end of the cycle the second copy is exactly where the first started,
+   so the reset is invisible at any viewport width. Nothing here is a pixel
+   distance, which is what makes a marquee written on one monitor break on
+   every other one.
+
+   SPEED
+   72 seconds for one pass of the full set. That is about 25 pixels a second —
+   slow enough to read a name without following it, and far below the rate at
+   which a moving strip starts to demand attention. The whole point is calm.
+
+   PAUSE
+   On hover and on focus-within, the animation pauses. Under
+   `prefers-reduced-motion: reduce` there is no animation at all: the rail
+   becomes an ordinary horizontally scrollable row and the duplicate copy is
+   removed, so nobody scrolls through the same twelve names twice.
+
+   Set in type with this platform's own marks, never a vendor logo: a wall of
+   trademarks claims a partnership this company does not have. The note under
+   the rail says so in words too, rather than relying on the reader to infer
+   it.
    ═════════════════════════════════════════════════════════════════════════════ */
 
-.tool-list {
+.mq {
+  overflow: hidden;
+  padding-block: var(--space-5);
+  border-block: 1px solid var(--brand-border);
+  /* Sections take a gutter at 768px and below (see the rule near the top of
+     this file). The rail is the one thing in a section that must reach the
+     screen edge, so it steps back out of that gutter — and only inside the
+     same query, or it would push the page sideways at every other width. */
+  /* A scroll container would clip the tokens' own edges at the rail's top and
+     bottom without this; it is also the mask that makes the loop invisible. */
+  background: var(--brand-surface);
+}
+
+.mq-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+  width: max-content;
+  animation: mq-travel 72s linear infinite;
+}
+.mq:hover .mq-row,
+.mq:focus-within .mq-row { animation-play-state: paused; }
+
+@keyframes mq-travel {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.mq-set {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--space-3);
+  /* Half of the gap, so the seam between the two copies is the same distance
+     as every other gap in the row. */
+  padding: 0 calc(var(--space-3) / 2);
   margin: 0;
-  padding: 0;
   list-style: none;
 }
-.tool-chip {
+
+.mq-item {
   display: inline-flex;
   align-items: center;
-  padding: 6px 12px;
-  border: 1px solid var(--brand-border);
-  border-radius: var(--radius-full);
-  background: var(--brand-surface);
-  font-size: var(--text-small);
+  gap: var(--space-2);
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: var(--radius-md);
+  /* The accent as a fill, with black on it — the only way this platform uses
+     Brand Lime. The edge is Dark Green so the token has a perceivable boundary
+     on white for a low-vision reader (WCAG 1.4.11). */
+  background: var(--brand-primary);
+  border: 1px solid var(--brand-primary-edge);
+  color: var(--brand-on-primary);
+  font-size: var(--text-micro);
   line-height: var(--leading-ui);
-  color: var(--brand-text-secondary);
+  white-space: nowrap;
 }
+.mq-icon { display: flex; color: var(--brand-on-primary); }
+
+@media (max-width: 768px) {
+  .mq { margin-inline: calc(var(--section-x) * -1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mq { overflow-x: auto; scrollbar-width: thin; }
+  .mq-row { animation: none; }
+  /* The duplicate exists only to make movement seamless. With no movement it
+     is twelve names said twice. */
+  .mq-row .mq-set + .mq-set { display: none; }
+}
+
 .tool-note {
-  margin: var(--space-6) 0 0;
+  margin: var(--space-5) 0 0;
   max-width: 46rem;
   font-size: var(--text-micro);
   line-height: var(--leading-body);

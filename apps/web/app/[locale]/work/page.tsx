@@ -59,7 +59,7 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
         <div className="hero-panel hero-panel-inner">
           <div className="hero-copy">
             <p className="section-label">{t('eyebrow')}</p>
-            <h1 style={{ margin: '0 0 var(--space-5)', maxWidth: '20ch' }}>{t('title')}</h1>
+            <h1 style={{ margin: '0 0 var(--space-5)' }}>{t('title')}</h1>
             <p className="hero-sub">{t('lede')}</p>
           </div>
 

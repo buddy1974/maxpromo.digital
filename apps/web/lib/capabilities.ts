@@ -83,22 +83,32 @@ export function getCapability(id: string): Capability | undefined {
 /**
  * Tools Maxpromo actually works with.
  *
- * Deliberately plain text, not logos. A wall of trademarks implies partnership
- * or certification, and this company has neither with any of them. Naming a
- * tool you integrate is a statement of fact; reproducing its mark is a
- * statement about a relationship. The copy beside this list says so as well.
+ * Set in type, with a mark from this platform's own icon set — never the
+ * vendor's logo. A wall of trademarks implies partnership or certification,
+ * and this company has neither with any of them. Naming a tool you integrate
+ * is a statement of fact; reproducing its mark is a statement about a
+ * relationship. The copy beside the rail says so in words as well.
+ *
+ * The icon says what kind of thing the tool is — mail, calendar, message,
+ * workflow, payment, table — so the row reads at a glance while it moves,
+ * without anyone mistaking it for a partner directory.
  */
-export const INTEGRATIONS: readonly string[] = [
-  'Web forms',
-  'Gmail',
-  'Google Calendar',
-  'Outlook',
-  'WhatsApp',
-  'Telegram',
-  'Slack',
-  'n8n',
-  'HubSpot',
-  'Stripe',
-  'Notion',
-  'Google Sheets',
+export interface Integration {
+  readonly name: string
+  readonly icon: IconName
+}
+
+export const INTEGRATIONS: readonly Integration[] = [
+  { name: 'Web forms',       icon: 'documents' },
+  { name: 'Gmail',           icon: 'newsletter' },
+  { name: 'Google Calendar', icon: 'calendar' },
+  { name: 'Outlook',         icon: 'newsletter' },
+  { name: 'WhatsApp',        icon: 'message' },
+  { name: 'Telegram',        icon: 'send' },
+  { name: 'Slack',           icon: 'message' },
+  { name: 'n8n',             icon: 'agents' },
+  { name: 'HubSpot',         icon: 'clients' },
+  { name: 'Stripe',          icon: 'invoice' },
+  { name: 'Notion',          icon: 'playbooks' },
+  { name: 'Google Sheets',   icon: 'projects' },
 ]

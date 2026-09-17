@@ -85,7 +85,7 @@ export default async function CaseStudiesPage() {
               <div className="case-head">
                 <div>
                   <p className="case-meta">{t(`${cs.id}Tag`)}</p>
-                  <h2 style={{ margin: 'var(--space-3) 0 0', maxWidth: '30ch' }}>{t(`${cs.id}Headline`)}</h2>
+                  <h2 style={{ margin: 'var(--space-3) 0 0' }}>{t(`${cs.id}Headline`)}</h2>
                 </div>
                 <p className="case-meta">{t('deliveredIn')} {t(`${cs.id}Timeline`)}</p>
               </div>

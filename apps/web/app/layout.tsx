@@ -148,10 +148,23 @@ interface RootLayoutProps {
 export default async function RootLayout({ children }: RootLayoutProps) {
   const locale = await resolveLocale()
   return (
-    <html lang={locale}>
-      <body
-        className={`${inter.variable} ${robotoMono.variable} antialiased`}
-      >
+    /* The font variables belong on <html>, not on <body>.
+       @maxpromo/design-tokens defines --brand-font-body, -sans, -heading and
+       -mono on :root, each one written as `var(--font-inter), …`. A custom
+       property whose value references an undefined custom property is invalid
+       at computed-value time — so with --font-inter defined one level down on
+       <body>, all four brand font tokens computed to nothing, and every page
+       of this site rendered in the system sans stack. Inter was never even
+       fetched: the browser reported it unloaded, because nothing asked for it.
+
+       It was invisible to the gates. `check:token-inputs` asks whether a
+       variable the token package reads is defined by the application, and it
+       was — just in a scope the token package could not see it from. Agent
+       Bureau has always put these on <html>, which is why the two applications
+       were resolving the same tokens to two different typefaces while an audit
+       comparing their stylesheets reported them identical. */
+    <html lang={locale} className={`${inter.variable} ${robotoMono.variable}`}>
+      <body className="antialiased">
         {children}
       </body>
     </html>
