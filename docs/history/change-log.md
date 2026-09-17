@@ -155,6 +155,23 @@ One rule, in `packages/ui`, where both applications read it. The two class
 names are still two declarations of one control; that is recorded in
 known-risks rather than quietly merged in the middle of a mobile pass.
 
+**And the first version of that rule did nothing.** `@maxpromo/ui` is imported
+at the top of each application's stylesheet, and each application then declares
+its own control further down — `.input` in the hub, `.field-input` in Agent
+Bureau — both setting the 15px small size. Same specificity, later source
+position, so the later one won and the minimum never applied. It went to
+production that way and was caught by measuring a live input on
+agents.maxpromo.digital, not by reading the CSS. The selectors are doubled now
+(`.input.input`), which wins on specificity rather than on where the import
+happens to sit.
+
+Two textareas needed more than that. The contact form's message field and the
+voice panel's transcript editor set `fontSize` as an inline style — 14px and
+13px — and an inline style cannot be overridden by a stylesheet at all. Both
+now carry the `.textarea` class and let the shared rule size them, while every
+other inline value still wins, so neither widget changed shape. Measured after:
+six controls on the contact form, smallest 16px at 375px and 15px at 1440px.
+
 ### The homepage operating flow was recomposed, not shrunk
 
 Seven stages, below 1100px, had been seven full-width boxes with the icon above

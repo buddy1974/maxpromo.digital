@@ -3,15 +3,15 @@
 ## RESOLVED 2026-09-17 — the hub's CSS budget, resolved by moving the back office out of the public payload
 
 The budget was **not raised**. 80 KB remains authoritative and the measurement
-is green at **79.86 KB**.
+is green at **79.90 KB**.
 
 | | bytes | KB |
 |---|---|---|
 | public payload before the mobile pass | 82,160 | 80.23 |
 | public payload after the mobile pass, before the split | 82,160 | 80.23 |
-| **public payload after the split** | **78,687** | **76.84** |
+| **public payload after the split** | **78,730** | **76.88** |
 | `/os` route chunk (not on the public path) | 3,090 | 3.02 |
-| **`web.total-css`** | **81,777** | **79.86** |
+| **`web.total-css`** | **81,820** | **79.90** |
 
 **What was wrong.** `app/globals.css` is imported by the root layout, so every
 visitor to every public page of maxpromo.digital downloaded the internal back

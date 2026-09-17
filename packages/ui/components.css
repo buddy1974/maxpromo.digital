@@ -109,18 +109,30 @@
    What is fixed here is that the rule about them now exists once.
    ───────────────────────────────────────────────────────────────────────── */
 
+/* THE DOUBLED CLASS NAMES ARE LOAD-BEARING, NOT A TYPO
+   This file is imported at the TOP of each application's stylesheet, and each
+   application then declares its own control further down — `.input` in the
+   hub, `.field-input` in Agent Bureau — both setting `font-size` to the 15px
+   small size. Same specificity, later source position, so the later one wins
+   and this rule did nothing at all. It shipped to production that way and was
+   caught by measuring a live input rather than by reading the CSS.
+
+   Repeating the class doubles specificity (0,2,0 against 0,1,0) so the minimum
+   holds wherever the import happens to sit. The alternative was to move the
+   rule into both applications, which is the duplication this package exists to
+   prevent, or `!important`, which wins by refusing to be reasoned about. */
 @media (max-width: 768px) {
-  .input,
-  .textarea,
-  .select,
-  .field-input {
+  .input.input,
+  .textarea.textarea,
+  .select.select,
+  .field-input.field-input {
     font-size: 1rem;
     /* A comfortable target as well as a readable one: 15px text in 11px of
        padding is a 41px control, under the 44px floor the rest of this pass
        holds every other control to. */
     min-height: 44px;
   }
-  .textarea { min-height: 88px; }
+  .textarea.textarea { min-height: 88px; }
 }
 
 /* ─── Surfaces ────────────────────────────────────────────────────────────── */

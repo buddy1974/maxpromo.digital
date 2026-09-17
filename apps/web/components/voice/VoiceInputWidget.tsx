@@ -194,13 +194,28 @@ export default function VoiceInputWidget({
   const voice = useVoiceInput(lang)
   const panelOpen = voice.phase !== 'idle' && voice.phase !== 'listening'
 
+  /**
+   * No `fontSize` here, deliberately.
+   *
+   * It was `14px` — below the smallest step in the platform's type scale, and
+   * below the 16px at which mobile Safari zooms the whole page when the field
+   * takes focus. This is the message field on the contact form, so that zoom
+   * happened to anybody writing to the company from a phone, and it does not
+   * zoom back out afterwards.
+   *
+   * An inline style cannot be overridden by a stylesheet, so the shared
+   * 16px-minimum in @maxpromo/ui could never have reached it. Dropping the
+   * declaration and adding the `.textarea` class lets that rule govern the
+   * size — 15px on a desktop, 16px on a phone — while every other value here
+   * still wins inline, so the widget keeps its own surface, border, padding
+   * and radius.
+   */
   const baseTextarea: React.CSSProperties = {
     width: '100%',
     background: 'var(--brand-background)',
     border: '1px solid var(--brand-border-control)',
     color: 'var(--brand-text)',
     fontFamily: sans,
-    fontSize: '14px',
     padding: '14px 16px',
     resize: 'vertical',
     outline: 'none',
@@ -238,6 +253,7 @@ export default function VoiceInputWidget({
       {/* ── Main textarea row ── */}
       <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
         <textarea
+          className="textarea"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={rows}
@@ -336,14 +352,17 @@ export default function VoiceInputWidget({
             <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 'var(--space-2)' }}>
               Raw transcript, edit if needed
             </p>
+            {/* Same reason as the field above: an inline 13px here would zoom
+                the page on focus and stay zoomed. The class carries the size,
+                so this stays mono and takes 16px on a phone. */}
             <textarea
+              className="textarea"
               value={voice.editedRaw}
               onChange={(e) => voice.setEditedRaw(e.target.value)}
               rows={4}
               style={{
                 ...baseTextarea,
                 minHeight: 'auto',
-                fontSize: 'var(--text-micro)',
                 fontFamily: mono,
                 resize: 'vertical',
               }}
