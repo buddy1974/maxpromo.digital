@@ -29,8 +29,14 @@ operating families are the room behind it. They only compete if they are given
 the same job, so the concrete one always comes first and the families always
 explain why the five are one practice.
 
-**Home page.** A rail of five under the hero, scrollable on a phone and wrapped
-above 1100px, each item linking into its Solutions section. "Three kinds of
+**Home page.** A rail of five under the hero, one line at every width, each
+item linking into its Solutions section. It wrapped in its first form, and at
+1440 that left one item alone on a second line — which reads as the first row
+of a card grid, and a rail that looks like a grid gets the vertical space of
+one. Corrected on the day: 13px labels, 14px marks, 6px×12px pills, and the
+band takes a spacing token rather than a section rhythm. All five now sit on
+one line from 1280 up in both locales, the track scrolls below that, and the
+band is **138px instead of 281px**. "Three kinds of
 work. One operating model." — three abstract families in the company's own
 vocabulary — was **replaced**, not supplemented, by "Five kinds of work. One
 operation.": the same five names arranged around one business in a hub. A

@@ -2676,42 +2676,61 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
    for a web developer that this company builds websites. This strip does, in
    five links, above the fold of the second screen.
 
-   On a narrow viewport the row is scrolled sideways rather than wrapped into
-   three ragged lines. It is pulled out past the container's own gutter so the
-   next item is visibly cut off — a row that stops neatly inside the text
-   column looks complete, and nobody scrolls a row that looks complete. From
-   the wide breakpoint the set wraps instead, and the horizontal scroll is
-   switched off so it cannot trap a trackpad gesture.
+   ONE LINE AT EVERY WIDTH. The row never wraps: on a desktop all five fit, and
+   below that the track scrolls sideways. The first version wrapped, and at
+   1440 it put one item alone on a second line — which reads as the first row
+   of a card grid rather than as a rail, and a rail that looks like a grid gets
+   the vertical space of a grid.
+
+   It is pulled out past the container's own gutter so the next item is visibly
+   cut off when it does scroll — a row that stops neatly inside the text column
+   looks complete, and nobody scrolls a row that looks complete. The left
+   padding puts the first item back on the container's edge, so it lines up
+   with the label above it.
+
+   The band is not one of the three section rhythms, deliberately. Those are
+   for sections: a heading, an argument, something to read. This is chrome
+   attached to the hero — one label and one row of links — and given a
+   section's rhythm it opens 144px of empty page around 56px of content.
+   It takes a spacing token, not a fourth rhythm.
 
    It never moves on its own. An animated strip reads as ornament and people
    stop reading it.
    ═════════════════════════════════════════════════════════════════════════════ */
 
+.rail-band { padding-block: var(--space-6); }
+
 .rail-wrap {
   margin-inline: calc(var(--section-x) * -1);
   padding-inline: var(--section-x);
+  /* Room for a focus ring, which a scroll container would otherwise clip. */
+  padding-block: 3px;
   overflow-x: auto;
   scrollbar-width: thin;
   overscroll-behavior-x: contain;
 }
 .rail {
   display: flex;
+  flex-wrap: nowrap;
   gap: var(--space-2);
   margin: 0;
   padding: 0;
   list-style: none;
   min-width: max-content;
 }
+/* At the width where the whole set fits, the track sits on the container edge
+   rather than bleeding. `overflow-x` stays auto: with nothing to scroll it
+   shows nothing, and it is still the right behaviour at an unusual zoom or a
+   long translation. */
 @media (min-width: 1100px) {
-  .rail-wrap { margin-inline: 0; padding-inline: 0; overflow-x: visible; }
-  .rail { min-width: 0; flex-wrap: wrap; gap: var(--space-3); }
+  .rail-wrap { margin-inline: 0; padding-inline: 0; }
 }
 
 .rail-item {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: 10px 14px;
+  padding: 6px 12px;
   border: 1px solid var(--brand-border);
   border-radius: var(--radius-full);
   background: var(--brand-surface);
@@ -2724,7 +2743,7 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 .rail-item:focus-visible { border-color: var(--brand-border-strong); background: var(--brand-surface-subtle); }
 .rail-icon { display: flex; color: var(--brand-text-secondary); }
 .rail-name {
-  font-size: var(--text-small);
+  font-size: var(--text-micro);
   line-height: var(--leading-ui);
   color: var(--brand-text);
 }
