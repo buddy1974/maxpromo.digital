@@ -28,7 +28,21 @@ export default async function LoginPage() {
   if (session) redirect("/dashboard");
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-surface-subtle px-4">
+    // `min-h-dvh`, not `min-h-screen`.
+    //
+    // `min-h-screen` is 100vh, which on mobile Safari is the viewport as it
+    // would be with the browser's toolbar hidden — taller than what is on
+    // screen. Combined with `justify-center` that pushed the card down by
+    // roughly the height of the toolbar, and the sign-in button sat below the
+    // fold on a page whose entire content is one short form.
+    //
+    // `justify-center` itself only applies once there is room to spare
+    // (`sm:justify-center`). With the on-screen keyboard open on a small
+    // phone the form is taller than the visible viewport, and a centred
+    // column that overflows is clipped at BOTH ends — the submit button
+    // becomes unreachable rather than merely below the fold. Top-aligned with
+    // padding, it simply scrolls.
+    <main className="flex min-h-dvh flex-col items-center justify-start bg-surface-subtle px-4 py-10 sm:justify-center">
       <div className="w-full max-w-sm">
         {/* Brand mark */}
         <div className="mb-8 flex flex-col items-center gap-2">

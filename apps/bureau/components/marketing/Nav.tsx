@@ -20,8 +20,16 @@ export async function Nav() {
   const tc = await getTranslations("common");
 
   return (
-    <header className="sticky top-0 z-50 h-28 border-b border-hairline bg-surface">
-      <div className="mx-auto flex h-full max-w-content items-center justify-between gap-4 px-6">
+    // 64px on a phone, the full 112px from `md` up.
+    //
+    // A sticky bar is a permanent deduction from the reading area, and 112px
+    // of a 667px viewport is a sixth of the screen given to a wordmark and a
+    // language toggle — on the device where the hero has least room to make
+    // its case. 112px is a proportion chosen for a desktop page and it does
+    // not translate; 64px is the height the hub's bar already uses, so the two
+    // properties now agree at the width where it matters most.
+    <header className="sticky top-0 z-50 h-16 border-b border-hairline bg-surface md:h-28">
+      <div className="mx-auto flex h-full max-w-content items-center justify-between gap-4 px-4 md:px-6">
         <Link href="/" className="flex items-center gap-3">
           <span className="h-2.5 w-2.5 rounded-full bg-accent" />
           <span className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-ink">

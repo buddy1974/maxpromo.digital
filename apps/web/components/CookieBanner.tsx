@@ -70,7 +70,7 @@ export default function CookieBanner({ privacyHref }: CookieBannerProps = {}) {
   return (
     <div
       role="dialog"
-      aria-label="Cookie notice"
+      aria-label={t('dialogLabel')}
       style={{
         position: 'fixed',
         bottom: '1.5rem',

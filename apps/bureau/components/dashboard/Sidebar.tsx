@@ -1,11 +1,12 @@
 "use client";
 
-import { Icon, type IconName } from "@maxpromo/ui";
+import { Icon } from "@maxpromo/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import LocaleSwitch from "@/components/LocaleSwitch";
+import { NAV, isCurrent } from "@/lib/navigation";
 
 /**
  * Client component: needs the active path to highlight the current section.
@@ -18,35 +19,14 @@ import LocaleSwitch from "@/components/LocaleSwitch";
  * section cannot be called one thing in the sidebar and another at the top of
  * the page it opens.
  *
- * Grouped: the backbone and operational-control items lead, then the
- * supporting workspace, then configuration.
+ * The list itself moved to lib/navigation.ts when the mobile drawer arrived.
+ * Two navigations over one product is fine; two lists of nineteen entries is
+ * the mistake this platform has made most expensively, and the drawer would
+ * have been the fourth place a section name could go missing.
+ *
+ * This is the wide-viewport presentation. `MobileNav` is the other one, and
+ * below 768px it is the only one — see its note for what used to happen there.
  */
-type NavItem = { href: string; key: string; glyph: IconName; group?: string };
-
-const NAV: NavItem[] = [
-  { href: "/dashboard", key: "overview", glyph: "dashboard", group: "groupControl" },
-  { href: "/dashboard/operating-model", key: "operatingModel", glyph: "operatingModel" },
-  { href: "/dashboard/audit", key: "audit", glyph: "audit" },
-  { href: "/dashboard/waiting-room", key: "waitingRoom", glyph: "waiting" },
-  { href: "/dashboard/documents", key: "documents", glyph: "documents" },
-  { href: "/dashboard/approvals", key: "approvals", glyph: "approvals" },
-  { href: "/dashboard/ai-governance", key: "aiGovernance", glyph: "governance" },
-  { href: "/dashboard/playbooks", key: "playbooks", glyph: "playbooks" },
-  { href: "/dashboard/client-implementation", key: "clientImplementation", glyph: "implementation" },
-
-  { href: "/dashboard/briefing", key: "briefing", glyph: "briefing", group: "groupWorkspace" },
-  { href: "/dashboard/tasks", key: "tasks", glyph: "tasks" },
-  { href: "/dashboard/projects", key: "projects", glyph: "projects" },
-  { href: "/dashboard/leads", key: "leads", glyph: "leads" },
-  { href: "/dashboard/contacts", key: "contacts", glyph: "clients" },
-  { href: "/dashboard/research", key: "research", glyph: "research" },
-  { href: "/dashboard/agents", key: "agents", glyph: "agents" },
-  { href: "/dashboard/memory", key: "memory", glyph: "memory" },
-  { href: "/dashboard/ai-lab", key: "aiLab", glyph: "lab" },
-
-  { href: "/dashboard/settings", key: "settings", glyph: "settings", group: "groupSystem" },
-];
-
 export function Sidebar() {
   const pathname = usePathname();
   const t = useTranslations("sections");
@@ -63,10 +43,7 @@ export function Sidebar() {
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto p-3" aria-label={s("sidebarLabel")}>
         {NAV.map((item) => {
-          const active =
-            item.href === "/dashboard"
-              ? pathname === "/dashboard"
-              : pathname.startsWith(item.href);
+          const active = isCurrent(item.href, pathname);
           return (
             <div key={item.href}>
               {item.group && (

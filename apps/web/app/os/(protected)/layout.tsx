@@ -6,6 +6,17 @@ import { Icon } from '@maxpromo/ui'
 import { OsLocaleProvider, useOsLocale } from '@/lib/os-i18n/context'
 import { LanguageSwitcher } from '@/components/os/LanguageSwitcher'
 
+/**
+ * The back office's own chrome, owned by the routes that use it.
+ *
+ * These ten class names lived in `app/globals.css`, which the root layout
+ * imports, so every visitor to every public page of maxpromo.digital
+ * downloaded the styling for a sidebar behind a login. This is the narrowest
+ * boundary that owns all of them — `/os/login` uses none and no longer
+ * receives them.
+ */
+import './os-layout.css'
+
 interface ScannedContact {
   name: string; company: string; email: string; phone: string
   address: string; city: string; postcode: string; country: string

@@ -84,6 +84,45 @@
   font-size: var(--text-micro);
 }
 
+/* ─── Form controls on a phone ────────────────────────────────────────────────
+   One rule, because it is one bug, and it was in both applications.
+
+   Mobile Safari zooms the entire page when a focused form control renders
+   below 16px, and it does not zoom back out afterwards. The reader is left on
+   a page 1.3× too wide, scrolling sideways to find the next field. Both
+   applications set their inputs to --text-small (15px) — the hub's `.input`,
+   `.textarea` and `.select`, and Agent Bureau's `.field-input` — so every
+   form on the platform did it: the contact form, the demo request, the
+   newsletter, the Agent Bureau login, and the settings pages behind it.
+
+   16px is the threshold, so 16px is the value. It is `1rem` rather than a type
+   token because it is not a typographic decision — no scale in this system has
+   a 16px step, and inventing one to satisfy a browser rule would put a size in
+   the scale that no heading, label or body copy will ever use. This is a
+   minimum imposed from outside, written once, where both applications read it.
+
+   THE TWO CLASS NAMES ARE NOT A SECOND IMPLEMENTATION BEING ENDORSED
+   `.input`/`.textarea`/`.select` and `.field-input` are the same control
+   declared twice, once per application, which is the thing the standards
+   forbid. Consolidating them is a component move, not a mobile fix, and it is
+   recorded in known-risks rather than done quietly in the middle of this pass.
+   What is fixed here is that the rule about them now exists once.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .input,
+  .textarea,
+  .select,
+  .field-input {
+    font-size: 1rem;
+    /* A comfortable target as well as a readable one: 15px text in 11px of
+       padding is a 41px control, under the 44px floor the rest of this pass
+       holds every other control to. */
+    min-height: 44px;
+  }
+  .textarea { min-height: 88px; }
+}
+
 /* ─── Surfaces ────────────────────────────────────────────────────────────── */
 
 .card {

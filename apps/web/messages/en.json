@@ -12,12 +12,14 @@
     "primaryLabel": "Primary navigation",
     "openMenu": "Open navigation",
     "closeMenu": "Close navigation",
-    "work": "Work"
+    "work": "Work",
+    "switchLanguage": "Switch language to {language}"
   },
   "cookieBanner": {
     "text": "We use no tracking cookies. Essential functions only. Your data is handled per our",
     "privacyLink": "Privacy Policy",
-    "accept": "OK"
+    "accept": "OK",
+    "dialogLabel": "Cookie notice"
   },
   "hero": {
     "eyebrow": "BUSINESS OPERATING SYSTEMS",
@@ -55,7 +57,8 @@
     "privacy": "Privacy",
     "agb": "Terms",
     "taxNumber": "Tax number",
-    "taxOffice": "Tax office"
+    "taxOffice": "Tax office",
+    "brand": "Maxpromo Digital"
   },
   "home": {
     "problem": {
@@ -704,5 +707,20 @@
     "deniedTitle": "This access is no longer valid.",
     "deniedBody": "The link has expired, was withdrawn, or does not belong to this area. Your contact can issue a new one.",
     "backToWork": "Back to work"
+  },
+  "max": {
+    "open": "Open Max",
+    "close": "Close",
+    "name": "Max",
+    "role": "Business review",
+    "empty": "Ask a question. Real answer.",
+    "placeholder": "Your message …",
+    "send": "Send",
+    "thinking": "Max is typing …",
+    "unavailable": "Max is temporarily unavailable. Please try again in a moment.",
+    "conversationLabel": "Conversation with Max",
+    "scrollToLatest": "Jump to latest message",
+    "youSaid": "You",
+    "maxSaid": "Max"
   }
 }

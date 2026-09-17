@@ -73,7 +73,7 @@ export async function Footer() {
       <div className="container">
         <div className="site-footer-grid">
           <div>
-            <p className="site-footer-brand">Maxpromo Digital</p>
+            <p className="site-footer-brand">{t('brand')}</p>
             <address className="site-footer-address">
               {BUSINESS.street}<br />
               {BUSINESS.city}<br />

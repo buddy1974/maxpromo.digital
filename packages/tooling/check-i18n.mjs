@@ -47,19 +47,53 @@ const APPS = [
   {
     name: 'web',
     messages: 'apps/web/messages',
-    scan: ['apps/web/app', 'apps/web/components'],
     /**
-     * The hub's message files are checked; its source is not scanned.
+     * The hub's PAGES are not scanned for hardcoded strings. Its CHROME is.
      *
-     * apps/web/app/os is the internal back office — one operator, German, not
-     * a supported-bilingual surface, and it contains German words that are
-     * data rather than interface: a unit of measure, a payment method, the
-     * name of a city. Scanning it would report several hundred findings that
-     * are all correct and none of which anybody should act on. The hub's
-     * public pages, which ARE bilingual, already read every string from the
-     * catalogue — and the parity and sameness checks above cover them.
+     * The pages say both languages with a conditional rather than a
+     * catalogue — `isDE ? 'Leistungen' : 'Solutions'`, and the same choice
+     * made once above a twenty-line array. That is complete coverage: the two
+     * languages are two arms of one expression, and neither can ship without
+     * the other. Scanning them produces 215 findings, every one of which is a
+     * correctly translated page, and the only route to a green gate would be
+     * an exemption list longer than the check itself. A gate nobody can read
+     * is not a gate, so the pages keep the original decision.
+     *
+     * The chrome is a different case, and the note that used to stand here
+     * was wrong about it. It said the hub's public surfaces "already read
+     * every string from the catalogue". True of the pages; false of the
+     * chrome wrapped around every one of them. The navigation shipped a
+     * German-only accessible name on its close control, and the Max
+     * conversation shipped its header, its close control and its send control
+     * as English literals with no German. These components DO read from the
+     * catalogue, so a literal in one of them is unambiguously a string that
+     * was never translated — there is no pairing question to answer and
+     * nothing to exempt.
+     *
+     * apps/web/app/os stays out, for the original and still-correct reason:
+     * it is the internal back office — one operator, German, not a
+     * supported-bilingual surface — and it contains German that is data
+     * rather than interface (a unit of measure, a payment method, a city).
      */
-    scanHardcoded: false,
+    scan: [
+      'apps/web/components/max',
+      'apps/web/components/Navbar.tsx',
+      'apps/web/components/Footer.tsx',
+      'apps/web/components/CookieBanner.tsx',
+      // The control that exists for readers of the other language announced
+      // itself only in English: `aria-label={`Switch language to ${target}`}`.
+      'apps/web/components/LocaleSwitcher.tsx',
+    ],
+    scanHardcoded: true,
+    /**
+     * Both languages are findings in the chrome.
+     *
+     * The platform heuristic is German-biased, because German text in a .tsx
+     * file was the Agent Bureau regression. The hub's chrome had the mirror
+     * image — an English product role and three English control labels on a
+     * German-first site — and a German-only scan walks past every one of them.
+     */
+    scanEnglish: true,
   },
   {
     name: 'bureau',
@@ -82,6 +116,10 @@ const SAME_IN_BOTH = new Set([
   // ── Brand, product and company names ──────────────────────────────────────
   'common.brandWordmark', 'bureau.chiefName', 'nav.maxpromo',
   'footer.companyHeading', 'footer.website', 'footer.impressum',
+  // The trading name in the hub's footer, and the assistant's own name. Both
+  // are in the catalogue rather than written into the component so that the
+  // words around them could be translated; neither changes with the language.
+  'footer.brand', 'max.name', 'max.maxSaid',
   'home.bureau.label', 'footer.agentBureau', 'demoRoom.brand',
   // ── Proper nouns, printed as they are ─────────────────────────────────────
   'integrations.calendar', 'integrations.forms',
@@ -100,6 +138,10 @@ const SAME_IN_BOTH = new Set([
   'model.recommendations.rec-1.tier',
   'toolRegister.tool', 'toolRegister.status',
   'contactsPage.name', 'contactsPage.status',
+  // Channels a customer arrives through. Both are the product's name in
+  // German and in English; they are in the catalogue rather than in a Record
+  // of literals so that the three around them could be translated at all.
+  'waitingRoom.channelWhatsapp', 'waitingRoom.channelSocial',
   // A key whose whole value is an interpolation of a proper noun.
   'dashboard.trailAgent', 'agentStatus.offline', 'demo.briefing.b-4Label',
 ])
@@ -275,13 +317,29 @@ if (existsSync(REGISTRY)) {
  * ß, and a list of common German words — inside JSX text and inside string
  * literals that are not obviously technical.
  *
- * That is deliberately narrow. It will not catch an English sentence left in a
- * component, which is why the key-set and sameness checks above exist. What it
- * does catch is the exact regression this application is being repaired from:
- * German text written straight into a component.
+ * That is deliberately narrow, and for the product pages it stays that way:
+ * the key-set and sameness checks above are what cover them.
+ *
+ * `scanEnglish` widens it for one kind of surface — chrome that reads from the
+ * catalogue on a German-first site, where an English literal is as much a
+ * missing translation as a German one. It is opt-in per application because
+ * the heuristic is only safe where every user-visible string is supposed to
+ * come from a message file; pointed at a product page it would report every
+ * variable name that happens to read like a sentence.
  */
 const GERMAN_WORDS = /\b(und|oder|nicht|keine|kein|eine|einen|einem|einer|wird|werden|wurde|sind|ist|haben|hat|Ihre|Ihrem|Ihren|Sie|wir|uns|über|für|von|mit|auf|dem|den|das|die|der|noch|mehr|alle|jede|jeden|bitte|abbrechen|speichern|löschen|zurück|weiter|anzeigen|bearbeiten|erstellen|freigeben|Freigabe|Übersicht|Einstellungen|Warteraum|Dokumente|Aufgaben|Anfragen|Kunden|Betrieb|Prüfung|Protokoll)\b/
 const UMLAUT = /[äöüßÄÖÜ]/
+
+/**
+ * English prose in a catalogue-driven surface.
+ *
+ * Two shapes, because the leaks were of two shapes. A sentence gives itself
+ * away with a function word; a control label — "Close", "Send", "Open Max",
+ * "Business Advisor" — has none, so it is caught as Capitalised Words instead.
+ * Both are only consulted where `scanEnglish` is set.
+ */
+const ENGLISH_WORDS = /\b(the|and|not|your|you|our|with|from|for|this|that|are|is|was|will|can|please|cancel|save|delete|back|next|show|edit|create|approve|close|send|open|search|loading|error|submit|continue)\b/i
+const ENGLISH_LABEL = /^[A-Z][a-z]+(?: [A-Z]?[a-z]+){0,3}$/
 
 const TECHNICAL = [
   /^[a-z0-9-]+$/i,                 // identifiers, slugs, css classes
@@ -302,7 +360,12 @@ const SKIP_FILES = [
   /[\\/]email/i,
 ]
 
+/** A scan entry may name a directory to walk or a single file to read. */
 const walk = (dir, out = []) => {
+  if (!statSync(dir).isDirectory()) {
+    if (/\.(tsx|ts)$/.test(dir)) out.push(dir)
+    return out
+  }
   for (const entry of readdirSync(dir)) {
     if (entry === 'node_modules' || entry === '.next') continue
     const p = join(dir, entry)
@@ -323,6 +386,7 @@ for (const app of APPS) {
     for (const file of walk(full)) {
       const rel = relative(ROOT, file).split(sep).join('/')
       if (SKIP_FILES.some((r) => r.test(rel))) continue
+      if (app.scanExclude?.some((r) => r.test(rel))) continue
       scannedFiles++
       const raw = readFileSync(file, 'utf8')
 
@@ -347,21 +411,70 @@ for (const app of APPS) {
       })
 
       const source = stripComments(raw)
-      source.split('\n').forEach((line, i) => {
+      const lines = source.split('\n')
+
+      const report = (text, lineNo) => {
+        const t = text.trim()
+        if (t.length < 4) return
+        if (TECHNICAL.some((r) => r.test(t))) return
+
+        const german = UMLAUT.test(t) || GERMAN_WORDS.test(t)
+        const english =
+          app.scanEnglish && (ENGLISH_WORDS.test(t) || ENGLISH_LABEL.test(t))
+        if (!german && !english) return
+
+        hardcoded.push({
+          file: rel,
+          line: lineNo,
+          lang: german ? 'German' : 'English',
+          text: t.slice(0, 70),
+        })
+      }
+
+      lines.forEach((line, i) => {
         if (exempt.has(i)) return
-        // JSX text between tags, and quoted literals
+        /**
+         * Quoted literals, and JSX text that opens and closes on one line.
+         *
+         * The quote patterns match a string of ANY length and the length rule
+         * is applied afterwards, in `report`. Requiring four characters inside
+         * the pattern looks equivalent and is not: a short value earlier on
+         * the line desynchronises the pairing, and everything after it is read
+         * against the wrong quotes. On
+         *
+         *     <Icon name="close" size="sm" label="Menü schließen" />
+         *
+         * the old pattern skipped `"sm"` for being too short, then matched
+         * `" label="` as though it were a string — which consumed the opening
+         * quote of the label and left "Menü schließen" invisible. That is how
+         * a German accessible name shipped on the close control of the mobile
+         * navigation, on every page of the site, past a green audit.
+         */
         const candidates = [
           ...[...line.matchAll(/>([^<>{}]{4,})</g)].map((m) => m[1]),
-          ...[...line.matchAll(/"([^"\\]{4,})"/g)].map((m) => m[1]),
-          ...[...line.matchAll(/'([^'\\]{4,})'/g)].map((m) => m[1]),
+          ...[...line.matchAll(/"([^"\\]*)"/g)].map((m) => m[1]),
+          ...[...line.matchAll(/'([^'\\]*)'/g)].map((m) => m[1]),
         ]
-        for (const raw of candidates) {
-          const text = raw.trim()
-          if (TECHNICAL.some((r) => r.test(text))) continue
-          if (!UMLAUT.test(text) && !GERMAN_WORDS.test(text)) continue
-          hardcoded.push({ file: rel, line: i + 1, text: text.slice(0, 70) })
-        }
+        for (const c of candidates) report(c, i + 1)
       })
+
+      /**
+       * JSX text that spans lines.
+       *
+       * The per-line pass needs the `>` and the `<` on one line, so a table
+       * head written the way a formatter writes it — the tag, then the words
+       * on their own line, then the closing tag — was invisible to it, and
+       * this audit reported clean over a German heading sitting in an English
+       * product. Same rule, same text, read across the newline that a
+       * line-oriented regex cannot see past.
+       */
+      for (const m of source.matchAll(/>([^<>{}]{4,}?)</gs)) {
+        const text = m[1]
+        if (!text.includes('\n')) continue          // the pass above had it
+        const lineNo = source.slice(0, m.index).split('\n').length
+        if (exempt.has(lineNo - 1)) continue
+        report(text.replace(/\s+/g, ' '), lineNo)
+      }
     }
   }
 }
@@ -373,7 +486,7 @@ if (scannedFiles === 0) {
 }
 
 for (const h of hardcoded) {
-  fail(`${h.file}:${h.line} — German text in source, not in a message file: "${h.text}"`)
+  fail(`${h.file}:${h.line} — ${h.lang} text in source, not in a message file: "${h.text}"`)
 }
 
 /* ── Report ───────────────────────────────────────────────────────────────── */

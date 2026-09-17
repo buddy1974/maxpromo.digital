@@ -47,7 +47,7 @@ export async function ApprovalCard({ proposal }: { proposal: AgentProposal }) {
           type="button"
           disabled
           title={t("placeholder")}
-          className="cursor-not-allowed rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white opacity-60"
+          className="min-h-11 cursor-not-allowed rounded-lg border border-accent-dark bg-accent px-4 py-2 text-sm font-semibold text-on-accent opacity-60"
         >
           {t("approveShort")}
         </button>

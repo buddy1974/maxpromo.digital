@@ -52,7 +52,7 @@ export function AILabClient() {
       }
     } catch {
       setState("error");
-      setErrorMsg("Netzwerkfehler. Bitte erneut versuchen.");
+      setErrorMsg(t("errNetwork"));
     }
   }
 
@@ -60,11 +60,10 @@ export function AILabClient() {
     <div className="space-y-6">
       <div className="rounded-lg border border-accent/30 bg-accent-soft p-5">
         <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
-          AI Lab — Draft Mode
+          {t("draftMode")}
         </p>
         <p className="mt-2 text-sm text-ink-secondary">
-          Das AI Lab erstellt ausschließlich Entwürfe. Nichts wird gesendet,
-          ausgeführt oder angewendet — ohne menschliche Freigabe.
+          {t("draftOnlyNote")}
         </p>
       </div>
 
@@ -100,7 +99,7 @@ export function AILabClient() {
           type="button"
           onClick={generate}
           disabled={state === "loading"}
-          className="mt-4 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
+          className="mt-4 min-h-11 rounded-lg border border-accent-dark bg-accent px-5 py-2.5 text-sm font-semibold text-on-accent transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
           {state === "loading" ? t("generating") : t("generate")}
         </button>
@@ -125,14 +124,14 @@ export function AILabClient() {
 
           <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-4">
             <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
-              Entwurf (nicht gesendet)
+              {t("draftBadge")}
             </p>
             <p className="mt-2 whitespace-pre-wrap text-sm text-ink">{result.draft}</p>
           </div>
 
           <div className="mt-4 border-t border-hairline pt-3">
             <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
-              Empfohlene nächste Aktion
+              {t("recommendedAction")}
             </p>
             <p className="mt-1 text-sm text-ink-secondary">{result.recommendedNextAction}</p>
           </div>

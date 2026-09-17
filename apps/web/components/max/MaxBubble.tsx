@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { Icon } from '@maxpromo/ui'
 
 interface MaxBubbleProps {
@@ -34,20 +35,31 @@ interface MaxBubbleProps {
  * Hover is CSS so keyboard focus gets the same response. A JS-only
  * onMouseEnter tells a mouse user this is interactive and tells a keyboard
  * user nothing.
+ *
+ * THE MOBILE PASS CHANGED THREE THINGS
+ *  1. `aria-label="Open Max"` was English, written into the component, on a
+ *     German-first site. It is the catalogue's now, like everything else.
+ *  2. 48px tall is under the 44px floor only in the other direction — it
+ *     passed — but it sat `--space-5` from the bottom of the viewport, which
+ *     on a phone with a home indicator is inside the gesture area. It now
+ *     clears the safe-area inset.
+ *  3. It hides itself while the sheet is open, rather than sitting under it.
  */
 export function MaxBubble({ onClick }: MaxBubbleProps) {
+  const t = useTranslations('max')
+
   return (
     <>
       <style>{`
         .max-bubble {
           position: fixed;
-          bottom: var(--space-5);
+          bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
           right: var(--space-5);
           z-index: 1000;
           display: inline-flex;
           align-items: center;
           gap: var(--space-2);
-          height: 48px;
+          min-height: 48px;
           padding: 0 var(--space-4);
           border-radius: var(--radius-full);
           background: var(--brand-surface-inverted);
@@ -72,9 +84,9 @@ export function MaxBubble({ onClick }: MaxBubbleProps) {
         }
       `}</style>
 
-      <button onClick={onClick} aria-label="Open Max" className="max-bubble">
+      <button onClick={onClick} aria-label={t('open')} className="max-bubble">
         <Icon name="message" size="sm" />
-        <span className="max-bubble-label" aria-hidden="true">Max</span>
+        <span className="max-bubble-label" aria-hidden="true">{t('name')}</span>
       </button>
     </>
   )

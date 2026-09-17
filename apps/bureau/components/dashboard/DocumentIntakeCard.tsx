@@ -1,26 +1,39 @@
+import { getTranslations } from "next-intl/server";
 import type { DocumentIntakeItem } from "@/types/document-intake";
 import { DocumentRiskBadge } from "./DocumentRiskBadge";
 import { RequiredActionPanel } from "./RequiredActionPanel";
 import { ResponseSuggestionPanel } from "./ResponseSuggestionPanel";
 
-const TYPE_LABEL: Record<DocumentIntakeItem["type"], string> = {
-  invoice: "Rechnung",
-  contract: "Vertrag",
-  tax_letter: "Finanzamt",
-  insurance: "Versicherung",
-  supplier: "Lieferant",
-  hr: "Personal",
-  customer: "Kunde",
-  other: "Sonstiges",
+/**
+ * What kind of document arrived, as a message key rather than a word.
+ *
+ * Eight German nouns in a Record keyed by enum — "Rechnung", "Finanzamt",
+ * "Versicherung" — printed at the top of every card on the document desk. The
+ * same shape as the task-status and channel maps, missed for the same reason:
+ * it reads as configuration.
+ */
+const TYPE_KEY: Record<DocumentIntakeItem["type"], string> = {
+  invoice: "typeInvoice",
+  contract: "typeContract",
+  tax_letter: "typeTaxLetter",
+  insurance: "typeInsurance",
+  supplier: "typeSupplier",
+  hr: "typeHr",
+  customer: "typeCustomer",
+  other: "typeOther",
 };
 
-export function DocumentIntakeCard({ item }: { item: DocumentIntakeItem }) {
+export async function DocumentIntakeCard({ item }: { item: DocumentIntakeItem }) {
+  const t = await getTranslations("documents");
+  const w = await getTranslations("waitingRoom");
+  const s = await getTranslations("status");
+
   return (
     <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="font-mono text-label uppercase tracking-[0.14em] text-ink-muted">
-            {TYPE_LABEL[item.type]} · {item.source}
+            {t(TYPE_KEY[item.type])} · {item.source}
           </p>
           <h3 className="mt-1 font-semibold text-ink">{item.title}</h3>
         </div>
@@ -30,7 +43,7 @@ export function DocumentIntakeCard({ item }: { item: DocumentIntakeItem }) {
 
       <div className="mt-3">
         <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
-          Erforderliche Aktion
+          {t("actionRequired")}
         </p>
         <div className="mt-1">
           <RequiredActionPanel actions={item.requiredActions} />
@@ -43,10 +56,10 @@ export function DocumentIntakeCard({ item }: { item: DocumentIntakeItem }) {
         </div>
       )}
 
-      <div className="mt-3 flex items-center justify-between text-xs text-ink-muted">
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-ink-muted">
         <span>{item.assignedAgent}</span>
         <span className="rounded-full border border-hairline bg-surface-sunken px-2.5 py-0.5 font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">
-          {item.approvalStatus === "pending" ? "Approval Required" : item.approvalStatus}
+          {item.approvalStatus === "pending" ? w("approvalRequired") : s(item.approvalStatus)}
         </span>
       </div>
     </div>

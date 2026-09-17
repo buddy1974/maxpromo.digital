@@ -68,11 +68,29 @@ export default function LocaleSwitch({
         <span key={code} style={{ display: 'inline-flex', alignItems: 'center' }}>
           {i > 0 && <span aria-hidden="true" style={{ opacity: 0.4, marginRight: 'var(--space-1)' }}>·</span>}
           {code === locale ? (
-            <span aria-current="true" style={{ color: colors.active }}>{code.toUpperCase()}</span>
+            <span aria-current="true" style={{ color: colors.active, padding: '11px 4px' }}>
+              {code.toUpperCase()}
+            </span>
           ) : (
+            /* The hit area is the whole 44px, not the two glyphs.
+               This control is 26px tall and its tappable part was the width of
+               the letters "EN" — about 20 × 15px, in the corner of the
+               navigation bar. It is named in the brief's touch-target list for
+               a reason: it is small, it is in the worst place on the screen to
+               be small, and it is how half the product's readers reach their
+               own language. The padding grows the target without changing the
+               control's appearance; the border still draws where it did. */
             <a
               href={`/language?to=${other}&next=${encodeURIComponent(here)}`}
-              style={{ color: colors.text, textDecoration: 'none' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                minHeight: '44px',
+                padding: '11px 4px',
+                margin: '-11px 0',
+                color: colors.text,
+                textDecoration: 'none',
+              }}
             >
               {code.toUpperCase()}
             </a>

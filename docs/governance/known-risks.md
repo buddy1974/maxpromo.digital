@@ -1,5 +1,152 @@
 # Known Risks — Maxpromo Platform
 
+## RESOLVED 2026-09-17 — the hub's CSS budget, resolved by moving the back office out of the public payload
+
+The budget was **not raised**. 80 KB remains authoritative and the measurement
+is green at **79.86 KB**.
+
+| | bytes | KB |
+|---|---|---|
+| public payload before the mobile pass | 82,160 | 80.23 |
+| public payload after the mobile pass, before the split | 82,160 | 80.23 |
+| **public payload after the split** | **78,687** | **76.84** |
+| `/os` route chunk (not on the public path) | 3,090 | 3.02 |
+| **`web.total-css`** | **81,777** | **79.86** |
+
+**What was wrong.** `app/globals.css` is imported by the root layout, so every
+visitor to every public page of maxpromo.digital downloaded the internal back
+office's chrome — the sidebar, its mobile drawer, the navigation rows and the
+sign-out control. 2.97 KB of a 80.23 KB payload, for a surface behind a login
+that one operator uses on a desktop. Nothing was wrong with the rules. They
+were in the wrong file.
+
+**How ownership was established.** Every one of the ten `.os-*` class names was
+traced to its consumers from source, not from the prefix: all ten resolve to
+exactly one file, `app/os/(protected)/layout.tsx`. The same trace was then run
+over all 273 classes the stylesheet declares, to catch any back-office rule
+that does *not* carry the prefix — **none exists**. The earlier speculative
+dead-CSS detector, which had returned 209 candidates including `.hero-panel`
+and `.ofn`, was discarded and not used for any decision.
+
+**What moved.** The block now lives in `app/os/(protected)/os-layout.css` and
+is imported by the layout that owns it — the narrowest boundary that covers all
+ten selectors. `/os/login` uses none of them and no longer receives them. Next
+emits it as a route-segment stylesheet: `/os` requests two stylesheets, a
+public page requests one, and that was verified in the served HTML rather than
+inferred.
+
+**One class was also deleted, and it was not a primitive.** `.footer-link` had
+no `className` consumer anywhere in the application because the footer was
+rebuilt around `.site-footer-link`, which carries the same 44px minimum and is
+defined with the rest of the footer. Two names for one thing, one of them wired
+to nothing. Three other zero-consumer classes were found — `.container-narrow`,
+`.hint`, `.table-wrap` — and **kept**, because each is half of a documented
+design-system pair (`.container`, the form-field set, the table set) and
+removing them would take capability out of the system to win bytes. That is the
+line between removing what is obsolete and deleting until the number goes
+green.
+
+**Why this is better than raising the limit.** Raising it would have recorded
+that the public payload is allowed to be 88 KB, when the actual problem was
+that 3 KB of it was never public in the first place. The budget now measures a
+payload that is 4.2% smaller than before this episode began, on a stylesheet
+that had grown 60% since the budget was set — and the gate is still 80 KB, so
+the next rule added to the public system still has to justify itself.
+
+**What remains true.** `web.total-css` sums every CSS file under
+`.next/static`, so it counts the `/os` chunk even though no public visitor
+requests it. The split therefore shows as −101 bytes in that number while the
+public payload actually fell by 3,473. The metric cannot see route splitting.
+That is worth knowing before the next split; it was not worth changing a gate
+over, and it did not need to be, because the number is under the line on its
+own terms.
+
+
+## ACCEPTED 2026-09-17 — the form control is still declared twice
+
+`.input` / `.textarea` / `.select` in the hub's stylesheet and `.field-input`
+in Agent Bureau's are the same control, declared independently in two
+applications — the exact shape the standards name as the platform's most
+expensive habit.
+
+The mobile pass did not merge them. What it did was move the *rule about* them
+into `packages/ui/components.css`, where both applications read it, so the
+16px-minimum that stops mobile Safari zooming the page exists once and cannot
+drift. The two class names remain.
+
+Merging them is a component move: every call site in both applications changes,
+and form controls are where a silent visual regression is least likely to be
+noticed and most likely to matter. It is worth doing and it is not a mobile
+fix. Recorded so that the next person to add a form rule adds it in one place.
+
+**Owner:** unassigned. **Risk if ignored:** the next control-level change is
+made in one application and not the other, and the two drift the way the two
+Tailwind configs did.
+
+## ACCEPTED 2026-09-17 — `grid-template-columns: 1fr` is not a safe single column
+
+A bare `1fr` is `minmax(auto, 1fr)`, and the automatic minimum is the largest
+child's min-content width. In German that is frequently a whole compound noun:
+"Prozessautomatisierung" measures 255px at label size, which is how a
+single-column grid on the homepage sized itself to 255px inside a 173px
+container and pushed the page sideways at 320px. The same layout is correct in
+English, where the label breaks at a space.
+
+`check:responsive` now accepts `minmax(0, 1fr)` as a single-column state — it
+did not, so the safe form failed the audit while the unsafe form passed — but
+it still accepts bare `1fr`, because the declaration genuinely is one column
+and the audit counts columns. It cannot see the content.
+
+The two grids that were failing are fixed. Others may carry the same latent
+shape; the trigger is a long unbreakable word in a narrow column, so it will
+appear in German first and on the narrowest phone first.
+
+**Owner:** unassigned. **What would close it:** either a rule that every
+single-column declaration is written `minmax(0, 1fr)` and an audit that
+enforces it, or a rendered-width check in CI at 320px across both locales.
+
+## ACCEPTED 2026-09-17 — sections and containers both take the gutter on a phone
+
+At 768px and below, `section` takes `padding-inline: var(--section-x)` and a
+`.container` inside it takes the same again. At 320px that is 41.6px of gutter
+and 265px of usable width — 13% of the screen spent twice.
+
+It is not an overflow and nothing is clipped, so it was left alone: removing
+the container's padding inside a padded section interacts with the two elements
+that deliberately negate it (`.rail-wrap` and `.mq` bleed to the screen edge by
+a negative margin computed from `--section-x`), and verifying that across every
+page is more than the mobile pass could confirm.
+
+**Owner:** unassigned. **Value if fixed:** ~21px of content width on every
+section of every page at phone widths.
+
+## OPEN 2026-09-17 — the drawer was verified on a minted session, not a real one
+
+Agent Bureau's authenticated surfaces were verified at 320–1440px in both
+languages against a **locally minted throwaway session**: a NextAuth JWT signed
+with a throwaway secret, against local fixtures, on a local dev server. The
+secret and the token were deleted afterwards and `.env.local` is gitignored.
+
+That is real rendering of the real code — the drawer, its nineteen
+destinations, the group headings, the current-page marking, the locale control,
+sign-out, the close paths, the scroll lock and restore, and the contacts
+table's horizontal scroll — and it is not the same as Marcel signing in.
+
+**What it does not cover.** The five pages that read the production database:
+`/dashboard`, `/dashboard/approvals`, `/dashboard/audit`,
+`/dashboard/documents`, `/dashboard/waiting-room`. Without `DATABASE_URL` they
+render their empty state, so their mobile layout **with real rows** is
+unverified — in particular the approval controls, which this pass restacked so
+that approve and reject are never adjacent on a phone.
+
+**What to do.** Sign in on a phone, open the drawer, walk to approvals, confirm
+the approve control is the full-width row and reject sits below it, switch to
+English, confirm the drawer and the desk both change.
+
+**Owner:** Marcel. **Risk if ignored:** the one screen where a mis-tap is a
+decision recorded against a customer has been verified empty and not full.
+
+
 ## OPEN 2026-09-17 — nobody has signed into the bilingual dashboard with a real account
 
 Agent Bureau's authenticated surfaces were verified in both languages against a

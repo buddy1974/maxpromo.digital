@@ -212,7 +212,10 @@
     "groupSystem": "System",
     "supervisedMode": "Überwachter Betrieb",
     "systemPreview": "Systemvorschau",
-    "sidebarLabel": "Bereiche"
+    "sidebarLabel": "Bereiche",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "menuLabel": "Bereiche"
   },
   "sections": {
     "overview": "Übersicht",
@@ -274,7 +277,9 @@
     "high": "Hoch",
     "medium": "Mittel",
     "low": "Niedrig",
-    "critical": "Kritisch"
+    "critical": "Kritisch",
+    "executed": "Ausgeführt",
+    "expired": "Abgelaufen"
   },
   "empty": {
     "seedHint": "Führen Sie den Demo-Seed aus: npm run db:seed:demo",
@@ -333,7 +338,8 @@
     "recommendedTeam": "Empfohlenes Team",
     "findings": "Befunde ({count})",
     "impactLabel": "Auswirkung",
-    "effortLabel": "Aufwand"
+    "effortLabel": "Aufwand",
+    "matrixCorner": "Priorität \\ Wirkung"
   },
   "documents": {
     "pageTitle": "Dokumenteneingang",
@@ -345,7 +351,17 @@
     "suggestedResponse": "Vorgeschlagene Antwort",
     "requiredActions": "Erforderliche Aktionen",
     "assignedAgent": "Zuständiger Agent",
-    "source": "Quelle"
+    "source": "Quelle",
+    "typeInvoice": "Rechnung",
+    "typeContract": "Vertrag",
+    "typeTaxLetter": "Finanzamt",
+    "typeInsurance": "Versicherung",
+    "typeSupplier": "Lieferant",
+    "typeHr": "Personal",
+    "typeCustomer": "Kunde",
+    "typeOther": "Sonstiges",
+    "draftLabel": "Vorgeschlagene Antwort (Entwurf)",
+    "notSent": "nicht gesendet"
   },
   "waitingRoom": {
     "eyebrow": "Wer wartet gerade auf Sie",
@@ -359,7 +375,15 @@
     "whoIsWaiting": "Wer wartet auf eine Antwort?",
     "prepNote": "Antworten werden vorbereitet — gesendet wird erst nach Ihrer Freigabe. Keine ausgehende Nachricht wurde ausgeführt.",
     "nobodyWaiting": "Niemand im Warteraum",
-    "queueHint": "Wartende Kunden erscheinen hier."
+    "queueHint": "Wartende Kunden erscheinen hier.",
+    "channelWhatsapp": "WhatsApp",
+    "channelEmail": "E-Mail",
+    "channelPhone": "Telefon",
+    "channelWebsiteForm": "Webformular",
+    "channelSocial": "Social",
+    "waitingPrefix": "wartet {duration}",
+    "preparedAction": "Vorbereitete nächste Aktion (nicht gesendet)",
+    "approvalRequired": "Freigabe erforderlich"
   },
   "model": {
     "eyebrow": "Produkt-Backbone",
@@ -1002,7 +1026,12 @@
     "taskDocument": "Dokument-Zusammenfassung",
     "taskWaiting": "Warteraum-Antwort",
     "taskGovernance": "Governance-Empfehlung",
-    "taskProposal": "Vorschlags-Entwurf"
+    "taskProposal": "Vorschlags-Entwurf",
+    "draftOnlyNote": "Das AI Lab erstellt ausschließlich Entwürfe. Nichts wird gesendet, ausgeführt oder freigegeben.",
+    "draftBadge": "Entwurf (nicht gesendet)",
+    "recommendedAction": "Empfohlene nächste Aktion",
+    "draftMode": "AI Lab — Entwurfsmodus",
+    "errNetwork": "Netzwerkfehler. Bitte erneut versuchen."
   },
   "safety": {
     "note": "Entwurf zur menschlichen Prüfung. Nichts wurde gesendet, ausgeführt oder zugesagt.",
@@ -1033,7 +1062,15 @@
   "tasksPage": {
     "open": "Offen",
     "done": "Erledigt",
-    "preparedByAgent": " · vom Agenten vorbereitet"
+    "preparedByAgent": " · vom Agenten vorbereitet",
+    "sTodo": "Offen",
+    "sInProgress": "In Arbeit",
+    "sBlocked": "Blockiert",
+    "sDone": "Erledigt",
+    "sCancelled": "Abgebrochen",
+    "priorityTitle": "Priorität: {priority}",
+    "due": " · fällig {date}",
+    "overdue": "Überfällig"
   },
   "projectsPage": {
     "planning": "Planung",
@@ -1156,5 +1193,12 @@
       "a-5007Action": "Audit-Anfrage eingegangen",
       "a-5007Detail": "Neue Anfrage über das öffentliche Formular."
     }
+  },
+  "error": {
+    "eyebrow": "Fehler",
+    "routeTitle": "Dieser Abschnitt konnte nicht geladen werden",
+    "routeBody": "Der Fehler wurde aufgezeichnet. Sie können es erneut versuchen — der Rest der Seite funktioniert weiterhin.",
+    "retry": "Erneut versuchen",
+    "reference": "Referenz: {digest}"
   }
 }

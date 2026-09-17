@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 
 /**
  * The route-level boundary.
@@ -9,6 +10,13 @@ import { useEffect } from 'react'
  * of them. The root layout survives, so the fonts, the tokens and the design
  * system are all available here — this component is allowed to look like the
  * platform, and `global-error.tsx` is not.
+ *
+ * The root layout surviving also means `NextIntlClientProvider` survives, so
+ * this boundary reads from the catalogue like everything else. It did not: it
+ * shipped four German literals, and an English operator whose approvals page
+ * failed got the failure explained to them in German. An error screen is the
+ * worst possible place to drop a language, because it is the one screen where
+ * the reader is already unable to guess what happened.
  *
  * It renders on the marketing pages and inside the supervised-agent dashboard,
  * so it names neither: a boundary that tries to work out where it is is a
@@ -21,6 +29,8 @@ export default function RouteError({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const t = useTranslations('error')
+
   useEffect(() => {
     console.error(JSON.stringify({
       ts: new Date().toISOString(),
@@ -53,7 +63,7 @@ export default function RouteError({
           margin: '0 0 var(--space-3)',
         }}
       >
-        Fehler
+        {t('eyebrow')}
       </p>
       <h1
         style={{
@@ -65,7 +75,7 @@ export default function RouteError({
           maxWidth: '22ch',
         }}
       >
-        Dieser Abschnitt konnte nicht geladen werden
+        {t('routeTitle')}
       </h1>
       <p
         style={{
@@ -77,8 +87,7 @@ export default function RouteError({
           maxWidth: '46ch',
         }}
       >
-        Der Fehler wurde aufgezeichnet. Sie können es erneut versuchen — der Rest der
-        Seite funktioniert weiterhin.
+        {t('routeBody')}
       </p>
       <button
         onClick={reset}
@@ -94,7 +103,7 @@ export default function RouteError({
           minHeight: '44px',
         }}
       >
-        Erneut versuchen
+        {t('retry')}
       </button>
       {error.digest ? (
         <p
@@ -105,7 +114,7 @@ export default function RouteError({
             marginTop: 'var(--space-6)',
           }}
         >
-          Referenz: {error.digest}
+          {t('reference', { digest: error.digest })}
         </p>
       ) : null}
     </main>

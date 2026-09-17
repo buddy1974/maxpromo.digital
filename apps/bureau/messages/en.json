@@ -212,7 +212,10 @@
     "groupSystem": "System",
     "supervisedMode": "Supervised mode",
     "systemPreview": "System preview",
-    "sidebarLabel": "Sections"
+    "sidebarLabel": "Sections",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menuLabel": "Sections"
   },
   "sections": {
     "overview": "Overview",
@@ -274,7 +277,9 @@
     "high": "High",
     "medium": "Medium",
     "low": "Low",
-    "critical": "Critical"
+    "critical": "Critical",
+    "executed": "Executed",
+    "expired": "Expired"
   },
   "empty": {
     "seedHint": "Run the demo seed: npm run db:seed:demo",
@@ -333,7 +338,8 @@
     "recommendedTeam": "Recommended team",
     "findings": "Findings ({count})",
     "impactLabel": "Impact",
-    "effortLabel": "Effort"
+    "effortLabel": "Effort",
+    "matrixCorner": "Priority \\ Impact"
   },
   "documents": {
     "pageTitle": "Document intake",
@@ -345,7 +351,17 @@
     "suggestedResponse": "Suggested reply",
     "requiredActions": "Required actions",
     "assignedAgent": "Assigned agent",
-    "source": "Source"
+    "source": "Source",
+    "typeInvoice": "Invoice",
+    "typeContract": "Contract",
+    "typeTaxLetter": "Tax office",
+    "typeInsurance": "Insurance",
+    "typeSupplier": "Supplier",
+    "typeHr": "HR",
+    "typeCustomer": "Customer",
+    "typeOther": "Other",
+    "draftLabel": "Suggested reply (draft)",
+    "notSent": "not sent"
   },
   "waitingRoom": {
     "eyebrow": "Who is waiting on you right now",
@@ -359,7 +375,15 @@
     "whoIsWaiting": "Who is waiting for a reply?",
     "prepNote": "Replies are prepared — nothing is sent until you approve it. No outbound message has been executed.",
     "nobodyWaiting": "Nobody in the waiting room",
-    "queueHint": "Waiting customers appear here."
+    "queueHint": "Waiting customers appear here.",
+    "channelWhatsapp": "WhatsApp",
+    "channelEmail": "Email",
+    "channelPhone": "Phone",
+    "channelWebsiteForm": "Website form",
+    "channelSocial": "Social",
+    "waitingPrefix": "waiting {duration}",
+    "preparedAction": "Prepared next action (not sent)",
+    "approvalRequired": "Approval required"
   },
   "model": {
     "eyebrow": "The product backbone",
@@ -1002,7 +1026,12 @@
     "taskDocument": "Document summary",
     "taskWaiting": "Waiting-room reply",
     "taskGovernance": "Governance recommendation",
-    "taskProposal": "Proposal draft"
+    "taskProposal": "Proposal draft",
+    "draftOnlyNote": "The AI Lab produces drafts only. Nothing is sent, executed or approved.",
+    "draftBadge": "Draft (not sent)",
+    "recommendedAction": "Recommended next action",
+    "draftMode": "AI Lab — draft mode",
+    "errNetwork": "Network error. Please try again."
   },
   "safety": {
     "note": "A draft for human review. Nothing has been sent, executed or promised.",
@@ -1033,7 +1062,15 @@
   "tasksPage": {
     "open": "Open",
     "done": "Done",
-    "preparedByAgent": " · prepared by an agent"
+    "preparedByAgent": " · prepared by an agent",
+    "sTodo": "Open",
+    "sInProgress": "In progress",
+    "sBlocked": "Blocked",
+    "sDone": "Done",
+    "sCancelled": "Cancelled",
+    "priorityTitle": "Priority: {priority}",
+    "due": " · due {date}",
+    "overdue": "Overdue"
   },
   "projectsPage": {
     "planning": "Planning",
@@ -1156,5 +1193,12 @@
       "a-5007Action": "Audit enquiry received",
       "a-5007Detail": "A new enquiry through the public form."
     }
+  },
+  "error": {
+    "eyebrow": "Error",
+    "routeTitle": "This section could not be loaded",
+    "routeBody": "The error has been recorded. You can try again — the rest of the page still works.",
+    "retry": "Try again",
+    "reference": "Reference: {digest}"
   }
 }

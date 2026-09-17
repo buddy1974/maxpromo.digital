@@ -99,7 +99,7 @@ export async function AgentSystemMap() {
 
       {/* Mobile: compact hub statement */}
       <div className="rounded-lg border border-accent/30 bg-accent-soft p-5 text-center md:hidden">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent font-mono text-xl text-white">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-accent-dark bg-accent font-mono text-xl text-on-accent">
           <Icon name="dashboard" size="md" />
         </span>
         <p className="mt-3 font-semibold text-ink">{tb("chiefName")}</p>

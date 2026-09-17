@@ -1,5 +1,176 @@
 # Decision Log
 
+## 2026-09-17 — the mobile pass
+
+Four surfaces, one pass. The decisions that were judgement rather than repair.
+
+---
+
+### The mobile navigations are two presentations of one list
+
+**Decision.** `lib/navigation.ts` holds Agent Bureau's nineteen sections.
+`Sidebar` and `MobileNav` both read it, and neither owns it.
+
+**Why.** The drawer needed the same nineteen entries, in the same three groups,
+with the same current-page rule. Copying them would have made a fourth place a
+section name can go missing — after the sidebar, the page heading and the
+catalogue — in the repository whose standards name duplicated definitions as
+its most expensive habit. The `isCurrent` rule moved with the list, because
+`startsWith("/dashboard")` is true of every route in the product and the
+overview's exception is exactly the kind of detail one copy gets and the other
+does not.
+
+**What it costs.** A server component can no longer import the list without
+pulling in a module that also exports a helper. Nothing does.
+
+---
+
+### The drawer is a drawer, and the conversation is a sheet
+
+**Decision.** Agent Bureau's mobile navigation slides from the left as a
+drawer. The Max conversation rises from the bottom as a sheet at 78dvh.
+
+**Why.** The brief asks for the bottom-sheet pattern and then says not to make
+every surface one — it is an interaction primitive, not a house style. A bottom
+sheet suits a short focused interaction: a conversation, a confirmation, a
+choice from a few options. Nineteen destinations in three labelled groups is a
+long scrollable list with headings, which is what a drawer is for. Making it a
+sheet would have meant either a sheet tall enough to be a full screen, which is
+a drawer with extra steps, or a scrollable sheet that hides most of its
+contents below the fold.
+
+**What it costs.** Two overlay implementations in two applications rather than
+one shared component. They share no markup today; if a third appears, that is
+the moment to extract one.
+
+---
+
+### The 16px form-control minimum lives in the shared package as a raw value
+
+**Decision.** `packages/ui/components.css` sets `font-size: 1rem` on mobile
+form controls, not a token.
+
+**Why.** No step in the type scale is 16px — it runs 15px (small) then 17px
+(body) — and adding one would put a size in the scale that no heading, label or
+paragraph will ever use, to satisfy a browser rule rather than a design
+intention. 16px here is not a typographic decision; it is a minimum imposed
+from outside, which is why it is written as the number it is, once, with the
+reason beside it.
+
+**What it costs.** A raw length in a file whose header says it defines no size
+of its own. The exception is stated at the call site rather than hidden.
+
+---
+
+### The operating flow was recomposed for mobile rather than scaled
+
+**Decision.** Below 1100px the seven stages put their icon in a left rail with
+the text beside it, and the lime route runs down that rail. 1002px becomes
+599px at 375px wide.
+
+**Why.** The brief forbids both the easy answers: do not shrink the desktop
+diagram until its labels are unreadable, and do not reduce it to plain text.
+What was there was the third failure — a desktop row rotated, which kept every
+element and every label at full size and cost 1002px of scrolling before the
+page made its first argument. Moving the icon beside the text rather than above
+it makes a stage one line of reading instead of three, and putting the route
+through the icons means the connectors line up with what they connect, which
+the centred version did not.
+
+**What is preserved, and was checked.** Seven stages, six connectors, seven
+icons, both human-control pills, the order, and the lime route. The approved
+desktop composition is unchanged and is still built from the same markup.
+
+---
+
+### `check:responsive` measures against 320px, and names its one exemption
+
+**Decision.** The narrowest supported viewport moves from 380px to 320px.
+`apps/web/app/os` is excluded from the inline-width check by name.
+
+**Why.** 380 sat above the smallest phone in use, so the audit had no opinion
+about the widths that actually break on one — and it had none about the two
+real overflows this pass found at 320. The back office is the one surface in
+the repository that is genuinely not used on a phone: one operator, on a
+desktop, behind a login, editing quotations whose tables are wide because the
+documents are. Squeezing it to 320px would be work nobody asked for and nobody
+would use.
+
+**What it costs.** An exemption, which is a thing that can be forgotten. It is
+a named constant with the reason above it and a sentence saying that deleting
+it is the first step if /os ever becomes a phone surface — rather than a
+threshold left loose for everybody so that one surface passes.
+
+---
+
+### The Max conversation ships without quick replies, a score card or a contact step
+
+**Decision.** Those three parts of the brief were not built.
+
+**Why.** None of them has any state behind it. Max is a free-text conversation
+against `/api/chat/message`: no quick-reply set, no score, no contact stage, no
+branching. The scored guided audit they belong to exists in this repository
+only as `/api/max-agent/submit` — an endpoint expecting business, pain, volume,
+system, name, phone and a 0–100 score, with a threshold at 80, and **no caller
+anywhere in the codebase**. Building the three would mean writing new
+conversation branching and a new scoring rule, which the same brief's
+no-business-logic-changes section forbids, and which is a product decision
+rather than a presentation one.
+
+**What it costs.** Three named items of the brief are not delivered. Reported
+in full rather than approximated with a UI that has nothing behind it.
+
+---
+
+### The back office's chrome left the public stylesheet; the budget was not raised
+
+**Decision.** The ten `.os-*` rules move from `app/globals.css` to
+`app/os/(protected)/os-layout.css`, imported by the layout that owns them. The
+80 KB budget stands unchanged and `web.total-css` measures **79.86 KB**.
+
+**The sequence, because the first answer was wrong.** The mobile pass took the
+public payload to 80.23 KB against an 80 KB budget, and the first position
+taken was to leave `verify` failing and ask: raising a limit is a decision, and
+a budget raised by the author of the work that exceeded it is self-approval.
+Marcel chose the third option that had been offered instead — move the
+back-office CSS out of the public payload — and it was the right one. The
+budget was never the problem. 2.97 KB of what it measured was a sidebar behind
+a login being downloaded by every visitor to every public page.
+
+**Why ownership was proved rather than assumed.** A prefix is not evidence.
+Each of the ten selectors was traced to its consumers from source and all ten
+resolve to one file. The same trace was then run across all 273 classes the
+stylesheet declares, looking for back-office rules that carry no `os-` prefix:
+there are none. An earlier speculative dead-CSS detector had named
+`.hero-panel`, `.ofn` and `.mq` among 209 "candidates" — all plainly in use —
+and nothing in this decision rests on it.
+
+**Where the boundary sits.** The protected segment's own layout, not the outer
+`/os` one. It is the narrowest segment that covers every one of the ten
+selectors, and it keeps `/os/login` — which uses none of them — off the list.
+Verified in the served HTML: `/os` requests two stylesheets, a public page
+requests one.
+
+**One deletion, and three refusals.** `.footer-link` had no consumer because
+the footer was rebuilt around `.site-footer-link`; it was an obsolete leftover
+from a rename and it went. `.container-narrow`, `.hint` and `.table-wrap` also
+have no consumer and were **kept**: each is half of a documented design-system
+pair, and removing capability from the system to win bytes is the thing the
+instruction to not "delete CSS randomly until the number becomes green" exists
+to prevent.
+
+**What it costs, and what is worth knowing.** A second stylesheet, which the
+budget's own note treats as a warning sign ("a second file appearing here… is
+the signal that a component has started shipping styles of its own"). Here it
+is the opposite signal, and the note should be read with that in mind. More
+usefully: `web.total-css` sums every CSS file under `.next/static`, so it still
+counts the `/os` chunk nobody public requests — the split shows as −101 bytes
+in that number while the public payload fell by 3,473. The metric cannot see
+route splitting. That did not need a gate change here and is recorded for the
+next one.
+
+---
+
 ## 2026-09-17 — Agent Bureau's second language
 
 The durable principle is **ADR-0014**. These are the decisions under it.

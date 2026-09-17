@@ -1,5 +1,230 @@
 # Change Log
 
+## 2026-09-17 — the mobile pass, and what it found in the bilingual one
+
+One coordinated pass across the four surfaces the platform actually has: the
+public hub, the Max conversation, the Agent Bureau public page, and the
+authenticated Agent Bureau application. Mobile treated as a first-class
+interface rather than a narrower desktop.
+
+It also found that the bilingual work closed the same morning was not finished.
+That is the more important half of this entry.
+
+### The bilingual pass had nine leaks, and the audit could not see any of them
+
+`check:i18n` reported clean over all nine. Three separate blind spots:
+
+**A short attribute value desynchronised the quote scanner.** The pattern
+required four characters between quotes, so `size="sm"` was skipped — and the
+scan then paired the quote that CLOSED it with the quote that OPENED the next
+attribute, reading `" label="` as the string. Everything after it on that line
+was invisible. That is how
+
+    <Icon name="close" size="sm" label="Menü schließen" />
+
+shipped a German accessible name on the close control of the hub's mobile
+navigation, on every page of the site, past a green gate. The pattern now
+matches a string of any length and applies the length rule afterwards.
+
+**JSX text that spans lines was never read.** The scan needed the `>` and the
+`<` on one line. A table head written the way a formatter writes one was
+therefore unreachable, and the audit console shipped `Priorität \ Wirkung` as a
+German column header inside the English product. A second pass now reads text
+nodes across newlines.
+
+**The heuristic only looked for German.** It was written German-biased, because
+German prose in a .tsx file was the Agent Bureau regression. The hub's chrome
+had the mirror image — the Max conversation's header, close control and send
+control were English literals with no German anywhere near them, and the locale
+switcher, the one control that exists for a reader of the other language,
+announced itself as `Switch language to EN` and nothing else. `scanEnglish` now
+covers the chrome components, where every string is supposed to come from the
+catalogue and a literal is therefore unambiguous.
+
+**And three label maps were never suspected.** `STATUS_LABEL`, `CHANNEL_LABEL`,
+`TYPE_LABEL` — eighteen German words in `Record`s keyed by enum, in task,
+waiting-room and document-desk cards. They read as configuration, and half of
+them ("Offen", "In Arbeit", "Blockiert") carry no umlaut and match no word in
+the heuristic's list. They are message keys now.
+
+Also translated: both error boundaries. `error.tsx` had four German literals
+and sits under the provider, so it reads from the catalogue like everything
+else; an English operator whose approvals page failed was being told so in
+German, on the one screen where the reader already cannot guess what happened.
+`global-error.tsx` cannot reach the catalogue — it replaces the document the
+provider is mounted in — so it carries both languages in the chunk, chosen from
+the same cookie the server reads, with an `i18n-exempt` marker saying why.
+
+`prove:i18n` grew from 11 demonstrations to 14: the multi-line node, the
+literal behind a short attribute, and English in catalogue-driven chrome are
+each staged, caught and undone.
+
+### The hub's homepage pushed itself sideways in German and not in English
+
+At 320px, `/de` overflowed by 16px and `/de/solutions` by 29px. The cause is
+worth writing down because it is invisible in review and invisible in English.
+
+`grid-template-columns: 1fr` is `minmax(auto, 1fr)`, and that automatic minimum
+is the largest child's **min-content** width — for a German compound, the width
+of the whole unbroken word. "Prozessautomatisierung" measures 255px at label
+size, so the single column of the architecture map sized itself to 255px inside
+a 173px grid. The English label, "Workflow automation", breaks at the space and
+fits. A one-column grid, declared correctly, moving the page.
+
+Both grids are `minmax(0, 1fr)` now and the node labels carry the same
+`overflow-wrap: break-word` the headings have had since a legal page did this
+at 390px. `check:responsive` did not recognise `minmax(0, 1fr)` as a
+single-column state — the safe form failed the audit while the unsafe one
+passed — and now does.
+
+### Agent Bureau had no navigation on a phone
+
+`Sidebar` is `hidden w-60 … md:flex`. Below 768px it was not collapsed and not
+replaced: it was removed, and nothing took its place. An operator opening
+agents.maxpromo.digital on a phone reached the dashboard and could not get to
+approvals, the audit console, documents, the waiting room, governance or
+settings, and could not sign out. The only reachable routes were whatever the
+current page happened to link to.
+
+No gate saw it. The responsive audit looks for grids that do not collapse and
+widths wider than a phone; a navigation that vanishes is neither. Two words
+took the whole product's navigation away on the device most likely to be used
+for an approval that cannot wait.
+
+`MobileNav` is a drawer: nineteen destinations in their three groups, the
+current one marked, 44px rows, the locale control and sign-out, closing on
+selection, backdrop, Escape and route change, with the page locked behind it
+and the scroll position given back. It shares its list with the sidebar through
+`lib/navigation.ts` rather than keeping a second copy — the platform's most
+expensive recurring mistake, and a drawer would have been the fourth place a
+section name could go missing.
+
+### The Max conversation became a bottom sheet
+
+It was a fixed block with `max-height: 560px`, every rule an inline style
+object, no dialog semantics, no Escape, no scroll ownership, and an auto-scroll
+that dragged the reader to the bottom on every render. On a 667px phone the cap
+left 107px of page behind it and the composer sat under the home indicator.
+
+Now: 78dvh with `max-height: 85svh`, so the sheet is never taller than the
+smallest state of the viewport and the browser's chrome collapsing cannot clip
+the composer. `role="dialog"`, `aria-modal`, Escape, focus moved in. The page
+stays visible above it, because this is a conversation with a company whose
+website you are reading. The body is locked with `position: fixed` and the
+scroll position restored — `overflow: hidden` alone is ignored by iOS Safari
+often enough to be unusable.
+
+**Auto-scroll lets go.** New messages follow the bottom only while the reader
+is within 64px of it. Scroll up to re-read and the conversation stops chasing;
+come back and following resumes, with a labelled control saying so rather than
+leaving the state to be discovered. The jump is instant rather than smooth
+under `prefers-reduced-motion`.
+
+The reader's own words sit on `--brand-surface-accent`, the one lime-tinted
+surface the token package sanctions, with ordinary text on it. They had been
+`--brand-primary-dark` used as a fill — Lime 600 is a text colour in this
+system — which made every second bubble the darkest object on the page.
+
+Quick replies, the high-score card and the conversational contact step are not
+here. There is no state behind them: Max is a free-text conversation against
+`/api/chat/message` with no quick-reply set, no score and no contact stage, and
+the scored guided audit they belong to exists only as an orphaned endpoint
+(`/api/max-agent/submit`) with no caller. Building them is new conversation
+branching and a new scoring rule. Reported rather than invented.
+
+### White text on Brand Lime, in four places
+
+`text-white` on `bg-accent` measures **1.51:1**. It was on the approve control
+of the approval desk — the highest-value button in the product and the least
+legible — and on the AI Lab's generate button, the approval card, and the
+Chief-of-Staff disc on the public page. The rule is one sentence long and these
+are the controls it was written for: the accent is a fill, and text on it is
+black. All four are `text-on-accent` with the accent edge, which a lime fill on
+white needs to have a perceivable boundary at all (WCAG 1.4.11).
+
+### Form controls stopped zooming the page
+
+Both applications set their inputs to 15px — the hub's `.input`, `.textarea`,
+`.select` and Agent Bureau's `.field-input`. Mobile Safari zooms the whole page
+when a focused control renders below 16px and does not zoom back out, leaving
+the reader on a page a third too wide, scrolling sideways to find the next
+field. Every form on the platform did it: contact, demo request, newsletter,
+the Agent Bureau login and the settings behind it.
+
+One rule, in `packages/ui`, where both applications read it. The two class
+names are still two declarations of one control; that is recorded in
+known-risks rather than quietly merged in the middle of a mobile pass.
+
+### The homepage operating flow was recomposed, not shrunk
+
+Seven stages, below 1100px, had been seven full-width boxes with the icon above
+the name above the detail, all centred: 1002px on a 375px phone, the same
+object met seven times before the page says anything. The icon now holds a left
+rail and the text sits beside it, with the lime route running down the rail
+through the icons rather than through the middle of the page. **599px, a 40%
+reduction**, with all seven stages, six connectors, seven icons and both
+human-control pills intact. The approved desktop composition is untouched and
+is still built from the same markup.
+
+### Also
+
+Navigation sheet on `100dvh` with safe-area insets top and bottom — its last
+items sat under the browser toolbar and its primary action inside the home
+gesture area. Burger, close, sheet links, both locale controls and the Max
+controls all at or above 44px; the locale switcher's tappable area had been the
+width of the letters "EN". The hub's locale switcher moved its hover from
+`onMouseEnter` to CSS, so a keyboard user gets the response a mouse user gets.
+Agent Bureau's public header is 64px on a phone instead of 112px — a sixth of a
+667px screen given to a wordmark and a toggle. Its login is `min-h-dvh` and
+top-aligned below `sm`, because a centred column that overflows is clipped at
+both ends and the submit button was the part that went.
+
+`check:responsive` now measures against **320px** rather than 380px, which is
+what let the two overflows above hide. The hub's internal back office is named
+as the one surface that is not a phone surface, rather than the threshold being
+left loose for everybody.
+
+### Verified
+
+Every public route and every reachable Agent Bureau route measured for
+page-level horizontal overflow at 320, 360, 375, 390, 430, 768, 1024 and 1440,
+in both languages: clean. The authenticated application was verified against a
+locally minted throwaway session over local fixtures — the drawer, its nineteen
+destinations, the language switch, the close paths, the scroll lock and the
+contacts table's horizontal scroll — at 320 through 1440, in German and in
+English. The Max sheet was driven end to end at 375 in both languages with the
+chat endpoint stubbed: open, send, scroll up, receive without being dragged,
+jump back, close, reopen.
+
+### And the public payload got smaller than it was before any of this
+
+The pass took `web.total-css` to 80.23 KB against an 80 KB budget. The budget
+was not raised. Instead the thing it was measuring was corrected: every visitor
+to every public page of maxpromo.digital had been downloading the internal back
+office's chrome — the sidebar, its drawer, the navigation rows, the sign-out —
+because `app/globals.css` is imported by the root layout and the `.os-*` rules
+lived in it.
+
+All ten selectors were traced to their consumers from source rather than from
+the prefix; all ten resolve to `app/os/(protected)/layout.tsx`. The same trace
+across all 273 declared classes found no other back-office rule hiding under a
+different name. The block moved to `os-layout.css` beside the layout that owns
+it, and the served HTML confirms it: `/os` requests two stylesheets, a public
+page requests one.
+
+    public payload, before this episode   82,160 bytes   80.23 KB
+    public payload, after the split       78,687 bytes   76.84 KB   -4.2%
+    /os chunk, off the public path         3,090 bytes    3.02 KB
+    web.total-css                         81,777 bytes   79.86 KB   under 80
+
+One class went with it: `.footer-link`, superseded by `.site-footer-link` in a
+rename and wired to nothing since. Three other zero-consumer classes were found
+and kept, because each is half of a documented pair and removing capability to
+win bytes is not the same activity as removing what is obsolete.
+
+`npm run verify` and `npm run certify` both exit 0.
+
+
 ## 2026-09-17 — Agent Bureau is bilingual, all the way through
 
 The requirement had been given more than once and deferred each time. It is

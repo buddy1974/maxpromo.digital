@@ -27,8 +27,13 @@ export default function Max() {
 
   return (
     <MaxMemoryProvider>
+      {/* Each is mounted only when it is on screen. The panel in particular
+          starts fresh every time it opens, which is what lets it land on the
+          latest message without an effect reaching in to reset its scroll
+          state. The provider outlives both, so the conversation itself is
+          not lost when the sheet closes. */}
       {!open && <MaxBubble onClick={() => setOpen(true)} />}
-      <MaxPanel open={open} onClose={() => setOpen(false)} />
+      {open && <MaxPanel onClose={() => setOpen(false)} />}
     </MaxMemoryProvider>
   )
 }

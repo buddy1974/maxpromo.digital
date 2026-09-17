@@ -104,13 +104,20 @@ export default function Navbar() {
             <span className="site-nav-logo">
               Maxpromo<span className="site-nav-logo-dim"> Digital</span>
             </span>
+            {/* The icon is decorative: the button already carries the
+                accessible name, and an icon that labels itself makes a screen
+                reader announce the control twice (ADR-0003). It was also
+                labelling itself in German — `label="Menü schließen"` — on the
+                close control of the mobile navigation, which is to say on
+                every page of a bilingual site. The audit walked past it for a
+                reason worth reading in check-i18n.mjs. */}
             <button
               type="button"
               className="site-nav-close"
               onClick={() => setMenuOpen(false)}
               aria-label={t('closeMenu')}
             >
-              <Icon name="close" size="sm" label="Menü schließen" />
+              <Icon name="close" size="sm" />
             </button>
           </div>
 

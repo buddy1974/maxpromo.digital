@@ -73,31 +73,52 @@ export function ApprovalActions({
 
   return (
     <div className="mt-5">
-      <div className="flex flex-wrap gap-2">
+      {/*
+        THE APPROVE CONTROL WAS WHITE TEXT ON BRAND LIME.
+        That measures 1.51:1. The platform rule is one sentence long and this
+        is the control it was written for: the accent is a fill, and text on it
+        is black. It is `text-on-accent` now — the token that exists precisely
+        so this is not a judgement call — and the border is the accent edge,
+        because a lime fill on white has no perceivable boundary (WCAG 1.4.11).
+        This was the highest-value button in the product and the least legible.
+
+        LAYOUT: APPROVE IS NOT BESIDE REJECT ON A PHONE.
+        Three 37px-tall controls in a wrapping row with 8px between them put
+        "approve" and "reject" a thumb's width apart on the one screen in this
+        product where the wrong tap is a decision recorded against a customer.
+        Below `sm` the affirmative action takes its own full-width row and the
+        other two share the next one, so the two opposite answers are never
+        adjacent. Every control clears 44px.
+
+        The three actions, their endpoint and their semantics are untouched.
+      */}
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         <button
           type="button"
           disabled={busy}
           onClick={() => run("approve")}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
+          className="min-h-11 rounded-lg border border-accent-dark bg-accent px-4 py-2 text-sm font-semibold text-on-accent transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
           {t("approve")}
         </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => run("reject")}
-          className="rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong disabled:opacity-60"
-        >
-          {t("reject")}
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => run("mark_reviewed")}
-          className="rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong disabled:opacity-60"
-        >
-          {t("markReviewed")}
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => run("reject")}
+            className="min-h-11 flex-1 rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong disabled:opacity-60 sm:flex-none"
+          >
+            {t("reject")}
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => run("mark_reviewed")}
+            className="min-h-11 flex-1 rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong disabled:opacity-60 sm:flex-none"
+          >
+            {t("markReviewed")}
+          </button>
+        </div>
       </div>
       {message && (
         <p

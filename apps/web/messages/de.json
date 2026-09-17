@@ -12,12 +12,14 @@
     "primaryLabel": "Hauptnavigation",
     "openMenu": "Navigation öffnen",
     "closeMenu": "Navigation schließen",
-    "work": "Arbeiten"
+    "work": "Arbeiten",
+    "switchLanguage": "Sprache auf {language} umstellen"
   },
   "cookieBanner": {
     "text": "Wir verwenden keine Tracking-Cookies. Nur technisch notwendige Funktionen. Ihre Daten werden gemäß unserer",
     "privacyLink": "Datenschutzerklärung",
-    "accept": "OK"
+    "accept": "OK",
+    "dialogLabel": "Cookie-Hinweis"
   },
   "hero": {
     "eyebrow": "BETRIEBSSYSTEME FÜR UNTERNEHMEN",
@@ -55,7 +57,8 @@
     "privacy": "Datenschutz",
     "agb": "AGB",
     "taxNumber": "Steuernummer",
-    "taxOffice": "Finanzamt"
+    "taxOffice": "Finanzamt",
+    "brand": "Maxpromo Digital"
   },
   "home": {
     "problem": {
@@ -704,5 +707,20 @@
     "deniedTitle": "Dieser Zugang gilt nicht mehr.",
     "deniedBody": "Der Link ist abgelaufen, wurde zurückgezogen oder gehört nicht zu diesem Bereich. Ihr Ansprechpartner kann einen neuen Zugang ausstellen.",
     "backToWork": "Zurück zu den Arbeiten"
+  },
+  "max": {
+    "open": "Max öffnen",
+    "close": "Schließen",
+    "name": "Max",
+    "role": "Geschäftsanalyse",
+    "empty": "Frage stellen. Echte Antwort.",
+    "placeholder": "Ihre Nachricht …",
+    "send": "Senden",
+    "thinking": "Max schreibt …",
+    "unavailable": "Max ist gerade nicht erreichbar. Bitte versuchen Sie es gleich erneut.",
+    "conversationLabel": "Gespräch mit Max",
+    "scrollToLatest": "Zur neuesten Nachricht",
+    "youSaid": "Sie",
+    "maxSaid": "Max"
   }
 }

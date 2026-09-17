@@ -21,7 +21,16 @@ export async function DashboardShell({
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar title={title} />
-        <main id="content" className="flex-1 overflow-y-auto bg-surface-subtle p-6">
+        {/* 16px of gutter on a phone, 24px from `sm` up. At 320px a 24px
+            gutter on both sides leaves 272px for cards that carry a customer
+            name, a channel and a waiting time on one row. The bottom padding
+            clears the home indicator so the last card in a queue is fully
+            readable rather than half under the gesture bar. */}
+        <main
+          id="content"
+          className="flex-1 overflow-y-auto bg-surface-subtle p-4 sm:p-6"
+          style={{ paddingBottom: "calc(var(--space-6) + env(safe-area-inset-bottom, 0px))" }}
+        >
           <div className="mx-auto max-w-6xl">{children}</div>
         </main>
       </div>

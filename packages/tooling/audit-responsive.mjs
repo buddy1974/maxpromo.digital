@@ -24,7 +24,31 @@ import { join, relative, sep } from 'node:path'
 
 const ROOT = process.cwd()
 const SKIP = new Set(['node_modules', '.next', '.git', 'out', 'dist'])
-const NARROWEST = 380   // the narrowest viewport we support
+/**
+ * The narrowest viewport we support: 320px, down from 380px.
+ *
+ * 380 was above the smallest phone anybody actually uses, so the audit could
+ * not see the widths that break on one. The mobile pass measured every public
+ * route and every Agent Bureau route at 320 and found two real overflows the
+ * old threshold had no opinion about, so the threshold now matches the
+ * narrowest column of the QA matrix rather than sitting just above it.
+ */
+const NARROWEST = 320
+
+/**
+ * The hub's internal back office is not a phone surface.
+ *
+ * `apps/web/app/os` is Marcel's own admin tool: one operator, on a desktop,
+ * behind a login, with invoice and quotation tables that are wide because the
+ * documents are. It carries three inline widths between 320 and 380 that the
+ * tightened threshold now sees. Widening the audit to catch phone bugs on the
+ * public site should not turn into a rebuild of the back office, and squeezing
+ * a quotation editor into 320px would be work nobody asked for and nobody
+ * would use — so this surface is named here rather than quietly fixed or the
+ * threshold quietly left loose. If /os ever becomes something used on a phone,
+ * deleting this line is the first step.
+ */
+const NOT_A_PHONE_SURFACE = /^apps\/web\/app\/os\//
 
 function walk(dir, out = []) {
   let entries
@@ -66,8 +90,26 @@ for (const f of files.filter((f) => f.endsWith('.css'))) {
     const m = body.match(/grid-template-columns:\s*([^;]+);/)
     if (!m) continue
     const v = m[1].trim()
+    /**
+     * A single-column state, in the three forms this platform writes it.
+     *
+     * `minmax(0, 1fr)` was not recognised, and it is the form that is actually
+     * safe. A bare `1fr` is `minmax(auto, 1fr)`, and that automatic minimum is
+     * the largest child's MIN-CONTENT width — for a German compound, the width
+     * of the whole unbroken word. The homepage shipped `grid-template-columns:
+     * 1fr` on the architecture map, "Prozessautomatisierung" measured 255px,
+     * and the single column sized itself to 255px inside a 173px grid: a
+     * one-column grid, declared correctly by this audit's rule, pushing the
+     * page sideways at 320px. The English label breaks at a space and fits,
+     * which is why it survived review in one of the two published languages.
+     *
+     * So both are accepted — the declaration is still a single column either
+     * way, and this audit is about column count — but `minmax(0, 1fr)` is the
+     * one to write. The failure above is recorded in known-risks.
+     */
     if (/auto-fit|auto-fill/.test(v)) single.add(sel)
     else if (/^1fr\s*(?:!important)?$/.test(v)) single.add(sel)
+    else if (/^minmax\(\s*0(?:px)?\s*,\s*1fr\s*\)\s*(?:!important)?$/.test(v)) single.add(sel)
     else if (/repeat\(\s*[2-9]|1fr\s+1fr|minmax[^)]*\)[\s,]+minmax/.test(v)) multi.add(sel)
   }
   gridsChecked += multi.size
@@ -85,8 +127,9 @@ for (const f of files.filter((f) => f.endsWith('.css'))) {
 // ── Source: inline fixed widths ─────────────────────────────────────────────
 for (const f of files.filter((f) => /\.tsx?$/.test(f))) {
   const src = readFileSync(f, 'utf8')
+  const phoneSurface = !NOT_A_PHONE_SURFACE.test(rel(f))
   for (const m of src.matchAll(/(?:minWidth|width):\s*'(\d{3,})px'/g)) {
-    if (Number(m[1]) >= NARROWEST) {
+    if (phoneSurface && Number(m[1]) >= NARROWEST) {
       findings.push({ file: rel(f), issue: `inline fixed width ${m[1]}px` })
     }
   }

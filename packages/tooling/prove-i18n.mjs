@@ -173,6 +173,80 @@ try {
     }
     unlinkSync(SCRATCH)
   }
+
+  /**
+   * ── 9. German in a text node that spans lines ───────────────────────────
+   *
+   * The scan was line-oriented: it needed the `>` and the `<` on the same
+   * line as the words. A table head written the way a formatter writes one
+   * therefore passed, and Agent Bureau shipped a German column header on the
+   * audit console for as long as it had an English translation to contradict.
+   */
+  {
+    writeFileSync(
+      SCRATCH,
+      'export function Probe() {\n' +
+      '  return (\n' +
+      '    <th>\n' +
+      '      Bitte prüfen Sie Ihre Eingaben\n' +
+      '    </th>\n' +
+      '  );\n' +
+      '}\n',
+    )
+    expectCaught(
+      'German text in a JSX node that spans lines',
+      /__i18n_probe\.tsx.*German text in source/s,
+    )
+    unlinkSync(SCRATCH)
+  }
+
+  /**
+   * ── 10. A literal hidden behind a short attribute value ─────────────────
+   *
+   * The quote pattern required four characters between the quotes. A shorter
+   * value earlier on the line — `size="sm"` — was skipped, and the scan then
+   * paired the quote that closed it with the quote that OPENED the next
+   * attribute, reading `" label="` as the string and leaving the real one
+   * invisible. That is exactly how `label="Menü schließen"` shipped on the
+   * close control of the hub's mobile navigation, on every page of the site.
+   */
+  {
+    writeFileSync(
+      SCRATCH,
+      'export function Probe() {\n' +
+      '  return <Icon name="close" size="sm" label="Bitte prüfen" />;\n' +
+      '}\n',
+    )
+    expectCaught(
+      'a German literal sitting after a short attribute value',
+      /__i18n_probe\.tsx.*German text in source/s,
+    )
+    unlinkSync(SCRATCH)
+  }
+
+  /**
+   * ── 11. English in catalogue-driven chrome ──────────────────────────────
+   *
+   * The heuristic is German-biased, because German prose in a .tsx file was
+   * the Agent Bureau regression. The hub's chrome had the mirror image — an
+   * English role line and three English control labels on a German-first
+   * site — and nothing looked for it. `scanEnglish` does, in the components
+   * where every string is supposed to come from a message file.
+   */
+  {
+    const probe = join(ROOT, 'apps/web/components/max/__i18n_probe.tsx')
+    writeFileSync(
+      probe,
+      'export function Probe() {\n' +
+      '  return <button aria-label="Close the conversation">x</button>;\n' +
+      '}\n',
+    )
+    expectCaught(
+      'English text hardcoded in catalogue-driven chrome',
+      /__i18n_probe\.tsx.*English text in source/s,
+    )
+    unlinkSync(probe)
+  }
 } finally {
   // Whatever happened above, the tree goes back exactly as it was found.
   writeFileSync(DE, originalDe)

@@ -180,17 +180,12 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 .nav-link:hover,
 .nav-link:focus-visible { color: var(--brand-text); }
 
-.footer-link {
-  color: var(--brand-text-inverted-secondary);
-  text-decoration: none;
-  font-size: var(--text-small);
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  transition: color var(--duration-fast) var(--ease);
-}
-.footer-link:hover,
-.footer-link:focus-visible { color: var(--brand-text-inverted); }
+/* `.footer-link` stood here and had no consumer. It was not an unused
+   primitive kept for a future call site — it was superseded: the footer was
+   rebuilt around `.site-footer-link`, which is defined with the rest of the
+   footer further down this file and carries the same 44px minimum. Two names
+   for one thing, one of them wired to nothing. Traced from every `className`
+   in the application before removing, not inferred from the name. */
 
 
 /* ─── Surfaces ────────────────────────────────────────────────────────────── */
@@ -314,170 +309,6 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 
 
 /* ═════════════════════════════════════════════════════════════════════════════
-   OS LAYOUT SYSTEM
-   Migrates to the token system in batch B5, together with the /os pages. Its
-   hardcoded dark palette is deliberately untouched here so that B3 produces no
-   visual change anywhere.
-   ══════════════════════════════════════════════════════════════════════════ */
-
-.os-sidebar {
-  width: 260px;
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  background: var(--brand-surface);
-  border-right: 1px solid var(--brand-border);
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-  overflow: hidden;
-}
-
-.os-main {
-  margin-left: 260px;
-  height: 100vh;
-  overflow-y: auto;
-  background: var(--brand-background);
-}
-
-.os-hamburger {
-  display: none;
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  z-index: 600;
-  width: 40px;
-  height: 40px;
-  background: var(--brand-surface-subtle);
-  border: 1px solid var(--brand-border-strong);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 5px;
-  padding: 0;
-}
-.os-hamburger-line {
-  display: block;
-  width: 18px;
-  height: 2px;
-  background: var(--brand-text-secondary);
-  border-radius: var(--radius-xs);
-}
-
-.os-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: color-mix(in srgb, var(--brand-text) 45%, transparent);
-  z-index: 400;
-}
-
-.os-section-label {
-  display: block;
-  padding: 16px 20px 8px;
-  font-family: var(--brand-font-mono);
-  font-size: 9px;
-  color: var(--brand-text-muted);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  margin: 0;
-}
-
-.os-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  margin: 2px 8px;
-  border-radius: var(--radius-sm);
-  text-decoration: none;
-  border-left: 2px solid transparent;
-  width: calc(100% - 16px);
-  box-sizing: border-box;
-  background: transparent;
-  transition: background var(--duration-fast) var(--ease);
-  cursor: pointer;
-}
-.os-nav-item:hover,
-.os-nav-item:focus-visible { background: var(--brand-surface-subtle); }
-.os-nav-item:hover .os-nav-icon  { color: var(--brand-text) !important; }
-.os-nav-item:hover .os-nav-label { color: var(--brand-text) !important; }
-.os-nav-item.active {
-  background: var(--brand-surface-subtle);
-  border-left-color: var(--brand-primary);
-  padding-left: 14px;
-}
-.os-nav-item.active .os-nav-icon  { color: var(--brand-text) !important; }
-.os-nav-item.active .os-nav-label { color: var(--brand-text) !important; font-weight: 600; }
-
-button.os-nav-item {
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
-}
-
-/* Holds an <Icon>, which draws itself at 20px and inherits this colour.
-   `font-size` and `text-align` were here to wrangle a Unicode glyph whose size
-   depended on whichever font happened to cover it; an SVG needs neither. */
-.os-nav-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  color: var(--brand-text-secondary);
-  flex-shrink: 0;
-  transition: color var(--duration-fast) var(--ease);
-}
-.os-nav-label {
-  font-family: var(--brand-font-sans);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--brand-text-secondary);
-  transition: color var(--duration-fast) var(--ease);
-  white-space: nowrap;
-}
-
-.os-logout-btn {
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  background: transparent;
-  border: 1px solid var(--brand-border);
-  color: var(--brand-text-secondary);
-  font-family: var(--brand-font-sans);
-  font-size: 12px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
-  margin-top: var(--space-3);
-  text-align: left;
-}
-.os-logout-btn:hover,
-.os-logout-btn:focus-visible {
-  border-color: var(--brand-text);
-  color: var(--brand-primary-text);
-}
-
-@media (max-width: 768px) {
-  .os-hamburger { display: flex; }
-  .os-sidebar {
-    transform: translateX(-260px);
-    transition: transform var(--duration-base) var(--ease);
-    z-index: 500;
-  }
-  .os-sidebar.open { transform: translateX(0); }
-  .os-backdrop.open { display: block; }
-  .os-main { margin-left: 0 !important; }
-  .os-nav-item { padding: 14px 20px; }
-  .os-nav-item.active { padding-left: 18px; }
-  .os-nav-label { font-size: 15px; }
-}
-
-
-
-/* ═════════════════════════════════════════════════════════════════════════════
    SITE CHROME — navigation
    The bar sits on the inverted surface. Links take the inverted text tokens,
    never literal white and never the accent: the accent's only job in the
@@ -572,21 +403,27 @@ button.os-nav-item {
   border-color: var(--brand-primary-edge);
 }
 
-/* Burger */
+/* Burger.
+   44px, not 40px. It is the only way into the navigation on every viewport
+   below 1200px, it sits against the right edge of the screen where a thumb is
+   least accurate, and 40px is under the floor the rest of this chrome holds
+   to. The bars inside are unchanged — the control grew, the mark did not. */
 .site-nav-burger {
   margin-left: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: var(--space-1);
-  width: 40px;
-  height: 40px;
-  padding: 0 10px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   background: transparent;
   border: 1px solid var(--brand-border-inverted);
   border-radius: var(--radius-md);
   cursor: pointer;
 }
+.site-nav-burger span { width: 20px; }
 .site-nav-burger span {
   display: block;
   height: 1.5px;
@@ -610,16 +447,30 @@ button.os-nav-item {
   .site-nav-burger  { display: none; }
 }
 
-/* Mobile sheet */
+/* Mobile sheet.
+   `height: 100dvh` rather than `inset: 0` alone: on mobile Safari an
+   `inset: 0` fixed element is measured against the *large* viewport, so the
+   last item in the sheet — the language control and the call to action — sat
+   under the browser's own toolbar until the reader scrolled, on a surface
+   that looks like it has nothing left to scroll. The dynamic unit measures
+   what is actually visible.
+
+   The bottom padding clears the home indicator. Without it the primary action
+   of the whole navigation sits inside the system gesture area, where a tap is
+   as likely to send the reader to their home screen as to the contact page. */
 .site-nav-sheet {
   position: fixed;
   inset: 0;
+  height: 100dvh;
   z-index: 300;
   background: var(--brand-surface-inverted);
   display: flex;
   flex-direction: column;
-  padding: 0 var(--section-x) var(--space-8);
+  padding: 0 var(--section-x);
+  padding-bottom: calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .site-nav-sheet-head {
   height: 64px;
@@ -629,9 +480,13 @@ button.os-nav-item {
   border-bottom: 1px solid var(--brand-border-inverted);
   margin-bottom: var(--space-6);
 }
+/* 44px, for the same reason as the burger that opens it. */
 .site-nav-close {
-  width: 40px;
-  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   background: transparent;
   border: 1px solid var(--brand-border-inverted);
   border-radius: var(--radius-md);
@@ -641,9 +496,17 @@ button.os-nav-item {
   line-height: 1;
 }
 .site-nav-sheet-links { display: flex; flex-direction: column; }
+/* A row, not a line of text: the whole width is the target and it is never
+   shorter than 52px, so six links are six comfortable taps rather than six
+   pieces of type with a hit area the height of their own ascenders.
+   1.25rem was also loud on a 320px screen against a 32px page heading — the
+   navigation was set larger than the page it navigates to. */
 .site-nav-sheet-link {
-  padding: var(--space-4) 0;
-  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: var(--space-3) 0;
+  font-size: var(--text-h4);
   font-weight: 600;
   color: var(--brand-text-inverted);
   text-decoration: none;
@@ -1836,6 +1699,18 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 
+/* On a narrow phone the two actions become two full-width rows rather than
+   two nowrap pills competing for 280px of usable width. `.btn` sets
+   `white-space: nowrap`, so at 320px the German "Gespräch vereinbaren" plus
+   its drawn arrow could not shrink and pushed the panel sideways — the hero
+   was the source of the page's horizontal scroll at the narrowest viewport
+   the platform supports. Full width also gives each one the whole thumb. */
+@media (max-width: 420px) {
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn,
+  .hero-actions .btn-primary { width: 100%; }
+}
+
 /* The reference sets an arrow inside both buttons. Drawn, not typed. */
 .hero-cta { gap: var(--space-4); }
 .hero-cta-arrow {
@@ -2024,21 +1899,52 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
    grid gutter by arithmetic. See ADR-0013.
    ═════════════════════════════════════════════════════════════════════════════ */
 
+/* ─── The mobile composition: a route read downward ──────────────────────────
+   Below 1100px the seven stages were seven full-width boxes, each with its
+   icon above its name above its detail, all centred. Correct, and nearly
+   1100px tall on a 390px phone — the reader met the same object seven times
+   and had to scroll past the whole operating model to reach the first thing
+   the page actually says. It was a desktop row turned on its side, which is
+   the specific failure the brief calls "desktop layout merely shrunk".
+
+   Recomposed rather than shrunk. The icon moves to a left rail and the text
+   sits beside it, so a stage is one line of reading instead of three, and the
+   route runs down the rail through the icons rather than through the middle of
+   the page. Same seven stages, same icons, same lime route, same two
+   human-control pills, same order — measured at 375px it goes from 1002px to
+   599px, a 40% reduction — and the relationship between the stages is more
+   legible rather than less, because the connectors now line up with the things
+   they connect.
+
+   Nothing here is text-only, and nothing is hidden. The brief is explicit
+   that this diagram may not be reduced to a list, and it has not been.
+   ───────────────────────────────────────────────────────────────────────── */
+
 .ofn { margin: 0; }
 
 .ofn-row { display: flex; flex-direction: column; gap: 0; }
 .ofn-cell { display: flex; flex-direction: column; position: relative; }
 
 .ofn-node {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  /* `auto`, not a fixed 2rem: `icon` is optional on FlowStage, and an auto
+     track with no item in it collapses to nothing instead of leaving a hole
+     where the rail would be. The gap travels with the icon for the same
+     reason — a column gap would survive the icon it was spacing. */
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-4) var(--space-3);
-  text-align: center;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
   background: var(--mp-gray-900);
   border: 1px solid var(--brand-border-inverted);
   border-radius: var(--radius-lg);
+}
+/* The icon holds the left rail across both text rows. */
+.ofn-node > .ofn-icon {
+  grid-row: 1 / span 2;
+  width: 2rem;
+  justify-content: center;
+  margin-right: var(--space-3);
 }
 .ofn-icon { display: flex; color: var(--brand-text-inverted); }
 /* The Decisions icon is lime in the reference.
@@ -2072,9 +1978,14 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 .ofn-node-human { border-color: var(--brand-primary); }
 
 /* A pill attached beneath the box, overlapping its lower edge. Black on lime,
-   because lime is a fill and the text on it is always black. */
+   because lime is a fill and the text on it is always black.
+
+   On mobile it sits against the left rail rather than centred: the node's
+   content is left-aligned there, and a pill centred under left-aligned text
+   reads as belonging to the row below it. */
 .ofn-tab {
-  align-self: center;
+  align-self: flex-start;
+  margin-left: var(--space-4);
   margin-top: -9px;
   padding: 3px 10px;
   border-radius: var(--radius-full);
@@ -2088,14 +1999,22 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   white-space: nowrap;
 }
 
-/* The route. Vertical below the horizontal breakpoint. */
+/* The route. Vertical below the horizontal breakpoint.
+
+   It runs down the icon rail — 1rem in from the node's left padding, which is
+   the centre of the 2rem icon column — so the line enters and leaves each
+   stage at its icon instead of at the middle of a box whose text it has
+   nothing to do with. Shorter, too: the gap was --space-6 (32px) seven times
+   over, which is 192px of empty page between seven boxes. */
 .ofn-link {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  align-self: center;
-  height: var(--space-6);
+  align-self: flex-start;
+  margin-left: calc(var(--space-4) + 1rem);
+  transform: translateX(-50%);
+  height: var(--space-4);
 }
 .ofn-link-dot {
   width: 5px;
@@ -2114,30 +2033,44 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   border-top: 5px solid var(--brand-primary);
 }
 
-/* ─── Horizontal, at the width the reference was drawn for ───────────────── */
+/* ─── Horizontal, at the width the reference was drawn for ───────────────────
+   The approved desktop composition is untouched by the mobile recomposition
+   above. Everything the mobile branch introduced — the icon rail, the left
+   alignment, the offset route — is unwound here, so the reference layout is
+   still built from the same markup rather than from a second component.
+   ───────────────────────────────────────────────────────────────────────── */
 @media (min-width: 1100px) {
   .ofn-row { flex-direction: row; align-items: flex-start; }
   .ofn-cell { flex: 1; flex-direction: row; align-items: stretch; min-width: 0; }
 
   .ofn-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     flex: 1;
     min-width: 0;
     justify-content: flex-start;
     padding: var(--space-5) var(--space-2);
     gap: var(--space-3);
   }
+  .ofn-node > .ofn-icon { width: auto; margin-right: 0; }
   /* The pill hangs below the box without adding height to the row. */
   .ofn-tab {
     position: absolute;
     left: 50%;
     bottom: -11px;
     transform: translateX(-50%);
+    align-self: auto;
+    margin-left: 0;
     margin-top: 0;
   }
 
   .ofn-link {
     flex-direction: row;
     align-self: center;
+    margin-left: 0;
+    transform: none;
     width: clamp(1.25rem, 3vw, 3.25rem);
     height: auto;
     flex-shrink: 0;
@@ -2402,6 +2335,11 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
   color: var(--brand-text);
+  /* The same rule the headings already carry, for the same reason and in the
+     same language: a compound noun is allowed to break rather than to move
+     the page. Letting the track shrink is only half the fix — without this
+     the word overflows its own node instead of the viewport. */
+  overflow-wrap: break-word;
 }
 .amap-detail {
   margin: 0;
@@ -2421,10 +2359,18 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 /* Hub: a 3x3 grid, centre in the middle cell. Below the breakpoint it is an
    ordered connected list instead, because six spokes at 375px is six
    unreadable labels. */
+/* `minmax(0, 1fr)`, not `1fr`.
+   A bare `1fr` is `minmax(auto, 1fr)`, and that automatic minimum is the
+   largest child's MIN-CONTENT width — for a German compound, the width of the
+   whole unbroken word. "Prozessautomatisierung" measures 255px at this size,
+   so on a 320px phone the single column sized itself to 255px inside a 173px
+   grid and pushed the homepage sideways. The English label breaks at a space
+   and fits, which is why this survived: the layout was correct in one of the
+   two languages the site is published in. */
 .amap-grid {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
 }
 .amap-node-round { border-radius: var(--radius-lg); }
@@ -2882,9 +2828,12 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 
 .cap-section { scroll-margin-top: var(--space-16); }
 
+/* `minmax(0, 1fr)` for the reason set out on .amap-grid: a bare `1fr` takes
+   its minimum from the longest unbreakable word in the column, and this column
+   holds capability names — "Prozessautomatisierung" among them. */
 .cap-head {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
 }
 @media (min-width: 900px) {
