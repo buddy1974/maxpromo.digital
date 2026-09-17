@@ -10,6 +10,8 @@ import { getCurrentUser } from "@/lib/auth/session";
 import type { AgentProposal } from "@/types/agent";
 import type { ActivityLog } from "@/types/activity";
 import type { DailyBriefing, DashboardMetric } from "@/types/dashboard";
+import { getTranslations } from "next-intl/server";
+import { partOfDay, displayName } from "@/lib/i18n/format";
 
 // DB-backed (session workspace). force-dynamic so the build never queries Neon.
 export const dynamic = "force-dynamic";
@@ -20,13 +22,17 @@ export default async function DashboardOverviewPage() {
   if (!user?.businessId) redirect("/login");
 
   const data = await getDashboardData(user.businessId);
+  const t = await getTranslations("dashboard");
+  const tg = await getTranslations("greeting");
+  const te = await getTranslations("empty");
+  const ts = await getTranslations("sections");
 
   if (data.empty) {
     return (
-      <DashboardShell title="Übersicht">
+      <DashboardShell title={ts("overview")}>
         <EmptyState
-          title="Demo-Workspace ist leer"
-          hint="Führen Sie den Demo-Seed aus, um diesen Workspace zu befüllen: npm run db:seed:demo"
+          title={te("workspaceEmpty")}
+          hint={te("workspaceEmptyHint")}
           icon="dashboard"
         />
       </DashboardShell>
@@ -43,20 +49,20 @@ export default async function DashboardOverviewPage() {
 
   const briefing: DailyBriefing = {
     date: new Date().toISOString().slice(0, 10),
-    greeting: "Guten Morgen, Marcel.",
-    headline: `${pending.length} Freigaben offen · ${urgent.length} wartende Kunden · ${data.audit.findings.length} Audit-Findings.`,
+    greeting: tg(partOfDay(), { name: displayName(user) }),
+    headline: t("headline", { approvals: pending.length, waiting: urgent.length, findings: data.audit.findings.length }),
     items: [
-      { id: "b1", label: "Freigaben", detail: `${pending.length} Agenten-Vorschläge warten auf Ihre Prüfung.` },
-      { id: "b2", label: "Warteraum", detail: `${urgent.length} Kunden warten mit hoher Dringlichkeit.` },
-      { id: "b3", label: "Audit", detail: data.audit.session ? `Geschäfts-Check läuft (Score ${data.audit.session.priorityScore}).` : "Kein aktives Audit." },
+      { id: "b1", label: t("bApprovalsLabel"), detail: t("bApprovalsDetail", { count: pending.length }) },
+      { id: "b2", label: t("bWaitingLabel"), detail: t("bWaitingDetail", { count: urgent.length }) },
+      { id: "b3", label: t("bAuditLabel"), detail: data.audit.session ? t("bAuditRunning", { score: data.audit.session.priorityScore }) : t("bAuditNone") },
     ],
   };
 
   const metrics: DashboardMetric[] = [
-    { id: "m1", label: "Offene Freigaben", value: String(pending.length) },
-    { id: "m2", label: "Aktive Agenten", value: String(activeAgents.length) },
-    { id: "m3", label: "Wartende Kunden", value: String(data.waiting.length) },
-    { id: "m4", label: "Audit-Findings", value: String(data.audit.findings.length) },
+    { id: "m1", label: t("mApprovals"), value: String(pending.length) },
+    { id: "m2", label: t("mAgents"), value: String(activeAgents.length) },
+    { id: "m3", label: t("mWaiting"), value: String(data.waiting.length) },
+    { id: "m4", label: t("mFindings"), value: String(data.audit.findings.length) },
   ];
 
   const proposalsForCards: AgentProposal[] = pending.slice(0, 4).map((p) => ({
@@ -69,7 +75,7 @@ export default async function DashboardOverviewPage() {
     riskLevel: p.riskLevel,
     status: p.status,
     expectedOutcome: p.expectedOutcome ?? "",
-    auditTrailPreview: [`Agent: ${p.agentKey}`, "Aktion vorbereitet (nicht ausgeführt)", "Wartet auf menschliche Freigabe"],
+    auditTrailPreview: [t("trailAgent", { agent: p.agentKey }), t("trailPrepared"), t("trailAwaiting")],
     createdAt: new Date(p.createdAt).toISOString(),
   }));
 
@@ -84,7 +90,7 @@ export default async function DashboardOverviewPage() {
   }));
 
   return (
-    <DashboardShell title="Übersicht">
+    <DashboardShell title={ts("overview")}>
       <div className="space-y-8">
         <BriefingPanel briefing={briefing} />
 
@@ -94,7 +100,7 @@ export default async function DashboardOverviewPage() {
           ))}
         </div>
 
-        <Section title="Offene Freigaben" hint="Agenten-Vorschläge warten auf Ihre Prüfung.">
+        <Section title={t("openApprovals")} hint={t("openApprovalsHint")}>
           {proposalsForCards.length ? (
             <div className="grid gap-4 lg:grid-cols-2">
               {proposalsForCards.map((p) => (
@@ -102,12 +108,12 @@ export default async function DashboardOverviewPage() {
               ))}
             </div>
           ) : (
-            <EmptyState title="Keine offenen Freigaben" icon="approvals" />
+            <EmptyState title={t("noApprovals")} icon="approvals" />
           )}
         </Section>
 
         <div className="grid gap-8 lg:grid-cols-2">
-          <Section title="Aktive Agenten">
+          <Section title={t("activeAgents")}>
             <ul className="divide-y divide-hairline rounded-lg border border-hairline bg-surface shadow-sm">
               {activeAgents.map((a) => (
                 <li key={a.id} className="flex items-center justify-between px-4 py-3">
@@ -121,23 +127,23 @@ export default async function DashboardOverviewPage() {
             </ul>
           </Section>
 
-          <Section title="Wartende Kunden">
+          <Section title={t("waitingCustomers")}>
             {urgent.length ? (
               <ul className="divide-y divide-hairline rounded-lg border border-hairline bg-surface shadow-sm">
                 {urgent.map((w) => (
                   <li key={w.id} className="px-4 py-3">
                     <p className="text-sm text-ink">{w.customerName}</p>
-                    <p className="text-xs text-ink-muted">{w.company ?? "—"} · wartet {w.waitingFor}</p>
+                    <p className="text-xs text-ink-muted">{w.company ?? "—"} · {t("waitingFor", { duration: w.waitingFor ?? "—" })}</p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <EmptyState title="Niemand wartet dringend" icon="waiting" />
+              <EmptyState title={t("noneWaitingUrgently")} icon="waiting" />
             )}
           </Section>
         </div>
 
-        <Section title="Letzte Aktivität">
+        <Section title={t("recentActivity")}>
           <div className="rounded-lg border border-hairline bg-surface px-4 shadow-sm">
             <ActivityFeed items={activity} />
           </div>

@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/dashboard/EmptyState";
 import { getDocuments } from "@/lib/db/queries/documents";
 import { getCurrentUser } from "@/lib/auth/session";
 import type { DocumentIntakeItem } from "@/types/document-intake";
+import { getTranslations } from "next-intl/server";
 
 // Module 4 — Document Intake Desk. DB-backed. No OCR/upload pipeline; summaries
 // and actions are prepared, not executed.
@@ -14,6 +15,10 @@ export default async function DocumentsPage() {
   // Auth-5: source businessId from session — no global demo lookup.
   const user = await getCurrentUser();
   if (!user?.businessId) redirect("/login");
+
+  const t = await getTranslations("documents");
+  const ts = await getTranslations("sections");
+  const te = await getTranslations("empty");
 
   const rows = await getDocuments(user.businessId);
 
@@ -40,10 +45,10 @@ export default async function DocumentsPage() {
 
   if (!items.length) {
     return (
-      <DashboardShell title="Document Intake Desk">
+      <DashboardShell title={ts("documents")}>
         <EmptyState
-          title="Keine Dokumente im Demo-Workspace"
-          hint="Führen Sie den Demo-Seed aus: npm run db:seed:demo"
+          title={te("noDocuments")}
+          hint={te("seedHint")}
           icon="documents"
         />
       </DashboardShell>
@@ -51,20 +56,20 @@ export default async function DocumentsPage() {
   }
 
   return (
-    <DashboardShell title="Document Intake Desk">
+    <DashboardShell title={ts("documents")}>
       <div className="space-y-8">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
-            Aus Dokument-Chaos wird strukturierte Aktion
+            {t("eyebrow")}
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
-            Zusammengefasst, mit Frist und nächster Aktion. Vorbereitet, nicht ausgeführt.
+            {t("lede")}
           </p>
         </div>
 
         {actionable.length > 0 && (
           <section>
-            <h3 className="mb-3 text-base font-semibold text-ink">Aktion erforderlich</h3>
+            <h3 className="mb-3 text-base font-semibold text-ink">{t("actionRequired")}</h3>
             <div className="grid gap-4 lg:grid-cols-2">
               {actionable.map((d) => (
                 <DocumentIntakeCard key={d.id} item={d} />
@@ -75,7 +80,7 @@ export default async function DocumentsPage() {
 
         {rest.length > 0 && (
           <section>
-            <h3 className="mb-3 text-base font-semibold text-ink">Erledigt / geprüft</h3>
+            <h3 className="mb-3 text-base font-semibold text-ink">{t("doneReviewed")}</h3>
             <div className="grid gap-4 lg:grid-cols-2">
               {rest.map((d) => (
                 <DocumentIntakeCard key={d.id} item={d} />

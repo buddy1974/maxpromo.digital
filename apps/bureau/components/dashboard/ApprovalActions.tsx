@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ApprovalAction } from "@/types/approval";
+import { useTranslations } from "next-intl";
 
 type UiStatus = "pending" | "approved" | "rejected" | "reviewed";
 
@@ -15,6 +16,7 @@ export function ApprovalActions({
   proposalId: string;
   initialStatus: "pending" | "approved" | "rejected";
 }) {
+  const t = useTranslations("approvalActions");
   const router = useRouter();
   const [status, setStatus] = useState<UiStatus>(initialStatus);
   const [busy, setBusy] = useState(false);
@@ -23,10 +25,10 @@ export function ApprovalActions({
   if (status !== "pending") {
     const label =
       status === "approved"
-        ? "Freigegeben (Vorschau) — keine ausgehende Aktion ausgeführt."
+        ? t("doneApproved")
         : status === "rejected"
-          ? "Abgelehnt — keine Aktion ausgeführt."
-          : "Geprüft — Entscheidung erfasst.";
+          ? t("doneRejected")
+          : t("doneReviewed");
     return (
       <p className="mt-4 rounded-lg border border-hairline bg-surface-subtle px-3 py-2 text-xs text-ink-secondary">
         {label}
@@ -52,18 +54,18 @@ export function ApprovalActions({
           kind: "ok",
           text:
             action === "approve"
-              ? "Freigegeben für den Demo-Workflow. Keine ausgehende Aktion ausgeführt."
+              ? t("okApproved")
               : action === "reject"
-                ? "Vorschlag abgelehnt. Keine Aktion ausgeführt."
-                : "Als geprüft markiert. Keine Aktion ausgeführt.",
+                ? t("okRejected")
+                : t("okReviewed"),
         });
         // Refresh server data so dashboard counts + activity feed update.
         router.refresh();
       } else {
-        setMessage({ kind: "err", text: "Aktion nicht möglich. Bitte Seite neu laden." });
+        setMessage({ kind: "err", text: t("errAction") });
       }
     } catch {
-      setMessage({ kind: "err", text: "Netzwerkfehler. Bitte erneut versuchen." });
+      setMessage({ kind: "err", text: t("errNetwork") });
     } finally {
       setBusy(false);
     }
@@ -78,7 +80,7 @@ export function ApprovalActions({
           onClick={() => run("approve")}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
-          Approve Preview
+          {t("approve")}
         </button>
         <button
           type="button"
@@ -86,7 +88,7 @@ export function ApprovalActions({
           onClick={() => run("reject")}
           className="rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong disabled:opacity-60"
         >
-          Reject Proposal
+          {t("reject")}
         </button>
         <button
           type="button"
@@ -94,7 +96,7 @@ export function ApprovalActions({
           onClick={() => run("mark_reviewed")}
           className="rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong disabled:opacity-60"
         >
-          Mark Reviewed
+          {t("markReviewed")}
         </button>
       </div>
       {message && (

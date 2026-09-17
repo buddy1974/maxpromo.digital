@@ -1,13 +1,7 @@
 import { TONE_TEXT, type Tone } from "@maxpromo/ui";
 import type { AuditFinding } from "@/types/audit";
 import { RiskBadge } from "./RiskBadge";
-
-const IMPACT_LABEL = {
-  time: "Zeit",
-  revenue: "Umsatz",
-  visibility: "Übersicht",
-  risk: "Risiko",
-} as const;
+import { getTranslations } from "next-intl/server";
 
 const PRIORITY_TONE_MAP = {
   low: "neutral",
@@ -16,7 +10,9 @@ const PRIORITY_TONE_MAP = {
   critical: "critical",
 } as const satisfies Record<string, Tone>;
 
-export function AuditFindingCard({ finding }: { finding: AuditFinding }) {
+export async function AuditFindingCard({ finding }: { finding: AuditFinding }) {
+  const t = await getTranslations("impact");
+
   return (
     <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
@@ -33,11 +29,11 @@ export function AuditFindingCard({ finding }: { finding: AuditFinding }) {
       <p className="mt-2 text-sm text-ink-secondary">{finding.pain}</p>
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <span className="rounded-full border border-hairline bg-surface-sunken px-2.5 py-0.5 font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">
-          Wirkung: {IMPACT_LABEL[finding.impactArea]}
+          {t("label")}: {t(finding.impactArea)}
         </span>
         <RiskBadge level={finding.riskLevel} />
         <span className="rounded-full border border-hairline bg-surface-sunken px-2.5 py-0.5 font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">
-          Stage: {finding.recommendedStage}
+          {t("stage")}: {finding.recommendedStage}
         </span>
       </div>
     </div>

@@ -1,35 +1,45 @@
-// Honest framing: the headline promise is the offer (Marcel's own pitch).
-// Hard delivery numbers belong to Maxpromo's installed systems — linked, not faked.
-const STATS = [
-  { value: "10–15 Std.", label: "Zeit pro Woche, die Sie zurückgewinnen sollen" },
-  { value: "Sie", label: "behalten die Kontrolle — jede Aktion wird freigegeben" },
-  { value: "15+ Jahre", label: "Erfahrung mit echten Produktionssystemen" },
-];
+import { getTranslations } from "next-intl/server";
+import { resolveLocale } from "@/lib/i18n/locale";
 
-export function Stats() {
+/**
+ * Honest framing: the headline promise is the offer, not a delivered result.
+ * Hard delivery numbers belong to Maxpromo's installed systems and are linked
+ * rather than restated here — the note under the row says so, and the link now
+ * follows the reader's language to the hub's own case studies.
+ *
+ * The figures themselves are translated rather than reformatted: "10–15 Std."
+ * and "10–15 hrs" are the same claim in two languages, and neither is
+ * strengthened.
+ */
+const STATS = ["s1", "s2", "s3"] as const;
+
+export async function Stats() {
+  const t = await getTranslations("stats");
+  const locale = await resolveLocale();
+
   return (
     <section className="border-b border-hairline bg-surface-subtle">
       <div className="mx-auto max-w-content px-6 py-20 md:py-28">
         <div className="grid gap-8 sm:grid-cols-3">
           {STATS.map((s) => (
-            <div key={s.label}>
+            <div key={s}>
               <div className="text-3xl font-semibold tracking-tight text-ink-secondary md:text-4xl">
-                {s.value}
+                {t(`${s}Value`)}
               </div>
-              <div className="mt-2 text-sm text-ink-secondary">{s.label}</div>
+              <div className="mt-2 text-sm text-ink-secondary">{t(`${s}Label`)}</div>
             </div>
           ))}
         </div>
         <p className="mt-8 font-mono text-xs text-ink-muted">
-          {"Belastbare Ergebnis-Zahlen stammen aus echten, installierten Maxpromo-Systemen"}{" "}
+          {t("note")}{" "}
           —{" "}
           <a
-            href="https://www.maxpromo.digital/de/case-studies"
+            href={`https://www.maxpromo.digital/${locale}/case-studies`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-ink-secondary underline underline-offset-2 hover:text-ink-secondary"
           >
-            Fallstudien ansehen
+            {t("caseStudies")}
           </a>
           .
         </p>

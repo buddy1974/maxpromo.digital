@@ -37,8 +37,19 @@ export function clampRisk(modelRisk: AIRiskLevel, floor: AIRiskLevel): AIRiskLev
   return RISK_ORDER[modelRisk] >= RISK_ORDER[floor] ? modelRisk : floor;
 }
 
-export function defaultSafetyNote(): string {
-  return "Entwurf zur menschlichen Prüfung. Nichts wurde gesendet, ausgeführt oder angewendet. Keine rechtliche/steuerliche/medizinische Letztberatung.";
+/**
+ * The note printed under every generated draft. It is read by the operator,
+ * so it follows the operator — and both versions say exactly the same thing,
+ * because what it states is a safety property of the product.
+ */
+/* i18n-exempt — both languages are present and chosen by the locale. */
+const SAFETY_NOTE = {
+  de: "Entwurf zur menschlichen Prüfung. Nichts wurde gesendet, ausgeführt oder angewendet. Keine rechtliche/steuerliche/medizinische Letztberatung.",
+  en: "A draft for human review. Nothing has been sent, executed or applied. Not final legal, tax or medical advice.",
+} as const;
+
+export function defaultSafetyNote(locale: "de" | "en" = "de"): string {
+  return SAFETY_NOTE[locale];
 }
 
 export function coerceRisk(value: unknown): AIRiskLevel {

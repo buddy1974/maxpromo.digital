@@ -3,24 +3,43 @@ import Link from "next/link";
 import { BUSINESS, UST_CLAUSE } from "@maxpromo/config";
 import { Nav } from "@/components/marketing/Nav";
 import { Footer } from "@/components/marketing/Footer";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Impressum — Max Agent",
-  robots: { index: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("meta");
+  return { title: t("impressumTitle"), description: t("impressumDescription"), robots: { index: false } };
+}
 
-export default function ImpressumPage() {
+export default async function ImpressumPage() {
+  const t = await getTranslations("legal");
+  const c = await getTranslations("common");
+
   return (
     <>
-      <a href="#content" className="skip-link">Zum Inhalt springen</a>
+      <a href="#content" className="skip-link">{c("skipToContent")}</a>
       <Nav />
       <main id="content" className="mx-auto max-w-2xl px-6 py-20">
         <Link
           href="/"
           className="font-mono text-xs uppercase tracking-[0.16em] text-ink-secondary hover:text-accent-text"
         >
-          ← Zurück
+          {t("back")}
         </Link>
+        {/* Why this page is not translated.
+            i18n-exempt — everything below is German legal text. It discharges
+            obligations under German law to German authorities and German data
+            subjects; a translation of it would be a second legal text that no
+            lawyer has reviewed, and the governing instruction for this pass is
+            explicit that a legal translation is not something to invent. The
+            page chrome around it is localised, and an English reader is told,
+            in English, why the body is not. */}
+        <p className="mt-6 rounded-lg border border-hairline bg-surface-subtle p-4 text-sm text-ink-secondary">
+          <span className="block font-mono text-label uppercase tracking-[0.14em] text-ink-muted">
+            {t("germanOnlyTitle")}
+          </span>
+          <span className="mt-1 block">{t("germanOnlyBody")}</span>
+        </p>
+
         <h1 className="mt-6 text-3xl font-semibold tracking-tight text-ink">
           Impressum
         </h1>

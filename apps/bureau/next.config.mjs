@@ -1,5 +1,17 @@
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import createNextIntlPlugin from 'next-intl/plugin';
+
+/**
+ * next-intl, pointed at i18n/request.ts.
+ *
+ * This application has no [locale] route segment — the Domain Registry says
+ * `useLocalePrefix: false` for this host, and lib/i18n/locale.ts explains why a
+ * signed-in product resolves its language from a cookie instead of from the
+ * URL. The plugin is the same one apps/web uses; only the source of the locale
+ * differs.
+ */
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -18,4 +30,4 @@ const nextConfig = {
   poweredByHeader: false,
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

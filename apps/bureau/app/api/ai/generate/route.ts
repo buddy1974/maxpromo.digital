@@ -1,4 +1,5 @@
 import { apiOk, apiError } from "@/lib/api/response";
+import { resolveLocale } from "@/lib/i18n/locale";
 import { requireApiBusinessId } from "@/lib/auth/api-guard";
 import { hasAIConfig } from "@/config/env";
 import { aiGenerateSchema } from "@/lib/validation/ai";
@@ -37,7 +38,9 @@ export async function POST(req: Request) {
     return apiError("invalid_request", 422, parsed.error.flatten().fieldErrors);
   }
 
-  const result = await generate(parsed.data);
+  // The draft comes back in the operator's language, not the server's.
+  const locale = await resolveLocale();
+  const result = await generate({ ...parsed.data, locale });
   if (!result.ok) {
     // Map provider errors to a safe status.
     const status = result.error === "ai_not_configured" ? 503 : 502;

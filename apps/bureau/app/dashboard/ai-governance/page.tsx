@@ -9,32 +9,36 @@ import {
   MOCK_POLICY_CHECKLIST,
   MOCK_DATA_SENSITIVITY,
 } from "@/lib/mock/ai-governance";
+import { getTranslations } from "next-intl/server";
 
 // Module 5 — Shadow AI Governance. Assessment & policy dashboard.
 // Uses "assessment"/"policy" language — does NOT claim to scan real tools.
-export default function AIGovernancePage() {
+export default async function AIGovernancePage() {
+  const t = await getTranslations("governancePage");
+  const ts = await getTranslations("sections");
+  const tr = await getTranslations("toolRegister");
+  const sv = await getTranslations("sensitivity");
+
   return (
-    <DashboardShell title="AI Governance">
+    <DashboardShell title={ts("aiGovernance")}>
       <div className="space-y-8">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
-            Shadow-AI unter Kontrolle
+            {t("eyebrow")}
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
-            Eine Einschätzung der KI-Nutzung im Betrieb: freigegebene Tools, Risikobereiche,
-            Policy-Status und Datensensibilität. Dies ist eine Bewertungs- und
-            Richtlinienübersicht — kein automatischer Scan von Mitarbeiter-Tools.
+            {t("lede")}
           </p>
         </div>
 
         <section>
-          <h3 className="mb-3 text-base font-semibold text-ink">Tool-Register</h3>
+          <h3 className="mb-3 text-base font-semibold text-ink">{tr("heading")}</h3>
           <AIToolRegister tools={MOCK_AI_TOOLS} />
         </section>
 
         <section className="grid gap-6 lg:grid-cols-2">
           <div>
-            <h3 className="mb-3 text-base font-semibold text-ink">Risikobereiche</h3>
+            <h3 className="mb-3 text-base font-semibold text-ink">{t("riskAreas")}</h3>
             <div className="grid gap-4">
               {MOCK_GOVERNANCE_RISKS.map((r) => (
                 <GovernanceRiskCard key={r.id} risk={r} />
@@ -47,7 +51,7 @@ export default function AIGovernancePage() {
         </section>
 
         <section>
-          <h3 className="mb-3 text-base font-semibold text-ink">Datensensibilität</h3>
+          <h3 className="mb-3 text-base font-semibold text-ink">{sv("heading")}</h3>
           <DataSensitivityMatrix rows={MOCK_DATA_SENSITIVITY} />
         </section>
       </div>

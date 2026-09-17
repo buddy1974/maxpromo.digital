@@ -1,5 +1,6 @@
 import { TONE_BADGE, toneMap } from "@maxpromo/ui";
 import type { AgentStatus } from "@/types/agent";
+import { getTranslations } from "next-intl/server";
 
 const STATUS_TONE = toneMap<AgentStatus>({
   active: 'positive',
@@ -10,22 +11,15 @@ const STATUS_TONE = toneMap<AgentStatus>({
   offline: 'neutral',
 })
 
-const LABELS: Record<AgentStatus, string> = {
-  active: "Aktiv",
-  proposing: "Proposal Ready",
-  idle: "Bereit",
-  paused: "Pausiert",
-  error: "Fehler",
-  offline: "Offline",
-};
+export async function StatusBadge({ status }: { status: AgentStatus }) {
+  const t = await getTranslations("agentStatus");
 
-export function StatusBadge({ status }: { status: AgentStatus }) {
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-label uppercase tracking-[0.12em] ${TONE_BADGE[STATUS_TONE(status)]}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" />
-      {LABELS[status]}
+      {t(status)}
     </span>
   );
 }

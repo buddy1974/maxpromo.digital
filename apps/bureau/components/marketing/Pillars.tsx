@@ -1,39 +1,35 @@
 import { Icon, type IconName } from "@maxpromo/ui";
+import { getTranslations } from "next-intl/server";
 
-// Outcomes, not features — per the core philosophy ("people buy outcomes").
+/**
+ * Outcomes, not features — per the core philosophy ("people buy outcomes").
+ *
+ * The middle pillar was titled "Follow-through" inside otherwise German copy.
+ * It is one of the English words that had leaked into the German interface, and
+ * German has a perfectly good word for it: Verbindlichkeit. The English column
+ * keeps Follow-through, which is the natural term there.
+ */
 const PILLARS = [
-  {
-    icon: "agents" as IconName,
-    title: "Organisation",
-    desc: "Anfragen, Aufgaben, Kontakte und Projekte an einem Ort. Nichts liegt mehr in fünf Tools verstreut.",
-  },
-  {
-    icon: "arrowRight" as IconName,
-    title: "Follow-through",
-    desc: "Jede Chance bekommt ein nächstes To-do. Follow-ups werden vorbereitet, nicht vergessen.",
-  },
-  {
-    icon: "memory" as IconName,
-    title: "Klarheit",
-    desc: "Ein tägliches Briefing beantwortet: Was braucht Aufmerksamkeit? Was kommt als Nächstes?",
-  },
+  { key: "p1", icon: "agents" as IconName },
+  { key: "p2", icon: "arrowRight" as IconName },
+  { key: "p3", icon: "memory" as IconName },
 ];
 
-export function Pillars() {
+export async function Pillars() {
+  const t = await getTranslations("pillars");
+
   return (
     <section className="border-b border-hairline">
       <div className="mx-auto max-w-content px-6 py-24 md:py-32">
-        <p className="eyebrow">{"Was Sie davon haben"}</p>
-        <h2 className="mt-4 max-w-2xl text-section-title text-ink">
-          Wir verkaufen keine KI. Wir verkaufen Ergebnisse.
-        </h2>
+        <p className="eyebrow">{t("eyebrow")}</p>
+        <h2 className="mt-4 max-w-2xl text-section-title text-ink">{t("title")}</h2>
 
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {PILLARS.map((p) => (
-            <div key={p.title} className="card">
+            <div key={p.key} className="card">
               <span className="text-ink-secondary"><Icon name={p.icon} size="lg" /></span>
-              <h3 className="mt-4 text-card-title text-ink">{p.title}</h3>
-              <p className="mt-2 text-body text-ink-secondary">{p.desc}</p>
+              <h3 className="mt-4 text-card-title text-ink">{t(`${p.key}Title`)}</h3>
+              <p className="mt-2 text-body text-ink-secondary">{t(`${p.key}Desc`)}</p>
             </div>
           ))}
         </div>

@@ -2,7 +2,7 @@
  * app/login/page.tsx
  *
  * Login page — server component wrapper.
- * German UI, v2.1 light system (docs/visual-facelift-v2.1.md).
+ * Bilingual, v2.1 light system (docs/visual-facelift-v2.1.md).
  * No public signup. Accounts are provisioned by Maxpromo.
  *
  * If already authenticated, redirect to dashboard.
@@ -14,13 +14,16 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/auth";
 import LoginForm from "@/components/auth/LoginForm";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Anmelden — Max Agent",
-  robots: "noindex, nofollow",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("login");
+  return { title: t("metaTitle"), robots: "noindex, nofollow" };
+}
 
 export default async function LoginPage() {
+  const t = await getTranslations("login");
+  const c = await getTranslations("common");
   const session = await getServerSession(authOptions);
   if (session) redirect("/dashboard");
 
@@ -33,10 +36,10 @@ export default async function LoginPage() {
             {"maxpromo digital"}
           </span>
           <h1 className="text-2xl font-semibold tracking-tight text-ink">
-            Max Agent
+            {c("brandWordmark")}
           </h1>
           <p className="text-sm text-ink-muted">
-            Melden Sie sich an, um fortzufahren.
+            {t("prompt")}
           </p>
         </div>
 

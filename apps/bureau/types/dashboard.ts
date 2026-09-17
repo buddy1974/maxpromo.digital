@@ -1,4 +1,5 @@
-import type { Agent, AgentProposal } from "./agent";
+import type { AgentProposal } from "./agent";
+import type { AgentRecord } from "@/lib/registry/agents";
 import type { Task } from "./task";
 import type { ActivityLog } from "./activity";
 import type { Contact } from "./contact";
@@ -34,7 +35,7 @@ export interface DashboardSummary {
   briefing: DailyBriefing;
   metrics: DashboardMetric[];
   pendingApprovals: AgentProposal[];
-  activeAgents: Agent[];
+  activeAgents: AgentRecord[];
   urgentFollowUps: Contact[];
   overdueTasks: Task[];
   recentActivity: ActivityLog[];

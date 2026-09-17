@@ -2,6 +2,8 @@
 // so they inherit the pill colour and turn orange on hover). No new dependency,
 // no brand-colour noise, no image assets.
 
+import { getTranslations } from "next-intl/server";
+
 type IconKey =
   | "mail"
   | "calendar"
@@ -15,9 +17,14 @@ type IconKey =
   | "grid"
   | "form";
 
-const TOOLS: { name: string; icon: IconKey }[] = [
+/**
+ * The tool names are proper nouns and stay as they are in both languages —
+ * Gmail is Gmail. The two that are descriptions rather than names, the Google
+ * calendar and a web form, carry a translation key instead.
+ */
+const TOOLS: { name: string; nameKey?: string; icon: IconKey }[] = [
   { name: "Gmail", icon: "mail" },
-  { name: "Google Kalender", icon: "calendar" },
+  { name: "Google Calendar", nameKey: "calendar", icon: "calendar" },
   { name: "Outlook", icon: "mail" },
   { name: "WhatsApp", icon: "chat" },
   { name: "Telegram", icon: "send" },
@@ -27,7 +34,7 @@ const TOOLS: { name: string; icon: IconKey }[] = [
   { name: "Stripe", icon: "card" },
   { name: "Notion", icon: "doc" },
   { name: "Google Sheets", icon: "grid" },
-  { name: "Webformulare", icon: "form" },
+  { name: "Web forms", nameKey: "forms", icon: "form" },
 ];
 
 function Icon({ name }: { name: IconKey }) {
@@ -90,25 +97,26 @@ function Icon({ name }: { name: IconKey }) {
   }
 }
 
-export function Integrations() {
+export async function Integrations() {
+  const t = await getTranslations("integrations");
   const loop = [...TOOLS, ...TOOLS];
   return (
     <section className="border-b border-hairline">
       <div className="mx-auto max-w-content px-6 py-20 md:py-28">
-        <p className="eyebrow">{"Verbindet, was Sie schon nutzen"}</p>
+        <p className="eyebrow">{t("eyebrow")}</p>
         <h2 className="mt-4 max-w-2xl text-section-title text-ink">
-          Kein Herausreißen. Wir verbinden Ihre vorhandenen Werkzeuge.
+          {t("title")}
         </h2>
       </div>
       <div className="relative overflow-hidden border-y border-hairline bg-surface-subtle py-5">
         <div className="animate-ticker flex w-max gap-3 px-3">
-          {loop.map((t, i) => (
+          {loop.map((tool, i) => (
             <span
               key={i}
               className="flex shrink-0 items-center gap-2 rounded-md border border-hairline bg-surface px-3.5 py-2 text-sm text-ink-secondary transition-colors hover:border-accent/50 hover:text-ink-secondary"
             >
-              <Icon name={t.icon} />
-              <span className="font-mono">{t.name}</span>
+              <Icon name={tool.icon} />
+              <span className="font-mono">{tool.nameKey ? t(tool.nameKey) : tool.name}</span>
             </span>
           ))}
         </div>

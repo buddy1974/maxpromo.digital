@@ -8,6 +8,7 @@ import { Pillars } from "@/components/marketing/Pillars";
 import { Stats } from "@/components/marketing/Stats";
 import { AuditCta } from "@/components/marketing/AuditCta";
 import { Footer } from "@/components/marketing/Footer";
+import { getTranslations } from "next-intl/server";
 
 // BusinessFlowInfographic is intentionally not rendered here: it told the same
 // observe -> prepare -> approve -> execute -> log story as SafeActionLifecycle
@@ -15,12 +16,14 @@ import { Footer } from "@/components/marketing/Footer";
 // the duplicate rather than let a visitor read the same idea twice. Component
 // kept in the codebase in case it's wanted for a different context later.
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const t = await getTranslations("common");
+
   return (
     <>
       {/* First in the tab order, visible only on focus. Without it a keyboard
           visitor tabs the whole navigation before reaching the page. */}
-      <a href="#content" className="skip-link">Zum Inhalt springen</a>
+      <a href="#content" className="skip-link">{t("skipToContent")}</a>
       <Nav />
       <main id="content">
         <Hero />

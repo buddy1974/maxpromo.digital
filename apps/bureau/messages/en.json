@@ -1,0 +1,1160 @@
+{
+  "meta": {
+    "title": "Max Agent Bureau — Your supervised AI operations team | Maxpromo Digital",
+    "description": "Not a chatbot. A supervised AI operations team that runs enquiries, follow-ups and workflows — you stay in control. Installed by Maxpromo Digital, Essen.",
+    "ogTitle": "Max Agent Bureau — Your supervised AI operations team",
+    "ogDescription": "A supervised AI operations team for your business. You approve; the agents execute. Maxpromo Digital, Essen.",
+    "twitterDescription": "A supervised AI operations team for your business. You approve; the agents execute.",
+    "impressumTitle": "Legal notice | Max Agent Bureau",
+    "impressumDescription": "Provider identification under § 5 TMG for Max Agent Bureau, a product of Maxpromo Digital.",
+    "datenschutzTitle": "Privacy policy | Max Agent Bureau",
+    "datenschutzDescription": "How Max Agent Bureau processes personal data, under the GDPR."
+  },
+  "common": {
+    "languageLabel": "Language",
+    "brandWordmark": "MAX AGENT BUREAU",
+    "loading": "Loading …",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "back": "Back",
+    "signOut": "Sign out",
+    "signIn": "Sign in",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "nothingHere": "Nothing here",
+    "errorTitle": "Something went wrong",
+    "skipToContent": "Skip to content"
+  },
+  "nav": {
+    "team": "The team",
+    "process": "How it works",
+    "maxpromo": "Maxpromo",
+    "businessCheck": "Business check"
+  },
+  "hero": {
+    "eyebrow": "Essen · Supervised AI operations team",
+    "title": "Your day comes prepared. You stay in control.",
+    "bodyBefore": "Not a chatbot. A supervised team of agents that captures enquiries, qualifies leads, prepares follow-ups and structures your day. Nothing leaves the building until ",
+    "bodyEmphasis": "you approve it.",
+    "ctaPrimary": "Request a business check",
+    "ctaSecondary": "See the team",
+    "footnote": "GDPR-compliant, hosted in the EU, built in Essen. "
+  },
+  "footer": {
+    "blurb": "A product of {brand}. Supervised AI operating systems, installed in real businesses.",
+    "companyHeading": "Maxpromo",
+    "website": "Website",
+    "solutions": "Solutions",
+    "contact": "Contact",
+    "legalHeading": "Legal",
+    "impressum": "Legal notice",
+    "privacy": "Privacy"
+  },
+  "ticker": {
+    "statusLabel": "System status",
+    "preview": "Product preview",
+    "events": [
+      "New enquiry captured — Essen",
+      "Lead agent is qualifying a contact",
+      "Follow-up prepared — waiting for approval",
+      "Briefing produced — 08:00",
+      "CRM synchronised — 14 records",
+      "Research agent: market scan complete",
+      "Meeting proposed — calendar",
+      "Content draft ready for review",
+      "Overdue task flagged"
+    ]
+  },
+  "pillars": {
+    "eyebrow": "What you get out of it",
+    "title": "We do not sell AI. We sell outcomes.",
+    "p1Title": "Organisation",
+    "p1Desc": "Enquiries, tasks, contacts and projects in one place. Nothing scattered across five tools.",
+    "p2Title": "Follow-through",
+    "p2Desc": "Every opportunity gets a next action. Follow-ups get prepared, not forgotten.",
+    "p3Title": "Clarity",
+    "p3Desc": "A daily briefing answers two questions: what needs attention, and what comes next?"
+  },
+  "bureau": {
+    "eyebrow": "A team, not a chatbot",
+    "title": "One Chief of Staff. One supervised team of agents.",
+    "ledeBefore": "Each agent watches one part of the business, prepares the decision and puts the action in front of you. ",
+    "ledeEmphasis": "Nothing runs unsupervised.",
+    "chiefName": "Chief of Staff",
+    "chiefRole": "The coordinating layer",
+    "chiefDesc": "Prioritises, coordinates, escalates and produces the daily briefing. It does not decide on its own; it puts the action up for approval.",
+    "approvalPrefix": "Approval:",
+    "note": "Every outbound action needs the approval named on its card before it runs.",
+    "a1Name": "Lead agent",
+    "a1Fn": "Enquiries and qualification",
+    "a1Approval": "Direct contact",
+    "a2Name": "Research agent",
+    "a2Fn": "Market and competition",
+    "a2Approval": "External content",
+    "a3Name": "CRM agent",
+    "a3Fn": "Deals and follow-ups",
+    "a3Approval": "Customer messages",
+    "a4Name": "Calendar agent",
+    "a4Fn": "Meetings and reminders",
+    "a4Approval": "Sending invitations",
+    "a5Name": "Content agent",
+    "a5Fn": "Drafts and campaigns",
+    "a5Approval": "Publishing",
+    "a6Name": "Operations agent",
+    "a6Fn": "Projects and deadlines",
+    "a6Approval": "Reassigning work",
+    "a7Name": "Document agent",
+    "a7Fn": "Documents and deadlines",
+    "a7Approval": "Sending externally",
+    "a8Name": "Follow-up agent",
+    "a8Fn": "Waiting customers",
+    "a8Approval": "Every outbound message",
+    "a9Name": "Governance agent",
+    "a9Fn": "AI risk and policy",
+    "a9Approval": "Policy changes"
+  },
+  "systemMap": {
+    "a11y": "The Chief of Staff coordinates nine specialist agents",
+    "caption": "One coordinating layer. Nine specialists. Every outbound action through a human approval.",
+    "mobileNote": "coordinates 9 specialist agents — every outbound action through a human approval.",
+    "n1": "Lead",
+    "n2": "Research",
+    "n3": "CRM",
+    "n4": "Calendar",
+    "n5": "Content",
+    "n6": "Operations",
+    "n7": "Documents",
+    "n8": "Follow-up",
+    "n9": "Governance"
+  },
+  "lifecycle": {
+    "eyebrow": "The safe action chain",
+    "title": "AI prepares. People decide.",
+    "a11y": "Action chain: observe, prepare, propose, human approval, execute, record",
+    "s1": "Observe",
+    "s2": "Prepare",
+    "s3": "Propose",
+    "s4a": "Human",
+    "s4b": "approval",
+    "s5": "Execute",
+    "s6": "Record",
+    "gateNote": "ONLY AFTER APPROVAL",
+    "footerLead": "AI prepares. People decide. ",
+    "footerTail": "Every action is recorded."
+  },
+  "beforeAfter": {
+    "eyebrow": "Sound familiar?",
+    "title": "You are the bottleneck. It does not have to stay that way.",
+    "beforeHeading": "Today — by hand",
+    "afterHeading": "With Max Agent Bureau — supervised",
+    "before": [
+      "Enquiries arrive after hours — and get lost.",
+      "Follow-ups slip. Customers book somewhere else.",
+      "Five tools, none of them talking to each other.",
+      "Every decision waits for you."
+    ],
+    "after": [
+      "Every enquiry is captured and prepared.",
+      "Follow-ups are ready — you approve them.",
+      "Your tools meet in one system.",
+      "You steer. The team executes."
+    ]
+  },
+  "integrations": {
+    "eyebrow": "Connects what you already use",
+    "title": "Nothing gets ripped out. We connect the tools you already have.",
+    "calendar": "Google Calendar",
+    "forms": "Web forms"
+  },
+  "auditCta": {
+    "eyebrow": "Ready?",
+    "title": "See what your business could stop doing by hand.",
+    "lede": "Thirty minutes, no commitment. We look at where time, customers and oversight are being lost — and where a supervised AI team takes the load off.",
+    "b1": "A clear picture before any commitment",
+    "b2": "No technology detour — we start from your working day",
+    "b3": "You keep control of every action"
+  },
+  "stats": {
+    "s1Value": "10–15 hrs",
+    "s1Label": "a week this is meant to give you back",
+    "s2Value": "You",
+    "s2Label": "stay in control — every action is approved",
+    "s3Value": "15+ years",
+    "s3Label": "of running real production systems",
+    "note": "Evidenced result figures come from real, installed Maxpromo systems",
+    "caseStudies": "See the case studies"
+  },
+  "lead": {
+    "successTitle": "Request received.",
+    "successBody": "We will be in touch about your free business check. Thirty minutes, no commitment.",
+    "name": "Name *",
+    "email": "Email *",
+    "phone": "Phone",
+    "company": "Company",
+    "message": "What is this about? (optional)",
+    "messagePlaceholder": "Your business in a line, and the manual job that costs you most …",
+    "submit": "Request a free business check",
+    "submitting": "Sending …",
+    "consent": "By sending this you agree to be contacted. Your data is used only to handle your enquiry. Details: ",
+    "privacyLink": "Privacy",
+    "errNameRequired": "Please enter your name.",
+    "errEmailInvalid": "Please enter a valid email address.",
+    "errCheckInput": "Please check what you entered.",
+    "errNotConfigured": "This form is not fully connected yet. Please email info@maxpromo.digital.",
+    "errGeneric": "Something went wrong. Please try again.",
+    "errNetwork": "Network error. Please try again."
+  },
+  "shell": {
+    "groupControl": "Control",
+    "groupWorkspace": "Workspace",
+    "groupSystem": "System",
+    "supervisedMode": "Supervised mode",
+    "systemPreview": "System preview",
+    "sidebarLabel": "Sections"
+  },
+  "sections": {
+    "overview": "Overview",
+    "operatingModel": "Operating model",
+    "audit": "Audit console",
+    "waitingRoom": "Waiting room",
+    "documents": "Documents",
+    "approvals": "Approvals",
+    "aiGovernance": "AI governance",
+    "playbooks": "Playbooks",
+    "clientImplementation": "Client implementation",
+    "briefing": "Briefing",
+    "tasks": "Tasks",
+    "projects": "Projects",
+    "leads": "Leads",
+    "contacts": "Contacts",
+    "research": "Research",
+    "agents": "Agents",
+    "memory": "Memory",
+    "aiLab": "AI lab",
+    "settings": "Settings"
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Access to the supervised operating system.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Checking …",
+    "errInvalid": "That email and password do not match.",
+    "errGeneric": "Sign-in failed. Please try again.",
+    "backToSite": "Back to the website",
+    "metaTitle": "Sign in — Max Agent Bureau",
+    "prompt": "Sign in to continue.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "name@company.com",
+    "passwordLabel": "Password",
+    "signingIn": "Signing in…",
+    "noAccount": "No account? Access is provisioned by Maxpromo.",
+    "errCredentials": "That email address or password is not valid."
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "waiting": "Waiting",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "draft": "Draft",
+    "ready": "Ready",
+    "completed": "Completed",
+    "failed": "Failed",
+    "requiresApproval": "Needs approval",
+    "inProgress": "In progress",
+    "planned": "Planned",
+    "blocked": "Blocked",
+    "open": "Open",
+    "review": "In review",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "critical": "Critical"
+  },
+  "empty": {
+    "seedHint": "Run the demo seed: npm run db:seed:demo",
+    "workspaceEmpty": "The demo workspace is empty",
+    "workspaceEmptyHint": "Run the demo seed to fill this workspace: npm run db:seed:demo",
+    "noProposals": "No proposals",
+    "noDocuments": "No documents in the demo workspace",
+    "noFindings": "No findings",
+    "noWaiting": "Nobody is waiting",
+    "noEntries": "No entries"
+  },
+  "greeting": {
+    "morning": "Good morning, {name}.",
+    "afternoon": "Good afternoon, {name}.",
+    "evening": "Good evening, {name}."
+  },
+  "dashboard": {
+    "headline": "{approvals} approvals open · {waiting} customers waiting · {findings} audit findings.",
+    "bApprovalsLabel": "Approvals",
+    "bApprovalsDetail": "{count} agent proposals are waiting for your review.",
+    "bWaitingLabel": "Waiting room",
+    "bWaitingDetail": "{count} customers are waiting with high urgency.",
+    "bAuditLabel": "Audit",
+    "bAuditRunning": "Business check in progress (score {score}).",
+    "bAuditNone": "No audit running.",
+    "mApprovals": "Open approvals",
+    "mAgents": "Active agents",
+    "mWaiting": "Waiting customers",
+    "mFindings": "Audit findings",
+    "openApprovals": "Open approvals",
+    "openApprovalsHint": "Agent proposals waiting for your review.",
+    "noApprovals": "No open approvals",
+    "activeAgents": "Active agents",
+    "waitingCustomers": "Waiting customers",
+    "noneWaitingUrgently": "Nobody is waiting urgently",
+    "recentActivity": "Recent activity",
+    "waitingFor": "waiting {duration}",
+    "trailPrepared": "Action prepared (not executed)",
+    "trailAwaiting": "Waiting for a human approval",
+    "trailAgent": "Agent: {agent}"
+  },
+  "approvals": {
+    "supervisedNote": "Approving records the decision and the audit trail, nothing more. In this preview no message, email, calendar action or CRM update is executed.",
+    "awaitingReview": "Awaiting review",
+    "context": "Context",
+    "proposedAction": "Proposed action",
+    "expectedOutcome": "Expected outcome",
+    "auditTrail": "Audit trail",
+    "auditTrailPreview": "Audit trail (preview)"
+  },
+  "auditConsole": {
+    "noAudit": "No audit in the demo workspace",
+    "businessCheck": "Business check",
+    "priorityScore": "Priority score",
+    "priorityMatrix": "Priority matrix",
+    "recommendedTeam": "Recommended team",
+    "findings": "Findings ({count})",
+    "impactLabel": "Impact",
+    "effortLabel": "Effort"
+  },
+  "documents": {
+    "pageTitle": "Document intake",
+    "eyebrow": "Document chaos becomes a structured action",
+    "lede": "Summarised, with the deadline and the next action. Prepared, not executed.",
+    "actionRequired": "Action required",
+    "doneReviewed": "Done and reviewed",
+    "deadline": "Deadline",
+    "suggestedResponse": "Suggested reply",
+    "requiredActions": "Required actions",
+    "assignedAgent": "Assigned agent",
+    "source": "Source"
+  },
+  "waitingRoom": {
+    "eyebrow": "Who is waiting on you right now",
+    "lede": "Prepared replies. Nothing is sent without your approval.",
+    "waitingFor": "Waiting",
+    "channel": "Channel",
+    "reason": "Reason",
+    "suggestedAction": "Suggested action",
+    "urgency": "Urgency",
+    "urgent": "Urgent",
+    "whoIsWaiting": "Who is waiting for a reply?",
+    "prepNote": "Replies are prepared — nothing is sent until you approve it. No outbound message has been executed.",
+    "nobodyWaiting": "Nobody in the waiting room",
+    "queueHint": "Waiting customers appear here."
+  },
+  "model": {
+    "eyebrow": "The product backbone",
+    "backbone": "Audit → Diagnose → Team design → Manual delivery → Systematise → Install → Maintain",
+    "lede": "The dashboard is the visible surface. The product itself is this operating model — a system Maxpromo installs into a business.",
+    "sevenStages": "The seven stages",
+    "safeChain": "The safe action chain",
+    "hierarchy": "Agent hierarchy",
+    "solves": "Solves",
+    "result": "Result",
+    "agentsLabel": "Agents",
+    "nextHandoff": "Next handover",
+    "stages": {
+      "audit": {
+        "name": "Audit",
+        "purpose": "Look through the business: where time is lost, where customers wait, where leads leak, what still runs by hand.",
+        "pain": "No clear picture of where the business loses time, customers and oversight.",
+        "output": "Structured audit findings, with priorities.",
+        "handoff": "The findings go into the diagnosis."
+      },
+      "diagnose": {
+        "name": "Diagnosis",
+        "purpose": "Turn audit findings into concrete operational pain points.",
+        "pain": "The symptoms are visible; the cause and the cost are not.",
+        "output": "A diagnosis list with impact and the recommended stage.",
+        "handoff": "The diagnosis decides which agent team is needed."
+      },
+      "design": {
+        "name": "Agent team design",
+        "purpose": "Recommend which agents the business needs — from the Chief of Staff alone to the full bureau.",
+        "pain": "It is not clear what support is actually needed.",
+        "output": "An agent recommendation that fits the situation.",
+        "handoff": "The team goes into manual delivery."
+      },
+      "manual_delivery": {
+        "name": "Manual delivery",
+        "purpose": "Serve the first customers by hand while the platform grows.",
+        "pain": "Value has to be delivered before everything is automated.",
+        "output": "Implementation notes and approved agent tasks.",
+        "handoff": "Whatever repeats gets systematised."
+      },
+      "systemize": {
+        "name": "Systematisation",
+        "purpose": "Turn repeated manual work into reusable playbooks and workflows.",
+        "pain": "The same work is done by hand again and again.",
+        "output": "Reusable playbooks, templates and approval rules.",
+        "handoff": "The systems get installed."
+      },
+      "install": {
+        "name": "Installation",
+        "purpose": "Install the AI Chief of Staff and the agent bureau into the business.",
+        "pain": "The business needs an installed, controlled system — not a tool to assemble itself.",
+        "output": "A configuration installed, handed over and supervised.",
+        "handoff": "The system moves into maintenance."
+      },
+      "maintain": {
+        "name": "Maintenance",
+        "purpose": "Running it: monitoring, updates, customer-specific configuration, improvements.",
+        "pain": "Systems decay without care; this is not a one-off project.",
+        "output": "Health checks, audit logs and monthly recommendations.",
+        "handoff": "New findings start the cycle again."
+      }
+    },
+    "lifecycle": {
+      "observe": "Observe",
+      "prepare": "Prepare",
+      "propose": "Propose",
+      "human_review": "Human approval",
+      "execute": "Execute",
+      "log": "Record"
+    },
+    "recommendations": {
+      "rec-1": {
+        "tier": "Chief of Staff",
+        "forSituation": "Start with oversight and a daily priority."
+      },
+      "rec-2": {
+        "tier": "Chief of Staff + CRM agent",
+        "forSituation": "Follow-ups and relationships are slipping."
+      },
+      "rec-3": {
+        "tier": "Chief of Staff + lead + follow-up",
+        "forSituation": "Leads arrive and then get lost."
+      },
+      "rec-4": {
+        "tier": "The full agent bureau",
+        "forSituation": "The whole operation should be supported end to end."
+      }
+    },
+    "hierarchy_": {
+      "chief-of-staff": "The coordinating intelligence: prioritises, coordinates, routes approvals, watches the audit trail.",
+      "lead-agent": "Researches, qualifies and prepares outreach.",
+      "research-agent": "Watches the market, the competition and the sector.",
+      "crm-agent": "Follow-ups, deal movement, keeping relationships warm.",
+      "calendar-agent": "Proposed meetings, reminders, the shape of the day.",
+      "operations-agent": "Project and task tracking, and visibility of the process.",
+      "content-agent": "Content planning, drafts, campaign support.",
+      "document-agent": "Document summaries, quotations, pulling out what matters.",
+      "follow-up-agent": "Spots waiting customers and prepares the next step."
+    }
+  },
+  "agentRegistry": {
+    "chief-of-staff": {
+      "role": "Coordination and priorities",
+      "description": "Prioritises the work, produces the daily briefing, coordinates the other agents and puts decisions up for approval.",
+      "caps": [
+        "Prioritising",
+        "Daily briefing",
+        "Coordination"
+      ],
+      "capDescs": [
+        "Judges what needs attention today.",
+        "Sums up the situation, the risks and the next steps.",
+        "Sends work to the agent that handles it."
+      ],
+      "allowed": [
+        "Produce the briefing",
+        "Propose priorities",
+        "Put tasks up for approval"
+      ],
+      "blocked": [
+        "Sending email",
+        "Releasing payments",
+        "Deleting data"
+      ],
+      "pains": [
+        "Unclear priorities",
+        "No overview"
+      ],
+      "outcomes": [
+        "Clarity",
+        "Better decisions",
+        "Less chaos"
+      ],
+      "next": "Have the 08:00 briefing ready for review."
+    },
+    "lead-agent": {
+      "role": "Lead research and qualification",
+      "description": "Researches companies, finds contacts, fills in records and qualifies incoming enquiries.",
+      "caps": [
+        "Company research",
+        "Enrichment",
+        "Qualification"
+      ],
+      "capDescs": [
+        "Collects public information about a prospect.",
+        "Fills the gaps in a contact record.",
+        "Judges fit and urgency."
+      ],
+      "allowed": [
+        "Research a lead",
+        "Enrich a record",
+        "Propose a qualification score"
+      ],
+      "blocked": [
+        "Contacting anyone directly",
+        "Exporting data to a third party"
+      ],
+      "pains": [
+        "Leads leaking away",
+        "Weak lead tracking"
+      ],
+      "outcomes": [
+        "More qualified opportunities",
+        "Fewer lost leads"
+      ],
+      "next": "Qualify the new audit enquiry from Essen."
+    },
+    "research-agent": {
+      "role": "Market and competitor watch",
+      "description": "Watches the market, the competition and sector signals, and reports what is worth acting on.",
+      "caps": [
+        "Market scan",
+        "Summary"
+      ],
+      "capDescs": [
+        "Tracks movement in the topics it has been given.",
+        "Condenses what it finds into short briefs."
+      ],
+      "allowed": [
+        "Run a market scan",
+        "Write the brief"
+      ],
+      "blocked": [
+        "Publishing anything externally"
+      ],
+      "pains": [
+        "No view of the market"
+      ],
+      "outcomes": [
+        "Opportunities spotted early",
+        "Better-informed decisions"
+      ],
+      "next": "Prepare the weekly competitor brief."
+    },
+    "crm-agent": {
+      "role": "Relationships and follow-up",
+      "description": "Tracks deals, raises follow-ups that are due and keeps contact data current.",
+      "caps": [
+        "Follow-up tracking",
+        "Data hygiene"
+      ],
+      "capDescs": [
+        "Spots the follow-ups that are due.",
+        "Flags stale or duplicated records."
+      ],
+      "allowed": [
+        "Prepare a follow-up",
+        "Propose a correction to a record"
+      ],
+      "blocked": [
+        "Sending a message to a customer",
+        "Changing a deal's final status"
+      ],
+      "pains": [
+        "Missed follow-ups",
+        "Weak lead tracking"
+      ],
+      "outcomes": [
+        "Reliable follow-through",
+        "Relationships kept warm"
+      ],
+      "next": "Put three overdue follow-ups up for approval."
+    },
+    "calendar-agent": {
+      "role": "Meetings and reminders",
+      "description": "Proposes meetings, raises reminders and keeps the calendar tidy.",
+      "caps": [
+        "Proposed time",
+        "Reminder"
+      ],
+      "capDescs": [
+        "Finds a slot that works.",
+        "Points at what is coming up."
+      ],
+      "allowed": [
+        "Propose a time",
+        "Prepare a reminder"
+      ],
+      "blocked": [
+        "Sending an invitation",
+        "Booking into someone else's calendar"
+      ],
+      "pains": [
+        "Slow replies",
+        "Unclear priorities"
+      ],
+      "outcomes": [
+        "A calendar that makes sense",
+        "Meetings you arrive prepared for"
+      ],
+      "next": "Propose a slot for the audit conversation."
+    },
+    "content-agent": {
+      "role": "Content planning and drafts",
+      "description": "Plans content, writes drafts and prepares campaigns — for review, never for publishing.",
+      "caps": [
+        "Planning",
+        "Drafting"
+      ],
+      "capDescs": [
+        "Sketches the topics and the schedule.",
+        "Writes first drafts for review."
+      ],
+      "allowed": [
+        "Build a content plan",
+        "Prepare a draft"
+      ],
+      "blocked": [
+        "Publishing a post",
+        "Sending a newsletter"
+      ],
+      "pains": [
+        "Manual administration",
+        "Content used once and forgotten"
+      ],
+      "outcomes": [
+        "More reach",
+        "Consistent communication"
+      ],
+      "next": "Put the case-study post draft up for review."
+    },
+    "operations-agent": {
+      "role": "Projects and task coordination",
+      "description": "Tracks projects, tasks and deadlines, and raises a blockage early.",
+      "caps": [
+        "Tracking",
+        "Escalation"
+      ],
+      "capDescs": [
+        "Keeps an eye on progress and deadlines.",
+        "Flags risks and blockages."
+      ],
+      "allowed": [
+        "Report project status",
+        "Flag a risk"
+      ],
+      "blocked": [
+        "Reassigning someone else's work without approval"
+      ],
+      "pains": [
+        "Scattered tasks",
+        "No overview",
+        "Reporting always late"
+      ],
+      "outcomes": [
+        "Visibility of the process",
+        "Deadlines that hold"
+      ],
+      "next": "Escalate the blocked 'Website migration' project."
+    },
+    "document-agent": {
+      "role": "Documents and preparation",
+      "description": "Writes and structures documents — quotations, reports, summaries — for approval.",
+      "caps": [
+        "Composing",
+        "Extraction"
+      ],
+      "capDescs": [
+        "Drafts a structured document.",
+        "Pulls the substance out of a source document."
+      ],
+      "allowed": [
+        "Draft a quotation",
+        "Summarise a report"
+      ],
+      "blocked": [
+        "Sending a document externally",
+        "Issuing a final invoice"
+      ],
+      "pains": [
+        "Document chaos",
+        "Manual administration"
+      ],
+      "outcomes": [
+        "A clear next action on every document",
+        "Fewer deadlines missed"
+      ],
+      "next": "Prepare the quotation draft for the new enquiry."
+    },
+    "follow-up-agent": {
+      "role": "Chasing and re-raising",
+      "description": "Makes sure no opportunity and no promise gets lost — and prepares the next chase.",
+      "caps": [
+        "Detection",
+        "Preparation"
+      ],
+      "capDescs": [
+        "Finds open promises and threads that went quiet.",
+        "Drafts the next chase."
+      ],
+      "allowed": [
+        "Spot what needs re-raising",
+        "Prepare a chase draft"
+      ],
+      "blocked": [
+        "Sending a message on its own",
+        "Sending repeatedly without approval"
+      ],
+      "pains": [
+        "Missed follow-ups",
+        "Slow replies",
+        "Leads leaking away"
+      ],
+      "outcomes": [
+        "No opportunity lost",
+        "Reliable follow-through"
+      ],
+      "next": "Put five quiet threads up to be chased."
+    }
+  },
+  "agentCard": {
+    "approvalRequired": "Approval required",
+    "observes": "Watches",
+    "prepares": "Prepares",
+    "needsApprovalFor": "Needs approval for",
+    "connectedSystems": "Connected systems",
+    "lastActivity": "Last activity",
+    "nextAction": "Next recommended action"
+  },
+  "agentsPage": {
+    "count": "Agent Bureau · {count} agents",
+    "lede": "One Chief of Staff coordinates a supervised team. Each agent watches one area, prepares the work and puts the action up for approval — nothing runs unsupervised.",
+    "coordination": "Coordination",
+    "specialists": "Specialists"
+  },
+  "approvalActions": {
+    "doneApproved": "Approved (preview) — no outbound action was executed.",
+    "doneRejected": "Rejected — no action was executed.",
+    "doneReviewed": "Reviewed — the decision is recorded.",
+    "okApproved": "Approved for the demo workflow. No outbound action was executed.",
+    "okRejected": "Proposal rejected. No action was executed.",
+    "okReviewed": "Marked as reviewed. No action was executed.",
+    "errAction": "That did not work. Please reload the page.",
+    "errNetwork": "Network error. Please try again.",
+    "approve": "Approve (preview)",
+    "reject": "Reject proposal",
+    "markReviewed": "Mark as reviewed",
+    "placeholder": "Placeholder — the approval logic lands in a later sprint",
+    "approveShort": "Approve",
+    "rejectShort": "Reject",
+    "editBeforeApproval": "Edit before approving",
+    "placeholderShort": "Placeholder"
+  },
+  "impact": {
+    "label": "Impact",
+    "time": "Time",
+    "revenue": "Revenue",
+    "visibility": "Oversight",
+    "risk": "Risk",
+    "stage": "Stage",
+    "priorityVsImpact": "Priority \\ impact"
+  },
+  "sensitivity": {
+    "heading": "Data sensitivity",
+    "dataType": "Data type",
+    "level": "Sensitivity",
+    "allowedTools": "Permitted tools",
+    "public": "Public",
+    "internal": "Internal",
+    "confidential": "Confidential",
+    "personal": "Personal data"
+  },
+  "toolRegister": {
+    "heading": "Tool register",
+    "approved": "Approved",
+    "under_review": "Under review",
+    "blocked": "Blocked",
+    "tool": "Tool",
+    "category": "Category",
+    "status": "Status",
+    "note": "Note"
+  },
+  "governancePage": {
+    "eyebrow": "Shadow AI under control",
+    "lede": "An assessment of how AI is being used in the business: approved tools, risk areas, policy status and data sensitivity. This is an assessment and a policy view — not an automatic scan of anybody's tools.",
+    "riskAreas": "Risk areas",
+    "recommendedAction": "Recommended action",
+    "policyChecklist": "Policy checklist"
+  },
+  "clientImpl": {
+    "eyebrow": "Concierge / manual delivery",
+    "lede": "Maxpromo delivers by hand first, while the platform grows. This page holds the observations, the proposed workflows and the installation progress for each client.",
+    "priority": "Priority: {level}",
+    "notStarted": "Not started",
+    "inProgress": "In progress",
+    "handedOver": "Handed over",
+    "businessPains": "Business pain points",
+    "bottlenecks": "Observed bottlenecks",
+    "proposedAgents": "Proposed agents",
+    "workflows": "Workflows to install",
+    "integrations": "Integrations",
+    "nextSteps": "Next steps",
+    "serviceNote": "Manual service note",
+    "maintenanceReady": "Ready for maintenance",
+    "notYet": "not yet",
+    "ready": "yes"
+  },
+  "playbooksPage": {
+    "eyebrow": "Reusable playbooks",
+    "lede": "Repeated manual work becomes an installable workflow. Every playbook stops at a human approval before anything runs.",
+    "approvalRequired": "Approval required",
+    "pain": "Pain",
+    "trigger": "Trigger",
+    "stage": "Stage",
+    "agents": "Agents",
+    "template": "Template",
+    "outcome": "Outcome"
+  },
+  "settingsPage": {
+    "available": "Available",
+    "planned": "Planned",
+    "integrations": "Integrations",
+    "connected": "Connected",
+    "error": "Error",
+    "coming_soon": "Coming soon",
+    "securityHeading": "Security and control",
+    "securityBody": "Supervised mode is on. No agent takes an outbound action without an approval. Configuring roles, permissions and audit retention lands in a later sprint."
+  },
+  "researchPage": {
+    "empty": "No research yet",
+    "eyebrow": "Research agent · supervised",
+    "lede": "Research findings and market signals. The research agent summarises — it publishes nothing without approval."
+  },
+  "memoryPage": {
+    "conversation": "Conversation",
+    "eyebrow": "The business memory",
+    "lede": "Context that persists: contacts, companies, projects, decisions and conversations. What the agents work from.",
+    "contact": "Contact",
+    "company": "Company",
+    "project": "Project",
+    "decision": "Decision",
+    "note": "Note"
+  },
+  "contactsPage": {
+    "nextFollowUp": "Next follow-up",
+    "name": "Name",
+    "company": "Company",
+    "status": "Status"
+  },
+  "briefingPage": {
+    "howItWasMade": "How this briefing was put together"
+  },
+  "playbooks": {
+    "pb-lead-followup": {
+      "title": "Lead follow-up",
+      "pain": "Leads come in and nobody chases them.",
+      "trigger": "A qualified lead with no reply for 24 hours.",
+      "outcome": "A revived lead with a next step.",
+      "steps": [
+        "Spot the quiet lead",
+        "Assemble the context",
+        "Propose a chase draft",
+        "Get approval"
+      ]
+    },
+    "pb-missed-inquiry": {
+      "title": "Missed-enquiry rescue",
+      "pain": "Enquiries that arrive after hours get lost.",
+      "trigger": "An incoming enquiry nobody captured.",
+      "outcome": "No enquiry goes unanswered.",
+      "steps": [
+        "Capture the enquiry",
+        "Judge the urgency",
+        "Prepare the reply",
+        "Get approval"
+      ]
+    },
+    "pb-daily-briefing": {
+      "title": "Daily briefing",
+      "pain": "No clear start to the day, no clear priorities.",
+      "trigger": "Every morning at 08:00.",
+      "outcome": "A clear, prioritised start to the day.",
+      "steps": [
+        "Read the situation",
+        "Condense the priorities",
+        "Put the briefing up",
+        "Owner reviews it"
+      ]
+    },
+    "pb-crm-cleanup": {
+      "title": "CRM clean-up",
+      "pain": "Stale and duplicated contact data.",
+      "trigger": "The monthly data-hygiene run.",
+      "outcome": "A contact base you can rely on.",
+      "steps": [
+        "Spot what looks wrong",
+        "Prepare the corrections",
+        "Propose the changes",
+        "Get approval"
+      ]
+    },
+    "pb-meeting-prep": {
+      "title": "Meeting preparation",
+      "pain": "Walking into meetings unprepared.",
+      "trigger": "A meeting within the next 24 hours.",
+      "outcome": "Prepared for every conversation.",
+      "steps": [
+        "Spot the meeting",
+        "Research the context",
+        "Propose a briefing card",
+        "Review"
+      ]
+    },
+    "pb-document-summary": {
+      "title": "Document summary",
+      "pain": "What matters gets missed in a long document.",
+      "trigger": "A new document in the intake.",
+      "outcome": "A clear next action on every document.",
+      "steps": [
+        "Spot the document",
+        "Pull out the key points",
+        "Propose a summary and an action",
+        "Get approval"
+      ]
+    },
+    "pb-content-repurpose": {
+      "title": "Content reuse",
+      "pain": "Good content gets used once.",
+      "trigger": "A new post or case study.",
+      "outcome": "More reach out of what already exists.",
+      "steps": [
+        "Spot the source",
+        "Draft the variants",
+        "Propose the drafts",
+        "Approval before publishing"
+      ]
+    },
+    "pb-overdue-task": {
+      "title": "Overdue-task rescue",
+      "pain": "Tasks go overdue and start blocking others.",
+      "trigger": "A task passes its due date.",
+      "outcome": "Blockages become visible early.",
+      "steps": [
+        "Spot the overdue task",
+        "Check the cause or the blocker",
+        "Propose an escalation",
+        "Review"
+      ]
+    },
+    "pb-shadow-ai-policy": {
+      "title": "Shadow-AI policy",
+      "pain": "The team is using AI tools nobody is watching.",
+      "trigger": "A governance review, or a new tool being reported.",
+      "outcome": "A clear AI policy that is actually applied.",
+      "steps": [
+        "Record which tools are in use",
+        "Place the risk",
+        "Propose a policy measure",
+        "Owner approves"
+      ]
+    },
+    "pb-waiting-room": {
+      "title": "Customer waiting room",
+      "pain": "Customers wait for a reply and go elsewhere.",
+      "trigger": "A customer has waited longer than the threshold.",
+      "outcome": "Nobody waits too long.",
+      "steps": [
+        "Spot who is waiting",
+        "Prepare the reply",
+        "Propose the next action",
+        "Get approval"
+      ]
+    }
+  },
+  "aiLab": {
+    "errNoInput": "Please enter something first.",
+    "inputPlaceholder": "The context or source text a draft should be built from …",
+    "nextUp": "Coming next — writing the proposal into the approval queue",
+    "input": "Input",
+    "createProposal": "Create proposal (coming next)",
+    "generate": "Generate a draft",
+    "generating": "Generating …",
+    "errGenerate": "Generation failed. Please try again.",
+    "notConfiguredBefore": "The AI provider is not configured yet. Add ",
+    "notConfiguredAfter": " in Vercel to enable generation.",
+    "task": "Task",
+    "taskFollowUp": "Follow-up draft",
+    "taskAudit": "Audit summary",
+    "taskDocument": "Document summary",
+    "taskWaiting": "Waiting-room reply",
+    "taskGovernance": "Governance recommendation",
+    "taskProposal": "Proposal draft"
+  },
+  "safety": {
+    "note": "A draft for human review. Nothing has been sent, executed or promised.",
+    "defaultNote": "A draft for human review. Nothing has been sent, executed or applied. Not final legal, tax or medical advice."
+  },
+  "legal": {
+    "back": "← Back",
+    "germanOnlyTitle": "Legally binding in German",
+    "germanOnlyBody": "This page fulfils German legal obligations (§ 5 DDG, GDPR) and is authoritative in German. It is shown in German for that reason; no translation is offered, because a translated legal text would be a different legal text."
+  },
+  "risk": {
+    "low": "Low risk",
+    "medium": "Medium risk",
+    "high": "High risk",
+    "critical": "Critical"
+  },
+  "agentStatus": {
+    "active": "Active",
+    "proposing": "Proposal ready",
+    "idle": "Idle",
+    "paused": "Paused",
+    "error": "Error",
+    "offline": "Offline"
+  },
+  "leadsPage": {
+    "empty": "No open leads"
+  },
+  "tasksPage": {
+    "open": "Open",
+    "done": "Done",
+    "preparedByAgent": " · prepared by an agent"
+  },
+  "projectsPage": {
+    "planning": "Planning",
+    "active": "Active",
+    "blocked": "Blocked",
+    "on_hold": "On hold",
+    "done": "Done",
+    "on_track": "On track",
+    "at_risk": "At risk",
+    "off_track": "Off track",
+    "due": "due {date}",
+    "openTasks": "{count} open tasks"
+  },
+  "demo": {
+    "tools": {
+      "tool-1": {
+        "category": "Assistant / text",
+        "note": "Approved for internal text with no personal customer data."
+      },
+      "tool-2": {
+        "name": "ChatGPT (personal accounts)",
+        "category": "Assistant / text",
+        "note": "Personal accounts in the team — policy still pending."
+      },
+      "tool-3": {
+        "category": "Translation",
+        "note": "Approved for non-sensitive content."
+      },
+      "tool-4": {
+        "name": "Unidentified image generator",
+        "category": "Image",
+        "note": "Unclear data handling — blocked pending review."
+      }
+    },
+    "risks": {
+      "gr-1": {
+        "area": "Customer data",
+        "description": "Assessment: a risk that customer data is typed into tools nobody approved.",
+        "action": "Circulate the approved tool list, and train on it."
+      },
+      "gr-2": {
+        "area": "Policy",
+        "description": "There is no written AI usage policy.",
+        "action": "Write a baseline policy and confirm it with the team."
+      },
+      "gr-3": {
+        "area": "Visibility",
+        "description": "No view of which tools the team is using.",
+        "action": "Keep the tool register current and review it regularly."
+      }
+    },
+    "policy": {
+      "pc-1": "A written AI usage policy exists",
+      "pc-2": "The approved tool list has been circulated",
+      "pc-3": "Rule: no customer data in unapproved tools",
+      "pc-4": "A responsible person has been named",
+      "pc-5": "A regular governance review is scheduled"
+    },
+    "sensitivity": {
+      "ds-1": {
+        "type": "Marketing copy",
+        "tools": "Any approved tool"
+      },
+      "ds-2": {
+        "type": "Internal notes",
+        "tools": "Approved tools only"
+      },
+      "ds-3": {
+        "type": "Quotations and contracts",
+        "tools": "Only with approval"
+      },
+      "ds-4": {
+        "type": "Customer and personal data",
+        "tools": "No external AI tools"
+      }
+    },
+    "integrations": {
+      "i-8001": "Notifications about new leads and approvals.",
+      "i-8002": "Persistent business data (EU region).",
+      "i-8003": "Read the inbox and prepare drafts (with approval).",
+      "i-8004": "Propose meetings and raise reminders.",
+      "i-8005": "Customer messaging and notifications.",
+      "i-8006": "The automation bus that runs approved actions.",
+      "i-8007": "CRM sync for contacts and deals.",
+      "i-8008": "Payment and invoice data (read only, never triggered).",
+      "calendarName": "Google Calendar"
+    },
+    "briefing": {
+      "headline": "3 approvals open, 2 tasks overdue, 1 project blocked.",
+      "b-1Label": "First",
+      "b-1Detail": "Answer the audit enquiry from Essen (due today).",
+      "b-2Label": "Approvals",
+      "b-2Detail": "3 agent proposals are waiting for your review.",
+      "b-3Label": "Risk",
+      "b-3Detail": "The 'Website migration' project is blocked (staging).",
+      "b-4Label": "Follow-up",
+      "b-4Detail": "The print shop has not replied since the first call."
+    },
+    "metrics": {
+      "mt-1Label": "Open approvals",
+      "mt-1Hint": "Waiting for review",
+      "mt-2Label": "Active agents",
+      "mt-2Hint": "of 9 in the bureau",
+      "mt-3Label": "Overdue tasks",
+      "mt-4Label": "Follow-ups due"
+    },
+    "activity": {
+      "a-5001Action": "Daily briefing produced",
+      "a-5001Detail": "8 items prioritised, 3 approvals open.",
+      "a-5002Action": "Lead qualified",
+      "a-5002Detail": "Score 82 — proposal put up for approval.",
+      "a-5003Action": "Quiet threads spotted",
+      "a-5003Detail": "5 contacts with no reply — a chase is prepared.",
+      "a-5004Action": "Follow-ups prepared",
+      "a-5004Detail": "3 overdue chases, approval required.",
+      "a-5005Action": "Project updated",
+      "a-5005Detail": "Progress set to 62%.",
+      "a-5006Action": "Market scan complete",
+      "a-5006Detail": "The competitor brief is written.",
+      "a-5007Action": "Audit enquiry received",
+      "a-5007Detail": "A new enquiry through the public form."
+    }
+  }
+}

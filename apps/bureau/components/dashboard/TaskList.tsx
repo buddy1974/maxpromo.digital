@@ -1,4 +1,5 @@
 import { TONE_TEXT, toneMap, TONE_BADGE } from "@maxpromo/ui";
+import { getTranslations } from "next-intl/server";
 import type { Task, TaskStatus, TaskPriority } from "@/types/task";
 import { Icon } from "@maxpromo/ui";
 
@@ -17,7 +18,8 @@ const PRIORITY_COLOR_TONE = toneMap<TaskPriority>({
   low: 'neutral',
 })
 
-export function TaskList({ tasks }: { tasks: Task[] }) {
+export async function TaskList({ tasks }: { tasks: Task[] }) {
+  const tr = await getTranslations("tasksPage");
   return (
     <ul className="divide-y divide-hairline rounded-xl border border-hairline bg-surface">
       {tasks.map((t) => (
@@ -33,7 +35,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
             <p className="text-xs text-ink-muted">
               {STATUS_LABEL[t.status]}
               {t.dueDate ? ` · fällig ${t.dueDate}` : ""}
-              {t.source === "agent" ? " · vom Agenten vorbereitet" : ""}
+              {t.source === "agent" ? tr("preparedByAgent") : ""}
             </p>
           </div>
           {t.isOverdue && (

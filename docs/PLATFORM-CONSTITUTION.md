@@ -366,6 +366,7 @@ else cross-references it.
 **Architecture documents**, all under `architecture/`:
 `platform.md` (how it is put together) · `diagrams.md` (ten diagrams) ·
 `observability.md` (errors, logging, health, performance) ·
+`localisation.md` (two languages, where a string lives, what the gate checks) ·
 `engineering-dashboard.md` (architecture only) ·
 `ai-governance-readiness.md` (where Track B's concerns belong) ·
 `agent-bureau-auth-readiness.md` · `agent-bureau-route-protection.md` ·
@@ -421,6 +422,7 @@ including what the decision deliberately does not deliver.
 | `adr/0011-an-advisory-is-blocked-or-accepted-never-ignored.md` | An advisory is blocked or accepted, never ignored |
 | `adr/0012-the-accent-is-not-chrome.md` | The accent belongs to an action, not to the chrome |
 | `adr/0013-a-diagram-is-built-not-generated.md` | A diagram is built from the design system, not generated |
+| `adr/0014-a-supported-language-is-complete.md` | A supported language is complete across the product, not just the landing page |
 
 The running record of decisions too small for an ADR is `adr/decision-log.md`.
 
@@ -451,7 +453,7 @@ applied to every change.
 ## 20. Certification pipeline
 
 ```
-npm run verify     14 gates — the merge gate
+npm run verify     15 gates — the merge gate
 npm run certify    verify + a11y + consistency + platform + claims + docs
 ```
 

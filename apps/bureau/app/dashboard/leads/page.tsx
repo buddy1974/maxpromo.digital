@@ -1,13 +1,16 @@
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { MOCK_CONTACTS } from "@/lib/mock/contacts";
+import { getTranslations } from "next-intl/server";
 
 // Leads view (skeleton): reuses contact mock data as inbound prospects.
-export default function LeadsPage() {
+export default async function LeadsPage() {
+  const t = await getTranslations("leadsPage");
+  const ts = await getTranslations("sections");
   const leads = MOCK_CONTACTS.filter((c) => c.status === "new" || c.status === "nurturing");
 
   return (
-    <DashboardShell title="Leads">
+    <DashboardShell title={ts("leads")}>
       {leads.length ? (
         <ul className="divide-y divide-hairline rounded-lg border border-hairline bg-surface shadow-sm">
           {leads.map((c) => (
@@ -23,7 +26,7 @@ export default function LeadsPage() {
           ))}
         </ul>
       ) : (
-        <EmptyState title="Keine offenen Leads" icon="leads" />
+        <EmptyState title={t("empty")} icon="leads" />
       )}
     </DashboardShell>
   );

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { StatusTicker } from "./StatusTicker";
 
 /**
@@ -15,35 +16,39 @@ import { StatusTicker } from "./StatusTicker";
  *      direction retires. The same three facts are now one plain sentence,
  *      which is how a technical document would state them.
  *   3. The "System-Vorschau" link reads as a link rather than as accent text.
+ *
+ * The sentence carrying the EU-hosting and GDPR wording is translated as it
+ * stands and not strengthened in either language — its evidence is still an
+ * open item in governance/known-risks.md, and a translation is not the place
+ * to settle it.
  */
-export function Hero() {
+export async function Hero() {
+  const t = await getTranslations("hero");
+  const tc = await getTranslations("common");
+
   return (
     <section className="border-b border-hairline bg-surface-subtle">
       <div className="mx-auto max-w-content px-6 py-24 md:py-32">
-        <p className="eyebrow">Essen · Überwachtes KI-Betriebsteam</p>
+        <p className="eyebrow">{t("eyebrow")}</p>
 
-        <h1 className="mt-6 max-w-3xl text-hero text-ink">
-          Ihr Tagesgeschäft läuft vorbereitet. Sie behalten die Kontrolle.
-        </h1>
+        <h1 className="mt-6 max-w-3xl text-hero text-ink">{t("title")}</h1>
 
         <p className="mt-6 max-w-2xl text-body text-ink-secondary">
-          Kein Chatbot. Ein überwachtes Team aus Agenten, das Anfragen erfasst,
-          Leads qualifiziert, Follow-ups vorbereitet und Ihren Tag strukturiert.
-          Jede Aktion nach außen geht erst raus, wenn{" "}
-          <span className="font-medium text-ink">Sie sie freigeben.</span>
+          {t("bodyBefore")}
+          <span className="font-medium text-ink">{t("bodyEmphasis")}</span>
         </p>
 
         <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
           <a href="#audit" className="btn-primary">
-            Geschäfts-Check anfragen
+            {t("ctaPrimary")}
           </a>
           <a href="#bureau" className="btn-secondary">
-            Das Team ansehen
+            {t("ctaSecondary")}
           </a>
         </div>
 
         <p className="mt-6 text-sm text-ink-muted">
-          DSGVO-konform, in der EU gehostet, gebaut in Essen.{" "}
+          {t("footnote")}
           {/* This offered a "System-Vorschau" and pointed at /dashboard, which
               is behind authentication — so the one thing on this page that
               promised a look at the product delivered a login form. It is a
@@ -52,7 +57,7 @@ export function Hero() {
             href="/login"
             className="text-ink underline decoration-hairline-strong decoration-1 underline-offset-4 transition-colors hover:text-accent-text"
           >
-            Anmelden
+            {tc("signIn")}
           </Link>
         </p>
 

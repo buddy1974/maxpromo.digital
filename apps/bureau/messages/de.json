@@ -1,0 +1,1160 @@
+{
+  "meta": {
+    "title": "Max Agent Bureau — Ihr überwachtes KI-Betriebsteam | Maxpromo Digital",
+    "description": "Kein Chatbot. Ein überwachtes KI-Betriebsteam, das Anfragen, Follow-ups und Abläufe führt — Sie behalten die Kontrolle. Installiert von Maxpromo Digital, Essen.",
+    "ogTitle": "Max Agent Bureau — Ihr überwachtes KI-Betriebsteam",
+    "ogDescription": "Ein überwachtes KI-Betriebsteam für Ihren Betrieb. Sie genehmigen, die Agenten führen aus. Maxpromo Digital, Essen.",
+    "twitterDescription": "Ein überwachtes KI-Betriebsteam für Ihren Betrieb. Sie genehmigen, die Agenten führen aus.",
+    "impressumTitle": "Impressum | Max Agent Bureau",
+    "impressumDescription": "Anbieterkennzeichnung nach § 5 TMG für Max Agent Bureau, ein Produkt von Maxpromo Digital.",
+    "datenschutzTitle": "Datenschutzerklärung | Max Agent Bureau",
+    "datenschutzDescription": "Wie Max Agent Bureau personenbezogene Daten verarbeitet, nach DSGVO."
+  },
+  "common": {
+    "languageLabel": "Sprache",
+    "brandWordmark": "MAX AGENT BUREAU",
+    "loading": "Wird geladen …",
+    "retry": "Erneut versuchen",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "save": "Speichern",
+    "back": "Zurück",
+    "signOut": "Abmelden",
+    "signIn": "Anmelden",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "nothingHere": "Nichts vorhanden",
+    "errorTitle": "Etwas ist schiefgelaufen",
+    "skipToContent": "Zum Inhalt springen"
+  },
+  "nav": {
+    "team": "Das Team",
+    "process": "Ablauf",
+    "maxpromo": "Maxpromo",
+    "businessCheck": "Geschäfts-Check"
+  },
+  "hero": {
+    "eyebrow": "Essen · Überwachtes KI-Betriebsteam",
+    "title": "Ihr Tagesgeschäft läuft vorbereitet. Sie behalten die Kontrolle.",
+    "bodyBefore": "Kein Chatbot. Ein überwachtes Team aus Agenten, das Anfragen erfasst, Leads qualifiziert, Follow-ups vorbereitet und Ihren Tag strukturiert. Jede Aktion nach außen geht erst raus, wenn ",
+    "bodyEmphasis": "Sie sie freigeben.",
+    "ctaPrimary": "Geschäfts-Check anfragen",
+    "ctaSecondary": "Das Team ansehen",
+    "footnote": "DSGVO-konform, in der EU gehostet, gebaut in Essen. "
+  },
+  "footer": {
+    "blurb": "Ein Produkt von {brand}. Überwachte KI-Betriebssysteme, installiert in echten Betrieben.",
+    "companyHeading": "Maxpromo",
+    "website": "Website",
+    "solutions": "Leistungen",
+    "contact": "Kontakt",
+    "legalHeading": "Rechtliches",
+    "impressum": "Impressum",
+    "privacy": "Datenschutz"
+  },
+  "ticker": {
+    "statusLabel": "System-Status",
+    "preview": "Produktvorschau",
+    "events": [
+      "Neue Anfrage erfasst — Essen",
+      "Lead-Agent qualifiziert Kontakt",
+      "Follow-up vorbereitet — wartet auf Freigabe",
+      "Briefing erstellt — 08:00",
+      "CRM synchronisiert — 14 Datensätze",
+      "Research-Agent: Markt-Scan abgeschlossen",
+      "Termin vorgeschlagen — Kalender",
+      "Content-Entwurf bereit zur Prüfung",
+      "Überfällige Aufgabe markiert"
+    ]
+  },
+  "pillars": {
+    "eyebrow": "Was Sie davon haben",
+    "title": "Wir verkaufen keine KI. Wir verkaufen Ergebnisse.",
+    "p1Title": "Organisation",
+    "p1Desc": "Anfragen, Aufgaben, Kontakte und Projekte an einem Ort. Nichts liegt mehr in fünf Tools verstreut.",
+    "p2Title": "Verbindlichkeit",
+    "p2Desc": "Jede Chance bekommt ein nächstes To-do. Follow-ups werden vorbereitet, nicht vergessen.",
+    "p3Title": "Klarheit",
+    "p3Desc": "Ein tägliches Briefing beantwortet: Was braucht Aufmerksamkeit? Was kommt als Nächstes?"
+  },
+  "bureau": {
+    "eyebrow": "Das Team, kein Chatbot",
+    "title": "Ein Chief of Staff. Ein überwachtes Agenten-Team.",
+    "ledeBefore": "Jeder Agent beobachtet einen Geschäftsbereich, bereitet Entscheidungen vor und legt Aktionen zur Freigabe vor. ",
+    "ledeEmphasis": "Keine unkontrollierte Ausführung.",
+    "chiefName": "Chief of Staff",
+    "chiefRole": "Die zentrale Koordinationsebene",
+    "chiefDesc": "Priorisiert, koordiniert, eskaliert und erstellt das tägliche Briefing. Entscheidet nicht allein, sondern legt Aktionen zur Freigabe vor.",
+    "approvalPrefix": "Freigabe:",
+    "note": "Jede externe Aktion erfordert die angegebene Freigabe, bevor sie ausgeführt wird.",
+    "a1Name": "Lead-Agent",
+    "a1Fn": "Anfragen & Qualifizierung",
+    "a1Approval": "Direktkontakt",
+    "a2Name": "Research-Agent",
+    "a2Fn": "Markt & Wettbewerb",
+    "a2Approval": "Externe Inhalte",
+    "a3Name": "CRM-Agent",
+    "a3Fn": "Deals & Follow-ups",
+    "a3Approval": "Kundennachrichten",
+    "a4Name": "Kalender-Agent",
+    "a4Fn": "Termine & Erinnerungen",
+    "a4Approval": "Einladungsversand",
+    "a5Name": "Content-Agent",
+    "a5Fn": "Entwürfe & Kampagnen",
+    "a5Approval": "Veröffentlichung",
+    "a6Name": "Operations-Agent",
+    "a6Fn": "Projekte & Deadlines",
+    "a6Approval": "Aufgaben-Umverteilung",
+    "a7Name": "Document-Agent",
+    "a7Fn": "Dokumente & Fristen",
+    "a7Approval": "Externer Versand",
+    "a8Name": "Follow-Up-Agent",
+    "a8Fn": "Wartende Kunden",
+    "a8Approval": "Jede externe Nachricht",
+    "a9Name": "Governance-Agent",
+    "a9Fn": "KI-Risiken & Policy",
+    "a9Approval": "Policy-Änderungen"
+  },
+  "systemMap": {
+    "a11y": "Chief of Staff koordiniert neun spezialisierte Agenten",
+    "caption": "Eine Koordinationsebene. Neun Spezialisten. Jede Aktion nach außen über menschliche Freigabe.",
+    "mobileNote": "koordiniert 9 spezialisierte Agenten — jede Aktion nach außen über menschliche Freigabe.",
+    "n1": "Lead",
+    "n2": "Research",
+    "n3": "CRM",
+    "n4": "Kalender",
+    "n5": "Content",
+    "n6": "Operations",
+    "n7": "Dokumente",
+    "n8": "Follow-Up",
+    "n9": "Governance"
+  },
+  "lifecycle": {
+    "eyebrow": "Sichere Aktions-Kette",
+    "title": "KI bereitet vor. Der Mensch entscheidet.",
+    "a11y": "Aktions-Kette: Beobachten, Vorbereiten, Vorschlagen, Menschliche Freigabe, Ausführen, Protokollieren",
+    "s1": "Beobachten",
+    "s2": "Vorbereiten",
+    "s3": "Vorschlagen",
+    "s4a": "Menschliche",
+    "s4b": "Freigabe",
+    "s5": "Ausführen",
+    "s6": "Protokollieren",
+    "gateNote": "NUR NACH FREIGABE",
+    "footerLead": "KI bereitet vor. Der Mensch entscheidet. ",
+    "footerTail": "Jede Aktion wird protokolliert."
+  },
+  "beforeAfter": {
+    "eyebrow": "Klingt bekannt?",
+    "title": "Sie sind der Engpass. Das muss nicht so bleiben.",
+    "beforeHeading": "Heute — manuell",
+    "afterHeading": "Mit Max Agent Bureau — überwacht",
+    "before": [
+      "Anfragen kommen nach Feierabend — und gehen unter.",
+      "Follow-ups rutschen durch. Kunden buchen woanders.",
+      "Fünf Werkzeuge, keines spricht mit dem anderen.",
+      "Jede Entscheidung wartet auf Sie."
+    ],
+    "after": [
+      "Jede Anfrage wird erfasst und vorbereitet.",
+      "Follow-ups stehen bereit — Sie geben frei.",
+      "Ihre Werkzeuge laufen über ein System zusammen.",
+      "Sie steuern. Das Team führt aus."
+    ]
+  },
+  "integrations": {
+    "eyebrow": "Verbindet, was Sie schon nutzen",
+    "title": "Kein Herausreißen. Wir verbinden Ihre vorhandenen Werkzeuge.",
+    "calendar": "Google Kalender",
+    "forms": "Webformulare"
+  },
+  "auditCta": {
+    "eyebrow": "Bereit?",
+    "title": "Sehen Sie, was Ihr Betrieb aufhören kann, manuell zu tun.",
+    "lede": "30 Minuten. Unverbindlich. Wir analysieren, wo Zeit, Kunden und Übersicht verloren gehen — und wo ein überwachtes KI-Team Sie entlastet.",
+    "b1": "Klares Bild vor jeder Verpflichtung",
+    "b2": "Kein Technik-Chaos — wir starten bei Ihrem Alltag",
+    "b3": "Sie behalten die Kontrolle über jede Aktion"
+  },
+  "stats": {
+    "s1Value": "10–15 Std.",
+    "s1Label": "Zeit pro Woche, die Sie zurückgewinnen sollen",
+    "s2Value": "Sie",
+    "s2Label": "behalten die Kontrolle — jede Aktion wird freigegeben",
+    "s3Value": "15+ Jahre",
+    "s3Label": "Erfahrung mit echten Produktionssystemen",
+    "note": "Belastbare Ergebnis-Zahlen stammen aus echten, installierten Maxpromo-Systemen",
+    "caseStudies": "Fallstudien ansehen"
+  },
+  "lead": {
+    "successTitle": "Anfrage erhalten.",
+    "successBody": "Wir melden uns zu Ihrem kostenlosen Geschäfts-Check. 30 Minuten, unverbindlich.",
+    "name": "Name *",
+    "email": "E-Mail *",
+    "phone": "Telefon",
+    "company": "Firma",
+    "message": "Worum geht es? (optional)",
+    "messagePlaceholder": "Kurz Ihr Betrieb und Ihre größte manuelle Baustelle …",
+    "submit": "Kostenlosen Geschäfts-Check anfragen",
+    "submitting": "Wird gesendet …",
+    "consent": "Mit dem Absenden stimmen Sie der Kontaktaufnahme zu. Ihre Daten werden ausschließlich zur Bearbeitung Ihrer Anfrage verwendet. Details: ",
+    "privacyLink": "Datenschutz",
+    "errNameRequired": "Bitte Namen angeben.",
+    "errEmailInvalid": "Bitte gültige E-Mail angeben.",
+    "errCheckInput": "Bitte Eingaben prüfen.",
+    "errNotConfigured": "Das Formular ist noch nicht final verbunden. Bitte schreiben Sie an info@maxpromo.digital.",
+    "errGeneric": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    "errNetwork": "Netzwerkfehler. Bitte erneut versuchen."
+  },
+  "shell": {
+    "groupControl": "Steuerung",
+    "groupWorkspace": "Arbeitsbereich",
+    "groupSystem": "System",
+    "supervisedMode": "Überwachter Betrieb",
+    "systemPreview": "Systemvorschau",
+    "sidebarLabel": "Bereiche"
+  },
+  "sections": {
+    "overview": "Übersicht",
+    "operatingModel": "Betriebsmodell",
+    "audit": "Audit-Konsole",
+    "waitingRoom": "Warteraum",
+    "documents": "Dokumente",
+    "approvals": "Freigaben",
+    "aiGovernance": "KI-Governance",
+    "playbooks": "Playbooks",
+    "clientImplementation": "Kundeneinführung",
+    "briefing": "Briefing",
+    "tasks": "Aufgaben",
+    "projects": "Projekte",
+    "leads": "Leads",
+    "contacts": "Kontakte",
+    "research": "Recherche",
+    "agents": "Agenten",
+    "memory": "Memory",
+    "aiLab": "KI-Labor",
+    "settings": "Einstellungen"
+  },
+  "login": {
+    "title": "Anmelden",
+    "subtitle": "Zugang zum überwachten Betriebssystem.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "submitting": "Wird geprüft …",
+    "errInvalid": "E-Mail oder Passwort stimmt nicht.",
+    "errGeneric": "Anmeldung fehlgeschlagen. Bitte erneut versuchen.",
+    "backToSite": "Zurück zur Website",
+    "metaTitle": "Anmelden — Max Agent Bureau",
+    "prompt": "Melden Sie sich an, um fortzufahren.",
+    "emailLabel": "E-Mail-Adresse",
+    "emailPlaceholder": "name@unternehmen.de",
+    "passwordLabel": "Passwort",
+    "signingIn": "Anmelden…",
+    "noAccount": "Kein Konto? Zugang wird von Maxpromo bereitgestellt.",
+    "errCredentials": "E-Mail-Adresse oder Passwort ungültig."
+  },
+  "status": {
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "waiting": "Wartend",
+    "pending": "Offen",
+    "approved": "Freigegeben",
+    "rejected": "Abgelehnt",
+    "draft": "Entwurf",
+    "ready": "Bereit",
+    "completed": "Abgeschlossen",
+    "failed": "Fehlgeschlagen",
+    "requiresApproval": "Freigabe erforderlich",
+    "inProgress": "In Arbeit",
+    "planned": "Geplant",
+    "blocked": "Blockiert",
+    "open": "Offen",
+    "review": "In Prüfung",
+    "high": "Hoch",
+    "medium": "Mittel",
+    "low": "Niedrig",
+    "critical": "Kritisch"
+  },
+  "empty": {
+    "seedHint": "Führen Sie den Demo-Seed aus: npm run db:seed:demo",
+    "workspaceEmpty": "Demo-Workspace ist leer",
+    "workspaceEmptyHint": "Führen Sie den Demo-Seed aus, um diesen Workspace zu befüllen: npm run db:seed:demo",
+    "noProposals": "Keine Vorschläge",
+    "noDocuments": "Keine Dokumente im Demo-Workspace",
+    "noFindings": "Keine Befunde",
+    "noWaiting": "Niemand wartet",
+    "noEntries": "Keine Einträge"
+  },
+  "greeting": {
+    "morning": "Guten Morgen, {name}.",
+    "afternoon": "Guten Tag, {name}.",
+    "evening": "Guten Abend, {name}."
+  },
+  "dashboard": {
+    "headline": "{approvals} Freigaben offen · {waiting} wartende Kunden · {findings} Audit-Befunde.",
+    "bApprovalsLabel": "Freigaben",
+    "bApprovalsDetail": "{count} Agenten-Vorschläge warten auf Ihre Prüfung.",
+    "bWaitingLabel": "Warteraum",
+    "bWaitingDetail": "{count} Kunden warten mit hoher Dringlichkeit.",
+    "bAuditLabel": "Audit",
+    "bAuditRunning": "Geschäfts-Check läuft (Score {score}).",
+    "bAuditNone": "Kein aktives Audit.",
+    "mApprovals": "Offene Freigaben",
+    "mAgents": "Aktive Agenten",
+    "mWaiting": "Wartende Kunden",
+    "mFindings": "Audit-Befunde",
+    "openApprovals": "Offene Freigaben",
+    "openApprovalsHint": "Agenten-Vorschläge warten auf Ihre Prüfung.",
+    "noApprovals": "Keine offenen Freigaben",
+    "activeAgents": "Aktive Agenten",
+    "waitingCustomers": "Wartende Kunden",
+    "noneWaitingUrgently": "Niemand wartet dringend",
+    "recentActivity": "Letzte Aktivität",
+    "waitingFor": "wartet {duration}",
+    "trailPrepared": "Aktion vorbereitet (nicht ausgeführt)",
+    "trailAwaiting": "Wartet auf menschliche Freigabe",
+    "trailAgent": "Agent: {agent}"
+  },
+  "approvals": {
+    "supervisedNote": "Eine Freigabe protokolliert nur die Entscheidung und den Audit-Trail. In dieser Vorschau wird keine externe Nachricht, E-Mail, Kalender-Aktion oder CRM-Aktualisierung ausgeführt.",
+    "awaitingReview": "Wartet auf Prüfung",
+    "context": "Kontext",
+    "proposedAction": "Vorgeschlagene Aktion",
+    "expectedOutcome": "Erwartetes Ergebnis",
+    "auditTrail": "Audit-Trail",
+    "auditTrailPreview": "Audit-Trail (Vorschau)"
+  },
+  "auditConsole": {
+    "noAudit": "Kein Audit im Demo-Workspace",
+    "businessCheck": "Geschäfts-Check",
+    "priorityScore": "Prioritäts-Score",
+    "priorityMatrix": "Prioritäts-Matrix",
+    "recommendedTeam": "Empfohlenes Team",
+    "findings": "Befunde ({count})",
+    "impactLabel": "Auswirkung",
+    "effortLabel": "Aufwand"
+  },
+  "documents": {
+    "pageTitle": "Dokumenteneingang",
+    "eyebrow": "Aus Dokument-Chaos wird strukturierte Aktion",
+    "lede": "Zusammengefasst, mit Frist und nächster Aktion. Vorbereitet, nicht ausgeführt.",
+    "actionRequired": "Aktion erforderlich",
+    "doneReviewed": "Erledigt / geprüft",
+    "deadline": "Frist",
+    "suggestedResponse": "Vorgeschlagene Antwort",
+    "requiredActions": "Erforderliche Aktionen",
+    "assignedAgent": "Zuständiger Agent",
+    "source": "Quelle"
+  },
+  "waitingRoom": {
+    "eyebrow": "Wer wartet gerade auf Sie",
+    "lede": "Vorbereitete Antworten. Nichts wird ohne Ihre Freigabe gesendet.",
+    "waitingFor": "Wartet seit",
+    "channel": "Kanal",
+    "reason": "Grund",
+    "suggestedAction": "Vorgeschlagene Aktion",
+    "urgency": "Dringlichkeit",
+    "urgent": "Dringend",
+    "whoIsWaiting": "Wer wartet auf eine Antwort?",
+    "prepNote": "Antworten werden vorbereitet — gesendet wird erst nach Ihrer Freigabe. Keine ausgehende Nachricht wurde ausgeführt.",
+    "nobodyWaiting": "Niemand im Warteraum",
+    "queueHint": "Wartende Kunden erscheinen hier."
+  },
+  "model": {
+    "eyebrow": "Produkt-Backbone",
+    "backbone": "Audit → Diagnose → Team-Design → Manuelle Lieferung → Systematisieren → Installieren → Warten",
+    "lede": "Das Dashboard ist die sichtbare Oberfläche. Das eigentliche Produkt ist dieses Betriebsmodell — ein System, das Maxpromo in einen Betrieb installiert.",
+    "sevenStages": "Die sieben Stufen",
+    "safeChain": "Sichere Aktions-Kette",
+    "hierarchy": "Agenten-Hierarchie",
+    "solves": "Löst",
+    "result": "Ergebnis",
+    "agentsLabel": "Agenten",
+    "nextHandoff": "Nächste Übergabe",
+    "stages": {
+      "audit": {
+        "name": "Audit",
+        "purpose": "Den Betrieb durchleuchten: Wo geht Zeit verloren, wo warten Kunden, wo lecken Leads, was läuft manuell?",
+        "pain": "Kein klares Bild, wo der Betrieb Zeit, Kunden und Übersicht verliert.",
+        "output": "Strukturierte Audit-Findings mit Prioritäten.",
+        "handoff": "Findings gehen in die Diagnose."
+      },
+      "diagnose": {
+        "name": "Diagnose",
+        "purpose": "Audit-Funde in konkrete operative Schmerzpunkte übersetzen.",
+        "pain": "Symptome sind sichtbar, aber die Ursache und Wirkung sind unklar.",
+        "output": "Diagnose-Liste mit Wirkung und empfohlenem Stage.",
+        "handoff": "Diagnose bestimmt das benötigte Agenten-Team."
+      },
+      "design": {
+        "name": "Agenten-Team-Design",
+        "purpose": "Empfehlen, welche Agenten der Betrieb braucht — vom Chief of Staff allein bis zum vollen Bureau.",
+        "pain": "Unklar, welche Unterstützung wirklich nötig ist.",
+        "output": "Agenten-Empfehlung (Tier) für die Situation.",
+        "handoff": "Team geht in die manuelle Lieferung."
+      },
+      "manual_delivery": {
+        "name": "Manuelle Lieferung",
+        "purpose": "Erste Kunden im Concierge-Modus bedienen, während die Plattform wächst.",
+        "pain": "Wert muss geliefert werden, bevor alles automatisiert ist.",
+        "output": "Implementierungsnotizen und freigegebene Agenten-Aufgaben.",
+        "handoff": "Wiederholbares wird systematisiert."
+      },
+      "systemize": {
+        "name": "Systematisierung",
+        "purpose": "Wiederholte manuelle Arbeit in wiederverwendbare Playbooks und Workflows verwandeln.",
+        "pain": "Gleiche Arbeit wird immer wieder von Hand erledigt.",
+        "output": "Wiederverwendbare Playbooks, Vorlagen und Freigaberegeln.",
+        "handoff": "Systeme werden installiert."
+      },
+      "install": {
+        "name": "Installation",
+        "purpose": "Den AI Chief of Staff und das Agenten-Bureau in den Betrieb installieren.",
+        "pain": "Der Betrieb braucht ein installiertes, kontrolliertes System — kein Tool zum Selbermachen.",
+        "output": "Installierte, übergebene und überwachte Konfiguration.",
+        "handoff": "System geht in die Wartung."
+      },
+      "maintain": {
+        "name": "Wartung",
+        "purpose": "Laufender Betrieb: Monitoring, Updates, kundenspezifische Konfiguration, Verbesserungen.",
+        "pain": "Systeme veralten ohne Pflege; kein Einmalprojekt.",
+        "output": "Gesundheits-Checks, Audit-Logs und monatliche Empfehlungen.",
+        "handoff": "Neue Findings starten den Zyklus erneut."
+      }
+    },
+    "lifecycle": {
+      "observe": "Beobachten",
+      "prepare": "Vorbereiten",
+      "propose": "Vorschlagen",
+      "human_review": "Menschliche Freigabe",
+      "execute": "Ausführen",
+      "log": "Protokollieren"
+    },
+    "recommendations": {
+      "rec-1": {
+        "tier": "Chief of Staff",
+        "forSituation": "Erst einmal Übersicht und tägliche Priorität."
+      },
+      "rec-2": {
+        "tier": "Chief of Staff + CRM-Agent",
+        "forSituation": "Follow-ups und Beziehungen rutschen durch."
+      },
+      "rec-3": {
+        "tier": "Chief of Staff + Lead + Follow-Up",
+        "forSituation": "Leads kommen rein, aber gehen verloren."
+      },
+      "rec-4": {
+        "tier": "Volles Agenten-Bureau",
+        "forSituation": "Operativer Betrieb soll durchgängig unterstützt werden."
+      }
+    },
+    "hierarchy_": {
+      "chief-of-staff": "Zentrale Intelligenz: priorisiert, koordiniert, routet Freigaben, überwacht den Audit-Trail.",
+      "lead-agent": "Recherchiert, qualifiziert und bereitet Outreach vor.",
+      "research-agent": "Markt-, Wettbewerbs- und Branchenbeobachtung.",
+      "crm-agent": "Follow-ups, Deal-Bewegung, Beziehungspflege.",
+      "calendar-agent": "Terminvorschläge, Erinnerungen, Tagesplanung.",
+      "operations-agent": "Projekt-/Aufgaben-Tracking und Prozess-Sichtbarkeit.",
+      "content-agent": "Content-Planung, Entwürfe, Kampagnen-Support.",
+      "document-agent": "Dokument-Zusammenfassungen, Angebote, Wissensextraktion.",
+      "follow-up-agent": "Erkennt wartende Kunden, bereitet nächste Schritte vor."
+    }
+  },
+  "agentRegistry": {
+    "chief-of-staff": {
+      "role": "Zentrale Intelligenz & Koordination",
+      "description": "Priorisiert die Arbeit, erstellt das tägliche Briefing, koordiniert die übrigen Agenten und legt Entscheidungen zur Freigabe vor.",
+      "caps": [
+        "Priorisierung",
+        "Tägliches Briefing",
+        "Koordination"
+      ],
+      "capDescs": [
+        "Bewertet, was heute Aufmerksamkeit braucht.",
+        "Fasst Lage, Risiken und nächste Schritte zusammen.",
+        "Verteilt Aufgaben an die passenden Agenten."
+      ],
+      "allowed": [
+        "Briefing erstellen",
+        "Prioritäten vorschlagen",
+        "Aufgaben zur Freigabe vorlegen"
+      ],
+      "blocked": [
+        "E-Mails senden",
+        "Zahlungen auslösen",
+        "Daten löschen"
+      ],
+      "pains": [
+        "Unklare Prioritäten",
+        "Fehlende Übersicht"
+      ],
+      "outcomes": [
+        "Klarheit",
+        "Bessere Entscheidungen",
+        "Weniger Chaos"
+      ],
+      "next": "Tagesbriefing um 08:00 zur Durchsicht bereitstellen."
+    },
+    "lead-agent": {
+      "role": "Lead-Recherche & Qualifizierung",
+      "description": "Recherchiert Firmen, findet Kontakte, reichert Datensätze an und qualifiziert eingehende Anfragen.",
+      "caps": [
+        "Firmen-Recherche",
+        "Anreicherung",
+        "Qualifizierung"
+      ],
+      "capDescs": [
+        "Sammelt öffentliche Informationen zu Interessenten.",
+        "Ergänzt fehlende Felder in Kontaktdatensätzen.",
+        "Bewertet Eignung und Dringlichkeit."
+      ],
+      "allowed": [
+        "Lead recherchieren",
+        "Datensatz anreichern",
+        "Qualifizierungs-Score vorschlagen"
+      ],
+      "blocked": [
+        "Kontakt direkt anschreiben",
+        "Daten an Dritte exportieren"
+      ],
+      "pains": [
+        "Lead-Leckage",
+        "Schwaches Lead-Tracking"
+      ],
+      "outcomes": [
+        "Mehr qualifizierte Chancen",
+        "Weniger verlorene Leads"
+      ],
+      "next": "Neue Audit-Anfrage aus Essen qualifizieren."
+    },
+    "research-agent": {
+      "role": "Markt- & Wettbewerbsbeobachtung",
+      "description": "Beobachtet Markt, Wettbewerb und Branchensignale und meldet relevante Gelegenheiten.",
+      "caps": [
+        "Markt-Scan",
+        "Zusammenfassung"
+      ],
+      "capDescs": [
+        "Verfolgt Entwicklungen in definierten Themenfeldern.",
+        "Verdichtet Funde zu kurzen Briefs."
+      ],
+      "allowed": [
+        "Markt-Scan durchführen",
+        "Brief zusammenfassen"
+      ],
+      "blocked": [
+        "Externe Inhalte veröffentlichen"
+      ],
+      "pains": [
+        "Fehlende Marktübersicht"
+      ],
+      "outcomes": [
+        "Frühe Chancen-Erkennung",
+        "Informierte Entscheidungen"
+      ],
+      "next": "Wöchentlichen Wettbewerbs-Brief vorbereiten."
+    },
+    "crm-agent": {
+      "role": "Beziehungspflege & Follow-up",
+      "description": "Verfolgt Deals, erinnert an Follow-ups und hält Kontaktdaten aktuell.",
+      "caps": [
+        "Follow-up-Tracking",
+        "Datenpflege"
+      ],
+      "capDescs": [
+        "Erkennt fällige Nachfassaktionen.",
+        "Markiert veraltete oder doppelte Datensätze."
+      ],
+      "allowed": [
+        "Follow-up vorbereiten",
+        "Datensatz-Korrektur vorschlagen"
+      ],
+      "blocked": [
+        "Nachricht an Kunden senden",
+        "Deal-Status final ändern"
+      ],
+      "pains": [
+        "Verpasste Follow-ups",
+        "Schwaches Lead-Tracking"
+      ],
+      "outcomes": [
+        "Verlässliches Follow-through",
+        "Gepflegte Beziehungen"
+      ],
+      "next": "3 überfällige Follow-ups zur Freigabe vorlegen."
+    },
+    "calendar-agent": {
+      "role": "Termine & Erinnerungen",
+      "description": "Schlägt Termine vor, erinnert an Meetings und hält den Kalender aufgeräumt.",
+      "caps": [
+        "Terminvorschlag",
+        "Erinnerung"
+      ],
+      "capDescs": [
+        "Findet passende Zeitfenster.",
+        "Weist auf anstehende Meetings hin."
+      ],
+      "allowed": [
+        "Terminvorschlag erstellen",
+        "Erinnerung vorbereiten"
+      ],
+      "blocked": [
+        "Einladung versenden",
+        "Termin im Kalender Dritter buchen"
+      ],
+      "pains": [
+        "Langsame Antworten",
+        "Unklare Prioritäten"
+      ],
+      "outcomes": [
+        "Aufgeräumter Kalender",
+        "Vorbereitete Termine"
+      ],
+      "next": "Slot für Audit-Gespräch vorschlagen."
+    },
+    "content-agent": {
+      "role": "Content-Planung & Entwürfe",
+      "description": "Plant Content, erstellt Entwürfe und bereitet Kampagnen vor — zur Prüfung, nicht zur Veröffentlichung.",
+      "caps": [
+        "Planung",
+        "Entwurf"
+      ],
+      "capDescs": [
+        "Skizziert Themen und Zeitplan.",
+        "Erstellt Roh-Entwürfe zur Prüfung."
+      ],
+      "allowed": [
+        "Content-Plan erstellen",
+        "Entwurf vorbereiten"
+      ],
+      "blocked": [
+        "Beitrag veröffentlichen",
+        "Newsletter versenden"
+      ],
+      "pains": [
+        "Manuelle Verwaltung",
+        "Content nur einmal genutzt"
+      ],
+      "outcomes": [
+        "Mehr Reichweite",
+        "Konsistente Kommunikation"
+      ],
+      "next": "Entwurf für Fallstudien-Post zur Prüfung vorlegen."
+    },
+    "operations-agent": {
+      "role": "Projekt- & Aufgabenkoordination",
+      "description": "Verfolgt Projekte, Aufgaben und Deadlines und meldet Blockaden frühzeitig.",
+      "caps": [
+        "Tracking",
+        "Eskalation"
+      ],
+      "capDescs": [
+        "Behält Fortschritt und Deadlines im Blick.",
+        "Markiert Risiken und Blockaden."
+      ],
+      "allowed": [
+        "Projektstatus berichten",
+        "Risiko markieren"
+      ],
+      "blocked": [
+        "Aufgaben Dritter umverteilen ohne Freigabe"
+      ],
+      "pains": [
+        "Verstreute Aufgaben",
+        "Fehlende Übersicht",
+        "Reporting-Verzug"
+      ],
+      "outcomes": [
+        "Prozess-Sichtbarkeit",
+        "Eingehaltene Deadlines"
+      ],
+      "next": "Blockiertes Projekt 'Website-Migration' eskalieren."
+    },
+    "document-agent": {
+      "role": "Dokumente & Aufbereitung",
+      "description": "Erstellt und strukturiert Dokumente wie Angebote, Berichte und Zusammenfassungen — zur Freigabe.",
+      "caps": [
+        "Erstellung",
+        "Extraktion"
+      ],
+      "capDescs": [
+        "Entwirft strukturierte Dokumente.",
+        "Fasst Inhalte aus Quelldokumenten zusammen."
+      ],
+      "allowed": [
+        "Angebot entwerfen",
+        "Bericht zusammenfassen"
+      ],
+      "blocked": [
+        "Dokument extern verschicken",
+        "Rechnung final ausstellen"
+      ],
+      "pains": [
+        "Dokumenten-Chaos",
+        "Manuelle Verwaltung"
+      ],
+      "outcomes": [
+        "Klare nächste Aktion pro Dokument",
+        "Weniger übersehene Fristen"
+      ],
+      "next": "Angebotsentwurf für neue Anfrage vorbereiten."
+    },
+    "follow-up-agent": {
+      "role": "Nachverfolgung & Wiedervorlage",
+      "description": "Stellt sicher, dass keine Chance und kein Versprechen untergeht — bereitet Wiedervorlagen vor.",
+      "caps": [
+        "Erkennung",
+        "Vorbereitung"
+      ],
+      "capDescs": [
+        "Findet offene Zusagen und stille Threads.",
+        "Entwirft die nächste Nachfassaktion."
+      ],
+      "allowed": [
+        "Wiedervorlage erkennen",
+        "Nachfass-Entwurf vorbereiten"
+      ],
+      "blocked": [
+        "Nachricht eigenständig senden",
+        "Mehrfach-Versand ohne Freigabe"
+      ],
+      "pains": [
+        "Verpasste Follow-ups",
+        "Langsame Antworten",
+        "Lead-Leckage"
+      ],
+      "outcomes": [
+        "Keine verlorene Chance",
+        "Verlässliches Follow-through"
+      ],
+      "next": "5 stille Threads zur Wiedervorlage vorlegen."
+    }
+  },
+  "agentCard": {
+    "approvalRequired": "Freigabe erforderlich",
+    "observes": "Beobachtet",
+    "prepares": "Bereitet vor",
+    "needsApprovalFor": "Freigabe nötig für",
+    "connectedSystems": "Verbundene Systeme",
+    "lastActivity": "Letzte Aktivität",
+    "nextAction": "Nächste empfohlene Aktion"
+  },
+  "agentsPage": {
+    "count": "Agent Bureau · {count} Agenten",
+    "lede": "Ein Chief of Staff koordiniert ein überwachtes Team. Jeder Agent beobachtet einen Bereich, bereitet vor und legt Aktionen zur Freigabe vor — keine unkontrollierte Ausführung.",
+    "coordination": "Koordination",
+    "specialists": "Spezialisten"
+  },
+  "approvalActions": {
+    "doneApproved": "Freigegeben (Vorschau) — keine ausgehende Aktion ausgeführt.",
+    "doneRejected": "Abgelehnt — keine Aktion ausgeführt.",
+    "doneReviewed": "Geprüft — Entscheidung erfasst.",
+    "okApproved": "Freigegeben für den Demo-Workflow. Keine ausgehende Aktion ausgeführt.",
+    "okRejected": "Vorschlag abgelehnt. Keine Aktion ausgeführt.",
+    "okReviewed": "Als geprüft markiert. Keine Aktion ausgeführt.",
+    "errAction": "Aktion nicht möglich. Bitte Seite neu laden.",
+    "errNetwork": "Netzwerkfehler. Bitte erneut versuchen.",
+    "approve": "Freigeben (Vorschau)",
+    "reject": "Vorschlag ablehnen",
+    "markReviewed": "Als geprüft markieren",
+    "placeholder": "Platzhalter — Freigabe-Logik folgt in einem späteren Sprint",
+    "approveShort": "Freigeben",
+    "rejectShort": "Ablehnen",
+    "editBeforeApproval": "Vor Freigabe bearbeiten",
+    "placeholderShort": "Platzhalter"
+  },
+  "impact": {
+    "label": "Wirkung",
+    "time": "Zeit",
+    "revenue": "Umsatz",
+    "visibility": "Übersicht",
+    "risk": "Risiko",
+    "stage": "Stufe",
+    "priorityVsImpact": "Priorität \\ Wirkung"
+  },
+  "sensitivity": {
+    "heading": "Datensensibilität",
+    "dataType": "Datentyp",
+    "level": "Sensibilität",
+    "allowedTools": "Erlaubte Tools",
+    "public": "Öffentlich",
+    "internal": "Intern",
+    "confidential": "Vertraulich",
+    "personal": "Personenbezogen"
+  },
+  "toolRegister": {
+    "heading": "Tool-Register",
+    "approved": "Freigegeben",
+    "under_review": "In Prüfung",
+    "blocked": "Gesperrt",
+    "tool": "Tool",
+    "category": "Kategorie",
+    "status": "Status",
+    "note": "Hinweis"
+  },
+  "governancePage": {
+    "eyebrow": "Shadow-AI unter Kontrolle",
+    "lede": "Eine Einschätzung der KI-Nutzung im Betrieb: freigegebene Tools, Risikobereiche, Policy-Status und Datensensibilität. Dies ist eine Bewertungs- und Richtlinienübersicht — kein automatischer Scan von Mitarbeiter-Tools.",
+    "riskAreas": "Risikobereiche",
+    "recommendedAction": "Empfohlene Maßnahme",
+    "policyChecklist": "Policy-Checkliste"
+  },
+  "clientImpl": {
+    "eyebrow": "Concierge / Manuelle Lieferung",
+    "lede": "Maxpromo liefert Wert zunächst manuell, während die Plattform wächst. Diese Seite hält Beobachtungen, vorgeschlagene Workflows und den Installations-Fortschritt pro Kunde fest.",
+    "priority": "Priorität {level}",
+    "notStarted": "Nicht begonnen",
+    "inProgress": "In Umsetzung",
+    "handedOver": "Übergeben",
+    "businessPains": "Geschäftliche Schmerzpunkte",
+    "bottlenecks": "Beobachtete Engpässe",
+    "proposedAgents": "Vorgeschlagene Agenten",
+    "workflows": "Zu installierende Workflows",
+    "integrations": "Integrationen",
+    "nextSteps": "Nächste Schritte",
+    "serviceNote": "Manuelle Service-Notiz",
+    "maintenanceReady": "Wartungsbereit",
+    "notYet": "noch nicht",
+    "ready": "ja"
+  },
+  "playbooksPage": {
+    "eyebrow": "Wiederverwendbare Playbooks",
+    "lede": "Wiederholte manuelle Arbeit wird zu installierbaren Workflows. Jedes Playbook endet vor der Ausführung mit einer menschlichen Freigabe.",
+    "approvalRequired": "Freigabe erforderlich",
+    "pain": "Schmerz",
+    "trigger": "Auslöser",
+    "stage": "Stufe",
+    "agents": "Agenten",
+    "template": "Vorlage",
+    "outcome": "Ergebnis"
+  },
+  "settingsPage": {
+    "available": "Verfügbar",
+    "planned": "Geplant",
+    "integrations": "Integrationen",
+    "connected": "Verbunden",
+    "error": "Fehler",
+    "coming_soon": "Bald",
+    "securityHeading": "Sicherheit & Kontrolle",
+    "securityBody": "Supervised Mode ist aktiv. Agenten führen keine Aktionen nach außen ohne Freigabe aus. Konfiguration von Rollen, Berechtigungen und Audit-Aufbewahrung folgt in einem späteren Sprint."
+  },
+  "researchPage": {
+    "empty": "Noch keine Recherche",
+    "eyebrow": "Research-Agent · überwacht",
+    "lede": "Recherche-Ergebnisse und Markt-Signale. Der Research-Agent fasst zusammen — er veröffentlicht nichts ohne Freigabe."
+  },
+  "memoryPage": {
+    "conversation": "Gespräch",
+    "eyebrow": "Geschäftsgedächtnis",
+    "lede": "Persistenter Kontext: Kontakte, Firmen, Projekte, Entscheidungen und Gespräche. Die Wissensbasis, auf die sich die Agenten stützen.",
+    "contact": "Kontakt",
+    "company": "Firma",
+    "project": "Projekt",
+    "decision": "Entscheidung",
+    "note": "Notiz"
+  },
+  "contactsPage": {
+    "nextFollowUp": "Nächstes Follow-up",
+    "name": "Name",
+    "company": "Firma",
+    "status": "Status"
+  },
+  "briefingPage": {
+    "howItWasMade": "Wie das Briefing entstanden ist"
+  },
+  "playbooks": {
+    "pb-lead-followup": {
+      "title": "Lead-Follow-up",
+      "pain": "Leads kommen rein, aber niemand fasst nach.",
+      "trigger": "Neuer qualifizierter Lead ohne Reaktion seit 24h.",
+      "outcome": "Reaktivierter Lead mit nächstem Schritt.",
+      "steps": [
+        "Stillen Lead erkennen",
+        "Kontext zusammenstellen",
+        "Nachfass-Entwurf vorschlagen",
+        "Freigabe einholen"
+      ]
+    },
+    "pb-missed-inquiry": {
+      "title": "Verpasste-Anfrage-Rettung",
+      "pain": "Anfragen nach Feierabend gehen unter.",
+      "trigger": "Eingehende Anfrage ohne Erfassung.",
+      "outcome": "Keine Anfrage bleibt unbeantwortet.",
+      "steps": [
+        "Anfrage erfassen",
+        "Dringlichkeit einschätzen",
+        "Antwort vorbereiten",
+        "Freigabe einholen"
+      ]
+    },
+    "pb-daily-briefing": {
+      "title": "Tägliches Briefing",
+      "pain": "Kein klarer Tagesstart, Prioritäten unklar.",
+      "trigger": "Jeden Morgen um 08:00.",
+      "outcome": "Klarer, priorisierter Start in den Tag.",
+      "steps": [
+        "Lage beobachten",
+        "Prioritäten verdichten",
+        "Briefing vorlegen",
+        "Durchsicht durch Owner"
+      ]
+    },
+    "pb-crm-cleanup": {
+      "title": "CRM-Bereinigung",
+      "pain": "Veraltete, doppelte Kontaktdaten.",
+      "trigger": "Monatlicher Datenhygiene-Lauf.",
+      "outcome": "Saubere, verlässliche Kontaktbasis.",
+      "steps": [
+        "Auffälligkeiten erkennen",
+        "Korrekturen vorbereiten",
+        "Änderungen vorschlagen",
+        "Freigabe einholen"
+      ]
+    },
+    "pb-meeting-prep": {
+      "title": "Meeting-Vorbereitung",
+      "pain": "Unvorbereitet in Termine gehen.",
+      "trigger": "Termin in den nächsten 24h.",
+      "outcome": "Vorbereitet in jedes Gespräch.",
+      "steps": [
+        "Termin erkennen",
+        "Kontext recherchieren",
+        "Briefing-Karte vorschlagen",
+        "Durchsicht"
+      ]
+    },
+    "pb-document-summary": {
+      "title": "Dokument-Zusammenfassung",
+      "pain": "Wichtiges in langen Dokumenten übersehen.",
+      "trigger": "Neues Dokument im Intake.",
+      "outcome": "Klare nächste Aktion pro Dokument.",
+      "steps": [
+        "Dokument erkennen",
+        "Kernpunkte extrahieren",
+        "Zusammenfassung + Aktion vorschlagen",
+        "Freigabe einholen"
+      ]
+    },
+    "pb-content-repurpose": {
+      "title": "Content-Wiederverwertung",
+      "pain": "Guter Content wird nur einmal genutzt.",
+      "trigger": "Neuer Beitrag oder Fallstudie.",
+      "outcome": "Mehr Reichweite aus vorhandenem Content.",
+      "steps": [
+        "Quelle erkennen",
+        "Varianten entwerfen",
+        "Entwürfe vorschlagen",
+        "Freigabe vor Veröffentlichung"
+      ]
+    },
+    "pb-overdue-task": {
+      "title": "Überfällige-Aufgaben-Rettung",
+      "pain": "Aufgaben werden überfällig und blockieren.",
+      "trigger": "Aufgabe überschreitet Fälligkeit.",
+      "outcome": "Blockaden werden früh sichtbar.",
+      "steps": [
+        "Überfälligkeit erkennen",
+        "Ursache/Blocker prüfen",
+        "Eskalation vorschlagen",
+        "Durchsicht"
+      ]
+    },
+    "pb-shadow-ai-policy": {
+      "title": "Shadow-AI-Policy",
+      "pain": "Team nutzt unkontrolliert KI-Tools.",
+      "trigger": "Governance-Review oder neue Tool-Meldung.",
+      "outcome": "Klare, durchgesetzte KI-Richtlinie.",
+      "steps": [
+        "Tool-Nutzung erfassen",
+        "Risiko einordnen",
+        "Policy-Maßnahme vorschlagen",
+        "Freigabe durch Owner"
+      ]
+    },
+    "pb-waiting-room": {
+      "title": "Kunden-Warteraum",
+      "pain": "Kunden warten auf Antwort und springen ab.",
+      "trigger": "Kunde wartet länger als Schwellwert.",
+      "outcome": "Niemand wartet zu lange.",
+      "steps": [
+        "Wartende erkennen",
+        "Antwort vorbereiten",
+        "Nächste Aktion vorschlagen",
+        "Freigabe einholen"
+      ]
+    }
+  },
+  "aiLab": {
+    "errNoInput": "Bitte eine Eingabe machen.",
+    "inputPlaceholder": "Kontext / Quelltext, aus dem ein Entwurf erstellt werden soll …",
+    "nextUp": "Kommt als Nächstes — Vorschlag in die Approval-Queue schreiben",
+    "input": "Eingabe",
+    "createProposal": "Vorschlag erstellen (kommt bald)",
+    "generate": "Entwurf generieren",
+    "generating": "Generiere …",
+    "errGenerate": "Generierung fehlgeschlagen. Bitte erneut versuchen.",
+    "notConfiguredBefore": "AI-Provider ist noch nicht konfiguriert. Fügen Sie ",
+    "notConfiguredAfter": " in Vercel hinzu, um die Generierung zu aktivieren.",
+    "task": "Aufgabe",
+    "taskFollowUp": "Follow-up-Entwurf",
+    "taskAudit": "Audit-Zusammenfassung",
+    "taskDocument": "Dokument-Zusammenfassung",
+    "taskWaiting": "Warteraum-Antwort",
+    "taskGovernance": "Governance-Empfehlung",
+    "taskProposal": "Vorschlags-Entwurf"
+  },
+  "safety": {
+    "note": "Entwurf zur menschlichen Prüfung. Nichts wurde gesendet, ausgeführt oder zugesagt.",
+    "defaultNote": "Entwurf zur menschlichen Prüfung. Nichts wurde gesendet, ausgeführt oder angewendet. Keine rechtliche/steuerliche/medizinische Letztberatung."
+  },
+  "legal": {
+    "back": "← Zurück",
+    "germanOnlyTitle": "Rechtlich verbindlich auf Deutsch",
+    "germanOnlyBody": "Diese Seite erfüllt deutsche Pflichten (§ 5 DDG, DSGVO) und ist auf Deutsch maßgeblich."
+  },
+  "risk": {
+    "low": "Risiko niedrig",
+    "medium": "Risiko mittel",
+    "high": "Risiko hoch",
+    "critical": "Kritisch"
+  },
+  "agentStatus": {
+    "active": "Aktiv",
+    "proposing": "Vorschlag bereit",
+    "idle": "Bereit",
+    "paused": "Pausiert",
+    "error": "Fehler",
+    "offline": "Offline"
+  },
+  "leadsPage": {
+    "empty": "Keine offenen Leads"
+  },
+  "tasksPage": {
+    "open": "Offen",
+    "done": "Erledigt",
+    "preparedByAgent": " · vom Agenten vorbereitet"
+  },
+  "projectsPage": {
+    "planning": "Planung",
+    "active": "Aktiv",
+    "blocked": "Blockiert",
+    "on_hold": "Pausiert",
+    "done": "Abgeschlossen",
+    "on_track": "Auf Kurs",
+    "at_risk": "Risiko",
+    "off_track": "Kritisch",
+    "due": "fällig {date}",
+    "openTasks": "{count} offene Aufgaben"
+  },
+  "demo": {
+    "tools": {
+      "tool-1": {
+        "category": "Assistenz / Text",
+        "note": "Freigegeben für interne Texte ohne personenbezogene Kundendaten."
+      },
+      "tool-2": {
+        "name": "ChatGPT (privat)",
+        "category": "Assistenz / Text",
+        "note": "Private Accounts im Team — Richtlinie ausstehend."
+      },
+      "tool-3": {
+        "category": "Übersetzung",
+        "note": "Freigegeben für nicht-sensible Inhalte."
+      },
+      "tool-4": {
+        "name": "Unbekannter Bild-Generator",
+        "category": "Bild",
+        "note": "Unklare Datenverarbeitung — bis zur Prüfung gesperrt."
+      }
+    },
+    "risks": {
+      "gr-1": {
+        "area": "Kundendaten",
+        "description": "Bewertung: Risiko, dass Kundendaten in nicht freigegebene Tools eingegeben werden.",
+        "action": "Freigegebene Tool-Liste kommunizieren und Schulung."
+      },
+      "gr-2": {
+        "area": "Richtlinie",
+        "description": "Es existiert keine schriftliche KI-Nutzungsrichtlinie.",
+        "action": "Basis-Policy erstellen und im Team bestätigen."
+      },
+      "gr-3": {
+        "area": "Sichtbarkeit",
+        "description": "Keine Übersicht, welche Tools im Team genutzt werden.",
+        "action": "Tool-Register pflegen und regelmäßig prüfen."
+      }
+    },
+    "policy": {
+      "pc-1": "Schriftliche KI-Nutzungsrichtlinie vorhanden",
+      "pc-2": "Freigegebene Tool-Liste kommuniziert",
+      "pc-3": "Regel: keine Kundendaten in nicht freigegebene Tools",
+      "pc-4": "Verantwortliche Person benannt",
+      "pc-5": "Regelmäßiges Governance-Review angesetzt"
+    },
+    "sensitivity": {
+      "ds-1": {
+        "type": "Marketing-Texte",
+        "tools": "Alle freigegebenen Tools"
+      },
+      "ds-2": {
+        "type": "Interne Notizen",
+        "tools": "Nur freigegebene Tools"
+      },
+      "ds-3": {
+        "type": "Angebote / Verträge",
+        "tools": "Nur mit Freigabe"
+      },
+      "ds-4": {
+        "type": "Kundendaten / personenbezogen",
+        "tools": "Keine externen KI-Tools"
+      }
+    },
+    "integrations": {
+      "i-8001": "Benachrichtigungen über neue Leads und Freigaben.",
+      "i-8002": "Persistente Geschäftsdaten (EU-Region).",
+      "i-8003": "Posteingang lesen und Entwürfe vorbereiten (mit Freigabe).",
+      "i-8004": "Termine vorschlagen und Erinnerungen.",
+      "i-8005": "Kundenkommunikation und Benachrichtigungen.",
+      "i-8006": "Automatisierungs- und Ausführungs-Bus für freigegebene Aktionen.",
+      "i-8007": "CRM-Synchronisation für Kontakte und Deals.",
+      "i-8008": "Zahlungs- und Rechnungsdaten (nur Lesen, keine Auslösung).",
+      "calendarName": "Google Kalender"
+    },
+    "briefing": {
+      "headline": "3 Freigaben offen, 2 überfällige Aufgaben, 1 Projekt blockiert.",
+      "b-1Label": "Zuerst",
+      "b-1Detail": "Audit-Anfrage aus Essen beantworten (heute fällig).",
+      "b-2Label": "Freigaben",
+      "b-2Detail": "3 Agenten-Vorschläge warten auf Ihre Prüfung.",
+      "b-3Label": "Risiko",
+      "b-3Detail": "Projekt 'Website-Migration' ist blockiert (Staging).",
+      "b-4Label": "Follow-up",
+      "b-4Detail": "Druckerei hat seit dem Erstgespräch nicht geantwortet."
+    },
+    "metrics": {
+      "mt-1Label": "Offene Freigaben",
+      "mt-1Hint": "Warten auf Prüfung",
+      "mt-2Label": "Aktive Agenten",
+      "mt-2Hint": "von 9 im Bureau",
+      "mt-3Label": "Überfällige Aufgaben",
+      "mt-4Label": "Fällige Follow-ups"
+    },
+    "activity": {
+      "a-5001Action": "Tagesbriefing erstellt",
+      "a-5001Detail": "8 Punkte priorisiert, 3 Freigaben offen.",
+      "a-5002Action": "Lead qualifiziert",
+      "a-5002Detail": "Score 82 — Vorschlag zur Freigabe vorgelegt.",
+      "a-5003Action": "Stille Threads erkannt",
+      "a-5003Detail": "5 Kontakte ohne Antwort — Wiedervorlage vorbereitet.",
+      "a-5004Action": "Follow-ups vorbereitet",
+      "a-5004Detail": "3 überfällige Nachfassaktionen, Freigabe erforderlich.",
+      "a-5005Action": "Projekt aktualisiert",
+      "a-5005Detail": "Fortschritt auf 62% gesetzt.",
+      "a-5006Action": "Markt-Scan abgeschlossen",
+      "a-5006Detail": "Wettbewerbs-Brief zusammengefasst.",
+      "a-5007Action": "Audit-Anfrage eingegangen",
+      "a-5007Detail": "Neue Anfrage über das öffentliche Formular."
+    }
+  }
+}

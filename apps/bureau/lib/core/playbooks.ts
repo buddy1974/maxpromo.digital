@@ -1,188 +1,49 @@
-import type { Playbook } from "@/types/playbook";
+import type { SafeActionLifecycleStep } from "@/types/operating-model";
 
-// Reusable agent playbooks — the repeatable delivery system that turns manual
-// concierge work into installable workflows. Every playbook ends in a human
-// review step before any execute/log (supervision contract).
-const review = (id: string, n: number, label: string, lifecycle: Playbook["steps"][number]["lifecycle"]) => ({
-  id,
-  order: n,
-  label,
-  lifecycle,
-});
+/**
+ * Reusable agent playbooks — the repeatable delivery system that turns manual
+ * concierge work into installable workflows. Every playbook ends in a human
+ * review step before any execute or log step: that is the supervision contract,
+ * and it is expressed here in structure rather than in prose, so it cannot be
+ * lost in a translation.
+ *
+ * STRUCTURE HERE, WORDS IN THE CATALOGUE
+ * The title, the pain it addresses, its trigger, its outcome and the label of
+ * each step live in `playbooks.<id>` in messages/{de,en}.json. What stays is
+ * the id, the order and lifecycle phase of each step, which agents are
+ * responsible, the operating stage, and whether approval is required.
+ */
+export interface PlaybookRecord {
+  id: string;
+  responsibleAgents: string[];
+  /** Ordered. The lifecycle phase is what makes the contract checkable. */
+  steps: { id: string; order: number; lifecycle: SafeActionLifecycleStep }[];
+  approvalRequired: boolean;
+  operatingStage: string;
+  reusableTemplate: boolean;
+}
 
-export const PLAYBOOKS: Playbook[] = [
-  {
-    id: "pb-lead-followup",
-    title: "Lead-Follow-up",
-    businessPain: "Leads kommen rein, aber niemand fasst nach.",
-    trigger: "Neuer qualifizierter Lead ohne Reaktion seit 24h.",
-    responsibleAgents: ["lead-agent", "follow-up-agent"],
-    steps: [
-      review("s1", 1, "Stillen Lead erkennen", "observe"),
-      review("s2", 2, "Kontext zusammenstellen", "prepare"),
-      review("s3", 3, "Nachfass-Entwurf vorschlagen", "propose"),
-      review("s4", 4, "Freigabe einholen", "human_review"),
-    ],
-    approvalRequired: true,
-    expectedOutcome: "Reaktivierter Lead mit nächstem Schritt.",
-    operatingStage: "manual_delivery",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-missed-inquiry",
-    title: "Verpasste-Anfrage-Rettung",
-    businessPain: "Anfragen nach Feierabend gehen unter.",
-    trigger: "Eingehende Anfrage ohne Erfassung.",
-    responsibleAgents: ["chief-of-staff", "follow-up-agent"],
-    steps: [
-      review("s1", 1, "Anfrage erfassen", "observe"),
-      review("s2", 2, "Dringlichkeit einschätzen", "prepare"),
-      review("s3", 3, "Antwort vorbereiten", "propose"),
-      review("s4", 4, "Freigabe einholen", "human_review"),
-    ],
-    approvalRequired: true,
-    expectedOutcome: "Keine Anfrage bleibt unbeantwortet.",
-    operatingStage: "manual_delivery",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-daily-briefing",
-    title: "Tägliches Briefing",
-    businessPain: "Kein klarer Tagesstart, Prioritäten unklar.",
-    trigger: "Jeden Morgen um 08:00.",
-    responsibleAgents: ["chief-of-staff"],
-    steps: [
-      review("s1", 1, "Lage beobachten", "observe"),
-      review("s2", 2, "Prioritäten verdichten", "prepare"),
-      review("s3", 3, "Briefing vorlegen", "propose"),
-      review("s4", 4, "Durchsicht durch Owner", "human_review"),
-    ],
-    approvalRequired: false,
-    expectedOutcome: "Klarer, priorisierter Start in den Tag.",
-    operatingStage: "systemize",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-crm-cleanup",
-    title: "CRM-Bereinigung",
-    businessPain: "Veraltete, doppelte Kontaktdaten.",
-    trigger: "Monatlicher Datenhygiene-Lauf.",
-    responsibleAgents: ["crm-agent"],
-    steps: [
-      review("s1", 1, "Auffälligkeiten erkennen", "observe"),
-      review("s2", 2, "Korrekturen vorbereiten", "prepare"),
-      review("s3", 3, "Änderungen vorschlagen", "propose"),
-      review("s4", 4, "Freigabe einholen", "human_review"),
-    ],
-    approvalRequired: true,
-    expectedOutcome: "Saubere, verlässliche Kontaktbasis.",
-    operatingStage: "systemize",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-meeting-prep",
-    title: "Meeting-Vorbereitung",
-    businessPain: "Unvorbereitet in Termine gehen.",
-    trigger: "Termin in den nächsten 24h.",
-    responsibleAgents: ["calendar-agent", "research-agent"],
-    steps: [
-      review("s1", 1, "Termin erkennen", "observe"),
-      review("s2", 2, "Kontext recherchieren", "prepare"),
-      review("s3", 3, "Briefing-Karte vorschlagen", "propose"),
-      review("s4", 4, "Durchsicht", "human_review"),
-    ],
-    approvalRequired: false,
-    expectedOutcome: "Vorbereitet in jedes Gespräch.",
-    operatingStage: "systemize",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-document-summary",
-    title: "Dokument-Zusammenfassung",
-    businessPain: "Wichtiges in langen Dokumenten übersehen.",
-    trigger: "Neues Dokument im Intake.",
-    responsibleAgents: ["document-agent"],
-    steps: [
-      review("s1", 1, "Dokument erkennen", "observe"),
-      review("s2", 2, "Kernpunkte extrahieren", "prepare"),
-      review("s3", 3, "Zusammenfassung + Aktion vorschlagen", "propose"),
-      review("s4", 4, "Freigabe einholen", "human_review"),
-    ],
-    approvalRequired: true,
-    expectedOutcome: "Klare nächste Aktion pro Dokument.",
-    operatingStage: "systemize",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-content-repurpose",
-    title: "Content-Wiederverwertung",
-    businessPain: "Guter Content wird nur einmal genutzt.",
-    trigger: "Neuer Beitrag oder Fallstudie.",
-    responsibleAgents: ["content-agent"],
-    steps: [
-      review("s1", 1, "Quelle erkennen", "observe"),
-      review("s2", 2, "Varianten entwerfen", "prepare"),
-      review("s3", 3, "Entwürfe vorschlagen", "propose"),
-      review("s4", 4, "Freigabe vor Veröffentlichung", "human_review"),
-    ],
-    approvalRequired: true,
-    expectedOutcome: "Mehr Reichweite aus vorhandenem Content.",
-    operatingStage: "systemize",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-overdue-task",
-    title: "Überfällige-Aufgaben-Rettung",
-    businessPain: "Aufgaben werden überfällig und blockieren.",
-    trigger: "Aufgabe überschreitet Fälligkeit.",
-    responsibleAgents: ["operations-agent"],
-    steps: [
-      review("s1", 1, "Überfälligkeit erkennen", "observe"),
-      review("s2", 2, "Ursache/Blocker prüfen", "prepare"),
-      review("s3", 3, "Eskalation vorschlagen", "propose"),
-      review("s4", 4, "Durchsicht", "human_review"),
-    ],
-    approvalRequired: false,
-    expectedOutcome: "Blockaden werden früh sichtbar.",
-    operatingStage: "manual_delivery",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-shadow-ai-policy",
-    title: "Shadow-AI-Policy",
-    businessPain: "Team nutzt unkontrolliert KI-Tools.",
-    trigger: "Governance-Review oder neue Tool-Meldung.",
-    responsibleAgents: ["chief-of-staff"],
-    steps: [
-      review("s1", 1, "Tool-Nutzung erfassen", "observe"),
-      review("s2", 2, "Risiko einordnen", "prepare"),
-      review("s3", 3, "Policy-Maßnahme vorschlagen", "propose"),
-      review("s4", 4, "Freigabe durch Owner", "human_review"),
-    ],
-    approvalRequired: true,
-    expectedOutcome: "Klare, durchgesetzte KI-Richtlinie.",
-    operatingStage: "diagnose",
-    reusableTemplate: true,
-  },
-  {
-    id: "pb-waiting-room",
-    title: "Kunden-Warteraum",
-    businessPain: "Kunden warten auf Antwort und springen ab.",
-    trigger: "Kunde wartet länger als Schwellwert.",
-    responsibleAgents: ["follow-up-agent", "crm-agent"],
-    steps: [
-      review("s1", 1, "Wartende erkennen", "observe"),
-      review("s2", 2, "Antwort vorbereiten", "prepare"),
-      review("s3", 3, "Nächste Aktion vorschlagen", "propose"),
-      review("s4", 4, "Freigabe einholen", "human_review"),
-    ],
-    approvalRequired: true,
-    expectedOutcome: "Niemand wartet zu lange.",
-    operatingStage: "manual_delivery",
-    reusableTemplate: true,
-  },
+/** Every playbook runs the same four phases, in the same order. */
+const FOUR_PHASE: PlaybookRecord["steps"] = [
+  { id: "s1", order: 1, lifecycle: "observe" },
+  { id: "s2", order: 2, lifecycle: "prepare" },
+  { id: "s3", order: 3, lifecycle: "propose" },
+  { id: "s4", order: 4, lifecycle: "human_review" },
 ];
 
-export function getPlaybookById(id: string) {
+export const PLAYBOOKS: PlaybookRecord[] = [
+  { id: "pb-lead-followup",     responsibleAgents: ["lead-agent", "follow-up-agent"],        steps: FOUR_PHASE, approvalRequired: true, operatingStage: "manual_delivery", reusableTemplate: true },
+  { id: "pb-missed-inquiry",    responsibleAgents: ["chief-of-staff", "follow-up-agent"],    steps: FOUR_PHASE, approvalRequired: true, operatingStage: "manual_delivery", reusableTemplate: true },
+  { id: "pb-daily-briefing",    responsibleAgents: ["chief-of-staff"],                       steps: FOUR_PHASE, approvalRequired: true, operatingStage: "maintain",        reusableTemplate: true },
+  { id: "pb-crm-cleanup",       responsibleAgents: ["crm-agent"],                            steps: FOUR_PHASE, approvalRequired: true, operatingStage: "systemize",       reusableTemplate: true },
+  { id: "pb-meeting-prep",      responsibleAgents: ["calendar-agent", "research-agent"],     steps: FOUR_PHASE, approvalRequired: true, operatingStage: "manual_delivery", reusableTemplate: true },
+  { id: "pb-document-summary",  responsibleAgents: ["document-agent"],                       steps: FOUR_PHASE, approvalRequired: true, operatingStage: "systemize",       reusableTemplate: true },
+  { id: "pb-content-repurpose", responsibleAgents: ["content-agent"],                        steps: FOUR_PHASE, approvalRequired: true, operatingStage: "systemize",       reusableTemplate: true },
+  { id: "pb-overdue-task",      responsibleAgents: ["operations-agent"],                     steps: FOUR_PHASE, approvalRequired: true, operatingStage: "maintain",        reusableTemplate: true },
+  { id: "pb-shadow-ai-policy",  responsibleAgents: ["chief-of-staff"],                       steps: FOUR_PHASE, approvalRequired: true, operatingStage: "maintain",        reusableTemplate: false },
+  { id: "pb-waiting-room",      responsibleAgents: ["follow-up-agent", "chief-of-staff"],    steps: FOUR_PHASE, approvalRequired: true, operatingStage: "manual_delivery", reusableTemplate: true },
+];
+
+export function getPlaybookById(id: string): PlaybookRecord | undefined {
   return PLAYBOOKS.find((p) => p.id === id);
 }

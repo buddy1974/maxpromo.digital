@@ -5,6 +5,7 @@
 
 import { token } from "@maxpromo/design-tokens";
 import { Icon, type IconName } from "@maxpromo/ui";
+import { getTranslations } from "next-intl/server";
 
 /**
  * Diagram palette. SVG presentation attributes cannot resolve CSS custom
@@ -33,13 +34,13 @@ const C = {
 };
 
 type Step = { label: string[]; icon: IconName; gate?: boolean; gated?: boolean };
-const STEPS: Step[] = [
-  { label: ["Beobachten"],         icon: "running" as IconName },
-  { label: ["Vorbereiten"],        icon: "leads" as IconName },
-  { label: ["Vorschlagen"],        icon: "arrowRight" as IconName },
-  { label: ["Menschliche","Freigabe"], icon: "approvals" as IconName, gate: true },
-  { label: ["Ausführen"],          icon: "dashboard" as IconName, gated: true },
-  { label: ["Protokollieren"],     icon: "tasks" as IconName },
+const STEP_ICONS: readonly { keys: string[]; icon: IconName; gate?: boolean; gated?: boolean }[] = [
+  { keys: ["s1"], icon: "running" },
+  { keys: ["s2"], icon: "leads" },
+  { keys: ["s3"], icon: "arrowRight" },
+  { keys: ["s4a", "s4b"], icon: "approvals", gate: true },
+  { keys: ["s5"], icon: "dashboard", gated: true },
+  { keys: ["s6"], icon: "tasks" },
 ];
 
 // Even 160-px spacing across 960 wide canvas.
@@ -47,13 +48,16 @@ const XS: number[] = [80, 240, 400, 560, 720, 880];
 const CY = 104;
 const R  = 38;
 
-export function SafeActionLifecycle() {
+export async function SafeActionLifecycle() {
+  const t = await getTranslations("lifecycle");
+  const STEPS: Step[] = STEP_ICONS.map((s) => ({ ...s, label: s.keys.map((k) => t(k)) }));
+
   return (
     <section id="ablauf" className="border-b border-hairline">
       <div className="mx-auto max-w-content px-6 py-20 md:py-28">
-        <p className="eyebrow">{"Sichere Aktions-Kette"}</p>
+        <p className="eyebrow">{t("eyebrow")}</p>
         <h2 className="mt-4 max-w-2xl text-section-title text-ink">
-          KI bereitet vor. Der Mensch entscheidet.
+          {t("title")}
         </h2>
 
         <div className="mt-8 overflow-x-auto rounded-lg border border-hairline bg-surface-subtle p-4 md:p-6">
@@ -61,7 +65,7 @@ export function SafeActionLifecycle() {
             viewBox="0 0 960 220"
             className="h-auto w-full min-w-[720px]"
             role="img"
-            aria-label="Aktions-Kette: Beobachten, Vorbereiten, Vorschlagen, Menschliche Freigabe, Ausführen, Protokollieren"
+            aria-label={t("a11y")}
           >
             <defs>
               <marker id="ar"  viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
@@ -97,7 +101,7 @@ export function SafeActionLifecycle() {
               strokeOpacity="0.5"
             />
             <text x={(XS[3] + XS[4]) / 2} y={CY + R + 50} textAnchor="middle" fontSize="9" fontFamily="monospace" fill={C.accent} opacity="0.7">
-              NUR NACH FREIGABE
+              {t("gateNote")}
             </text>
 
             {/* nodes */}
@@ -146,8 +150,8 @@ export function SafeActionLifecycle() {
         <div className="mt-5 flex items-center gap-2 rounded-lg border border-accent/30 bg-accent-soft px-4 py-2.5">
           <span className="font-mono text-ink-secondary"><Icon name="check" size="sm" /></span>
           <p className="text-sm text-ink-secondary">
-            KI bereitet vor. Der Mensch entscheidet.{" "}
-            <span className="text-ink-secondary">Jede Aktion wird protokolliert.</span>
+            {t("footerLead")}
+            <span className="text-ink-secondary">{t("footerTail")}</span>
           </p>
         </div>
       </div>

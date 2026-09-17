@@ -1,12 +1,21 @@
 import { z } from "zod";
 
+/**
+ * Validation messages are KEYS, not sentences.
+ *
+ * This schema runs on the client and on the server. A German sentence baked in
+ * here would be shown to an English user by the form, and would also be the
+ * only thing the API could return. The form resolves these keys against the
+ * `lead` message namespace; the API passes them through as codes, which is
+ * what an API error should have been anyway.
+ */
 // Shared client + server validation. The form and the API use the SAME schema,
 // so what the UI accepts and what the DB stores can never drift apart.
 export const ctaTypeSchema = z.enum(["audit", "call", "contact"]);
 
 export const leadSchema = z.object({
-  name: z.string().trim().min(2, "Bitte Namen angeben.").max(120),
-  email: z.string().trim().email("Bitte gültige E-Mail angeben.").max(200),
+  name: z.string().trim().min(2, "errNameRequired").max(120),
+  email: z.string().trim().email("errEmailInvalid").max(200),
   phone: z.string().trim().max(40).optional().or(z.literal("")),
   company: z.string().trim().max(160).optional().or(z.literal("")),
   message: z.string().trim().max(2000).optional().or(z.literal("")),

@@ -1,5 +1,5 @@
 import { getAIConfig, hasOpenAIConfig } from "@/config/env";
-import { SYSTEM_PROMPT, buildUserPrompt } from "./prompts";
+import { systemPrompt, buildUserPrompt } from "./prompts";
 import {
   clampRisk,
   coerceRisk,
@@ -31,7 +31,17 @@ function extractText(json: unknown): string {
   return "";
 }
 
-function parseProposal(raw: string): Omit<AIGeneratedProposal, "requiresApproval" | "safetyNote" | "riskLevel"> & { riskLevel?: unknown } {
+function parseProposal(raw: string, locale: "de" | "en" = "de"): Omit<AIGeneratedProposal, "requiresApproval" | "safetyNote" | "riskLevel"> & { riskLevel?: unknown } {
+  /**
+   * What is shown when the model returns something unusable. It is the only
+   * text this file puts in front of an operator, so it follows their language
+   * rather than the language the prompt happens to be written in.
+   */
+  /* i18n-exempt — both languages are right here, chosen by the locale. */
+  const fallback = locale === "en"
+    ? { title: "Draft", next: "Put it up for approval." }
+    : { title: "Entwurf", next: "Zur Freigabe vorlegen." };
+
   // Tolerate stray code fences or prose around the JSON.
   const start = raw.indexOf("{");
   const end = raw.lastIndexOf("}");
@@ -39,10 +49,10 @@ function parseProposal(raw: string): Omit<AIGeneratedProposal, "requiresApproval
     try {
       const obj = JSON.parse(raw.slice(start, end + 1));
       return {
-        title: String(obj.title ?? "Entwurf"),
+        title: String(obj.title ?? fallback.title),
         summary: String(obj.summary ?? ""),
         draft: String(obj.draft ?? raw),
-        recommendedNextAction: String(obj.recommendedNextAction ?? "Zur Freigabe vorlegen."),
+        recommendedNextAction: String(obj.recommendedNextAction ?? fallback.next),
         riskLevel: obj.riskLevel,
       };
     } catch {
@@ -51,10 +61,10 @@ function parseProposal(raw: string): Omit<AIGeneratedProposal, "requiresApproval
   }
   // Fallback: wrap the raw text as the draft.
   return {
-    title: "Entwurf",
+    title: fallback.title,
     summary: raw.slice(0, 200),
     draft: raw,
-    recommendedNextAction: "Zur Freigabe vorlegen.",
+    recommendedNextAction: fallback.next,
     riskLevel: undefined,
   };
 }
@@ -79,7 +89,7 @@ export async function generateWithOpenAI(
         model,
         temperature,
         input: [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: systemPrompt(request.locale) },
           { role: "user", content: buildUserPrompt(request.task, request.context) },
         ],
       }),
@@ -104,7 +114,7 @@ export async function generateWithOpenAI(
   const text = extractText(json);
   if (!text) return { ok: false, error: "ai_empty_response" };
 
-  const parsed = parseProposal(text);
+  const parsed = parseProposal(text, request.locale);
   const floor = riskFloor(request.task, request.context);
   const data: AIGeneratedProposal = {
     title: parsed.title,
@@ -113,7 +123,7 @@ export async function generateWithOpenAI(
     riskLevel: clampRisk(coerceRisk(parsed.riskLevel), floor),
     recommendedNextAction: parsed.recommendedNextAction,
     requiresApproval: true,
-    safetyNote: defaultSafetyNote(),
+    safetyNote: defaultSafetyNote(request.locale),
   };
   return { ok: true, data };
 }

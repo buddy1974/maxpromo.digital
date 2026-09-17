@@ -155,7 +155,26 @@ for (const file of CATALOGUES) {
     if (RESULT_KEY.test(key) && !SITUATION_KEY.test(key)) {
       const lower = text.toLowerCase()
       for (const h of HEDGES) {
-        if (!lower.includes(h)) continue
+        /**
+         * Whole words only.
+         *
+         * `includes` found "over" inside "overdue" and reported "2 tasks
+         * overdue" as a result stated as an estimate. A hedge is a word, not a
+         * sequence of letters, and a rule that cannot tell the difference
+         * spends its credibility on findings nobody can act on. The escape
+         * keeps "ca." and "approx" working, and \b on both sides is what makes
+         * "over" a word.
+         */
+        const escaped = h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        // \b only where the hedge's own edge is a word character. "ca." ends in
+        // a full stop, and \b after it would demand a letter immediately
+        // afterwards — which "um ca. 18 Tage" does not have. Requiring it there
+        // would trade this false positive for a false negative, which is the
+        // worse of the two.
+        const left = /^\w/.test(h) ? '\\b' : ''
+        const right = /\w$/.test(h) ? '\\b' : ''
+        const word = new RegExp(`${left}${escaped}${right}`, 'i')
+        if (!word.test(lower)) continue
         // Only when the hedge sits near a figure or a comparative claim.
         // German puts the stem change in the participle — "gestiegen", not
         // "gestieget" — so a stem list built from the infinitive matches the
@@ -290,8 +309,17 @@ function groupOf(parent, leaf) {
  * one project; comparing it with "1-4 weeks" on the process section would be
  * comparing what happened once with what is promised generally, and a script
  * should not draw that conclusion. A human should — and did, in known-risk 40.
+ *
+ * The product namespaces are excluded for the same reason, one step further
+ * in. A playbook's trigger — "a meeting within the next 24 hours" — is a
+ * condition the software watches for, not a promise to a customer, and reading
+ * it as one produced "the first conversation is committed to as 30 minutes and
+ * 24 hours" the day Agent Bureau gained an English catalogue. The German said
+ * "24h" and slipped through the unit pattern; the English said "24 hours" and
+ * did not, which is how a rule's blind spot surfaces as a new finding about
+ * old copy.
  */
-const NOT_A_COMMITMENT = /^caseStudies\./
+const NOT_A_COMMITMENT = /^(caseStudies|playbooks|demo|agentRegistry|model)\./
 
 const commitments = new Map()   // kind -> Map(value -> [where])
 

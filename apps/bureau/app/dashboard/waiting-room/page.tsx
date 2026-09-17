@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/dashboard/EmptyState";
 import { getWaitingRoom } from "@/lib/db/queries/waiting-room";
 import { getCurrentUser } from "@/lib/auth/session";
 import type { WaitingRoomItem } from "@/types/waiting-room";
+import { getTranslations } from "next-intl/server";
 
 // Module 2 — Customer Waiting Room. DB-backed. Prepared responses only; nothing sent.
 export const dynamic = "force-dynamic";
@@ -13,6 +14,10 @@ export default async function WaitingRoomPage() {
   // Auth-5: source businessId from session — no global demo lookup.
   const user = await getCurrentUser();
   if (!user?.businessId) redirect("/login");
+
+  const t = await getTranslations("waitingRoom");
+  const ts = await getTranslations("sections");
+  const te = await getTranslations("empty");
 
   const rows = await getWaitingRoom(user.businessId);
 
@@ -33,15 +38,14 @@ export default async function WaitingRoomPage() {
   }));
 
   return (
-    <DashboardShell title="Kunden-Warteraum">
+    <DashboardShell title={ts("waitingRoom")}>
       <div className="space-y-6">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
-            Wer wartet auf eine Antwort?
+            {t("whoIsWaiting")}
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
-            Antworten werden vorbereitet — gesendet wird erst nach Ihrer Freigabe.
-            Keine ausgehende Nachricht wurde ausgeführt.
+            {t("prepNote")}
           </p>
         </div>
 
@@ -49,8 +53,8 @@ export default async function WaitingRoomPage() {
           <WaitingRoomQueue items={items} />
         ) : (
           <EmptyState
-            title="Niemand im Warteraum"
-            hint="Führen Sie den Demo-Seed aus: npm run db:seed:demo"
+            title={t("nobodyWaiting")}
+            hint={te("seedHint")}
             icon="waiting"
           />
         )}

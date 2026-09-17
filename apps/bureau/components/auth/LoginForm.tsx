@@ -9,14 +9,18 @@ import { FormStatus } from "@maxpromo/ui";
  * Calls signIn("credentials") from next-auth/react.
  *
  * Design: platform design system. Colour comes from @maxpromo/design-tokens.
- * Language: German UI (target market is German SMEs).
+ * Language: whichever the visitor has chosen. The product is German-first by
+ * governance and fully available in English; this form reads both from the
+ * catalogue rather than assuming the reader.
  * No public signup — accounts are provisioned by Maxpromo.
  */
 import { useState, useTransition } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function LoginForm() {
+  const t = useTranslations("login");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -38,7 +42,7 @@ export default function LoginForm() {
       if (result?.error) {
         // NextAuth returns "CredentialsSignin" on wrong credentials.
         // We show a deliberate vague message to avoid user enumeration.
-        setError("E-Mail-Adresse oder Passwort ungültig.");
+        setError(t("errCredentials"));
         return;
       }
 
@@ -52,7 +56,7 @@ export default function LoginForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {/* E-Mail */}
       <label className="flex flex-col gap-1.5">
-        <span className="field-label">E-Mail-Adresse</span>
+        <span className="field-label">{t("emailLabel")}</span>
         <input
           id="email"
           type="email"
@@ -61,7 +65,7 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="field-input"
-          placeholder="name@unternehmen.de"
+          placeholder={t("emailPlaceholder")}
           disabled={isPending}
           aria-busy={isPending}
         />
@@ -69,7 +73,7 @@ export default function LoginForm() {
 
       {/* Passwort */}
       <label className="flex flex-col gap-1.5">
-        <span className="field-label">Passwort</span>
+        <span className="field-label">{t("passwordLabel")}</span>
         <input
           id="password"
           type="password"
@@ -91,16 +95,16 @@ export default function LoginForm() {
         {isPending ? (
           <>
             <span className="mr-2 h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-            Anmelden…
+            {t("signingIn")}
           </>
         ) : (
-          "Anmelden"
+          t("submit")
         )}
       </button>
 
       {/* No public signup notice */}
       <p className="text-center font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
-        Kein Konto? Zugang wird von Maxpromo bereitgestellt.
+        {t("noAccount")}
       </p>
     </form>
   );

@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "certify": "npm run verify && npm run audit:a11y && npm run audit:consistency && npm run audit:platform && npm run audit:claims && npm run audit:docs && npm run audit:dependencies",
-    "verify": "npm run check:governance && npm run check:domains && npm run check:brands && npm run check:tokens && npm run check:token-inputs && npm run check:trace && npm run check:icons && npm run check:capabilities && npm run check:responsive && npm run audit:typography && npm run typecheck && npm run lint && npm run build && npm run check:budgets",
+    "verify": "npm run check:governance && npm run check:domains && npm run check:brands && npm run check:tokens && npm run check:token-inputs && npm run check:trace && npm run check:icons && npm run check:capabilities && npm run check:i18n && npm run check:responsive && npm run audit:typography && npm run typecheck && npm run lint && npm run build && npm run check:budgets",
     "audit:a11y": "node packages/tooling/audit-a11y.mjs",
     "audit:consistency": "node packages/tooling/audit-consistency.mjs",
     "audit:platform": "node packages/tooling/audit-platform.mjs",
@@ -41,7 +41,9 @@
     "prove:trace": "node packages/tooling/prove-trace-contract.mjs",
     "prove:provisioning": "node packages/tooling/prove-provisioning-guards.mjs",
     "check:capabilities": "node packages/tooling/check-capabilities.mjs",
-    "prove:demo-access": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/prove-demo-access.mjs"
+    "prove:demo-access": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/prove-demo-access.mjs",
+    "check:i18n": "node packages/tooling/check-i18n.mjs",
+    "prove:i18n": "node packages/tooling/prove-i18n.mjs"
   },
   "engines": {
     "node": ">=20"

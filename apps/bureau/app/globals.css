@@ -119,6 +119,11 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--brand-text);
   letter-spacing: var(--tracking-tight);
   text-wrap: balance;
+  /* German compounds are frequently longer than a phone viewport at heading
+     size — "Datenschutzerklärung", "Anbieterkennzeichnung". The hub took the
+     same rule after a legal page pushed itself sideways at 390px. A heading is
+     allowed to break; it is not allowed to move the page. */
+  overflow-wrap: break-word;
 }
 h1 { font-size: var(--text-h1); font-weight: var(--weight-heading); line-height: var(--leading-tight); }
 h2 { font-size: var(--text-h2); font-weight: var(--weight-subhead); line-height: var(--leading-snug); }

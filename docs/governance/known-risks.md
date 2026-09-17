@@ -1,5 +1,51 @@
 # Known Risks — Maxpromo Platform
 
+## OPEN 2026-09-17 — nobody has signed into the bilingual dashboard with a real account
+
+Agent Bureau's authenticated surfaces were verified in both languages against a
+**locally minted session**: a throwaway NextAuth token, signed with a throwaway
+secret passed to a local `next start`, against local demo fixtures. That is
+real rendering of the real code — fourteen authenticated pages, both languages,
+three viewport widths, no language mixing and no horizontal overflow — and it
+is not the same as Marcel signing in.
+
+**What that leaves untested.** The pages that read the production database:
+`/dashboard`, `/dashboard/approvals`, `/dashboard/audit`,
+`/dashboard/documents`, `/dashboard/waiting-room`. Their chrome is translated
+and checked like every other page; what nobody has seen is those translations
+around **real rows**. The rows themselves are records and stay in the language
+they were written in, by design — which means a German workspace will show
+German record text inside an English interface, and that is correct behaviour
+rather than a defect.
+
+**What to do.** The checklist in the release report: sign in, walk the sections
+in German, switch to English, walk them again, refresh, confirm the language
+holds and the session does not drop.
+
+**Owner:** Marcel. **Risk if ignored:** a DB-backed page shows an English label
+over a German column heading that nobody translated, and the first person to
+see it is a customer.
+
+## ACCEPTED 2026-09-17 — the demo fixtures are German where they stand for records
+
+`lib/mock/*` holds the demo workspace. Content in the product's voice is
+translated; content that stands for a **record** — the named restaurant, the
+named logistics firm, the pains and bottlenecks a consultant wrote down — is
+not. An English operator therefore sees German text on
+`/dashboard/client-implementation`.
+
+This is deliberate and is the same behaviour real data will have: no product
+translates its records. It is recorded here rather than left as a surprise,
+because it is the one judgement in the bilingual pass that a reasonable person
+could disagree with. If Marcel wants the demo workspace to read English for an
+English prospect, that is a decision about demo data, not about localisation,
+and it means writing a second set of fixtures.
+
+**Owner:** Marcel. **Risk if ignored:** none technically; a prospect shown the
+demo in English sees German client notes and may read it as an unfinished
+translation rather than as data.
+
+
 ## RESOLVED 2026-09-17 — the site was not rendering in its own typeface, and no gate could see it
 
 **What was wrong.** `@maxpromo/design-tokens` defines `--brand-font-body`,

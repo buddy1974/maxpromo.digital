@@ -28,6 +28,13 @@ export interface AITaskContext {
 export interface AIGenerationRequest {
   task: AIGenerationTask;
   context: AITaskContext;
+  /**
+   * The language the draft is written in. It follows the operator's interface
+   * language, because a draft that comes back in the other one is the same
+   * mixed-language screen this product was repaired from — and it is the
+   * operator who will send it.
+   */
+  locale?: "de" | "en";
 }
 
 // The structured draft the model returns. Always a proposal — never executed.

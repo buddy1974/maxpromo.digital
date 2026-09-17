@@ -1,4 +1,5 @@
 import { Icon, type IconName } from "@maxpromo/ui";
+import { getTranslations } from "next-intl/server";
 // Hub-and-spoke system map (inline SVG): Chief of Staff at the centre, the nine
 // specialist agents connected as spokes. Pure SVG — no faces/avatars/images.
 // Radial map on md+, compact hub statement on mobile.
@@ -31,16 +32,16 @@ const C = {
   ink: V.onAccent,
 };
 
-const SPECIALISTS = [
-  { icon: "leads" as IconName, name: "Lead" },
-  { icon: "research" as IconName, name: "Research" },
-  { icon: "clients" as IconName, name: "CRM" },
-  { icon: "calendar" as IconName, name: "Kalender" },
-  { icon: "edit" as IconName, name: "Content" },
-  { icon: "projects" as IconName, name: "Operations" },
-  { icon: "documents" as IconName, name: "Document" },
-  { icon: "waiting" as IconName, name: "Follow-Up" },
-  { icon: "governance" as IconName, name: "Governance" },
+const SPECIALISTS: readonly { icon: IconName; key: string }[] = [
+  { icon: "leads", key: "n1" },
+  { icon: "research", key: "n2" },
+  { icon: "clients", key: "n3" },
+  { icon: "calendar", key: "n4" },
+  { icon: "edit", key: "n5" },
+  { icon: "projects", key: "n6" },
+  { icon: "documents", key: "n7" },
+  { icon: "waiting", key: "n8" },
+  { icon: "governance", key: "n9" },
 ];
 
 const CX = 480;
@@ -50,17 +51,19 @@ const RY = 185;
 const CHIEF_R = 52;
 const NODE_R = 28;
 
-export function AgentSystemMap() {
+export async function AgentSystemMap() {
+  const t = await getTranslations("systemMap");
+  const tb = await getTranslations("bureau");
   const nodes = SPECIALISTS.map((s, i) => {
     const theta = ((-90 + i * (360 / SPECIALISTS.length)) * Math.PI) / 180;
-    return { ...s, x: CX + RX * Math.cos(theta), y: CY + RY * Math.sin(theta) };
+    return { ...s, name: t(s.key), x: CX + RX * Math.cos(theta), y: CY + RY * Math.sin(theta) };
   });
 
   return (
     <div className="mt-8">
       {/* Desktop: radial system map */}
       <div className="hidden rounded-lg border border-hairline bg-surface-subtle p-4 md:block">
-        <svg viewBox="0 0 960 500" className="h-auto w-full" role="img" aria-label="Chief of Staff koordiniert neun spezialisierte Agenten">
+        <svg viewBox="0 0 960 500" className="h-auto w-full" role="img" aria-label={t("a11y")}>
           {/* spokes */}
           {nodes.map((n, i) => (
             <line key={`l${i}`} x1={CX} y1={CY} x2={n.x} y2={n.y} stroke={C.spoke} strokeWidth="1.5" />
@@ -86,11 +89,11 @@ export function AgentSystemMap() {
             <Icon name="dashboard" size="md" />
           </text>
           <text x={CX} y={CY + 20} textAnchor="middle" fontSize="12" fontWeight="700" fill={C.ink}>
-            Chief of Staff
+            {tb("chiefName")}
           </text>
         </svg>
         <p className="px-2 pb-1 text-center text-xs text-ink-muted">
-          Eine Koordinationsebene. Neun Spezialisten. Jede Aktion nach außen über menschliche Freigabe.
+          {t("caption")}
         </p>
       </div>
 
@@ -99,10 +102,9 @@ export function AgentSystemMap() {
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent font-mono text-xl text-white">
           <Icon name="dashboard" size="md" />
         </span>
-        <p className="mt-3 font-semibold text-ink">Chief of Staff</p>
+        <p className="mt-3 font-semibold text-ink">{tb("chiefName")}</p>
         <p className="mt-1 text-sm text-ink-secondary">
-          koordiniert 9 spezialisierte Agenten — jede Aktion nach außen über
-          menschliche Freigabe.
+          {t("mobileNote")}
         </p>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { ApprovalActions } from "@/components/dashboard/ApprovalActions";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { getProposals } from "@/lib/db/queries/approvals";
 import { getCurrentUser } from "@/lib/auth/session";
+import { getTranslations } from "next-intl/server";
 
 // Module 3 — Approval Desk. DB-backed + interactive (Sprint 5).
 // Approving records a decision + audit trail only — no real-world execution.
@@ -15,6 +16,12 @@ export default async function ApprovalsPage() {
   const user = await getCurrentUser();
   if (!user?.businessId) redirect("/login");
 
+  const t = await getTranslations("approvals");
+  const ts = await getTranslations("sections");
+  const te = await getTranslations("empty");
+  const td = await getTranslations("dashboard");
+  const sh = await getTranslations("shell");
+
   const rows = await getProposals(user.businessId);
   // Show pending first, then decided (so the queue reads naturally).
   const ordered = [...rows].sort((a, b) =>
@@ -22,16 +29,14 @@ export default async function ApprovalsPage() {
   );
 
   return (
-    <DashboardShell title="Approval Desk">
+    <DashboardShell title={ts("approvals")}>
       <div className="space-y-6">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
-            Supervised Mode
+            {sh("supervisedMode")}
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
-            Eine Freigabe protokolliert nur die Entscheidung und den Audit-Trail.
-            In dieser Vorschau wird keine externe Nachricht, E-Mail, Kalender-Aktion
-            oder CRM-Aktualisierung ausgeführt.
+            {t("supervisedNote")}
           </p>
         </div>
 
@@ -44,26 +49,26 @@ export default async function ApprovalsPage() {
                     <h3 className="font-semibold text-ink">{p.title}</h3>
                     <p className="mt-0.5 text-xs text-ink-muted">
                       {p.agentKey} ·{" "}
-                      {p.status === "pending" ? "Awaiting Review" : p.status}
+                      {p.status === "pending" ? t("awaitingReview") : p.status}
                     </p>
                   </div>
                   <RiskBadge level={p.riskLevel} />
                 </div>
 
                 <dl className="mt-4 space-y-3 text-sm">
-                  <Row label="Kontext" value={p.businessContext ?? "—"} />
-                  <Row label="Vorgeschlagene Aktion" value={p.proposedAction} />
-                  <Row label="Erwartetes Ergebnis" value={p.expectedOutcome ?? "—"} />
+                  <Row label={t("context")} value={p.businessContext ?? "—"} />
+                  <Row label={t("proposedAction")} value={p.proposedAction} />
+                  <Row label={t("expectedOutcome")} value={p.expectedOutcome ?? "—"} />
                 </dl>
 
                 <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-3">
                   <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
-                    Audit-Trail
+                    {t("auditTrail")}
                   </p>
                   <ul className="mt-2 space-y-1 font-mono text-xs text-ink-secondary">
-                    <li>Agent: {p.agentKey}</li>
-                    <li>Aktion vorbereitet (nicht ausgeführt)</li>
-                    <li>Wartet auf menschliche Freigabe</li>
+                    <li>{td("trailAgent", { agent: p.agentKey })}</li>
+                    <li>{td("trailPrepared")}</li>
+                    <li>{td("trailAwaiting")}</li>
                   </ul>
                 </div>
 
@@ -80,8 +85,8 @@ export default async function ApprovalsPage() {
           </div>
         ) : (
           <EmptyState
-            title="Keine Vorschläge"
-            hint="Führen Sie den Demo-Seed aus: npm run db:seed:demo"
+            title={te("noProposals")}
+            hint={te("seedHint")}
             icon="approvals"
           />
         )}

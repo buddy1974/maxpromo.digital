@@ -1,17 +1,13 @@
 import type { AuditFinding } from "@/types/audit";
+import { getTranslations } from "next-intl/server";
 
 // Compact priority × impact matrix summarising findings. Read-only overview.
 const IMPACTS = ["time", "revenue", "visibility", "risk"] as const;
 const PRIORITIES = ["critical", "high", "medium", "low"] as const;
 
-const IMPACT_LABEL: Record<(typeof IMPACTS)[number], string> = {
-  time: "Zeit",
-  revenue: "Umsatz",
-  visibility: "Übersicht",
-  risk: "Risiko",
-};
+export async function AuditPriorityMatrix({ findings }: { findings: AuditFinding[] }) {
+  const t = await getTranslations("impact");
 
-export function AuditPriorityMatrix({ findings }: { findings: AuditFinding[] }) {
   function count(p: string, i: string) {
     return findings.filter((f) => f.priority === p && f.impactArea === i).length;
   }
@@ -25,7 +21,7 @@ export function AuditPriorityMatrix({ findings }: { findings: AuditFinding[] }) 
             </th>
             {IMPACTS.map((i) => (
               <th key={i} className="px-3 py-2 font-mono text-label-dense uppercase tracking-[0.12em]">
-                {IMPACT_LABEL[i]}
+                {t(i)}
               </th>
             ))}
           </tr>

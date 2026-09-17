@@ -1,13 +1,17 @@
 import type { WaitingRoomItem } from "@/types/waiting-room";
 import { WaitingCustomerCard } from "./WaitingCustomerCard";
 import { EmptyState } from "./EmptyState";
+import { getTranslations } from "next-intl/server";
 
 // Orders the queue by urgency so the most at-risk customers surface first.
 const URGENCY_RANK = { urgent: 0, high: 1, medium: 2, low: 3 } as const;
 
-export function WaitingRoomQueue({ items }: { items: WaitingRoomItem[] }) {
+export async function WaitingRoomQueue({ items }: { items: WaitingRoomItem[] }) {
+  const t = await getTranslations("waitingRoom");
+  const e = await getTranslations("empty");
+
   if (!items.length) {
-    return <EmptyState title="Niemand wartet" hint="Wartende Kunden erscheinen hier." icon="empty" />;
+    return <EmptyState title={e("noWaiting")} hint={t("queueHint")} icon="empty" />;
   }
   const ordered = [...items].sort(
     (a, b) => URGENCY_RANK[a.urgency] - URGENCY_RANK[b.urgency],

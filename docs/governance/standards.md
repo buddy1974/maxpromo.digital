@@ -31,12 +31,13 @@ run on developer machines and never in CI.
 | 6 | **Trace contract** `check:trace` | Every application with a middleware imports `TRACE_HEADER` and `newTrace` from `@maxpromo/observability`, actually sets the header on a response, and declares a matcher with a catch-all entry so a public page and a 404 both carry a correlation id. No application may hardcode the header name or mint its own trace id. Added 2026-09-07 after production verification found `apps/bureau` stamping nothing for four sprints while the platform was described as observable — a contract that held in one of two applications. Proven by `prove:trace` |
 | 7 | **Icon audit** `check:icons` | Any Unicode mark standing in for an icon. Typography (the CTA arrow, the real minus sign, the monospace tree) is allowed and named |
 | 8 | **Capability catalogue** `check:capabilities` | A capability whose scene icons and scene labels disagree in length — in either locale, since German and English carry separate label arrays — a scene naming an icon the set does not have, a `humanAt` index past the end of its scene, or a missing capability message key. The five capability families are the commercial doorway: the home page rail, the /solutions anchors and the contact context all read one catalogue, and every failure it catches renders as a broken diagram on a public page rather than as an error |
-| 9 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
-| 10 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
-| 11 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
-| 12 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
-| 13 | **Production build** `build` | Every application builds |
-| 14 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS and CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built |
+| 9 | **Localisation audit** `check:i18n` | A supported language that is not complete. It compares both applications' message catalogues key by key — a key present in one locale and absent in the other, an empty value, a value left as its own key, a list that lost an item in one language, and a string copied verbatim into both files where it should have been translated. It also scans `apps/bureau` for German written straight into a component, which is how that product came to have German navigation beside "Operating Model" and "Approval Desk". Exemptions are full key paths or an `i18n-exempt` comment beside the code it excuses, never a silence. Proven by `prove:i18n` |
+| 10 | **Responsive audit** `check:responsive` | Every grid collapses; no fixed width exceeds a 380px viewport; no section padding outside the three rhythms |
+| 11 | **Typography audit** `audit:typography` | Any size below the 10px legibility floor, any sub-pixel size, and weight 700 above the 13px label band |
+| 12 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
+| 13 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
+| 14 | **Production build** `build` | Every application builds |
+| 15 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS and CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built |
 
 The static audits run first on purpose: they are the fastest and they catch the
 classes of regression this platform has had most often.
@@ -67,6 +68,16 @@ than evidence. This standard has been honoured by hand since ADR-0004, and in
 that time nine rules in this repository's own tooling were found to look correct
 and examine nothing — two of them written in the sprint that introduced the
 discipline.
+
+`npm run prove:i18n` stages seven regressions against the localisation audit —
+a key missing from each locale in turn, an empty value, a value left as its own
+key, a German string copied into the English file, a list that lost an item,
+and German written straight into a component — and requires the audit to catch
+each one *and* to name it. It then asserts that the `i18n-exempt` marker
+silences exactly the block it introduces, that every file it edited is
+byte-identical again, and that the audit passes on the restored tree. Like
+`prove:domains` it writes to real files and puts them back, so it is not part
+of `verify`; run it on a clean tree.
 
 `npm run prove:demo-access` is the same discipline applied to an access
 boundary rather than to an audit. The private demonstration room ships empty and
@@ -322,6 +333,7 @@ whichever port was free, and the two live audits address `:3021` by name. A
 | `check:token-inputs` | Does every application define what the token package reads, and does every `var()` resolve? | yes |
 | `check:icons` | Is any Unicode mark standing in for an icon? | yes |
 | `check:capabilities` | Do the five capability scenes have as many labels as icons, in both locales, naming icons that exist? | yes |
+| `check:i18n` | Is every supported language complete, in both applications, with nothing user-visible hardcoded in a component? | yes |
 | `check:responsive` | Does every grid collapse? Does anything exceed a 380px viewport? | yes |
 | `audit:typography` | Is any type below the legibility floor, on a sub-pixel size, or at weight 700 above the label band? | yes |
 | `audit:a11y` | Landmarks, heading order, alt text, accessible names, labels, titles — on rendered output across every public route | needs both apps running |

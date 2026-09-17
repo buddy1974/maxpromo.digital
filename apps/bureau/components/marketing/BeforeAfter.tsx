@@ -1,32 +1,24 @@
 import { Icon } from "@maxpromo/ui";
+import { getTranslations } from "next-intl/server";
 // The "you are the bottleneck" narrative, in the Maxpromo voice.
-const BEFORE = [
-  "Anfragen kommen nach Feierabend — und gehen unter.",
-  "Follow-ups rutschen durch. Kunden buchen woanders.",
-  "Fünf Werkzeuge, keines spricht mit dem anderen.",
-  "Jede Entscheidung wartet auf Sie.",
-];
 
-const AFTER = [
-  "Jede Anfrage wird erfasst und vorbereitet.",
-  "Follow-ups stehen bereit — Sie geben frei.",
-  "Ihre Werkzeuge laufen über ein System zusammen.",
-  "Sie steuern. Das Team führt aus.",
-];
+export async function BeforeAfter() {
+  const t = await getTranslations("beforeAfter");
+  const BEFORE = t.raw("before") as string[];
+  const AFTER = t.raw("after") as string[];
 
-export function BeforeAfter() {
   return (
     <section className="border-b border-hairline">
       <div className="mx-auto max-w-content px-6 py-24 md:py-32">
-        <p className="eyebrow">{"Klingt bekannt?"}</p>
+        <p className="eyebrow">{t("eyebrow")}</p>
         <h2 className="mt-4 max-w-2xl text-section-title text-ink">
-          Sie sind der Engpass. Das muss nicht so bleiben.
+          {t("title")}
         </h2>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           <div className="card">
             <h3 className="font-mono text-xs uppercase tracking-[0.18em] text-ink-muted">
-              Heute — manuell
+              {t("beforeHeading")}
             </h3>
             <ul className="mt-5 space-y-4">
               {BEFORE.map((b) => (
@@ -40,7 +32,7 @@ export function BeforeAfter() {
 
           <div className="rounded-lg border border-accent/30 bg-accent-soft p-10">
             <h3 className="font-mono text-xs uppercase tracking-[0.18em] text-ink-secondary">
-              Mit Max Agent — überwacht
+              {t("afterHeading")}
             </h3>
             <ul className="mt-5 space-y-4">
               {AFTER.map((a) => (

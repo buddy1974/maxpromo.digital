@@ -1,5 +1,103 @@
 # Decision Log
 
+## 2026-09-17 — Agent Bureau's second language
+
+The durable principle is **ADR-0014**. These are the decisions under it.
+
+---
+
+### The locale is a cookie, not a URL segment
+
+**Decision.** `agents.maxpromo.digital` resolves its language from
+`bureau_locale`, and no locale ever appears in a URL.
+
+**Why.** The hub carries `/de` and `/en` because it is a public site with two
+complete copies of itself, and a crawler needs two addresses. A product does
+not: this one is a single authenticated application behind NextAuth, and a
+locale segment would prefix every callback URL, every `callbackUrl` round trip,
+every deep link a customer has been sent, and the middleware's one protected
+prefix. The Domain Registry already recorded the distinction as
+`useLocalePrefix`, so the decision was to honour a rule that already existed
+rather than to invent one.
+
+**What it costs.** No shareable per-language link. Nobody has asked for one,
+and a person who wants to send a colleague an English page can tell them which
+button to press — which is what the switcher is for.
+
+---
+
+### Switching language is a navigation, not client state
+
+**Decision.** `GET /language?to=<locale>&next=<path>` sets the cookie and
+redirects back.
+
+**Why.** The locale is read on the server, so a client-side toggle would
+re-render nothing. A navigation works before hydration, works with JavaScript
+off, can be opened in a new tab, and — the part that matters on a signed-in
+product — never touches the session. `next` is honoured only as a same-origin
+absolute path; an open redirect on a product people sign into is a phishing
+primitive, and the check is three lines.
+
+---
+
+### Structure lives in code; words live in the catalogue
+
+**Decision.** The operating model, the playbooks, the agent hierarchy and the
+agent registry keep ids, order, relationships and counts. Every sentence they
+used to hold is keyed by the record's own id.
+
+**Why it is more than tidiness.** An agent's blocked-action list is a statement
+about what it may not do without asking. Left as prose in a data file, a
+translation that dropped one entry would make the English product claim a
+narrower supervision contract than the German one, and no review would catch
+it. The count now lives in structure and `check:i18n` asserts the catalogue
+against it, so that particular mistake fails the build.
+
+---
+
+### Records are not translated, and the demo fixtures behave like records
+
+**Decision.** Customer names, client files, the text of a customer's message
+and the consultant's notes stay in the language they were written in — in the
+demo fixtures exactly as they will with real data. Product *voice* inside those
+fixtures is translated.
+
+**Why.** No product translates its data. An English-speaking operator of a
+German business reads German customer records, and a fixture that pretended
+otherwise would be teaching the wrong expectation about the real thing. The
+line is drawn in `lib/mock/ai-governance.ts` and repeated in
+`architecture/localisation.md`, because it is the one judgement in this pass
+that somebody could reasonably disagree with.
+
+---
+
+### The legal pages stay German
+
+**Decision.** `/impressum` and `/datenschutz` keep their German body. The
+chrome around them is localised, and an English reader gets one sentence, in
+English, saying the page is authoritative in German.
+
+**Why.** Those pages discharge obligations under German law to German
+authorities and German data subjects. A translation is not a translation: it is
+a second legal text, and producing one is a lawyer's deliverable. The governing
+instruction for this pass said so, and it was right to.
+
+---
+
+### The English catalogue surfaced two defects in `audit:claims`, which were fixed in the rule
+
+**Decision.** The hedge matcher matches whole words, and the product namespaces
+are excluded from the commitment comparison.
+
+**Why not change the copy.** "2 tasks overdue" is not an estimate and "a
+meeting within the next 24 hours" is not a promise about the first
+conversation. Both findings were the rule reading letters rather than words —
+the German said "24h" and slipped through the unit pattern, the English said
+"24 hours" and did not. Editing the copy to satisfy a rule that is wrong is how
+an audit stops meaning anything. The `\b` is applied only where the hedge's own
+edge is a word character, so "ca." still matches; the same seven pre-existing
+findings stand.
+
 ## 2026-09-17 — MVP release: capability discovery, the demonstration room, and what was deliberately left undone
 
 ---

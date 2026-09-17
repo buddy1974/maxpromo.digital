@@ -1,22 +1,25 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useState } from "react";
 import { RiskBadge } from "./RiskBadge";
 import type { AIGeneratedProposal, AIGenerationTask } from "@/lib/ai/types";
 
-const TASKS: { value: AIGenerationTask; label: string }[] = [
-  { value: "follow_up_draft", label: "Follow-up-Entwurf" },
-  { value: "audit_summary", label: "Audit-Zusammenfassung" },
-  { value: "document_summary", label: "Dokument-Zusammenfassung" },
-  { value: "waiting_room_response", label: "Warteraum-Antwort" },
-  { value: "governance_recommendation", label: "Governance-Empfehlung" },
-  { value: "proposal_draft", label: "Vorschlags-Entwurf" },
+const TASKS: { value: AIGenerationTask; key: string }[] = [
+  { value: "follow_up_draft", key: "taskFollowUp" },
+  { value: "audit_summary", key: "taskAudit" },
+  { value: "document_summary", key: "taskDocument" },
+  { value: "waiting_room_response", key: "taskWaiting" },
+  { value: "governance_recommendation", key: "taskGovernance" },
+  { value: "proposal_draft", key: "taskProposal" },
 ];
 
 type State = "idle" | "loading" | "done" | "error" | "not_configured";
 
 export function AILabClient() {
   const [task, setTask] = useState<AIGenerationTask>("follow_up_draft");
+  const t = useTranslations("aiLab");
   const [input, setInput] = useState("");
   const [state, setState] = useState<State>("idle");
   const [result, setResult] = useState<AIGeneratedProposal | null>(null);
@@ -25,7 +28,7 @@ export function AILabClient() {
   async function generate() {
     if (!input.trim()) {
       setState("error");
-      setErrorMsg("Bitte eine Eingabe machen.");
+      setErrorMsg(t("errNoInput"));
       return;
     }
     setState("loading");
@@ -45,7 +48,7 @@ export function AILabClient() {
         setState("not_configured");
       } else {
         setState("error");
-        setErrorMsg("Generierung fehlgeschlagen. Bitte erneut versuchen.");
+        setErrorMsg(t("errGenerate"));
       }
     } catch {
       setState("error");
@@ -67,29 +70,29 @@ export function AILabClient() {
 
       <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
         <label className="grid gap-1.5">
-          <span className="text-sm text-ink-secondary">Aufgabe</span>
+          <span className="text-sm text-ink-secondary">{t("task")}</span>
           <select
             value={task}
             onChange={(e) => setTask(e.target.value as AIGenerationTask)}
             className="rounded-lg border border-hairline bg-surface px-3 py-2.5 text-ink outline-none focus:border-accent"
           >
-            {TASKS.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
+            {TASKS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {t(option.key)}
               </option>
             ))}
           </select>
         </label>
 
         <label className="mt-4 grid gap-1.5">
-          <span className="text-sm text-ink-secondary">Eingabe</span>
+          <span className="text-sm text-ink-secondary">{t("input")}</span>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             rows={5}
             maxLength={8000}
             className="rounded-lg border border-hairline bg-surface px-3 py-2.5 text-ink outline-none placeholder:text-ink-muted focus:border-accent"
-            placeholder="Kontext / Quelltext, aus dem ein Entwurf erstellt werden soll …"
+            placeholder={t("inputPlaceholder")}
           />
         </label>
 
@@ -99,13 +102,12 @@ export function AILabClient() {
           disabled={state === "loading"}
           className="mt-4 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
-          {state === "loading" ? "Generiere …" : "Entwurf generieren"}
+          {state === "loading" ? t("generating") : t("generate")}
         </button>
 
         {state === "not_configured" && (
           <p className="mt-3 text-sm text-warning">
-            AI-Provider ist noch nicht konfiguriert. Fügen Sie <code>OPENAI_API_KEY</code> in
-            Vercel hinzu, um die Generierung zu aktivieren.
+            {t("notConfiguredBefore")}<code>OPENAI_API_KEY</code>{t("notConfiguredAfter")}
           </p>
         )}
         {state === "error" && errorMsg && (
@@ -140,10 +142,10 @@ export function AILabClient() {
           <button
             type="button"
             disabled
-            title="Kommt als Nächstes — Vorschlag in die Approval-Queue schreiben"
+            title={t("nextUp")}
             className="mt-4 cursor-not-allowed rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-muted opacity-60"
           >
-            Create proposal (Coming next)
+            {t("createProposal")}
           </button>
         </div>
       )}

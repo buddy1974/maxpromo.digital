@@ -397,7 +397,15 @@ export const DOMAIN_REGISTRY: readonly DomainEntry[] = [
     parentCompany:     PARENT,
     productSlug:       'agent-bureau',
     primaryLanguage:   'de',
-    languages:         ['de'],
+    // Both, as of the bilingual pass. The registry's own rule is that a domain
+    // does not list a language it cannot serve completely — Agent Bureau now
+    // serves English across the landing page, the login and every authenticated
+    // surface, and  is what keeps that true.
+    languages:         ['de', 'en'],
+    // Still false, and deliberately. A signed-in product resolves its language
+    // from a cookie rather than from the URL: a locale segment would prefix
+    // every NextAuth callback and every deep link a customer has been sent.
+    // See apps/bureau/lib/i18n/locale.ts.
     useLocalePrefix:   false,
     origin:            'https://agents.maxpromo.digital',
     canonicalStrategy: 'self',

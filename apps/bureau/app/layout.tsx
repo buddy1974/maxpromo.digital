@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { resolveDomain } from "@maxpromo/config";
 import { Inter, Roboto_Mono } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import Providers from "@/components/auth/Providers";
+import { resolveLocale, HTML_LANG, OG_LOCALE } from "@/lib/i18n/locale";
 import "./globals.css";
 
 /**
@@ -45,55 +48,73 @@ const mono = Roboto_Mono({
 const BUREAU = resolveDomain("agents.maxpromo.digital");
 const siteUrl = BUREAU.origin;
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  applicationName: BUREAU.siteName,
-  manifest: "/manifest.webmanifest",
-  // This page emitted no canonical at all. A property with no canonical leaves
-  // the choice of address to the crawler, which is the same class of problem
-  // as naming the wrong one.
-  alternates: { canonical: siteUrl },
-  title: "Max Agent — Ihr KI-Betriebsteam | Maxpromo Digital",
-  description:
-    "Kein Chatbot. Ein überwachtes KI-Betriebsteam, das Anfragen, Follow-ups und Abläufe führt — Sie behalten die Kontrolle. Installiert von Maxpromo Digital, Essen.",
-  openGraph: {
-    title: "Max Agent — Ihr KI-Betriebsteam",
-    description:
-      "Ein überwachtes KI-Betriebsteam für Ihren Betrieb. Sie genehmigen, die Agenten führen aus. Maxpromo Digital, Essen.",
-    type: "website",
-    locale: "de_DE",
-    url: siteUrl,
-    // The registry names this property once; "Max Agent" and "Max Agent
-    // Bureau" were two names for it in two files.
-    siteName: BUREAU.siteName,
-    // This page carried no og:image at all, so every share of
-    // agents.maxpromo.digital rendered a bare link. The registry declares one;
-    // declaring an image nothing emits is a registry that is true and useless.
-    images: [{
-      url: BUREAU.openGraph.path,
-      width: BUREAU.openGraph.width,
-      height: BUREAU.openGraph.height,
-      alt: BUREAU.product,
-    }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Max Agent — Ihr KI-Betriebsteam",
-    description:
-      "Ein überwachtes KI-Betriebsteam für Ihren Betrieb. Sie genehmigen, die Agenten führen aus.",
-    images: [BUREAU.openGraph.path],
-  },
-};
+/**
+ * Metadata in the language of the request.
+ *
+ * There is no locale in the URL, so there are no `alternates.languages`: both
+ * languages are the same address, and telling a crawler otherwise would be
+ * declaring two URLs that do not exist. What changes is `og:locale` and the
+ * text, which is what a share card actually shows.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await resolveLocale();
+  const t = await getTranslations({ locale, namespace: "meta" });
 
-export default function RootLayout({
+  return {
+    metadataBase: new URL(siteUrl),
+    applicationName: BUREAU.siteName,
+    manifest: "/manifest.webmanifest",
+    // This page emitted no canonical at all. A property with no canonical
+    // leaves the choice of address to the crawler, which is the same class of
+    // problem as naming the wrong one.
+    alternates: { canonical: siteUrl },
+    title: t("title"),
+    description: t("description"),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      type: "website",
+      locale: OG_LOCALE[locale],
+      url: siteUrl,
+      // The registry names this property once; "Max Agent" and "Max Agent
+      // Bureau" were two names for it in two files.
+      siteName: BUREAU.siteName,
+      // This page carried no og:image at all, so every share of
+      // agents.maxpromo.digital rendered a bare link. The registry declares
+      // one; declaring an image nothing emits is a registry that is true and
+      // useless.
+      images: [{
+        url: BUREAU.openGraph.path,
+        width: BUREAU.openGraph.width,
+        height: BUREAU.openGraph.height,
+        alt: BUREAU.product,
+      }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("ogTitle"),
+      description: t("twitterDescription"),
+      images: [BUREAU.openGraph.path],
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await resolveLocale();
+
   return (
-    <html lang="de" className={`${sans.variable} ${mono.variable}`}>
+    <html lang={HTML_LANG[locale]} className={`${sans.variable} ${mono.variable}`}>
       <body>
-        <Providers>{children}</Providers>
+        {/* The provider carries the messages to client components — the login
+            form, the approval actions, the language control. Server components
+            read them directly and never ship them to the browser. */}
+        <NextIntlClientProvider>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

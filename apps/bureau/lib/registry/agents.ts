@@ -1,225 +1,180 @@
-import type { Agent } from "@/types/agent";
+import type { AgentStatus, AgentRiskLevel } from "@/types/agent";
+import type { OperatingStageKey } from "@/types/operating-model";
 
 /**
  * The Agent Bureau registry — the single source of truth for which agents
  * exist and what they are permitted to do.
  *
  * SUPERVISION CONTRACT: every agent prepares and proposes; outward actions are
- * listed in `blockedActions` until a human approves them via the approval queue.
- * No entry here should imply autonomous execution of risky real-world actions.
+ * listed in `blocked` until a human approves them via the approval queue. No
+ * entry here should imply autonomous execution of risky real-world actions.
+ *
+ * STRUCTURE HERE, WORDS IN THE CATALOGUE
+ * Each agent's role, description, capabilities, permitted and blocked actions
+ * and next recommended action are sentences an operator reads, so they live in
+ * `agentRegistry.<id>` in messages/{de,en}.json. What stays in this file is
+ * what does not change with language and what the supervision contract depends
+ * on: the ids, the status, the risk level, whether approval is required, how
+ * many capabilities and actions there are, and which systems and stages the
+ * agent touches.
+ *
+ * The counts matter. `capabilityCount`, `allowedCount` and `blockedCount` are
+ * asserted against the catalogue by `npm run check:i18n`, so a translation
+ * that quietly drops an entry from `blockedActions` — which would misstate
+ * what an agent may do without asking — fails the build rather than the
+ * review.
  */
-export const AGENTS: Agent[] = [
+export interface AgentRecord {
+  id: string;
+  /** Proper noun. The same in both languages by design. */
+  name: string;
+  status: AgentStatus;
+  riskLevel: AgentRiskLevel;
+  requiresApproval: boolean;
+  capabilityIds: string[];
+  allowedCount: number;
+  blockedCount: number;
+  /**
+   * The sections of this product the agent touches, named by their message
+   * key so the card says the same word the navigation does. They were English
+   * product names ("Tasks", "Approvals") printed inside German cards, which is
+   * the same mixture this pass removed from the sidebar.
+   */
+  connectedSections: string[];
+  supportedOperatingStages: OperatingStageKey[];
+  playbooks: string[];
+  lastActivity: string;
+}
+
+export const AGENTS: AgentRecord[] = [
   {
     id: "chief-of-staff",
     name: "Chief of Staff",
-    role: "Zentrale Intelligenz & Koordination",
-    description:
-      "Priorisiert die Arbeit, erstellt das tägliche Briefing, koordiniert die übrigen Agenten und legt Entscheidungen zur Freigabe vor.",
     status: "active",
     riskLevel: "low",
     requiresApproval: true,
-    capabilities: [
-      { id: "prioritize", label: "Priorisierung", description: "Bewertet, was heute Aufmerksamkeit braucht." },
-      { id: "brief", label: "Tägliches Briefing", description: "Fasst Lage, Risiken und nächste Schritte zusammen." },
-      { id: "coordinate", label: "Koordination", description: "Verteilt Aufgaben an die passenden Agenten." },
-    ],
-    allowedActions: ["Briefing erstellen", "Prioritäten vorschlagen", "Aufgaben zur Freigabe vorlegen"],
-    blockedActions: ["E-Mails senden", "Zahlungen auslösen", "Daten löschen"],
-    connectedSystems: ["Tasks", "Projects", "Approvals"],
+    capabilityIds: ["prioritize", "brief", "coordinate"],
+    allowedCount: 3,
+    blockedCount: 3,
+    connectedSections: ["tasks", "projects", "approvals"],
     supportedOperatingStages: ["audit", "diagnose", "design", "manual_delivery", "install", "maintain"],
-    auditPainsSolved: ["Unklare Prioritäten", "Fehlende Übersicht"],
     playbooks: ["pb-daily-briefing", "pb-missed-inquiry", "pb-shadow-ai-policy"],
-    businessOutcomes: ["Klarheit", "Bessere Entscheidungen", "Weniger Chaos"],
     lastActivity: "2026-05-29T07:55:00Z",
-    nextRecommendedAction: "Tagesbriefing um 08:00 zur Durchsicht bereitstellen.",
   },
   {
     id: "lead-agent",
     name: "Lead Agent",
-    role: "Lead-Recherche & Qualifizierung",
-    description:
-      "Recherchiert Firmen, findet Kontakte, reichert Datensätze an und qualifiziert eingehende Anfragen.",
     status: "proposing",
     riskLevel: "medium",
     requiresApproval: true,
-    capabilities: [
-      { id: "research", label: "Firmen-Recherche", description: "Sammelt öffentliche Informationen zu Interessenten." },
-      { id: "enrich", label: "Anreicherung", description: "Ergänzt fehlende Felder in Kontaktdatensätzen." },
-      { id: "qualify", label: "Qualifizierung", description: "Bewertet Eignung und Dringlichkeit." },
-    ],
-    allowedActions: ["Lead recherchieren", "Datensatz anreichern", "Qualifizierungs-Score vorschlagen"],
-    blockedActions: ["Kontakt direkt anschreiben", "Daten an Dritte exportieren"],
-    connectedSystems: ["Leads", "Contacts", "Research"],
-    supportedOperatingStages: ["audit", "design", "manual_delivery"],
-    auditPainsSolved: ["Lead-Leckage", "Schwaches Lead-Tracking"],
-    playbooks: ["pb-lead-followup"],
-    businessOutcomes: ["Mehr qualifizierte Chancen", "Weniger verlorene Leads"],
-    lastActivity: "2026-05-29T07:40:00Z",
-    nextRecommendedAction: "Neue Audit-Anfrage aus Essen qualifizieren.",
+    capabilityIds: ["research", "enrich", "qualify"],
+    allowedCount: 3,
+    blockedCount: 2,
+    connectedSections: ["leads", "contacts"],
+    supportedOperatingStages: ["audit", "manual_delivery"],
+    playbooks: ["pb-missed-inquiry"],
+    lastActivity: "2026-05-29T08:10:00Z",
   },
   {
     id: "research-agent",
     name: "Research Agent",
-    role: "Markt- & Wettbewerbsbeobachtung",
-    description:
-      "Beobachtet Markt, Wettbewerb und Branchensignale und meldet relevante Gelegenheiten.",
     status: "idle",
     riskLevel: "low",
-    requiresApproval: false,
-    capabilities: [
-      { id: "scan", label: "Markt-Scan", description: "Verfolgt Entwicklungen in definierten Themenfeldern." },
-      { id: "summarize", label: "Zusammenfassung", description: "Verdichtet Funde zu kurzen Briefs." },
-    ],
-    allowedActions: ["Markt-Scan durchführen", "Brief zusammenfassen"],
-    blockedActions: ["Externe Inhalte veröffentlichen"],
-    connectedSystems: ["Research", "Memory"],
+    requiresApproval: true,
+    capabilityIds: ["scan", "summarize"],
+    allowedCount: 2,
+    blockedCount: 1,
+    connectedSections: ["research"],
     supportedOperatingStages: ["audit", "diagnose"],
-    auditPainsSolved: ["Fehlende Marktübersicht"],
-    playbooks: ["pb-meeting-prep"],
-    businessOutcomes: ["Frühe Chancen-Erkennung", "Informierte Entscheidungen"],
+    playbooks: [],
     lastActivity: "2026-05-28T16:20:00Z",
-    nextRecommendedAction: "Wöchentlichen Wettbewerbs-Brief vorbereiten.",
   },
   {
     id: "crm-agent",
     name: "CRM Agent",
-    role: "Beziehungspflege & Follow-up",
-    description:
-      "Verfolgt Deals, erinnert an Follow-ups und hält Kontaktdaten aktuell.",
-    status: "proposing",
+    status: "active",
     riskLevel: "medium",
     requiresApproval: true,
-    capabilities: [
-      { id: "followup", label: "Follow-up-Tracking", description: "Erkennt fällige Nachfassaktionen." },
-      { id: "hygiene", label: "Datenpflege", description: "Markiert veraltete oder doppelte Datensätze." },
-    ],
-    allowedActions: ["Follow-up vorbereiten", "Datensatz-Korrektur vorschlagen"],
-    blockedActions: ["Nachricht an Kunden senden", "Deal-Status final ändern"],
-    connectedSystems: ["Contacts", "Leads", "Tasks"],
+    capabilityIds: ["followup", "hygiene"],
+    allowedCount: 2,
+    blockedCount: 2,
+    connectedSections: ["contacts", "projects"],
     supportedOperatingStages: ["manual_delivery", "systemize"],
-    auditPainsSolved: ["Verpasste Follow-ups", "Schwaches Lead-Tracking"],
-    playbooks: ["pb-crm-cleanup", "pb-waiting-room"],
-    businessOutcomes: ["Verlässliches Follow-through", "Gepflegte Beziehungen"],
-    lastActivity: "2026-05-29T06:30:00Z",
-    nextRecommendedAction: "3 überfällige Follow-ups zur Freigabe vorlegen.",
+    playbooks: ["pb-missed-inquiry"],
+    lastActivity: "2026-05-29T07:40:00Z",
   },
   {
     id: "calendar-agent",
     name: "Calendar Agent",
-    role: "Termine & Erinnerungen",
-    description:
-      "Schlägt Termine vor, erinnert an Meetings und hält den Kalender aufgeräumt.",
     status: "idle",
     riskLevel: "medium",
     requiresApproval: true,
-    capabilities: [
-      { id: "schedule", label: "Terminvorschlag", description: "Findet passende Zeitfenster." },
-      { id: "remind", label: "Erinnerung", description: "Weist auf anstehende Meetings hin." },
-    ],
-    allowedActions: ["Terminvorschlag erstellen", "Erinnerung vorbereiten"],
-    blockedActions: ["Einladung versenden", "Termin im Kalender Dritter buchen"],
-    connectedSystems: ["Calendar", "Tasks"],
-    supportedOperatingStages: ["manual_delivery", "systemize"],
-    auditPainsSolved: ["Langsame Antworten", "Unklare Prioritäten"],
-    playbooks: ["pb-meeting-prep"],
-    businessOutcomes: ["Aufgeräumter Kalender", "Vorbereitete Termine"],
-    lastActivity: "2026-05-29T07:10:00Z",
-    nextRecommendedAction: "Slot für Audit-Gespräch vorschlagen.",
+    capabilityIds: ["schedule", "remind"],
+    allowedCount: 2,
+    blockedCount: 2,
+    connectedSections: ["briefing", "tasks"],
+    supportedOperatingStages: ["manual_delivery"],
+    playbooks: [],
+    lastActivity: "2026-05-29T06:30:00Z",
   },
   {
     id: "content-agent",
     name: "Content Agent",
-    role: "Content-Planung & Entwürfe",
-    description:
-      "Plant Content, erstellt Entwürfe und bereitet Kampagnen vor — zur Prüfung, nicht zur Veröffentlichung.",
-    status: "idle",
+    status: "proposing",
     riskLevel: "medium",
     requiresApproval: true,
-    capabilities: [
-      { id: "plan", label: "Planung", description: "Skizziert Themen und Zeitplan." },
-      { id: "draft", label: "Entwurf", description: "Erstellt Roh-Entwürfe zur Prüfung." },
-    ],
-    allowedActions: ["Content-Plan erstellen", "Entwurf vorbereiten"],
-    blockedActions: ["Beitrag veröffentlichen", "Newsletter versenden"],
-    connectedSystems: ["Content", "Memory"],
+    capabilityIds: ["plan", "draft"],
+    allowedCount: 2,
+    blockedCount: 2,
+    connectedSections: ["playbooks"],
     supportedOperatingStages: ["systemize"],
-    auditPainsSolved: ["Manuelle Verwaltung", "Content nur einmal genutzt"],
-    playbooks: ["pb-content-repurpose"],
-    businessOutcomes: ["Mehr Reichweite", "Konsistente Kommunikation"],
-    lastActivity: "2026-05-28T14:05:00Z",
-    nextRecommendedAction: "Entwurf für Fallstudien-Post zur Prüfung vorlegen.",
+    playbooks: [],
+    lastActivity: "2026-05-28T18:05:00Z",
   },
   {
     id: "operations-agent",
     name: "Operations Agent",
-    role: "Projekt- & Aufgabenkoordination",
-    description:
-      "Verfolgt Projekte, Aufgaben und Deadlines und meldet Blockaden frühzeitig.",
     status: "active",
     riskLevel: "low",
-    requiresApproval: false,
-    capabilities: [
-      { id: "track", label: "Tracking", description: "Behält Fortschritt und Deadlines im Blick." },
-      { id: "flag", label: "Eskalation", description: "Markiert Risiken und Blockaden." },
-    ],
-    allowedActions: ["Projektstatus berichten", "Risiko markieren"],
-    blockedActions: ["Aufgaben Dritter umverteilen ohne Freigabe"],
-    connectedSystems: ["Projects", "Tasks"],
+    requiresApproval: true,
+    capabilityIds: ["track", "flag"],
+    allowedCount: 2,
+    blockedCount: 1,
+    connectedSections: ["projects", "tasks"],
     supportedOperatingStages: ["audit", "diagnose", "systemize", "maintain"],
-    auditPainsSolved: ["Verstreute Aufgaben", "Fehlende Übersicht", "Reporting-Verzug"],
-    playbooks: ["pb-overdue-task"],
-    businessOutcomes: ["Prozess-Sichtbarkeit", "Eingehaltene Deadlines"],
-    lastActivity: "2026-05-29T07:50:00Z",
-    nextRecommendedAction: "Blockiertes Projekt 'Website-Migration' eskalieren.",
+    playbooks: [],
+    lastActivity: "2026-05-29T08:00:00Z",
   },
   {
     id: "document-agent",
     name: "Document Agent",
-    role: "Dokumente & Aufbereitung",
-    description:
-      "Erstellt und strukturiert Dokumente wie Angebote, Berichte und Zusammenfassungen — zur Freigabe.",
     status: "idle",
     riskLevel: "medium",
     requiresApproval: true,
-    capabilities: [
-      { id: "compose", label: "Erstellung", description: "Entwirft strukturierte Dokumente." },
-      { id: "extract", label: "Extraktion", description: "Fasst Inhalte aus Quelldokumenten zusammen." },
-    ],
-    allowedActions: ["Angebot entwerfen", "Bericht zusammenfassen"],
-    blockedActions: ["Dokument extern verschicken", "Rechnung final ausstellen"],
-    connectedSystems: ["Memory", "Projects"],
-    supportedOperatingStages: ["systemize", "install"],
-    auditPainsSolved: ["Dokumenten-Chaos", "Manuelle Verwaltung"],
-    playbooks: ["pb-document-summary"],
-    businessOutcomes: ["Klare nächste Aktion pro Dokument", "Weniger übersehene Fristen"],
-    lastActivity: "2026-05-28T11:25:00Z",
-    nextRecommendedAction: "Angebotsentwurf für neue Anfrage vorbereiten.",
+    capabilityIds: ["compose", "extract"],
+    allowedCount: 2,
+    blockedCount: 2,
+    connectedSections: ["documents"],
+    supportedOperatingStages: ["systemize", "manual_delivery"],
+    playbooks: [],
+    lastActivity: "2026-05-28T15:45:00Z",
   },
   {
     id: "follow-up-agent",
     name: "Follow-Up Agent",
-    role: "Nachverfolgung & Wiedervorlage",
-    description:
-      "Stellt sicher, dass keine Chance und kein Versprechen untergeht — bereitet Wiedervorlagen vor.",
-    status: "proposing",
-    riskLevel: "high",
+    status: "active",
+    riskLevel: "medium",
     requiresApproval: true,
-    capabilities: [
-      { id: "detect", label: "Erkennung", description: "Findet offene Zusagen und stille Threads." },
-      { id: "prepare", label: "Vorbereitung", description: "Entwirft die nächste Nachfassaktion." },
-    ],
-    allowedActions: ["Wiedervorlage erkennen", "Nachfass-Entwurf vorbereiten"],
-    blockedActions: ["Nachricht eigenständig senden", "Mehrfach-Versand ohne Freigabe"],
-    connectedSystems: ["Contacts", "Tasks", "Approvals"],
-    supportedOperatingStages: ["manual_delivery", "systemize"],
-    auditPainsSolved: ["Verpasste Follow-ups", "Langsame Antworten", "Lead-Leckage"],
-    playbooks: ["pb-lead-followup", "pb-missed-inquiry", "pb-waiting-room"],
-    businessOutcomes: ["Keine verlorene Chance", "Verlässliches Follow-through"],
-    lastActivity: "2026-05-29T06:50:00Z",
-    nextRecommendedAction: "5 stille Threads zur Wiedervorlage vorlegen.",
+    capabilityIds: ["detect", "prepare"],
+    allowedCount: 2,
+    blockedCount: 2,
+    connectedSections: ["waitingRoom", "contacts"],
+    supportedOperatingStages: ["manual_delivery", "maintain"],
+    playbooks: ["pb-missed-inquiry"],
+    lastActivity: "2026-05-29T07:20:00Z",
   },
 ];
 
-export function getAgentById(id: string): Agent | undefined {
+export function getAgentById(id: string): AgentRecord | undefined {
   return AGENTS.find((a) => a.id === id);
 }

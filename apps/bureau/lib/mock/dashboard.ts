@@ -5,29 +5,24 @@ import { MOCK_OVERDUE_TASKS } from "./tasks";
 import { MOCK_URGENT_FOLLOWUPS } from "./contacts";
 import { MOCK_ACTIVITY } from "./activity";
 
-const BRIEFING: DailyBriefing = {
-  date: "2026-05-29",
-  greeting: "Guten Morgen, Marcel.",
-  headline: "3 Freigaben offen, 2 überfällige Aufgaben, 1 Projekt blockiert.",
-  items: [
-    { id: "b-1", label: "Zuerst", detail: "Audit-Anfrage aus Essen beantworten (heute fällig)." },
-    { id: "b-2", label: "Freigaben", detail: "3 Agenten-Vorschläge warten auf Ihre Prüfung." },
-    { id: "b-3", label: "Risiko", detail: "Projekt 'Website-Migration' ist blockiert (Staging)." },
-    { id: "b-4", label: "Follow-up", detail: "Druckerei hat seit dem Erstgespräch nicht geantwortet." },
-  ],
-};
+/**
+ * The demo briefing, as structure. Its words are in demo.briefing, and the
+ * greeting is not here at all: it is computed per request from the reader's
+ * language and the time of day in Essen (lib/i18n/format.ts), so a message
+ * file never contains a person's name.
+ */
+export const BRIEFING_ITEM_IDS = ["b-1", "b-2", "b-3", "b-4"] as const;
 
-const METRICS: DashboardMetric[] = [
-  { id: "mt-1", label: "Offene Freigaben", value: "3", trend: "up", delta: "+1", hint: "Warten auf Prüfung" },
-  { id: "mt-2", label: "Aktive Agenten", value: "3", trend: "flat", hint: "von 9 im Bureau" },
-  { id: "mt-3", label: "Überfällige Aufgaben", value: "2", trend: "down", delta: "-1" },
-  { id: "mt-4", label: "Fällige Follow-ups", value: "3", trend: "up", delta: "+2" },
+/** Demo metrics, as structure. Labels and hints are in demo.metrics. */
+export const METRIC_RECORDS = [
+  { id: "mt-1", value: "3", trend: "up" as const, delta: "+1", hint: true },
+  { id: "mt-2", value: "3", trend: "flat" as const, hint: true },
+  { id: "mt-3", value: "2", trend: "down" as const, delta: "-1", hint: false },
+  { id: "mt-4", value: "3", trend: "up" as const, delta: "+2", hint: false },
 ];
 
 // Single assembled summary used by the dashboard overview and its API route.
-export const MOCK_DASHBOARD_SUMMARY: DashboardSummary = {
-  briefing: BRIEFING,
-  metrics: METRICS,
+export const MOCK_DASHBOARD_SUMMARY = {
   pendingApprovals: MOCK_APPROVALS.filter((p) => p.status === "pending"),
   activeAgents: AGENTS.filter((a) => a.status === "active" || a.status === "proposing"),
   urgentFollowUps: MOCK_URGENT_FOLLOWUPS,

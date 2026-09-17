@@ -10,6 +10,7 @@ import { AGENT_RECOMMENDATIONS } from "@/lib/core/operating-model";
 import type { AuditFinding, AuditPriority } from "@/types/audit";
 import type { AgentRiskLevel } from "@/types/agent";
 import type { OperatingStageKey } from "@/types/operating-model";
+import { getTranslations } from "next-intl/server";
 
 // Module 1 — AI Audit Console. DB-backed (session workspace).
 export const dynamic = "force-dynamic";
@@ -19,14 +20,18 @@ export default async function AuditConsolePage() {
   const user = await getCurrentUser();
   if (!user?.businessId) redirect("/login");
 
+  const t = await getTranslations("auditConsole");
+  const ts = await getTranslations("sections");
+  const te = await getTranslations("empty");
+
   const { session, findings } = await getAuditOverview(user.businessId);
 
   if (!session) {
     return (
-      <DashboardShell title="Audit Console">
+      <DashboardShell title={ts("audit")}>
         <EmptyState
-          title="Kein Audit im Demo-Workspace"
-          hint="Führen Sie den Demo-Seed aus: npm run db:seed:demo"
+          title={t("noAudit")}
+          hint={te("seedHint")}
           icon="audit"
         />
       </DashboardShell>
@@ -54,19 +59,19 @@ export default async function AuditConsolePage() {
     AGENT_RECOMMENDATIONS.find((r) => r.agents.length >= 3) ?? AGENT_RECOMMENDATIONS[0];
 
   return (
-    <DashboardShell title="Audit Console">
+    <DashboardShell title={ts("audit")}>
       <div className="space-y-8">
         <section className="rounded-lg border border-hairline bg-surface p-6 shadow-sm">
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
-                Geschäfts-Check · {session.industry ?? "—"}
+                {t("businessCheck")} · {session.industry ?? "—"}
               </p>
               <h2 className="mt-1 text-xl font-semibold text-ink">{session.businessName}</h2>
             </div>
             <div className="text-right">
               <p className="text-3xl font-semibold text-ink-secondary">{session.priorityScore}</p>
-              <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">Prioritäts-Score</p>
+              <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">{t("priorityScore")}</p>
             </div>
           </div>
         </section>
@@ -75,17 +80,17 @@ export default async function AuditConsolePage() {
           <>
             <section className="grid gap-6 lg:grid-cols-2">
               <div>
-                <h3 className="mb-3 text-base font-semibold text-ink">Prioritäts-Matrix</h3>
+                <h3 className="mb-3 text-base font-semibold text-ink">{t("priorityMatrix")}</h3>
                 <AuditPriorityMatrix findings={mapped} />
               </div>
               <div>
-                <h3 className="mb-3 text-base font-semibold text-ink">Empfohlenes Team</h3>
+                <h3 className="mb-3 text-base font-semibold text-ink">{t("recommendedTeam")}</h3>
                 <AgentRecommendationCard recommendation={recommendation} />
               </div>
             </section>
 
             <section>
-              <h3 className="mb-3 text-base font-semibold text-ink">Findings ({mapped.length})</h3>
+              <h3 className="mb-3 text-base font-semibold text-ink">{t("findings", { count: mapped.length })}</h3>
               <div className="grid gap-4 lg:grid-cols-2">
                 {mapped.map((f) => (
                   <AuditFindingCard key={f.id} finding={f} />
@@ -94,7 +99,7 @@ export default async function AuditConsolePage() {
             </section>
           </>
         ) : (
-          <EmptyState title="Keine Findings" icon="audit" />
+          <EmptyState title={te("noFindings")} icon="audit" />
         )}
       </div>
     </DashboardShell>

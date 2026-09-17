@@ -1,5 +1,134 @@
 # Change Log
 
+## 2026-09-17 — Agent Bureau is bilingual, all the way through
+
+The requirement had been given more than once and deferred each time. It is
+done: `agents.maxpromo.digital` now serves German and English across every
+user-visible surface, public and authenticated, and a gate holds it there.
+
+### What was wrong
+
+The product was declared German and was not quite German. "Operating Model",
+"Audit Console", "Approval Desk", "Supervised Mode", "System Preview",
+"Proposal Ready", "Approve Preview" — English written by developers, sitting
+inside German navigation, read by German customers. And there was no English at
+all: not a partial English, none. Every gate passed the whole time, because
+nothing was looking at which language a string was in.
+
+### The architecture
+
+**next-intl, the same library and the same message-file shape as the hub, with
+the locale resolved from a cookie instead of the URL.** The Domain Registry
+already said `useLocalePrefix: false` for this host and the reason holds: this
+is one authenticated product behind NextAuth, and a locale segment would prefix
+every callback URL, every `callbackUrl` round trip, every deep link a customer
+has been sent, and the middleware's one protected prefix.
+
+- `messages/{de,en}.json` — **1,280 keys per locale**, from nothing.
+- `lib/i18n/locale.ts` — cookie, then `Accept-Language`, then the registry's
+  `primaryLanguage`. German stays the default.
+- `app/language/route.ts` — switching is a navigation that sets the cookie and
+  returns you to the same path. It works before hydration, works without
+  JavaScript, and never touches the session: you stay on the approvals desk and
+  the approvals desk changes language. `next` is honoured only as a same-origin
+  absolute path, because an open redirect on a signed-in product is a phishing
+  primitive.
+- `lib/i18n/format.ts` — dates, times and the greeting through `Intl`, in
+  **Europe/Berlin**, so an operator in Essen sees their own clock whatever
+  region the server runs in. The catalogue holds `"Guten Morgen, {name}."` and
+  never a person.
+
+### Coverage
+
+Public: navigation, hero, the Chief-of-Staff system map, the safe-action chain,
+the before/after comparison, the integration rail, the pillars, the statistics,
+the lead form including its validation messages, the footer, metadata.
+
+Authenticated: the sidebar's nineteen sections, the topbar, the greeting, the
+dashboard, approvals, the audit console, documents, the waiting room, agents,
+the operating model, playbooks, AI governance, client implementation, briefing,
+tasks, projects, leads, contacts, research, memory, the AI lab and settings —
+with their empty, loading and error states, their status and risk badges, their
+table headings and their accessible names.
+
+**The draft an operator generates now comes back in their language too.** The
+system prompt stays in one reviewed German voice; the line that tells the model
+which language to answer in follows the reader.
+
+### Structure and words were separated
+
+`lib/core/operating-model.ts`, `lib/core/playbooks.ts`, `lib/core/agent-hierarchy.ts`
+and `lib/registry/agents.ts` carried German prose. They now carry the model —
+ids, order, relationships, counts — and the words are keyed by each record's
+own id. The supervision contract went with it: an agent's `blockedCount` is
+declared in structure and **asserted against the catalogue by the gate**,
+because a translation that quietly dropped an entry would make the English
+product claim a narrower contract than the German one.
+
+### What is deliberately not translated
+
+- **Records.** A customer's name, a client's file, the note a consultant wrote.
+  No product translates its data, and the demo fixtures that stand in for
+  records behave the same way. Product *voice* inside those fixtures — a tool
+  register, a policy checklist, an activity line the system wrote — is
+  translated.
+- **Instructions to a model**, which are not interface text.
+- **The legal pages.** `/impressum` and `/datenschutz` discharge obligations
+  under German law; translating them would produce a second legal text nobody
+  has reviewed. Their chrome is localised and an English reader is told, in
+  English, why the body is not.
+
+Each is marked with `i18n-exempt` and a reason where it lives.
+
+### New gate: `check:i18n` (14 → 15)
+
+Both locale files exist and parse · the key sets are identical in both
+directions · nothing empty, nothing left as its own key · lists have the same
+length in both languages · the two languages are actually different except
+where exempted by full key path · the agent registry's counts match the
+catalogue · no German prose hardcoded in `apps/bureau`.
+
+`prove:i18n` stages seven regressions, requires the gate to catch and name each
+one, checks that an `i18n-exempt` marker silences exactly the block it
+introduces, and puts every file back byte-identical. **11/11.**
+
+### Found on the way
+
+- The navigation pushed the page 13px sideways at 375px once the language
+  control was added; the business-check button now steps out below 640px, where
+  the hero repeats it one screen down.
+- The German submit label is 340px on one line and `@maxpromo/ui` sets
+  `white-space: nowrap` on every button — the form, its column and the whole
+  landing page were **72px wider than a 375px screen, in German only, before
+  this pass**. The label wraps inside the button; the shared component did not
+  have to change.
+- German compounds had no `overflow-wrap` in this application. The hub took
+  that rule after a legal page pushed itself sideways; the bureau has it now.
+- `audit:claims` matched "over" inside "overdue" and read a playbook's trigger
+  ("a meeting within the next 24 hours") as a commitment about the first
+  conversation. Both are rule defects that the English catalogue surfaced: the
+  hedge matcher now matches whole words — with `\b` only where the hedge's own
+  edge is a word character, so "ca." still matches — and the product namespaces
+  are excluded from the commitment comparison. No true positive was lost: the
+  same seven pre-existing findings stand.
+
+### Registry
+
+`agents.maxpromo.digital` now declares `languages: ['de', 'en']`. The
+registry's own rule is that a domain does not list a language it cannot serve
+completely, and `check:i18n` is what keeps that true.
+
+### Verification
+
+`npm run certify` exit 0 — fifteen gates, accessibility clean across 36 routes,
+cross-application consistency clean, documentation clean, dependencies clean.
+`prove:i18n` 11/11. `prove:demo-access` unchanged.
+
+Measured in a real browser, both languages, at 375 / 768 / 1440: **no
+horizontal overflow on any public page or any authenticated page.** A
+language-parity probe fetched fourteen authenticated pages in both languages
+and found no marker of one language in the other.
+
 ## 2026-09-17 — Three visual corrections, and the typeface that was never loading
 
 Marcel's corrections from the live page, taken one at a time. The third one

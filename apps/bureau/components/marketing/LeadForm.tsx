@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { leadSchema } from "@/lib/validation/lead";
 import { FormStatus } from "@maxpromo/ui";
 import { Icon } from "@maxpromo/ui";
+import { useTranslations } from "next-intl";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -25,6 +26,7 @@ function readAttribution() {
 }
 
 export function LeadForm() {
+  const t = useTranslations("lead");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const attribution = useRef<ReturnType<typeof readAttribution>>(undefined);
@@ -53,11 +55,13 @@ export function LeadForm() {
     // Client-side validation with the SAME schema the server uses.
     const parsed = leadSchema.safeParse(payload);
     if (!parsed.success) {
-      const first =
-        Object.values(parsed.error.flatten().fieldErrors)[0]?.[0] ??
-        "Bitte Eingaben prüfen.";
+      // The schema returns keys; the message is chosen here, in the reader's
+      // language. An unknown key falls back to the generic sentence rather
+      // than rendering a key path at somebody.
+      const code = Object.values(parsed.error.flatten().fieldErrors)[0]?.[0];
+      const known = ["errNameRequired", "errEmailInvalid"];
       setStatus("error");
-      setError(first);
+      setError(code && known.includes(code) ? t(code) : t("errCheckInput"));
       return;
     }
 
@@ -74,13 +78,11 @@ export function LeadForm() {
       const data = await res.json().catch(() => null);
       setStatus("error");
       setError(
-        data?.error === "not_configured"
-          ? "Das Formular ist noch nicht final verbunden. Bitte schreiben Sie an info@maxpromo.digital."
-          : "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+        data?.error === "not_configured" ? t("errNotConfigured") : t("errGeneric"),
       );
     } catch {
       setStatus("error");
-      setError("Netzwerkfehler. Bitte erneut versuchen.");
+      setError(t("errNetwork"));
     }
   }
 
@@ -89,11 +91,10 @@ export function LeadForm() {
       <div className="rounded-lg border border-accent/40 bg-accent-soft p-8 text-center">
         <div className="flex justify-center text-ink-secondary"><Icon name="check" size="lg" /></div>
         <h3 className="mt-3 text-xl font-semibold text-ink">
-          Anfrage erhalten.
+          {t("successTitle")}
         </h3>
         <p className="mt-2 text-ink-secondary">
-          Wir melden uns zu Ihrem kostenlosen Geschäfts-Check. 30 Minuten,
-          unverbindlich.
+          {t("successBody")}
         </p>
       </div>
     );
@@ -102,25 +103,25 @@ export function LeadForm() {
   return (
     <form onSubmit={onSubmit} className="grid gap-4" noValidate>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field name="name" label="Name *" autoComplete="name" required />
+        <Field name="name" label={t("name")} autoComplete="name" required />
         <Field
           name="email"
-          label="E-Mail *"
+          label={t("email")}
           type="email"
           autoComplete="email"
           required
         />
-        <Field name="phone" label="Telefon" type="tel" autoComplete="tel" />
-        <Field name="company" label="Firma" autoComplete="organization" />
+        <Field name="phone" label={t("phone")} type="tel" autoComplete="tel" />
+        <Field name="company" label={t("company")} autoComplete="organization" />
       </div>
 
       <label className="grid gap-1.5">
-        <span className="field-label">Worum geht es? (optional)</span>
+        <span className="field-label">{t("message")}</span>
         <textarea
           name="message"
           rows={3}
           className="field-input"
-          placeholder="Kurz Ihr Betrieb und Ihre größte manuelle Baustelle …"
+          placeholder={t("messagePlaceholder")}
         />
       </label>
 
@@ -139,16 +140,21 @@ export function LeadForm() {
         disabled={status === "submitting"}
         className="btn-primary mt-1"
       >
-        {status === "submitting"
-          ? "Wird gesendet …"
-          : "Kostenlosen Geschäfts-Check anfragen"}
+        {/* The label wraps inside the button rather than the button refusing
+            to wrap. @maxpromo/ui sets white-space: nowrap on every button, and
+            the German label is 340px on one line — which forced the form, the
+            column and the whole page 72px wider than a 375px screen.
+            white-space inherits, so a child can say otherwise; the shared
+            component does not have to change for one long word. */}
+        <span className="whitespace-normal">
+          {status === "submitting" ? t("submitting") : t("submit")}
+        </span>
       </button>
 
       <p className="text-xs text-ink-muted">
-        Mit dem Absenden stimmen Sie der Kontaktaufnahme zu. Ihre Daten werden
-        ausschließlich zur Bearbeitung Ihrer Anfrage verwendet. Details:{" "}
+        {t("consent")}
         <a href="/datenschutz" className="underline underline-offset-2 hover:text-ink-secondary">
-          Datenschutz
+          {t("privacyLink")}
         </a>
         .
       </p>

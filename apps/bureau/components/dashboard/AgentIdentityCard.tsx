@@ -1,18 +1,42 @@
 import { Icon } from "@maxpromo/ui";
-import type { Agent } from "@/types/agent";
+import { getTranslations } from "next-intl/server";
+import type { AgentRecord } from "@/lib/registry/agents";
 import { StatusBadge } from "./StatusBadge";
 import { RiskBadge } from "./RiskBadge";
+import { formatDateTime } from "@/lib/i18n/format";
+import { resolveLocale } from "@/lib/i18n/locale";
 
-// Operational agent identity — NO faces/avatars. Communicates: this agent
-// prepares work and proposes; it does not execute uncontrolled actions.
-export function AgentIdentityCard({
+/**
+ * Operational agent identity — no faces, no avatars. It communicates one
+ * thing: this agent prepares work and proposes it; it does not execute
+ * uncontrolled actions.
+ *
+ * Everything an operator reads here comes from the catalogue, keyed by the
+ * agent's id. The card used to render German that lived in the registry beside
+ * the English word "Approval Required", which is precisely the mixture this
+ * pass exists to remove.
+ *
+ * The timestamp is formatted rather than sliced. It used to be printed by
+ * cutting the ISO string and appending "UTC", which showed an English reader
+ * and a German reader the same machine format in a time zone neither of them
+ * works in.
+ */
+export async function AgentIdentityCard({
   agent,
   primary = false,
 }: {
-  agent: Agent;
+  agent: AgentRecord;
   primary?: boolean;
 }) {
-  const observes = agent.capabilities.map((c) => c.label);
+  const t = await getTranslations(`agentRegistry.${agent.id}`);
+  const c = await getTranslations("agentCard");
+  const sec = await getTranslations("sections");
+  const locale = await resolveLocale();
+
+  const observes = t.raw("caps") as string[];
+  const prepares = t.raw("allowed") as string[];
+  const blocked = t.raw("blocked") as string[];
+
   return (
     <div
       className={`rounded-lg border bg-surface p-6 shadow-sm ${
@@ -26,54 +50,54 @@ export function AgentIdentityCard({
           </span>
           <div>
             <h3 className="font-semibold text-ink">{agent.name}</h3>
-            <p className="text-xs text-ink-muted">{agent.role}</p>
+            <p className="text-xs text-ink-muted">{t("role")}</p>
           </div>
         </div>
         <StatusBadge status={agent.status} />
       </div>
 
-      <p className="mt-3 text-sm leading-relaxed text-ink-secondary">{agent.description}</p>
+      <p className="mt-3 text-sm leading-relaxed text-ink-secondary">{t("description")}</p>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <RiskBadge level={agent.riskLevel} />
         {agent.requiresApproval && (
           <span className="rounded-full border border-hairline bg-surface-sunken px-2.5 py-0.5 font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">
-            Approval Required
+            {c("approvalRequired")}
           </span>
         )}
       </div>
 
       <div className="mt-5 space-y-3">
-        <Field label="Observiert" items={observes} />
-        <Field label="Bereitet vor" items={agent.allowedActions} />
-        <Field label="Freigabe nötig für" items={agent.blockedActions} accent />
+        <Field label={c("observes")} items={observes} />
+        <Field label={c("prepares")} items={prepares} />
+        <Field label={c("needsApprovalFor")} items={blocked} accent />
       </div>
 
       <div className="mt-5 grid gap-3 border-t border-hairline pt-4 sm:grid-cols-2">
         <div>
-          <Label>Verbundene Systeme</Label>
+          <Label>{c("connectedSystems")}</Label>
           <div className="mt-1 flex flex-wrap gap-1.5">
-            {agent.connectedSystems.map((s) => (
+            {agent.connectedSections.map((s) => (
               <span
                 key={s}
                 className="rounded border border-hairline bg-surface-sunken px-2 py-0.5 font-mono text-label-dense text-ink-secondary"
               >
-                {s}
+                {sec(s)}
               </span>
             ))}
           </div>
         </div>
         <div>
-          <Label>Letzte Aktivität</Label>
+          <Label>{c("lastActivity")}</Label>
           <p className="mt-1 font-mono text-label text-ink-muted">
-            {agent.lastActivity.slice(0, 16).replace("T", " ")} UTC
+            {formatDateTime(agent.lastActivity, locale)}
           </p>
         </div>
       </div>
 
       <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-3">
-        <Label>Nächste empfohlene Aktion</Label>
-        <p className="mt-1 text-sm text-ink-secondary">{agent.nextRecommendedAction}</p>
+        <Label>{c("nextAction")}</Label>
+        <p className="mt-1 text-sm text-ink-secondary">{t("next")}</p>
       </div>
     </div>
   );

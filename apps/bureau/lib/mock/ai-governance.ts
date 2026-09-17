@@ -1,34 +1,51 @@
-import type {
-  AIToolRegisterItem,
-  AIGovernanceRisk,
-  PolicyChecklistItem,
-  DataSensitivityRow,
-} from "@/types/ai-governance";
+import type { AIToolStatus, GovernanceRiskLevel, DataSensitivity } from "@/types/ai-governance";
 
-export const MOCK_AI_TOOLS: AIToolRegisterItem[] = [
-  { id: "tool-1", name: "Claude", category: "Assistenz / Text", status: "approved", usageNote: "Freigegeben für interne Texte ohne personenbezogene Kundendaten." },
-  { id: "tool-2", name: "ChatGPT (privat)", category: "Assistenz / Text", status: "under_review", usageNote: "Private Accounts im Team — Richtlinie ausstehend." },
-  { id: "tool-3", name: "DeepL", category: "Übersetzung", status: "approved", usageNote: "Freigegeben für nicht-sensible Inhalte." },
-  { id: "tool-4", name: "Unbekannter Bild-Generator", category: "Bild", status: "blocked", usageNote: "Unklare Datenverarbeitung — bis zur Prüfung gesperrt." },
+/**
+ * Demo fixtures for the AI-governance surfaces.
+ *
+ * WHAT IS HERE AND WHAT IS IN THE CATALOGUE
+ * These records are product content, not customer records: a tool register, a
+ * policy checklist, the areas of risk this product assesses. An English
+ * operator reading them is reading the product, so their text lives in
+ * `demo.*` in the message catalogue and only the structure — ids, statuses,
+ * levels, what is ticked — stays here.
+ *
+ * That line matters and it is drawn deliberately. A customer's name, a
+ * customer's message and a customer's document title are records: they are not
+ * translated in any product, and the fixtures that stand in for them are not
+ * translated either. Anything the product itself says, is.
+ */
+
+export interface ToolRecord { id: string; name: string; status: AIToolStatus }
+export interface RiskRecord { id: string; level: GovernanceRiskLevel }
+export interface PolicyRecord { id: string; done: boolean }
+export interface SensitivityRecord { id: string; sensitivity: DataSensitivity }
+
+/** Tool names are proper nouns; two of them are descriptions and are keyed. */
+export const MOCK_AI_TOOLS: ToolRecord[] = [
+  { id: "tool-1", name: "Claude", status: "approved" },
+  { id: "tool-2", name: "", status: "under_review" },
+  { id: "tool-3", name: "DeepL", status: "approved" },
+  { id: "tool-4", name: "", status: "blocked" },
 ];
 
-export const MOCK_GOVERNANCE_RISKS: AIGovernanceRisk[] = [
-  { id: "gr-1", area: "Kundendaten", description: "Bewertung: Risiko, dass Kundendaten in nicht freigegebene Tools eingegeben werden.", level: "high", recommendedAction: "Freigegebene Tool-Liste kommunizieren und Schulung." },
-  { id: "gr-2", area: "Richtlinie", description: "Es existiert keine schriftliche KI-Nutzungsrichtlinie.", level: "medium", recommendedAction: "Basis-Policy erstellen und im Team bestätigen." },
-  { id: "gr-3", area: "Sichtbarkeit", description: "Keine Übersicht, welche Tools im Team genutzt werden.", level: "medium", recommendedAction: "Tool-Register pflegen und regelmäßig prüfen." },
+export const MOCK_GOVERNANCE_RISKS: RiskRecord[] = [
+  { id: "gr-1", level: "high" },
+  { id: "gr-2", level: "medium" },
+  { id: "gr-3", level: "medium" },
 ];
 
-export const MOCK_POLICY_CHECKLIST: PolicyChecklistItem[] = [
-  { id: "pc-1", label: "Schriftliche KI-Nutzungsrichtlinie vorhanden", done: false },
-  { id: "pc-2", label: "Freigegebene Tool-Liste kommuniziert", done: false },
-  { id: "pc-3", label: "Regel: keine Kundendaten in nicht freigegebene Tools", done: true },
-  { id: "pc-4", label: "Verantwortliche Person benannt", done: true },
-  { id: "pc-5", label: "Regelmäßiges Governance-Review angesetzt", done: false },
+export const MOCK_POLICY_CHECKLIST: PolicyRecord[] = [
+  { id: "pc-1", done: false },
+  { id: "pc-2", done: false },
+  { id: "pc-3", done: true },
+  { id: "pc-4", done: true },
+  { id: "pc-5", done: false },
 ];
 
-export const MOCK_DATA_SENSITIVITY: DataSensitivityRow[] = [
-  { id: "ds-1", dataType: "Marketing-Texte", sensitivity: "public", allowedTools: "Alle freigegebenen Tools" },
-  { id: "ds-2", dataType: "Interne Notizen", sensitivity: "internal", allowedTools: "Nur freigegebene Tools" },
-  { id: "ds-3", dataType: "Angebote / Verträge", sensitivity: "confidential", allowedTools: "Nur mit Freigabe" },
-  { id: "ds-4", dataType: "Kundendaten / personenbezogen", sensitivity: "personal", allowedTools: "Keine externen KI-Tools" },
+export const MOCK_DATA_SENSITIVITY: SensitivityRecord[] = [
+  { id: "ds-1", sensitivity: "public" },
+  { id: "ds-2", sensitivity: "internal" },
+  { id: "ds-3", sensitivity: "confidential" },
+  { id: "ds-4", sensitivity: "personal" },
 ];

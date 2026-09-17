@@ -1,12 +1,7 @@
 import { TONE_TEXT, type Tone } from "@maxpromo/ui";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { MOCK_CLIENT_IMPLEMENTATIONS } from "@/lib/mock/client-implementation";
-
-const HANDOVER_LABEL = {
-  not_started: "Nicht begonnen",
-  in_progress: "In Umsetzung",
-  handed_over: "Übergeben",
-} as const;
+import { getTranslations } from "next-intl/server";
 
 const PRIORITY_TONE_MAP = {
   low: "neutral",
@@ -16,18 +11,21 @@ const PRIORITY_TONE_MAP = {
 
 // Supports manual/concierge delivery — value delivered by hand before full
 // automation exists. Central to the Maxpromo "we install a system" model.
-export default function ClientImplementationPage() {
+export default async function ClientImplementationPage() {
+  const t = await getTranslations("clientImpl");
+  const ts = await getTranslations("sections");
+
+  const HANDOVER_KEY = { not_started: "notStarted", in_progress: "inProgress", handed_over: "handedOver" } as const;
+
   return (
-    <DashboardShell title="Client Implementation">
+    <DashboardShell title={ts("clientImplementation")}>
       <div className="space-y-6">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
-            Concierge / Manuelle Lieferung
+            {t("eyebrow")}
           </p>
           <p className="mt-2 text-sm text-ink-secondary">
-            Maxpromo liefert Wert zunächst manuell, während die Plattform wächst.
-            Diese Seite hält Beobachtungen, vorgeschlagene Workflows und den
-            Installations-Fortschritt pro Kunde fest.
+            {t("lede")}
           </p>
         </div>
 
@@ -40,32 +38,32 @@ export default function ClientImplementationPage() {
               </div>
               <div className="text-right">
                 <span className={`font-mono text-label uppercase tracking-[0.12em] ${TONE_TEXT[PRIORITY_TONE_MAP[c.implementationPriority]]}`}>
-                  Priorität {c.implementationPriority}
+                  {t("priority", { level: c.implementationPriority })}
                 </span>
                 <p className="mt-1 font-mono text-label text-ink-muted">
-                  {HANDOVER_LABEL[c.handoverStatus]}
+                  {t(HANDOVER_KEY[c.handoverStatus])}
                 </p>
               </div>
             </div>
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <Block label="Geschäftliche Schmerzpunkte" items={c.businessPains} />
-              <Block label="Beobachtete Engpässe" items={c.observedBottlenecks} />
-              <Block label="Vorgeschlagene Agenten" items={c.proposedAgents} mono />
-              <Block label="Zu installierende Workflows" items={c.workflowsToInstall} mono />
-              <Block label="Integrationen" items={c.integrationRequirements} />
-              <Block label="Nächste Schritte" items={c.nextSteps} />
+              <Block label={t("businessPains")} items={c.businessPains} />
+              <Block label={t("bottlenecks")} items={c.observedBottlenecks} />
+              <Block label={t("proposedAgents")} items={c.proposedAgents} mono />
+              <Block label={t("workflows")} items={c.workflowsToInstall} mono />
+              <Block label={t("integrations")} items={c.integrationRequirements} />
+              <Block label={t("nextSteps")} items={c.nextSteps} />
             </div>
 
             <div className="mt-4 rounded-lg border border-hairline bg-surface-subtle p-3">
               <p className="font-mono text-label-dense uppercase tracking-[0.14em] text-ink-muted">
-                Manuelle Service-Notiz
+                {t("serviceNote")}
               </p>
               <p className="mt-1 text-sm text-ink-secondary">{c.manualServiceNotes}</p>
             </div>
 
             <p className="mt-3 font-mono text-label uppercase tracking-[0.12em] text-ink-muted">
-              Wartungsbereit: {c.maintenanceReady ? "ja" : "noch nicht"}
+              {t("maintenanceReady")}: {c.maintenanceReady ? t("ready") : t("notYet")}
             </p>
           </div>
         ))}
