@@ -86,11 +86,13 @@ export default function Navbar() {
             </Link>
           </div>
 
+          {/* The accessible name follows the state: `aria-expanded` reported
+              the sheet open while the name still said "open menu". */}
           <button
             type="button"
             className="site-nav-burger"
             onClick={() => setMenuOpen(true)}
-            aria-label={t('openMenu')}
+            aria-label={menuOpen ? t('closeMenu') : t('openMenu')}
             aria-expanded={menuOpen}
           >
             <span /><span /><span />

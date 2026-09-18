@@ -96,10 +96,20 @@ export function getCapability(id: string): Capability | undefined {
 export interface Integration {
   readonly name: string
   readonly icon: IconName
+  /**
+   * Set only where `name` is not a product name.
+   *
+   * Every other entry in this rail is a mark — Gmail, Slack, n8n — and a mark
+   * is the same word in every language. "Web forms" is not a mark; it is an
+   * English noun phrase that sat untranslated in the German rail between
+   * eleven proper nouns, where it read as one more product nobody had heard
+   * of. Translated through the catalogue when this key is present.
+   */
+  readonly nameKey?: string
 }
 
 export const INTEGRATIONS: readonly Integration[] = [
-  { name: 'Web forms',       icon: 'documents' },
+  { name: 'Web forms',       icon: 'documents', nameKey: 'webForms' },
   { name: 'Gmail',           icon: 'newsletter' },
   { name: 'Google Calendar', icon: 'calendar' },
   { name: 'Outlook',         icon: 'newsletter' },

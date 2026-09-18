@@ -7,6 +7,7 @@ import { resolveLocale } from "@/lib/i18n/locale";
 export default async function ContactsPage() {
   const t = await getTranslations("contactsPage");
   const ts = await getTranslations("sections");
+  const s = await getTranslations("status");
   const locale = await resolveLocale();
   return (
     <DashboardShell title={ts("contacts")}>
@@ -25,7 +26,7 @@ export default async function ContactsPage() {
               <tr key={c.id} className="text-ink-secondary">
                 <td className="px-4 py-3">{c.name}</td>
                 <td className="px-4 py-3 text-ink-secondary">{c.companyName ?? "—"}</td>
-                <td className="px-4 py-3 text-ink-secondary">{c.status}</td>
+                <td className="px-4 py-3 text-ink-secondary">{s(c.status)}</td>
                 <td className="px-4 py-3 font-mono text-xs text-ink-muted">
                   {c.nextFollowUpAt ? formatDate(c.nextFollowUpAt, locale) : "—"}
                 </td>

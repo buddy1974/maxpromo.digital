@@ -1,4 +1,5 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
+import HtmlLangSync from '@/components/HtmlLangSync'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { currentDomain } from '@/lib/domains/server'
@@ -82,6 +83,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider>
+      <HtmlLangSync />
       {isShowcase ? (
         <>
           <ShowcaseChrome domain={domain} locale={locale}>

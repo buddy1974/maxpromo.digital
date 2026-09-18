@@ -1,5 +1,144 @@
 # Change Log
 
+## 2026-09-18 — forensic remediation: fourteen production defects
+
+A browser forensic pass over live production produced a defect ledger. Every
+finding was verified in source before it was touched; two were not what the
+ledger assumed, and one turned out not to be a code defect at all.
+
+### The two P0s
+
+**Placeholder WhatsApp numbers on every article.** The article page read
+`process.env.NEXT_PUBLIC_WHATSAPP_NUMBER` with a hardcoded fallback, in two
+places, and the two fallbacks did not agree: `4915901234567` on the inline CTA
+and `491234567890` on the closing one. The variable is declared in no env file
+and set in no environment, so both fallbacks were live — every reader who
+pressed "WhatsApp Maxpromo" was sent to a number that is not this company's.
+
+A contact destination is legal identity, not configuration. `WHATSAPP_NUMBER`
+is now derived in `@maxpromo/config` from `BUSINESS.phone`, the same value the
+Impressum prints, so the two cannot disagree. The env override is gone. A
+repository-wide sweep found no other placeholder contact destination on a
+public surface; the remaining example addresses are input placeholders inside
+the private back office.
+
+**MaxAgent returning 503 in production.** Not a code defect. The chain: the
+session endpoint "working" was meaningless — it fails open and returns 204 on
+any error — and the message route's own log line read
+`provider failure { status: 400, type: 'Error' }` for every possible cause,
+because the SDK error's `name` is the string "Error". The database was fine,
+the key was present, the model id was valid, and the persisted history was a
+single well-formed user message, all verified against production.
+
+The provider's actual message, recovered from a second endpoint that logs the
+whole error: **"Your credit balance is too low to access the Anthropic API."**
+An account billing state, not something code can correct.
+
+What was fixed is the reason it took a log dive to find: the handler now
+records the provider's message and request id alongside the status. The
+response stays `503 chat_unavailable` — a visitor learns nothing useful from a
+provider's billing state, and the composer already says the truthful thing in
+their own language.
+
+### Content that was not true
+
+**The public page advertised an agent the product does not have.** Nine
+specialist cards and nine nodes in the system map, where the agent registry
+holds one Chief of Staff and **eight** specialists. The ninth of each was
+"Governance-Agent" — AI Governance is a product module with its own dashboard
+section, not an agent. The ninth card and the ninth node are gone and the count
+reads "Acht Spezialisten" / "Eight specialists". The module is untouched; what
+was removed is the claim that it is an agent.
+
+**The Work hero's diagram could not be read.** That page renders a
+ProcessSequence inside `.scene-on-dark`, and the variant covered the
+architecture map only. Every `.ps-*` rule kept its light-surface colour on the
+black panel: the step labels measured 1.00:1 — `#111111` on `#111111` — and the
+supporting copy 2.44:1. The variant now covers the sequence too, with the same
+inverted tokens the map's half already used. The hub's own 404 headline carried
+the mirror of this fault and is fixed with it: the inverted text token is
+near-white and that page is white.
+
+**The WhatsApp CTA.** `#25D366` is governed and allowlisted — a WhatsApp button
+is allowed to look like one — but the text token paired with it was the
+inverted one, white, about 1.9:1, against the module's own note that black
+measures 6.7:1. The inline CTA was worse: white text on a 12% tint, and a
+border written as a single-quoted string instead of a template literal, so the
+declaration was invalid and no border drew at all.
+
+**Sprint language shown to customers.** The dashboard's approval cards ended in
+three dead buttons tooltipped "Placeholder — the approval logic lands in a
+later sprint", while working controls exist one click away. The buttons are
+replaced by a link to the Approval Desk: the card is a preview and now says so,
+and no destructive action was wired onto a summary card. Settings no longer
+promises a later sprint; it states what is fixed today.
+
+**Raw enum values.** `approval_approved` and `approval_reviewed` printed
+straight into the audit feed; `active`, `nurturing`, `new` into Contacts and
+Leads; the agent status and the audit priority elsewhere. Stored values are
+unchanged — they are the audit record's identity — and are mapped at the render
+site through the one status vocabulary the catalogue already held.
+
+**Currency drift in translation.** The English article said "£89/month to
+£19/month" where the German source says "89 Euro/Monat auf 19 Euro/Monat" — the
+same numbers with the currency swapped. Restored to euro. The £14,000
+case-study figure is **not** that: it is in pounds in both locales, and the
+decision to leave it is recorded in that page's own header under ADR-0007. It
+stays.
+
+**Automation Lab contradicted the operating model.** The support agent claimed
+it "answers queries 24/7". Answering a customer is an outbound action, and the
+model says an outbound action waits for a person; preparation is what runs
+continuously, and the wording now says that. The research agent still researches
+autonomously, because research is preparation and that claim is true. The page
+prints 72 third-party marks across 18 cards and said nothing about what naming
+them means — it now carries the same disclaimer the homepage has always used.
+
+**Agent Bureau had no 404.** An unknown path served the framework default. It
+has a small one now, in both languages, with the product's identity and two
+routes back.
+
+### Also
+
+`<html lang>` follows a language switch. It is set in the root layout, which
+sits above the locale segment and is preserved across client navigation, so the
+document stayed `lang="de"` while showing English until the next full load —
+which is what a screen reader uses to choose its pronunciation. The Bureau's
+hub link no longer sends English readers to the German site. The Automation
+Lab's calls to action keep the reader's locale, and the `?automation=` context
+those eighteen cards built is read by the contact form instead of being
+discarded. The contact message field is required in markup as well as in the
+asterisk and the validity check. "Web forms" is translated in the German rail;
+the eleven marks beside it are not, because a mark is the same word in every
+language. German percentages are written the German way throughout, with the
+narrow no-break space the case-study headline already used.
+
+### CSS
+
+The required contrast fix cost bytes and the budget was **not** raised. The
+legal-document typography — six classes, one consumer, three routes — left the
+global stylesheet for the component that uses it, following the precedent set
+when the back office's chrome moved. That relocation does not move
+`web.total-css`, which sums every chunk; what did was removing the `.table`
+component, six rules with zero consumers anywhere including the back office,
+whose eight tables are long gone and whose surviving sibling on the industries
+page is `.matrix`.
+
+    public payload   76.88 KB -> 75.36 KB
+    web.total-css    80.54 KB -> 79.93 KB   against an unchanged 80 KB
+
+### Not fixed, deliberately
+
+The Bureau's "DSGVO-konform, in der EU gehostet" against a `us-east-1` database
+is an open governed risk with GDPR Chapter V implications, owned by Marcel:
+changing the copy removes the claim rather than the discrepancy. The demo
+workspace's German records stay German — they are seeded fixtures, not customer
+data, and a second locale for them is a fixture decision and a production data
+operation. Four hedged case-study results are flagged by `audit:claims` and
+left: hedging is the safe direction, and strengthening them would invent
+evidence.
+
+
 ## 2026-09-17 — the mobile pass, and what it found in the bilingual one
 
 One coordinated pass across the four surfaces the platform actually has: the

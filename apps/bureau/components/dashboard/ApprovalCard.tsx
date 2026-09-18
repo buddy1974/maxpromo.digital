@@ -1,11 +1,15 @@
+import Link from "next/link";
+import { Icon } from "@maxpromo/ui";
 import type { AgentProposal } from "@/types/agent";
 import { getTranslations } from "next-intl/server";
 import { RiskBadge } from "./RiskBadge";
 
 /**
- * Renders one agent proposal awaiting human review. The action buttons are
- * intentionally NON-FUNCTIONAL placeholders in this skeleton — the supervision
- * UI and data model are real; wiring approve/reject/execute is a later sprint.
+ * One agent proposal awaiting human review, as a dashboard preview.
+ *
+ * Read-only by design: it states what is waiting, what the agent proposes and
+ * what the audit trail will record, and then hands over to the Approval Desk,
+ * where the decision is taken and recorded. See the note above the link.
  */
 export async function ApprovalCard({ proposal }: { proposal: AgentProposal }) {
   const t = await getTranslations("approvalActions");
@@ -41,33 +45,30 @@ export async function ApprovalCard({ proposal }: { proposal: AgentProposal }) {
         </ul>
       </div>
 
-      {/* Placeholder controls — no handlers yet (skeleton). */}
-      <div className="mt-5 flex flex-wrap gap-2">
-        <button
-          type="button"
-          disabled
-          title={t("placeholder")}
-          className="min-h-11 cursor-not-allowed rounded-lg border border-accent-dark bg-accent px-4 py-2 text-sm font-semibold text-on-accent opacity-60"
-        >
-          {t("approveShort")}
-        </button>
-        <button
-          type="button"
-          disabled
-          title={t("placeholderShort")}
-          className="cursor-not-allowed rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary opacity-60"
-        >
-          {t("rejectShort")}
-        </button>
-        <button
-          type="button"
-          disabled
-          title={t("placeholderShort")}
-          className="cursor-not-allowed rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary opacity-60"
-        >
-          {t("editBeforeApproval")}
-        </button>
-      </div>
+      {/*
+        THIS CARD IS A PREVIEW. THE DECISION IS MADE ON THE APPROVAL DESK.
+
+        It used to end with three disabled buttons — Approve, Reject, Edit —
+        whose tooltips read "Placeholder — the approval logic lands in a later
+        sprint". Two problems, and the tooltip was the smaller one. A customer
+        was being shown internal delivery planning; and three dead approval
+        controls on the dashboard, while working ones exist one click away on
+        /dashboard/approvals, teach an operator that this product's approvals
+        do not work.
+
+        The controls are not wired up here — that would be putting a
+        destructive, audited action on a summary card, which is the opposite of
+        what this pass is for. They are replaced by the truthful thing: a link
+        to where the decision is actually taken. The card keeps its job, which
+        is to say what is waiting and why.
+      */}
+      <Link
+        href="/dashboard/approvals"
+        className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-lg border border-hairline px-4 py-2 text-sm font-medium text-ink-secondary transition-colors hover:border-hairline-strong hover:text-ink"
+      >
+        {t("openInApprovalDesk")}
+        <Icon name="chevronRight" size="xs" />
+      </Link>
     </div>
   );
 }

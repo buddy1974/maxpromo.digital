@@ -521,47 +521,20 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 }
 
 
-/* ═════════════════════════════════════════════════════════════════════════════
-   TABLES
-   Reference tables, not styled data grids: hairline rules, no zebra striping,
-   no rounded container, no shadow. Numeric columns are tabular so figures line
-   up down the column.
-   ══════════════════════════════════════════════════════════════════════════ */
+/* The `.table` component was removed here.
 
-/* Wide data tables scroll rather than clip. Eight of them sat in wrappers with
-   overflow:hidden until v7.1, so on a phone the far columns were unreachable
-   rather than merely off-screen — invisible to the responsive audit, which
-   looks for fixed widths and collapsing grids and finds neither here. */
-.table-wrap { overflow-x: auto; }
+   Six rules — `.table-wrap`, `.table`, `.table th`, `.table td`,
+   `.table tr:last-child td`, `.table .num` — with zero consumers anywhere in
+   this application, /os included, traced from every `className` in the source
+   rather than from the name. The eight wide tables its comment described are
+   gone; the one table the hub still renders (the sector matrix on
+   /industries) uses `.matrix` and `.matrix-wrap`, which are defined with the
+   rest of that page's scene and are untouched.
 
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--text-small);
-}
-.table th {
-  text-align: left;
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-micro);
-  font-weight: 600;
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-secondary);
-  border-bottom: 1px solid var(--brand-border-strong);
-  white-space: nowrap;
-}
-.table td {
-  padding: var(--space-4);
-  border-bottom: 1px solid var(--brand-border);
-  vertical-align: top;
-  line-height: var(--leading-ui);
-}
-.table tr:last-child td { border-bottom: 0; }
-.table .num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
+   Removed rather than kept as an unused primitive because it is a whole
+   component with nothing behind it, which is what this file's own header
+   records doing to twenty-two other classes. Agent Bureau's tables are its
+   own and are unaffected. */
 
 
 /* ═════════════════════════════════════════════════════════════════════════════
@@ -1339,7 +1312,8 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   vertical-align: top;
   border-bottom: 1px solid var(--brand-border);
 }
-.matrix thead th {  font-weight: 500;  color: var(--brand-text-muted);
+.matrix thead th {  font-weight: 500;
+  color: var(--brand-text-muted);
   border-bottom-color: var(--brand-text);
   white-space: nowrap;
 }
@@ -1357,7 +1331,8 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 .matrix tbody tr:hover { background: var(--brand-surface); }
 .matrix-link {
   display: inline-block;
-  margin-top: var(--space-2);  color: var(--brand-text);
+  margin-top: var(--space-2);
+  color: var(--brand-text);
   text-decoration: none;
   border-bottom: 1px solid var(--brand-border-strong);
 }
@@ -1426,7 +1401,8 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 .idx-theme {
   margin: var(--space-10) 0 0;
-  padding-bottom: var(--space-3);  color: var(--brand-text-muted);
+  padding-bottom: var(--space-3);
+  color: var(--brand-text-muted);
   max-width: none;
 }
 .idx-theme-note {
@@ -1455,7 +1431,8 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   margin-bottom: var(--space-6);
 }
 .case-meta {
-  margin: 0;  color: var(--brand-text-muted);
+  margin: 0;
+  color: var(--brand-text-muted);
   max-width: none;
 }
 /* The three-column before/system/after grid this label belonged to was
@@ -1464,77 +1441,10 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
    middle one having to carry a different background to be read as different.
    The label survived the swap and is still used above each comparison. */
 .transform-label {
-  margin: 0 0 var(--space-4);  color: var(--brand-text-muted);
+  margin: 0 0 var(--space-4);
+  color: var(--brand-text-muted);
   max-width: none;
 }
-
-
-/* ═════════════════════════════════════════════════════════════════════════════
-   LEGAL DOCUMENTS
-   A legal page is a document. It gets a document's typography: a contents
-   list, numbered sections, a readable measure and hairline separators.
-
-   What this replaces: every clause rendered as a rounded pale panel with a
-   green left border, repeated forty times down a page, which made an
-   obligation look like a marketing feature and made the page impossible to
-   scan. No legal wording changed with it.
-   ═════════════════════════════════════════════════════════════════════════════ */
-
-.legal { max-width: 46rem; margin-inline: auto; hyphens: auto; }
-.legal-toc {
-  margin: 0 0 var(--space-10);
-  padding: var(--space-5) 0;
-  border-top: 1px solid var(--brand-text);
-  border-bottom: 1px solid var(--brand-border);
-  list-style: none;
-  columns: 1;
-}
-@media (min-width: 720px) { .legal-toc { columns: 2; column-gap: var(--space-8); } }
-.legal-toc li { margin-bottom: var(--space-2); break-inside: avoid; }
-.legal-toc a {
-  font-size: var(--text-small);
-  color: var(--brand-text-secondary);
-  text-decoration: none;
-}
-.legal-toc a:hover,
-.legal-toc a:focus-visible { color: var(--brand-text); text-decoration: underline; }
-.legal-toc-num {
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  color: var(--brand-text-muted);
-  margin-right: var(--space-2);
-}
-
-.legal-section { padding: var(--space-8) 0 0; scroll-margin-top: var(--space-16); }
-.legal-section + .legal-section { border-top: 1px solid var(--brand-border); }
-.legal-h {
-  display: flex;
-  gap: var(--space-4);
-  align-items: baseline;
-  margin: 0 0 var(--space-4);
-  font-size: var(--text-h4);
-  font-weight: 600;
-  line-height: var(--leading-heading);
-  color: var(--brand-text);
-}
-.legal-h-num {
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  color: var(--brand-text-muted);
-  flex-shrink: 0;
-}
-.legal-body {
-  font-size: var(--text-small);
-  line-height: var(--leading-body);
-  color: var(--brand-text-secondary);
-}
-.legal-body p { max-width: none; margin: 0 0 var(--space-4); }
-.legal-body p:last-child { margin-bottom: 0; }
-.legal-body ul,
-.legal-body ol { margin: 0 0 var(--space-4); padding-left: var(--space-5); }
-.legal-body li { margin-bottom: var(--space-2); }
-.legal-body strong { color: var(--brand-text); font-weight: 600; }
-.legal-body a { color: var(--brand-text); }
 
 @media print {
   .site-nav, .site-footer, .max-bubble, .legal-toc { display: none; }
@@ -2170,7 +2080,8 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 .ps-human {
   margin: var(--space-1) 0 0;
-  max-width: none;  color: var(--brand-primary-text);
+  max-width: none;
+  color: var(--brand-primary-text);
 }
 
 .ps-link {
@@ -2503,6 +2414,45 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   color: var(--brand-text-inverted);
 }
 
+/* ─── The same variant, for the process sequence ─────────────────────────────
+   `.scene-on-dark` covered the architecture map and stopped there. The Work
+   page puts a ProcessSequence inside it — `<div className="hero-flow
+   scene-on-dark">` — and every `.ps-*` rule kept its light-surface colour on
+   the black hero panel:
+
+     .ps-label   --brand-text (#111111) on #111111   1.00:1   invisible
+     .ps-detail  --brand-text-secondary (#52525B)    2.44:1   below AA
+
+   The step labels of the diagram the page leads with could not be read at all,
+   in either language, at any width. This is the missing half of a variant that
+   already existed, not a new one — the values are the same inverted tokens the
+   map's rules use, so the two scenes stay one scene.
+
+   `.ps-disc` inverts too: a white disc with a black glyph on a black panel
+   reads as a hole punched in the composition. The human-control disc keeps its
+   lime fill and black glyph, because the accent is a fill and text on it is
+   black on any background. */
+.scene-on-dark .ps-disc {
+  background: var(--brand-surface-inverted);
+  border-color: var(--brand-border-inverted);
+  color: var(--brand-text-inverted);
+}
+.scene-on-dark .ps-disc-human {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary-edge);
+  color: var(--brand-on-primary);
+}
+.scene-on-dark .ps-label { color: var(--brand-text-inverted); }
+.scene-on-dark .ps-detail,
+.scene-on-dark .ps-num { color: var(--brand-text-inverted-secondary); }
+/* Dark Green is the accent's text form on white and measures 2.3:1 on black.
+   On the inverted surface the human step is marked by the lime disc beside it;
+   the words take the ordinary inverted colour so they stay readable. */
+.scene-on-dark .ps-label-human,
+.scene-on-dark .ps-human { color: var(--brand-text-inverted); }
+.scene-on-dark .ps-link-line { background: var(--brand-border-inverted); }
+.scene-on-dark .ps-link-tip { border-top-color: var(--brand-border-inverted); }
+
 
 /* The middle of a case study: what the system carries between the before and
    the after. A ruled list rather than a third panel, so the comparison stays
@@ -2581,7 +2531,8 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 @media (min-width: 640px) { .demo-meta { grid-template-columns: repeat(3, 1fr); } }
 .demo-meta dt {
-  margin: 0 0 var(--space-1);  color: var(--brand-text-inverted-secondary);
+  margin: 0 0 var(--space-1);
+  color: var(--brand-text-inverted-secondary);
 }
 .demo-meta dd {
   margin: 0;
@@ -2597,7 +2548,8 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 }
 .demo-card-cat {
   margin: 0 0 var(--space-2);
-  max-width: none;  color: var(--brand-text-inverted-secondary);
+  max-width: none;
+  color: var(--brand-text-inverted-secondary);
 }
 .demo-card-name { margin: 0 0 var(--space-3); font-size: var(--text-h4); color: var(--brand-text-inverted); }
 .demo-card-desc {

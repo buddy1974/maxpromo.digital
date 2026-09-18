@@ -46,8 +46,28 @@ export type FeedItem = {
   hasDetail?: boolean
 }
 
+/**
+ * Lifecycle codes the product writes into `action` itself.
+ *
+ * The rule above — a record prints as it stands — is right for text a person
+ * or an agent wrote about a customer. It is wrong for these three, which are
+ * not text at all: they are enum-shaped codes the approvals API writes when an
+ * operator decides, and the audit console rendered them to the customer as
+ * `approval_approved` and `approval_reviewed`, in both languages.
+ *
+ * Mapped here rather than at the write site, because the stored value is the
+ * audit record's identity and must not change. Anything not in this map is
+ * still printed exactly as it stands.
+ */
+const SYSTEM_ACTION_KEY: Record<string, string> = {
+  approval_approved: "approvalApproved",
+  approval_rejected: "approvalRejected",
+  approval_reviewed: "approvalReviewed",
+};
+
 export async function ActivityFeed({ items }: { items: FeedItem[] }) {
   const d = await getTranslations("demo.activity");
+  const sys = await getTranslations("activity");
   const locale = await resolveLocale();
   const time = new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-GB", {
     hour: "2-digit",
@@ -64,7 +84,10 @@ export async function ActivityFeed({ items }: { items: FeedItem[] }) {
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-sm text-ink">
-              <span className="font-medium">{a.actorName}</span> — {a.action ?? d(a.id + "Action")}
+              <span className="font-medium">{a.actorName}</span> —{" "}
+              {a.action
+                ? (SYSTEM_ACTION_KEY[a.action] ? sys(SYSTEM_ACTION_KEY[a.action]) : a.action)
+                : d(a.id + "Action")}
               {a.target ? <span className="text-ink-muted"> · {a.target}</span> : null}
             </p>
             {(a.detail || a.hasDetail) && (

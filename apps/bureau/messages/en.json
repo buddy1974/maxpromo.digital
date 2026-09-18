@@ -110,15 +110,12 @@
     "a7Approval": "Sending externally",
     "a8Name": "Follow-up agent",
     "a8Fn": "Waiting customers",
-    "a8Approval": "Every outbound message",
-    "a9Name": "Governance agent",
-    "a9Fn": "AI risk and policy",
-    "a9Approval": "Policy changes"
+    "a8Approval": "Every outbound message"
   },
   "systemMap": {
-    "a11y": "The Chief of Staff coordinates nine specialist agents",
-    "caption": "One coordinating layer. Nine specialists. Every outbound action through a human approval.",
-    "mobileNote": "coordinates 9 specialist agents — every outbound action through a human approval.",
+    "a11y": "The Chief of Staff coordinates eight specialist agents",
+    "caption": "One coordinating layer. Eight specialists. Every outbound action through a human approval.",
+    "mobileNote": "coordinates 8 specialist agents — every outbound action through a human approval.",
     "n1": "Lead",
     "n2": "Research",
     "n3": "CRM",
@@ -126,8 +123,7 @@
     "n5": "Content",
     "n6": "Operations",
     "n7": "Documents",
-    "n8": "Follow-up",
-    "n9": "Governance"
+    "n8": "Follow-up"
   },
   "lifecycle": {
     "eyebrow": "The safe action chain",
@@ -279,7 +275,9 @@
     "low": "Low",
     "critical": "Critical",
     "executed": "Executed",
-    "expired": "Expired"
+    "expired": "Expired",
+    "nurturing": "Nurturing",
+    "new": "New"
   },
   "empty": {
     "seedHint": "Run the demo seed: npm run db:seed:demo",
@@ -782,11 +780,7 @@
     "approve": "Approve (preview)",
     "reject": "Reject proposal",
     "markReviewed": "Mark as reviewed",
-    "placeholder": "Placeholder — the approval logic lands in a later sprint",
-    "approveShort": "Approve",
-    "rejectShort": "Reject",
-    "editBeforeApproval": "Edit before approving",
-    "placeholderShort": "Placeholder"
+    "openInApprovalDesk": "Open in the Approval Desk"
   },
   "impact": {
     "label": "Impact",
@@ -861,7 +855,7 @@
     "error": "Error",
     "coming_soon": "Coming soon",
     "securityHeading": "Security and control",
-    "securityBody": "Supervised mode is on. No agent takes an outbound action without an approval. Configuring roles, permissions and audit retention lands in a later sprint."
+    "securityBody": "Supervised mode is active. Agents take no outbound action without approval. Roles, permissions and audit-log retention are currently fixed and cannot be configured from this view."
   },
   "researchPage": {
     "empty": "No research yet",
@@ -1050,11 +1044,12 @@
   },
   "agentStatus": {
     "active": "Active",
-    "proposing": "Proposal ready",
-    "idle": "Idle",
+    "proposing": "Proposing",
+    "idle": "Ready",
     "paused": "Paused",
     "error": "Error",
-    "offline": "Offline"
+    "offline": "Offline",
+    "working": "Working"
   },
   "leadsPage": {
     "empty": "No open leads"
@@ -1200,5 +1195,16 @@
     "routeBody": "The error has been recorded. You can try again — the rest of the page still works.",
     "retry": "Try again",
     "reference": "Reference: {digest}"
+  },
+  "activity": {
+    "approvalApproved": "Approval granted",
+    "approvalRejected": "Approval rejected",
+    "approvalReviewed": "Reviewed and noted"
+  },
+  "notFound": {
+    "title": "This page does not exist.",
+    "body": "The address leads nowhere — most likely an old link or a typo. Your access and your data are unaffected.",
+    "toHome": "Go to the start page",
+    "toDashboard": "Go to the dashboard"
   }
 }

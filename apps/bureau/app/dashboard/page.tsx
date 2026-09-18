@@ -26,6 +26,7 @@ export default async function DashboardOverviewPage() {
   const tg = await getTranslations("greeting");
   const te = await getTranslations("empty");
   const ts = await getTranslations("sections");
+  const tas = await getTranslations("agentStatus");
 
   if (data.empty) {
     return (
@@ -121,7 +122,7 @@ export default async function DashboardOverviewPage() {
                     <p className="text-sm text-ink">{a.name}</p>
                     <p className="text-xs text-ink-muted">{a.role}</p>
                   </div>
-                  <span className="font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">{a.status}</span>
+                  <span className="font-mono text-label-dense uppercase tracking-[0.12em] text-ink-secondary">{tas(a.status)}</span>
                 </li>
               ))}
             </ul>

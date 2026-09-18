@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { Icon } from '@maxpromo/ui'
 import { INTEGRATIONS } from '@/lib/capabilities'
 
@@ -38,13 +39,15 @@ import { INTEGRATIONS } from '@/lib/capabilities'
  * scrollbar is present.
  */
 
-export function IntegrationMarquee({ label }: { label: string }) {
+export async function IntegrationMarquee({ label }: { label: string }) {
+  const t = await getTranslations('integrations')
+
   const set = (hidden: boolean) => (
     <ul className="mq-set" aria-hidden={hidden || undefined}>
       {INTEGRATIONS.map((tool) => (
         <li key={`${hidden ? 'b' : 'a'}-${tool.name}`} className="mq-item">
           <span className="mq-icon"><Icon name={tool.icon} size="xs" /></span>
-          {tool.name}
+          {tool.nameKey ? t(tool.nameKey) : tool.name}
         </li>
       ))}
     </ul>

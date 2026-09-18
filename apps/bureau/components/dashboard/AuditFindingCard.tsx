@@ -12,6 +12,7 @@ const PRIORITY_TONE_MAP = {
 
 export async function AuditFindingCard({ finding }: { finding: AuditFinding }) {
   const t = await getTranslations("impact");
+  const s = await getTranslations("status");
 
   return (
     <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
@@ -23,7 +24,7 @@ export async function AuditFindingCard({ finding }: { finding: AuditFinding }) {
           <h3 className="mt-1 font-semibold text-ink">{finding.title}</h3>
         </div>
         <span className={`font-mono text-label uppercase tracking-[0.12em] ${TONE_TEXT[PRIORITY_TONE_MAP[finding.priority]]}`}>
-          {finding.priority}
+          {s(finding.priority)}
         </span>
       </div>
       <p className="mt-2 text-sm text-ink-secondary">{finding.pain}</p>

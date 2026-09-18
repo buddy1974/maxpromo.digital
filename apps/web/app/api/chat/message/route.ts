@@ -67,17 +67,43 @@ export async function POST(req: NextRequest) {
 
     return res
   } catch (err) {
+    /**
+     * The response stays `503 chat_unavailable` — a visitor learns nothing
+     * useful from a provider's billing state, and the composer already says
+     * the truthful thing in their own language.
+     *
+     * What changed is the log. This branch recorded `{ status, type: err.name }`
+     * and nothing else, and `err.name` on an SDK error is the string "Error",
+     * so every provider failure logged identically:
+     *
+     *     [chat/message POST] provider failure { status: 400, type: 'Error' }
+     *
+     * A 400 that says "your credit balance is too low" and a 400 that says
+     * "messages: at least one message is required" are the same line. One is
+     * an account problem and one is a code bug, and telling them apart took a
+     * second endpoint with better logging and a production log dive. The
+     * provider's own message and `request_id` are the two things that identify
+     * the fault; they are not secrets, and the API key is never part of an
+     * error body.
+     */
     if (err instanceof Anthropic.APIError) {
       console.error('[chat/message POST] provider failure', {
-        status: err.status,
-        type: err.name,
+        stage,
+        status:    err.status,
+        type:      err.constructor?.name ?? 'APIError',
+        message:   err.message?.slice(0, 300),
+        requestId: err.requestID ?? null,
       })
       return NextResponse.json({ error: 'chat_unavailable' }, { status: 503 })
     }
     const reason = err instanceof Error && err.message.includes('is not set')
       ? 'configuration'
       : 'internal'
-    console.error('[chat/message POST] failed', { reason, stage })
+    console.error('[chat/message POST] failed', {
+      reason,
+      stage,
+      message: err instanceof Error ? err.message.slice(0, 300) : String(err).slice(0, 300),
+    })
     return NextResponse.json({ error: 'chat_unavailable' }, { status: 503 })
   }
 }

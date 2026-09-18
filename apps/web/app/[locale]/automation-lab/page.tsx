@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import AutomationCard from '@/components/AutomationCard'
-import Link from 'next/link'
+// The locale-aware Link: `next/link` sent every CTA on this page to an
+// unprefixed /contact, dropping the reader's language.
+import { Link } from '@/i18n/navigation'
 
 export async function generateMetadata({
   params,
@@ -59,8 +61,8 @@ function getCategories(locale: string): Category[] {
         {
           title: t(locale, 'KI-Kundensupport-Agent', 'Customer Support AI Agent'),
           description: t(locale,
-            'Beantwortet Anfragen rund um die Uhr mithilfe Ihrer Wissensdatenbank. Übernimmt Tier-1-Support, bearbeitet FAQs und eskaliert komplexe Fälle mit vollständigem Gesprächskontext.',
-            'Answers queries 24/7 using your knowledge base. Handles tier-1 support, processes FAQs, escalates complex issues with full conversation context.'),
+            'Bereitet Antworten auf eingehende Anfragen rund um die Uhr aus Ihrer Wissensdatenbank vor. Entwürfe für Tier-1-Support und FAQs gehen vor dem Versand über Ihre Freigabe; komplexe Fälle werden mit vollständigem Gesprächskontext eskaliert.',
+            'Prepares replies to inbound queries around the clock from your knowledge base. Tier-1 and FAQ drafts go through your approval before they are sent; complex cases escalate with full conversation context.'),
           tools: ['Claude AI', 'Zendesk', 'Slack', 'n8n'],
         },
         {
@@ -273,6 +275,17 @@ export default async function AutomationLabPage({
                 <AutomationCard key={a.title} {...a} locale={locale} />
               ))}
             </div>
+
+            {/* Every card names four tools, so this page prints 72 third-party
+                marks and said nothing about what naming them means. The
+                homepage has carried that sentence since the capability rail
+                shipped; this is the same sentence, not a second one written
+                for this page. */}
+            <p className="tool-note">
+              {t(locale,
+                'Genannt werden Werkzeuge, mit denen wir tatsächlich arbeiten. Das ist keine Partnerschaft und keine Zertifizierung.',
+                'These are tools we actually work with. It is not a partnership and not a certification.')}
+            </p>
           </div>
         </section>
       ))}

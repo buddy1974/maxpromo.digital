@@ -28,6 +28,13 @@
  * the change that introduced it.
  */
 
+/**
+ * The document typography for the three legal routes, carried by the
+ * component that uses it rather than by the global stylesheet that every
+ * page of the site downloads. Six classes, one consumer — this file.
+ */
+import './legal-section.css'
+
 /** Stable anchor from a heading, so a clause can be linked to directly. */
 export function legalAnchor(label: string): string {
   return label

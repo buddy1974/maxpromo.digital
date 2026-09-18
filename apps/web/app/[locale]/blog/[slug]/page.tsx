@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { WHATSAPP_NUMBER } from '@maxpromo/config'
 import { THIRD_PARTY } from '@/lib/third-party-brands'
 import { notFound } from 'next/navigation'
 import { getTranslations, getLocale } from 'next-intl/server'
@@ -117,7 +118,6 @@ const mdxComponents = {
 
   // Inline article CTA block, placed in MDX above "Continue reading"
   BlogArticleCTA: ({ locale: l = 'en' }: { locale?: string }) => {
-    const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '4915901234567'
     const msg = encodeURIComponent(
       l === 'de'
         ? 'Hallo, ich möchte Kontakt aufnehmen.'
@@ -140,11 +140,21 @@ const mdxComponents = {
           <Link href="/contact" className="btn btn-primary">
             {l === 'de' ? 'Kontakt aufnehmen →' : 'Contact us →'}
           </Link>
+          {/* The tint is a 12% green wash on a light surface, so it is very
+              nearly white. This carried `--brand-text-inverted` — white text —
+              which made the label all but invisible. It takes the ordinary
+              text colour, like any other control on a light surface.
+
+              The border was written `'1px solid ${...}'` in single quotes, so
+              the literal characters `${THIRD_PARTY.whatsappTint}` were sent to
+              CSS as a colour. The whole declaration was invalid and no border
+              drew at all; it is a real template literal now and uses the same
+              green at full strength so the edge is perceivable (WCAG 1.4.11). */}
           <a
-            href={`https://wa.me/${wa}?text=${msg}`}
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ fontFamily: 'var(--brand-font-mono)', fontWeight: 600, fontSize: 'var(--text-micro)', letterSpacing: '0.02em', background: THIRD_PARTY.whatsappTint, color: 'var(--brand-text-inverted)', border: '1px solid ${THIRD_PARTY.whatsappTint}', padding: '13px 24px', borderRadius: 'var(--radius-lg)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
+            style={{ fontFamily: 'var(--brand-font-mono)', fontWeight: 600, fontSize: 'var(--text-micro)', letterSpacing: '0.02em', background: THIRD_PARTY.whatsappTint, color: 'var(--brand-text)', border: `1px solid ${THIRD_PARTY.whatsapp}`, padding: '13px 24px', borderRadius: 'var(--radius-lg)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}
           >
             WhatsApp Maxpromo →
           </a>
@@ -206,9 +216,8 @@ export default async function BlogDetailPage({ params }: PageProps) {
     ...(post.keywords?.length ? { keywords: post.keywords.join(', ') } : {}),
   }
 
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '491234567890'
-  const whatsappMsg    = encodeURIComponent(t('whatsappMsg'))
-  const whatsappHref   = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`
+  const whatsappMsg  = encodeURIComponent(t('whatsappMsg'))
+  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMsg}`
 
   return (
     <>
@@ -408,12 +417,17 @@ export default async function BlogDetailPage({ params }: PageProps) {
             <h2 style={{ marginBottom: '1.75rem', marginTop: 0 }}>
               {t('whatsappTitle')}
             </h2>
+            {/* Black on the green, not white. The third-party module's own note
+                says so — "Black text on it measures 6.7:1" — and this carried
+                `--brand-text-inverted`, which is white and measures about
+                1.9:1 on #25D366. The colour was governed; the text token
+                paired with it was not the one it was governed for. */}
             <a
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               className="btn"
-              style={{ background: THIRD_PARTY.whatsapp, color: 'var(--brand-text-inverted)' }}
+              style={{ background: THIRD_PARTY.whatsapp, color: 'var(--brand-on-primary)' }}
             >
               {t('whatsappCta')}
             </a>

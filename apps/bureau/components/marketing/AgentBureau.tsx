@@ -24,7 +24,8 @@ const AGENTS: readonly { key: string; icon: IconName }[] = [
   { key: "a6", icon: "projects" },
   { key: "a7", icon: "documents" },
   { key: "a8", icon: "waiting" },
-  { key: "a9", icon: "governance" },
+  // No a9. See AgentSystemMap — "Governance-Agent" was a card for an agent
+  // this product does not ship.
 ];
 
 export async function AgentBureau() {

@@ -38,7 +38,11 @@ export default function LocaleNotFound() {
       >
         {'404'}
       </p>
-      <h1 style={{ color: 'var(--brand-text-inverted)', margin: '0 0 var(--space-3)' }}>
+      {/* `--brand-text-inverted` is near-white and this page sits on
+          `--brand-background`, which is white: the headline measured about
+          1.05:1 and could not be seen at all. Same class of fault as the
+          Work hero's step labels — an inverted token on a light surface. */}
+      <h1 style={{ color: 'var(--brand-text)', margin: '0 0 var(--space-3)' }}>
         {de ? 'Diese Seite gibt es nicht.' : 'This page does not exist.'}
       </h1>
       <p

@@ -45,6 +45,25 @@ export const BUSINESS = {
   website: 'maxpromo.digital',
 } as const
 
+/**
+ * The company's number in the form `wa.me` expects: country code first, digits
+ * only, no plus and no spaces.
+ *
+ * Derived from `BUSINESS.phone` rather than written out again, because it was
+ * written out again and the two copies were both wrong. The article pages read
+ * `process.env.NEXT_PUBLIC_WHATSAPP_NUMBER` with a hardcoded fallback, the
+ * variable was declared in no env file and set in no environment, and the two
+ * call sites did not even agree on their fallback: one said 4915901234567 and
+ * the other 491234567890. Both are placeholders. Both were live on
+ * maxpromo.digital, on every article, sending readers who pressed "WhatsApp
+ * Maxpromo" to a number that is not this company's.
+ *
+ * A contact destination is legal identity, not configuration. It belongs where
+ * the Impressum gets its number, so that the two cannot disagree — which is
+ * the same reason this module exists at all.
+ */
+export const WHATSAPP_NUMBER = BUSINESS.phone.replace(/\D/g, '')
+
 /** Required on every commercial surface (Kleinunternehmer § 19 UStG). Do not change. */
 export const UST_CLAUSE = {
   de: 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.',

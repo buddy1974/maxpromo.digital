@@ -19,7 +19,7 @@
  * through more than one surface.
  */
 
-export { BUSINESS, UST_CLAUSE } from './legal.ts'
+export { BUSINESS, UST_CLAUSE, WHATSAPP_NUMBER } from './legal.ts'
 
 export {
   DOMAIN_REGISTRY,

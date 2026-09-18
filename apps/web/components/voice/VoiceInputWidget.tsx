@@ -26,6 +26,7 @@
  */
 
 import { useRef, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { useVoiceInput } from '@/hooks/useVoiceInput'
 import { Icon } from '@maxpromo/ui'
 
@@ -53,6 +54,14 @@ export interface VoiceInputWidgetProps {
   onBlur?: React.FocusEventHandler<HTMLTextAreaElement>
   /** Allow direct typing in main textarea (always true; voice is additive) */
   disabled?: boolean
+  /**
+   * Mirrors the `*` the field label draws. The contact form marked its message
+   * field required and enforced it in `isValid`, but the control itself
+   * carried no `required` attribute — so the visual promise, the JS check and
+   * the HTML contract disagreed, and assistive technology was told the field
+   * was optional.
+   */
+  required?: boolean
 }
 
 // ── MicButton ────────────────────────────────────────────────────────────────
@@ -68,6 +77,7 @@ function MicButton({
   onStart: () => void
   onStop: () => void
 }) {
+  const t = useTranslations('voice')
   const holdRef = useRef(false)
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
@@ -95,7 +105,7 @@ function MicButton({
       <button
         type="button"
         disabled
-        title="Voice input not supported in this browser (use Chrome, Edge, or Safari)"
+        title={t('unsupported')}
         style={{
           width: '44px',
           height: '44px',
@@ -110,7 +120,7 @@ function MicButton({
           flexShrink: 0,
           touchAction: 'none',
         }}
-        aria-label="Voice input not supported"
+        aria-label={t('unsupportedShort')}
       >
         <MicIcon muted />
       </button>
@@ -124,7 +134,7 @@ function MicButton({
       onPointerUp={handlePointerUp}
       onPointerLeave={handlePointerLeave}
       onPointerCancel={handlePointerUp}
-      title={listening ? 'Release to stop' : 'Press and hold to speak'}
+      title={listening ? t('releaseToStop') : t('holdToSpeak')}
       style={{
         width: '48px',
         height: '48px',
@@ -147,7 +157,7 @@ function MicButton({
         transition: 'background var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease)',
         animation: listening ? 'voicePulse 1.2s ease-in-out infinite' : 'none',
       }}
-      aria-label={listening ? 'Recording, release to stop' : 'Press and hold to record'}
+      aria-label={listening ? t('recordingRelease') : t('holdToRecord')}
       aria-pressed={listening}
     >
       <MicIcon active={listening} />
@@ -190,7 +200,9 @@ export default function VoiceInputWidget({
   onFocus,
   onBlur,
   disabled = false,
+  required = false,
 }: VoiceInputWidgetProps) {
+  const t = useTranslations('voice')
   const voice = useVoiceInput(lang)
   const panelOpen = voice.phase !== 'idle' && voice.phase !== 'listening'
 
@@ -254,6 +266,7 @@ export default function VoiceInputWidget({
       <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
         <textarea
           className="textarea"
+          required={required}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           rows={rows}
@@ -308,7 +321,7 @@ export default function VoiceInputWidget({
               fontStyle: voice.interimTranscript ? 'normal' : 'italic',
             }}
           >
-            {voice.interimTranscript || 'Listening… speak now'}
+            {voice.interimTranscript || t('listening')}
           </p>
         </div>
       )}
@@ -335,22 +348,22 @@ export default function VoiceInputWidget({
             }}
           >
             <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-              Voice Transcript
+              {t('panelTitle')}
             </span>
             <button
               type="button"
               onClick={voice.dismiss}
               style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontFamily: mono, fontSize: 'var(--text-label)', padding: '2px 6px' }}
-              aria-label="Dismiss voice panel"
+              aria-label={t('dismissPanel')}
             >
-              <Icon name="close" size="sm" label="Close" />
+              <Icon name="close" size="sm" />
             </button>
           </div>
 
           {/* Raw transcript, editable */}
           <div style={{ padding: '14px' }}>
             <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 'var(--space-2)' }}>
-              Raw transcript, edit if needed
+              {t('rawLabel')}
             </p>
             {/* Same reason as the field above: an inline 13px here would zoom
                 the page on focus and stay zoomed. The class carries the size,
@@ -366,7 +379,7 @@ export default function VoiceInputWidget({
                 fontFamily: mono,
                 resize: 'vertical',
               }}
-              placeholder="Your spoken words appear here…"
+              placeholder={t('rawPlaceholder')}
             />
           </div>
 
@@ -434,14 +447,14 @@ export default function VoiceInputWidget({
                   cursor: !voice.editedRaw.trim() ? 'not-allowed' : 'pointer',
                 }}
               >
-                <Icon name="lab" size="sm" /> Enhance with AI
+                <Icon name="lab" size="sm" /> {t('enhance')}
               </button>
             )}
 
             {/* Enhancing spinner */}
             {voice.phase === 'enhancing' && (
               <span style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-primary-text)', letterSpacing: '0.08em' }}>
-                <Icon name="running" size="xs" /> Enhancing…
+                <Icon name="running" size="xs" /> {t('enhancing')}
               </span>
             )}
 
@@ -452,7 +465,7 @@ export default function VoiceInputWidget({
                 onClick={() => voice.approveEnhanced(onChange)}
                 style={{ ...btnBase, background: 'var(--brand-primary)', color: 'var(--brand-text)' }}
               >
-                <Icon name="check" size="sm" /> Use enhanced
+                <Icon name="check" size="sm" /> {t('useEnhanced')}
               </button>
             )}
 
@@ -462,7 +475,7 @@ export default function VoiceInputWidget({
               onClick={voice.dismiss}
               style={{ ...btnBase, background: 'none', color: 'var(--brand-text-muted)', marginLeft: 'auto' }}
             >
-              Discard
+              {t('discard')}
             </button>
           </div>
 

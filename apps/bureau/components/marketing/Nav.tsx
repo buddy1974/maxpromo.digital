@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import LocaleSwitch from "@/components/LocaleSwitch";
+import { resolveLocale } from "@/lib/i18n/locale";
 
 /**
  * The public navigation.
@@ -17,6 +18,10 @@ import LocaleSwitch from "@/components/LocaleSwitch";
  */
 export async function Nav() {
   const t = await getTranslations("nav");
+  // The hub link was hardcoded to /de, so an English reader of the Bureau
+  // landing was sent to the German Maxpromo site. The hub carries both
+  // locales in its path; this one follows the reader.
+  const locale = await resolveLocale();
   const tc = await getTranslations("common");
 
   return (
@@ -45,7 +50,7 @@ export async function Nav() {
             {t("process")}
           </a>
           <a
-            href="https://www.maxpromo.digital/de"
+            href={`https://www.maxpromo.digital/${locale}`}
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-ink"

@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 export default async function LeadsPage() {
   const t = await getTranslations("leadsPage");
   const ts = await getTranslations("sections");
+  const s = await getTranslations("status");
   const leads = MOCK_CONTACTS.filter((c) => c.status === "new" || c.status === "nurturing");
 
   return (
@@ -20,7 +21,7 @@ export default async function LeadsPage() {
                 <p className="text-xs text-ink-muted">{c.companyName ?? "—"} · {c.role ?? ""}</p>
               </div>
               <span className="font-mono text-label uppercase tracking-[0.12em] text-ink-muted">
-                {c.status}
+                {s(c.status)}
               </span>
             </li>
           ))}

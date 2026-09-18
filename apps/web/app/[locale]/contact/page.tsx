@@ -122,6 +122,17 @@ export default function ContactPage() {
   const capability = CAPABILITIES.find((c) => c.id === searchParams.get('capability'))
   const isDemoRequest = searchParams.get('intent') === 'demo'
 
+  /* ?automation=<name>  from a "Request this" card on /automation-lab.
+     Eighteen cards built this parameter and nothing here read it, so every one
+     of those requests arrived indistinguishable from a blank enquiry — the
+     visitor had told us exactly which automation they wanted and the form
+     dropped it on the floor. It travels the same way `capability` does, in
+     `system`, which the API already puts in the subject line and the lead
+     source. Free text from a URL, so it is length-capped and never trusted as
+     an identifier; it is shown back to the visitor rather than used to look
+     anything up. */
+  const automation = (searchParams.get('automation') ?? '').trim().slice(0, 80)
+
   const [form, setForm] = useState<FormData>(() => {
     /* The product systems keep priority: a visitor who arrived from a product
        domain is asking about that product, whatever else the URL carries.
@@ -131,6 +142,7 @@ export default function ContactPage() {
     const system = presetSystem
       || (isDemoRequest ? 'demo-request' : '')
       || (capability ? `capability/${capability.id}` : '')
+      || (automation ? `automation/${automation}` : '')
     return {
       ...initialForm,
       system,
@@ -241,6 +253,12 @@ export default function ContactPage() {
                     {tCap(`${capability.key}Name`)}
                   </p>
                 )}
+                {!capability && automation && (
+                  <p className="contact-origin">
+                    <span className="contact-origin-label">{t('originLabel')}</span>
+                    {automation}
+                  </p>
+                )}
               </>
             )}
           </div>
@@ -341,6 +359,7 @@ export default function ContactPage() {
 
               <Field label={t('formMessage')} required>
                 <VoiceInputWidget
+                  required
                   value={form.message}
                   onChange={(value) => update('message', value)}
                   rows={7}

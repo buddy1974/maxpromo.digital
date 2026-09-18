@@ -41,7 +41,10 @@ const SPECIALISTS: readonly { icon: IconName; key: string }[] = [
   { icon: "projects", key: "n6" },
   { icon: "documents", key: "n7" },
   { icon: "waiting", key: "n8" },
-  { icon: "governance", key: "n9" },
+  // There is no ninth. `n9` was "Governance", which is a product module
+  // (/dashboard/ai-governance) and not an agent — the registry in
+  // lib/registry/agents.ts holds one Chief of Staff and eight
+  // specialists, and this ring is the public drawing of that roster.
 ];
 
 const CX = 480;

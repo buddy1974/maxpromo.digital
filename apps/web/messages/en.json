@@ -722,5 +722,25 @@
     "scrollToLatest": "Jump to latest message",
     "youSaid": "You",
     "maxSaid": "Max"
+  },
+  "voice": {
+    "unsupported": "Voice input is not supported in this browser (use Chrome, Edge or Safari)",
+    "unsupportedShort": "Voice input not supported",
+    "holdToSpeak": "Press and hold to speak",
+    "releaseToStop": "Release to stop",
+    "holdToRecord": "Press and hold to record",
+    "recordingRelease": "Recording — release to stop",
+    "listening": "Listening … speak now",
+    "panelTitle": "Voice transcript",
+    "dismissPanel": "Dismiss voice panel",
+    "rawLabel": "Raw transcript, edit if needed",
+    "rawPlaceholder": "Your spoken words appear here …",
+    "enhance": "Enhance with AI",
+    "enhancing": "Enhancing …",
+    "useEnhanced": "Use enhanced text",
+    "discard": "Discard"
+  },
+  "integrations": {
+    "webForms": "Web forms"
   }
 }

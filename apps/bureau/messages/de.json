@@ -110,15 +110,12 @@
     "a7Approval": "Externer Versand",
     "a8Name": "Follow-Up-Agent",
     "a8Fn": "Wartende Kunden",
-    "a8Approval": "Jede externe Nachricht",
-    "a9Name": "Governance-Agent",
-    "a9Fn": "KI-Risiken & Policy",
-    "a9Approval": "Policy-Änderungen"
+    "a8Approval": "Jede externe Nachricht"
   },
   "systemMap": {
-    "a11y": "Chief of Staff koordiniert neun spezialisierte Agenten",
-    "caption": "Eine Koordinationsebene. Neun Spezialisten. Jede Aktion nach außen über menschliche Freigabe.",
-    "mobileNote": "koordiniert 9 spezialisierte Agenten — jede Aktion nach außen über menschliche Freigabe.",
+    "a11y": "Chief of Staff koordiniert acht spezialisierte Agenten",
+    "caption": "Eine Koordinationsebene. Acht Spezialisten. Jede Aktion nach außen über menschliche Freigabe.",
+    "mobileNote": "koordiniert 8 spezialisierte Agenten — jede Aktion nach außen über menschliche Freigabe.",
     "n1": "Lead",
     "n2": "Research",
     "n3": "CRM",
@@ -126,8 +123,7 @@
     "n5": "Content",
     "n6": "Operations",
     "n7": "Dokumente",
-    "n8": "Follow-Up",
-    "n9": "Governance"
+    "n8": "Follow-Up"
   },
   "lifecycle": {
     "eyebrow": "Sichere Aktions-Kette",
@@ -279,7 +275,9 @@
     "low": "Niedrig",
     "critical": "Kritisch",
     "executed": "Ausgeführt",
-    "expired": "Abgelaufen"
+    "expired": "Abgelaufen",
+    "nurturing": "In Pflege",
+    "new": "Neu"
   },
   "empty": {
     "seedHint": "Führen Sie den Demo-Seed aus: npm run db:seed:demo",
@@ -782,11 +780,7 @@
     "approve": "Freigeben (Vorschau)",
     "reject": "Vorschlag ablehnen",
     "markReviewed": "Als geprüft markieren",
-    "placeholder": "Platzhalter — Freigabe-Logik folgt in einem späteren Sprint",
-    "approveShort": "Freigeben",
-    "rejectShort": "Ablehnen",
-    "editBeforeApproval": "Vor Freigabe bearbeiten",
-    "placeholderShort": "Platzhalter"
+    "openInApprovalDesk": "Im Freigabe-Center öffnen"
   },
   "impact": {
     "label": "Wirkung",
@@ -861,7 +855,7 @@
     "error": "Fehler",
     "coming_soon": "Bald",
     "securityHeading": "Sicherheit & Kontrolle",
-    "securityBody": "Supervised Mode ist aktiv. Agenten führen keine Aktionen nach außen ohne Freigabe aus. Konfiguration von Rollen, Berechtigungen und Audit-Aufbewahrung folgt in einem späteren Sprint."
+    "securityBody": "Supervised Mode ist aktiv. Agenten führen keine Aktionen nach außen ohne Freigabe aus. Rollen, Berechtigungen und die Aufbewahrung des Audit-Protokolls sind derzeit fest vorgegeben und in dieser Ansicht nicht konfigurierbar."
   },
   "researchPage": {
     "empty": "Noch keine Recherche",
@@ -1050,11 +1044,12 @@
   },
   "agentStatus": {
     "active": "Aktiv",
-    "proposing": "Vorschlag bereit",
+    "proposing": "Schlägt vor",
     "idle": "Bereit",
     "paused": "Pausiert",
     "error": "Fehler",
-    "offline": "Offline"
+    "offline": "Offline",
+    "working": "Arbeitet"
   },
   "leadsPage": {
     "empty": "Keine offenen Leads"
@@ -1200,5 +1195,16 @@
     "routeBody": "Der Fehler wurde aufgezeichnet. Sie können es erneut versuchen — der Rest der Seite funktioniert weiterhin.",
     "retry": "Erneut versuchen",
     "reference": "Referenz: {digest}"
+  },
+  "activity": {
+    "approvalApproved": "Freigabe erteilt",
+    "approvalRejected": "Freigabe abgelehnt",
+    "approvalReviewed": "Geprüft und vermerkt"
+  },
+  "notFound": {
+    "title": "Diese Seite gibt es nicht.",
+    "body": "Die Adresse führt ins Leere — möglicherweise ein alter Link oder ein Tippfehler. Ihr Zugang und Ihre Daten sind davon nicht berührt.",
+    "toHome": "Zur Startseite",
+    "toDashboard": "Zum Dashboard"
   }
 }
