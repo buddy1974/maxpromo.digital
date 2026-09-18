@@ -139,7 +139,6 @@ export default async function HomePage() {
   const tCap   = await getTranslations('capabilities')
   const tMeth  = await getTranslations('home.method')
   const tEvid  = await getTranslations('home.evidence')
-  const tProof = await getTranslations('home.proof')
   const tTools = await getTranslations('home.tools')
   const tFound = await getTranslations('home.founder')
   const tRes   = await getTranslations('home.resource')
@@ -169,6 +168,16 @@ export default async function HomePage() {
      business before the technology, and a cold visitor cannot tell from those
      six words what was happening before. A third number to square off a row is
      the thing this section is least allowed to do.
+
+     Dropping it meant deleting the key, not skipping it. These figures were in
+     a `home.proof` group of their own, and next-intl serialises the whole
+     message tree into the document — so the first attempt, which simply stopped
+     rendering p2, left "94 % der Rechnungen ohne manuellen Eingriff verarbeitet"
+     sitting in the page source of every visit. Found by reading what production
+     actually served, not the component. The two live figures now sit in
+     `home.evidence` with the rest of this section's copy, and the group that
+     held the withdrawn claim, along with a stale title still promising three
+     systems, is gone.
 
      Proof before symmetry. The grid sizes itself to what it is given. */
   const PROOF = ['p1', 'p3'] as const
@@ -307,9 +316,9 @@ export default async function HomePage() {
           <ProofMetrics
             metrics={PROOF.map((id): ProofMetric => ({
               id,
-              value: tProof(`${id}Value`),
-              label: tProof(`${id}Label`),
-              source: tProof(`${id}Source`),
+              value: tEvid(`${id}Value`),
+              label: tEvid(`${id}Label`),
+              source: tEvid(`${id}Source`),
             }))}
           />
         </div>

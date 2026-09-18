@@ -132,7 +132,13 @@
       "eyebrow": "Real work",
       "title": "What changes when the system starts doing its share?",
       "lede": "Each figure is one project, measured after its system went live. Client names are held back under the agreements we work under.",
-      "viewAll": "Read the case studies"
+      "viewAll": "Read the case studies",
+      "p1Value": "78%",
+      "p1Label": "less time spent on manual data processing",
+      "p1Source": "Operations · 6 weeks",
+      "p3Value": "3 days → 4h",
+      "p3Label": "invoice cycle, start to finish",
+      "p3Source": "Logistics · 8 weeks"
     },
     "tools": {
       "eyebrow": "The tools aren’t the point",
@@ -186,21 +192,6 @@
       "body": "You don’t need to know what system you need. Tell us what’s happening now. We’ll start there.",
       "cta": "Tell us what’s getting in the way",
       "emailLabel": "Or write to us"
-    },
-    "proof": {
-      "eyebrow": "Delivered work",
-      "title": "Three systems, and what changed.",
-      "lede": "Each figure is one project, measured after its system went live. Client names are withheld under NDA. The work itself is documented in the case studies.",
-      "p1Value": "78%",
-      "p1Label": "less time spent on manual data processing",
-      "p1Source": "Operations · 6 weeks",
-      "p2Value": "94%",
-      "p2Label": "of invoices processed without human intervention",
-      "p2Source": "Professional services · 4 weeks",
-      "p3Value": "3 days → 4h",
-      "p3Label": "invoice cycle, start to finish",
-      "p3Source": "Logistics · 8 weeks",
-      "viewAll": "Read the case studies →"
     }
   },
   "newsletter": {

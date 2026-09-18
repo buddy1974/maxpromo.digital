@@ -132,7 +132,13 @@
       "eyebrow": "Echte Arbeit",
       "title": "Was ändert sich, wenn das System seinen Teil übernimmt?",
       "lede": "Jede Zahl gehört zu einem Projekt und wurde gemessen, nachdem das System live war. Kundennamen nennen wir nicht, so sind die Vereinbarungen.",
-      "viewAll": "Fallstudien lesen"
+      "viewAll": "Fallstudien lesen",
+      "p1Value": "78 %",
+      "p1Label": "weniger Zeit für manuelle Datenverarbeitung",
+      "p1Source": "Betriebsmanagement · 6 Wochen",
+      "p3Value": "3 Tage → 4h",
+      "p3Label": "Rechnungslauf, von Anfang bis Ende",
+      "p3Source": "Logistik · 8 Wochen"
     },
     "tools": {
       "eyebrow": "Die Werkzeuge sind nicht der Punkt",
@@ -186,21 +192,6 @@
       "body": "Sie müssen nicht wissen, welches System Sie brauchen. Sagen Sie uns, was gerade passiert. Da fangen wir an.",
       "cta": "Sagen Sie uns, was im Weg steht",
       "emailLabel": "Oder schreiben Sie uns"
-    },
-    "proof": {
-      "eyebrow": "Umgesetzte Projekte",
-      "title": "Drei Systeme, und was sich danach geändert hat.",
-      "lede": "Jede Zahl stammt aus einem Projekt, gemessen nach dem Livegang. Kundennamen bleiben unter NDA vertraulich. Die Arbeit selbst ist in den Fallstudien dokumentiert.",
-      "p1Value": "78 %",
-      "p1Label": "weniger Zeit für manuelle Datenverarbeitung",
-      "p1Source": "Betriebsmanagement · 6 Wochen",
-      "p2Value": "94 %",
-      "p2Label": "der Rechnungen ohne manuellen Eingriff verarbeitet",
-      "p2Source": "Beratung · 4 Wochen",
-      "p3Value": "3 Tage → 4h",
-      "p3Label": "Rechnungslauf, von Anfang bis Ende",
-      "p3Source": "Logistik · 8 Wochen",
-      "viewAll": "Fallstudien lesen →"
     }
   },
   "newsletter": {
