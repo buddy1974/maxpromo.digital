@@ -340,12 +340,16 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
    without hiding half the company's name. */
 /* The wordmark is a link to the homepage and it was 22px tall — the last
    control on the public chrome still under the 44px floor the rest of this
-   pass raised. The text stays the size it is; the target grows around it,
-   which is why this is align-items rather than padding. */
+   pass raised. The text stays the size it is; the target grows around it.
+   The height comes from line-height and NOT from a flex box. The first
+   attempt used `display: inline-flex; align-items: center`, which shipped:
+   the bar is a flex row, so the link computes to `display: flex`, the
+   "Digital" span becomes a flex item, and a flex item's leading whitespace
+   is dropped. The wordmark read MAXPROMODIGITAL in production. Inline flow
+   inside the link is what keeps the space, so inline flow is what it gets. */
 .site-nav-logo {
-  display: inline-flex;
-  align-items: center;
   min-height: 44px;
+  line-height: 44px;
   font-size: var(--text-micro);
   font-weight: 600;
   letter-spacing: 0.2em;
