@@ -32,6 +32,17 @@ Examples:
 
 ---
 
+## While a scene does not exist yet
+
+This document says which images must exist. What to do until they do is the
+**Placeholders** rule in `docs/governance/standards.md`, and it is not
+optional: the slot is built to its final container, aspect ratio and
+responsive behaviour, and carries a restrained branded pending state until the
+real asset is supplied. The area is never removed, collapsed, filled with
+stock photography or redesigned around the absence.
+
+---
+
 ## Per-Product Scene Inventory
 
 Required scenes per product. These are **production targets**, not

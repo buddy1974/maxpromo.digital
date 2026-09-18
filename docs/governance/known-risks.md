@@ -14,7 +14,13 @@ those documents defines them.
 | `apps/web/app/api/os/send-invoice/route.ts` | 17 | no |
 | `apps/web/app/api/os/send-angebot/route.ts` | 17 | no |
 | `apps/web/app/api/newsletter/subscribe/route.ts` | 4 | no |
-| `apps/web/lib/documents/printCss.ts` | 1 | no |
+
+`apps/web/lib/documents/printCss.ts` was named in the first version of this
+entry and does not belong. It is injected into a page in the browser through a
+`<style>` element, where custom properties resolve normally, and
+`check-token-inputs.mjs` already documents that exclusion with its reason. The
+error was mine: I matched on the string `var(--` without asking where the bytes
+end up, which is the same shortcut this risk is about.
 
 A custom property with no declaration and no fallback makes the declaration
 invalid at computed-value time, so the property falls back to inherited or
@@ -29,22 +35,49 @@ is required on and the ones a customer judges the company by. Nobody has
 reported it, which means either the fallbacks happen to look acceptable or the
 damage has not been noticed.
 
-**Why it happened.** The token discipline is correct and the build enforces it
-for the application. These files are not the application: they generate
-documents that are rendered somewhere with no stylesheet. The rule "no
-hardcoded colours" is right for a component and wrong for an email, and
-`check:tokens` cannot tell the difference because both are TypeScript files
-containing colour.
+**Why it happened, and this is the more serious half.** The rule already
+exists and is already written down. `docs/governance/standards.md` states that
+any surface which cannot resolve a custom property, naming email and PDF,
+"reads the TypeScript mirror instead, and `check:token-inputs` fails on a
+`var()` that travels there".
 
-**What would fix it.** Resolve tokens to literal values at build time for
-generated documents, the way the newsletter email already does for some of its
-colours via `token.surface` and `token.primary` from `@maxpromo/design-tokens`.
-That import is already present in the newsletter route and is the pattern the
-other three should follow. The token audit would then need to accept resolved
-literals in these specific files, which is a rule change and needs a decision.
+The gate is real and it works. It just does not look here. Its list of
+travelling surfaces is two entries matched by filename:
 
-**Not fixed here.** Needs a code phase and Marcel's approval, and the audit
-rule change is an architecture decision.
+```js
+const NO_CUSTOM_PROPERTIES = [
+  { file: /lib[\/]email\.ts$/,                 why: 'transactional email markup' },
+  { file: /lib[\/]documents[\/]emailHtml\.ts$/, why: 'invoice and quotation email markup' },
+]
+```
+
+Both of those files are clean today, because both are where the defect was
+found the first time. The list was pinned to the two known offenders rather
+than to the property that defines the class, which is "this string is rendered
+somewhere without a stylesheet". When the same markup was later written inside
+three API route handlers, the gate examined them zero times and reported clean.
+
+That is ADR-0004's failure mode wearing a different coat. The check does not
+pass silently because it found nothing; it passes because it looked only where
+the bug had already been fixed. The standards document meanwhile describes the
+general rule, so the documentation states a guarantee the tooling does not
+provide.
+
+**What would fix it, in two parts.**
+
+The defect: use the TypeScript mirror. The newsletter route already imports
+`token` from `@maxpromo/design-tokens` and uses `token.surface` and
+`token.primary` correctly in the same file where it also writes four `var()`
+calls, so the right pattern is present beside the wrong one. The two document
+routes follow it.
+
+The gate: the allowlist should describe the class rather than enumerate the
+known members. Any file whose output is a string of HTML or CSS sent outside
+the browser belongs in it. Widening it will surface the three files above and
+possibly others, which is the point.
+
+**Not fixed here.** The code change needs a code phase and Marcel's approval,
+and widening a gate's scope is an architecture decision that needs an ADR.
 
 ## RESOLVED 2026-09-17 — the hub's CSS budget, resolved by moving the back office out of the public payload
 

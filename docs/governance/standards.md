@@ -194,7 +194,11 @@ layout, not to hide a page.
 
 **Components.** A component every page on a surface must wear lives in that
 surface's layout, never inside one page's engine. A component renders nothing
-rather than a placeholder when its data is absent.
+rather than an empty shell when its **data** is absent: a list with no items,
+a metric with no figure, a section with nothing to say. That rule is about
+data, and it does not extend to an **asset that is coming**. See *Placeholders*
+below, which governs the other case and takes precedence where the two could
+both be read to apply.
 
 **Styling.** Inline style objects are the platform's convention for one-off
 composition; anything reused is a class or a component. No colour, size,
@@ -219,6 +223,42 @@ company in a title is a per-domain decision the registry records, not a default.
 slot states why. `check:brands` classifies each KEEP / REPLACE / CREATE / REMOVE
 and prints the counts, so the asset backlog is a number in a report rather than
 something to remember.
+
+**Placeholders.** A placeholder is not a missing design. It is a reserved
+position for an asset that has been decided on and not yet supplied, and it
+survives implementation.
+
+A missing final asset is never permission to remove the visual area, collapse
+the layout, substitute stock photography, generate a person, generate generic
+artwork, or redesign the section around the absence. The container, its aspect
+ratio, its responsive behaviour and the composition around it are built to
+their final specification, and the real asset is later dropped into the slot
+without a second layout pass. That is the whole point: a slot that has to be
+redesigned when the photograph arrives was not a slot.
+
+The placeholder state is restrained and branded, reuses the same box as the
+real asset, and says what is coming in plain words that a visitor could read
+without embarrassment: PHOTO COMING, SYSTEM SCREENSHOT, WORKFLOW IMAGE,
+CASE STUDY IMAGE, VIDEO THUMBNAIL. Never a developer filename, a TODO, a
+dimension string or an implementation note. Every placeholder is also
+identifiable in source so the asset backlog can be counted.
+
+Three categories carry their own constraint:
+
+- **Founder imagery.** A real photograph of Marcel or the reserved slot. Never
+  a generated likeness, never a stock person. The slot stays until he supplies
+  the photograph.
+- **Project and work imagery.** Real screenshots, real interfaces, real
+  workflow diagrams, controlled product captures. A client system or a client
+  result is never fabricated, and this is the image half of G8.
+- **Industry imagery.** Wait for approved imagery. A generic stock photograph
+  added to stop a page looking incomplete makes it look like every other
+  agency page, which is the specific outcome the design system exists to avoid.
+
+The reference implementation is the homepage founder slot,
+`components/home/FounderNote.tsx`: the pending state carries the same
+`.founder-photo` class as the real image, so it holds the same 4:5 box, and
+`public/images/homepage/founder.jpg` appearing on disk is the entire migration.
 
 **Testing.** There is no unit-test suite, and this is stated rather than
 implied. What exists instead: eleven merge gates, five report-only audits, two
