@@ -47,6 +47,31 @@ will catch that growing further is now in place.
 Decision and reasoning: `docs/adr/decision-log.md`, rules:
 `docs/governance/standards.md`.
 
+### Two defects the gates could not have caught, found by reading production
+
+Both shipped, both were found in the live visual review, both are fixed and
+redeployed. Recording them because the lesson is the same one twice: a gate
+reads what the code says, and neither of these was visible there.
+
+**The withdrawn 94% figure was still in every page's payload.** The evidence
+section was cut to two figures by not rendering the third. next-intl
+serialises the whole message tree into the document, so the withdrawn claim
+was still in the page source of every homepage visit. Not rendering a key is
+not removing it. The two live figures moved into `home.evidence` and the
+`home.proof` group — which also held a stale title still promising three
+systems — is deleted. The same figure remains on the Case Studies page, where
+it sits inside a narrative that says what was happening before; whether it
+goes from there too is Marcel's decision.
+
+**The wordmark read MAXPROMODIGITAL.** Raising it to the 44px target floor
+used `display: inline-flex`. The navigation bar is a flex row, so the link
+computed to `display: flex`, the "Digital" span became a flex item, and a flex
+item's leading whitespace is dropped — the company name lost its space on
+every page of the public site. The height now comes from `line-height`, which
+leaves the inside of the link in inline flow. A property that changes a box's
+formatting context changes the layout of its children, and this box had two
+children whose relationship was a single space.
+
 ## 2026-09-18 — forensic remediation: fourteen production defects
 
 A browser forensic pass over live production produced a defect ledger. Every
