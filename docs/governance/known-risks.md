@@ -1,5 +1,51 @@
 # Known Risks — Maxpromo Platform
 
+## OPEN 2026-09-18 — client-facing documents reference design tokens that cannot resolve
+
+Found while researching the acquisition architecture, not while looking for it.
+Recorded here rather than fixed, because that phase changed no production code.
+
+**What is wrong.** The generated HTML for the invoice email, the quotation
+email and the newsletter welcome email uses CSS custom properties, and none of
+those documents defines them.
+
+| File | `var(--…)` uses | defines them |
+|---|---|---|
+| `apps/web/app/api/os/send-invoice/route.ts` | 17 | no |
+| `apps/web/app/api/os/send-angebot/route.ts` | 17 | no |
+| `apps/web/app/api/newsletter/subscribe/route.ts` | 4 | no |
+| `apps/web/lib/documents/printCss.ts` | 1 | no |
+
+A custom property with no declaration and no fallback makes the declaration
+invalid at computed-value time, so the property falls back to inherited or
+initial. Email clients additionally strip or ignore custom properties
+altogether. Borders drawn with `var(--brand-border)` may not appear, text
+intended as `var(--brand-text-secondary)` renders as the client's default, and
+an inverted surface may render with no background at all.
+
+**Why it matters more than it looks.** Two of the four are **invoices and
+quotations sent to real clients**. These are the documents the §19 UStG clause
+is required on and the ones a customer judges the company by. Nobody has
+reported it, which means either the fallbacks happen to look acceptable or the
+damage has not been noticed.
+
+**Why it happened.** The token discipline is correct and the build enforces it
+for the application. These files are not the application: they generate
+documents that are rendered somewhere with no stylesheet. The rule "no
+hardcoded colours" is right for a component and wrong for an email, and
+`check:tokens` cannot tell the difference because both are TypeScript files
+containing colour.
+
+**What would fix it.** Resolve tokens to literal values at build time for
+generated documents, the way the newsletter email already does for some of its
+colours via `token.surface` and `token.primary` from `@maxpromo/design-tokens`.
+That import is already present in the newsletter route and is the pattern the
+other three should follow. The token audit would then need to accept resolved
+literals in these specific files, which is a rule change and needs a decision.
+
+**Not fixed here.** Needs a code phase and Marcel's approval, and the audit
+rule change is an architecture decision.
+
 ## RESOLVED 2026-09-17 — the hub's CSS budget, resolved by moving the back office out of the public payload
 
 The budget was **not raised**. 80 KB remains authoritative and the measurement

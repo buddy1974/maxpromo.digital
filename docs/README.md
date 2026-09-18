@@ -11,6 +11,7 @@ these documents; none keeps its own copy.
 | `deployment/` | Vercel projects, environments, verification runbooks. |
 | `brand/` | The design system: tokens, typography, accent rules, writing voice. |
 | `openclaw/` | Company operating memory and how OpenClaw governs the platform. |
+| `research/` | Market and competitor research. Findings and proposals, not decisions. A document here describes what was observed outside the company; nothing in it is committed until it appears in `adr/` or the roadmap. |
 | `history/` | Superseded documents, kept because decisions are only legible with their history. Nothing here is current. |
 
 ## Where to look first
@@ -19,6 +20,7 @@ these documents; none keeps its own copy.
 - **Making a change?** `governance/standards.md`
 - **Locked out of Agent Bureau?** `deployment/agent-bureau-owner-access.md`
 - **Wondering why something is the way it is?** `adr/`
+- **Looking at what competitors do?** `research/competitive-intelligence-2026.md`
 - **Writing copy or building UI?** `brand/`
 
 ## The rule
