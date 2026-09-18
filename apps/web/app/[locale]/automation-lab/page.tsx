@@ -264,7 +264,15 @@ export default async function AutomationLabPage({
             <p style={{ ...mono, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '10px' }}>
               {`// ${cat.heading}`}
             </p>
-            <h2 style={{ marginBottom: 'var(--space-6)', paddingBottom: 'var(--space-4)', borderBottom: '2px solid var(--brand-primary-edge)', display: 'inline-block' }}>
+            {/* `max-width: 100%` is load-bearing. The rule is inline-block so the
+                accent underline stops at the end of the words rather than running
+                the width of the column — and an inline-block sizes to its content's
+                max-content width, so `overflow-wrap: break-word` from the base
+                heading rule never gets a narrow enough line box to act on. At 320px
+                "Kommunikationsabläufe" measured 294px in a 305px viewport and
+                pushed the page 10px sideways. English breaks at the space and fits,
+                which is why this only appeared in German. */}
+            <h2 style={{ marginBottom: 'var(--space-6)', paddingBottom: 'var(--space-4)', borderBottom: '2px solid var(--brand-primary-edge)', display: 'inline-block', maxWidth: '100%' }}>
               {cat.heading}
             </h2>
             <div
