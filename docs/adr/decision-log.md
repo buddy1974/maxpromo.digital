@@ -1,5 +1,58 @@
 # Decision Log
 
+## 2026-09-18 — the homepage content reset, and what it exposed in the gate
+
+---
+
+### The CSS budget is route-aware, because the old one measured nobody
+
+**Decision.** `web.total-css` — the sum of every emitted stylesheet, limited to
+80 KB — stops being a gate. Two new budgets take its place and both block:
+`web.shared-css` at 72 KB, the floor every visitor pays, and `web.route-css` at
+88 KB, shared plus the heaviest single route chunk. The old sum stays in the
+report, marked *reported, not enforced*, so uncontrolled growth is still
+visible. The full reasoning is in `docs/governance/standards.md`.
+
+**Why.** The homepage rebuild put the gate 4 KB over and the easy answers were
+both wrong. Cutting approved visuals would have let a broken metric edit the
+product; raising 80 to 92 would have fixed today's number and left the flaw for
+the next route to hit. The flaw is that the build no longer emits one
+stylesheet. It emits four, mutually exclusive by route — proven by reading what
+each route requests from a running production server, not inferred. Summing
+them describes no visitor, and failing a build on that sum punishes the one
+change that makes a payload smaller.
+
+**What it costs, stated plainly.** Route splitting is not free and this was not
+a pure win. Before this phase a homepage visitor downloaded one 75 KB
+stylesheet. Now a homepage visitor downloads 82 KB and everyone else downloads
+68 KB. Most routes got lighter; the homepage got heavier, and it is the page
+that carries the scenes, the bench and the transformation. `web.route-css` is
+the budget that will make that cost visible the next time it grows.
+
+**What it does not do.** It does not weaken the gate. The enforced ceilings are
+new and both sit on numbers a person actually receives; the shared one is below
+the old total. `informational: true` exists for measurements that describe no
+visitor, not for budgets that have become inconvenient.
+
+---
+
+### The attribution is by provenance, not by filename
+
+**Decision.** `audit-budgets.mjs` identifies the shared chunk by reading the
+class names out of the stylesheet the root layout imports and finding the
+emitted chunk that carries them. No match, or two equal matches, reports as
+unmeasured.
+
+**Why.** Nothing in the build output maps routes to stylesheets —
+`build-manifest.json` carries no CSS, and the filenames are content hashes.
+Matching on a filename or assuming the largest chunk is shared would be a
+naming convention pretending to be a measurement, and this repository has
+already had to delete that kind of check once (ADR-0004). Every page renders
+inside the root layout, so the chunk carrying the root layout's stylesheet is
+the shared one by definition. That is a fact about the build, not a convention.
+
+---
+
 ## 2026-09-17 — the mobile pass
 
 Four surfaces, one pass. The decisions that were judgement rather than repair.

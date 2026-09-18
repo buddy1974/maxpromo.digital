@@ -1,0 +1,720 @@
+/* =============================================================================
+   HOMEPAGE — the content reset
+   =============================================================================
+   Every class here is used by this route and nothing else. It is route-scoped
+   for the same reason the back office's chrome and the legal typography are:
+   held in the global stylesheet these rules would be downloaded by every
+   visitor to every page in order to serve one of them.
+
+   Written to lean on what already exists. The section rhythms, surfaces, type
+   scale, `.card`, `.sec-split`, `.section-label` and `.quiet-link` all come
+   from the platform; what is defined below is only the handful of shapes this
+   page introduces. Nothing here declares a colour, a size or a space of its
+   own.
+   ========================================================================== */
+
+/* ─── Hero ──────────────────────────────────────────────────────────────────
+   The panel is the governed `.hero-band` / `.hero-panel`. Only the headline
+   changes: it is a plain sentence now rather than a composition with approved
+   line breaks, so it takes an ordinary measure and wraps where it wraps. */
+.home-hero-headline { margin: 0 0 var(--space-4); max-width: 20ch; }
+.home-hero-sub-2 { margin-top: calc(var(--space-4) * -1); }
+
+
+/* ─── Sound familiar? ───────────────────────────────────────────────────── */
+.fsits {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+}
+@media (min-width: 900px) {
+  .fsits { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
+}
+.fsit-title {
+  margin: var(--space-5) 0 var(--space-3);
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  letter-spacing: 0;
+  max-width: 24ch;
+}
+.fsit-body {
+  margin: 0;
+  max-width: 46ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.fsits-close {
+  margin: var(--space-8) 0 0;
+  max-width: 46rem;
+  font-size: var(--text-lede);
+  line-height: var(--leading-body);
+}
+
+
+/* ─── The three scenes ──────────────────────────────────────────────────────
+   One frame, three arrangements. The frame, the boxes and the little grey
+   record lines are shared; each scene adds only the one shape that is its
+   own. Each animates exactly one thing, and that thing is what its sentence
+   is about. */
+.fscene {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  height: 104px;
+  padding: var(--space-4);
+  background: var(--brand-surface-subtle);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+}
+.fscene > div { display: flex; align-items: center; gap: var(--space-2); width: 100%; }
+
+.fscene-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-md);
+  color: var(--brand-text-secondary);
+}
+.fscene-rows { display: flex; flex-direction: column; gap: 3px; }
+.fscene-rows i {
+  display: block;
+  height: 2px;
+  width: 100%;
+  border-radius: var(--radius-xs);
+  background: var(--brand-border-strong);
+}
+.fscene-rows i + i { width: 62%; }
+
+/* 1 — the same record typed into a second system. */
+.fscene-track { position: relative; flex: 0 0 44px; height: 2px; background: var(--brand-border-strong); }
+.fscene-chip {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-xs);
+  background: var(--brand-primary);
+  border: 1px solid var(--brand-primary-edge);
+  animation: fscene-copy 3.2s var(--ease) infinite;
+}
+@keyframes fscene-copy {
+  0%, 12%   { left: 0;    opacity: 0; }
+  20%, 80%  { opacity: 1; }
+  80%, 100% { left: 34px; }
+  92%, 100% { opacity: 0; }
+}
+
+/* 2 — three jobs behind one person. Only the front one breathes. */
+.fscene-jobs { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+.fscene-job {
+  height: 14px;
+  border-radius: var(--radius-xs);
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+}
+.fscene-job-front { border-color: var(--brand-border-strong); animation: fscene-wait 2.4s var(--ease) infinite; }
+@keyframes fscene-wait { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+.fscene-gate { flex: 0 0 1px; height: 52px; background: var(--brand-border-strong); }
+.fscene-person {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border-strong);
+  color: var(--brand-text);
+}
+
+/* 3 — three tools reaching for a centre that is not there. */
+/* Beats `.fscene > div` on specificity rather than with !important. */
+.fscene > .fscene-split { position: relative; display: block; }
+.fscene-arcs {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 32px;
+  fill: none;
+  stroke: var(--brand-border-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+}
+.fscene-gap {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  transform: translateX(-50%);
+  border-radius: var(--radius-full);
+  border: 1px dashed var(--brand-border-strong);
+  animation: fscene-wait 3s var(--ease) infinite;
+}
+.fscene-tools { display: flex; gap: var(--space-2); margin-top: 32px; }
+
+
+/* ─── What we do ────────────────────────────────────────────────────────── */
+.what-line {
+  margin: 0 0 var(--space-3);
+  max-width: 52ch;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.what-rule {
+  margin: var(--space-5) 0 0;
+  max-width: none;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--brand-border);
+  font-size: var(--text-lede);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+
+
+/* ─── The capability bench ──────────────────────────────────────────────────
+   One frame, five rows, hairlines between. Not five cards: five cards say
+   "pick a package", and a business usually needs more than one of these. */
+.bench {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.bench-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-5);
+  background: var(--brand-surface);
+}
+.bench-row + .bench-row { border-top: 1px solid var(--brand-border); }
+@media (min-width: 900px) {
+  .bench-row {
+    grid-template-columns: 2.5rem minmax(0, 11rem) minmax(0, 1fr) minmax(0, 12rem);
+    align-items: start;
+    gap: var(--space-6);
+    padding: var(--space-6);
+  }
+}
+/* At 11rem every German label here hyphenates, and automatic hyphenation puts
+   the break inside a word: PROZESSAUTOMATISIE-RUNG, SO-CIAL-ABLÄUFE. Correct
+   behaviour for a narrow column, and it reads badly.
+   Above 1200px there is room to stop asking for it. The column is widened to
+   hold the longest unbreakable run — PROZESSAUTOMATISIERUNG, measured at
+   222px — and hyphenation becomes manual, so the browser breaks only where
+   the words already break: at the space in "Individuelle Anwendungen", at the
+   existing hyphens in "Content- und Social-Abläufe".
+   The automatic rule below is untouched. It is what keeps 900–1199px from
+   overflowing, and the narrow case is the one that needed it. */
+@media (min-width: 1200px) {
+  .bench-row { grid-template-columns: 2.5rem minmax(0, 16rem) minmax(0, 1fr) minmax(0, 12rem); }
+}
+.bench-num {
+  margin: 0;
+  max-width: none;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  color: var(--brand-text-muted);
+}
+.bench-id { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.bench-icon { display: flex; color: var(--brand-text-secondary); }
+/* "PROZESSAUTOMATISIERUNG" is one unbreakable 22-character word and this
+   column is 11rem. Without a break opportunity it ran straight through the
+   headline beside it. The same shape as every other German compound on this
+   platform: English breaks at a space and never shows the fault. */
+.bench-name {
+  margin: 0;
+  max-width: none;
+  min-width: 0;
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+/* This has to sit after the rule above, not inside the grid query further up:
+   same specificity, and at equal specificity the later declaration wins. The
+   first attempt put it earlier and it shipped inert, which is the second time
+   this platform has lost a rule to source order rather than to specificity. */
+@media (min-width: 1200px) {
+  .bench-name { hyphens: manual; }
+}
+.bench-headline {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  letter-spacing: 0;
+  max-width: 32ch;
+}
+.bench-body {
+  margin: 0;
+  max-width: 56ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.bench-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-micro);
+  color: var(--brand-text);
+  text-decoration: none;
+}
+.bench-cta-arrow {
+  position: relative;
+  width: 14px;
+  height: 1px;
+  background: currentColor;
+  flex-shrink: 0;
+  transition: width var(--duration-base) var(--ease);
+}
+.bench-cta-arrow::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+}
+.bench-cta:hover .bench-cta-arrow,
+.bench-cta:focus-visible .bench-cta-arrow { width: 22px; }
+
+
+/* ─── Method, on the authority surface ──────────────────────────────────── */
+.method-body,
+.method-then { margin: 0 0 var(--space-5); font-size: var(--text-body); line-height: var(--leading-body); }
+.method-then { margin-bottom: 0; }
+.method-lead { margin: 0 0 var(--space-3); font-size: var(--text-body); color: var(--brand-text-inverted); }
+.method-questions {
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.method-questions li {
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--brand-border-inverted);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text-inverted-secondary);
+}
+.method-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  margin: var(--space-8) 0 0;
+  padding: var(--space-5) 0 0;
+  border-top: 1px solid var(--brand-border-inverted);
+  list-style: none;
+}
+.method-steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-inverted);
+}
+.method-steps li:not(:last-child)::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-top: 1px solid var(--brand-primary);
+  border-right: 1px solid var(--brand-primary);
+  transform: rotate(45deg);
+}
+
+
+/* ─── The method transformation ─────────────────────────────────────────────
+   The same job twice. Left is deliberately untidy, right is one route with a
+   single point where a person decides. No connector labels, no system names,
+   no legend: it reads in two seconds or it has failed. */
+.mtr {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-5);
+  margin-top: var(--space-8);
+}
+@media (min-width: 760px) { .mtr { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); } }
+.mtr-panel { margin: 0; }
+.mtr-label {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-inverted-secondary);
+}
+.mtr-stage {
+  position: relative;
+  height: 104px;
+  padding: var(--space-4);
+  background: var(--mp-gray-900);
+  border: 1px solid var(--brand-border-inverted);
+  border-radius: var(--radius-lg);
+}
+.mtr-after .mtr-stage { border-color: var(--brand-primary-edge); }
+.mtr-tangle {
+  position: absolute;
+  inset: var(--space-4);
+  width: auto;
+  height: auto;
+  fill: none;
+  stroke: var(--brand-border-inverted);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  animation: mtr-settle 6s var(--ease) infinite;
+}
+@keyframes mtr-settle { 0%, 40%, 100% { opacity: 1; } 60%, 80% { opacity: 0.35; } }
+.mtr-nodes,
+.mtr-route { display: flex; height: 100%; margin: 0; padding: 0; list-style: none; }
+.mtr-nodes {
+  position: relative;
+  flex-wrap: wrap;
+  align-content: space-between;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.mtr-nodes li,
+.mtr-stop > svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  border-radius: var(--radius-sm);
+  background: var(--brand-surface-inverted);
+  border: 1px solid var(--brand-border-inverted);
+  color: var(--brand-text-inverted-secondary);
+}
+.mtr-route { align-items: center; justify-content: space-between; }
+.mtr-stop { display: flex; align-items: center; flex: 1; min-width: 0; }
+.mtr-stop:last-child { flex: 0 0 auto; }
+.mtr-stop > svg { padding: 4px; color: var(--brand-text-inverted); }
+.mtr-stop-human > svg { border-color: var(--brand-primary); }
+.mtr-link { flex: 1; height: 1px; background: var(--brand-primary); }
+.mtr-arrow {
+  justify-self: center;
+  width: 18px;
+  height: 18px;
+  border-top: 1px solid var(--brand-primary);
+  border-right: 1px solid var(--brand-primary);
+  transform: rotate(135deg);
+}
+@media (min-width: 760px) { .mtr-arrow { transform: rotate(45deg); } }
+
+
+/* ─── Evidence, tools ───────────────────────────────────────────────────── */
+.evid-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-5);
+}
+.evid-lede,
+.tools-body {
+  margin: 0 0 var(--space-8);
+  max-width: 46rem;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.tools-body { margin-bottom: 0; }
+.tools-title { margin: 0; font-size: var(--text-h3); }
+
+
+/* ─── The founder ───────────────────────────────────────────────────────── */
+.founder { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+@media (min-width: 900px) {
+  .founder { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: var(--space-10); align-items: start; }
+}
+.founder-portrait { margin: 0; }
+.founder-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--brand-border);
+}
+/* No stock face and no generated one: initials, and a line saying why. */
+.founder-photo-pending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  background: var(--brand-surface);
+  border: 1px dashed var(--brand-border-strong);
+}
+.founder-initials {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  color: var(--brand-text-muted);
+}
+.founder-pending-note,
+.founder-role {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+}
+.founder-title { margin: 0 0 var(--space-5); font-size: var(--text-h3); max-width: 34ch; }
+.founder-p {
+  margin: 0 0 var(--space-4);
+  max-width: 58ch;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.founder-list {
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.founder-list li {
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--brand-border-strong);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+}
+.founder-rule {
+  margin: 0 0 var(--space-6);
+  max-width: 46ch;
+  padding: var(--space-4) var(--space-5);
+  background: var(--brand-surface-accent);
+  border: 1px solid var(--mp-lime-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-lede);
+  line-height: var(--leading-body);
+}
+.founder-sig { margin: 0 0 var(--space-4); max-width: none; }
+.founder-name { display: block; font-weight: 600; }
+.founder-role { display: block; color: var(--brand-text-secondary); }
+
+
+/* ─── The resource, which is not built yet ──────────────────────────────── */
+.resource-say { max-width: 54rem; }
+.resource-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-3);
+  max-width: none;
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+}
+/* A pill, not a button. There is nothing to press yet, and a control that
+   cannot be used is worse than a label that tells the truth. */
+.resource-status {
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--brand-surface-accent);
+  border: 1px solid var(--mp-lime-200);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label-dense);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-primary-text);
+}
+.resource-body { margin: 0 0 var(--space-5); max-width: 52ch; font-size: var(--text-body); line-height: var(--leading-body); }
+.resource-lookat {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-secondary);
+}
+.resource-items { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0 0 var(--space-5); padding: 0; list-style: none; }
+.resource-items li {
+  padding: 6px 12px;
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-full);
+  font-size: var(--text-micro);
+  line-height: var(--leading-ui);
+}
+.resource-outcome,
+.resource-note {
+  margin: 0 0 var(--space-4);
+  max-width: 52ch;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.resource-note { margin-bottom: var(--space-5); color: var(--brand-text-muted); }
+
+
+/* ─── Knowledge ─────────────────────────────────────────────────────────── */
+.know-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); margin: 0; padding: 0; list-style: none; }
+@media (min-width: 760px) { .know-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.know-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  padding: var(--space-5);
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  transition: border-color var(--duration-base) var(--ease);
+}
+.know-item:hover,
+.know-item:focus-visible { border-color: var(--brand-border-strong); }
+.know-title {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  color: var(--brand-text);
+}
+.know-excerpt { font-size: var(--text-small); line-height: var(--leading-body); color: var(--brand-text-secondary); }
+
+
+/* ─── The closing invitation ────────────────────────────────────────────── */
+.close-block { max-width: 40rem; margin: 0 auto; text-align: center; }
+.close-title { margin: 0 auto var(--space-4); }
+.close-body { margin: 0 auto var(--space-8); font-size: var(--text-body); line-height: var(--leading-body); }
+.close-email {
+  margin: var(--space-5) auto 0;
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  color: var(--brand-text-inverted-secondary);
+}
+.close-email-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--brand-text-inverted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* ─── The evidence grid ─────────────────────────────────────────────────────
+   Moved here from the global stylesheet with `ProofMetrics`, which this route
+   is the only consumer of.
+
+   The column count is `auto-fit` rather than a hardcoded three. It was three,
+   and the homepage now shows two governed figures, which would have left a
+   third of the grid empty. Sizing to what it is given is also the rule this
+   section is supposed to embody: the number of stories is decided by how many
+   are defensible, not by how many fit.
+
+   The entrance is a CSS animation with a per-cell delay set inline, which
+   replaced the last framer-motion usage in the platform: a 110 KB runtime to
+   fade numbers in did not earn its place. Reduced motion gets the final state
+   immediately. */
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--brand-border);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+@media (min-width: 640px) {
+  .metric-grid { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }
+}
+
+.metric-cell {
+  background: var(--brand-surface);
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  animation: mp-fade-up 0.5s var(--ease) both;
+}
+.metric-value {
+  margin: 0 0 var(--space-3);
+  max-width: none;
+  font-family: var(--brand-font-heading);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: var(--weight-subhead);
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
+}
+.metric-label {
+  margin: 0 0 var(--space-2);
+  max-width: none;
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+}
+.metric-source {
+  margin: 0;
+  max-width: none;
+  font-size: var(--text-micro);
+  color: var(--brand-text-muted);
+}
+
+
+/* ─── Narrow phones ─────────────────────────────────────────────────────────
+   `.btn` is `white-space: nowrap`, which is right for a bar and wrong for a
+   sentence. The calls to action on this page are sentences: "Sagen Sie uns,
+   was im Weg steht" cannot shrink and pushed the page 27px sideways at 320px.
+   The hero's pair already stacks below 420px; these two are the resource
+   panel's and the closing invitation's, and they do the same. */
+@media (max-width: 420px) {
+  .resource-say > .btn-secondary,
+  .close-block > .btn-primary {
+    display: flex;
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+
+/* ─── Reduced motion ────────────────────────────────────────────────────────
+   Every drawing settles at the state that makes its point: the record has
+   arrived in the second system, the queue stops pulsing, the split stays
+   split, the tangle stays visible. Nothing here needs movement to be read. */
+@media (prefers-reduced-motion: reduce) {
+  .fscene-chip { animation: none; left: 34px; opacity: 1; }
+  .fscene-job-front,
+  .fscene-gap,
+  .metric-cell,
+  .mtr-tangle { animation: none; }
+  .fscene-gap { opacity: 0.6; }
+}

@@ -1,5 +1,52 @@
 # Change Log
 
+## 2026-09-18 — homepage content reset, and route-aware CSS governance
+
+The homepage was rebuilt so that a business owner who knows nothing about AI
+can read it and understand what this company does. Eleven sections, in the
+approved order: the problem, the recognition, the explanation, the capability,
+the method, the evidence, what it works with, who is behind it, something
+useful, something to read, and a conversation. Every section is written
+problem-first, in both languages, with none of the vocabulary the reset
+banned.
+
+### What is honest about it
+
+**The evidence section carries two figures, not three.** The third — "94% of
+invoices processed without human intervention" — was removed on Marcel's
+instruction: it is the automation language the reset exists to get away from.
+A fourth candidate was excluded separately because the same figure appears in
+two currencies and is still under forensic review. The section is designed for
+two rather than padded back to three.
+
+**Knowledge links one article, because one is published.** The second
+candidate is still a draft, and the homepage surfaces published slugs only. No
+article was invented to fill a row.
+
+**Business Friction Check says COMING NEXT and links nowhere.** The tool does
+not exist yet. A call to action pointing at a page that is not there would be
+the first thing a visitor discovered was untrue.
+
+**The founder section holds a placeholder, not a face.** No AI portrait, no
+stock person. It renders the note without a photograph until Marcel supplies
+one, and it does not block the deployment.
+
+### Route-aware CSS governance
+
+The rebuilt homepage put `web.total-css` over its 80 KB limit, and the limit
+turned out to be measuring the wrong thing. The build emits four stylesheets
+that are mutually exclusive by route; their sum describes no visitor. Two new
+enforced budgets replace it — `web.shared-css` (72 KB) and `web.route-css`
+(88 KB) — and the sum is kept as a reported, non-blocking row. The audit
+attributes chunks by provenance rather than by filename.
+
+Numbers, without the flattering framing: every non-homepage route went from 75
+KB of CSS to 68 KB. The homepage went from 75 KB to 82 KB. The budget that
+will catch that growing further is now in place.
+
+Decision and reasoning: `docs/adr/decision-log.md`, rules:
+`docs/governance/standards.md`.
+
 ## 2026-09-18 — forensic remediation: fourteen production defects
 
 A browser forensic pass over live production produced a defect ledger. Every

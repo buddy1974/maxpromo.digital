@@ -34,13 +34,25 @@ import { Icon } from '@maxpromo/ui'
  *      the inverted text tokens rather than literal white.
  */
 
+/**
+ * Five destinations, in the order the content reset approved.
+ *
+ * Work moves ahead of Industries: evidence that we have built things is the
+ * question a visitor asks second, before they ask whether we have built things
+ * for a business like theirs.
+ *
+ * Contact left this list. It has not been deleted and the route is unchanged;
+ * it is simply already the bar's call to action, and a navigation that offers
+ * the same destination twice is a navigation with one wasted slot. Every page
+ * still links to it, the footer still lists it, and the sheet still carries
+ * the same action.
+ */
 const NAV_LINKS = [
   { href: '/solutions',  key: 'solutions'  },
-  { href: '/industries', key: 'industries' },
   { href: '/work',       key: 'work'       },
+  { href: '/industries', key: 'industries' },
   { href: '/resources',  key: 'resources'  },
   { href: '/about',      key: 'about'      },
-  { href: '/contact',    key: 'contact'    },
 ] as const
 
 export default function Navbar() {

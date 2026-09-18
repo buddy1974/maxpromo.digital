@@ -37,13 +37,17 @@ import { BUSINESS } from '@maxpromo/config'
 const COLUMNS = [
   {
     titleKey: 'colCompany',
+    // The same five destinations as the primary navigation, in the same order,
+    // plus Contact. A footer that lists a different set from the bar above it
+    // is a second, quieter opinion about what this site contains.
     links: [
-      { key: 'about',       href: '/about' },
       { key: 'solutions',   href: '/solutions' },
+      { key: 'work',        href: '/work' },
       { key: 'industries',  href: '/industries' },
+      { key: 'about',       href: '/about' },
+      { key: 'contact',     href: '/contact' },
       // The one product marketed publicly from the hub.
       { key: 'agentBureau', href: '/agent-bureau' },
-      { key: 'contact',     href: '/contact' },
     ],
   },
   {

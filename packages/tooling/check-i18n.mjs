@@ -120,6 +120,11 @@ const SAME_IN_BOTH = new Set([
   // are in the catalogue rather than written into the component so that the
   // words around them could be translated; neither changes with the language.
   'footer.brand', 'max.name', 'max.maxSaid',
+  // The homepage. "Information" is the same word in German and English and is
+  // one of five flow labels whose four siblings do differ; the founder's name
+  // is a person; and the Business Friction Check is a product name, which the
+  // content constitution says is not translated.
+  'home.hero.f2', 'home.founder.name', 'home.resource.name',
   'home.bureau.label', 'footer.agentBureau', 'demoRoom.brand',
   // ── Proper nouns, printed as they are ─────────────────────────────────────
   'integrations.calendar', 'integrations.forms',

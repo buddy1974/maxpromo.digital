@@ -15,7 +15,6 @@
    ========================================================================== */
 
 
-
 /* ─────────────────────────────────────────────────────────────────────────────
    TAILWIND THEME
 
@@ -339,7 +338,14 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
    size or weight, so the two words read as one identity while both stay
    readable. "DIGITAL" keeps the secondary inverted tone, which groups the mark
    without hiding half the company's name. */
+/* The wordmark is a link to the homepage and it was 22px tall — the last
+   control on the public chrome still under the 44px floor the rest of this
+   pass raised. The text stays the size it is; the target grows around it,
+   which is why this is align-items rather than padding. */
 .site-nav-logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-size: var(--text-micro);
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -654,7 +660,12 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   flex-direction: column;
   gap: var(--space-2);
 }
+/* The 44px lived on `.footer-link`, which nothing used. This is the class the
+   footer actually renders, and it was 15.6px tall. */
 .site-footer-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   font-size: var(--text-micro);
   color: var(--brand-text-inverted-secondary);
   text-decoration: none;
@@ -782,50 +793,6 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
   color: var(--brand-text);
 }
 
-/* Homepage route grid — the two doors into the site (sector, or problem). */
-.route-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--brand-border);
-  border: 1px solid var(--brand-border);
-}
-@media (min-width: 720px) { .route-grid { grid-template-columns: 1fr 1fr; } }
-
-.route-cell {
-  display: flex;
-  flex-direction: column;
-  background: var(--brand-surface);
-  padding: var(--space-8);
-  text-decoration: none;
-  transition: background-color var(--duration-base) var(--ease);
-}
-.route-cell:hover,
-.route-cell:focus-visible { background: var(--brand-surface-subtle); }
-.route-cell-label {
-  margin: 0 0 var(--space-4);
-  font-size: var(--text-micro);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-  color: var(--brand-text-muted);
-}
-.route-cell-desc {
-  margin: 0 0 var(--space-5);
-  flex: 1;
-  font-size: var(--text-small);
-  line-height: var(--leading-body);
-  color: var(--brand-text-secondary);
-}
-.route-cell-cta {
-  font-size: var(--text-small);
-  color: var(--brand-text);
-  border-bottom: 1px solid var(--brand-border-strong);
-  padding-bottom: 2px;
-  align-self: flex-start;
-}
-
-
 
 /* Scope: what is included beside what is not. Equal weight, because the
    boundary is the half a buyer actually needs. */
@@ -865,60 +832,6 @@ code, pre, .mono { font-family: var(--brand-font-mono); }
 
 /* main should not introduce its own box; it is a landmark, not a layer. */
 main { display: block; }
-
-/* ─── Metric grid ─────────────────────────────────────────────────────────────
-   Sourced figures in a hairline grid. The entrance is a CSS animation with a
-   per-cell delay set inline, which replaced the last framer-motion usage in
-   the platform: a 110 KB runtime to fade three numbers in did not earn its
-   place. Reduced-motion users get the final state immediately.
-   ───────────────────────────────────────────────────────────────────────── */
-
-.metric-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--brand-border);
-  border: 1px solid var(--brand-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-@media (min-width: 640px) { .metric-grid { grid-template-columns: repeat(3, 1fr); } }
-
-.metric-cell {
-  background: var(--brand-surface);
-  padding: clamp(1.5rem, 5vw, 2.5rem);
-  animation: mp-fade-up 0.5s var(--ease) both;
-}
-
-.metric-value {
-  margin: 0 0 var(--space-3);
-  font-family: var(--brand-font-heading);
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: var(--weight-subhead);
-  letter-spacing: var(--tracking-tight);
-  line-height: 1;
-  color: var(--brand-text);
-  max-width: none;
-}
-.metric-label {
-  margin: 0 0 var(--space-2);
-  font-size: var(--text-small);
-  line-height: var(--leading-ui);
-  color: var(--brand-text);
-  max-width: none;
-}
-.metric-source {
-  margin: 0;
-  font-size: var(--text-micro);
-  color: var(--brand-text-muted);
-  max-width: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .metric-cell { animation: none; }
-}
-
-
 
 
 
@@ -1183,57 +1096,6 @@ main { display: block; }
   max-width: none;
 }
 .surface-authority .ruled-desc { color: var(--brand-text-inverted-secondary); }
-
-/* Two-column ruled list. Principles, rules, short pairs. */
-.rules-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  border-top: 1px solid var(--brand-border);
-}
-@media (min-width: 760px) {
-  .rules-grid { grid-template-columns: repeat(2, 1fr); column-gap: var(--space-10); }
-}
-.rule-item {
-  padding: var(--space-4) 0;
-  border-bottom: 1px solid var(--brand-border);
-}
-.rule-title {
-  margin: 0 0 var(--space-1);
-  font-size: var(--text-small);
-  font-weight: 600;
-  color: var(--brand-text);
-  max-width: none;
-}
-.rule-desc {
-  margin: 0;
-  font-size: var(--text-small);
-  line-height: var(--leading-body);
-  color: var(--brand-text-secondary);
-  max-width: none;
-}
-
-/* A sequence stated as one line of text rather than as numbered panels. */
-.steps-line {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.steps-line li {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-micro);
-  color: var(--brand-text-secondary);
-}
-.steps-line li + li::before {
-  content: '→';
-  color: var(--brand-text-muted);
-}
 .surface-authority .steps-line li { color: var(--brand-text-inverted-secondary); }
 
 
@@ -1456,7 +1318,16 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 
 /* The quiet "see all" link that sits beside a section heading. It was an
    inline style object repeated on four pages with three different sizes. */
+/* A text link is still a target. These measured 17.78px tall, which fails even
+   the 24px minimum of WCAG 2.2 AA, let alone the 44px this platform holds its
+   controls to. `inline-flex` with a minimum height gives the whole 44px to the
+   thumb without moving the text: in a baseline-aligned row the item's baseline
+   is still its first line's, so the headers that sit one of these beside a
+   heading are unchanged. */
 .quiet-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   flex-shrink: 0;
   font-family: var(--brand-font-mono);
   font-size: var(--text-micro);
@@ -1471,30 +1342,6 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 .surface-authority .quiet-link { color: var(--brand-text-inverted-secondary); }
 .surface-authority .quiet-link:hover,
 .surface-authority .quiet-link:focus-visible { color: var(--brand-text-inverted); border-bottom-color: var(--brand-border-inverted); }
-
-/* Route cells on the inverted surface.
-   The first version recoloured the text and the borders and left both
-   backgrounds alone, so inverted text landed on a white cell inside a black
-   section: invisible, and a contrast failure rather than only an ugly one.
-   The surfaces have to be inverted with the type. */
-.route-grid-inverted { background: var(--brand-border-inverted); }
-.route-grid-inverted .route-cell { background: var(--brand-surface-inverted); border-color: var(--brand-border-inverted); }
-.route-grid-inverted .route-cell:hover,
-.route-grid-inverted .route-cell:focus-visible { background: var(--mp-gray-900); }
-.route-grid-inverted .route-cell-label { color: var(--brand-text-inverted); }
-.route-grid-inverted .route-cell-desc { color: var(--brand-text-inverted-secondary); }
-.route-grid-inverted .route-cell-cta { color: var(--brand-text-inverted); border-bottom-color: var(--brand-border-inverted); }
-
-/* The human-approval note under the Agent Bureau action. */
-.bureau-guarantee {
-  margin: var(--space-5) 0 0;
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--brand-border);
-  font-size: var(--text-micro);
-  line-height: var(--leading-body);
-  color: var(--brand-text-secondary);
-  max-width: none;
-}
 
 
 /* ─── Form layout ─────────────────────────────────────────────────────────── */
@@ -1529,8 +1376,6 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   border-color: var(--brand-primary-edge);
   color: var(--brand-on-primary);
 }
-
-
 
 
 /* ═════════════════════════════════════════════════════════════════════════════
@@ -1578,27 +1423,6 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
 /* ─── Upper left: the statement ──────────────────────────────────────────── */
 
 .hero-copy { position: relative; z-index: 2; max-width: 46rem; }
-
-/* 22ch holds the reference's three-line break at desktop. */
-/* The reference breaks this "We design and build / the systems a company /
-   runs on." — a greedy wrap, not a balanced one. The base h1 rule sets
-   text-wrap: balance, which redistributes the lines evenly and produced a
-   two-line headline at every measure that fit the words. Overridden here for
-   the one heading whose line breaks are part of an approved composition. */
-.hero-headline {
-  margin: 0 0 var(--space-4);
-  /* Measured, not guessed. At the hero size "We design and build" is 465px,
-     "…build the" is 552px and "the systems a company" is 527px, so a measure
-     anywhere in [527, 552) produces the reference's three lines exactly.
-     19ch is 549px here, and ch tracks the font size as it clamps down. */
-  max-width: 19ch;
-  /* `wrap`, not `normal`: `normal` is not a valid text-wrap keyword, so the
-     declaration was dropped and the base rule's `balance` kept redistributing
-     the lines evenly. An invalid value fails silently, which is the whole
-     reason check:token-inputs exists for var(). Verified in the browser by
-     measuring the rendered line widths, not by reading the CSS. */
-  text-wrap: wrap;
-}
 
 .hero-sub {
   margin: 0 0 var(--space-5);
@@ -1651,153 +1475,10 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   background: var(--mp-gray-900);
 }
 
-/* ─── Upper right: the outcome the flow leads to ─────────────────────────── */
-
-.hero-outcome { display: none; }
-
-@media (min-width: 1100px) {
-  .hero-outcome {
-    position: absolute;
-    z-index: 2;
-    top: var(--space-16);
-    right: var(--space-10);
-    display: block;
-    max-width: 14rem;
-  }
-  .hero-outcome-node {
-    position: absolute;
-    left: -1.25rem;
-    top: 3px;
-    width: 9px;
-    height: 9px;
-    border-radius: var(--radius-full);
-    background: var(--brand-primary);
-  }
-  .hero-outcome-text {
-    margin: 0;
-    max-width: none;
-    font-family: var(--brand-font-sans);
-    font-size: var(--text-micro);
-    font-weight: 500;
-    letter-spacing: var(--tracking-label);
-    line-height: 1.7;
-    text-transform: uppercase;
-    color: var(--brand-text-inverted);
-  }
-  .hero-outcome-text span { display: block; }
-  .hero-outcome-rule {
-    display: block;
-    width: 34px;
-    height: 1px;
-    margin-top: var(--space-4);
-    background: var(--brand-primary);
-  }
-}
-
-/* ─── The two architectural curves ───────────────────────────────────────────
-   They rise from the Workflows and Teams area of the flow toward the outcome
-   node. Subtle, behind everything, and decorative: the meaning they carry is
-   said in words by the flow's own accessible description.
-   ───────────────────────────────────────────────────────────────────────── */
-
-.hero-curves { display: none; }
-@media (min-width: 1100px) {
-  .hero-curves {
-    display: block;
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: var(--brand-border-inverted);
-    stroke-width: 1;
-  }
-  .hero-curves path { vector-effect: non-scaling-stroke; }
-}
-
 /* ─── The flow band ──────────────────────────────────────────────────────── */
 
 .hero-flow { position: relative; z-index: 2; margin-top: var(--space-8); }
 @media (min-width: 1100px) { .hero-flow { margin-top: var(--space-8); } }
-
-/* ─── The foot: scroll cue centred, signature right ──────────────────────── */
-
-.hero-foot {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: 1fr;
-  align-items: end;
-  margin-top: var(--space-8);
-}
-@media (min-width: 1100px) {
-  .hero-foot { grid-template-columns: 1fr auto 1fr; margin-top: var(--space-6); }
-  .hero-foot .hero-scroll { grid-column: 2; }
-  .hero-foot .hero-signature { grid-column: 3; }
-}
-
-.hero-scroll { display: none; }
-@media (min-width: 1100px) {
-  .hero-scroll {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-3);
-    margin: 0;
-    max-width: none;
-  }
-  .hero-scroll-mouse {
-    position: relative;
-    width: 20px;
-    height: 30px;
-    border: 1px solid var(--brand-border-inverted);
-    border-radius: var(--radius-full);
-  }
-  .hero-scroll-mouse::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 7px;
-    width: 3px;
-    height: 3px;
-    transform: translateX(-50%);
-    border-radius: var(--radius-full);
-    background: var(--brand-text-inverted-secondary);
-  }
-  .hero-scroll-label {
-    font-size: var(--text-micro);
-    color: var(--brand-text-inverted-secondary);
-  }
-  /* The thin continuation that runs off the foot of the panel. */
-  .hero-scroll-tail {
-    width: 1px;
-    height: var(--space-6);
-    background: var(--brand-border-inverted);
-  }
-}
-
-.hero-signature {
-  margin: var(--space-6) 0 0;
-  max-width: none;
-  justify-self: start;
-  font-family: var(--brand-font-sans);
-  font-size: var(--text-label);
-  font-weight: 500;
-  letter-spacing: var(--tracking-label);
-  line-height: 1.8;
-  text-transform: uppercase;
-  color: var(--brand-text-inverted-secondary);
-}
-.hero-signature span { display: block; }
-@media (min-width: 1100px) { .hero-signature { margin: 0; justify-self: end; text-align: left; } }
-.hero-signature-rule {
-  display: block;
-  width: 30px;
-  height: 1px;
-  margin-top: var(--space-3);
-  background: var(--brand-primary);
-}
 
 
 /* ═════════════════════════════════════════════════════════════════════════════
@@ -2676,94 +2357,6 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   color: var(--brand-text-inverted);
 }
 .contact-origin-label {  color: var(--brand-text-inverted-secondary);
-}
-
-
-/* ═════════════════════════════════════════════════════════════════════════════
-   PROBLEM CARDS
-   ═════════════════════════════════════════════════════════════════════════════
-   The three things that go wrong in an operation, on the home page.
-
-   They were three ruled columns: a black rule, an index, a title, a paragraph.
-   Correct, and indistinguishable from the rest of the page — a reader scanning
-   found no object to land on.
-
-   Now three cards, neutral · accent · neutral. The middle one takes the one
-   lime-tinted surface in the system. That is a rhythm, not a ranking: all
-   three carry the same structure, the same icon size and the same measure, and
-   the accent card is not larger, not bolder and not a call to action. A full
-   lime fill would make it a button; a third neutral card would make the row
-   flat.
-
-   Restrained on purpose — thin border, small radius, no shadow, no gradient,
-   nothing that moves. This is the Agent Bureau card language, at corporate
-   weight.
-   ═════════════════════════════════════════════════════════════════════════════ */
-
-.pcards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-4);
-}
-@media (min-width: 900px) {
-  .pcards { grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
-}
-
-.pcard {
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-5);
-  background: var(--brand-surface-subtle);
-  border: 1px solid var(--brand-border);
-  border-radius: var(--radius-lg);
-}
-/* The one lime-tinted surface in the system, used the way its own note in the
-   token package says it may be: a small callout, never a section wash. Its
-   edge is the lightest lime rather than the neutral border, so the card is
-   tinted rather than outlined in green. */
-.pcard-accent {
-  background: var(--brand-surface-accent);
-  border-color: var(--mp-lime-200);
-}
-
-.pcard-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-}
-.pcard-index {
-  margin: 0;
-  max-width: none;
-  font-family: var(--brand-font-mono);
-  font-size: var(--text-label);
-  letter-spacing: var(--tracking-label);
-  color: var(--brand-text-muted);
-}
-.pcard-icon { display: flex; color: var(--brand-text-secondary); }
-.pcard-title {
-  margin: 0 0 var(--space-3);
-  font-size: var(--text-h4);
-  font-weight: var(--weight-subhead);
-  line-height: var(--leading-heading);
-  letter-spacing: 0;
-}
-.pcard-desc {
-  margin: 0;
-  max-width: none;
-  font-size: var(--text-small);
-  line-height: var(--leading-body);
-  color: var(--brand-text-secondary);
-}
-
-/* The conclusion of the three, so it sits with them rather than at the
-   section's own distance. */
-.pcards-close {
-  margin: var(--space-6) 0 0;
-  max-width: 46rem;
-  font-size: var(--text-body);
-  line-height: var(--leading-body);
 }
 
 

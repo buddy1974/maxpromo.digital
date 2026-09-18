@@ -37,7 +37,7 @@ run on developer machines and never in CI.
 | 12 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
 | 13 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
 | 14 | **Production build** `build` | Every application builds |
-| 15 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS and CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built |
+| 15 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS, shared CSS, route-delivered CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built. One row, total CSS, is reported and never enforced — see *The CSS budget is three numbers* |
 
 The static audits run first on purpose: they are the fastest and they catch the
 classes of regression this platform has had most often.
@@ -357,3 +357,65 @@ a currency would be inventing a fact about a client.
 is unused will eventually be wrong about something that matters — on its first
 run it flagged 19 API routes that are a working, secured data layer the
 dashboard has simply not been wired to yet.
+
+### The CSS budget is three numbers, and only two of them block
+
+There was one CSS budget: the sum of every stylesheet the build emits, limited
+to 80 KB. It was an honest measure of what a visitor downloads for exactly as
+long as the build emitted one stylesheet, because the sum and the payload were
+the same file.
+
+They are not the same thing any more. The web application now emits four CSS
+chunks and they are **mutually exclusive by route**. Read from a running
+production server, by looking at which stylesheets each route actually asks
+for:
+
+| Route | Stylesheets requested |
+|---|---|
+| `/de`, `/en` | shared + homepage |
+| `/de/solutions`, `/de/resources`, `/de/work`, `/de/contact`, `/de/blog` | shared |
+| `/de/impressum` | shared + legal |
+| `/os/*` | shared + back office |
+
+Nobody downloads all four. Failing a build on their sum penalises the one
+change that makes a visitor's payload *smaller* — moving route-specific rules
+off the shared path — and that is not a governance rule, it is a bug in the
+measurement. When the homepage was rebuilt the sum went up while the stylesheet
+every other page loads went **down**.
+
+So the one number became three:
+
+| Budget | Limit | Blocks? | What it protects |
+|---|---|---|---|
+| `web.shared-css` | 72 KB | yes | The floor every visitor pays before anything specific to the page they asked for. It grows when something route-specific is written into the global stylesheet, which is the mistake the split exists to prevent. Headroom is tight on purpose: this one should be going down |
+| `web.route-css` | 88 KB | yes | What the worst-served visitor downloads: shared plus the heaviest single route chunk. A route-scoped stylesheet is not free, and this is where its cost is charged |
+| `web.total-css` | 120 KB | **no** | Kept visible so a sudden jump anywhere is still seen in every report. It cannot be the number that blocks a release, because it does not describe any visitor |
+
+This is **stricter** than what it replaces, not weaker. The shared ceiling sits
+below the old total, and no route may exceed the delivered ceiling. Nothing was
+raised to make a red number green: the enforced numbers are new, and they are
+measured against what a person receives.
+
+`informational: true` in `packages/config/budgets.ts` is what makes a row
+report without enforcing. Use it only where the measurement genuinely does not
+correspond to something a person downloads. It is not an escape hatch for a
+budget that has become inconvenient — a budget that is merely inconvenient gets
+a raise recorded in the change log, or the code gets smaller.
+
+**How the audit knows which chunk is which.** Nothing in the build output maps
+a route to its stylesheets: `build-manifest.json` carries no CSS at all, and
+the emitted filenames are content hashes that say nothing about provenance.
+Attribution by filename would be a naming convention pretending to be a
+measurement, which is the class of check this repository has had to delete
+before (**ADR-0004**). Instead `audit-budgets.mjs` reads the class names out of
+the stylesheet the **root layout** imports and finds the emitted chunk that
+carries them; every page renders inside that layout, so that chunk is the
+shared one by definition. The rest are route-scoped by elimination. If no chunk
+matches confidently, or two match equally, the split reports as *unmeasured*
+rather than as clean.
+
+Agent Bureau still emits a single stylesheet, so `bureau.total-css` remains an
+honest measure of a visitor's payload and stays as it is. It gets the same
+treatment on the day it emits a second chunk, and not before.
+
+Decision: Marcel, 2026-09-18. Reasoning in `docs/adr/decision-log.md`.
