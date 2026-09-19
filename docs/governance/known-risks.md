@@ -1,6 +1,6 @@
 # Known Risks — Maxpromo Platform
 
-## OPEN 2026-09-18 — client-facing documents reference design tokens that cannot resolve
+## RESOLVED 2026-09-19 — client-facing documents reference design tokens that cannot resolve
 
 Found while researching the acquisition architecture, not while looking for it.
 Recorded here rather than fixed, because that phase changed no production code.
@@ -76,8 +76,30 @@ known members. Any file whose output is a string of HTML or CSS sent outside
 the browser belongs in it. Widening it will surface the three files above and
 possibly others, which is the point.
 
-**Not fixed here.** The code change needs a code phase and Marcel's approval,
-and widening a gate's scope is an architecture decision that needs an ADR.
+**Resolved 2026-09-19.** Both parts.
+
+The thirty-eight references are gone. Each mapping was checked against
+`packages/design-tokens/brand.css` before substitution and every one resolves
+to an identical value, so the intent was already correct and only the delivery
+was broken. Rendered from the real source with synthetic data, before and
+after:
+
+| Surface | before | after |
+|---|---|---|
+| newsletter welcome | 4 unresolved | 0 |
+| invoice email | 10 unresolved | 0 |
+| quotation email | 10 unresolved | 0 |
+
+The invoice email's rendered output previously contained no `#111111` anywhere,
+which is to say the body text of every invoice had no colour of its own and
+inherited whatever the mail client chose.
+
+The gate no longer enumerates filenames. It computes the outbound set from the
+mail transport's import graph, coverage went from two files to six as a strict
+superset, and a temporary route with one `var()` in its markup was used to
+prove the point: the old gate reported clean and exited 0, the new one named
+the file and line and exited 1. **ADR-0015**, and the corrected promise is in
+`docs/governance/standards.md`.
 
 ## RESOLVED 2026-09-17 — the hub's CSS budget, resolved by moving the back office out of the public payload
 

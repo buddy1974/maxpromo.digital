@@ -1,5 +1,37 @@
 # Change Log
 
+## 2026-09-19 — outbound email renders its own colours, and the gate protects a class
+
+Invoice, quotation and newsletter email wrote CSS custom properties into markup
+that mail clients render. Custom properties do not exist there, so those
+declarations were dropped and the elements inherited. Thirty-eight of them. The
+invoice email's rendered output contained no `#111111` at all: the body text of
+every invoice this company sends had no colour of its own.
+
+Fixed by using the TypeScript mirror the three files already imported and
+already used correctly in places. Every mapping was proved identical in value
+against the stylesheet first, so what changed is what arrives, not what was
+intended. Nothing else in those routes moved: no wording, no amounts, no
+recipients, no §19 clause, no delivery, rate limiting, database or notification
+behaviour.
+
+The more important half is why nothing caught it. `check:token-inputs` had the
+rule and `standards.md` promised it generally, but the implementation was two
+filenames, both of them the files where the defect was first found and both
+long since clean. Three route handlers written later were examined zero times.
+The check reported clean because it only ever looked where the bug had already
+been fixed.
+
+The set is now computed from the architecture rather than listed: the transport
+is found by behaviour, the outbound set is its import graph in both directions,
+and the files in it that contain markup are checked. Two files became six, a
+strict superset. `lib/documents/printCss.ts` no longer needs an exclusion entry
+because the graph never reaches it. Proved negatively with a temporary route
+the old allowlist never named: old gate clean and exit 0, new gate names the
+file and line and exits 1.
+
+Reasoning in `docs/adr/0015-a-gate-protects-a-class-not-a-filename.md`.
+
 ## 2026-09-18 — homepage content reset, and route-aware CSS governance
 
 The homepage was rebuilt so that a business owner who knows nothing about AI

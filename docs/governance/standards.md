@@ -208,8 +208,21 @@ spacing, radius or duration outside the token system, in either form.
 colour is never a semantic one — including a *product's* brand colour, which
 until v14.0 could be `var(--semantic-success)` because nothing looked. Any
 surface that cannot resolve a custom property — email, PDF, a web manifest —
-reads the TypeScript mirror instead, and `check:token-inputs` fails on a `var()`
-that travels there.
+reads the TypeScript mirror instead.
+
+`check:token-inputs` enforces that for email by computing the set rather than
+listing it: it locates the mail transport by behaviour, takes everything that
+reaches it through local imports in both directions, and fails on a `var()` in
+any of those files that contains markup. A new email surface is protected the
+moment it is written. `TOKEN_INPUTS_LIST=1 npm run check:token-inputs` prints
+the covered set, because a derived set cannot be audited by reading the code
+that derives it.
+
+This sentence used to promise that protection while the check enforced it on
+two hard-coded filenames, and thirty-eight unresolved custom properties shipped
+in invoice, quotation and newsletter email underneath it. **ADR-0015.** PDF
+output is not covered by this mechanism and does not currently need to be: the
+document CSS is injected into a browser page, where custom properties resolve.
 
 **Translations.** A domain declares the languages it has, and serves no others.
 Silent field-level fallback is the failure mode: it produces a page in two
