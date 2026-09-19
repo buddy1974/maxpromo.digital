@@ -273,6 +273,32 @@ The reference implementation is the homepage founder slot,
 `.founder-photo` class as the real image, so it holds the same 4:5 box, and
 `public/images/homepage/founder.jpg` appearing on disk is the entire migration.
 
+The shared primitive is `components/ui/ScreenshotSlot.tsx`. Its default for a
+missing `src` is now to reserve the slot; both states share one style object,
+so the reserved box is the real box rather than a second set of numbers kept in
+step by hand.
+
+**Surfaces that predate this rule, and are deliberately not being retrofitted.**
+Marcel's decision, 2026-09-19: the rule governs new work, rewritten pages and
+pages entering a planned rebuild. A page that currently collapses a missing
+image does not start showing a reserved slot merely because governance changed,
+and none of these is a defect to be fixed in passing:
+
+| Surface | Today | Adopts the rule |
+|---|---|---|
+| `components/landing/sections/ProductGallery.tsx` | renders nothing until one screenshot exists | when product pages are rebuilt |
+| `components/landing/sections/ProblemSolution.tsx` | `painImages` optional, conditional | when product pages are rebuilt |
+| `app/[locale]/blog/[slug]/page.tsx` | cover image conditional | when the article surface is rebuilt |
+
+ProductGallery is the one case with a standing instruction of its own. Its
+header records Marcel's direction of 2026-07-25, stated twice, that a product
+page must show no empty frame and no "screens coming soon" message, and it
+satisfies that at the section level by rendering nothing at all. That stays
+until the surface is rebuilt, at which point the two rules need reconciling
+rather than one quietly overriding the other. `whenMissing="collapse"` exists
+on the primitive for that narrow case, is not the default, and goes away when
+its last caller does.
+
 **Testing.** There is no unit-test suite, and this is stated rather than
 implied. What exists instead: eleven merge gates, five report-only audits, two
 harnesses that prove their audits can fail, and a live domain walk
