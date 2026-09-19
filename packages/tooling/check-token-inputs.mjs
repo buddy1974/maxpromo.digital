@@ -57,7 +57,7 @@
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
-import { join, relative, sep } from 'node:path'
+import { join, relative, sep, dirname } from 'node:path'
 import { stripComments } from './strip-comments.mjs'
 
 const ROOT = process.cwd()
@@ -195,31 +195,168 @@ const dangling = [...REFERENCED.entries()]
   .sort()
 
 /**
- * Files whose output is read somewhere that has no CSS engine of ours.
+ * PART THREE - a var() in markup that leaves the browser.
  *
- * Listed rather than inferred, and each with its reason, because the
- * distinction is about where the bytes end up and nothing in the path says so.
- * `lib/documents/printCss.ts` is deliberately absent: it is injected into a
- * page in the browser via <style>, where custom properties resolve normally.
+ * WHY THIS IS A GRAPH AND NOT A LIST OF FILENAMES
+ *
+ * It was a list of two filenames, `lib/email.ts` and
+ * `lib/documents/emailHtml.ts`, and both were clean, because both were where
+ * the defect was found the first time. The list was pinned to the two known
+ * offenders rather than to the property that defines the class. When the same
+ * markup was later written inside three API route handlers, this check
+ * examined them zero times and reported clean over thirty-eight unresolved
+ * custom properties in invoice, quotation and newsletter email.
+ *
+ * That is the ADR-0004 failure mode wearing a different coat. The check did not
+ * pass because it looked and found nothing. It passed because it only ever
+ * looked where the bug had already been fixed. A gate that must be extended by
+ * hand every time someone builds a new surface is a reminder, not a gate.
+ *
+ * THE INVARIANT THAT ACTUALLY MATTERS
+ *
+ * Not "this file is named email.ts". It is:
+ *
+ *   markup that reaches the mail transport must not reference a CSS custom
+ *   property, because nothing on the other side defines one.
+ *
+ * So the class is computed from the architecture. The transport is found by
+ * what it does, the module that posts to the Resend API, and the outbound set
+ * is everything that can reach it through local imports. A future route that
+ * imports `sendEmail` and writes `var(--brand-text)` joins the set the moment
+ * it is written, with nobody editing this file.
+ *
+ * WHAT IS EXCLUDED, AND WHY IT NEEDS NO EXCLUSION ENTRY
+ *
+ * `lib/documents/printCss.ts` uses `var(--brand-surface)` and is correct: it is
+ * injected into a page in the browser through a <style> element by
+ * `components/documents/DocumentPage.tsx`, where custom properties resolve
+ * normally. The old list had to name it in a comment to keep it out. The graph
+ * never reaches it, because no mail route imports it. The architecture does the
+ * classifying.
  */
-const NO_CUSTOM_PROPERTIES = [
-  { file: /lib[\/]email\.ts$/,                 why: 'transactional email markup' },
-  { file: /lib[\/]documents[\/]emailHtml\.ts$/, why: 'invoice and quotation email markup' },
-]
+
+/** Evidence of the transport itself: the module that posts to the mail API. */
+const TRANSPORT = /api\.resend\.com/
+
+/**
+ * Local import specifiers only. A package cannot be part of this app's graph.
+ *
+ * `[^'"]*?` rather than `[^'"\n]*` because an import statement wraps. The first
+ * draft of this regex forbade newlines, and `send-invoice/route.ts` imports
+ * eight named exports from `lib/documents/emailHtml` across four lines, so the
+ * edge was invisible and the file that builds the invoice letterhead sat
+ * outside the graph. A detector that silently sees less than it claims is the
+ * thing this whole part exists to stop, so it is worth saying twice: the bug
+ * was found by listing the set and reading it, not by the check going red.
+ */
+const IMPORTS = /(?:^|\n)\s*(?:import|export)[^'"]*?['"](@\/[^'"]+|\.[^'"]+)['"]/g
+
+/** A file is outbound markup only if it actually contains markup or style text. */
+const MARKUP = /<(?:div|p|td|tr|table|span|a|body|html|h[1-6])[\s>]|style="/
+
+/**
+ * Genuine browser-rendered sources that the graph reaches anyway.
+ *
+ * Empty, and it should stay that way. An entry here is a claim that a file
+ * reachable from the mail transport is nevertheless rendered by a browser, and
+ * it has to say who renders it. If you are adding one to make a build pass,
+ * the defect is real.
+ */
+const BROWSER_RENDERED = []
+
+/** Resolve a local specifier to a file on disk, or null. */
+function resolveLocal(spec, fromFile, appBase) {
+  const base = spec.startsWith('@/')
+    ? join(appBase, spec.slice(2))
+    : join(dirname(fromFile), spec)
+  const candidates = [base, base + '.ts', base + '.tsx', base + '.mjs',
+                      join(base, 'index.ts'), join(base, 'index.tsx')]
+  for (const cand of candidates) {
+    try { if (statSync(cand).isFile()) return cand } catch { /* not this one */ }
+  }
+  return null
+}
 
 let travellingChecked = 0
+let transportsFound = 0
 const travelling = []
+/**
+ * Which files the outbound rule actually covers.
+ *
+ * Printed on request, because "how many" is not an answer to "is my new email
+ * surface protected". The set is derived, so the only way to know what is in
+ * it is to ask:  TOKEN_INPUTS_LIST=1 npm run check:token-inputs
+ */
+const outboundFiles = []
+
 for (const app of APPS) {
-  const base = join(ROOT, 'apps', app)
-  if (!existsSync(base)) continue
-  for (const f of walk(base)) {
+  const appBase = join(ROOT, 'apps', app)
+  if (!existsSync(appBase)) continue
+  const files = walk(appBase)
+
+  // 1. The transport, by behaviour rather than by name.
+  const transports = files.filter((f) => TRANSPORT.test(readFileSync(f, 'utf8')))
+  if (transports.length === 0) continue
+  transportsFound += transports.length
+
+  // 2. Everything that can reach it. The question is "does this file's markup
+  //    end up in an email", and that is answered by what it flows into.
+  const importsOf = new Map()
+  for (const f of files) {
+    const src = stripComments(readFileSync(f, 'utf8'))
+    const targets = []
+    for (const m of src.matchAll(IMPORTS)) {
+      const r = resolveLocal(m[1], f, appBase)
+      if (r) targets.push(r)
+    }
+    importsOf.set(f, targets)
+  }
+
+  //    Two directions, and both are needed.
+  //
+  //    Upstream, by importer: a route that imports the transport sends mail, so
+  //    its own markup travels. That catches the three API handlers.
+  //
+  //    Downstream, by import: a module that a sender pulls in to build the
+  //    message also travels, even though it imports nothing itself. That
+  //    catches `lib/documents/emailHtml.ts`, which builds the invoice
+  //    letterhead and is one of the two files the old list named. Walking only
+  //    one direction would have quietly dropped it while appearing to widen
+  //    coverage.
+  const outbound = new Set(transports)
+  let grew = true
+  while (grew) {
+    grew = false
+    for (const [f, targets] of importsOf) {
+      if (outbound.has(f)) continue
+      if (targets.some((t) => outbound.has(t))) { outbound.add(f); grew = true }
+    }
+  }
+  grew = true
+  while (grew) {
+    grew = false
+    for (const f of [...outbound]) {
+      for (const t of importsOf.get(f) ?? []) {
+        if (!outbound.has(t)) { outbound.add(t); grew = true }
+      }
+    }
+  }
+
+  // 3. Of those, the ones that actually produce markup.
+  for (const f of outbound) {
     const rel = relative(ROOT, f).split(sep).join('/')
-    const rule = NO_CUSTOM_PROPERTIES.find((r) => r.file.test(rel))
-    if (!rule) continue
+    if (BROWSER_RENDERED.some((r) => r.file.test(rel))) continue
+    const src = stripComments(readFileSync(f, 'utf8'))
+    if (!MARKUP.test(src)) continue
     travellingChecked++
-    stripComments(readFileSync(f, 'utf8')).split('\n').forEach((line, i) => {
+    outboundFiles.push(rel)
+    src.split('\n').forEach((line, i) => {
       for (const m of line.matchAll(/var\(\s*(--[\w-]+)/g)) {
-        travelling.push({ where: rel + ':' + (i + 1), name: m[1], why: rule.why })
+        travelling.push({
+          where: rel + ':' + (i + 1),
+          name: m[1],
+          why: 'markup that reaches the mail transport',
+        })
       }
     })
   }
@@ -227,9 +364,15 @@ for (const app of APPS) {
 
 // A rule that examines no files reports nothing and looks identical to a rule
 // that examines many and finds nothing. ADR-0004.
+if (transportsFound === 0) {
+  console.error('token inputs: no mail transport found in any application.')
+  console.error('The outbound check has nothing to anchor to. Either the transport moved or')
+  console.error('its API host changed. Refusing to report clean.')
+  process.exit(1)
+}
 if (travellingChecked === 0) {
-  console.error('token inputs: no file matched the no-custom-properties list.')
-  console.error('Either the list is stale or the files moved. Refusing to report clean.')
+  console.error('token inputs: the mail transport is reachable from no markup at all.')
+  console.error('That is not plausible while the application sends email. Refusing to report clean.')
   process.exit(1)
 }
 
@@ -239,6 +382,9 @@ console.log(`${APPS.length} application(s), ${filesChecked} file(s) checked`)
 
 console.log(`custom properties: ${DEFINED.size} defined, ${REFERENCED.size} referenced by an application`)
 console.log(`${travellingChecked} file(s) whose output leaves the browser checked for custom properties`)
+if (process.env.TOKEN_INPUTS_LIST) {
+  for (const f of outboundFiles.sort()) console.log(`    ${f}`)
+}
 
 for (const [name, where] of dangling) {
   findings.push({ app: where, name, dangling: true })
