@@ -135,10 +135,10 @@
       "viewAll": "Fallstudien lesen",
       "p1Value": "Kein zweites Abtippen",
       "p1Label": "Eingehende Berichte werden gelesen, geprüft und an der richtigen Stelle abgelegt, ohne dass jemand sie erneut eingibt.",
-      "p1Source": "Betriebsmanagement · 6 Wochen",
+      "p1Source": "Betriebsmanagement",
       "p3Value": "Rechnungen entstehen von selbst",
       "p3Label": "Fahrerdaten, Tankprotokolle und Lieferbestätigungen ergeben einen Rechnungsentwurf, den ein Mensch freigibt, bevor er rausgeht.",
-      "p3Source": "Logistik · 8 Wochen"
+      "p3Source": "Logistik"
     },
     "tools": {
       "eyebrow": "Die Werkzeuge sind nicht der Punkt",

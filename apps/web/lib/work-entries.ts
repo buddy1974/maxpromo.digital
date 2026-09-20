@@ -55,9 +55,12 @@ export interface WorkEntry {
   readonly id: string
   /** Message key prefix under the `caseStudies` namespace. */
   readonly cs: string
-  /** Sector and duration, both already governed in that namespace. */
+  /**
+   * The sector. The duration used to sit beside it and does not any more:
+   * a project length is a quantity, the publication rule names time
+   * explicitly, and this repository holds no record of either figure.
+   */
   readonly tagKey: string
-  readonly timelineKey: string
   /**
    * What this entry leads with: the change to the work, not a measurement.
    *
@@ -85,12 +88,13 @@ export const WORK_ENTRIES: readonly WorkEntry[] = [
     id: 'operations-document-pipeline',
     cs: 'cs1',
     tagKey: 'cs1Tag',
-    timelineKey: 'cs1Timeline',
     /* The figure this entry used to lead with, 78%, is
        SOURCE_EXISTS_NEEDS_REVIEW in the claims registry and is not published
        here. The system change is. */
     headlineKey: 'w1Headline',
-    beforeKeys: ['cs1b1', 'cs1b2', 'cs1b3'],
+    /* cs1b1 held "over 60% of staff time" and is not published here. The two
+       that remain describe the same situation without measuring it. */
+    beforeKeys: ['cs1b2', 'cs1b3'],
     afterKeys: ['cs1s1', 'cs1s2', 'cs1s3'],
     evidence: ['before-after', 'workflow', 'case-study', 'private-demo'],
     capability: 'workflow-automation',
@@ -99,10 +103,12 @@ export const WORK_ENTRIES: readonly WorkEntry[] = [
     id: 'logistics-invoice-cycle',
     cs: 'cs3',
     tagKey: 'cs3Tag',
-    timelineKey: 'cs3Timeline',
     /* Same position: the 3-days-to-4-hours figure is not published here. */
     headlineKey: 'w2Headline',
-    beforeKeys: ['cs3b1', 'cs3b2', 'cs3b3'],
+    /* cs3b2 held "three full working days", the before half of the
+       3-days-to-4-hours figure. Publishing one end of an unevidenced
+       measurement is still publishing it. */
+    beforeKeys: ['cs3b1', 'cs3b3'],
     afterKeys: ['cs3s1', 'cs3s2', 'cs3s3'],
     evidence: ['before-after', 'workflow', 'case-study', 'private-demo'],
     capability: 'workflow-automation',

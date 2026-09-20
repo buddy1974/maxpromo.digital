@@ -116,6 +116,7 @@ if (commercialFiles.length === 0) {
 const forbidden = CLAIMS.filter((c) => !CLAIM_RULE[c.status].includes('commercial'))
 
 const findings = []
+const unclassified = []
 let filesChecked = 0
 
 for (const f of commercialFiles) {
@@ -140,6 +141,43 @@ for (const f of commercialFiles) {
   }
 }
 
+/**
+ * PART TWO — a quantity from the case studies that nobody has classified.
+ *
+ * Part one enforces the registry. This catches the case the registry cannot:
+ * someone builds a page next year, reaches for a `caseStudies` key that has a
+ * number in it, and nobody ever recorded that number as a claim. The registry
+ * only protects what is in it, which is the enumeration failure ADR-0015 is
+ * about, one level up.
+ *
+ * Scope is deliberately narrow. Only the `caseStudies` namespace, because that
+ * is where statements about delivered client work live, and a general
+ * numbers-in-copy detector would flag "five kinds of work" and "fifteen years"
+ * and be switched off within a week.
+ *
+ * A counting word doing grammatical work is not a claim: "into one pipeline"
+ * asserts nothing about an outcome. Digits, and the written numbers above two,
+ * are what get flagged.
+ */
+const QUANTITY = /\d|\b(three|four|five|six|seven|eight|nine|ten|dozen|hundred|thousand)\b/i
+
+const catalogue = JSON.parse(
+  readFileSync(join(ROOT, 'apps', 'web', 'messages', 'en.json'), 'utf8'),
+)
+const registered = new Set(CLAIMS.flatMap((c) => c.keys.map((k) => k.split('.').pop())))
+
+for (const f of commercialFiles) {
+  const rel = relative(ROOT, f).split(sep).join('/')
+  const src = stripComments(readFileSync(f, 'utf8'))
+  for (const [leaf, text] of Object.entries(catalogue.caseStudies ?? {})) {
+    if (typeof text !== 'string') continue
+    if (registered.has(leaf)) continue
+    if (!QUANTITY.test(text)) continue
+    if (!new RegExp(`['"\`]${leaf}['"\`]`).test(src)) continue
+    unclassified.push({ where: rel, leaf, text })
+  }
+}
+
 console.log('='.repeat(74))
 console.log('CLAIMS REGISTRY')
 console.log(`${CLAIMS.length} claim(s) recorded · ${forbidden.length} not permitted on a commercial page`)
@@ -149,10 +187,20 @@ const byStatus = {}
 for (const c of CLAIMS) byStatus[c.status] = (byStatus[c.status] ?? 0) + 1
 for (const [s, n] of Object.entries(byStatus)) console.log(`  ${s.padEnd(28)} ${n}`)
 
-if (findings.length === 0) {
+const total = findings.length + unclassified.length
+
+if (total === 0) {
   console.log('\nCLAIMS: clean — no unevidenced claim is rendered on a page that persuades')
 } else {
-  console.log(`\nCLAIMS: ${findings.length} finding(s)\n`)
+  console.log(`\nCLAIMS: ${total} finding(s)\n`)
+  for (const u of unclassified) {
+    console.log(`  caseStudies.${u.leaf} is used by ${u.where} and carries a quantity`)
+    console.log(`      "${u.text.slice(0, 88)}"`)
+    console.log('      Nothing in the registry says whether this can be evidenced, so')
+    console.log('      nobody has decided it may persuade. Classify it in')
+    console.log('      packages/config/claims.ts.')
+    console.log('')
+  }
   for (const f of findings) {
     console.log(`  ${f.key} is used by ${f.where}`)
     console.log(`      "${f.claim.claim}" — ${f.claim.status}`)

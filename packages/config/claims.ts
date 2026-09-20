@@ -77,7 +77,28 @@ export interface Claim {
 }
 
 /**
- * The publication rule, stated once so no page has to decide for itself:
+ * THE PUBLICATION RULE
+ *
+ *   An unsupported quantitative claim may not be used to persuade.
+ *
+ * That is the whole rule, and it is deliberately broader than the distinction
+ * it replaced. The first version of this registry separated a "result" from a
+ * "before state", on the reasoning that a number describing the problem a
+ * client arrived with is not a claim about delivered work. ADR-0007 makes that
+ * distinction and it is a reasonable one.
+ *
+ * Marcel's decision, 2026-09-20: it is not the rule this company runs. A figure
+ * with no evidence behind it does the same persuading whichever end of the
+ * story it sits at. "Over 60% of staff time went on manual data entry" is doing
+ * work on the page, and the repository cannot support it any better than it can
+ * support the 78% that followed it.
+ *
+ * So the rule applies to a quantity regardless of what it describes:
+ *
+ *   before state · after state · result · saving · time · percentage ·
+ *   volume · performance · improvement · duration
+ *
+ * By status:
  *
  *   VERIFIED                   → commercial and archive
  *   SOURCE_EXISTS_NEEDS_REVIEW → archive only
@@ -85,8 +106,15 @@ export interface Claim {
  *   HEDGED                     → archive only
  *
  * Nothing is deleted. A claim that cannot appear on a commercial page keeps
- * its place in the case studies, where the page's own framing applies and
+ * its place in the case studies, where the page records what was said and
  * where the company's history stays readable.
+ *
+ * WHAT IS NOT A QUANTITATIVE CLAIM
+ *
+ * A counting word doing grammatical work: "into one pipeline", "a second
+ * system". The test is whether removing the number changes what the sentence
+ * asserts about an outcome. "One pipeline" survives the test; "three working
+ * days" does not.
  */
 export const CLAIM_RULE: Record<ClaimStatus, readonly ClaimSurface[]> = {
   VERIFIED:                   ['commercial', 'archive'],
@@ -126,6 +154,64 @@ export const CLAIMS: readonly Claim[] = [
     source: 'Same commit, same absence.',
     allowedOn: ['archive'],
     toUpgrade: 'The before and after measurement, and how error was defined.',
+  },
+  {
+    id: 'cs1-60-percent-before',
+    claim: 'Over 60% of staff time went on manual data entry',
+    keys: ['caseStudies.cs1b1'],
+    status: 'SOURCE_EXISTS_NEEDS_REVIEW',
+    source:
+      'Same commit, same absence. Describes the state the client arrived in ' +
+      'rather than the outcome, which ADR-0007 treats as a softer case. The ' +
+      'publication rule above deliberately does not.',
+    allowedOn: ['archive'],
+    toUpgrade: 'How the 60% was arrived at, and over what period.',
+  },
+  {
+    id: 'cs3-3-days-before',
+    claim: 'Three full working days per billing cycle',
+    keys: ['caseStudies.cs3b2'],
+    status: 'SOURCE_EXISTS_NEEDS_REVIEW',
+    source:
+      'Same commit, same absence. This is the "before" half of the 3-days-to-' +
+      '4-hours claim, so publishing it while withholding the other half would ' +
+      'state the same unevidenced measurement with one end hidden.',
+    allowedOn: ['archive'],
+    toUpgrade: 'The measurement of the original cycle.',
+  },
+  {
+    id: 'cs1-timeline',
+    claim: 'Delivered in 6 weeks',
+    keys: ['caseStudies.cs1Timeline'],
+    status: 'SOURCE_EXISTS_NEEDS_REVIEW',
+    source:
+      'Same commit, same absence. A duration is a quantity and the rule names ' +
+      'time explicitly. It describes how long Maxpromo took rather than what ' +
+      'the client measured, which makes it the easiest of these to evidence ' +
+      'and does not exempt it in the meantime.',
+    allowedOn: ['archive'],
+    toUpgrade: 'A project record showing the start and the go-live date.',
+  },
+  {
+    id: 'cs3-timeline',
+    claim: 'Delivered in 8 weeks',
+    keys: ['caseStudies.cs3Timeline'],
+    status: 'SOURCE_EXISTS_NEEDS_REVIEW',
+    source: 'Same commit, same absence. Same reasoning as cs1-timeline.',
+    allowedOn: ['archive'],
+    toUpgrade: 'A project record showing the start and the go-live date.',
+  },
+  {
+    id: 'home-durations',
+    claim: 'Project durations shown beside the homepage evidence items',
+    keys: ['home.evidence.p1Source', 'home.evidence.p3Source'],
+    status: 'SOURCE_EXISTS_NEEDS_REVIEW',
+    source:
+      'Written during Phase A as "Operations · 6 weeks" and "Logistics · 8 ' +
+      'weeks". The sector is not a claim; the duration is the same unevidenced ' +
+      'figure as cs1-timeline and cs3-timeline, restated in different words.',
+    allowedOn: ['archive'],
+    toUpgrade: 'The same project records.',
   },
   {
     id: 'cs2-14000',

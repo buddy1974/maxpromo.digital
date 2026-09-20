@@ -37,7 +37,7 @@ run on developer machines and never in CI.
 | 12 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
 | 13 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
 | 14 | **Production build** `build` | Every application builds |
-| 16 | **Claim registry** `check:claims` | An unevidenced claim about a delivered client outcome may not appear on a page whose job is to persuade. Status lives in `packages/config/claims.ts`; the check reads every commercial route source, and its component and lib modules, and fails when one reaches a claim the registry places below `VERIFIED`. Commercial surfaces are derived from the route, so a new page is covered the day it exists. See *Two claims checks, and why one blocks* |
+| 16 | **Claim registry** `check:claims` | An unsupported quantitative claim may not be used to persuade. Status lives in `packages/config/claims.ts`; the check reads every commercial route source and its component and lib modules, and fails when one reaches a claim the registry places below `VERIFIED`. A second pass fails on any `caseStudies` string carrying a quantity that no claim record classifies, so a figure nobody has ruled on cannot reach a commercial page by being overlooked. Commercial surfaces are derived from the route, so a new page is covered the day it exists. See *Two claims checks, and why one blocks* |
 | 17 | **Evidence isolation** `prove:evidence-isolation` | Proves the synthetic evidence environment cannot reach production, cannot read a production row, cannot delete a row it did not write, and cannot send. Twenty-three properties, each set up as a violation that must be refused. Verified to fail when the outbound guard is removed |
 | 15 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS, shared CSS, route-delivered CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built. One row, total CSS, is reported and never enforced — see *The CSS budget is three numbers* |
 
@@ -469,7 +469,22 @@ fix is always the same: take it off the page. So it blocks.
 They are not two implementations of one thing. One asks whether something is
 wrong; the other asks whether a decision already taken is being obeyed.
 
-**The publication rule**, stated once so no page decides for itself:
+**The rule itself:** *an unsupported quantitative claim may not be used to
+persuade.* Marcel's decision, 2026-09-20, and deliberately broader than the
+distinction it replaced. An earlier version separated a result from a
+before-state, on the reasoning that a number describing the problem a client
+arrived with says nothing about delivered work. ADR-0007 makes that distinction
+and it is defensible. It is not the rule this company runs: a figure with no
+evidence behind it does the same persuading whichever end of the story it sits
+at. The rule applies to a quantity describing a before state, an after state, a
+result, a saving, a time, a percentage, a volume, a performance, an improvement
+or a duration.
+
+A counting word doing grammatical work is not a claim. "Into one pipeline"
+asserts nothing about an outcome. The test is whether removing the number
+changes what the sentence claims.
+
+**By status**, stated once so no page decides for itself:
 
 | Status | May appear on |
 |---|---|

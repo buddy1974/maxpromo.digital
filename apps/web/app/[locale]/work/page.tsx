@@ -120,8 +120,6 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
                 <header className="we-head">
                   <p className="we-meta">
                     <span className="we-tag">{tcs(e.tagKey)}</span>
-                    <span aria-hidden="true"> · </span>
-                    <span>{tcs(e.timelineKey)}</span>
                   </p>
                   <h3 className="we-headline">{tw(e.headlineKey)}</h3>
                 </header>

@@ -135,10 +135,10 @@
       "viewAll": "Read the case studies",
       "p1Value": "No more retyping",
       "p1Label": "Incoming reports are read, checked and filed into the right place without anyone entering them a second time.",
-      "p1Source": "Operations · 6 weeks",
+      "p1Source": "Operations",
       "p3Value": "Invoices assemble themselves",
       "p3Label": "Driver data, fuel logs and delivery confirmations compile one draft invoice, and a person approves it before it goes.",
-      "p3Source": "Logistics · 8 weeks"
+      "p3Source": "Logistics"
     },
     "tools": {
       "eyebrow": "The tools aren’t the point",
