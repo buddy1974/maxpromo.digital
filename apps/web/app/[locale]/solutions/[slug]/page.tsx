@@ -20,8 +20,20 @@ import { SOLUTIONS, getSolution, asLocale } from '@/lib/solutions'
  * page never prints.
  */
 
+/**
+ * Slugs that now have a page of their own.
+ *
+ * `workflow-automation` was a solution entry here and is now a Phase A
+ * commercial page at `solutions/workflow-automation/page.tsx` (ADR-0016). A
+ * static segment wins over a dynamic one at request time, but generating the
+ * same path from both is a build conflict, so it is excluded here rather than
+ * deleted from `SOLUTIONS` — the entry still feeds the family listings and the
+ * URL is unchanged for anyone who has it.
+ */
+const HAS_OWN_PAGE = new Set(['workflow-automation'])
+
 export function generateStaticParams() {
-  return SOLUTIONS.map((s) => ({ slug: s.slug }))
+  return SOLUTIONS.filter((s) => !HAS_OWN_PAGE.has(s.slug)).map((s) => ({ slug: s.slug }))
 }
 
 export async function generateMetadata(

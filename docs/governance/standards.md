@@ -290,6 +290,19 @@ and none of these is a defect to be fixed in passing:
 | `components/landing/sections/ProblemSolution.tsx` | `painImages` optional, conditional | when product pages are rebuilt |
 | `app/[locale]/blog/[slug]/page.tsx` | cover image conditional | when the article surface is rebuilt |
 
+**Assets Phase A is waiting for.** Every position below is built, reserved and
+labelled; none of them blocks anything. Replacing a placeholder means putting
+the file in place, not changing a layout.
+
+| Page | Section | Asset | Ratio | Must show | Priority |
+|---|---|---|---|---|---|
+| `/solutions/workflow-automation` | proof | real system screenshot | 16:10 | work moving through an actual system, no customer records | HIGH |
+| `/solutions/custom-applications` | proof | real interface screenshot | 16:10 | a focused internal screen, not a dashboard mock | HIGH |
+| `/work` | entry: operations | workflow diagram | 16:9 | how the document pipeline routes and where a person approves | MEDIUM |
+| `/work` | entry: logistics | workflow diagram | 16:9 | the sources feeding one invoice draft | MEDIUM |
+| `/work` | entry (either) | short screen recording | 16:9 | a run through the real system, client-approved | LOW |
+| homepage | founder | photograph of Marcel | 4:5 | him, real, no generated likeness | HIGH |
+
 ProductGallery is the one case with a standing instruction of its own. Its
 header records Marcel's direction of 2026-07-25, stated twice, that a product
 page must show no empty frame and no "screens coming soon" message, and it

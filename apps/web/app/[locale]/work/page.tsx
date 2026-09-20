@@ -2,7 +2,10 @@ import type { Metadata } from 'next'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
+import { SectionHeader } from '@maxpromo/ui'
 import { DEMOS } from '@/lib/demo/registry'
+import { WORK_ENTRIES, CAPABILITY_HREF } from '@/lib/work-entries'
+import './work.css'
 
 /**
  * app/[locale]/work/page.tsx — public.
@@ -48,6 +51,8 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   setRequestLocale(locale)
   const t = await getTranslations('work')
+  const tw = t
+  const tcs = await getTranslations('caseStudies')
 
   /** Public previews only. Empty until a demo is both configured and cleared
    *  for public preview — never merely because the page has space. */
@@ -97,6 +102,95 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* The proof entries. Each renders what it declares it has and nothing
+          more, so an entry that gains an approved screenshot later gains a
+          screenshot rather than forcing a redesign. lib/work-entries.ts holds
+          the claims audit that decides what appears at all. */}
+      <section className="section surface-plain" data-section="delivered">
+        <div className="container">
+          <SectionHeader label={tw('provenEyebrow')}>{tw('provenTitle')}</SectionHeader>
+          <p className="sec-lede" style={{ margin: '0 0 var(--space-8)' }}>{tw('provenLede')}</p>
+
+          <div className="we-list">
+            {WORK_ENTRIES.map((e) => (
+              <article key={e.id} className="we" data-entry={e.id}>
+                <header className="we-head">
+                  <p className="we-meta">
+                    <span className="we-tag">{tcs(e.tagKey)}</span>
+                    <span aria-hidden="true"> · </span>
+                    <span>{tcs(e.timelineKey)}</span>
+                  </p>
+                  <h3 className="we-headline">{tcs(e.headlineKey)}</h3>
+                </header>
+
+                <div className="we-body">
+                  {e.evidence.includes('before-after') && (
+                    <div className="we-ba">
+                      <div>
+                        <p className="we-ba-label">{tw('beforeLabel')}</p>
+                        <ul className="we-ba-list we-ba-before">
+                          {e.beforeKeys.map((k) => <li key={k}>{tcs(k)}</li>)}
+                        </ul>
+                      </div>
+                      <div>
+                        <p className="we-ba-label we-ba-label-after">{tw('afterLabel')}</p>
+                        <ul className="we-ba-list we-ba-after">
+                          {e.afterKeys.map((k) => <li key={k}>{tcs(k)}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {e.resultKeys.length > 0 && (
+                    <div className="we-results">
+                      <p className="we-ba-label">{tw('resultsLabel')}</p>
+                      <ul className="we-results-list">
+                        {e.resultKeys.map((k) => <li key={k}>{tcs(k)}</li>)}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                <footer className="we-foot">
+                  {e.evidence.includes('case-study') && (
+                    <Link href="/case-studies" className="quiet-link">{tw('readCase')}</Link>
+                  )}
+                  {e.evidence.includes('private-demo') && (
+                    <Link
+                      href={`/contact?intent=demo&project=${e.id}&source=work`}
+                      className="btn btn-sm"
+                    >
+                      {tw('askDemo')}
+                    </Link>
+                  )}
+                  {CAPABILITY_HREF[e.capability] && (
+                    <Link href={CAPABILITY_HREF[e.capability]} className="quiet-link">
+                      {tw('relatedLabel')}
+                    </Link>
+                  )}
+                </footer>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What can be shown and what cannot, said plainly rather than left for
+          the visitor to wonder about. */}
+      <section className="section-compact surface-evidence" data-section="evidence-policy">
+        <div className="container">
+          <SectionHeader label={tw('evidenceEyebrow')}>{tw('evidenceTitle')}</SectionHeader>
+          <ul className="we-policy">
+            {(['e1', 'e2', 'e3'] as const).map((k) => (
+              <li key={k} className="we-policy-item">
+                <h3 className="we-policy-title">{tw(`${k}Title`)}</h3>
+                <p className="we-policy-body">{tw(`${k}Body`)}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

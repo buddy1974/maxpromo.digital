@@ -1154,6 +1154,13 @@ main { display: block; }
   text-decoration: none;
   transition: border-color var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
 }
+/* Same 6px padding, same 36px result, same thumb. The example links under
+   each operating family are the last controls on What We Do still below the
+   floor. Mobile only: on desktop these are a compact row of small links and
+   should stay one. */
+@media (max-width: 768px) {
+  .family-example { min-height: 44px; }
+}
 a.family-example:hover,
 a.family-example:focus-visible { border-color: var(--brand-text); color: var(--brand-text); }
 
@@ -2337,6 +2344,13 @@ a.family-example:focus-visible { border-color: var(--brand-text); color: var(--b
   white-space: nowrap;
   transition: border-color var(--duration-fast) var(--ease),
               background-color var(--duration-fast) var(--ease);
+}
+/* 6px of padding makes a 33px target. The rail is the first thing a thumb
+   meets on What We Do, so it gets the 44px floor on a phone. Desktop keeps the
+   compact row: a rail of five that is 44px tall on a 1440px screen reads as a
+   button bar rather than a table of contents. */
+@media (max-width: 768px) {
+  .rail-item { min-height: 44px; }
 }
 .rail-item:hover,
 .rail-item:focus-visible { border-color: var(--brand-border-strong); background: var(--brand-surface-subtle); }

@@ -1,0 +1,368 @@
+/* ─── Phase A commercial surfaces ──────────────────────────────────────────
+   What We Do, and the two capability pages under it.
+
+   Route-scoped on purpose. These rules serve three routes and nothing else,
+   so they are imported by those pages rather than written into globals.css,
+   where every visitor to every page would download them. That is the split
+   `web.shared-css` exists to protect (ADR in docs/governance/standards.md,
+   "The CSS budget is three numbers").
+
+   Everything here composes with the shared section, surface and container
+   classes. Nothing redefines a colour, a radius or a duration. */
+
+/* ─── What We Do: the five shapes of problem ───────────────────────────── */
+.wwd-cases {
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-4);
+  max-width: 54rem;
+}
+.wwd-case {
+  padding-left: var(--space-5);
+  border-left: 2px solid var(--brand-border);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+/* The one line that takes the choosing off the reader carries the weight. */
+.wwd-close {
+  margin: 0;
+  max-width: 44rem;
+  font-size: var(--text-h4);
+  line-height: var(--leading-tight);
+  color: var(--brand-text);
+}
+
+/* ─── What We Do: how it starts ───────────────────────────────────────── */
+.wwd-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+}
+@media (min-width: 900px) {
+  /* minmax(0, 1fr), never a bare 1fr. A grid item's automatic minimum is its
+     min-content width, and "Zusammenarbeit" does not shrink. */
+  .wwd-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-8); }
+}
+.wwd-step { min-width: 0; }
+.wwd-step-title {
+  margin: var(--space-2) 0 var(--space-2);
+  font-size: var(--text-h4);
+  line-height: var(--leading-tight);
+}
+.wwd-step-body {
+  margin: 0;
+  max-width: 28rem;
+  color: var(--brand-text-secondary);
+  line-height: var(--leading-body);
+}
+
+/* ─── Shared closing block ────────────────────────────────────────────── */
+.wwd-close-block { max-width: 44rem; }
+.wwd-close-body {
+  margin: 0 0 var(--space-6);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+.wwd-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* ─── Capability section actions ──────────────────────────────────────── */
+.cap-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+/* The honest note under a capability that has not been rebuilt. Smaller than
+   the body it follows, because it is a status and not an argument. */
+.cap-later {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-muted);
+}
+
+/* ─── Capability page: recognisable situations ────────────────────────── */
+.cp-familiar {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+@media (min-width: 720px) {
+  .cp-familiar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4) var(--space-6); }
+}
+.cp-familiar li {
+  display: flex;
+  gap: var(--space-3);
+  min-width: 0;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+/* A small square rather than a bullet or a tick. A tick would read as a
+   feature list; these are the reader's problems, not our features. */
+.cp-familiar li::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-top: 0.62em;
+  border: 1px solid var(--brand-border-strong);
+}
+
+/* ─── Capability page: what it means ──────────────────────────────────── */
+.cp-means {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  counter-reset: cpmeans;
+}
+@media (min-width: 720px)  { .cp-means { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .cp-means { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-5); } }
+.cp-mean {
+  min-width: 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--brand-border);
+}
+.cp-mean-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-small);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+}
+.cp-mean-body {
+  margin: 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+/* The last of the five is the one about people deciding. It is the point of
+   the section, so it gets the only accented edge on the page. */
+.cp-mean-human { border-top-color: var(--brand-primary); }
+
+/* ─── Capability page: what we build ──────────────────────────────────── */
+.cp-build {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+}
+@media (min-width: 720px) { .cp-build { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6); } }
+.cp-build-item {
+  min-width: 0;
+  padding: var(--space-5);
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+}
+.cp-build-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-h4);
+  line-height: var(--leading-tight);
+}
+.cp-build-body {
+  margin: 0;
+  color: var(--brand-text-secondary);
+  line-height: var(--leading-body);
+}
+
+/* ─── Capability page: the honest caveat ──────────────────────────────── */
+.cp-honest {
+  max-width: 46rem;
+  padding: var(--space-6);
+  background: var(--brand-surface-accent);
+  border-radius: var(--radius-lg);
+}
+.cp-honest p { margin: 0 0 var(--space-4); line-height: var(--leading-body); }
+.cp-honest p:last-child { margin-bottom: 0; font-weight: 600; }
+
+/* ─── Capability page: the human-control note ─────────────────────────── */
+.cp-human { max-width: 46rem; }
+.cp-human-body {
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+
+/* ─── Capability page: proof position ─────────────────────────────────── */
+.cp-proof { max-width: 68rem; }
+.cp-proof-note {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-muted);
+}
+
+/* ─── Capability page: back link ──────────────────────────────────────── */
+.cp-back { margin: 0 0 var(--space-5); }
+
+@media (prefers-reduced-motion: reduce) {
+  .wwd-case, .cp-familiar li { transition: none; }
+}
+
+/* ─── FlowContrast: the same enquiry, twice ───────────────────────────────
+   The two rows share every dimension so the difference a reader sees is the
+   path and nothing else. Before: broken segments with a gap under each
+   hand-off. After: one continuous line. */
+.fc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  /* The section header above sets its own bottom margin for a paragraph, and
+     the first caption here is a label rather than a paragraph, so it landed
+     almost against the heading. */
+  margin-top: var(--space-6);
+  gap: var(--space-8);
+  max-width: 68rem;
+}
+@media (min-width: 1000px) { .fc { gap: var(--space-10); } }
+
+.fc-figure { margin: 0; }
+.fc-caption {
+  margin: 0 0 var(--space-4);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+}
+.fc-caption-after { color: var(--brand-text); }
+
+.fc-row {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-4);
+}
+/* Five across once there is room. Below that the row becomes a column, which
+   is the honest mobile form of a sequence: still ordered, still readable, and
+   not a five-column grid crushed to 60px. */
+@media (min-width: 760px) {
+  .fc-row {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-5);
+  }
+}
+
+.fc-step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+@media (min-width: 760px) {
+  .fc-step { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+}
+
+.fc-disc {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--brand-border);
+  background: var(--brand-surface);
+  color: var(--brand-text-secondary);
+}
+.fc-label {
+  min-width: 0;
+  font-size: var(--text-micro);
+  line-height: var(--leading-tight);
+  color: var(--brand-text-secondary);
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* The connector. Drawn from each step to the next, never after the last. */
+@media (min-width: 760px) {
+  .fc-step::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    right: calc(var(--space-5) * -1);
+    height: 1px;
+  }
+  .fc-step:last-child::after { display: none; }
+  /* Before: the line does not reach. That gap is the hand-off. */
+  .fc-row-before .fc-step::after {
+    background: var(--brand-border);
+    right: calc(var(--space-5) * -1 + 10px);
+    opacity: 0.7;
+  }
+  .fc-row-after .fc-step::after { background: var(--brand-border-strong); }
+}
+
+/* The one step a person approves. The only accent in the figure. */
+.fc-step-human .fc-disc {
+  border-color: var(--brand-primary);
+  color: var(--brand-text);
+}
+.fc-step-human .fc-label { color: var(--brand-text); font-weight: 600; }
+
+/* The record travelling the finished line, once. */
+@media (min-width: 760px) {
+  .fc-travel {
+    position: absolute;
+    top: 18px;
+    left: 40px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--brand-primary-dark);
+    animation: fc-move 5.5s var(--ease) 0.4s infinite;
+  }
+  @keyframes fc-move {
+    0%        { transform: translateX(0);      opacity: 0; }
+    6%        { opacity: 1; }
+    60%, 100% { transform: translateX(calc(100% + 60vw)); opacity: 0; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fc-travel { animation: none; display: none; }
+}
+
+/* ─── German CTA labels are longer than English ones ──────────────────────
+   `.btn` in the shared component layer sets `white-space: nowrap`, which is
+   right for a button whose label is two words and wrong for one whose label
+   is "Zeigen Sie uns die wiederkehrende Arbeit". At 390px that button was
+   396px wide and pushed the page sideways; at 320px all three closing CTAs
+   did. English never showed it, which is the same shape of bug as every other
+   German wrapping defect on this platform.
+
+   Scoped to these rows rather than fixed on `.btn`, because a nowrap button
+   is correct nearly everywhere else and this is a property of the sentence,
+   not of the control. Higher specificity, so source order is not load-bearing. */
+.wwd-cta-row .btn,
+.cap-actions .btn,
+.we-foot .btn {
+  white-space: normal;
+  text-align: center;
+}

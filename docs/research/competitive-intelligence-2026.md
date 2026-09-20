@@ -993,6 +993,11 @@ that states a figure, and demo access decisions.
 
 ## 23. New backlog
 
+> **Superseded 2026-09-20 by `docs/adr/0016-the-site-is-an-acquisition-system.md`.**
+> Marcel approved a phased order there, and that table is the one to follow.
+> This section is kept unchanged because it is the reasoning the decision was
+> made from, not because it is still the plan.
+
 **NOW** (small, unblocks everything else)
 
 1. Decide the fate of the thirteen legacy articles. Live line of work, or

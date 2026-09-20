@@ -8,6 +8,7 @@ import { OperatingFlow } from '@/components/ui/OperatingFlow'
 import { ArchitectureMap } from '@/components/ui/ArchitectureMap'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
 import { CapabilityRail } from '@/components/ui/CapabilityRail'
+import './solutions.css'
 
 /**
  * app/[locale]/solutions/page.tsx
@@ -38,6 +39,28 @@ import { CapabilityRail } from '@/components/ui/CapabilityRail'
  */
 
 const FLOW_KEYS = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7'] as const
+
+/**
+ * Where each capability's own page lives, and how honestly it is presented.
+ *
+ * Two of the five have been rebuilt as Phase A commercial pages (ADR-0016) and
+ * get the prominent link. Two point at the existing page that already
+ * describes that work, checked against its own title rather than assumed:
+ * `websites-platforms` is "Websites and legacy systems" and `social-media` is
+ * "Content and visibility". Those links are quiet and labelled as what they
+ * are, because the page is not going to imply a rewrite that has not happened.
+ *
+ * `product-operations` has no page at all, so it gets no link. An anchor that
+ * goes nowhere is worse than an absent one.
+ */
+const CAPABILITY_PAGE: Record<string, string | undefined> = {
+  'workflow-automation': '/solutions/workflow-automation',
+  'custom-applications': '/solutions/custom-applications',
+  'web-development':     '/solutions/websites-platforms',
+  'content-operations':  '/solutions/social-media',
+  'product-operations':  undefined,
+}
+const REBUILT = new Set(['workflow-automation', 'custom-applications'])
 
 /** Governed icon per family, so the scene and the list below it agree. */
 const FAMILY_ICON: Record<string, IconName> = {
@@ -75,31 +98,48 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
   const tFlow = await getTranslations('flow')
   const tScene = await getTranslations('scenes')
   const tCap = await getTranslations('capabilities')
+  const tWwd = await getTranslations('whatWeDo')
 
   const solution = (slug: string) => SOLUTIONS.find((s) => s.slug === slug)
 
   return (
     <>
-      {/* Opening statement, on the authority surface. */}
+      {/* Opening statement, on the authority surface.
+          Problem-led, not a catalogue. The previous version opened with "five
+          kinds of work", which asks the reader to choose a category before
+          anyone has acknowledged what brought them here. Naming the five is
+          still this page's job; it is just not its first sentence. */}
       <section className="section-feature surface-authority">
         <div className="container">
           <div className="sec-head sec-head-wide" style={{ marginBottom: 0 }}>
-            <p className="section-label">{isDE ? 'Leistungen' : 'Solutions'}</p>
-            <h1 style={{ margin: '0 0 var(--space-5)' }}>
-              {isDE ? 'Wir arbeiten am Ablauf, nicht am Werkzeug.' : 'We work on the process, not the tool.'}
-            </h1>
-            <p className="sec-lede" style={{ margin: 0 }}>
-              {isDE
-                ? 'Fünf Arten von Arbeit, und darunter ein Betrieb. Fangen Sie mit der an, wegen der Sie hier sind.'
-                : 'Five kinds of work, and one operation underneath them. Start with the one you came for.'}
-            </p>
+            <p className="section-label">{tWwd('eyebrow')}</p>
+            <h1 style={{ margin: '0 0 var(--space-5)' }}>{tWwd('title')}</h1>
+            <p className="sec-lede" style={{ margin: 0 }}>{tWwd('lede')}</p>
           </div>
         </div>
       </section>
 
-      {/* The five, as jump links, directly under the statement. This is the
-          page's table of contents and its answer to "do you do the thing I
-          need" at the same time. */}
+      {/* The argument the page is actually making, before the menu.
+          Five sentences, each a different shape of problem, so a reader who
+          does not know what they need recognises their situation rather than
+          picking a service. The closing line takes the choosing off them. */}
+      <section className="section surface-plain" data-section="different-answers">
+        <div className="container">
+          <div className="sec-head">
+            <p className="section-label">{tWwd('diffEyebrow')}</p>
+            <h2 style={{ margin: 0 }}>{tWwd('diffTitle')}</h2>
+          </div>
+          <ul className="wwd-cases">
+            {(['d1', 'd2', 'd3', 'd4', 'd5'] as const).map((k) => (
+              <li key={k} className="wwd-case">{tWwd(k)}</li>
+            ))}
+          </ul>
+          <p className="wwd-close">{tWwd('diffClose')}</p>
+        </div>
+      </section>
+
+      {/* The five, as jump links. This is the page's table of contents and its
+          answer to "do you do the thing I need" at the same time. */}
       <CapabilityRail
         label={tCap('railLabel')}
         items={CAPABILITIES.map((c) => ({ id: c.id, icon: c.icon, name: tCap(`${c.key}Name`) }))}
@@ -126,11 +166,33 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
               <div>
                 <p className="cap-pain">{tCap(`${c.key}Pain`)}</p>
                 <p className="cap-does">{tCap(`${c.key}Does`)}</p>
-                {/* Carries which capability the reader was looking at into the
-                    contact page, so the first conversation starts from it. */}
-                <Link href={`/contact?capability=${c.id}`} className="quiet-link">
-                  {isDE ? 'Darüber sprechen' : 'Talk about this'}
-                </Link>
+
+                <div className="cap-actions">
+                  {REBUILT.has(c.id) && CAPABILITY_PAGE[c.id] ? (
+                    <Link href={CAPABILITY_PAGE[c.id]!} className="btn btn-sm">
+                      {tWwd('capReady')}
+                    </Link>
+                  ) : null}
+
+                  {/* Carries which capability the reader was looking at into
+                      the contact page, so the first conversation starts from
+                      it rather than from a blank form. */}
+                  <Link href={`/contact?capability=${c.id}`} className="quiet-link">
+                    {isDE ? 'Darüber sprechen' : 'Talk about this'}
+                  </Link>
+                </div>
+
+                {/* The three not yet rebuilt say so, and still go somewhere
+                    real where a page exists. Silence here would read as
+                    "coming soon", which is a thing this site does not say. */}
+                {!REBUILT.has(c.id) && CAPABILITY_PAGE[c.id] ? (
+                  <p className="cap-later">
+                    {tWwd('capLater')}{' '}
+                    <Link href={CAPABILITY_PAGE[c.id]!} className="quiet-link">
+                      {tCap(`${c.key}Cta`)}
+                    </Link>
+                  </p>
+                ) : null}
               </div>
             </div>
 
@@ -278,20 +340,40 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
         </div>
       </section>
 
-      <section className="section surface-authority">
+      {/* What happens after someone writes in. Three steps, and the third one
+          says out loud that the answer can be "you do not need us". A page
+          that cannot say that is a brochure. */}
+      <section className="section surface-plain" data-section="how-it-starts">
         <div className="container">
-          <div style={{ maxWidth: '40rem' }}>
-            <h2 style={{ margin: '0 0 var(--space-4)' }}>
-              {isDE ? 'Nicht sicher, was davon passt?' : 'Not sure which of these applies?'}
-            </h2>
-            <p style={{ margin: '0 0 var(--space-6)', fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)' }}>
-              {isDE
-                ? 'Das ist normal. Meistens ist das genannte Problem ein Symptom eines anderen. Ein Gespräch klärt das schneller als eine Auswahl auf einer Website.'
-                : 'That is normal. The problem people name is usually a symptom of a different one. A conversation settles that faster than a menu on a website.'}
-            </p>
-            <Link href="/contact" className="btn btn-primary">
-              {isDE ? 'Gespräch vereinbaren' : 'Start a conversation'}
-            </Link>
+          <div className="sec-head">
+            <p className="section-label">{tWwd('startEyebrow')}</p>
+            <h2 style={{ margin: 0 }}>{tWwd('startTitle')}</h2>
+          </div>
+          <ol className="wwd-steps">
+            {(['s1', 's2', 's3'] as const).map((k, i) => (
+              <li key={k} className="wwd-step">
+                <p className="family-index">{String(i + 1).padStart(2, '0')}</p>
+                <h3 className="wwd-step-title">{tWwd(`${k}Title`)}</h3>
+                <p className="wwd-step-body">{tWwd(`${k}Body`)}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section surface-authority" data-section="closing">
+        <div className="container">
+          <div className="wwd-close-block">
+            <h2 style={{ margin: '0 0 var(--space-4)' }}>{tWwd('closeTitle')}</h2>
+            <p className="wwd-close-body">{tWwd('closeBody')}</p>
+            <div className="wwd-cta-row">
+              <Link href="/contact?source=what-we-do" className="btn btn-primary">
+                {tWwd('closeCta')}
+              </Link>
+              <Link href="/work" className="btn">
+                {tWwd('closeSecondary')}
+              </Link>
+            </div>
           </div>
         </div>
       </section>

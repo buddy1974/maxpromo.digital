@@ -133,6 +133,24 @@ export default function ContactPage() {
      anything up. */
   const automation = (searchParams.get('automation') ?? '').trim().slice(0, 80)
 
+  /* ?project=<entry id>  from a work entry's "ask to see this running".
+     ?source=<page>       from What We Do and the capability pages.
+
+     Added with Phase A (ADR-0016). Both are the same shape of thing as
+     `automation`: free text off a URL, length-capped, never used to look
+     anything up, and never rendered into the form the visitor edits. They
+     exist so that a demonstration request for one specific system does not
+     arrive identical to a request for any system, which is precisely the
+     failure `automation` was added to fix and the reason it is worth being
+     careful here rather than adding a third parameter nothing reads.
+
+     `source` is deliberately the weakest signal. It refines the record when
+     nothing better is present, and it never wins over a product, a demo
+     request or a capability, because knowing which page someone left is worth
+     less than knowing what they want. */
+  const project = (searchParams.get('project') ?? '').trim().slice(0, 64)
+  const source = (searchParams.get('source') ?? '').trim().slice(0, 40)
+
   const [form, setForm] = useState<FormData>(() => {
     /* The product systems keep priority: a visitor who arrived from a product
        domain is asking about that product, whatever else the URL carries.
@@ -140,9 +158,10 @@ export default function ContactPage() {
        in the subject line and the lead source — so a demonstration request
        arrives looking like one, with no API change. */
     const system = presetSystem
-      || (isDemoRequest ? 'demo-request' : '')
+      || (isDemoRequest ? (project ? `demo-request/${project}` : 'demo-request') : '')
       || (capability ? `capability/${capability.id}` : '')
       || (automation ? `automation/${automation}` : '')
+      || (source ? `from/${source}` : '')
     return {
       ...initialForm,
       system,

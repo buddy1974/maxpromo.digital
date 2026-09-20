@@ -1,5 +1,75 @@
 # Change Log
 
+## 2026-09-20 — Phase A: the commercial foundation
+
+Five surfaces, both languages, shipped as one release. The decision behind the
+order is `docs/adr/0016-the-site-is-an-acquisition-system.md`; the short version
+is that capability pages were the wrong next build because each one needs real
+work to point at, and only two could be supported honestly.
+
+**What We Do** (`/solutions`, URL unchanged) now opens with the problem rather
+than the catalogue. The previous first line was "five kinds of work", which
+asks a reader to pick a category before anyone has acknowledged why they came.
+Five sentences describe five shapes of problem, and the closing line takes the
+choosing off the reader. The five capability sections keep their anchors, so
+the homepage rail still lands where it did.
+
+**Workflow automation** and **custom applications** are commercial pages of
+their own. `workflow-automation` took over a URL the dynamic solutions route
+used to serve, so nobody's link breaks; `custom-applications` is new. They are
+deliberately not the same page twice: automation is about a route, so its
+centre is a before and after of how work travels, and custom software is about
+fit, so its centre is the admission that building something new is often the
+wrong answer.
+
+**Work** stops being an empty state and becomes the proof surface. Entries
+render what they declare they have rather than filling a layout, so an entry
+that gains an approved screenshot later gains a screenshot instead of forcing
+a redesign.
+
+**Contact** keeps its shape and gains the two context parameters Phase A
+introduced. A demonstration request for one specific system no longer arrives
+identical to a request for any system.
+
+### The claims audit, and what it cost
+
+Two of the three case studies are shown. The third is not, and the reason is
+recorded in `lib/work-entries.ts` rather than left implicit: its £14,000 figure
+is stated identically in both locales, so there is nothing to correct, but a
+German case study quoting pounds to a German buyer is a question for Marcel.
+It also contains the "94% of invoices" line withdrawn from the homepage, and a
+grid is not a reason to bring it back. Two hedged results on the logistics
+project, the ones `audit:claims` reports, are excluded from the commercial
+page and kept in the case study where the source lives.
+
+A correction to the record: an earlier note said that figure appeared in two
+currencies. It does not. Both locales say pounds.
+
+### Defects found and fixed on the way
+
+German CTA labels overflowed at 320px on three pages and at 390px on one.
+`.btn` sets `white-space: nowrap`, which is right for a two-word label and
+wrong for "Zeigen Sie uns die wiederkehrende Arbeit". Fixed in the route
+stylesheet rather than on the shared button, because it is a property of the
+sentence. English never showed it.
+
+Three shared controls sat below the 44px mobile target floor: the capability
+rail items at 33px, small buttons at 35px, and the family example links at
+36px. All raised on phones only.
+
+`audit:a11y` never looked at `/work`, and would never have looked at the new
+page either: its route list is hardcoded. The five Phase A routes were added
+and all pass. The weakness itself is noted in the file, and is the same shape
+as ADR-0015 without the same fix, because that list is a curated sample rather
+than a set with a computable property.
+
+### Budgets
+
+Shared CSS 68 to 69 KB against a 72 KB limit; route-delivered CSS unchanged at
+83 against 88. Nothing raised. The new pages are route-scoped stylesheets, so
+the informational total moved from 87 to 96 KB and the floor every visitor pays
+barely moved, which is what that split exists to do.
+
 ## 2026-09-19 — outbound email renders its own colours, and the gate protects a class
 
 Invoice, quotation and newsletter email wrote CSS custom properties into markup

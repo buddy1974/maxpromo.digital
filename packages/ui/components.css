@@ -121,6 +121,16 @@
    holds wherever the import happens to sit. The alternative was to move the
    rule into both applications, which is the duplication this package exists to
    prevent, or `!important`, which wins by refusing to be reasoned about. */
+/* A small button is small because of its type scale, not because it should be
+   a small target. At 9px padding it measures 35px, and the Work page and the
+   capability pages both put one where a thumb goes. The label stays the size
+   it is; the box grows around it. Same correction as `.site-footer-link` and
+   `.quiet-link` in the mobile pass, and the desktop navigation CTA is behind
+   the burger at this width so nothing there moves. */
+@media (max-width: 768px) {
+  .btn-sm.btn-sm { min-height: 44px; }
+}
+
 @media (max-width: 768px) {
   .input.input,
   .textarea.textarea,

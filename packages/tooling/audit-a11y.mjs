@@ -25,6 +25,16 @@ const TARGETS = [
     '/en/agent-bureau', '/en/blog', '/en/impressum', '/en/privacy', '/en/agb',
     '/en/automation-lab', '/en/ai-websites', '/en/data-deletion',
     '/de/solutions', '/de/industries/healthcare', '/de/about', '/de/contact',
+    /* Phase A commercial surfaces (ADR-0016). `/work` was never in this list
+       and neither was any page that did not exist when the list was written,
+       which is the weakness of enumerating routes rather than deriving them:
+       a new public page is unchecked until somebody remembers this file.
+       Recorded rather than re-architected, because unlike the token gate this
+       list is a curated sample across two locales rather than a set with a
+       property that can be computed. */
+    '/en/solutions/custom-applications', '/de/solutions/custom-applications',
+    '/de/solutions/workflow-automation',
+    '/en/work', '/de/work',
   ]],
   ['bureau', 'http://localhost:3021', ['/', '/impressum', '/datenschutz', '/login']],
 ]
