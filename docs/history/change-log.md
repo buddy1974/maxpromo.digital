@@ -42,8 +42,14 @@ grid is not a reason to bring it back. Two hedged results on the logistics
 project, the ones `audit:claims` reports, are excluded from the commercial
 page and kept in the case study where the source lives.
 
-A correction to the record: an earlier note said that figure appeared in two
-currencies. It does not. Both locales say pounds.
+A correction to the record, itself corrected on 2026-09-20: this entry
+originally said an earlier note claiming two currencies was wrong. It was not.
+ADR-0007 records the same client saving published as `€14k/mo` on the homepage
+and `£14,000/month` on the case-studies page. The euro instance was removed in
+`f75fc50`, which is why `audit:claims` is quiet about it now. The conflict was
+resolved by deletion rather than by evidence, and a figure published at two
+values seventeen per cent apart is weaker evidence, not stronger. See
+`docs/research/evidence-inventory-2026.md` §E.
 
 ### Defects found and fixed on the way
 

@@ -21,6 +21,7 @@ these documents; none keeps its own copy.
 - **Locked out of Agent Bureau?** `deployment/agent-bureau-owner-access.md`
 - **Wondering why something is the way it is?** `adr/`
 - **Looking at what competitors do?** `research/competitive-intelligence-2026.md`
+- **Asking what evidence we actually have?** `research/evidence-inventory-2026.md`
 - **Writing copy or building UI?** `brand/`
 
 ## The rule
