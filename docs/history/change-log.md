@@ -1,5 +1,46 @@
 # Change Log
 
+## 2026-09-20 — Phase B2: the proof engine
+
+Internal architecture. Nothing public changed and nothing was deployed.
+
+Every surface that describes a delivered project described it from a different
+place, and none of them was the project. The narrative sits in the i18n
+catalogue as translatable interface copy. `work-entries.ts` decides which of
+those keys the Work page may render. `claims.ts` decides which figures may
+persuade. Three files, three angles, no source of truth, which is how the same
+client saving came to be published in two currencies at once.
+
+`packages/config/proof.ts` is now that source. One record per project holding
+what the system does, what establishes each statement, what the company does
+not know, what media would have to be captured, and what anybody has agreed to.
+It keeps apart three things that get confused: what is claimed, what establishes
+it, and what is permitted. `mayPublish()` combines them once so no page decides
+for itself, and `check:proof` enforces the mechanical failures.
+
+The first package is Maxpromo OS, verified against the code rather than copied
+from the earlier inventory: nine statements, all of them system or process
+facts, all proved by source. It records no outcome of any kind, because nothing
+measures this system, and the package is deliberately complete without one. It
+proves a real application, a real automation and two real human decisions, which
+is exactly what the commercial pages claim and previously could not show.
+
+Three open questions are recorded rather than filled in, including how
+quotations were produced before the system existed. Nobody in this repository
+can answer that, and it has not been guessed.
+
+Six media requirements describe what Phase B3 should capture, each with what it
+proves and, separately, what it does not. All six need synthetic data, which is
+what the dormant evidence harness is for.
+
+Two migration contracts are open and both are deliberate. Work still reads
+message keys, because rewriting a live commercial page to prove an architectural
+point is the wrong trade. The historical case studies stay historical, because
+they record what the company said and forcing them into a model built years
+later would destroy that.
+
+ADR-0017 holds the decision.
+
 ## 2026-09-20 — Phase A: the commercial foundation
 
 Five surfaces, both languages, shipped as one release. The decision behind the

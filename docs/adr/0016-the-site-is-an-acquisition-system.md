@@ -81,14 +81,19 @@ business already pays for.
 
 The order follows what a visitor needs to exist, not what the sitemap lists.
 
-| Phase | What | Why this position |
-|---|---|---|
-| **A** | What We Do, Workflow Automation, Custom Applications, Work, Contact | The commercial foundation. Two capability pages, not five, because each needs real work to point at and only two can be supported honestly today |
-| **B** | The proof engine | Capability pages are worth little until the thing they link to is worth reading |
-| **C** | Business Friction Check, "what should I automate first", cost calculator | Acquisition assets, once there is proof behind them |
-| **D** | Knowledge and search | Guides earn their place once the systems they describe are published |
-| **E** | Web Development, Content & Social Operations, Product & Commerce Operations, industries | The remaining commercial surfaces, each waiting for its own proof |
-| then | SEO, GEO, social | Last, because optimising surfaces that do not yet exist is wasted work |
+**Progress, updated 2026-09-20.** Phase A shipped. B1 produced the evidence
+inventory, B1.1 the claims registry and the dormant evidence harness, and B2 the
+proof engine (ADR-0017). B3 is the first controlled evidence capture. Nothing
+after B3 has started.
+
+| Phase | What | Status | Why this position |
+|---|---|---|---|
+| **A** | What We Do, Workflow Automation, Custom Applications, Work, Contact | **done** | The commercial foundation. Two capability pages, not five, because each needs real work to point at and only two can be supported honestly today |
+| **B** | The proof engine: B1 inventory, B1.1 claims registry and evidence harness, **B2 proof packages**, B3 first evidence capture | **B2 done, B3 next** | Capability pages are worth little until the thing they link to is worth reading |
+| **C** | Business Friction Check, "what should I automate first", cost calculator | not started | Acquisition assets, once there is proof behind them |
+| **D** | Knowledge and search | not started | Guides earn their place once the systems they describe are published |
+| **E** | Web Development, Content & Social Operations, Product & Commerce Operations, industries | not started | The remaining commercial surfaces, each waiting for its own proof |
+| then | SEO, GEO, social | not started | Last, because optimising surfaces that do not yet exist is wasted work |
 
 ---
 

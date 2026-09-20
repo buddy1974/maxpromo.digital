@@ -76,6 +76,32 @@ export type { AcceptedRisk, Severity } from './security.ts'
    marker every synthetic record carries. Here rather than in apps/web because
    the seed runner and the isolation proof both live outside that application
    and must agree with it on all three. */
+/* The proof engine. Evidence is recorded once here; every published surface
+   is a projection of what it and the permissions allow (ADR-0017). Exported
+   from the config package rather than from an application because tooling,
+   both applications and any future OpenClaw workflow read the same record. */
+export {
+  PROOF_PACKAGES,
+  getProofPackage,
+  mayPublish,
+  publicStatements,
+  NO_PERMISSIONS,
+  OWN_SYSTEM_PERMISSIONS,
+} from './proof.ts'
+export type {
+  ProofPackage,
+  ProofStatement,
+  MissingEvidence,
+  MediaRequirement,
+  Permissions,
+  Permission,
+  EvidenceBasis,
+  ClaimKind,
+  DemoState,
+  Visibility,
+  Verdict,
+} from './proof.ts'
+
 export {
   EVIDENCE_MODE_ENV,
   EVIDENCE_DB_ENV,

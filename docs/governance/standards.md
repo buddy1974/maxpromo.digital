@@ -38,6 +38,7 @@ run on developer machines and never in CI.
 | 13 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
 | 14 | **Production build** `build` | Every application builds |
 | 16 | **Claim registry** `check:claims` | An unsupported quantitative claim may not be used to persuade. Status lives in `packages/config/claims.ts`; the check reads every commercial route source and its component and lib modules, and fails when one reaches a claim the registry places below `VERIFIED`. A second pass fails on any `caseStudies` string carrying a quantity that no claim record classifies, so a figure nobody has ruled on cannot reach a commercial page by being overlooked. Commercial surfaces are derived from the route, so a new page is covered the day it exists. See *Two claims checks, and why one blocks* |
+| 18 | **Proof packages** `check:proof` | A proof package may not claim more than its evidence and its permissions allow. Enforces the mechanical failures: a quantity published without a measurement, a permission left unknown treated as consent, a basis named with no source, a statement public on a `historical-claim` or `unknown` basis, and media marked public while admitting it carries customer data. See *The proof engine* |
 | 17 | **Evidence isolation** `prove:evidence-isolation` | Proves the synthetic evidence environment cannot reach production, cannot read a production row, cannot delete a row it did not write, and cannot send. Twenty-three properties, each set up as a violation that must be refused. Verified to fail when the outbound guard is removed |
 | 15 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS, shared CSS, route-delivered CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built. One row, total CSS, is reported and never enforced — see *The CSS budget is three numbers* |
 
@@ -315,7 +316,7 @@ on the primitive for that narrow case, is not the default, and goes away when
 its last caller does.
 
 **Testing.** There is no unit-test suite, and this is stated rather than
-implied. What exists instead: seventeen merge gates, five report-only audits, two
+implied. What exists instead: eighteen merge gates, five report-only audits, two
 harnesses that prove their audits can fail, and a live domain walk
 (`audit:domain-experience`). Adding a test framework is an architecture decision
 and needs an ADR; adding a gate for a defect class that has recurred does not.
@@ -451,6 +452,47 @@ a currency would be inventing a fact about a client.
 is unused will eventually be wrong about something that matters — on its first
 run it flagged 19 API routes that are a working, secured data layer the
 dashboard has simply not been wired to yet.
+
+### The proof engine
+
+**Evidence is recorded once; publication is a projection of it.** The record is
+`docs/adr/0017-evidence-is-recorded-once-publication-is-a-projection.md`.
+
+`packages/config/proof.ts` holds one record per delivered project: what the
+system does, what establishes each statement, what the company does not know,
+what media would have to be captured, and what anyone has agreed to. Three
+things it keeps apart, because confusing them is how a code fact becomes a
+business result:
+
+| | |
+|---|---|
+| **Kind** | system fact · process fact · qualitative outcome · quantitative outcome · customer attribution · testimonial · media |
+| **Basis** | repository · artefact · system-data · owner-attested · client-attested · measured · historical-claim · unknown |
+| **Permission** | eight separate grants, defaulting to `unknown` |
+
+`mayPublish()` combines them, once, so no page decides for itself. A system fact
+is public when the repository proves it. A quantitative outcome is public only
+when the basis is `measured`. Permission is checked before evidence, and
+`unknown` is treated exactly as `denied`.
+
+There is no score, no percentage and no maturity level. A number attached to a
+belief is a way of avoiding writing down what is actually known.
+
+**Two migration contracts are open, and both are deliberate.**
+
+*Work does not consume proof packages yet.* `apps/web/lib/work-entries.ts` reads
+message keys and the page reads it. That works, it is accepted, and rewriting a
+live commercial page to prove an architectural point is the wrong trade. When it
+moves, a package gains an approved public projection and Work reads that; the
+message keys stay where they are for the historical entries.
+
+*Historical case studies stay historical.* The three in the i18n catalogue
+record what the company said, including claims the registry marks unresolved,
+and that is their value. Future evidence-backed case studies derive from
+packages. Two categories, one boundary: a case study written from a package
+carries statement ids, one written before the engine existed does not.
+
+---
 
 ### Two claims checks, and why one blocks
 
