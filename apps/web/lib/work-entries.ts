@@ -14,35 +14,36 @@
  *
  * TRUTH OVER SYMMETRY. An entry with two pieces of evidence renders two.
  *
- * THE CLAIMS POSITION, AUDITED 2026-09-20
+ * THE CLAIMS POSITION
  *
- * Every figure below is classified before it is shown:
+ * Status lives in `packages/config/claims.ts` and is enforced by
+ * `check:claims`. This file does not decide it and must not restate it, because
+ * two places recording the same status is how they come to disagree.
  *
- *   VERIFIED     the figure the homepage already publishes for this project,
- *                with its source and timeframe named. Marcel approved the
- *                conservative direction; these are those numbers.
- *   SOURCE EXISTS the case study carries it, but something about the claim
- *                needs a person's decision before it goes on a commercial
- *                page. Kept in `/case-studies`, not promoted here.
- *   HEDGED       "approximately", "significantly". Reported by
- *                `npm run audit:claims`. Never shown as a headline result.
+ * What that registry currently says, and why this page shows no figures: every
+ * number these two case studies carry is SOURCE_EXISTS_NEEDS_REVIEW. They
+ * entered the repository in a workspace restructuring commit with no
+ * measurement artefact, no client record and no source document behind them
+ * (docs/research/evidence-inventory-2026.md). None of that makes them false.
+ * It makes them unevidenced, and the rule is that an unevidenced figure belongs
+ * on the case studies, where the page records what was said, and not on a page
+ * whose job is to persuade.
  *
- * What is deliberately absent:
+ * So each entry leads with the change to the work instead. That is a claim
+ * about what was built, the same case study describes it, and it needs no
+ * measurement to stand behind.
  *
- *   cs2 as a headline entry. Its £14,000/month figure is stated identically in
- *   both locales, so there is no contradiction to fix, but a German-language
- *   case study quoting pounds to a German buyer is a presentation question
- *   Marcel has to answer rather than one to answer by editing. It also
- *   contains the "94% of invoices" line that was removed from the homepage on
- *   his instruction, and a grid is not a reason to bring it back.
- *
- *   cs3Result2 ("approximately 18 days") and cs3Result4 ("increased
- *   significantly"). Both hedged, both reported by the claims audit, neither
- *   used. The project's headline figure is not hedged and is used.
+ * An earlier version of this comment said the £14,000 figure was "stated
+ * identically in both locales, so there is no contradiction to fix". That was
+ * wrong. ADR-0007 records it published as euros on the homepage and pounds on
+ * the case studies at the same time; the euro instance was later deleted, which
+ * is why the audit is quiet. The registry classifies it CONTRADICTED.
  */
 
 export type EvidenceKind =
-  | 'result'        // a measured figure with a named source and timeframe
+  | 'result'        // a measured figure with a named source and timeframe.
+                    // Nothing carries this today; it exists so an entry can
+                    // declare one the day a figure becomes VERIFIED.
   | 'before-after'  // how the work ran, and how it runs now
   | 'workflow'      // the system, drawn
   | 'screenshot'    // a real capture, once a client has approved it
@@ -57,10 +58,19 @@ export interface WorkEntry {
   /** Sector and duration, both already governed in that namespace. */
   readonly tagKey: string
   readonly timelineKey: string
-  /** The one figure this entry leads with. VERIFIED only. */
+  /**
+   * What this entry leads with: the change to the work, not a measurement.
+   *
+   * It used to be `headlineKey`, pointing at a figure in the case studies.
+   * The evidence inventory established that none of those figures has an
+   * artefact behind it in this repository, and `packages/config/claims.ts`
+   * now records that and forbids them on a page whose job is to persuade.
+   *
+   * The replacement is not a weaker number. It is a statement about what was
+   * built, which the same case study describes and which the company can
+   * stand behind without producing a measurement.
+   */
   readonly headlineKey: string
-  /** Supporting results. Each checked individually; hedged ones excluded. */
-  readonly resultKeys: readonly string[]
   /** Before, then after. Three and three in the existing catalogue. */
   readonly beforeKeys: readonly string[]
   readonly afterKeys: readonly string[]
@@ -76,14 +86,13 @@ export const WORK_ENTRIES: readonly WorkEntry[] = [
     cs: 'cs1',
     tagKey: 'cs1Tag',
     timelineKey: 'cs1Timeline',
-    /* VERIFIED. 78%, the homepage's first figure, Operations, 6 weeks. */
-    headlineKey: 'cs1Result1',
-    /* cs1Result2 and cs1Result3 are specific and unhedged. cs1Result4 is
-       qualitative and reads as a feature, so it is left in the case study. */
-    resultKeys: ['cs1Result2', 'cs1Result3'],
+    /* The figure this entry used to lead with, 78%, is
+       SOURCE_EXISTS_NEEDS_REVIEW in the claims registry and is not published
+       here. The system change is. */
+    headlineKey: 'w1Headline',
     beforeKeys: ['cs1b1', 'cs1b2', 'cs1b3'],
     afterKeys: ['cs1s1', 'cs1s2', 'cs1s3'],
-    evidence: ['result', 'before-after', 'workflow', 'case-study', 'private-demo'],
+    evidence: ['before-after', 'workflow', 'case-study', 'private-demo'],
     capability: 'workflow-automation',
   },
   {
@@ -91,15 +100,11 @@ export const WORK_ENTRIES: readonly WorkEntry[] = [
     cs: 'cs3',
     tagKey: 'cs3Tag',
     timelineKey: 'cs3Timeline',
-    /* VERIFIED. 3 days to 4 hours, the homepage's second figure, Logistics,
-       8 weeks. */
-    headlineKey: 'cs3Result1',
-    /* Only cs3Result3 survives. cs3Result2 and cs3Result4 are the two hedged
-       claims the audit reports, and they stay out of a commercial page. */
-    resultKeys: ['cs3Result3'],
+    /* Same position: the 3-days-to-4-hours figure is not published here. */
+    headlineKey: 'w2Headline',
     beforeKeys: ['cs3b1', 'cs3b2', 'cs3b3'],
     afterKeys: ['cs3s1', 'cs3s2', 'cs3s3'],
-    evidence: ['result', 'before-after', 'workflow', 'case-study', 'private-demo'],
+    evidence: ['before-after', 'workflow', 'case-study', 'private-demo'],
     capability: 'workflow-automation',
   },
 ]

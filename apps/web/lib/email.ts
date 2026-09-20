@@ -1,3 +1,4 @@
+import { isEvidenceMode } from '@maxpromo/config'
 import { token, space } from '@maxpromo/design-tokens'
 
 export interface EmailPayload {
@@ -20,6 +21,20 @@ export interface EmailResult {
  * Requires RESEND_API_KEY environment variable.
  */
 export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
+  /* The outbound boundary of the evidence environment.
+     Placed inside the transport rather than at the call sites because this is
+     the only function in the application that reaches the mail API, which is
+     not an assumption: check:token-inputs computes this module's import graph
+     from that fact and fails if a second transport appears (ADR-0015).
+     A caller cannot forget this, and a disabled button cannot replace it. */
+  if (isEvidenceMode()) {
+    console.log('[email] evidence mode: delivery suppressed', {
+      to: Array.isArray(payload.to) ? payload.to.length + ' recipient(s)' : '1 recipient',
+      subject: payload.subject?.slice(0, 80),
+    })
+    return { success: true, id: 'evidence-sink' }
+  }
+
   const apiKey = process.env.RESEND_API_KEY
 
   if (!apiKey) {

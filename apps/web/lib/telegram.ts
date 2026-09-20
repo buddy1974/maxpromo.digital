@@ -1,3 +1,4 @@
+import { isEvidenceMode } from '@maxpromo/config'
 /**
  * lib/telegram.ts — Centralised Telegram notification helper
  *
@@ -16,6 +17,14 @@ export interface TelegramResult {
 export async function sendTelegramNotification(
   message: string,
 ): Promise<TelegramResult> {
+  /* Same boundary, second transport. A notification is outbound
+     communication even though it goes to the company rather than to a
+     customer, and §7 of the evidence brief names notifications explicitly. */
+  if (isEvidenceMode()) {
+    console.log('[telegram] evidence mode: notification suppressed')
+    return { sent: false, error: 'evidence_mode' }
+  }
+
   const botToken = process.env.TELEGRAM_BOT_TOKEN
   const chatId = process.env.TELEGRAM_CHAT_ID
 

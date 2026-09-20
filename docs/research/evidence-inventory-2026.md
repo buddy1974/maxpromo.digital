@@ -428,6 +428,116 @@ inferred, and none of it should be.
 
 ---
 
+## L. The evidence environment (added 2026-09-20, Phase B1.1)
+
+Marcel approved a synthetic dataset for Maxpromo OS. It is built, it is not
+public, and it is not switched on anywhere.
+
+### The workflow, from code, for a future diagram
+
+Every transition below was read out of the application, not described from
+memory. **A** is automatic, **P** requires a person.
+
+| # | Step | Where | A / P |
+|---|---|---|---|
+| 1 | Source material arrives: a photo, a screenshot, a pasted email, typed notes | the operator's own inbox or phone | P |
+| 2 | Extraction: the text or image is sent for structuring | `POST /api/os/ai/enhance`, or `ai/scan-invoice`, `ai/scan-client` | **A** |
+| 3 | Structure is guaranteed by a tool schema, not by parsing a string | `apps/web/app/api/os/ai/enhance/route.ts` | **A** |
+| 4 | The result is written into the form the operator is looking at. **No record exists yet** | `applyExtracted()` in `apps/web/app/os/(protected)/angebote/new/page.tsx` | **A** |
+| 5 | The operator reads it, corrects it, and saves | the same form | **P** |
+| 6 | A record is created as `draft` | `POST /api/os/angebote` | **A** |
+| 7 | The operator decides to send. A separate, deliberate action | `POST /api/os/send-angebot` or `/send-invoice` | **P** |
+| 8 | The document is emailed to the client | `sendEmail()` in `apps/web/lib/email.ts` | **A** |
+| 9 | The record moves to `sent` with a timestamp | `UPDATE os_invoices SET status = 'sent', sent_at = NOW()` | **A** |
+| 10 | Lifecycle continues: `draft`, `sent`, `paid`, `overdue`, `accepted` | the list views | **P** |
+
+Two human steps, at 5 and 7, and both are load-bearing. Step 4 is the one a
+marketing diagram usually gets wrong: the extraction does not create anything,
+it fills a form. Nothing exists until a person saves it.
+
+**No marketing interpretation belongs in a diagram drawn from this table.** It
+shows what the system does. What it is worth is a separate argument.
+
+### Architecture
+
+Two conditions, both required, neither sufficient alone:
+
+```
+MAXPROMO_EVIDENCE_MODE=1     armed deliberately, per process, never in Vercel
+EVIDENCE_DATABASE_URL        a database that is not the production one
+```
+
+`packages/config/evidence.ts` holds the contract. `evidenceDbProblem()` refuses
+when the mode is off, when no evidence database is named, or when the evidence
+URL equals `DATABASE_URL` or `NEON_DATABASE_URL`.
+
+The seed adds a second, independent check before writing: it counts invoices
+whose number does not start with `EVD-2026-` and refuses if any exist. A URL
+check alone is necessary and not sufficient, because two strings can point at
+one database. A database holding real paperwork is not an evidence database
+whatever it is called.
+
+### The dataset
+
+One fictional business, generated from constants, never copied from anywhere.
+**Beckmann Elektrotechnik GmbH**, Industriestraße 14, 45899 Musterhausen, at
+`beckmann-elektro.example`. Musterhausen is fictional and `.example` is a
+reserved TLD that cannot resolve. Contact: a fictional Katrin Beckmann.
+
+Records: one client, one quotation in `draft` (`EVD-2026-0007`, 3,380.00 EUR
+across three line items), one invoice `sent` (`EVD-2026-0004`), one invoice
+`paid` (`EVD-2026-0001`). Three states, so a list view shows a lifecycle.
+
+The source note is written as a real enquiry arrives: a greeting, a stray
+sentence about a meeting, three ordered items, and a signature. The extraction
+prompt says it discards exactly those non-commercial parts, so the sample has
+to contain them or it demonstrates nothing.
+
+No clock, no randomness, no counters. Two runs produce identical rows.
+
+### The outbound boundary
+
+Enforced inside the transport functions, not at the call sites:
+
+| Host | What it carries | In evidence mode |
+|---|---|---|
+| `api.resend.com` | customer email | **blocked**, returns an `evidence-sink` result |
+| `api.telegram.org` | internal notification | **blocked**, returns `evidence_mode` |
+| `api.anthropic.com` | model inference | allowed |
+| `api.openai.com` | model inference | allowed |
+
+The model hosts stay open because the extraction is the thing being
+demonstrated and a screenshot of a disabled feature proves nothing. They carry
+synthetic text and return structure; they do not reach a customer.
+
+`prove:evidence-isolation` fails if the application grows a fifth outbound host
+that nobody has classified.
+
+### Screenshot surfaces this makes available
+
+Once the seed is run against an evidence database, these can be captured with
+no real customer in frame: the source note (A), the extraction modal (B), the
+populated quotation form before saving (C), the same form under review (D), the
+saved draft `EVD-2026-0007` (E), and the invoice list showing draft, sent and
+paid (F).
+
+**None has been captured.** This phase prepared the environment.
+
+### Reuse, once captured
+
+One package supports: the Workflow Automation proof slot, the Custom
+Applications proof slot, a Work entry describing the system Maxpromo runs
+itself, a future system breakdown, a short walkthrough video, a private
+demonstration, and a before-and-after explanation for social.
+
+### Still owner input
+
+The before state remains **OWNER INPUT REQUIRED**. How quotations and invoices
+were produced before the OS is not recorded anywhere and has not been guessed.
+The package can describe the current workflow without it.
+
+---
+
 ## What was not done
 
 No placeholder was replaced, no case study published, no demo opened, no

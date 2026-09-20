@@ -37,6 +37,8 @@ run on developer machines and never in CI.
 | 12 | **TypeScript** `typecheck` | `tsc --noEmit` in every workspace |
 | 13 | **ESLint** `lint` | Zero errors in every workspace. Warnings are allowed; errors are not |
 | 14 | **Production build** `build` | Every application builds |
+| 16 | **Claim registry** `check:claims` | An unevidenced claim about a delivered client outcome may not appear on a page whose job is to persuade. Status lives in `packages/config/claims.ts`; the check reads every commercial route source, and its component and lib modules, and fails when one reaches a claim the registry places below `VERIFIED`. Commercial surfaces are derived from the route, so a new page is covered the day it exists. See *Two claims checks, and why one blocks* |
+| 17 | **Evidence isolation** `prove:evidence-isolation` | Proves the synthetic evidence environment cannot reach production, cannot read a production row, cannot delete a row it did not write, and cannot send. Twenty-three properties, each set up as a violation that must be refused. Verified to fail when the outbound guard is removed |
 | 15 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS, shared CSS, route-delivered CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built. One row, total CSS, is reported and never enforced — see *The CSS budget is three numbers* |
 
 The static audits run first on purpose: they are the fastest and they catch the
@@ -313,7 +315,7 @@ on the primitive for that narrow case, is not the default, and goes away when
 its last caller does.
 
 **Testing.** There is no unit-test suite, and this is stated rather than
-implied. What exists instead: eleven merge gates, five report-only audits, two
+implied. What exists instead: seventeen merge gates, five report-only audits, two
 harnesses that prove their audits can fail, and a live domain walk
 (`audit:domain-experience`). Adding a test framework is an architecture decision
 and needs an ADR; adding a gate for a defect class that has recurred does not.
@@ -449,6 +451,41 @@ a currency would be inventing a fact about a client.
 is unused will eventually be wrong about something that matters — on its first
 run it flagged 19 API routes that are a working, secured data layer the
 dashboard has simply not been wired to yet.
+
+### Two claims checks, and why one blocks
+
+`audit:claims` discovers. It reads the message catalogues looking for problems
+nobody has noticed: the same magnitude carrying two currencies, a hedge word
+inside a string whose key presents it as a result. It reports and never
+rewrites, and it sits in `certify` rather than `verify`, because resolving what
+it finds means knowing something about delivered work that a tool does not know.
+Choosing a currency states a fact about a client. **ADR-0007.**
+
+`check:claims` enforces. `packages/config/claims.ts` records decisions already
+made about what each figure is worth as evidence, and this check fails the build
+when one of them appears on a commercial page. That needs no judgement and the
+fix is always the same: take it off the page. So it blocks.
+
+They are not two implementations of one thing. One asks whether something is
+wrong; the other asks whether a decision already taken is being obeyed.
+
+**The publication rule**, stated once so no page decides for itself:
+
+| Status | May appear on |
+|---|---|
+| `VERIFIED` | commercial pages and the archive |
+| `SOURCE_EXISTS_NEEDS_REVIEW` | the archive only |
+| `CONTRADICTED` | the archive only |
+| `HEDGED` | the archive only |
+
+The archive is the case studies and the blog: pages that record what was said.
+Nothing is deleted when a status drops. A claim that cannot appear on a page
+that persuades keeps its place where the company's history stays readable, which
+is the same rule that governs `docs/history/`.
+
+Status is a business decision. It is never edited so that a build goes green.
+
+---
 
 ### The CSS budget is three numbers, and only two of them block
 

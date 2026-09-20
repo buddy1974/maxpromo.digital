@@ -71,3 +71,19 @@ export {
 } from './security.ts'
 
 export type { AcceptedRisk, Severity } from './security.ts'
+
+/* The evidence environment: the mode flag, the outbound boundary and the
+   marker every synthetic record carries. Here rather than in apps/web because
+   the seed runner and the isolation proof both live outside that application
+   and must agree with it on all three. */
+export {
+  EVIDENCE_MODE_ENV,
+  EVIDENCE_DB_ENV,
+  PRODUCTION_DB_ENVS,
+  EVIDENCE_MARKER,
+  EVIDENCE_DOC_PREFIX,
+  BLOCKED_OUTBOUND_HOSTS,
+  ALLOWED_OUTBOUND_HOSTS,
+  isEvidenceMode,
+  evidenceDbProblem,
+} from './evidence.ts'

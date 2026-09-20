@@ -175,7 +175,7 @@ one is a decision, not a detail.
 
 ## Enforcement
 
-`npm run verify` — 15 gates, eleven of them static audits. See
+`npm run verify` — 17 gates, eleven of them static audits. See
 `docs/governance/standards.md` for the table, which `check:docs` holds this
 sentence to: it said eight while the gate ran ten, and it was correct on the
 day it was written.

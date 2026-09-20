@@ -37,13 +37,14 @@
   line-height: var(--leading-tight);
 }
 
+/* One column. It was 2fr/1fr while a results column sat on the right holding
+   measured figures; those figures are SOURCE_EXISTS_NEEDS_REVIEW in the claims
+   registry and no longer appear anywhere that persuades, so the column went
+   with them and the before-and-after takes the width it was sharing. */
 .we-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6);
-}
-@media (min-width: 1000px) {
-  .we-body { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--space-8); }
 }
 
 /* Before and after, side by side once there is room. */
@@ -63,7 +64,7 @@
 }
 .we-ba-label-after { color: var(--brand-text); }
 
-.we-ba-list, .we-results-list {
+.we-ba-list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -71,7 +72,7 @@
   gap: var(--space-3);
   min-width: 0;
 }
-.we-ba-list li, .we-results-list li {
+.we-ba-list li {
   position: relative;
   padding-left: var(--space-5);
   font-size: var(--text-small);
@@ -81,8 +82,7 @@
 /* A dash for what was, a short rule for what is. Two marks, one difference,
    and neither of them a tick: a tick on the "before" column would be absurd
    and a tick on the "after" one turns an account into a feature list. */
-.we-ba-list li::before,
-.we-results-list li::before {
+.we-ba-list li::before {
   content: '';
   position: absolute;
   left: 0;
@@ -93,14 +93,6 @@
 }
 .we-ba-after li { color: var(--brand-text); }
 .we-ba-after li::before { background: var(--brand-primary-dark); }
-
-.we-results { min-width: 0; }
-@media (min-width: 1000px) {
-  .we-results {
-    padding-left: var(--space-6);
-    border-left: 1px solid var(--brand-border);
-  }
-}
 
 .we-foot {
   display: flex;

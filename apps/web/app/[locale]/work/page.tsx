@@ -123,7 +123,7 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
                     <span aria-hidden="true"> · </span>
                     <span>{tcs(e.timelineKey)}</span>
                   </p>
-                  <h3 className="we-headline">{tcs(e.headlineKey)}</h3>
+                  <h3 className="we-headline">{tw(e.headlineKey)}</h3>
                 </header>
 
                 <div className="we-body">
@@ -144,14 +144,6 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
                     </div>
                   )}
 
-                  {e.resultKeys.length > 0 && (
-                    <div className="we-results">
-                      <p className="we-ba-label">{tw('resultsLabel')}</p>
-                      <ul className="we-results-list">
-                        {e.resultKeys.map((k) => <li key={k}>{tcs(k)}</li>)}
-                      </ul>
-                    </div>
-                  )}
                 </div>
 
                 <footer className="we-foot">
