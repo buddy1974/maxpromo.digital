@@ -19,7 +19,7 @@
  *   node packages/tooling/prove-evidence-isolation.mjs
  */
 
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { stripComments } from './strip-comments.mjs'
@@ -44,6 +44,13 @@ const {
   EVIDENCE_MODE_ENV, EVIDENCE_DB_ENV, EVIDENCE_DOC_PREFIX,
   BLOCKED_OUTBOUND_HOSTS, ALLOWED_OUTBOUND_HOSTS,
 } = await import(pathToFileURL(cfg).href)
+
+const dbCfg = join(ROOT, 'packages', 'config', 'database.ts')
+if (!existsSync(dbCfg)) {
+  console.error('evidence isolation: no database resolver at packages/config/database.ts')
+  process.exit(1)
+}
+const { resolveDatabaseUrl, databaseSource } = await import(pathToFileURL(dbCfg).href)
 
 const results = []
 const check = (name, ok, detail = '') => {
@@ -85,6 +92,142 @@ check(
     [EVIDENCE_DB_ENV]: 'postgres://evidence/only',
     DATABASE_URL: 'postgres://the-real-one/maxpromo',
   }) === null,
+)
+
+console.log('')
+console.log('Storage follows the mode, and fails closed')
+
+/*
+ * The defect this section exists about.
+ *
+ * Until B3.1 evidence mode isolated outbound communication and left the
+ * database alone, so arming it produced something worse than no protection:
+ * the operator watched mail and notifications being suppressed and concluded
+ * the run was isolated, while every read and write went to production.
+ *
+ * Assertions below name variables, never values. `databaseSource` returns the
+ * name of the variable that would be used, which is the whole reason it
+ * exists — a proof about which database was chosen should not need to hold a
+ * connection string, and a failure message should not print one.
+ */
+
+const PROD = { NEON_DATABASE_URL: 'postgres://prod/neon', DATABASE_URL: 'postgres://prod/plain' }
+const EVID = { [EVIDENCE_DB_ENV]: 'postgres://evidence/disposable' }
+const ARMED = { [EVIDENCE_MODE_ENV]: '1' }
+
+check(
+  'armed, with an evidence database: selects the evidence database',
+  databaseSource({ ...ARMED, ...EVID }) === EVIDENCE_DB_ENV,
+)
+check(
+  'armed, with every URL present: still selects the evidence database',
+  databaseSource({ ...ARMED, ...PROD, ...EVID }) === EVIDENCE_DB_ENV,
+)
+
+/* The most important property in the file. Evidence mode armed, both
+   production databases configured, the evidence database forgotten. A
+   resolver that falls back here photographs production. */
+const forgotten = resolveDatabaseUrl({ ...ARMED, ...PROD })
+check(
+  'armed, evidence database missing, production present: refuses',
+  forgotten.ok === false,
+)
+check(
+  'armed, evidence database missing: cannot select NEON_DATABASE_URL',
+  forgotten.source !== 'NEON_DATABASE_URL',
+)
+check(
+  'armed, evidence database missing: cannot select NEON_DATABASE_URL (only NEON set)',
+  resolveDatabaseUrl({ ...ARMED, NEON_DATABASE_URL: PROD.NEON_DATABASE_URL }).ok === false,
+)
+/* Each production variable gets its own scenario. With both set, precedence
+   alone decides which one a faulty resolver would reach for, so a single
+   combined case leaves the other assertion unable to fail — and a property
+   that cannot fail in the situation it is given is decoration. */
+check(
+  'armed, evidence database missing: cannot select DATABASE_URL (only DATABASE_URL set)',
+  resolveDatabaseUrl({ ...ARMED, DATABASE_URL: PROD.DATABASE_URL }).ok === false,
+)
+check(
+  'the refusal says the mode is armed and the fallback was refused',
+  forgotten.ok === false
+    && forgotten.reason.includes(EVIDENCE_MODE_ENV)
+    && /refused/i.test(forgotten.reason),
+)
+check(
+  'the refusal leaks no connection string',
+  forgotten.ok === false
+    && !Object.values({ ...PROD, ...EVID }).some((v) => forgotten.reason.includes(v)),
+)
+
+/* Nothing about production resolution may have moved. */
+check(
+  'off, both URLs present: prefers NEON_DATABASE_URL',
+  databaseSource(PROD) === 'NEON_DATABASE_URL',
+)
+check(
+  'off, only DATABASE_URL present: uses DATABASE_URL',
+  databaseSource({ DATABASE_URL: PROD.DATABASE_URL }) === 'DATABASE_URL',
+)
+check(
+  'off, an evidence database present anyway: ignores it',
+  databaseSource({ ...PROD, ...EVID }) === 'NEON_DATABASE_URL',
+)
+check(
+  'off, nothing configured: refuses rather than inventing one',
+  resolveDatabaseUrl({}).ok === false,
+)
+
+console.log('')
+console.log('The application has one way to open a database')
+
+/*
+ * Protects the class rather than the filename (ADR-0015). B3.1 found
+ * send-invoice building its own client from `process.env.NEON_DATABASE_URL`,
+ * entirely around `getDb()` — a route that runs during evidence capture. A
+ * check naming that one route would not have caught the next one.
+ */
+const webClients = []
+const walkWeb = (dir) => {
+  for (const e of readdirSync(join(ROOT, dir), { withFileTypes: true })) {
+    const rel = `${dir}/${e.name}`
+    if (e.isDirectory()) {
+      if (e.name === 'node_modules' || e.name === '.next') continue
+      walkWeb(rel)
+    } else if (/\.(ts|tsx)$/.test(e.name)) {
+      if (/neon\s*\(/.test(code(rel))) webClients.push(rel)
+    }
+  }
+}
+walkWeb('apps/web')
+check(
+  'only lib/db.ts constructs a database client',
+  webClients.length === 1 && webClients[0] === 'apps/web/lib/db.ts',
+  webClients.length === 1 ? '' : `also: ${webClients.filter((f) => f !== 'apps/web/lib/db.ts').join(', ')}`,
+)
+check(
+  'lib/db.ts decides nothing itself, it asks the resolver',
+  /resolveDatabaseUrl\(/.test(code('apps/web/lib/db.ts'))
+    && !/process\.env\.(NEON_)?DATABASE_URL/.test(code('apps/web/lib/db.ts')),
+)
+
+const routeSrc = []
+const walkRoutes = (dir) => {
+  for (const e of readdirSync(join(ROOT, dir), { withFileTypes: true })) {
+    const rel = `${dir}/${e.name}`
+    if (e.isDirectory()) {
+      if (e.name === 'node_modules' || e.name === '.next') continue
+      walkRoutes(rel)
+    } else if (/\.(ts|tsx)$/.test(e.name)) {
+      if (/process\.env\.(NEON_DATABASE_URL|DATABASE_URL)/.test(code(rel))) routeSrc.push(rel)
+    }
+  }
+}
+walkRoutes('apps/web')
+check(
+  'no route or library reads a production database variable directly',
+  routeSrc.length === 0,
+  routeSrc.join(', '),
 )
 
 console.log('')
@@ -147,7 +290,6 @@ console.log('The blocked list matches what the application can actually reach')
 /* The contract names four hosts. If the application grows a fifth outbound
    host, this fails, because a host nobody classified is a host nobody blocked. */
 const SCAN = ['apps/web/lib', 'apps/web/app/api']
-const { readdirSync, statSync } = await import('node:fs')
 const walk = (d, out = []) => {
   for (const e of readdirSync(d)) {
     if (e === 'node_modules') continue

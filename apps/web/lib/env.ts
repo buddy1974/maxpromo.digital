@@ -16,6 +16,8 @@
  * modules don't crash when a var is missing.
  */
 
+import { resolveDatabaseUrl } from '@maxpromo/config'
+
 type EnvShape = {
   // Database
   NEON_DATABASE_URL: string
@@ -70,15 +72,16 @@ function read(name: keyof EnvShape, opts: { required?: boolean; minLength?: numb
 let cached: EnvShape | null = null
 
 function build(): EnvShape {
-  // NEON_DATABASE_URL or DATABASE_URL — prefer the explicit one.
-  const dbUrl =
-    process.env.NEON_DATABASE_URL?.trim() ||
-    process.env.DATABASE_URL?.trim()
-  if (!dbUrl) {
-    throw new EnvError(
-      'NEON_DATABASE_URL (or DATABASE_URL) is required. Set the Neon serverless connection string.',
-    )
+  // Asks the one resolver in `@maxpromo/config` rather than restating the
+  // precedence. This module has no consumers today, and that is exactly why it
+  // mattered: it held a third copy of the database rule, written before the
+  // evidence boundary existed and unaware of it. Wired up as it stood, it would
+  // have handed a production URL to a process running in evidence mode.
+  const selection = resolveDatabaseUrl()
+  if (!selection.ok) {
+    throw new EnvError(selection.reason)
   }
+  const dbUrl = selection.url
 
   const osPassword = read('OS_PASSWORD', { required: true, minLength: 8 })
   const osSessionSecret = read('OS_SESSION_SECRET', { required: true, minLength: 32 })

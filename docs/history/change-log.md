@@ -1,5 +1,56 @@
 # Change Log
 
+## 2026-09-20 — Phase B3.1: evidence mode becomes a runtime boundary
+
+Internal architecture. Nothing public changed and nothing was deployed.
+
+B3 could not photograph anything because evidence mode isolated outbound
+communication and left storage alone. That is not a smaller version of
+protection, it is a worse one: the operator watches mail and notifications
+being suppressed, concludes the run is isolated, and every read and write goes
+to production.
+
+`MAXPROMO_EVIDENCE_MODE=1` now means the whole process is isolated.
+`resolveDatabaseUrl` in `@maxpromo/config` is the only code in either mode that
+reads a database variable. Armed, it selects `EVIDENCE_DATABASE_URL` and refuses
+both production variables. Armed without one, the process gets no database and
+does not fall back — `if the evidence database exists use it, else use
+production` is forbidden by name, because it reproduces the original defect with
+more code. With the mode off, production precedence is byte-for-byte what it
+was, including the `??` semantics in which a present-but-empty variable is
+selected and then fails rather than falling through.
+
+The resolver returns the *name* of the variable it chose, not only the string.
+That is what lets the proof assert evidence mode refused `NEON_DATABASE_URL`
+without a connection string entering a test, an assertion or a failure log.
+
+The audit that came with it found something nobody had counted. `send-invoice`
+built its own client from `process.env.NEON_DATABASE_URL`, entirely around
+`getDb()`, in a route that runs during a capture — so fixing `getDb()` alone
+would have left the invoice path writing to production. Three more routes and
+the public health probe carried their own copies of the resolution rule and
+would have reported "configured" while the resolver refused. `lib/env.ts` held a
+third copy, unused, written before the boundary existed; wired up as it stood it
+would have handed a production URL to an armed process.
+
+All of it now goes through one function, and both facts are proved against the
+class rather than a list of files (ADR-0015): exactly one place constructs a
+client, and nothing reads a production database variable directly. A check
+naming `send-invoice` would not have caught the next one.
+
+`prove:evidence-isolation` went from 24 properties to 39 and was shown red twice
+before being trusted: once against a resolver that falls back to production,
+once against the pre-B3.1 architecture, where it named the bypassing file. One
+property was strengthened after the first red run revealed it could not fail in
+the scenario it had been given.
+
+No database was created. Selection is provable without opening a connection,
+which is the point. Risk 52 is half resolved: the architecture is correct and
+nothing has been verified against a live evidence database, so the five captures
+stay blocked. Agent Bureau resolves its own `DATABASE_URL` and was deliberately
+left alone; it is a separate deployment that cannot serve a Maxpromo OS capture,
+and the decision is recorded rather than taken here.
+
 ## 2026-09-20 — Phase B3: one artefact made, five recorded as blocked
 
 Internal. Nothing public changed and nothing was deployed.

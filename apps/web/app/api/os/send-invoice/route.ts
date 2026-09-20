@@ -1,7 +1,7 @@
 import { token } from '@maxpromo/design-tokens'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
-import { neon } from '@neondatabase/serverless'
+import { getDb, isDatabaseConfigured } from '@/lib/db'
 import { BUSINESS, type CurrencyCode, type DocumentLanguage } from '@/lib/documents/config'
 import { fmtCurrency, fmtDocDate, splitClientName } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
@@ -157,11 +157,13 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const dbUrl = process.env.NEON_DATABASE_URL ?? process.env.DATABASE_URL
-  if (!dbUrl) {
-    console.error('[send-invoice] DATABASE_URL missing')
+  // Asks the one resolver rather than re-reading the environment. In evidence
+  // mode this is false unless the evidence database is configured, so the route
+  // refuses instead of quietly reaching production.
+  if (!isDatabaseConfigured()) {
+    console.error('[send-invoice] no database this process is allowed to open')
     return NextResponse.json(
-      { error: 'Database not configured', detail: 'Neither NEON_DATABASE_URL nor DATABASE_URL is set' },
+      { error: 'Database not configured', detail: 'No database is configured for this process' },
       { status: 503 }
     )
   }
@@ -200,7 +202,7 @@ export async function POST(request: NextRequest) {
     console.log('[send-invoice] to:', toEmails, '| invoice:', body.invoice_number)
 
     // Fall back to the invoice's stored language if the caller didn't pass one explicitly.
-    const sql = neon(dbUrl)
+    const sql = getDb()
     let language: DocumentLanguage | null = body.language ?? null
     if (!language) {
       const langRows = await sql`SELECT language FROM os_invoices WHERE id = ${body.invoice_id}` as { language: DocumentLanguage | null }[]

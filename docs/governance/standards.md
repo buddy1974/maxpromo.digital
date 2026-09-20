@@ -39,7 +39,7 @@ run on developer machines and never in CI.
 | 14 | **Production build** `build` | Every application builds |
 | 16 | **Claim registry** `check:claims` | An unsupported quantitative claim may not be used to persuade. Status lives in `packages/config/claims.ts`; the check reads every commercial route source and its component and lib modules, and fails when one reaches a claim the registry places below `VERIFIED`. A second pass fails on any `caseStudies` string carrying a quantity that no claim record classifies, so a figure nobody has ruled on cannot reach a commercial page by being overlooked. Commercial surfaces are derived from the route, so a new page is covered the day it exists. See *Two claims checks, and why one blocks* |
 | 18 | **Proof packages** `check:proof` | A proof package may not claim more than its evidence and its permissions allow. Enforces the mechanical failures: a quantity published without a measurement, a permission left unknown treated as consent, a basis named with no source, a statement public on a `historical-claim` or `unknown` basis, media marked public while admitting it carries customer data, a media requirement recorded as satisfied by an artefact that is not in the repository, and one recorded as both satisfied and blocked. See *The proof engine* |
-| 17 | **Evidence isolation** `prove:evidence-isolation` | Proves the synthetic evidence environment cannot reach production, cannot read a production row, cannot delete a row it did not write, cannot send, and is not configured in anything git tracks. Twenty-four properties, each set up as a violation that must be refused. Verified to fail when the outbound guard is removed and when a tracked env file declares evidence configuration |
+| 17 | **Evidence isolation** `prove:evidence-isolation` | Proves the synthetic evidence environment cannot reach production, cannot read a production row, cannot delete a row it did not write, cannot send, and is not configured in anything git tracks. Thirty-nine properties, each set up as a violation that must be refused. Covers **storage and outbound**: evidence mode selects the evidence database and can reach neither production variable, a missing evidence database fails closed rather than falling back, production precedence is unchanged when the mode is off, and the application has exactly one place that opens a database. Verified to fail against a resolver that falls back to production, against the pre-B3.1 architecture, when the outbound guard is removed, and when a tracked env file declares evidence configuration |
 | 15 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS, shared CSS, route-delivered CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built. One row, total CSS, is reported and never enforced — see *The CSS budget is three numbers* |
 
 The static audits run first on purpose: they are the fastest and they catch the
@@ -452,6 +452,46 @@ a currency would be inventing a fact about a client.
 is unused will eventually be wrong about something that matters — on its first
 run it flagged 19 API routes that are a working, secured data layer the
 dashboard has simply not been wired to yet.
+
+### Evidence mode is a runtime boundary
+
+`MAXPROMO_EVIDENCE_MODE=1` means **this process operates only against the
+controlled evidence environment**. Both halves are enforced.
+
+| | |
+|---|---|
+| **Storage** | `resolveDatabaseUrl` in `@maxpromo/config` selects `EVIDENCE_DATABASE_URL` and refuses `NEON_DATABASE_URL` and `DATABASE_URL` |
+| **Outbound** | the transports return before `fetch`; Resend and Telegram are blocked, the two model hosts stay open |
+
+**Missing evidence configuration fails closed.** Armed without
+`EVIDENCE_DATABASE_URL`, the process gets no database. It does not fall back.
+`if the evidence database exists use it, else use production` is the one
+implementation forbidden here by name, because the failure being prevented is an
+operator who arms the mode, mistypes a variable, watches mail being suppressed,
+and photographs production. That state is worse than no protection: it looks
+like protection.
+
+Until B3.1 this was real rather than hypothetical. Evidence mode isolated
+outbound communication and left storage alone, so arming it redirected the part
+the operator could see and left every read and write pointed at production. That
+is why B3 captured no screenshots.
+
+**One place opens a database.** `apps/web/lib/db.ts` asks the resolver; nothing
+else constructs a client and nothing else reads a production database variable.
+Both are proved against the class rather than a list of files (ADR-0015), which
+is what catches the next bypass — B3.1 found `send-invoice` building its own
+client around `getDb()`, and a check naming that route would not have.
+
+**Production resolution is unchanged with the mode off**, including the
+`NEON_DATABASE_URL ?? DATABASE_URL` semantics in which a variable present but
+empty is selected and then fails rather than falling through. Preserved
+deliberately; see the note in `packages/config/database.ts`.
+
+**The evidence database does not exist yet.** The architecture is proved without
+one, which is the point: selection is testable without opening a connection.
+Creating it, and proving a live runtime against it, is a separate step.
+
+---
 
 ### No evidence configuration is committed or deployed
 

@@ -113,3 +113,6 @@ export {
   isEvidenceMode,
   evidenceDbProblem,
 } from './evidence.ts'
+
+export { resolveDatabaseUrl, databaseSource } from './database.ts'
+export type { DatabaseSelection, DatabaseSource } from './database.ts'

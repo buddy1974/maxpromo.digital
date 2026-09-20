@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { runHealth, healthStatus, type HealthCheck } from '@maxpromo/observability'
 import { DOMAIN_REGISTRY, BRAND_REGISTRY, BUSINESS } from '@maxpromo/config'
-import { getDb } from '@/lib/db'
+import { getDb, isDatabaseConfigured } from '@/lib/db'
 
 /**
  * app/api/health/route.ts — is this surface working?
@@ -51,12 +51,14 @@ const CHECKS: readonly HealthCheck[] = [
     critical: true,
     timeoutMs: 2500,
     probe: async () => {
-      // Both names, because `lib/db.ts` accepts both. A probe that checks a
-      // narrower condition than the code it is probing reports `down` on a
-      // deployment that works, which is the fastest way to teach everyone to
-      // ignore a health endpoint.
-      if (!(process.env.NEON_DATABASE_URL ?? process.env.DATABASE_URL)) {
-        return { state: 'down', note: 'no database URL is set' }
+      // Asks `lib/db.ts` the same question it will answer itself a line later.
+      // A probe testing a different condition from the code it probes reports
+      // `down` on a deployment that works, or `ok` on one that cannot open a
+      // connection; both teach everyone to ignore a health endpoint. It says
+      // whether a database is available, never which one: this route is
+      // public, and the variable in use is nobody else's business.
+      if (!isDatabaseConfigured()) {
+        return { state: 'down', note: 'no database is configured for this process' }
       }
       const started = Date.now()
       const sql = getDb()

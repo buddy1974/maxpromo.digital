@@ -28,6 +28,24 @@
  * dataset is generated from constants in this repository rather than copied
  * from anywhere.
  *
+ * THE MODE IS A RUNTIME BOUNDARY, NOT A MAIL SWITCH
+ *
+ * Armed, it means: this process operates only against the controlled evidence
+ * environment. Both halves of that are enforced, and the second half was
+ * missing until B3.1.
+ *
+ *   STORAGE    `resolveDatabaseUrl` in ./database.ts selects the evidence
+ *              database and refuses every production variable. If the evidence
+ *              database is not configured, the process gets no database at all.
+ *              There is deliberately no fallback: the failure being prevented
+ *              is an operator who arms the mode, mistypes the variable, sees
+ *              mail being suppressed, and photographs production.
+ *
+ *   OUTBOUND   the transports below.
+ *
+ * It must never come to mean "messages are fake but writes may still be real".
+ * That state is worse than no protection, because it looks like protection.
+ *
  * WHAT THE MODE FORBIDS
  *
  * Every outbound path that could reach a person. The web application talks to
@@ -53,7 +71,13 @@ export const EVIDENCE_MODE_ENV = 'MAXPROMO_EVIDENCE_MODE'
 /** The evidence database. Must differ from every production database URL. */
 export const EVIDENCE_DB_ENV = 'EVIDENCE_DATABASE_URL'
 
-/** Production database variables, in the order `lib/db.ts` prefers them. */
+/**
+ * Production database variables, in the precedence the application uses.
+ *
+ * The order is load-bearing and is consumed by `resolveDatabaseUrl`, which is
+ * now the only code that reads these names. Nothing in either application
+ * reaches for them directly, and the isolation proof fails if anything starts.
+ */
 export const PRODUCTION_DB_ENVS = ['NEON_DATABASE_URL', 'DATABASE_URL'] as const
 
 /**

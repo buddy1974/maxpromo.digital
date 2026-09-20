@@ -1,7 +1,7 @@
 import { token } from '@maxpromo/design-tokens'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
-import { getDb } from '@/lib/db'
+import { getDb, isDatabaseConfigured } from '@/lib/db'
 import type { CurrencyCode, DocumentLanguage } from '@/lib/documents/config'
 import { fmtCurrency, fmtUnitPrice, fmtDocDate, splitClientName } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
@@ -151,10 +151,11 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const dbUrl = process.env.NEON_DATABASE_URL ?? process.env.DATABASE_URL
-  if (!dbUrl) {
+  // One resolver, asked rather than re-derived. Under evidence mode this is
+  // false unless the evidence database is configured.
+  if (!isDatabaseConfigured()) {
     return NextResponse.json(
-      { error: 'Database not configured', detail: 'NEON_DATABASE_URL is missing' },
+      { error: 'Database not configured', detail: 'No database is configured for this process' },
       { status: 503 },
     )
   }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/db'
+import { getDb, isDatabaseConfigured } from '@/lib/db'
 import { withAuth } from '@/lib/auth'
 
 export const GET = withAuth(async () => {
@@ -14,7 +14,7 @@ export const GET = withAuth(async () => {
 })
 
 async function postHandler(request: NextRequest) {
-  if (!(process.env.NEON_DATABASE_URL ?? process.env.DATABASE_URL)) {
+  if (!isDatabaseConfigured()) {
     console.error('[/api/os/clients POST] DATABASE_URL is not set')
     return NextResponse.json(
       { error: 'Database not configured', detail: 'DATABASE_URL environment variable is missing. Add it to .env.local (dev) and Vercel environment variables (production).' },
