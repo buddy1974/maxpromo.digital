@@ -172,6 +172,41 @@ check(
 )
 
 console.log('')
+console.log('No evidence configuration is committed or deployed')
+
+/* Marcel's invariant, 2026-09-20, made checkable rather than asserted.
+   The distinction that matters is tracked versus ignored, not present versus
+   absent: `.env.local` is gitignored and may legitimately carry evidence
+   configuration during a capture session (Phase B3). A *committed* env file
+   carrying it would reach every clone and, through the example files people
+   copy, every developer machine and eventually a deployment.
+   So this checks what git tracks. */
+const { execSync } = await import('node:child_process')
+let trackedEnv = []
+try {
+  trackedEnv = execSync('git ls-files', { cwd: ROOT, encoding: 'utf8' })
+    .split('\n')
+    .filter((f) => /(^|\/)\.env/.test(f))
+} catch {
+  trackedEnv = null
+}
+if (trackedEnv === null) {
+  check('git could be queried for tracked env files', false, 'git ls-files failed')
+} else {
+  const offenders = trackedEnv.filter((f) => {
+    try {
+      const body = readFileSync(join(ROOT, f), 'utf8')
+      return /^\s*(EVIDENCE_DATABASE_URL|MAXPROMO_EVIDENCE_MODE)\s*=/m.test(body)
+    } catch { return false }
+  })
+  check(
+    'no committed env file declares evidence configuration',
+    offenders.length === 0,
+    offenders.length ? offenders.join(', ') : `${trackedEnv.length} tracked env file(s) scanned`,
+  )
+}
+
+console.log('')
 console.log('Production behaviour is unchanged when the mode is off')
 check(
   'the guard is the only thing the transports gained',

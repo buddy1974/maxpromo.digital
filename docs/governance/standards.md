@@ -39,7 +39,7 @@ run on developer machines and never in CI.
 | 14 | **Production build** `build` | Every application builds |
 | 16 | **Claim registry** `check:claims` | An unsupported quantitative claim may not be used to persuade. Status lives in `packages/config/claims.ts`; the check reads every commercial route source and its component and lib modules, and fails when one reaches a claim the registry places below `VERIFIED`. A second pass fails on any `caseStudies` string carrying a quantity that no claim record classifies, so a figure nobody has ruled on cannot reach a commercial page by being overlooked. Commercial surfaces are derived from the route, so a new page is covered the day it exists. See *Two claims checks, and why one blocks* |
 | 18 | **Proof packages** `check:proof` | A proof package may not claim more than its evidence and its permissions allow. Enforces the mechanical failures: a quantity published without a measurement, a permission left unknown treated as consent, a basis named with no source, a statement public on a `historical-claim` or `unknown` basis, and media marked public while admitting it carries customer data. See *The proof engine* |
-| 17 | **Evidence isolation** `prove:evidence-isolation` | Proves the synthetic evidence environment cannot reach production, cannot read a production row, cannot delete a row it did not write, and cannot send. Twenty-three properties, each set up as a violation that must be refused. Verified to fail when the outbound guard is removed |
+| 17 | **Evidence isolation** `prove:evidence-isolation` | Proves the synthetic evidence environment cannot reach production, cannot read a production row, cannot delete a row it did not write, cannot send, and is not configured in anything git tracks. Twenty-four properties, each set up as a violation that must be refused. Verified to fail when the outbound guard is removed and when a tracked env file declares evidence configuration |
 | 15 | **Performance budgets** `check:budgets` | Shared root JavaScript, total JS, shared CSS, route-delivered CSS, public-directory weight, largest image and the count over 500 KB — each measured from the production build and compared against `packages/config/budgets.ts`. It runs after `build` because there is nothing to measure before it, and it errors rather than passing when no application has been built. One row, total CSS, is reported and never enforced — see *The CSS budget is three numbers* |
 
 The static audits run first on purpose: they are the fastest and they catch the
@@ -452,6 +452,24 @@ a currency would be inventing a fact about a client.
 is unused will eventually be wrong about something that matters — on its first
 run it flagged 19 API routes that are a working, secured data layer the
 dashboard has simply not been wired to yet.
+
+### No evidence configuration is committed or deployed
+
+The evidence environment is armed by two variables. Neither may appear in
+anything git tracks, and neither may be set in any Vercel environment. This is
+checked rather than asserted, by `prove:evidence-isolation`.
+
+The distinction the check draws is **tracked versus ignored**, not present
+versus absent. `.env.local` is gitignored and may legitimately carry evidence
+configuration during a capture session, which is how the harness is meant to be
+used. A *committed* env file carrying it is different in kind: it reaches every
+clone, and through the example files people copy it reaches every developer
+machine and eventually a deployment.
+
+So a local file may hold it; a tracked file may not, and the build fails if one
+does.
+
+---
 
 ### The proof engine
 
