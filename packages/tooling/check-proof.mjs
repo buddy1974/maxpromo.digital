@@ -23,6 +23,11 @@
  *      statement about the before state.
  *   5. A media requirement that claims public suitability while admitting it
  *      needs customer data.
+ *   6. A media requirement recorded as satisfied by an artefact that is not
+ *      in the repository. The only claim here a machine can settle outright,
+ *      and the one most likely to rot as files move.
+ *   7. A media requirement recorded as both satisfied and blocked. They say
+ *      opposite things and one of them is stale.
  *
  * Every one of these is a rule the registry itself states. This file is the
  * part that makes the registry mean something.
@@ -128,6 +133,23 @@ for (const pkg of PROOF_PACKAGES) {
       say(pkg, `media ${m.id} does not say what it fails to prove`,
         'A screenshot always proves less than it looks like; that has to be written down')
     }
+
+    /* (6) A satisfied requirement names an artefact that is really there.
+       This is the one claim in the file a machine can check outright, and
+       the one most likely to rot: files get renamed, and a package still
+       saying the evidence exists is worse than one admitting it never did. */
+    if (m.satisfiedBy && !existsSync(join(ROOT, m.satisfiedBy.artefact))) {
+      say(pkg, `media ${m.id} names an artefact that is not in the repository`,
+        `${m.satisfiedBy.artefact} does not exist. Either it moved, or the requirement is not satisfied`)
+    }
+
+    /* (7) Satisfied or blocked, never both. The two say opposite things
+       about whether the evidence exists, and a record holding both leaves
+       the reader to guess which one is current. */
+    if (m.satisfiedBy && m.blockedBy) {
+      say(pkg, `media ${m.id} is recorded as both satisfied and blocked`,
+        'One of the two is stale. A requirement has one state')
+    }
   }
 
   /* A package that records no missing evidence has almost certainly not
@@ -156,7 +178,12 @@ for (const pkg of PROOF_PACKAGES) {
   console.log('')
   console.log(`  ${pkg.id}`)
   console.log(`    ${pub.length} publishable · ${priv.length} private only · ${held.length} withheld`)
+  const satisfied = pkg.media.filter((m) => m.satisfiedBy).length
+  const blocked = pkg.media.filter((m) => m.blockedBy).length
   console.log(`    ${pkg.missing.length} open question(s) · ${pkg.media.length} media requirement(s) · demo: ${pkg.demo}`)
+  /* Printed every run. A blocked artefact that nobody is reminded about is
+     indistinguishable from one nobody ever wanted. */
+  console.log(`    media: ${satisfied} satisfied · ${blocked} blocked · ${pkg.media.length - satisfied - blocked} outstanding`)
 }
 
 if (findings.length === 0) {

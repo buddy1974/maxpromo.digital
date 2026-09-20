@@ -219,6 +219,27 @@ export interface MediaRequirement {
   /** Commercial placeholders this could fill once captured. */
   readonly targets: readonly string[]
   readonly priority: 'high' | 'medium' | 'low'
+  /**
+   * What satisfies this requirement, once something does. Absent is the normal
+   * state and means the artefact does not exist yet.
+   *
+   * `artefact` is a repository path and `check:proof` fails if it is not
+   * there, because a record saying an artefact exists is worth nothing unless
+   * something notices when it stops being true.
+   */
+  readonly satisfiedBy?: {
+    readonly artefact: string
+    readonly basis: EvidenceBasis
+    /** ISO date the artefact was made and its provenance recorded. */
+    readonly recordedOn: string
+    readonly note: string
+  }
+  /**
+   * Why this artefact could not be captured, when it could not. Recorded
+   * instead of an artefact, never alongside one: a requirement is satisfied or
+   * it is blocked, and claiming both hides which.
+   */
+  readonly blockedBy?: string
 }
 
 export type DemoState =
@@ -366,6 +387,37 @@ export function publicStatements(pkg: ProofPackage): readonly ProofStatement[] {
  * automation and two real human decisions, which is what the commercial pages
  * claim and could not previously show.
  */
+/**
+ * Why the five screen captures could not be taken on 2026-09-20.
+ *
+ * Phase B3 set out to run the application against a disposable evidence
+ * database and photograph what it did. It could not, and the reason is worth
+ * stating exactly, because it is a gap in the harness rather than a missing
+ * password.
+ *
+ * `apps/web/lib/db.ts` resolves its connection as
+ * `NEON_DATABASE_URL ?? DATABASE_URL`. It does not read
+ * `EVIDENCE_DATABASE_URL`, and it does not consult `isEvidenceMode()`. The
+ * only consumer of the evidence database in the repository is the seed
+ * script. So the harness has a seed path and no application path: arming
+ * evidence mode suppresses outbound mail and notifications, and leaves all
+ * thirteen `getDb()` call sites pointed wherever production points.
+ *
+ * Running a capture anyway would have meant operating the real system on the
+ * real database and cropping the pictures, which is the thing this whole
+ * phase exists to avoid.
+ *
+ * Underneath that sits a second, smaller obstacle: `neon()` speaks HTTP to
+ * Neon's endpoint, so a local Postgres container cannot serve the application
+ * even once the routing is fixed. A separate, empty, disposable Neon project
+ * would satisfy both, and creating one is Marcel's to decide.
+ */
+const CAPTURE_BLOCKED =
+  'No application path to the evidence database. apps/web/lib/db.ts reads '
+  + 'NEON_DATABASE_URL ?? DATABASE_URL and never EVIDENCE_DATABASE_URL, so evidence '
+  + 'mode redirects mail and notifications but not storage. Capturing this would have '
+  + 'required running against production. Blocked 2026-09-20, pending Marcel.'
+
 const MAXPROMO_OS: ProofPackage = {
   id: 'maxpromo-os-capture-to-document',
   internalName: 'Maxpromo OS — quotation and invoice capture',
@@ -514,6 +566,7 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot'],
       priority: 'high',
+      blockedBy: CAPTURE_BLOCKED,
     },
     {
       id: 'os-extraction-result',
@@ -526,6 +579,7 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot'],
       priority: 'high',
+      blockedBy: CAPTURE_BLOCKED,
     },
     {
       id: 'os-form-before-save',
@@ -538,6 +592,7 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot', 'work entry'],
       priority: 'high',
+      blockedBy: CAPTURE_BLOCKED,
     },
     {
       id: 'os-draft-record',
@@ -550,6 +605,7 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['custom-applications proof slot'],
       priority: 'medium',
+      blockedBy: CAPTURE_BLOCKED,
     },
     {
       id: 'os-lifecycle-list',
@@ -562,11 +618,19 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:9',
       targets: ['custom-applications proof slot', 'work entry'],
       priority: 'medium',
+      blockedBy: CAPTURE_BLOCKED,
     },
     {
       id: 'os-workflow-diagram',
       capture: 'The flow drawn from the code, marking which steps a person takes',
-      source: 'docs/research/evidence-inventory-2026.md §L, the ten-step table',
+      /* Read from the application, not from the inventory table that described
+         it. The table was written from the same code and agrees, but a diagram
+         sourced from a prose summary of the code is one copy further from the
+         truth than it needs to be. */
+      source:
+        'apps/web/app/os/(protected)/angebote/new/page.tsx, '
+        + 'apps/web/app/api/os/ai/enhance/route.ts, '
+        + 'apps/web/app/api/os/send-angebot/route.ts',
       proves: 'The shape of the process, including both human decisions',
       doesNotProve: 'Anything about how long it takes or what it costs',
       suitability: 'public',
@@ -574,6 +638,17 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:9',
       targets: ['workflow-automation', 'work entry', 'future system breakdown'],
       priority: 'high',
+      satisfiedBy: {
+        artefact: 'apps/web/components/proof/OsWorkflowDiagram.tsx',
+        basis: 'repository',
+        recordedOn: '2026-09-20',
+        note:
+          'Built as a component rather than captured as an image, per ADR-0013. '
+          + 'Four claims were verified against source before it was drawn: extraction '
+          + 'calls only state setters, the enhance route contains no INSERT, save is '
+          + 'bound to an explicit button, and send is a separate route that sets '
+          + "status = 'sent' with a timestamp. Rendered by no route yet.",
+      },
     },
   ],
 

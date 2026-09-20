@@ -1664,6 +1664,13 @@ Last updated: 2026-09-04 (v7.0 — enterprise polish)
 | 51 | Hand-drawn SVG icons remain in two components | `AgentBureauSection`'s orbit diagram draws six icons inline, at a stroke weight belonging to no set. ADR-0003 says one icon set; `check:icons` enforces it for Unicode marks and cannot see hand-rolled SVG. The chat bubble had the same problem and was fixed in v7.1. Replacing these changes a diagram's appearance, which a freeze sprint should not do. |
 | 45 | ~~`pricing.faq.a2` is classified as a build duration~~ | *"After your business check, we typically start within one week"* commits to a **time to start**, not a build duration, and `audit:claims` reports it under *building and going live* because the two share a key group. Listed rather than silenced: a rule that quietly drops what it cannot classify is the failure ADR-0004 exists to prevent. **Action:** either give time-to-start its own commitment kind, or reword the answer so it does not read as a delivery estimate. **Resolved 2026-09-04 (v9.6)** — the pricing FAQ went with the page. |
 
+
+## P3 — Evidence harness (2026-09-20)
+
+| # | Risk | Detail |
+|---|------|--------|
+| 52 | **Evidence mode redirects messages but not storage** | `packages/config/evidence.ts` arms an evidence environment on two conditions and the transports honour it: `lib/email.ts` and `lib/telegram.ts` both return early before `fetch`, and `prove:evidence-isolation` proves 24 properties about it. **The database is not part of that.** `apps/web/lib/db.ts` resolves `NEON_DATABASE_URL ?? DATABASE_URL` and never reads `EVIDENCE_DATABASE_URL` or calls `isEvidenceMode()`; the seed script is the only consumer of the evidence database in the repository. So the harness has a seed path and no application path, and arming evidence mode on a machine configured for production leaves all thirteen `getDb()` call sites reading and writing production while the operator believes they are isolated. No harm has occurred: the mode has never been armed outside the checks, no `.env` file on this machine sets either variable, and the isolation proof fails the build if one is ever committed. **This is why B3 captured no screenshots** — the five blocked artefacts are recorded with this cause in `packages/config/proof.ts`. **Action, Marcel's to choose:** either teach `getDb()` to prefer the evidence database when the mode is armed (an architecture change to the function every OS route depends on, which needs approval and a database to verify against), or accept that evidence capture requires a separate empty Neon project and never a local container. Until one is chosen, evidence mode should be understood as covering outbound communication only. Recorded 2026-09-20. |
+
 ---
 
 ## Resolution path

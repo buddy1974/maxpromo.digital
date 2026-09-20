@@ -1,5 +1,45 @@
 # Change Log
 
+## 2026-09-20 — Phase B3: one artefact made, five recorded as blocked
+
+Internal. Nothing public changed and nothing was deployed.
+
+B3 set out to run Maxpromo OS against a disposable evidence database and
+photograph what it did. One of the six artefacts was made. Five were not, and
+the reason is a gap in the harness rather than a missing password.
+
+`apps/web/lib/db.ts` resolves its connection as `NEON_DATABASE_URL ??
+DATABASE_URL`. It does not read `EVIDENCE_DATABASE_URL` and it does not call
+`isEvidenceMode()`. The seed script is the only consumer of the evidence
+database in the repository, so the harness has a seed path and no application
+path: arming evidence mode suppresses outbound mail and notifications and
+leaves all thirteen `getDb()` call sites pointed wherever production points.
+Capturing the five screens would have meant operating the real system on the
+real database and cropping the pictures, which is the thing the phase exists to
+avoid. They are recorded as blocked, with that cause, in the proof package.
+The gap is risk 52 and the decision is Marcel's.
+
+A local Postgres container was started to serve the application, could not
+(`neon()` speaks HTTP to Neon's endpoint), and has been destroyed. No volume
+survived it, no `.env` file on this machine names either evidence variable, and
+`prove:evidence-isolation` still proves 24 properties.
+
+The artefact that was made is the workflow diagram, built as a component rather
+than exported as a picture, per ADR-0013. It is markup in the design system, so
+it shows up in a diff when the code it describes changes; a PNG would not. Four
+claims were verified against source before it was drawn: extraction calls only
+state setters, the enhance route contains no INSERT, save is bound to an
+explicit button, and send is a separate route that sets `status = 'sent'` with a
+timestamp. The drawing marks which steps a person takes and, on the connecting
+line, where a stored record starts to exist, which is the fact this flow is most
+often read backwards. It is rendered by no route, so it costs no budget yet.
+
+A media requirement now has one state. `satisfiedBy` names the artefact and what
+established it, `blockedBy` says why it could not be made, never both, and
+`check:proof` fails if a named artefact is not in the repository. Both new
+checks were proved red before being trusted. Every run prints satisfied,
+blocked and outstanding, so a blocked artefact cannot go quiet.
+
 ## 2026-09-20 — Phase B2: the proof engine
 
 Internal architecture. Nothing public changed and nothing was deployed.

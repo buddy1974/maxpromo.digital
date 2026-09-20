@@ -1,0 +1,221 @@
+/*
+ * components/proof/proof.css
+ *
+ * Styles for the proof components. Imported by the component that needs them,
+ * so the CSS lands in the route chunk of whatever route mounts it and is
+ * measured by the route-css budget there. Nothing mounts these yet, so this
+ * file is in no bundle.
+ *
+ * WHY CSS AND NOT SVG
+ * The Agent Bureau system map draws itself in SVG and had to read colours from
+ * the JS token module, because SVG presentation attributes do not resolve CSS
+ * custom properties reliably when the SVG is inlined and re-themed. A sequence
+ * does not need drawn geometry: it is a list with a rule down the side, which
+ * CSS does natively and which therefore keeps the colours in the token layer
+ * where the audit can see them.
+ */
+
+/* ── The workflow diagram ────────────────────────────────────────────────── */
+
+.oswf {
+  margin: 0;
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  background: var(--brand-surface-subtle);
+  padding: var(--space-5);
+}
+
+/* The key. It has to be read before the diagram means anything, so it sits
+   above it rather than underneath in the usual legend position. */
+.oswf-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-bottom: var(--space-5);
+  font-size: var(--text-micro);
+  color: var(--brand-text-secondary);
+  line-height: var(--leading-ui);
+}
+
+.oswf-key-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Miniatures of the two disc styles, so the key shows the thing itself. */
+.oswf-key-disc {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+}
+
+.oswf-key-disc-system {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border-strong);
+}
+
+.oswf-key-disc-human {
+  background: var(--brand-primary);
+  border: 1px solid var(--brand-primary-edge);
+}
+
+/* Miniatures of the two connector styles. */
+.oswf-key-line {
+  width: 16px;
+  border-top: 2px solid var(--brand-border-strong);
+  flex-shrink: 0;
+}
+
+.oswf-key-line-none {
+  border-top-style: dashed;
+}
+
+/* ── The sequence ────────────────────────────────────────────────────────── */
+
+.oswf-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Two columns: the rule with its disc, then the words. The rule is drawn by
+ * the step itself as a left border on the marker column, which means it
+ * stretches to whatever height the text needs and cannot fall out of
+ * alignment with it.
+ */
+.oswf-step {
+  display: grid;
+  grid-template-columns: var(--space-8) minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.oswf-marker {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/*
+ * The connector running from this step's disc down to the next one. Each step
+ * draws only the segment below itself, so one line has one owner.
+ *
+ * Dashed means no stored record exists yet at that point in the sequence;
+ * solid means one does. That is the single most misread fact about this flow,
+ * so it is drawn rather than left to the caption to explain.
+ */
+.oswf-step:not(:last-child) .oswf-marker::after {
+  content: '';
+  position: absolute;
+  top: var(--space-8);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 2px dashed var(--brand-border-strong);
+}
+
+.oswf-step-recorded .oswf-marker::after {
+  border-left-style: solid;
+}
+
+.oswf-disc {
+  position: relative;
+  z-index: 1;
+  width: var(--space-8);
+  height: var(--space-8);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.oswf-step-system .oswf-disc {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border-strong);
+  color: var(--brand-text-secondary);
+}
+
+/* The accent is a fill, and text on it is black. Lime marks the human steps,
+   which is the claim the whole drawing exists to make. */
+.oswf-step-human .oswf-disc {
+  background: var(--brand-primary);
+  border: 1px solid var(--brand-primary-edge);
+  color: var(--brand-on-primary);
+}
+
+/* ── The words ───────────────────────────────────────────────────────────── */
+
+.oswf-text {
+  padding-bottom: var(--space-5);
+  min-width: 0;
+}
+
+.oswf-step:last-child .oswf-text {
+  padding-bottom: 0;
+}
+
+.oswf-actor {
+  display: block;
+  font-size: var(--text-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+/* The actor is also said in words. Colour alone would leave the one
+   distinction this diagram makes unavailable to a reader who cannot see it. */
+.oswf-step-human .oswf-actor {
+  color: var(--brand-primary-text);
+}
+
+.oswf-label {
+  display: block;
+  font-size: var(--text-body);
+  font-weight: var(--weight-medium);
+  color: var(--brand-text);
+  line-height: var(--leading-ui);
+}
+
+.oswf-detail {
+  display: block;
+  font-size: var(--text-small);
+  color: var(--brand-text-secondary);
+  line-height: var(--leading-ui);
+  margin-top: var(--space-1);
+}
+
+.oswf-caption {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--brand-border);
+  font-size: var(--text-micro);
+  color: var(--brand-text-secondary);
+  line-height: var(--leading-body);
+}
+
+/* Narrow screens. German compounds are long and the marker column is the
+   only thing that can afford to give up room. */
+@media (max-width: 480px) {
+  .oswf {
+    padding: var(--space-4);
+  }
+
+  .oswf-step {
+    grid-template-columns: var(--space-6) minmax(0, 1fr);
+    gap: var(--space-3);
+  }
+
+  .oswf-disc {
+    width: var(--space-6);
+    height: var(--space-6);
+  }
+
+  .oswf-step:not(:last-child) .oswf-marker::after {
+    top: var(--space-6);
+  }
+}
