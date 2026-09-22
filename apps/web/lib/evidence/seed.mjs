@@ -56,8 +56,22 @@ if (problem) {
 
 const sql = neon(process.env[EVIDENCE_DB_ENV])
 
-/** Owner id the OS uses for its single operator. Mirrors the API routes. */
-const OWNER_ID = 1
+/*
+ * owner_id is deliberately not supplied.
+ *
+ * This file carried `const OWNER_ID = 1` and passed it into every INSERT. The
+ * column is `UUID NOT NULL REFERENCES os_owners (id)` (migration 0003), so an
+ * integer 1 fails twice over: wrong type, and no such owner. Every INSERT here
+ * would have errored on the first run — which is exactly what nobody found
+ * out, because the seed had never been run against a database.
+ *
+ * The fix is not to hardcode the owner UUID. Migration 0004 gave every os_*
+ * table a column DEFAULT precisely because the API route handlers do not
+ * supply owner_id either, so omitting it is both correct and the same thing
+ * the application does when the operator saves a quotation by hand. A seed
+ * that inserts rows differently from the application is seeding something the
+ * application did not make.
+ */
 
 async function main() {
   /* ── Gate two: prove the target is not production, from its contents ────
@@ -96,9 +110,10 @@ async function main() {
     console.log('evidence seed: client already present, id ' + clientId)
   } else {
     const rows = await sql`
-      INSERT INTO os_clients (owner_id, name, company, email, phone, address, city, country, notes, status)
-      VALUES (${OWNER_ID}, ${EVIDENCE_CLIENT.name}, ${EVIDENCE_CLIENT.company},
+      INSERT INTO os_clients (name, company, email, phone, address, postcode, city, country, notes, status)
+      VALUES (${EVIDENCE_CLIENT.name}, ${EVIDENCE_CLIENT.company},
               ${EVIDENCE_CLIENT.email}, ${EVIDENCE_CLIENT.phone}, ${EVIDENCE_CLIENT.address},
+              ${EVIDENCE_CLIENT.postcode},
               ${EVIDENCE_CLIENT.city}, ${EVIDENCE_CLIENT.country}, ${EVIDENCE_CLIENT.notes}, 'active')
       RETURNING id`
     clientId = rows[0].id
@@ -111,11 +126,11 @@ async function main() {
   if (haveAngebot.length === 0) {
     await sql`
       INSERT INTO os_angebote
-        (owner_id, angebot_number, client_id, client_name, client_email, client_address,
+        (created_at, angebot_number, client_id, client_name, client_email, client_address,
          line_items, subtotal, total, status, valid_until, notes,
          anzahlung, payment_method, currency, language)
       VALUES
-        (${OWNER_ID}, ${a.angebot_number}, ${clientId}, ${EVIDENCE_CLIENT.company},
+        (${a.date}, ${a.angebot_number}, ${clientId}, ${EVIDENCE_CLIENT.company},
          ${EVIDENCE_CLIENT.email},
          ${`${EVIDENCE_CLIENT.address}, ${EVIDENCE_CLIENT.postcode} ${EVIDENCE_CLIENT.city}`},
          ${JSON.stringify(EVIDENCE_LINE_ITEMS)}::jsonb, ${a.subtotal}, ${a.total},
@@ -135,14 +150,14 @@ async function main() {
     }
     await sql`
       INSERT INTO os_invoices
-        (owner_id, invoice_number, client_id, client_name, client_email, client_address,
-         line_items, subtotal, total, status, due_date, notes, currency, language)
+        (created_at, invoice_number, client_id, client_name, client_email, client_address,
+         line_items, subtotal, total, status, due_date, paid_date, notes, currency, language)
       VALUES
-        (${OWNER_ID}, ${inv.invoice_number}, ${clientId}, ${EVIDENCE_CLIENT.company},
+        (${inv.date}, ${inv.invoice_number}, ${clientId}, ${EVIDENCE_CLIENT.company},
          ${EVIDENCE_CLIENT.email},
          ${`${EVIDENCE_CLIENT.address}, ${EVIDENCE_CLIENT.postcode} ${EVIDENCE_CLIENT.city}`},
          ${JSON.stringify(inv.line_items)}::jsonb, ${inv.subtotal}, ${inv.total},
-         ${inv.status}, ${inv.due_date}, ${EVIDENCE_CLIENT.notes},
+         ${inv.status}, ${inv.due_date}, ${inv.paid_date ?? null}, ${EVIDENCE_CLIENT.notes},
          ${inv.currency}, ${inv.language})`
     console.log('evidence seed: invoice ' + inv.invoice_number + ' created (' + inv.status + ')')
   }

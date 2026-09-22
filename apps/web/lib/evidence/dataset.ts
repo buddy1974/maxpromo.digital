@@ -20,6 +20,13 @@ import { EVIDENCE_DOC_PREFIX, EVIDENCE_MARKER } from '@maxpromo/config'
  * what makes a screenshot reproducible six months from now when the figures in
  * it need to match the ones in an article.
  *
+ * That includes the dates. Neither `os_angebote` nor `os_invoices` has a
+ * document-date column — they carry `created_at`, which defaults to `now()` —
+ * so the `date` fields below are written into `created_at` explicitly. Left to
+ * the default, every document would be dated the day the seed happened to run,
+ * the lifecycle below would collapse into one afternoon, and a screenshot taken
+ * today would not match one taken tomorrow.
+ *
  * OBVIOUSLY FICTIONAL, PROFESSIONALLY REALISTIC
  *
  * Both halves matter. The business has to look like a real German SME or the
@@ -126,6 +133,7 @@ export const EVIDENCE_INVOICE_PAID = {
   due_date:       '2026-08-19',
   currency:       'EUR',
   language:       'de',
+  paid_date:      '2026-08-14',
   subtotal:       620.00,
   total:          620.00,
   line_items: [
