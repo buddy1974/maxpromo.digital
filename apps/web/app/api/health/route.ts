@@ -76,9 +76,13 @@ const CHECKS: readonly HealthCheck[] = [
     name: 'ai-provider',
     critical: false,
     probe: async () => {
+      // `unvalidated`, not `ok`. A key being set proves nothing about the key
+      // being accepted: this probe reported `ok` while every real call returned
+      // 401 invalid x-api-key. Health may not contact the provider — a check
+      // must not cost money — so it reports what it actually established.
       const configured = Boolean(process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY)
       return configured
-        ? { state: 'ok', note: 'configured; not called' }
+        ? { state: 'unvalidated', note: 'credential present; validity not checked here' }
         : { state: 'degraded', note: 'no provider key — assistant surfaces fall back' }
     },
   },
@@ -86,9 +90,11 @@ const CHECKS: readonly HealthCheck[] = [
     name: 'email',
     critical: false,
     probe: async () => {
+      // Same correction as the provider above, and for the same reason: nothing
+      // here contacts Resend, so nothing here may report it working.
       const configured = Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL)
       return configured
-        ? { state: 'ok', note: 'configured; not called' }
+        ? { state: 'unvalidated', note: 'credential present; validity not checked here' }
         : { state: 'degraded', note: 'not configured — enquiries and documents cannot be sent' }
     },
   },

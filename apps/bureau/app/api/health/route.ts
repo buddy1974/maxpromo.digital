@@ -63,7 +63,9 @@ const CHECKS: readonly HealthCheck[] = [
     probe: async () => {
       const configured = Boolean(process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY);
       return configured
-        ? { state: "ok", note: "configured; not called" }
+        // `unvalidated`, not `ok` — see HealthState in @maxpromo/observability.
+        // A credential being set is not the dependency working.
+        ? { state: "unvalidated", note: "credential present; validity not checked here" }
         : { state: "degraded", note: "no provider key — the agents cannot run" };
     },
   },

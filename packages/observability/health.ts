@@ -36,7 +36,33 @@
  * design, so it reports *whether* a subsystem answers, never *what* it said.
  */
 
-export type HealthState = 'ok' | 'degraded' | 'down'
+/**
+ * What a check found.
+ *
+ *   ok           the subsystem was contacted and answered correctly
+ *   unvalidated  configuration for it exists and nothing was contacted
+ *   degraded     it answered, but not well enough to call ok
+ *   down         it did not answer, or answered wrongly
+ *
+ * `unvalidated` exists because of a real incident. The AI provider and the mail
+ * transport were both reported `ok` on the strength of an environment variable
+ * being set, with the note "configured; not called". The note was honest and
+ * the state was not: a browser QA pass found `/api/health` reporting the AI
+ * provider `ok` while every actual call to it returned 401 invalid x-api-key.
+ * Anyone reading the state rather than the note concluded a broken dependency
+ * was working.
+ *
+ * The fix is not to make health call the provider. The rules above forbid a
+ * check that costs money, and a health endpoint that spends per probe is one
+ * nobody can afford to poll. So the state says what was actually established:
+ * the credential is present, and its validity is unknown.
+ *
+ * `unvalidated` deliberately does NOT affect the overall report state. The
+ * surface is not degraded because an external dependency was not contacted —
+ * if it did degrade, every correctly configured deployment would report
+ * `degraded` permanently and the word would stop meaning anything.
+ */
+export type HealthState = 'ok' | 'unvalidated' | 'degraded' | 'down'
 
 export interface HealthResult {
   /** Subsystem name. Stable — it is what an alert will be named after. */
@@ -132,6 +158,9 @@ export async function runHealth(
   for (const r of results) {
     if (r.state === 'down') state = r.critical ? 'down' : (state === 'down' ? 'down' : 'degraded')
     else if (r.state === 'degraded' && state === 'ok') state = 'degraded'
+    // `unvalidated` is deliberately ignored here. See HealthState: a surface is
+    // not degraded because an external dependency was never contacted, and
+    // treating it as degraded would pin every healthy deployment at degraded.
   }
 
   return { state, surface, ts: new Date().toISOString(), release, checks: results, ms: Date.now() - started }

@@ -400,3 +400,113 @@ and would have been discovered during the capture session instead of before it.
 But the OS was never reached, nothing was rendered, and no viewport was
 observed. The honest verdict is the one the directive names for exactly this
 case: a core workflow was not testable, so this is not green.
+
+---
+
+# Remediation follow-up — 2026-09-23, later the same day
+
+The verdict above stands. It was BLOCKED and it remains BLOCKED: no viewport was
+observed, no OS surface reached, no screenshot taken. This section records what
+the forensic pass established afterwards, and corrects two things this report
+got wrong.
+
+## QA-01 — resolved as owner action, not a code defect
+
+Traced from route to provider. All five Anthropic call sites construct the
+request identically and correctly: `x-api-key`, `anthropic-version: 2023-06-01`,
+no transformation, no `Bearer` prefix, no truncation.
+
+The configured credential was then probed directly, and described without being
+disclosed: 31 characters, no leading or trailing whitespace, no newline, no
+quotes, no inner space, and not the shape Anthropic issues — theirs begin
+`sk-ant-api03-` and run to about a hundred characters. Sent exactly as
+configured, the provider answered `401 authentication_error / invalid x-api-key`.
+Trimming and unquoting produced no different value, so whitespace corruption is
+excluded.
+
+**Cause: the configured value is not an Anthropic API key.** Classification:
+**OWNER SECRET ROTATION REQUIRED.** No application logic was changed to
+accommodate it — compensating in code for an invalid secret would hide the next
+one.
+
+`os-extraction-result` stays blocked until a valid credential exists.
+
+## QA-02 — attributed, and this report was wrong about it
+
+The original entry guessed "likely a Next.js dev-mode instrumentation artefact"
+and suggested it might not appear in a production build. The first half is
+right; **the second half was wrong and is withdrawn.**
+
+- Our source calls `performance.measure` and `performance.mark` **nowhere**.
+- `LocalizedCatchAllPage` *is* ours — `apps/web/app/[locale]/[...rest]/page.tsx` —
+  but it is four lines and calls only `notFound()`. It contains no
+  instrumentation, which is why the component name in the message was
+  misleading.
+- `performance.measure` lives in `node_modules/next/dist/client/index.js`.
+
+So Next's client instrumentation measures a span named after our component, and
+the negative timestamp comes from a missing navigation mark. **The correction:**
+that file ships in production builds too, so this is not dev-only, as the
+original entry implied. It is framework code either way, there is nothing in our
+source to change, and the 404 renders correctly.
+
+**Status: NOT REPRODUCED IN OUR CODE / OBSERVE.** No fix, no speculative change.
+
+## The health check — corrected, and it was three places
+
+This report found `/api/health` reporting the AI provider `ok` while every call
+401'd. The forensic pass found the same pattern in **three** probes across both
+applications, because it had been copied rather than shared: the web provider
+probe, the web mail probe, and Agent Bureau's provider probe. Each returned
+`{ state: 'ok', note: 'configured; not called' }` on the strength of an
+environment variable existing.
+
+The note was honest. The state was not, and a state is what anything automated
+reads.
+
+Health was **not** made to call the provider. `health.ts` forbids a check that
+costs money, and an endpoint that spends per probe is one nobody can afford to
+poll. Instead the shared contract gained a fourth state, `unvalidated`, meaning
+configuration is present and nothing was contacted. It deliberately does not
+degrade the overall report — otherwise every correctly configured deployment
+would sit at `degraded` permanently and the word would stop meaning anything —
+and it is served with 200.
+
+Live, after the change:
+
+```
+ai-provider   unvalidated   credential present; validity not checked here
+```
+
+A new gate, `prove:health-semantics`, protects the class: no probe may return
+`ok` from a branch whose only evidence is a third-party credential being
+present. It was proved red three ways — reverting the web probe, reverting the
+Bureau probe, and removing `unvalidated` from the contract — then green.
+
+**One thing that gate got wrong first, recorded because it matters.** Its initial
+detector flagged three further probes: `authentication`, `legal-identity` and
+`documents`. Those are entitled to say `ok`. They check *our own* configuration
+completeness, and there is nothing remote to contact, so the configuration is a
+complete answer and `unvalidated` would be meaningless. Had that version been
+accepted, three truthful probes would have been pushed into a wrong state in the
+name of honesty. The detector now keys on third-party credentials — API keys and
+bot tokens — and excludes this application's own `OS_*` configuration.
+
+Merge gate count: **18 → 19**, updated in all four places that claimed it.
+
+## New observation — the evidence lab is a slow database from here
+
+Not a defect, and worth knowing before the capture session. `/api/health`
+reports `database degraded — answered in 1542ms`. The lab is in `us-east-2` and
+this machine is in Europe, so every OS query crosses the Atlantic and exceeds the
+800ms threshold that turns `ok` into `degraded`.
+
+Consequences: health will read `degraded` for the whole of the evidence work,
+which is correct rather than alarming; and the OS will feel slow during capture.
+Nothing to fix. If the lab is ever rebuilt, `eu-central-1` would remove it.
+
+## Still owed, unchanged
+
+Everything in §17. Nine viewports, interaction, visual, practical accessibility,
+console and network panels, and the five captures. The next visual verdict has
+to come from a working browser session.
