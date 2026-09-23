@@ -431,6 +431,33 @@ one.
 
 `os-extraction-result` stays blocked until a valid credential exists.
 
+### QA-01 closed — 2026-09-23, 20:44
+
+A valid credential is now configured and the provider accepts it: **HTTP 200**,
+against the same request construction that was never at fault. `QA-01` is
+closed, and `os-extraction-result` is no longer blocked by it.
+
+Two things worth recording, because they change the exposure picture.
+
+**The value that leaked was never a working credential.** The 31-character
+`sixletters_…` string that reached the transcript was not an Anthropic API key
+and returned `401 invalid x-api-key` every time it was sent. So the transcript
+disclosure, as far as Anthropic is concerned, exposed nothing usable. Two
+rotation attempts appeared to change nothing because the same wrong kind of
+value was being pasted each time — the diagnosis that unstuck it was structural:
+31 characters against an expected 108, and no `sk-ant-` prefix.
+
+**The replacement is genuinely new.** Compared by equality against the key that
+has sat in the repository-root `.env.local` since May: they differ. So a new key
+was created rather than an existing one copied across, and the old one can be
+revoked without affecting anything here.
+
+Rotation status overall: `ANTHROPIC_API_KEY` replaced and verified working;
+`OS_PASSWORD` changed; `OS_SESSION_SECRET` changed and meets the minimum, though
+it remains an all-digit string and generated output would be stronger;
+`EVIDENCE_DATABASE_URL` deliberately unchanged — disposable lab, synthetic data
+only, and the lab still connects with its baseline intact.
+
 ## QA-02 — attributed, and this report was wrong about it
 
 The original entry guessed "likely a Next.js dev-mode instrumentation artefact"
