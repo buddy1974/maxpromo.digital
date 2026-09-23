@@ -1,5 +1,51 @@
 # Change Log
 
+## 2026-09-23 — Phase B3.2: the evidence lab, proved against a real database
+
+Internal. Nothing public changed, nothing was deployed, and no capture was
+taken.
+
+A dedicated Neon project now exists, and the storage boundary B3.1 built was
+exercised against it instead of being reasoned about. Every gate held:
+
+The armed runtime selected `EVIDENCE_DATABASE_URL`, and the application
+reported a healthy database while armed — which it could only have reached
+through the resolver, because nothing else in the application opens one.
+Withholding the evidence URL while both production variables were present
+refused outright and selected nothing. The evidence host is a different Neon
+project in a different region from production, so the two cannot be confused.
+
+Schema and all ten migrations were applied only after three gates: the
+resolver's own verdict, a host comparison against production, and a count of
+business rows the governed process did not create. The target was empty. The
+seed then ran for the first time in its life and wrote one fictional client and
+three `EVD-2026-` documents, in draft, sent and paid, on the dates the dataset
+specifies. Running it again changed nothing. A reset with a deliberately
+planted non-evidence row removed every evidence document and left the planted
+row untouched, then rebuilt the same state exactly.
+
+Both transports were called with the mode armed, against an instrumented
+`fetch`. Zero outbound attempts. The mail guard logs "1 recipient" rather than
+the address, which is the right instinct.
+
+One closure condition was deliberately not attempted. A before/after
+production row-count fingerprint would have meant connecting to the database of
+unknown provenance, and a later instruction forbade that outright. The
+structural argument is stronger evidence than a row count: while armed, the
+resolver cannot select either production variable.
+
+**The five captures were not taken.** `/os/*` requires a signed session cookie
+from `/os/login`, and entering a password into a login form is outside what an
+agent does here — including when the password has been supplied and the work
+authorised, because that framing is exactly how credential misuse is usually
+requested. Minting the cookie directly would have meant bypassing an
+authentication control. So the capture waits for one owner login. Everything
+else it needs is standing ready: schema applied, dataset seeded at baseline,
+transports proved inert.
+
+Risk 52 records the seven proved conditions and stays open. The agent does not
+close its own boundary work.
+
 ## 2026-09-20 — Phase B3.1: evidence mode becomes a runtime boundary
 
 Internal architecture. Nothing public changed and nothing was deployed.
