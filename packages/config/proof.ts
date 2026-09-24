@@ -609,10 +609,27 @@ const MAXPROMO_OS: ProofPackage = {
     },
     {
       id: 'os-lifecycle-list',
-      capture: 'The invoice list showing draft, sent and paid together',
+      /*
+       * Corrected 2026-09-24. This read "the invoice list showing draft, sent
+       * and paid together", which the governed dataset cannot produce and must
+       * not be made to produce.
+       *
+       * The scenario has three documents in three states, but they do not all
+       * live on this list: the draft is a *quotation* and belongs to
+       * os_angebote. The invoice list carries two states, sent and paid.
+       *
+       * The requirement was wrong, not the data. Adding a third invoice so one
+       * screenshot could show three states would have been inventing a business
+       * record to improve a picture, which is the failure this whole package
+       * exists to prevent. So the description now says what the evidence
+       * actually demonstrates.
+       */
+      capture: 'The invoice list showing two lifecycle states together: one sent, one paid',
       source: 'apps/web/app/os/(protected)/invoices/page.tsx',
       proves: 'The system carries a document through a lifecycle',
-      doesNotProve: 'Any volume, value or timing',
+      doesNotProve:
+        'Any volume, value or timing, and not the full lifecycle on one screen: '
+        + 'the draft state in this scenario belongs to a quotation on a different list',
       suitability: 'public',
       dataRisk: 'synthetic-required',
       aspect: '16:9',

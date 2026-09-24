@@ -53,6 +53,10 @@ const RX = 380;
 const RY = 185;
 const CHIEF_R = 52;
 const NODE_R = 28;
+/* Icon.tsx renders at a fixed pixel size; the map needs the same number to
+   centre it, and guessing it here is how the two drift apart. md = 20, lg = 24. */
+const ICON_PX = 20;
+const CHIEF_ICON_PX = 24;
 
 export async function AgentSystemMap() {
   const t = await getTranslations("systemMap");
@@ -76,9 +80,20 @@ export async function AgentSystemMap() {
           {nodes.map((n, i) => (
             <g key={`n${i}`}>
               <circle cx={n.x} cy={n.y} r={NODE_R} fill={C.node} stroke={C.ring} strokeWidth="1.5" />
-              <text x={n.x} y={n.y + 1} textAnchor="middle" dominantBaseline="central" fontSize="18" fill={C.accent}>
+              {/*
+                * An <svg> is valid as a child of <g>, and is NOT valid inside
+                * <text>. This sat inside a <text> element, so none of these
+                * eight icons had ever rendered — the circles and labels drew,
+                * the icons silently did not.
+                *
+                * A nested <svg> has no x/y here, so it lands at the origin and
+                * the transform places it: half its own size back from the node
+                * centre, which centres it. `color` is what the icon's
+                * stroke="currentColor" resolves against.
+                */}
+              <g transform={`translate(${n.x - ICON_PX / 2}, ${n.y - ICON_PX / 2})`} style={{ color: C.accent }}>
                 <Icon name={n.icon} size="md" />
-              </text>
+              </g>
               <text x={n.x} y={n.y + NODE_R + 16} textAnchor="middle" fontSize="13" fontWeight="500" fill={C.text}>
                 {n.name}
               </text>
@@ -88,9 +103,9 @@ export async function AgentSystemMap() {
           {/* central Chief hub */}
           <circle cx={CX} cy={CY} r={CHIEF_R + 8} fill="none" stroke={C.accent} strokeOpacity="0.25" strokeWidth="2" />
           <circle cx={CX} cy={CY} r={CHIEF_R} fill={C.accent} stroke={C.accent} strokeWidth="2" />
-          <text x={CX} y={CY - 6} textAnchor="middle" dominantBaseline="central" fontSize="26" fill={C.ink}>
-            <Icon name="dashboard" size="md" />
-          </text>
+          <g transform={`translate(${CX - CHIEF_ICON_PX / 2}, ${CY - 6 - CHIEF_ICON_PX / 2})`} style={{ color: C.ink }}>
+            <Icon name="dashboard" size="lg" />
+          </g>
           <text x={CX} y={CY + 20} textAnchor="middle" fontSize="12" fontWeight="700" fill={C.ink}>
             {tb("chiefName")}
           </text>

@@ -188,6 +188,29 @@ appears in a capture, that is an isolation incident: stop and report it.
 
 ---
 
+## Ingesting captures: never "the newest file"
+
+An earlier version of this handoff said the operator would press Win+PrtScn and
+the agent would "take the newest file from `Pictures\Screenshots`". That
+instruction was withdrawn on 2026-09-24 after the folder was inspected and found
+to contain the owner's personal screenshots, including an order confirmation
+carrying his home address. Ingesting by recency would have copied private
+personal data into a committed evidence directory, and the agent would have had
+no way to know it had.
+
+**The rule.** A capture is ingested only when the operator names it explicitly,
+by filename or by unambiguous reference, and the agent has looked at the image
+and confirmed it shows the governed evidence environment. Recency, folder
+position and modification time are not evidence of anything.
+
+**The positive test still applies.** Every ingested image must show at least one
+of: a document number beginning `EVD-2026-`, the client `Beckmann
+Elektrotechnik GmbH` / `Katrin Beckmann`, or an address at `Musterhausen` or a
+domain ending `.example`. An image showing none of those is not verifiably from
+the evidence environment and is not ingested, whatever it is called.
+
+---
+
 ## After the captures
 
 The agent reads each file, inspects it against the list above, and moves each
