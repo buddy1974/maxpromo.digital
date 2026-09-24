@@ -1,0 +1,239 @@
+/*
+ * app/[locale]/friction-check/friction-check.css
+ *
+ * Route CSS for the Business Friction Check. Loaded only by this route, so it
+ * is measured against the route-css budget here and costs the rest of the site
+ * nothing.
+ *
+ * The page is one contained column at every width. There is no grid, so there
+ * is nothing to collapse, and the German option text — which is the longest
+ * text on the page — has the full column at 320px rather than half of a
+ * two-column layout.
+ */
+
+.fc {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-4) var(--space-16);
+}
+
+.fc-panel {
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-6);
+}
+
+.fc-title {
+  font-size: var(--text-h2);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  margin: 0 0 var(--space-4);
+}
+
+.fc-lede {
+  font-size: var(--text-lede);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  margin: 0 0 var(--space-4);
+}
+
+.fc-meta {
+  font-size: var(--text-small);
+  color: var(--brand-text-muted);
+  margin: 0 0 var(--space-5);
+}
+
+.fc-note {
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  margin: 0 0 var(--space-5);
+}
+
+.fc-start { margin-top: var(--space-2); }
+
+/* ── Progress ─────────────────────────────────────────────────────────── */
+
+.fc-progress {
+  font-size: var(--text-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+  margin: 0 0 var(--space-2);
+}
+
+.fc-bar {
+  height: 3px;
+  background: var(--brand-surface-sunken);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-6);
+}
+
+/* The accent as a fill, which is the only thing it is for. */
+.fc-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--brand-primary);
+  transition: width 220ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fc-bar-fill { transition: none; }
+}
+
+/* ── Question ─────────────────────────────────────────────────────────── */
+
+/* A fieldset carries the grouping for assistive technology; its default border
+   and padding would draw a box the design does not want. */
+.fc-fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 var(--space-6);
+  min-width: 0;
+}
+
+.fc-question {
+  font-size: var(--text-h3);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  color: var(--brand-text);
+  padding: 0;
+  margin: 0 0 var(--space-5);
+}
+
+.fc-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.fc-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  /* A whole-row target. At 320px a 14px radio alone is not a tap target. */
+  min-height: 44px;
+}
+
+.fc-option:hover { border-color: var(--brand-border-strong); }
+
+/* Focus lives on the row, because the input itself is visually small. */
+.fc-option:focus-within {
+  outline: 2px solid var(--brand-focus);
+  outline-offset: 2px;
+}
+
+.fc-option-on {
+  border-color: var(--brand-primary-edge);
+  background: var(--brand-primary-soft);
+}
+
+.fc-radio {
+  margin: 2px 0 0;
+  accent-color: var(--brand-primary-dark);
+  flex-shrink: 0;
+}
+
+.fc-option-text {
+  font-size: var(--text-body);
+  line-height: var(--leading-ui);
+  color: var(--brand-text);
+  min-width: 0;
+}
+
+/* ── Actions ──────────────────────────────────────────────────────────── */
+
+.fc-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fc-back { margin-right: auto; }
+
+/* ── Result ───────────────────────────────────────────────────────────── */
+
+.fc-honest {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+  border-left: 2px solid var(--brand-primary-edge);
+  padding-left: var(--space-4);
+  margin: 0 0 var(--space-5);
+}
+
+.fc-pattern {
+  border-top: 1px solid var(--brand-border);
+  padding-top: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.fc-pattern-title {
+  font-size: var(--text-h3);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  margin: 0 0 var(--space-4);
+}
+
+.fc-pattern-part { margin-bottom: var(--space-4); }
+
+.fc-pattern-label {
+  font-size: var(--text-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+  margin: 0 0 var(--space-1);
+}
+
+.fc-pattern-body {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  margin: 0;
+}
+
+.fc-disclaimer {
+  font-size: var(--text-micro);
+  line-height: var(--leading-body);
+  color: var(--brand-text-muted);
+  border-top: 1px solid var(--brand-border);
+  padding-top: var(--space-4);
+  margin: var(--space-6) 0 0;
+}
+
+.fc-after {
+  border-top: 1px solid var(--brand-border);
+  padding-top: var(--space-5);
+  margin-top: var(--space-6);
+}
+
+/* `.btn` sets white-space: nowrap, which is correct for short labels and wrong
+   for a German CTA at 320px. Released here only, not on the shared button. */
+.fc-cta {
+  white-space: normal;
+  text-align: center;
+  margin-bottom: var(--space-3);
+}
+
+.fc-restart { margin-top: var(--space-6); }
+
+/* ── Narrow ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .fc { padding: var(--space-6) var(--space-4) var(--space-10); }
+  .fc-panel { padding: var(--space-5) var(--space-4); }
+
+  /* Stack the actions so neither button has to shrink below its label. */
+  .fc-actions { flex-direction: column-reverse; align-items: stretch; }
+  .fc-actions .btn { width: 100%; }
+  .fc-back { margin-right: 0; }
+}
