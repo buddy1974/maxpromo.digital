@@ -35,6 +35,10 @@ const TARGETS = [
     '/en/solutions/custom-applications', '/de/solutions/custom-applications',
     '/de/solutions/workflow-automation',
     '/en/work', '/de/work',
+    /* Phase C. Added in the same change that created the route, which is what
+       the note above asks for and is the only thing that keeps this list
+       honest. */
+    '/en/friction-check', '/de/friction-check',
   ]],
   ['bureau', 'http://localhost:3021', ['/', '/impressum', '/datenschutz', '/login']],
 ]
