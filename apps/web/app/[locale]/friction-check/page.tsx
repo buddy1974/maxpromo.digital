@@ -201,7 +201,7 @@ export default function FrictionCheckPage() {
           <div className="fc-after">
             <p className="fc-pattern-label">{t('learnTitle')}</p>
             <p className="fc-pattern-body">{t('learnBody')}</p>
-            <Link href="/solutions/workflow-automation" className="quiet-link">{t('learnLink')}</Link>
+            <Link href="/resources/what-to-automate-first" className="quiet-link">{t('learnLink')}</Link>
           </div>
 
           <button type="button" className="btn btn-ghost fc-restart" onClick={restart}>

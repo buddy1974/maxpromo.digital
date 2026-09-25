@@ -1,0 +1,186 @@
+/*
+ * Route CSS for the Guides lane.
+ *
+ * A reading measure and a single column. The two lists are the only place a
+ * grid was tempting, and they are deliberately not one: "what suits" and "what
+ * does not" read as an argument in sequence, and side by side at 1440px they
+ * read as a comparison table nobody finishes.
+ */
+
+.guide {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: var(--space-10) var(--space-4) var(--space-16);
+}
+
+.guide-head { margin-bottom: var(--space-10); }
+
+.guide-title {
+  font-size: var(--text-h1);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  margin: var(--space-3) 0 var(--space-5);
+}
+
+.guide-lede {
+  font-size: var(--text-lede);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  margin: 0 0 var(--space-4);
+}
+
+.guide-meta {
+  font-size: var(--text-small);
+  color: var(--brand-text-muted);
+  margin: 0;
+}
+
+.guide-section {
+  border-top: 1px solid var(--brand-border);
+  padding-top: var(--space-8);
+  margin-bottom: var(--space-10);
+}
+
+.guide-body {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  margin: 0 0 var(--space-4);
+}
+
+.guide-body-lede { margin-bottom: var(--space-6); }
+
+/* ── Rules ────────────────────────────────────────────────────────────── */
+
+.guide-rule { margin-bottom: var(--space-8); }
+.guide-rule:last-child { margin-bottom: 0; }
+
+.guide-rule-label {
+  font-size: var(--text-label);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-primary-text);
+  margin: 0 0 var(--space-2);
+}
+
+.guide-rule-title {
+  font-size: var(--text-h3);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  color: var(--brand-text);
+  margin: 0 0 var(--space-4);
+}
+
+/* The question the reader can act on. Marked by a rule rather than a tinted
+   box, so a page with five of them does not turn into a wall of panels. */
+.guide-ask {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+  border-left: 2px solid var(--brand-primary-edge);
+  padding-left: var(--space-4);
+  margin: 0;
+}
+
+/* ── The two lists ────────────────────────────────────────────────────── */
+
+.guide-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.guide-item {
+  border-left: 2px solid var(--brand-border-strong);
+  padding-left: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.guide-item:last-child { margin-bottom: 0; }
+
+/* Suited and not-suited differ by the weight of the rule, not by colour.
+   Green-for-yes and red-for-no would be a semantic claim the content does not
+   make: nothing on the second list is wrong, it is simply a different kind of
+   work. */
+.guide-item-yes { border-left-color: var(--brand-primary-edge); }
+.guide-item-no  { border-left-color: var(--brand-border); }
+
+.guide-item-title {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  color: var(--brand-text);
+  margin: 0 0 var(--space-2);
+}
+
+.guide-item-body {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  margin: 0;
+}
+
+/* ── The order ────────────────────────────────────────────────────────── */
+
+.guide-order {
+  list-style: none;
+  counter-reset: none;
+  margin: 0 0 var(--space-6);
+  padding: 0;
+}
+
+.guide-order-item {
+  display: grid;
+  grid-template-columns: var(--space-6) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  margin-bottom: var(--space-4);
+}
+
+.guide-order-num {
+  font-family: var(--brand-font-mono, monospace);
+  font-size: var(--text-small);
+  font-weight: var(--weight-bold);
+  color: var(--brand-primary-text);
+  line-height: var(--leading-body);
+}
+
+.guide-order-text {
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  min-width: 0;
+}
+
+/* ── Mistakes ─────────────────────────────────────────────────────────── */
+
+.guide-mistake { margin-bottom: var(--space-6); }
+.guide-mistake:last-child { margin-bottom: 0; }
+
+/* ── Close ────────────────────────────────────────────────────────────── */
+
+.guide-close {
+  border-top: 1px solid var(--brand-border);
+  padding-top: var(--space-8);
+}
+
+/* `.btn` sets white-space: nowrap, which the German label outgrows at 320px. */
+.guide-cta {
+  white-space: normal;
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+.guide-alt {
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .guide { padding: var(--space-6) var(--space-4) var(--space-10); }
+  .guide-cta { display: block; }
+  .guide-order-item { grid-template-columns: var(--space-5) minmax(0, 1fr); gap: var(--space-3); }
+}

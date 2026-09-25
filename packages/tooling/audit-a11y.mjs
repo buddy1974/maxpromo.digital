@@ -39,6 +39,7 @@ const TARGETS = [
        the note above asks for and is the only thing that keeps this list
        honest. */
     '/en/friction-check', '/de/friction-check',
+    '/en/resources/what-to-automate-first', '/de/resources/what-to-automate-first',
   ]],
   ['bureau', 'http://localhost:3021', ['/', '/impressum', '/datenschutz', '/login']],
 ]
