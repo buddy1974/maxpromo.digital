@@ -465,3 +465,194 @@ exist. One guide is now among them.
 fifteen local commits, tree clean, verify and certify green, two new public
 pages, one governed handoff contract and one architectural finding that the
 existing gates could not have caught.
+
+
+---
+
+# FULL-DAY SHIFT — 2026-09-25
+
+**Started** `28a524c` · **ended** `f43170c` and the commits after it ·
+**17+ unpushed commits** · tree clean · verify **exit 0** at 21 gates ·
+certify **exit 0** · accessibility **clean across 51 routes**.
+
+## Risk 55 — before and after
+
+**Before.** `<NextIntlClientProvider>` carried no `messages` prop, so next-intl
+serialised the entire message tree into every page: 22 namespaces, 66,635 bytes
+per locale, every route. `caseStudies` was among them, so pages with no
+commercial figures on them served the contradicted £14,000/month claim.
+
+**After.** `apps/web/i18n/client-namespaces.ts` declares the eight namespaces a
+client component actually reads — measured, 31 % of the tree — and names
+`caseStudies`, `work` and `blog` as never-client rather than merely omitting
+them. Omission is silent; a refusal is not.
+
+**Proved, not asserted.** `prove:payload-claims` is gate 21 and has two layers:
+source always, and a real payload fetch when a dev server answers. Shown red
+against the restored bare provider — 11 of 18 failing, the contradicted figure
+plus 78 %, 91 % and 94 % on **seven routes including `/de/impressum`**, a locked
+legal page. Then green on 18.
+
+**Measured effect.** `/de/friction-check` 104 KB → **56 KB**. `/de/contact`
+112 KB → **64 KB**. The claims left the wire and roughly 45 KB of dead payload
+left every route with them.
+
+One detector correction recorded rather than silently fixed: the first
+namespace probe searched for `"work":` anywhere and reported a leak that was not
+there — `nav` legitimately carries a `work` label, which serialises as a string
+while a namespace serialises as an object.
+
+## Architecture decisions
+
+**The client namespace list is written, not derived.** A derived allowlist grows
+silently: add `useTranslations('caseStudies')` to a client component and the
+derivation quietly starts shipping the claims again. Written down, that same
+edit fails a gate and somebody has to decide.
+
+**The payload gate says so loudly when it cannot run.** Only the fetch layer
+proves the defect is closed rather than configured, so with no server reachable
+it prints a banner and claims nothing.
+
+**Empty lanes are not published.** Resources gained Guides, which has one real
+entry. System Breakdowns and Field Notes are in the approved architecture and
+were deliberately not surfaced — a lane with no entries advertises absence.
+
+## Routes added
+
+Five, all DE and EN: `/friction-check` (yesterday),
+`/resources/what-to-automate-first`, `/solutions/web-development`,
+`/solutions/content-operations`, `/solutions/product-operations`.
+
+Every one registered in the sitemap **and** added to the accessibility audit in
+the same change — the gap that let the Friction Check ship unchecked has not
+recurred.
+
+## Phase E — complete
+
+All three remaining capability pages built, DE and EN, 99 new keys per locale,
+none identical across the two. Each follows the established argument shape,
+including the caveat before the catalogue:
+
+- **Web Development** — most businesses do not need a new website; they need
+  the one they have to do something. No framework names anywhere.
+- **Content & Social Operations** — the problem is rarely the writing, it is
+  the capturing. Refuses autonomous brand publishing explicitly.
+- **Product & Commerce Operations** — rarely a shop problem, a
+  question-of-ownership problem. No named platform, ERP or accounting system,
+  because the repository has no evidence of an integration with any.
+
+**None of the three carries a figure.** No conversion rates, reach, cadence or
+savings. All three reserve the proof position instead.
+
+## Status of everything else
+
+| Item | State |
+|---|---|
+| Proof package | `1 satisfied · 5 blocked · 0 outstanding` — unchanged, correctly |
+| Chrome contract | refreshed for the five new routes, including the Friction Check's honest path as an explicit P1 test |
+| Industry coherence | **not done** |
+| Founder / About / CTA coherence | **not done** |
+| Knowledge engine | **not done** — see below |
+| SEO/GEO inventory | **not done** |
+| Social preview system | **not done** |
+| `llms.txt` | not implemented, no evidence gathered this shift |
+| Newsletter | correctly deferred — two useful write-ups now exist against a bar of four |
+| Cost calculator | deferred, not revisited |
+
+**The knowledge engine, specifically.** Not built, and the reason is the same
+one as yesterday and is still good: `BlogPost` already carries locale, status,
+tags, category and author, and the three real gaps are a first-class lane,
+provenance, and a work-item relation. Designing that taxonomy from one guide
+and one hand-built page would bake in the wrong shape. **Trigger:** the second
+guide or the first system breakdown.
+
+## Defects
+
+**P0 · P1:** none open.
+
+**Fixed today:** risk 55 (P2, claim delivery) — proved red then green.
+
+**Open P3:** `QA-02`, the `performance.measure` TypeError on the localized 404,
+attributed to Next.js client code, for Chrome to observe.
+
+---
+
+# EVENING REVIEW
+
+## A. What changed today
+
+Three new commercial pages, one new guide, a Guides lane on Resources, and one
+real defect closed: withdrawn commercial claims were travelling in the HTML of
+every page on the site, including the Impressum, and no longer are.
+
+## B. What to review first
+
+```
+http://localhost:3020/de/solutions/web-development
+http://localhost:3020/de/solutions/content-operations
+http://localhost:3020/de/solutions/product-operations
+http://localhost:3020/de/resources/what-to-automate-first
+http://localhost:3020/de/resources
+http://localhost:3020/de/friction-check      ← answer the first option six times
+```
+
+The last one matters most: it should tell you that you probably do not need
+Maxpromo. If that reads wrong, the copy is one i18n namespace.
+
+## C. Architecture decisions that matter
+
+The client namespace list, and the fact it is written rather than derived. The
+payload gate's two layers. Empty lanes not published.
+
+## D. Defects found
+
+Risk 55, P2, claim delivery. Found while checking the new guide for stray
+figures — the figures were in the payload rather than the page.
+
+## E. Defects fixed
+
+Risk 55, proved red against the vulnerable architecture across seven routes,
+then green on 18 properties, with the payload reduction measured.
+
+## F. What remains, and why
+
+Industry coherence, founder/CTA coherence, knowledge engine, SEO/GEO inventory
+and the social preview system. Each is a substantial build, and the SEO pass is
+gated on content architecture being stable — which it now nearly is, with Phase
+E done. That is the natural next session.
+
+## G. Owner decisions — only these
+
+1. **Risk 53** — the three 8 June leads, untouched.
+2. **Publication treatment of the proprietor's name** in evidence captures.
+3. **A real founder photograph.** The slot is preserved; no substitute used.
+4. Optional: `OS_SESSION_SECRET` is 33 all-digit characters.
+
+## H. Agent handoffs
+
+**Chrome:** the five OS captures and the full rendered QA pass, now including
+five new routes. Contract refreshed and ready. Not owner work.
+
+## I. External platform validation
+
+A Facebook/LinkedIn re-scrape once social metadata exists — it does not yet.
+Search Console submission whenever deployment happens. Neither is possible or
+needed locally.
+
+## J. Deployment verdict
+
+**READY FOR OWNER REVIEW.** Not ready for deployment in the sense that the
+proof package is still incomplete and rendered visual QA has not happened — but
+nothing in the tree is unsafe, and the claim leak that *was* shipping is fixed.
+
+## K. Commit range
+
+`28a524c` (yesterday's report) → HEAD. All local.
+
+## L. Rollback
+
+- Before today: `28a524c`
+- Before the claim fix: `1559293`
+- Before Phase E: `91bb163`
+
+Each is a clean tree with verify green.

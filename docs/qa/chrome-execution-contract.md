@@ -1,6 +1,6 @@
 # Chrome execution contract
 
-**Status:** CHROME HANDOFF READY · 2026-09-25
+**Status:** CHROME HANDOFF READY · refreshed 2026-09-25 for five new routes
 
 For the browser execution agent. Self-contained: Chrome has no repository
 filesystem access and needs none. Everything required is here.
@@ -270,12 +270,35 @@ Homepage · What We Do (`/solutions`) · Workflow Automation ·
 Custom Applications · Work · Contact · About · localized 404
 (`/de/no-such-page-qa`, `/en/no-such-page-qa`)
 
-**Plus the routes added in this run:** Friction Check (`/friction-check`),
-the automation guide, Resources, and any new capability page. Ask VS for the
-current list if unsure rather than guessing.
+**Plus every route added on 2026-09-25**, all DE and EN:
+
+```
+/friction-check
+/resources/what-to-automate-first
+/solutions/web-development
+/solutions/content-operations
+/solutions/product-operations
+```
+
+That is five new routes in both locales. All five are server-rendered apart
+from the Friction Check, which is interactive end to end and is the one that
+most needs rendered observation: six question screens, a progress bar, radio
+groups, and two different result shapes.
+
+**Exercise the Friction Check's honest path explicitly.** Answer the first
+option on all six questions. The result must say the visitor may not need
+Maxpromo. If it names a friction pattern instead, that is a P1 — the page's
+whole credibility rests on that outcome being reachable.
 
 **Full matrix on:** Homepage, Workflow Automation, Work, Contact, Friction
-Check. Representative coverage (390, 901, 1440) elsewhere.
+Check. Representative coverage (390, 901, 1440) elsewhere, including all three
+new capability pages and the guide.
+
+**Two things to look at specifically on the new pages.** The capability pages
+carry a reserved `ScreenshotSlot` proof position — confirm it renders as an
+intentional placeholder and has not collapsed. And the guide is a long single
+column of German prose: check it does not overflow at 320 and that the two
+lists stay legible.
 
 Legal pages: navigate to confirm they load and are not visually broken. **Do not
 assess their content** — they are locked, and their identical bilingual
