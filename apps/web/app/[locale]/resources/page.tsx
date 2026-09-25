@@ -67,6 +67,24 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
 
   const destinations = [
     {
+      /* Guides lead, because they are the only lane a reader can use without
+         us. Linked straight at the one guide rather than at an index of one:
+         a directory page listing a single item is a worse experience and an
+         honest reader notices immediately. It becomes an index at three.
+
+         Two further lanes are defined in the Resources architecture and are
+         deliberately absent here — System Breakdowns has nothing to show until
+         the Maxpromo OS evidence package is captured, and Field Notes has
+         nothing at all. A lane with no entries advertises absence. */
+      href: '/resources/what-to-automate-first',
+      question: isDE ? 'Was Sie selbst entscheiden können' : 'What you can decide for yourself',
+      title: isDE ? 'Leitfäden' : 'Guides',
+      desc: isDE
+        ? 'Praktische Anleitungen, die ohne uns funktionieren. Der erste: welche Arbeit sich für Automatisierung eignet, welche besser bei Menschen bleibt, und in welcher Reihenfolge man anfängt.'
+        : 'Practical guides that work without us. The first: which work suits automation, which is better left with people, and what order to start in.',
+      cta: isDE ? 'Leitfaden lesen' : 'Read the guide',
+    },
+    {
       href: '/blog',
       question: isDE ? 'Was wir gelernt haben' : 'What we have learned',
       title: isDE ? 'Fachbeiträge' : 'Written work',
@@ -106,8 +124,8 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
             </h1>
             <p className="sec-lede" style={{ margin: 0 }}>
               {isDE
-                ? 'Kein Blog. Drei verschiedene Dinge: was uns das Bauen dieser Systeme beigebracht hat, was dabei herausgekommen ist, und wie die Systeme selbst aufgebaut sind.'
-                : 'Not a blog. Three separate things: what building these systems taught us, what the work produced, and how the systems themselves are put together.'}
+                ? 'Kein Blog. Vier verschiedene Dinge: was Sie selbst entscheiden können, was uns das Bauen dieser Systeme beigebracht hat, was dabei herausgekommen ist, und wie die Systeme selbst aufgebaut sind.'
+                : 'Not a blog. Four separate things: what you can decide for yourself, what building these systems taught us, what the work produced, and how the systems themselves are put together.'}
             </p>
           </div>
         </div>

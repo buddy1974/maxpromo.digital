@@ -313,3 +313,155 @@ not need us. If that result reads wrong for your business, the copy is the
 thing to change and it is all in one i18n namespace.
 
 Then the five captures.
+
+
+---
+
+# Continuation — 2026-09-25
+
+## 0. A correction to this report
+
+The previous section listed **"take the five captures"** under owner actions.
+That was wrong, and it is withdrawn.
+
+Chrome is the browser execution layer and has since proved it: navigation,
+rendered reading, clicking, screenshots and authenticated `/os` access all
+work, against the governed dataset. The captures are an **agent execution
+dependency**, not something the owner performs. The owner is not the screenshot
+operator and is not the QA operator.
+
+This continuation therefore separates three things the earlier section ran
+together:
+
+| | |
+|---|---|
+| **OWNER ACTION** | a genuine owner decision — consent, publication treatment, deployment approval, a real photograph |
+| **AGENT HANDOFF** | ordinary work belonging to another agent — captures, rendered QA |
+| **EXTERNAL PLATFORM** | something only a third-party account can do — a social re-scrape, Search Console |
+
+Nothing that is ordinary engineering, screenshots, browser work or repository
+work belongs in the first column.
+
+## 1. Work completed today
+
+**The Chrome execution contract is now a governed file** —
+`docs/qa/chrome-execution-contract.md`, status **CHROME HANDOFF READY**. It
+existed only in a chat message, which made it unrepeatable and unreviewable.
+It carries the five captures with exact routes and states, the synthetic source
+text, expected arithmetic, the corrected lifecycle truth, evidence-safety and
+provenance rules, the operator-name rule, the fourteen-pair viewport matrix
+including the 899/901 and 1099/1101 boundaries the stylesheets actually use,
+the route matrix, interaction limits, defect classification and the final
+report schema. Chrome needs no repository access to execute it.
+
+**The automation guide is built** — `/resources/what-to-automate-first`, DE and
+EN, 60 keys per locale, none identical across the two. Three rules, two lists,
+an order sorted by certainty of benefit rather than effort, and three mistakes.
+Exactly two calls to action, both at the end. No time savings, no percentages,
+no "businesses typically see" — this company has no measured figure it may
+publish, and the argument stands on reasoning instead. Registered in the
+sitemap and added to the accessibility audit in the same change. The Friction
+Check's read-next slot now points at it.
+
+**Resources gained a Guides lane**, placed first because it is the only lane a
+reader can use without us. Linked straight at the one guide rather than at an
+index of one; it becomes an index at three. The hero's "three separate things"
+is now four.
+
+**System Breakdowns and Field Notes were deliberately not added.** Both are in
+the approved architecture and both have zero entries — System Breakdowns has
+nothing until the Maxpromo OS evidence is captured. A lane with no entries
+advertises absence.
+
+## 2. A finding worth more than the features: risk 55
+
+While checking the guide for stray figures, the served HTML turned out to
+contain them.
+
+`next-intl` serialises the whole message tree into every page. So
+`/de/friction-check` — a page with no commercial figures on it — ships
+`cs2Headline` and `cs2Result1` carrying **"14.000 £/Monat an Betriebskosten"**,
+plus the 78 % and 18-day figures.
+
+That £14,000 figure is the one ADR-0007 records as **CONTRADICTED**: published
+simultaneously as €14k/mo and £14,000/month, differing by seventeen per cent,
+and resolved by deleting it from the pages. **It was never removed from the
+wire.**
+
+`check:claims` is clean because it scans what a page *renders*. This is what a
+page *serves*. The two were assumed to be the same thing and are not.
+
+It matters beyond tidiness: anything reading raw HTML — a crawler, a model, a
+scraper, a "view source" — sees a withdrawn figure attributed to this company on
+a page that deliberately makes no such claim.
+
+**Not fixed here, deliberately.** Both remedies — narrowing the serialised tree
+per route, or moving historical case-study strings out of the runtime catalogue
+— change how every page loads messages, and verifying that needs rendered QA
+this session cannot perform. Recorded with evidence rather than half-changed.
+
+## 3. Verification
+
+`npm run verify` **exit 0** at 20 gates · `npm run certify` **exit 0** ·
+accessibility **clean across 45 routes** (up from 43; both new pages included in
+the same change that created them) · i18n clean at 1692 keys per locale ·
+`web.route-css` 83 KB of 88 KB · no secret in any diff.
+
+The four `CLAIMS` findings in certify are the long-standing hedged case-study
+strings, reported-not-failed, unchanged.
+
+## 4. Commits added today
+
+| Hash | Purpose |
+|---|---|
+| `509868a` | The guide, and the Chrome contract as a governed file |
+| *(this)* | Resources Guides lane, risk 55, report continuation |
+
+## 5. What remains, and why
+
+**AGENT HANDOFF — Chrome.** The five captures and the full rendered QA pass.
+The contract is written and ready; nothing in the repository blocks either.
+
+**Deferred with triggers:**
+
+*Knowledge engine foundation.* Inspected rather than built. The existing
+`BlogPost` model already carries locale, status, tags, category, author and
+keywords — most of what the loop needs. The three genuine gaps are a
+first-class content lane, provenance back to the work that produced the
+knowledge, and a relation to a work item. It is **not** built today because the
+taxonomy would be designed from a single example: the guide is a hand-built
+page, not a `BlogPost`, and that disconnection is itself the useful signal.
+**Trigger:** the second guide or the first system breakdown, whichever lands
+first, so the shape is informed by two real examples.
+
+*Phase E capability pages* (Web Development, Content & Social Operations,
+Product & Commerce Operations), *industry page coherence*, *SEO/GEO
+foundation*, *social preview system*. Each is a substantial content build.
+Three started badly is worse than one finished well, and §24 of the SEO
+directive gates that pass on content architecture being stable — which, with
+Phase E outstanding, it is not. **Trigger:** Phase E pages land, then the SEO
+and social passes over a settled set of page families.
+
+*Manual work cost calculator.* Remains deferred; the earlier reasoning is
+accepted and was not revisited.
+
+*Newsletter.* Go conditions still unmet — fewer than four useful write-ups
+exist. One guide is now among them.
+
+## 6. Owner actions — genuinely only these
+
+1. **Risk 53** — the three 8 June leads, untouched since June.
+2. **Publication treatment of the proprietor's name**, which renders in the OS
+   chrome on every capture surface. Not a leak; a publication decision.
+3. **A real founder photograph**, whenever convenient. The slot is preserved
+   and no generated or stock substitute has been used.
+4. **Risk 55 remedy choice** — narrow the serialised tree, or move the
+   historical strings. An architecture decision.
+5. Optional: `OS_SESSION_SECRET` is 33 all-digit characters.
+
+## 7. Readiness
+
+**READY FOR OWNER REVIEW**, unchanged in substance and stronger in content:
+fifteen local commits, tree clean, verify and certify green, two new public
+pages, one governed handoff contract and one architectural finding that the
+existing gates could not have caught.
