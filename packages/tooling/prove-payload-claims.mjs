@@ -189,6 +189,99 @@ if (!server) {
     check(`${route} carries no withdrawn claim`, hits.length === 0, hits.join(' · '))
   }
 
+  /* ── Social metadata ──────────────────────────────────────────────────
+     Added 2026-09-25. The site served one static Open Graph image for every
+     page, and only four routes set `openGraph` at all, so a shared link to
+     Resources and one to the Impressum previewed identically. Patching
+     Resources alone would have left the same hole in twenty-six routes, so
+     the system is checked rather than the page.
+
+     This is the layer that makes the previous failure mechanically harder to
+     reintroduce: it reads the head a crawler actually receives. */
+  console.log('')
+  console.log('Social metadata is complete and page-specific')
+
+  const SOCIAL_ROUTES = [
+    '/de', '/de/solutions/web-development', '/de/friction-check',
+    '/de/resources/what-to-automate-first', '/en/solutions/product-operations',
+  ]
+  const REQUIRED = [
+    ['og:title', /<meta property="og:title" content="([^"]*)"/],
+    ['og:description', /<meta property="og:description" content="([^"]*)"/],
+    ['og:url', /<meta property="og:url" content="([^"]*)"/],
+    ['og:image', /<meta property="og:image" content="([^"]*)"/],
+    ['og:locale', /<meta property="og:locale" content="([^"]*)"/],
+    ['twitter:card', /<meta name="twitter:card" content="([^"]*)"/],
+    ['canonical', /<link rel="canonical" href="([^"]*)"/],
+  ]
+
+  const ogTitles = new Map()
+  for (const route of SOCIAL_ROUTES) {
+    let html = ''
+    try {
+      html = await (await fetch(BASE + route, { signal: AbortSignal.timeout(45000) })).text()
+    } catch (e) {
+      check(`${route} metadata could be read`, false, e.message.slice(0, 50)); continue
+    }
+    const missing = REQUIRED.filter(([, re]) => !re.test(html)).map(([n]) => n)
+    check(`${route} has a complete social head`, missing.length === 0, missing.join(', '))
+
+    const t = html.match(REQUIRED[0][1])?.[1]
+    if (t) ogTitles.set(route, t)
+
+    /* hreflang: both locales must be declared, or one language is invisible. */
+    const hasDe = /<link rel="alternate" hrefLang="de"|hreflang="de"/i.test(html)
+    const hasEn = /<link rel="alternate" hrefLang="en"|hreflang="en"/i.test(html)
+    check(`${route} declares both language alternates`, hasDe && hasEn,
+      [!hasDe && 'de', !hasEn && 'en'].filter(Boolean).join(', '))
+  }
+
+  /* The original defect, stated as a property: different pages, different
+     previews. One shared title across every route is the failure returning. */
+  check(
+    'every route previews as itself, not as the site',
+    new Set(ogTitles.values()).size === ogTitles.size,
+    `${ogTitles.size} route(s), ${new Set(ogTitles.values()).size} distinct og:title`,
+  )
+
+  /*
+   * The og:image must return an image.
+   *
+   * Added after a real failure this gate did not catch: a `color-mix()` value
+   * in the card, valid CSS and accepted by the design-token audit, is not
+   * implemented by satori, which renders the image. The route stopped
+   * responding entirely and every gate stayed green, because checking that a
+   * URL is present is not checking that it resolves.
+   */
+  {
+    let html = ''
+    try {
+      html = await (await fetch(`${BASE}/de/solutions/web-development`, { signal: AbortSignal.timeout(45000) })).text()
+    } catch { /* reported above */ }
+    const raw = html.match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? ''
+    const imageUrl = raw.replace(/&amp;/g, '&').replace(/^https?:\/\/[^/]+/, BASE)
+    if (!imageUrl) {
+      check('the og:image URL could be read', false)
+    } else {
+      try {
+        const res = await fetch(imageUrl, { signal: AbortSignal.timeout(60000) })
+        const type = res.headers.get('content-type') ?? ''
+        const bytes = (await res.arrayBuffer()).byteLength
+        check('the og:image actually returns an image', res.ok && type.startsWith('image/'),
+          `HTTP ${res.status} ${type || 'no content-type'}`)
+        check('the og:image is not an empty response', bytes > 2000, `${bytes} bytes`)
+      } catch (e) {
+        check('the og:image actually returns an image', false, e.message.slice(0, 60))
+      }
+    }
+  }
+
+  /* A card is a persuasive surface; the claim rules apply to it too. */
+  for (const [route, t] of ogTitles) {
+    const hits = FORBIDDEN.filter((f) => f.re.test(t)).map((f) => f.label)
+    check(`${route} og:title carries no withdrawn claim`, hits.length === 0, hits.join(' · '))
+  }
+
   /* The namespace itself should not be on the wire either — the claim strings
      are the symptom, the namespace is the cause. */
   try {

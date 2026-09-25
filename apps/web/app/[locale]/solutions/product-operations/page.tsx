@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -45,19 +46,15 @@ const BUILDS = ['c5b1', 'c5b2', 'c5b3', 'c5b4'] as const
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/solutions/product-operations',
     title: isDE ? 'Produkt- und Handelsabläufe' : 'Product and commerce operations',
     description: isDE
       ? 'Ein führender Ort für Produktangaben, und Kanäle, die ihm folgen. Preise und Zusagen bleiben eine menschliche Entscheidung.'
       : 'One authoritative place for product detail, and channels that follow it. Prices and promises stay a human decision.',
-    alternates: {
-      canonical: `/${locale}/solutions/product-operations`,
-      languages: {
-        de: '/de/solutions/product-operations',
-        en: '/en/solutions/product-operations',
-      },
-    },
-  }
+    family: 'capability',
+  })
 }
 
 export default async function CapabilityPage({

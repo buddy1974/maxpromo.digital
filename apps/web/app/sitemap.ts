@@ -24,6 +24,7 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataR
   { path: '/solutions',                      priority: 0.9, changeFrequency: 'monthly' },
   { path: '/solutions/customer-inquiries',   priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/workflow-automation',  priority: 0.7, changeFrequency: 'monthly' },
+  { path: '/solutions/custom-applications', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/web-development',      priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/content-operations',   priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/product-operations',   priority: 0.7, changeFrequency: 'monthly' },
@@ -81,10 +82,6 @@ function languageAlternates(path: string): Record<string, string> {
  * than promoted.
  */
 const PRODUCT_ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }> = [
-  { path: '',           priority: 1.0, changeFrequency: 'weekly'  },
-  { path: '/contact',   priority: 0.8, changeFrequency: 'monthly' },
-  { path: '/impressum', priority: 0.2, changeFrequency: 'yearly'  },
-  { path: '/privacy',   priority: 0.2, changeFrequency: 'yearly'  },
 ]
 
 /**

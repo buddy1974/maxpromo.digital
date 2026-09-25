@@ -1,38 +1,28 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 
 /**
- * app/[locale]/contact/page.tsx is a client component ('use client'),
- * so it cannot export generateMetadata itself, Next.js requires
- * metadata exports to live in a Server Component. This segment
- * layout supplies the metadata and otherwise just passes children
- * through; the visual shell (Navbar/Footer/CookieBanner) already
- * comes from app/[locale]/layout.tsx above it.
+ * Metadata for Contact.
+ *
+ * The page is `'use client'` because the form is interactive, and a client
+ * component cannot export `generateMetadata`. The route therefore had no
+ * title, description, canonical or hreflang of its own — on the page every
+ * commercial surface on this site points at.
  */
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ locale: string }>
-}): Promise<Metadata> {
+}: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  const title = isDE
-    ? 'Kontakt'
-    : 'Contact'
-  const description = isDE
-    ? 'Sprechen Sie mit Maxpromo Digital über Business-Systeme, Automatisierung oder ein bestimmtes Produkt, Antwort innerhalb eines Werktags.'
-    : 'Talk to Maxpromo Digital about business systems, automation, or a specific product, we reply within one business day.'
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/contact`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de/contact',
-        en: 'https://www.maxpromo.digital/en/contact',
-      },
-    },
-    openGraph: { title, description, url: `https://www.maxpromo.digital/${locale}/contact` },
-  }
+  return pageMetadata({
+    locale,
+    path: '/contact',
+    title: isDE ? 'Kontakt' : 'Contact',
+    description: isDE
+      ? 'Schildern Sie uns, was im Tagesgeschäft bremst. Wir sagen Ihnen, was sich vereinfachen lässt, was sich verbinden lässt und was so bleiben sollte, wie es ist.'
+      : 'Tell us what is slowing the working day down. We will tell you what can be simplified, what can be connected, and what should stay exactly as it is.',
+    family: 'company',
+  })
 }
 
 export default function ContactLayout({ children }: { children: React.ReactNode }) {

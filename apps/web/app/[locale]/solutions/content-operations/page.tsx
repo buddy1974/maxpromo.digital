@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -45,19 +46,15 @@ const BUILDS = ['c4b1', 'c4b2', 'c4b3', 'c4b4'] as const
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/solutions/content-operations',
     title: isDE ? 'Inhalte und Social Media' : 'Content and social operations',
     description: isDE
       ? 'Erfassen, vorbereiten, prüfen, veröffentlichen, festhalten. Die Maschine bereitet vor, ein Mensch entscheidet, wie der Betrieb nach außen klingt.'
       : 'Capture, prepare, review, publish, record. The machine prepares; a person decides how the business sounds.',
-    alternates: {
-      canonical: `/${locale}/solutions/content-operations`,
-      languages: {
-        de: '/de/solutions/content-operations',
-        en: '/en/solutions/content-operations',
-      },
-    },
-  }
+    family: 'capability',
+  })
 }
 
 export default async function CapabilityPage({

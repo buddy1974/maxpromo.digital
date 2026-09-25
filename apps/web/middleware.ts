@@ -216,6 +216,12 @@ export const config = {
     // /demo is the private demonstration room. It sits outside the locale
     // tree on purpose, so it must not be locale-prefixed here either; it
     // enforces its own authorisation server-side. See lib/demo/access.ts.
-    '/((?!_next|api/(?!os)|_vercel|demo|.*\\.).*)',
+    //
+    // /og generates the social card. It has no locale of its own — the locale
+    // is a query parameter — and a social crawler fetching it must receive an
+    // image, not a 307 to /de/og. Without this exclusion every Open Graph
+    // image on the site resolves to a redirect, which is the same as having
+    // none, and the preview falls back to whatever the platform guesses.
+    '/((?!_next|api/(?!os)|_vercel|demo|og|.*\\.).*)',
   ],
 }

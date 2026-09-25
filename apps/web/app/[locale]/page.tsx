@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { currentDomain, showcaseRootMetadata } from '@/lib/domains/server'
 import { notFound } from 'next/navigation'
@@ -65,34 +66,18 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const ogTitle = isDE
     ? 'Maxpromo Digital — Business-Systeme aus Essen'
     : 'Maxpromo Digital — Business Systems, Built in Essen'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/',
     title,
     description,
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de',
-        en: 'https://www.maxpromo.digital/en',
-      },
-    },
-    openGraph: {
-      // Next replaces the openGraph object rather than merging it, so a page
-      // that sets any of it sets all of it. The root layout's siteName was
-      // being dropped here — the consultancy's own home page has been serving
-      // no og:site_name at all, on both locales.
-      siteName: 'Maxpromo Digital',
-      title: ogTitle,
-      description,
-      url: `https://www.maxpromo.digital/${locale}`,
-      images: [{ url: '/images/seo/maxpromo-digital-og.png', width: 1200, height: 630, alt: 'Maxpromo Digital' }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: ogTitle,
-      description,
-      images: ['/images/seo/maxpromo-digital-og.png'],
-    },
-  }
+    family: 'company',
+    // The page title is templated with the brand; og:title is shown as-is by
+    // a crawler, so it carries the full framing. Previously this block was
+    // hand-rolled and, despite a comment warning that setting any of
+    // openGraph sets all of it, still omitted og:locale entirely.
+    ogTitle,
+  })
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -46,19 +47,15 @@ const RULES = ['rule1', 'rule2', 'rule3'] as const
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/resources/what-to-automate-first',
     title: isDE ? 'Was sollte zuerst automatisiert werden?' : 'What should you automate first?',
     description: isDE
       ? 'Welche Arbeit sich für Automatisierung eignet, welche besser bei Menschen bleibt, und in welcher Reihenfolge man anfängt. Ohne Verkaufsgespräch.'
       : 'Which work suits automation, which is better left with people, and what order to start in. Without a sales pitch.',
-    alternates: {
-      canonical: `/${locale}/resources/what-to-automate-first`,
-      languages: {
-        de: '/de/resources/what-to-automate-first',
-        en: '/en/resources/what-to-automate-first',
-      },
-    },
-  }
+    family: 'guide',
+  })
 }
 
 export default async function WhatToAutomateFirstPage({

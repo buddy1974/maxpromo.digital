@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -50,19 +51,15 @@ const BUILDS = ['c3b1', 'c3b2', 'c3b3', 'c3b4'] as const
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/solutions/web-development',
     title: isDE ? 'Webentwicklung' : 'Web development',
     description: isDE
       ? 'Eine Website, die einen Teil der Arbeit übernimmt: Anfragen, die ankommen, Weiterleitung nach Inhalt und Verbindung zu den Systemen, die Sie ohnehin nutzen.'
       : 'A website that does some of the work: enquiries that arrive properly, routing by what they are, and a connection to the systems you already run.',
-    alternates: {
-      canonical: `/${locale}/solutions/web-development`,
-      languages: {
-        de: '/de/solutions/web-development',
-        en: '/en/solutions/web-development',
-      },
-    },
-  }
+    family: 'capability',
+  })
 }
 
 export default async function WebDevelopmentPage({
