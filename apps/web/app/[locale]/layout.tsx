@@ -1,4 +1,6 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
+import { getMessages } from 'next-intl/server'
+import { pickClientMessages } from '@/i18n/client-namespaces'
 import HtmlLangSync from '@/components/HtmlLangSync'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
@@ -81,8 +83,21 @@ export default async function LocaleLayout({
     },
   ]
 
+  /*
+   * Only the namespaces the browser actually needs.
+   *
+   * Without this the whole tree is serialised into every page: 22
+   * namespaces, 66,635 bytes per locale, on every route. `caseStudies`
+   * was among them, so pages with no commercial figures on them were
+   * serving the withdrawn £14,000/month claim in their HTML. Risk 55.
+   *
+   * Server components are unaffected — `getTranslations` reads the full
+   * tree server-side and serialises none of it.
+   */
+  const clientMessages = pickClientMessages(await getMessages())
+
   return (
-    <NextIntlClientProvider>
+    <NextIntlClientProvider messages={clientMessages}>
       <HtmlLangSync />
       {isShowcase ? (
         <>

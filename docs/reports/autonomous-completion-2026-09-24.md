@@ -201,7 +201,7 @@ page families are not settled.
 
 | | |
 |---|---|
-| `npm run verify` | **exit 0**, 20 gates |
+| Merge gate | **exit 0** — 20 gates, the count on 2026-09-24 |
 | `npm run certify` | **exit 0** |
 | Accessibility | clean across **43** rendered routes |
 | i18n | clean, 1632 keys per locale |
@@ -402,7 +402,7 @@ this session cannot perform. Recorded with evidence rather than half-changed.
 
 ## 3. Verification
 
-`npm run verify` **exit 0** at 20 gates · `npm run certify` **exit 0** ·
+Merge gate **exit 0** — 20 gates, the count that morning · certify **exit 0** ·
 accessibility **clean across 45 routes** (up from 43; both new pages included in
 the same change that created them) · i18n clean at 1692 keys per locale ·
 `web.route-css` 83 KB of 88 KB · no secret in any diff.
