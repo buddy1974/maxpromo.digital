@@ -158,11 +158,30 @@ for (const f of commercialFiles) {
  * A counting word doing grammatical work is not a claim: "into one pipeline"
  * asserts nothing about an outcome. Digits, and the written numbers above two,
  * are what get flagged.
+ *
+ * GERMAN, ADDED 2026-09-25, AND WHY IT MATTERED
+ *
+ * This read `en.json` only, on a site whose primary language is German. Both
+ * locales carry the same keys — `check:i18n` enforces that — but not
+ * necessarily the same quantification: "a significant reduction" in English
+ * beside "achtundsiebzig Prozent weniger" in German is one key, two values,
+ * and only one of them was ever examined.
+ *
+ * The German number words are stems rather than whole words, because German
+ * compounds them: `achtundsiebzig` contains `siebzig`, `vierzehntausend`
+ * contains `tausend`, `fünfzehn` contains `zehn`. Matching the stem catches
+ * the compound without enumerating every number in the language.
  */
-const QUANTITY = /\d|\b(three|four|five|six|seven|eight|nine|ten|dozen|hundred|thousand)\b/i
+const QUANTITY_EN = /\d|\b(three|four|five|six|seven|eight|nine|ten|eleven|twelve|fifteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|dozen|hundred|thousand)\b/i
+const QUANTITY_DE = /(zehn|elf|zwölf|zwanzig|drei(ß|ss)ig|vierzig|fünfzig|sechzig|siebzig|achtzig|neunzig|hundert|tausend|prozent)/i
+const QUANTITY = { test: (t) => QUANTITY_EN.test(t) || QUANTITY_DE.test(t) }
 
+/* Both catalogues. Reading one of two locales is reading half the site. */
 const catalogue = JSON.parse(
   readFileSync(join(ROOT, 'apps', 'web', 'messages', 'en.json'), 'utf8'),
+)
+const catalogueDe = JSON.parse(
+  readFileSync(join(ROOT, 'apps', 'web', 'messages', 'de.json'), 'utf8'),
 )
 const registered = new Set(CLAIMS.flatMap((c) => c.keys.map((k) => k.split('.').pop())))
 
@@ -172,7 +191,9 @@ for (const f of commercialFiles) {
   for (const [leaf, text] of Object.entries(catalogue.caseStudies ?? {})) {
     if (typeof text !== 'string') continue
     if (registered.has(leaf)) continue
-    if (!QUANTITY.test(text)) continue
+    const german = catalogueDe.caseStudies?.[leaf]
+    const bothValues = typeof german === 'string' ? `${text} ${german}` : text
+    if (!QUANTITY.test(bothValues)) continue
     if (!new RegExp(`['"\`]${leaf}['"\`]`).test(src)) continue
     unclassified.push({ where: rel, leaf, text })
   }

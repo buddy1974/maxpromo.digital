@@ -25,6 +25,11 @@ const TARGETS = [
     '/en/agent-bureau', '/en/blog', '/en/impressum', '/en/privacy', '/en/agb',
     '/en/automation-lab', '/en/ai-websites', '/en/data-deletion',
     '/de/solutions', '/de/industries/healthcare', '/de/about', '/de/contact',
+    /* DE carried one industry route while EN carried all six, so five German
+       pages were unchecked. Parity is the point of a bilingual audit. */
+    '/de/industries', '/de/industries/construction', '/de/industries/property',
+    '/de/industries/hospitality', '/de/industries/publishing',
+    '/de/industries/professional-services',
     /* Phase A commercial surfaces (ADR-0016). `/work` was never in this list
        and neither was any page that did not exist when the list was written,
        which is the weakness of enumerating routes rather than deriving them:
