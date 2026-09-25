@@ -656,3 +656,160 @@ nothing in the tree is unsafe, and the claim leak that *was* shipping is fixed.
 - Before Phase E: `91bb163`
 
 Each is a clean tree with verify green.
+
+
+---
+
+# FULL-DAY SHIFT CONTINUATION — 2026-09-25
+
+**Started** `2bbe488` · **ended** `91c3263` + the report commit ·
+**21 unpushed commits** · tree clean · verify **exit 0** at 22 gates · certify
+**exit 0** · accessibility **clean across 57 routes**.
+
+## Defects found and fixed this session
+
+Seven, none of which any existing gate could have caught, and three of which
+were in my own work.
+
+**`/contact` and `/friction-check` had no metadata at all.** No title,
+description, canonical or hreflang. Both are client components, and a client
+component cannot export `generateMetadata`, so both silently inherited the site
+defaults. The conversion page every commercial surface points at, and the one
+asset built specifically to be found, were the two pages search could not read.
+
+**The homepage omitted `og:locale`.** Its own comment warned that Next replaces
+the `openGraph` object rather than merging it — "a page that sets any of it sets
+all of it" — and it still missed one field. That is the argument for a helper
+rather than a convention.
+
+**`/og` was 307-redirecting.** The locale middleware prefixed it, so every Open
+Graph image on the site resolved to a redirect, which is the same as having
+none.
+
+**The sitemap had three duplicate entries** and was **missing
+`/solutions/custom-applications`** — a live Phase A commercial page.
+
+**The claims gate could not read German.** It examined `en.json` only, on a
+German-first site, and knew no German number words at all. Tested before
+changing anything: `achtundsiebzig Prozent weniger Arbeit`,
+`vierzehntausend Euro im Monat` and even `fifteen years` all passed unseen.
+
+**Construction was the one industry entry with no human decision point**, in
+either locale, on a platform whose central claim is that a person decides.
+
+**My own two:** I hardcoded five hex values in the social card and wrote a
+comment claiming the token audit exempted it — the audit disagreed, correctly.
+Fixing that with `color-mix()` satisfied the audit and *broke the card*, because
+satori does not implement it; `/og` stopped responding entirely while every gate
+stayed green, since checking that an `og:image` URL is present is not checking
+that it returns an image.
+
+## Architecture decisions
+
+**One social card system, not forty PNGs.** `pageMetadata()` returns the whole
+head block so a page cannot acquire a canonical without an hreflang or an
+`og:title` without an image. The card is generated from the page's own title, so
+it cannot drift from the page the day one is renamed. A hand-made folder of
+images has the same problem with more maintenance.
+
+**The card obeys the claim rules.** It carries the wordmark, a family label and
+the page title. No figure. A social card is a persuasive surface.
+
+**Route governance requires a decision, not a registration.** A route belongs in
+the sitemap and the accessibility audit, or in the exclusion list with a reason.
+Being forgotten is not one of the options.
+
+**The claims fix widened the locale, not the scope.** Its author restricted it
+to `caseStudies` on the grounds that a general numbers-in-copy detector would
+flag "five kinds of work" and be switched off within a week. That reasoning
+still holds, so both locales are now read and the scope is untouched.
+
+## Industry pass
+
+All six entries audited mechanically, then against the text. **No unsupported
+figures, no fabricated sector delivery history, genuine sector specificity** —
+healthcare's "practice software is built for billing, not for communication" is
+real insight, not a template swap. Verdict: **KEEP all six.**
+
+One correction to my own audit: my detector flagged three entries as missing a
+human decision point. Two were false positives — property says *"Bewertet wird
+trotzdem von Ihnen"* and professional-services *"geprüft wird von Ihnen"*, which
+my pattern could not see. I nearly "fixed" two pages that were already correct.
+Checking flagged text before editing it is why that did not happen.
+
+Also fixed: the accessibility audit carried one German industry route and all
+six English ones, so five German pages were unchecked.
+
+## About, contact and CTA
+
+**About: audited, no rewrite needed.** Concrete headings, honest positioning
+("most businesses do not need another website"), no tax or Finanzamt detail
+outside the legal pages, founder placeholder intact. It is not too corporate,
+abstract or AI-heavy. Saying so is more useful than churning it.
+
+**CTAs: intent-specific and preserved.** Each capability page carries its own
+next action and passes `?capability=` and `?source=`, which the contact form
+already reads. The Friction Check passes `?source=friction-check`, the guide
+`?source=automation-guide`. Nothing was flattened into "book a call".
+
+## SEO and GEO
+
+`docs/governance/seo-inventory.md` — the canonical record. All 28 routes
+classified INDEX / ARCHIVE / NOINDEX / REDIRECT / OWNER REVIEW with reasons.
+
+**No schema was added** beyond the truthful `Organization` and `WebSite` already
+present. No `FAQPage` without an FAQ, no `Review` without reviews, no
+`LocalBusiness` implying premises that do not exist.
+
+**No tool is named** — not DATEV, Lexware, sevDesk, or any shop or ERP. The
+repository has no evidence of an integration with any, and naming one to catch
+its search traffic would claim experience the evidence registry does not
+support. No city pages.
+
+**`llms.txt`: NOT ADOPTED**, with reasoning and a revisit condition — not a
+standard, not documented as consumed by any major crawler, no measured
+retrieval benefit. What makes a page usable by a model is what makes it usable
+by a reader, and that work pays off either way.
+
+**One item genuinely needs the owner:** `/case-studies` is indexed and carries
+the figures the registry marks unresolved and, in one case, contradicted. Those
+strings are legitimately there as a record. Whether that page should be what a
+search engine shows for "Maxpromo case study" is a commercial judgement.
+
+## Status
+
+| | |
+|---|---|
+| Gates | 20 → **22** (`prove:route-governance` added; payload gate now 36 properties) |
+| Accessibility | 51 → **57 routes**, clean |
+| Proof package | `1 satisfied · 5 blocked · 0 outstanding` — **unchanged** |
+| Chrome contract | refreshed for the five new routes and the social card |
+| Newsletter | still deferred — two useful write-ups against a bar of four |
+| Cost calculator | deferred, not revisited |
+| Knowledge engine | deferred by accepted reasoning; trigger recorded |
+
+## Remaining
+
+**Agent handoff (Chrome):** the five OS captures and the full rendered QA pass,
+now covering five new routes plus the share previews.
+
+**Owner decisions:** Risk 53 · publication treatment of the proprietor's name in
+captures · a real founder photograph · `/case-studies` indexability.
+
+**External platform:** Search Console and Bing verification after deployment ·
+Facebook and LinkedIn re-scrape, since the old static card is cached there and
+will persist until a live URL is fetched.
+
+**Engineering that remains, and is genuinely small:** migrating the twelve
+still-hand-rolled metadata blocks onto `pageMetadata()`. Mechanical, and the
+gate already covers the routes that matter.
+
+## Verdict
+
+**READY FOR OWNER REVIEW.** Not deployable while the proof package is
+incomplete and rendered QA has not happened — but the site now serves correct,
+page-specific metadata, no withdrawn claim travels anywhere, and every route is
+governed rather than remembered.
+
+**Rollback:** `2bbe488` before this session · `9bf1c64` before SEO and social ·
+`91bb163` before Phase E. Each a clean tree with verify green.

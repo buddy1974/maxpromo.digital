@@ -1,6 +1,6 @@
 # Chrome execution contract
 
-**Status:** CHROME HANDOFF READY · refreshed 2026-09-25 for five new routes
+**Status:** CHROME HANDOFF READY · refreshed 2026-09-25 for five new routes and the social card
 
 For the browser execution agent. Self-contained: Chrome has no repository
 filesystem access and needs none. Everything required is here.
@@ -280,7 +280,22 @@ Custom Applications · Work · Contact · About · localized 404
 /solutions/product-operations
 ```
 
-That is five new routes in both locales. All five are server-rendered apart
+That is five new routes in both locales, ten pages.
+
+**One route that is not a page.** `/og` generates the social card and returns a
+PNG. Do not add it to the viewport matrix — there is nothing to lay out. Do
+open it once in each family to confirm the card reads at the size a timeline
+shows it:
+
+```
+/og?title=Webentwicklung&family=capability&locale=de
+/og?title=Was+sollte+zuerst+automatisiert+werden%3F&family=guide&locale=de
+/og?title=Business+Friction+Check&family=resource&locale=en
+```
+
+It should be black with one lime rule, the wordmark, a family label and the
+page title — and **no figure of any kind**. A number on a social card is a
+claim on a persuasive surface. If one appears, that is a P1. All five are server-rendered apart
 from the Friction Check, which is interactive end to end and is the one that
 most needs rendered observation: six question screens, a progress bar, radio
 groups, and two different result shapes.
@@ -293,6 +308,10 @@ whole credibility rests on that outcome being reachable.
 **Full matrix on:** Homepage, Workflow Automation, Work, Contact, Friction
 Check. Representative coverage (390, 901, 1440) elsewhere, including all three
 new capability pages and the guide.
+
+**Check the share preview on every new route.** Each page now sets its own
+`og:title` and its own generated card. Two different pages previewing
+identically is the defect this replaced and is worth catching if it returns.
 
 **Two things to look at specifically on the new pages.** The capability pages
 carry a reserved `ScreenshotSlot` proof position — confirm it renders as an
