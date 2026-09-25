@@ -40,6 +40,9 @@ const TARGETS = [
        honest. */
     '/en/friction-check', '/de/friction-check',
     '/en/resources/what-to-automate-first', '/de/resources/what-to-automate-first',
+    '/en/solutions/web-development', '/de/solutions/web-development',
+    '/en/solutions/content-operations', '/de/solutions/content-operations',
+    '/en/solutions/product-operations', '/de/solutions/product-operations',
   ]],
   ['bureau', 'http://localhost:3021', ['/', '/impressum', '/datenschutz', '/login']],
 ]
