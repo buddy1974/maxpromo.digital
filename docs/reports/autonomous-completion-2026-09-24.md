@@ -813,3 +813,130 @@ governed rather than remembered.
 
 **Rollback:** `2bbe488` before this session · `9bf1c64` before SEO and social ·
 `91bb163` before Phase E. Each a clean tree with verify green.
+
+
+---
+
+# POST-CHROME QA / EVIDENCE CLOSURE — 2026-09-26
+
+**Started** `ddac49e` · **ended** `db0464e` + this report · verify **exit 0** at
+23 gates · certify **exit 0** · accessibility clean across 57 routes.
+
+## Chrome's result, and why it was the right one
+
+Two captures passed, three are blocked, and Chrome refused to fabricate the
+difference. That is the evidence governance working exactly as designed — it
+stopped a broken workflow from becoming marketing proof.
+
+| Capture | Status | Where it stands |
+|---|---|---|
+| 1 `os-source-note` | **PASS** | Chrome storage `ss_53700jc04` — not yet repository evidence |
+| 2 `os-extraction-result` | **BLOCKED** | live provider failure, error frame `ss_2957teoi2` |
+| 3 `os-form-before-save` | **BLOCKED** | needs a form populated *by* the extraction |
+| 4 `os-draft-record` | **BLOCKED** | needs the save that follows Capture 3 |
+| 5 `os-lifecycle-list` | **PASS** | Chrome storage `ss_63507sdzq` — not yet repository evidence |
+
+**Proof package unchanged: `1 satisfied · 5 blocked · 0 outstanding`.** A
+capture existing in a browser is not evidence this repository may claim. The
+two passes are recorded in the registry as *captured, not ingested*, with their
+storage identifiers, because Chrome has no filesystem access and the images
+have not been seen, cropped or committed here.
+
+## The 502 — root cause
+
+**Not a code defect.** Reproducing the route's exact upstream call:
+
+```
+HTTP 400  invalid_request_error
+"Your credit balance is too low to access the Anthropic API."
+```
+
+Identical on `claude-sonnet-4-6`, `claude-sonnet-5`, `claude-opus-5` and
+`claude-haiku-4-5` — so the account, not the model identifier. The credential
+authenticates and cannot be charged.
+
+**Risk 56. Owner action: add credit.** Nothing else is required. The model
+identifier was left alone: billing fails first, so its validity cannot be
+tested, and changing it on a guess would be swapping one unverified thing for
+another.
+
+**The code defect it exposed, fixed.** Every cause collapsed into one 502 and
+one sentence, so the only way to find out what happened was to reproduce the
+call by hand. `lib/ai-failure.ts` now classifies, billing answers 503 rather
+than 502, the class goes to the caller and the provider's own message only to
+the server log, and the network catch logs `err.message` alone — an error
+object from `fetch` can carry the request, and the request carries the key.
+
+## Quotation numbering — root cause and fix
+
+Chrome saw **ANG-2026-010 → 012 → 014** across three loads with no save. Two
+compounding causes: the form requested a number on mount and the server
+answered with `next_angebot_number()`, which runs `nextval()` and permanently
+advances a sequence; and React StrictMode invoked the effect twice per load.
+
+**Loading a blank form did mutate the sequence.** Nothing was saved, so the
+series has gaps corresponding to nobody looking at a form.
+
+Reading is now a preview from stored rows, touching no sequence. Saving
+allocates once and no longer accepts a number from the client. `ANG-` is the
+correct runtime family and `EVD-` remains the seeded evidence family; they were
+**not** merged. Gate 23 proves it, red first. The lab sequence was found at
+exactly **14** — where Chrome's `ANG-2026-014` left it.
+
+## P3 triage
+
+**Friction Check** — the sales CTA rendered under the low-friction result. We
+told someone they probably do not need us, then pitched them. Now conditional.
+
+**Mobile menu** — `aria-controls` added with a matching id.
+
+**Localised 404** — **partially fixed, and the limit is recorded.** Next does
+not support `generateMetadata` in `not-found.tsx`, and adding it to the
+catch-all does nothing because `notFound()` throws first. The title is set on
+the client, so the server-rendered HTML still carries the old one. Chrome
+should verify the rendered tab title.
+
+**`overdue`** — investigated, **deliberately not changed**. It is a full
+citizen of the interface (filter tab, critical tone, red due-date, and the
+Outstanding metric sums `sent` + `overdue`) that no route writes and nothing
+derives. *When* an invoice becomes overdue is a business rule this repository
+does not contain. Risk 58; owner states the rule, then it derives in three
+lines.
+
+**Social previews** — four older routes migrated (`/resources`,
+`/industries`, and both original capability pages). Three skipped because their
+metadata has a different shape; they still work and were left alone rather than
+rewritten blind.
+
+**QA-02** — **OBSERVED AGAIN**, both locales, on reload. Attribution unchanged:
+framework code, nothing in this repository to change, no user-visible effect.
+Status OBSERVE. No framework upgrade during a closure pass.
+
+## Evidence lab
+
+Reset to canonical baseline via the governed mechanism: one Beckmann client,
+`EVD-2026-0007` draft €3.380, `EVD-2026-0004` sent €1.180, `EVD-2026-0001` paid
+€620, no leads, jobs or newsletter rows, zero non-`EVD` documents.
+
+## Chrome recovery handoff
+
+`docs/qa/chrome-recovery-contract.md` — Captures 2, 3 and 4 only. Captures 1
+and 5 are not repeated. It opens **BLOCKED ON OWNER BILLING** with a one-line
+precondition check, and tells Chrome what changed: failures now report a class,
+and the number on a blank form is a preview that may differ from the saved
+document's.
+
+## Deployment verdict
+
+**ENGINEERING FIX READY · CHROME EVIDENCE RECOVERY REQUIRED · BLOCKED ON OWNER
+BILLING.**
+
+Not ready for deployment review. The flagship evidence workflow cannot run, and
+the reason is an empty provider account rather than anything in the code.
+
+## Owner actions
+
+1. **Add Anthropic credit** — unblocks Captures 2–4 and the whole package.
+2. **State the overdue rule** — risk 58.
+3. Risk 53 · founder photograph · publication treatment of the proprietor's
+   name · `/case-studies` indexability — all unchanged.
