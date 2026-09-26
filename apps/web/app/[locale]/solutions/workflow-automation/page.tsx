@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -59,19 +60,15 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/solutions/workflow-automation',
     title: isDE ? 'Prozessautomatisierung' : 'Workflow automation',
     description: isDE
       ? 'Dieselben Angaben nicht mehr von Hand weiterreichen. Einmal erfassen, richtig weiterleiten, Arbeit vorbereiten, Ergebnis festhalten. Entscheidungen bleiben bei Menschen.'
       : 'Stop moving the same information by hand. Capture once, route correctly, prepare the work, record the outcome. Decisions stay with people.',
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/solutions/workflow-automation`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de/solutions/workflow-automation',
-        en: 'https://www.maxpromo.digital/en/solutions/workflow-automation',
-      },
-    },
-  }
+    family: 'capability',
+  })
 }
 
 export default async function WorkflowAutomationPage(

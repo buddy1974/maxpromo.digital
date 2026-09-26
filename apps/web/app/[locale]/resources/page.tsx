@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { getPublishedPosts } from '@/lib/blog/posts'
@@ -35,19 +36,15 @@ import { ArchitectureMap } from '@/components/ui/ArchitectureMap'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/resources',
     title: isDE ? 'Ressourcen' : 'Resources',
     description: isDE
       ? 'Was wir gelernt haben, was wir gebaut haben und wie die Systeme aufgebaut sind.'
       : 'What we have learned, what we have built, and how the systems are put together.',
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/resources`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de/resources',
-        en: 'https://www.maxpromo.digital/en/resources',
-      },
-    },
-  }
+    family: 'resource',
+  })
 }
 
 export default async function ResourcesPage({ params }: { params: Promise<{ locale: string }> }) {

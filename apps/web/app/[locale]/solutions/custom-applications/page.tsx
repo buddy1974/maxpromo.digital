@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -39,19 +40,15 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/solutions/custom-applications',
     title: isDE ? 'Individuelle Anwendungen' : 'Custom applications',
     description: isDE
       ? 'Wenn Tabellen und Standardsoftware nicht mehr passen: interne Anwendungen, Portale und operative Systeme, gebaut um den Ablauf, den Ihr Betrieb wirklich hat.'
       : 'When spreadsheets and off-the-shelf software stop fitting: internal applications, portals and operational systems built around the process your business actually has.',
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/solutions/custom-applications`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de/solutions/custom-applications',
-        en: 'https://www.maxpromo.digital/en/solutions/custom-applications',
-      },
-    },
-  }
+    family: 'capability',
+  })
 }
 
 export default async function CustomApplicationsPage(

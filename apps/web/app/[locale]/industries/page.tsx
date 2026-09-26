@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { INDUSTRIES, asLocale } from '@/lib/industries'
@@ -45,19 +46,15 @@ const INDUSTRY_ICON: Record<string, IconName> = {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  return {
+  return pageMetadata({
+    locale,
+    path: '/industries',
     title: isDE ? 'Branchen' : 'Industries',
     description: isDE
       ? 'Sechs Branchen, drei wiederkehrende Betriebsprobleme. Wo Arbeit ankommt, wo Informationen auseinanderfallen und was eine Entscheidung aufhält.'
       : 'Six sectors, three recurring operational problems. Where work arrives, where information splits up, and what holds a decision.',
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/industries`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de/industries',
-        en: 'https://www.maxpromo.digital/en/industries',
-      },
-    },
-  }
+    family: 'industry',
+  })
 }
 
 export default async function IndustriesPage({ params }: { params: Promise<{ locale: string }> }) {

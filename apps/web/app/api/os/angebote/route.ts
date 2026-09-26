@@ -6,6 +6,42 @@ import { getDb } from '@/lib/db'
  * db/migrations/0001-document-numbering.sql. Falls back to SELECT-MAX
  * if the migration hasn't run yet.
  */
+/**
+ * What the next number will probably be, WITHOUT consuming one.
+ *
+ * `next_angebot_number()` calls `nextval()`, which permanently advances a
+ * Postgres sequence. The new-quotation form asked for a number on mount, so
+ * merely opening a blank form burned a document number — and burned two,
+ * because React's development StrictMode invokes an effect twice. A governed
+ * browser run watched the sequence go 010 → 012 → 014 across three page loads
+ * without a single quotation being saved.
+ *
+ * Opening a blank form is not a business event. A document number is
+ * allocated when a person saves, which is the moment a document starts to
+ * exist. Until then the form shows a preview, computed from what is already
+ * stored, and says nothing to the sequence.
+ *
+ * The preview can be wrong — two forms open at once will show the same one.
+ * That is correct and harmless: `POST` allocates authoritatively, and a
+ * preview that is occasionally superseded is a far smaller problem than a
+ * numbering series with silent gaps in it.
+ */
+async function previewAngebotNumber(): Promise<string> {
+  const sql = getDb()
+  const year = new Date().getFullYear()
+  const prefix = `ANG-${year}-`
+  const rows = await sql`
+    SELECT angebot_number FROM os_angebote
+    WHERE angebot_number LIKE ${prefix + '%'}
+    ORDER BY angebot_number DESC LIMIT 1`
+  if (rows.length === 0) return `${prefix}001`
+  const last = (rows[0] as { angebot_number: string }).angebot_number
+  const num = parseInt(last.replace(prefix, ''), 10)
+  if (!Number.isFinite(num)) return `${prefix}001`
+  return `${prefix}${String(num + 1).padStart(3, '0')}`
+}
+
+/** Allocates a number and consumes it. Only a save may call this. */
 async function nextAngebotNumber(): Promise<string> {
   const sql = getDb()
   try {
@@ -34,7 +70,8 @@ export async function GET(request: NextRequest) {
     const next = searchParams.get('next')
 
     if (next === 'true') {
-      return NextResponse.json({ number: await nextAngebotNumber() })
+      /* A preview. Reading a form must not consume a document number. */
+      return NextResponse.json({ number: await previewAngebotNumber(), preview: true })
     }
     if (id) {
       const rows = await sql`SELECT * FROM os_angebote WHERE id = ${id}`
@@ -61,7 +98,16 @@ export async function POST(request: NextRequest) {
       payment_method?: string; currency?: string; language?: string
     }
 
-    const angebot_number = body.angebot_number || await nextAngebotNumber()
+    /*
+     * Always allocated here, never taken from the request.
+     *
+     * The client holds a preview from `?next=true`, and it used to send that
+     * preview back to be stored. Two forms open at once would then both store
+     * the same number, and the unique constraint would reject the second save
+     * as an opaque failure. The number the document keeps is the one the
+     * sequence issues at the moment of saving.
+     */
+    const angebot_number = await nextAngebotNumber()
     // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
     // When multi-user auth lands, replace this with the session user's owner_id.
     const OWNER_ID = '00000000-0000-0000-0000-000000000001'

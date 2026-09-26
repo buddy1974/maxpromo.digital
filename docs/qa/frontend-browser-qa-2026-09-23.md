@@ -537,3 +537,27 @@ Nothing to fix. If the lab is ever rebuilt, `eu-central-1` would remove it.
 Everything in §17. Nine viewports, interaction, visual, practical accessibility,
 console and network panels, and the five captures. The next visual verdict has
 to come from a working browser session.
+
+---
+
+# QA-02 update — 2026-09-26
+
+**OBSERVED AGAIN.**
+
+A governed Chrome run reproduced it on **both** localised 404 routes,
+`/de/no-such-page` and `/en/no-such-page`, and on reload.
+
+The attribution is unchanged and still holds: Maxpromo source calls
+`performance.measure` and `performance.mark` nowhere, the catch-all page is a
+handful of lines calling `notFound()`, and the call lives in
+`node_modules/next/dist/client/index.js`. A negative start timestamp is what a
+`measure` produces when its navigation mark is missing, which background-tab
+throttling and remounting both cause.
+
+**Still not fixed, and deliberately.** There is nothing in this repository to
+change. The framework is not being upgraded during a closure pass to chase a
+console line with no user-visible effect: the 404 renders, the status is 404,
+and nothing a visitor does is affected.
+
+**Status: OBSERVE.** Revisit if it ever accompanies a real symptom, or as part
+of a planned framework upgrade rather than as the reason for one.

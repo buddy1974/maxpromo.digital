@@ -566,7 +566,12 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot'],
       priority: 'high',
-      blockedBy: CAPTURE_BLOCKED,
+      blockedBy:
+        'CAPTURED but not ingested. A governed Chrome run produced this frame on 2026-09-26 '
+        + '(tool storage ss_53700jc04) and it passed its safety inspection. It is not in the '
+        + 'repository: Chrome has no filesystem access, so the image has not been seen, cropped '
+        + 'or committed here. A capture existing in a browser is not evidence this package may '
+        + 'claim. Satisfied when the file is ingested and inspected.',
     },
     {
       id: 'os-extraction-result',
@@ -579,7 +584,13 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot'],
       priority: 'high',
-      blockedBy: CAPTURE_BLOCKED,
+      blockedBy:
+        'Blocked by an unusable provider account, not by the application. Two genuine attempts '
+        + 'returned 502; reproducing the upstream call this route makes showed the provider answering '
+        + 'HTTP 400 invalid_request_error, "credit balance is too low", identically on every '
+        + 'model. The credential authenticates and cannot be charged. Chrome correctly refused '
+        + 'to hand-fill the form. Risk 56; owner action. Error frame ss_2957teoi2 is evidence of '
+        + 'the failure and is NOT evidence of the workflow.',
     },
     {
       id: 'os-form-before-save',
@@ -592,7 +603,10 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot', 'work entry'],
       priority: 'high',
-      blockedBy: CAPTURE_BLOCKED,
+      blockedBy:
+        'Dependent. This frame is only honest when the form was populated BY the extraction, and '
+        + 'the extraction did not run (risk 56). Filling it by hand would produce exactly the '
+        + 'picture this package exists to refuse.',
     },
     {
       id: 'os-draft-record',
@@ -605,7 +619,10 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['custom-applications proof slot'],
       priority: 'medium',
-      blockedBy: CAPTURE_BLOCKED,
+      blockedBy:
+        'Dependent on the extraction and on the save that follows it. Neither happened: no '
+        + 'quotation was created by the capture session, confirmed against the evidence lab, '
+        + 'which holds exactly the three seeded documents.',
     },
     {
       id: 'os-lifecycle-list',
@@ -635,7 +652,11 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:9',
       targets: ['custom-applications proof slot', 'work entry'],
       priority: 'medium',
-      blockedBy: CAPTURE_BLOCKED,
+      blockedBy:
+        'CAPTURED but not ingested. Chrome produced this frame on 2026-09-26 (tool storage '
+        + 'ss_63507sdzq) showing EVD-2026-0004 sent and EVD-2026-0001 paid, and it passed its '
+        + 'safety inspection. Same position as os-source-note: the image is not in the '
+        + 'repository and has not been inspected here.',
     },
     {
       id: 'os-workflow-diagram',

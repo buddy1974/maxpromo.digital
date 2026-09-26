@@ -106,6 +106,9 @@ export default function Navbar() {
             onClick={() => setMenuOpen(true)}
             aria-label={menuOpen ? t('closeMenu') : t('openMenu')}
             aria-expanded={menuOpen}
+            /* `aria-expanded` said whether something was open; nothing said
+               what. The control and the thing it controls are now linked. */
+            aria-controls="site-nav-sheet"
           >
             <span /><span /><span />
           </button>
@@ -113,7 +116,7 @@ export default function Navbar() {
       </header>
 
       {menuOpen && (
-        <div className="site-nav-sheet" role="dialog" aria-modal="true" aria-label={t('primaryLabel')}>
+        <div id="site-nav-sheet" className="site-nav-sheet" role="dialog" aria-modal="true" aria-label={t('primaryLabel')}>
           <div className="site-nav-sheet-head">
             <span className="site-nav-logo">
               Maxpromo<span className="site-nav-logo-dim"> Digital</span>

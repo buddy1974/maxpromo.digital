@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect } from 'react'
 import { useParams } from 'next/navigation'
 
 /**
@@ -12,6 +13,24 @@ import { useParams } from 'next/navigation'
 export default function LocaleNotFound() {
   const params = useParams<{ locale: string }>()
   const de = params?.locale === 'de'
+
+  /*
+   * The tab title, set here because nowhere else can.
+   *
+   * A governed browser QA pass found `/de/no-such-page` and `/en/no-such-page`
+   * both serving "Maxpromo Digital — Business Systems Consultancy": the site's
+   * generic English company title, on a German page, describing a page that
+   * does not exist. All three of those are wrong.
+   *
+   * Next does not support `generateMetadata` in `not-found.tsx`, and adding it
+   * to the catch-all route does nothing because `notFound()` throws before the
+   * page's metadata is used. So the title is set on the client, which is where
+   * the visitor is. A 404 already carries a 404 status, so nothing here is
+   * about search; it is about the person with twelve tabs open.
+   */
+  useEffect(() => {
+    document.title = de ? 'Seite nicht gefunden' : 'Page not found'
+  }, [de])
 
   return (
     <div

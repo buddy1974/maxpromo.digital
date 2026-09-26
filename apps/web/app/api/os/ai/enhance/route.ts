@@ -1,3 +1,4 @@
+import { classifyProviderError, logAiFailure } from '@/lib/ai-failure'
 import { NextRequest, NextResponse } from 'next/server'
 import { ENHANCE_BASE, ENHANCE_CLIENT } from '@/lib/prompts'
 
@@ -198,7 +199,10 @@ function reconcile(doc: DocResult): DocResult {
 
 export async function POST(request: NextRequest) {
   if (!process.env.ANTHROPIC_API_KEY) {
-    return NextResponse.json({ error: 'AI not configured' }, { status: 503 })
+    logAiFailure('/api/os/ai/enhance', {
+      klass: 'CONFIGURATION', status: 503, logDetail: 'no provider credential configured',
+    })
+    return NextResponse.json({ error: 'AI not configured', klass: 'CONFIGURATION' }, { status: 503 })
   }
 
   let body: EnhanceBody
@@ -263,16 +267,29 @@ export async function POST(request: NextRequest) {
       }),
     })
   } catch (err) {
-    console.error('[/api/os/ai/enhance] network error:', err)
-    return NextResponse.json({ error: 'Upstream AI request failed' }, { status: 502 })
+    /* The message only. An error object from fetch can carry the request,
+       and the request carries the key. */
+    logAiFailure('/api/os/ai/enhance', {
+      klass: 'PROVIDER', status: 502,
+      logDetail: `network: ${err instanceof Error ? err.message : 'unknown'}`,
+    })
+    return NextResponse.json({ error: 'Upstream AI request failed', klass: 'PROVIDER' }, { status: 502 })
   }
 
   if (!res.ok) {
     const errText = await res.text().catch(() => '')
-    console.error('[/api/os/ai/enhance] anthropic error', res.status, errText)
+    /*
+     * Classified rather than collapsed. A governed browser run hit this twice
+     * and saw 502 both times; the provider had actually answered 400 with
+     * "credit balance is too low", which is an operator billing problem and
+     * not a gateway fault. The class goes to the log and to the caller; the
+     * provider's own text goes only to the log.
+     */
+    const failure = classifyProviderError(res.status, errText)
+    logAiFailure('/api/os/ai/enhance', failure)
     return NextResponse.json(
-      { error: 'AI extraction failed', detail: `Anthropic ${res.status}` },
-      { status: 502 },
+      { error: 'AI extraction failed', klass: failure.klass },
+      { status: failure.status },
     )
   }
 
@@ -285,8 +302,10 @@ export async function POST(request: NextRequest) {
   )
 
   if (!toolBlock) {
-    console.error('[/api/os/ai/enhance] no tool_use block in response')
-    return NextResponse.json({ error: 'AI returned no structured output' }, { status: 502 })
+    logAiFailure('/api/os/ai/enhance', {
+      klass: 'RESPONSE', status: 502, logDetail: 'answered without a tool_use block',
+    })
+    return NextResponse.json({ error: 'AI returned no structured output', klass: 'RESPONSE' }, { status: 502 })
   }
 
   if (kind === 'client') {

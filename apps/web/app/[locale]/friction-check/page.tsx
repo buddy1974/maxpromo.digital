@@ -188,6 +188,19 @@ export default function FrictionCheckPage() {
 
           <p className="fc-disclaimer">{t('disclaimer')}</p>
 
+          {/*
+            * The sales block is shown only when a friction pattern was found.
+            *
+            * It used to render unconditionally, so a visitor who answered the
+            * low-friction option six times was told "you probably do not need
+            * us right now" and then immediately asked to show us what was
+            * slowing them down. That contradiction undoes the one thing that
+            * makes this tool worth linking to. A browser QA pass caught it.
+            *
+            * The low-friction branch keeps the guide below, which is useful
+            * whether or not they ever talk to us.
+            */}
+          {!result.lowFriction && (
           <div className="fc-after">
             <SectionHeader label={t('ctaTitle')}>{t('ctaBody')}</SectionHeader>
             {/* `source` is the parameter the contact form already reads as its
@@ -197,6 +210,7 @@ export default function FrictionCheckPage() {
             </Link>
             <p className="fc-note">{t('ctaNoEmail')}</p>
           </div>
+          )}
 
           <div className="fc-after">
             <p className="fc-pattern-label">{t('learnTitle')}</p>
