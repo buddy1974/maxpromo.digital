@@ -323,6 +323,9 @@ If anything goes sideways in production:
   `/api/os/ai/generate-invoice` and `/api/os/ai/scan-invoice` routes
   — switch the fetch URLs back in the OS quotation and invoice creation
   pages under `apps/web/app/os/(protected)/`. Both old endpoints still exist.
+  Both run the provenance guard (2026-10-04), so a rollback is not a way
+  round it; the screens keep their hold and client-linking boundary either
+  way, and `prove:extraction-integrity` checks both.
 - **Migration regret**: `0001` and `0002` are additive only — nothing
   to undo. `0003` adds NOT NULL `owner_id` columns; if you need to
   back out, set them nullable again and you're back to single-tenant

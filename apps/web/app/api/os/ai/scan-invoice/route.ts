@@ -1,4 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { guardExtraction } from '@/lib/documents/extraction-guard'
+
+/*
+ * Legacy, not called by the interface since enhance replaced it, and kept as
+ * the documented rollback path (docs/deployment/deploy-verify.md). An image
+ * offers no text to verify against, so the guard runs in image mode: scope
+ * clauses removed, AI free text withheld, everything flagged unverified.
+ */
 
 const SYSTEM = `You are an invoice extraction assistant for MAXPROMO DIGITAL, a German AI and web development agency.
 
@@ -22,12 +30,14 @@ EXTRACT and structure:
 - Payment terms if visible
 - Deposit/Anzahlung if visible
 
-For line items — write clean, professional German business descriptions:
+For line items — normalise spelling and capitalisation only. A quotation or
+invoice states what was agreed; never add scope, materials, standards,
+deliverables or conditions the input does not contain.
   Visible: "website 5 seiten 1500"
-  Clean:   "Website-Entwicklung — 5 Seiten inkl. Kontaktformular und responsivem Design"
+  Clean:   "Website, 5 Seiten"
 
   Visible: "logo"
-  Clean:   "Logodesign inkl. Entwürfe und Reinzeichnung"
+  Clean:   "Logo"
 
 If information is missing or unclear, leave the field empty. Do not invent data.
 
@@ -42,7 +52,7 @@ Return ONLY valid JSON with no explanation, no markdown, no code blocks:
   "clientPostcode": "",
   "lineItems": [
     {
-      "description": "clean professional German description",
+      "description": "the visible wording, normalised",
       "quantity": 1,
       "unit": "pauschal",
       "unitPrice": 0,
@@ -123,7 +133,7 @@ export async function POST(request: NextRequest) {
     const clean = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '')
     const parsed = JSON.parse(clean)
 
-    return NextResponse.json(parsed)
+    return NextResponse.json(guardExtraction(parsed, null).doc)
   } catch (error) {
     console.error('[/api/os/ai/scan-invoice]', error)
     return NextResponse.json({ error: 'Scan extraction failed' }, { status: 500 })

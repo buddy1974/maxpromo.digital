@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { predictNextAngebotNumber } from '@/lib/documents/numbering'
+import { admitLineItems } from '@/lib/documents/extraction-guard'
 
 /**
  * Atomic per-year angebot numbering — uses the Postgres sequence from
@@ -134,6 +135,16 @@ export async function POST(request: NextRequest) {
      * as an opaque failure. The number the document keeps is the one the
      * sequence issues at the moment of saving.
      */
+    const admitted = admitLineItems(body.line_items)
+    if (admitted.held.length > 0) {
+      /* Persistence boundary: a line the provenance guard held, and no person
+         resolved, is not stored. See admitLineItems in extraction-guard.ts. */
+      return NextResponse.json(
+        { error: 'Line items hold content the source does not support', held: admitted.held },
+        { status: 422 },
+      )
+    }
+
     const angebot_number = await nextAngebotNumber()
     // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
     // When multi-user auth lands, replace this with the session user's owner_id.
@@ -147,7 +158,7 @@ export async function POST(request: NextRequest) {
       VALUES
         (${OWNER_ID}, ${angebot_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
-         ${JSON.stringify(body.line_items)}::jsonb, ${body.subtotal}, ${body.total},
+         ${JSON.stringify(admitted.items)}::jsonb, ${body.subtotal}, ${body.total},
          ${body.status || 'draft'}, ${body.valid_until || null}, ${body.notes || null},
          ${body.anzahlung ?? 0}, ${body.anzahlung_date || null}, ${body.anzahlung_method || null},
          ${body.payment_method || 'bank'}, ${body.currency || 'EUR'}, ${body.language || 'de'})
@@ -209,6 +220,16 @@ export async function PATCH(request: NextRequest) {
 
     if (!body.id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
 
+    const admitted = body.line_items ? admitLineItems(body.line_items) : null
+    if (admitted && admitted.held.length > 0) {
+      /* Persistence boundary: a line the provenance guard held, and no person
+         resolved, is not stored. See admitLineItems in extraction-guard.ts. */
+      return NextResponse.json(
+        { error: 'Line items hold content the source does not support', held: admitted.held },
+        { status: 422 },
+      )
+    }
+
     const rows = await sql`
       UPDATE os_angebote SET
         status               = COALESCE(${body.status as string | null}, status),
@@ -219,7 +240,7 @@ export async function PATCH(request: NextRequest) {
         client_name          = COALESCE(${body.client_name as string | null}, client_name),
         client_email         = COALESCE(${body.client_email as string | null}, client_email),
         client_address       = COALESCE(${body.client_address as string | null}, client_address),
-        line_items           = COALESCE(${body.line_items ? JSON.stringify(body.line_items) : null}::jsonb, line_items),
+        line_items           = COALESCE(${admitted ? JSON.stringify(admitted.items) : null}::jsonb, line_items),
         subtotal             = COALESCE(${body.subtotal ?? null}, subtotal),
         total                = COALESCE(${body.total ?? null}, total),
         anzahlung            = COALESCE(${body.anzahlung ?? null}, anzahlung),

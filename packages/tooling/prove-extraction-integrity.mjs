@@ -226,25 +226,153 @@ console.log('An extracted customer links only on one exact match')
       && matchExistingClient({}, clients).kind === 'none')
 }
 
-/* ── Wiring: the guard and the matcher are actually in the path ──────────── */
+/* ── The persistence boundary ────────────────────────────────────────────── */
 console.log('')
-console.log('The application uses them')
+console.log('A held line cannot be stored or sent')
+{
+  const { admitLineItems } = await load('apps', 'web', 'lib', 'documents', 'extraction-guard.ts')
+  const { adoptLineItems, countHeld, releaseHold } = await load('apps', 'web', 'lib', 'documents', 'ai-adoption.ts')
+
+  const heldLine = { description: 'Prüfung ortsveränderlicher elektrischer Geräte', qty: 48, unit_price: 12.5, total: 600, unsupportedTerms: ['elektrischer'] }
+  const clean = { description: 'Schaltschrank-Umbau Halle 2', qty: 1, unit_price: 2400, total: 2400 }
+
+  const refused = admitLineItems([clean, heldLine])
+  check('a still-held line is refused, and named by position', JSON.stringify(refused.held) === '[1]', JSON.stringify(refused.held))
+
+  const edited = admitLineItems([{ ...heldLine, description: 'Prüfung ortsveränderlicher Geräte' }])
+  check('a line whose held word was edited out is admitted, without the marker',
+    edited.held.length === 0 && !('unsupportedTerms' in edited.items[0]))
+
+  const kept = admitLineItems(releaseHold([heldLine], 0))
+  check('a line kept deliberately is admitted, without the marker',
+    kept.held.length === 0 && !('unsupportedTerms' in kept.items[0]))
+
+  const figure = admitLineItems([{ description: 'X', unsupportedTerms: ['Einzelpreis 13.5'] }])
+  check('a held figure is refused whatever the wording', figure.held.length === 1)
+
+  const manual = admitLineItems([clean])
+  check('a manual line with no markers is stored unchanged', JSON.stringify(manual.items[0]) === JSON.stringify(clean))
+
+  /* The defect behind risk 62: screens mapped extracted lines and dropped the markers. */
+  const { doc } = guardExtraction(CHROME_RUN, SOURCE)
+  const adopted = adoptLineItems(doc.lineItems)
+  check('adopting an extraction into a form keeps the hold markers',
+    adopted[1].unsupportedTerms?.includes('elektrischer') && countHeld(adopted) === 1,
+    JSON.stringify(adopted.map((l) => l.unsupportedTerms ?? null)))
+  check('the override releases exactly one line', countHeld(releaseHold(adopted, 1)) === 0)
+}
+
+/* ── Every door, discovered and governed ─────────────────────────────────── */
+console.log('')
+console.log('Every AI route, AI screen and line-item route is registered and protected')
+{
+  const { readdirSync, statSync } = await import('node:fs')
+  const { relative, sep } = await import('node:path')
+  const { AI_ROUTES, AI_SCREENS, LINE_ITEM_ROUTES } = await load('apps', 'web', 'lib', 'documents', 'ai-surfaces.ts')
+  const WEB = join(ROOT, 'apps', 'web')
+  const walk = (dir, out = []) => {
+    for (const name of readdirSync(dir)) {
+      if (name === 'node_modules' || name.startsWith('.')) continue
+      const p = join(dir, name)
+      if (statSync(p).isDirectory()) walk(p, out)
+      else if (/\.(ts|tsx)$/.test(name)) out.push(p)
+    }
+    return out
+  }
+  const rel = (p) => relative(WEB, p).split(sep).join('/')
+  const files = ['app', 'components', 'lib'].flatMap((d) => walk(join(WEB, d)))
+  const src = new Map(files.map((p) => [rel(p), stripComments(readFileSync(p, 'utf8'))]))
+
+  /* Routes. */
+  const aiRoutes = [...src.keys()].filter((p) => /^app\/api\/os\/ai\/(.+\/)?route\.ts$/.test(p))
+  const unregisteredRoutes = aiRoutes.filter((p) => !(p in AI_ROUTES))
+  check('every route under api/os/ai is registered', unregisteredRoutes.length === 0,
+    unregisteredRoutes.length ? `unregistered: ${unregisteredRoutes.join(', ')}` : `${aiRoutes.length} route(s)`)
+  const missingRoutes = Object.keys(AI_ROUTES).filter((p) => !src.has(p))
+  check('every registered AI route exists', missingRoutes.length === 0, missingRoutes.join(', '))
+  const unguarded = Object.entries(AI_ROUTES)
+    .filter(([p, c]) => c === 'document' && !/guardExtraction\(/.test(src.get(p) ?? ''))
+    .map(([p]) => p)
+  check('every document-producing AI route runs the provenance guard', unguarded.length === 0,
+    unguarded.length ? `unguarded: ${unguarded.join(', ')}` : 'enhance, generate-invoice, scan-invoice')
+
+  /* Screens. */
+  const callers = [...src.entries()]
+    .filter(([p, s]) => !p.startsWith('app/api/') && /fetch\(\s*[`'"]\/api\/os\/ai[`'"/]/.test(s))
+    .map(([p]) => p)
+  const unregisteredScreens = callers.filter((p) => !(p in AI_SCREENS))
+  check('every file that calls an AI route is registered', unregisteredScreens.length === 0,
+    unregisteredScreens.length ? `unregistered: ${unregisteredScreens.join(', ')}` : `${callers.length} caller(s)`)
+  const staleScreens = Object.keys(AI_SCREENS).filter((p) => !callers.includes(p))
+  check('every registered AI screen still calls one (the list is not stale)', staleScreens.length === 0, staleScreens.join(', '))
+
+  for (const [p, cls] of Object.entries(AI_SCREENS)) {
+    const s = src.get(p) ?? ''
+    const name = p.replace('app/os/(protected)/', '').replace('/page.tsx', '')
+    if (cls === 'contact') {
+      check(`${name}: a contact screen never asks for a document kind and never stores a document`,
+        !/kind:\s*'(angebot|rechnung)'/.test(s) && !/fetch\(\s*[`'"]\/api\/os\/(angebote|invoices|send-invoice)[`'"?]/.test(s))
+      continue
+    }
+    if (cls !== 'document') continue
+    const problems = []
+    if (!/adoptLineItems\(/.test(s)) problems.push('does not adopt lines through adoptLineItems')
+    if (!/const heldCount\s*=\s*countHeld\(lineItems\)/.test(s)) problems.push('does not count held lines')
+    if ((s.match(/heldCount > 0/g) ?? []).length < 2) problems.push('does not both block the handler and disable the control')
+    if (!/<HeldLineNotice\b/.test(s) || !/releaseHold\(/.test(s)) problems.push('does not show why a line is held or offer the override')
+    if (!/<HeldSaveNotice\b/.test(s)) problems.push('does not say why saving is blocked')
+    if (!/<ExtractionWarnings\b/.test(s)) problems.push('does not show what the server removed or withheld')
+    if (!/matchExistingClient\(/.test(s) || !/<ClientMatchNotice\b/.test(s)) problems.push('does not use the exact client-matching rule')
+    if (!/res\.status === 422/.test(s)) problems.push('does not explain a server-side hold refusal')
+    const markerLines = s.split('\n').filter((l) => /unsupportedTerms/.test(l) && !/unsupportedTerms\?: string\[\]/.test(l))
+    if (markerLines.length) problems.push(`touches hold markers directly: ${markerLines[0].trim().slice(0, 80)}`)
+    check(`${name}: the full provenance boundary`, problems.length === 0, problems.join('; '))
+  }
+
+  /* Persistence. Any route that writes line_items into a document table. */
+  const writers = [...src.entries()]
+    .filter(([p, s]) => p.startsWith('app/api/') && /(INSERT INTO|UPDATE)\s+os_(angebote|invoices)[\s\S]{0,600}line_items/.test(s))
+    .map(([p]) => p)
+  const sendsLines = [...src.entries()]
+    .filter(([p, s]) => /^app\/api\/os\/send-/.test(p) && /body\.line_items/.test(s))
+    .map(([p]) => p)
+  const lineRoutes = [...new Set([...writers, ...sendsLines])]
+  const unregisteredWriters = lineRoutes.filter((p) => !LINE_ITEM_ROUTES.includes(p))
+  check('every route that stores or sends request line items is registered', unregisteredWriters.length === 0,
+    unregisteredWriters.length ? `unregistered: ${unregisteredWriters.join(', ')}` : lineRoutes.join(', '))
+  for (const p of LINE_ITEM_ROUTES) {
+    const s = src.get(p) ?? ''
+    const ok = /admitLineItems\(/.test(s) && /status: 422/.test(s) && !/JSON\.stringify\(body\.line_items\)/.test(s)
+    check(`${p.replace('app/api/os/', '').replace('/route.ts', '')}: refuses held lines and stores only admitted ones`, ok)
+  }
+}
+
+console.log('')
+console.log('The rest of the wiring')
 {
   const route = stripComments(read('apps', 'web', 'app', 'api', 'os', 'ai', 'enhance', 'route.ts'))
   check('the enhance route guards every document extraction against the pasted text',
     /guardExtraction\(\s*toolBlock\.input/.test(route) && /hasText \? body\.text!\.trim\(\) : null/.test(route))
+  const gen = stripComments(read('apps', 'web', 'app', 'api', 'os', 'ai', 'generate-invoice', 'route.ts'))
+  const scan = stripComments(read('apps', 'web', 'app', 'api', 'os', 'ai', 'scan-invoice', 'route.ts'))
+  check('the legacy text route is guarded against its own input, the legacy image route as unverified',
+    /guardExtraction\(parsed, text\)/.test(gen) && /guardExtraction\(parsed, null\)/.test(scan))
 
-  const prompt = read('apps', 'web', 'lib', 'prompts.ts')
-  check('the prompt no longer instructs enrichment',
-    !/ENHANCE descriptions/.test(prompt) && /NEVER add anything the source does not/.test(prompt))
+  const prompts = [read('apps', 'web', 'lib', 'prompts.ts'), gen, scan]
+  check('no extraction prompt instructs enrichment',
+    !/ENHANCE descriptions/.test(prompts[0]) && /NEVER add anything the source does not/.test(prompts[0])
+      /* An example of the wanted output may not add scope. prompts.ts quotes
+         the old enrichment once, as what NOT to do; that is not a target. */
+      && prompts.every((p) => !/Clean:\s*"[^"]*\binkl\./.test(p)))
 
   const form = stripComments(read('apps', 'web', 'app', 'os', '(protected)', 'angebote', 'new', 'page.tsx'))
-  check('the form matches extracted customers against existing clients',
-    /matchExistingClient\(d, clientsRef\.current\)/.test(form))
-  check('the form will not save a held line', /heldCount > 0\) return/.test(form) && /disabled=\{saving \|\| !clientName\.trim\(\) \|\| heldCount > 0\}/.test(form))
   const apply = form.slice(form.indexOf('function applyExtracted'), form.indexOf('const triggerImageExtract'))
   check('payment terms are not copied into the notes as well (rendered twice)',
     apply.length > 0 && !/Zahlungsbedingungen/.test(apply))
+
+  const invoice = stripComments(read('apps', 'web', 'app', 'os', '(protected)', 'invoices', 'new', 'page.tsx'))
+  check('sending an invoice for a linked client does not save that client a second time',
+    /if \(!clientName\.trim\(\) \|\| clientId\) return/.test(invoice))
 }
 
 console.log('')

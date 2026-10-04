@@ -95,7 +95,6 @@ export interface GuardDoc {
   anzahlungDate?: string
   overallConfidence?: Confidence
   warnings?: string[]
-  [k: string]: unknown
 }
 
 export interface GuardReport {
@@ -369,4 +368,36 @@ export function isHeld(item: { description: string; unsupportedTerms?: string[] 
   return (item.unsupportedTerms ?? []).some((t) =>
     FIGURE_TERM.test(t) || desc.includes(` ${words(t).join(' ')} `),
   )
+}
+
+/**
+ * The persistence boundary: what a save or send route does with line items.
+ *
+ * The form is the first place a hold is enforced, and a form is a suggestion —
+ * a second screen, a future screen, or a direct API call can skip it. So every
+ * route that stores or sends a commercial document asks this function too. A
+ * line still held is refused; a line whose hold was resolved (word edited out,
+ * or kept deliberately, which clears the terms) is stored without the marker.
+ *
+ * What it cannot catch: a caller that discards the markers itself before
+ * sending. That is why the registered screens are also proved, statically, to
+ * leave the markers alone (prove:extraction-integrity).
+ */
+export function admitLineItems(items: unknown): { held: number[]; items: unknown[] } {
+  const list = Array.isArray(items) ? items : []
+  const held: number[] = []
+  const clean = list.map((raw, i) => {
+    if (!raw || typeof raw !== 'object') return raw
+    const item = raw as { description?: unknown; unsupportedTerms?: unknown }
+    const terms = Array.isArray(item.unsupportedTerms)
+      ? item.unsupportedTerms.filter((t): t is string => typeof t === 'string')
+      : []
+    if (terms.length && isHeld({ description: String(item.description ?? ''), unsupportedTerms: terms })) {
+      held.push(i)
+    }
+    const { unsupportedTerms: _marker, ...rest } = item
+    void _marker
+    return rest
+  })
+  return { held, items: clean }
 }

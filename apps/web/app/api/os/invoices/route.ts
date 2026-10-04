@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
+import { admitLineItems } from '@/lib/documents/extraction-guard'
 
 /**
  * Atomic per-year invoice numbering. Uses the Postgres sequence created
@@ -66,6 +67,16 @@ export async function POST(request: NextRequest) {
       payment_method?: string; currency?: string; language?: string
     }
 
+    const admitted = admitLineItems(body.line_items)
+    if (admitted.held.length > 0) {
+      /* Persistence boundary: a line the provenance guard held, and no person
+         resolved, is not stored. See admitLineItems in extraction-guard.ts. */
+      return NextResponse.json(
+        { error: 'Line items hold content the source does not support', held: admitted.held },
+        { status: 422 },
+      )
+    }
+
     const invoice_number = body.invoice_number || await nextInvoiceNumber()
 
     // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
@@ -80,7 +91,7 @@ export async function POST(request: NextRequest) {
       VALUES
         (${OWNER_ID}, ${invoice_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
-         ${JSON.stringify(body.line_items)}::jsonb, ${body.subtotal}, ${body.total},
+         ${JSON.stringify(admitted.items)}::jsonb, ${body.subtotal}, ${body.total},
          ${body.status || 'draft'}, ${body.due_date || null}, ${body.notes || null},
          ${body.anzahlung ?? 0}, ${body.anzahlung_date || null},
          ${body.anzahlung_method || null}, ${body.restbetrag ?? body.total},
@@ -120,6 +131,16 @@ export async function PATCH(request: NextRequest) {
 
     if (!body.id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
 
+    const admitted = body.line_items ? admitLineItems(body.line_items) : null
+    if (admitted && admitted.held.length > 0) {
+      /* Persistence boundary: a line the provenance guard held, and no person
+         resolved, is not stored. See admitLineItems in extraction-guard.ts. */
+      return NextResponse.json(
+        { error: 'Line items hold content the source does not support', held: admitted.held },
+        { status: 422 },
+      )
+    }
+
     const rows = await sql`
       UPDATE os_invoices SET
         status         = COALESCE(${body.status as string | null}, status),
@@ -127,7 +148,7 @@ export async function PATCH(request: NextRequest) {
         sent_at        = COALESCE(${body.sent_at as string | null}, sent_at),
         due_date       = COALESCE(${body.due_date as string | null}, due_date),
         notes          = COALESCE(${body.notes as string | null}, notes),
-        line_items     = COALESCE(${body.line_items ? JSON.stringify(body.line_items) : null}::jsonb, line_items),
+        line_items     = COALESCE(${admitted ? JSON.stringify(admitted.items) : null}::jsonb, line_items),
         subtotal       = COALESCE(${body.subtotal ?? null}, subtotal),
         total          = COALESCE(${body.total ?? null}, total),
         payment_method = COALESCE(${body.payment_method as string | null}, payment_method),

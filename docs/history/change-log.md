@@ -1,5 +1,31 @@
 # Change Log
 
+## 2026-10-04 — Provenance becomes a document-system invariant
+
+Internal. Nothing pushed, nothing deployed, no provider called.
+
+The morning's fix put the provenance boundary — held lines, deliberate
+override, client linking — into the new-quotation form. Inspection found it was
+one of three screens offering AI extraction. The quotation edit page and the
+new-invoice page received the server's removals but dropped the hold markers
+when mapping the result, so a held line arrived looking clean; neither linked
+clients; the invoice page showed no warnings and could save and send in one
+click. Two retired extraction routes were still reachable, unguarded, and their
+prompts still asked for "inkl. Kontaktformular und responsivem Design".
+
+Now one rule holds wherever AI touches a quotation or invoice: no unsupported
+contractual content is stored or sent without a person resolving it. One helper
+adopts extracted lines and keeps the markers; one set of components shows the
+warnings, the reason a line is held, and the override; every save and send
+route refuses a held line with 422; the legacy routes run the guard. Sending
+an invoice for a linked client no longer saves that client a second time.
+
+Gate 24 now discovers every AI route, AI-calling screen and line-item route
+from source against `lib/documents/ai-surfaces.ts` and fails on any unregistered
+door (63 properties, up from 42). Shown red against the previous surfaces and
+against a simulated new route. Risk 62 partly closed; its remaining limits, and
+two adjacent findings left for the owner (risks 63, 64), are recorded.
+
 ## 2026-10-04 — Post-evidence engineering: extraction provenance, honest numbering, client linking
 
 Internal. Nothing pushed, nothing deployed, no provider called. The first

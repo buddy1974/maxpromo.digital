@@ -6,6 +6,9 @@ import type { CurrencyCode, PaymentMethodId, DocumentLanguage } from '@/lib/docu
 import { fmtCurrency } from '@/lib/documents/format'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { Icon } from '@maxpromo/ui'
+import { adoptLineItems, countHeld, releaseHold } from '@/lib/documents/ai-adoption'
+import { matchExistingClient, type ClientMatch } from '@/lib/documents/client-match'
+import { ExtractionWarnings, HeldLineNotice, HeldSaveNotice, ClientMatchNotice } from '@/components/os/ExtractionReview'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
@@ -17,7 +20,11 @@ interface LineItem {
   unit_price: number
   total: number
   isFixedPrice: boolean
+  aiConfidence?: 'high' | 'medium' | 'low'
+  category?: string
+  unsupportedTerms?: string[]
 }
+interface Client { id: string; name: string; company: string; email: string; address: string; city: string }
 
 interface AIExtractedItem {
   description: string
@@ -27,6 +34,8 @@ interface AIExtractedItem {
   finalPrice: number
   isFixedPrice: boolean
   confidence?: 'high' | 'medium' | 'low'
+  category?: string
+  unsupportedTerms?: string[]
 }
 interface AIExtracted {
   clientName?: string
@@ -53,6 +62,7 @@ interface AIExtracted {
 interface Angebot {
   id: string
   angebot_number: string
+  client_id?: string | null
   client_name: string
   client_email: string | null
   client_address: string | null
@@ -123,6 +133,10 @@ export default function EditAngebotPage() {
   const [clientName,    setClientName]    = useState('')
   const [clientEmail,   setClientEmail]   = useState('')
   const [clientAddress, setClientAddress] = useState('')   // free-form multi-line
+  const [clientId,      setClientId]      = useState('')
+  const [clientMatch,   setClientMatch]   = useState<ClientMatch<Client> | null>(null)
+  /* Read by applyExtracted, which the memoised image handler captures. */
+  const clientsRef = useRef<Client[]>([])
 
   const [lineItems, setLineItems] = useState<LineItem[]>([])
   const [notes,     setNotes]     = useState('')
@@ -149,6 +163,7 @@ export default function EditAngebotPage() {
   const [aiDragOver,    setAiDragOver]    = useState(false)
   const [aiMode,        setAiMode]        = useState<'merge' | 'replace'>('merge')
   const [aiAppliedMsg,  setAiAppliedMsg]  = useState('')
+  const [aiWarnings,    setAiWarnings]    = useState<string[]>([])
   const aiFileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -164,6 +179,7 @@ export default function EditAngebotPage() {
         setClientName(d.client_name ?? '')
         setClientEmail(d.client_email ?? '')
         setClientAddress(d.client_address ?? '')
+        setClientId(d.client_id ?? '')
 
         const items = Array.isArray(d.line_items) ? d.line_items : []
         setLineItems(items.length > 0 ? items.map(it => ({
@@ -198,6 +214,10 @@ export default function EditAngebotPage() {
     // re-runs this. Refetching one angebot on a language switch is cheap and
     // correct; suppressing the dependency to avoid it was not.
   }, [id, t.forms.loadAngebotFailed])
+
+  useEffect(() => {
+    fetch('/api/os/clients').then(r => r.json()).then(d => { clientsRef.current = Array.isArray(d) ? d : [] }).catch(() => {})
+  }, [])
 
   /**
    * Keep unit_price and total in agreement so the document never displays
@@ -266,16 +286,27 @@ export default function EditAngebotPage() {
       if (isReplace || !current.trim()) setter(incoming)
     }
 
-    // Client info
-    const incomingName = d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : '')
-    if (d.clientName) setIfEmptyOrReplace(clientName, incomingName, setClientName)
-    setIfEmptyOrReplace(clientEmail, d.clientEmail, setClientEmail)
+    /*
+     * Client info. An existing client is linked only on one exact, uncontested
+     * match, and then its record — not the extraction — supplies the details.
+     * A quotation already linked keeps its client on merge: replacing a link
+     * is something only "replace" may do.
+     */
+    const match = matchExistingClient(d, clientsRef.current)
+    setClientMatch(match)
+    const linked = match.kind === 'linked' && (isReplace || !clientId) ? match.client : null
+    if (linked) setClientId(linked.id)
+    const incomingName = linked
+      ? linked.name + (linked.company ? ` — ${linked.company}` : '')
+      : (d.clientName ?? '') + (d.clientCompany ? ` — ${d.clientCompany}` : '')
+    if (linked || d.clientName) setIfEmptyOrReplace(clientName, incomingName, setClientName)
+    setIfEmptyOrReplace(clientEmail, linked ? linked.email || undefined : d.clientEmail, setClientEmail)
 
     // Address: flatten AI's split fields into our single textarea field.
-    const flatAddr = [
-      d.clientAddress,
-      [d.clientPostcode, d.clientCity].filter(Boolean).join(' '),
-    ].filter(s => s && s.trim()).join('\n')
+    const flatAddr = (linked
+      ? [linked.address, linked.city]
+      : [d.clientAddress, [d.clientPostcode, d.clientCity].filter(Boolean).join(' ')]
+    ).filter(s => s && s.trim()).join('\n')
     setIfEmptyOrReplace(clientAddress, flatAddr || undefined, setClientAddress)
 
     // Dates
@@ -283,14 +314,9 @@ export default function EditAngebotPage() {
     setIfEmptyOrReplace(validUntil, incomingValid, setValidUntil)
 
     // Line items
-    const newItems = (d.lineItems ?? []).map(li => ({
-      description:  li.description,
-      qty:          li.quantity,
-      unit:         li.unit || 'pauschal',
-      unit_price:   li.unitPrice,
-      total:        li.finalPrice,
-      isFixedPrice: li.isFixedPrice,
-    }))
+    /* adoptLineItems keeps the hold markers the server set. The mapping that
+       stood here dropped them, so a held line arrived looking clean. */
+    const newItems = adoptLineItems(d.lineItems)
     if (newItems.length) {
       if (isReplace) {
         setLineItems(newItems)
@@ -333,6 +359,8 @@ export default function EditAngebotPage() {
         setNotes(notes.trim() ? `${notes.trim()}\n\n${d.notes.trim()}` : d.notes.trim())
       }
     }
+
+    setAiWarnings(d.warnings ?? [])
 
     // Build a friendly toast describing what landed.
     const summary: string[] = []
@@ -444,8 +472,12 @@ export default function EditAngebotPage() {
 
   const subtotal = lineItems.reduce((s, i) => s + Number(i.total), 0)
   const restbet  = subtotal - (hasAnzahlung ? Number(anzahlung) : 0)
+  /* Lines holding wording or figures the source did not support. Not savable
+     until a person edits them or keeps them deliberately. */
+  const heldCount = countHeld(lineItems)
 
   async function handleSave() {
+    if (heldCount > 0) return
     if (!clientName.trim()) {
       setSaveError(t.forms.clientNameRequired)
       return
@@ -458,6 +490,7 @@ export default function EditAngebotPage() {
           id,
           status,
           valid_until: validUntil || null,
+          client_id:      clientId || null,
           client_name:    clientName,
           client_email:   clientEmail,
           client_address: clientAddress,
@@ -475,6 +508,7 @@ export default function EditAngebotPage() {
           language,
         }),
       })
+      if (res.status === 422) throw new Error(t.forms.heldRejected)
       if (!res.ok) {
         const err = await res.json().catch(() => ({})) as { error?: string; detail?: string }
         throw new Error(err.detail ?? err.error ?? `Server error ${res.status}`)
@@ -658,6 +692,8 @@ export default function EditAngebotPage() {
         </div>
       )}
 
+      <ExtractionWarnings warnings={aiWarnings} />
+
       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
@@ -696,6 +732,7 @@ export default function EditAngebotPage() {
 
         <div style={{ height: '1px', background: 'var(--brand-border)', margin: 'var(--space-1) 0' }} />
 
+        <ClientMatchNotice match={clientMatch} />
         <Field label={t.angebotForm.fieldClientName}>
           <input value={clientName} onChange={e => setClientName(e.target.value)} style={inp} />
         </Field>
@@ -713,6 +750,7 @@ export default function EditAngebotPage() {
           <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
           {lineItems.map((item, i) => (
             <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: 'var(--space-3)', marginBottom: '6px', borderRadius: 'var(--radius-xs)' }}>
+              <HeldLineNotice item={item} onKeep={() => setLineItems(prev => releaseHold(prev, i))} />
               <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', alignItems: 'flex-start' }}>
                 <textarea
                   value={item.description}
@@ -830,14 +868,14 @@ export default function EditAngebotPage() {
           <button
             type="button"
             onClick={handleSave}
-            disabled={saving || !clientName.trim()}
+            disabled={saving || !clientName.trim() || heldCount > 0}
             style={{
               background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)',
               fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)',
               letterSpacing: '0.1em', padding: '12px 20px',
-              cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer',
+              cursor: saving || !clientName.trim() || heldCount > 0 ? 'not-allowed' : 'pointer',
               textTransform: 'uppercase', borderRadius: 'var(--radius-xs)',
-              opacity: saving || !clientName.trim() ? 0.5 : 1,
+              opacity: saving || !clientName.trim() || heldCount > 0 ? 0.5 : 1,
             }}
           >
             {saving ? t.angebotForm.saving : t.angebotForm.saveChanges}
@@ -857,6 +895,7 @@ export default function EditAngebotPage() {
             {t.angebotForm.cancel}
           </Link>
         </div>
+        <HeldSaveNotice count={heldCount} />
       </div>
     </div>
   )

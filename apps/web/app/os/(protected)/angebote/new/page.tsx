@@ -7,8 +7,9 @@ import type { AngebotData } from '@/lib/documents/types'
 import { fmtCurrency } from '@/lib/documents/format'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { Icon } from '@maxpromo/ui'
-import { isHeld } from '@/lib/documents/extraction-guard'
-import { matchExistingClient } from '@/lib/documents/client-match'
+import { adoptLineItems, countHeld, releaseHold, isHeld } from '@/lib/documents/ai-adoption'
+import { matchExistingClient, type ClientMatch } from '@/lib/documents/client-match'
+import { ExtractionWarnings, HeldLineNotice, HeldSaveNotice, ClientMatchNotice } from '@/components/os/ExtractionReview'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -151,7 +152,7 @@ export default function NewAngebotPage() {
   const [includedItems,     setIncludedItems]     = useState<string[]>([])
   const [paymentTerms,      setPaymentTerms]      = useState('')
   const [aiWarnings,        setAiWarnings]        = useState<string[]>([])
-  const [clientMatchNote,   setClientMatchNote]   = useState('')
+  const [clientMatch,       setClientMatch]       = useState<ClientMatch<Client> | null>(null)
 
   const fileRef = useRef<HTMLInputElement>(null)
   /* Read by applyExtracted, which the memoised image handler captures once.
@@ -189,18 +190,12 @@ export default function NewAngebotPage() {
 
     /* An existing client is linked only on one exact, uncontested match. */
     const match = matchExistingClient(d, clientsRef.current)
-    if (match.kind === 'linked') {
-      applyClient(match.client)
-      setClientMatchNote(t.angebotForm.clientLinked(match.client.company || match.client.name))
-    } else if (match.kind === 'ambiguous') {
-      setClientId('')
-      setClientMatchNote(t.angebotForm.clientAmbiguous(match.candidates.length))
-    } else {
-      setClientMatchNote('')
-    }
+    setClientMatch(match)
+    if (match.kind === 'linked') applyClient(match.client)
+    else if (match.kind === 'ambiguous') setClientId('')
     if (d.validUntil || d.dueDate) setValidUntil(d.validUntil || d.dueDate)
     if (d.lineItems?.length) {
-      setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice, aiConfidence: li.confidence, category: li.category, unsupportedTerms: li.unsupportedTerms })))
+      setLineItems(adoptLineItems(d.lineItems))
     }
     if (d.anzahlung > 0) {
       setHasAnzahlung(true); setAnzahlung(d.anzahlung)
@@ -355,7 +350,7 @@ export default function NewAngebotPage() {
   const subtotal   = lineItems.reduce((s, i) => s + Number(i.total), 0)
   /* Lines holding wording or figures the source did not support. Not savable
      until a person edits the wording out or keeps it deliberately. */
-  const heldCount  = lineItems.filter(isHeld).length
+  const heldCount  = countHeld(lineItems)
   const restbetrag = subtotal - (hasAnzahlung ? Number(anzahlung) : 0)
 
   async function handleSave() {
@@ -387,7 +382,8 @@ export default function NewAngebotPage() {
           client_name: clientName,
           client_email: clientEmail,
           client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'),
-          line_items: lineItems.filter(i => i.description).map(li => ({ ...li, unsupportedTerms: undefined })),
+          /* Hold markers travel with the lines: the server refuses a held one. */
+          line_items: lineItems.filter(i => i.description),
           subtotal,
           total: subtotal,
           status: 'draft',
@@ -400,6 +396,7 @@ export default function NewAngebotPage() {
           language,
         }),
       })
+      if (res.status === 422) throw new Error(t.forms.heldRejected)
       if (!res.ok) {
         const err = await res.json() as { error?: string }
         throw new Error(err.error ?? `Server error ${res.status}`)
@@ -515,16 +512,7 @@ export default function NewAngebotPage() {
           )}
 
           {/* Sum-reconciliation + missing-data warnings (server-side) */}
-          {aiEnhanced && aiWarnings.length > 0 && (
-            <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 25%, transparent)', padding: '10px 14px', marginBottom: '14px', borderRadius: 'var(--radius-xs)' }}>
-              <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 6px', letterSpacing: '0.1em', textTransform: 'uppercase' }}><Icon name="warning" size="xs" /> Verify before sending</p>
-              <ul style={{ margin: 0, paddingLeft: '18px' }}>
-                {aiWarnings.map((w, i) => (
-                  <li key={i} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--semantic-danger)', lineHeight: 1.5, marginBottom: '2px' }}>{w}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <ExtractionWarnings warnings={aiEnhanced ? aiWarnings : []} />
 
           {/* Included (free) items — kept out of line items deliberately */}
           {aiEnhanced && includedItems.length > 0 && (
@@ -578,9 +566,7 @@ export default function NewAngebotPage() {
 
             <div style={{ height: '1px', background: 'var(--brand-border)' }} />
 
-            {clientMatchNote && (
-              <p role="status" style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.04em' }}>{clientMatchNote}</p>
-            )}
+            <ClientMatchNotice match={clientMatch} />
             <Field label={t.angebotForm.fieldSelectClient}>
               <select value={clientId} onChange={e => selectClient(e.target.value)} style={{ ...inp, appearance: 'none' }}>
                 <option value="">{t.angebotForm.selectClientPlaceholder}</option>
@@ -617,12 +603,7 @@ export default function NewAngebotPage() {
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
                 <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: 'var(--space-3)', marginBottom: '6px', borderRadius: 'var(--radius-xs)', position: 'relative' }}>
-                  {isHeld(item) && (
-                    <div role="alert" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
-                      <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {t.angebotForm.heldTerms((item.unsupportedTerms ?? []).join(', '))}</span>
-                      <button type="button" onClick={() => setLineItems(prev => prev.map((li, idx) => idx === i ? { ...li, unsupportedTerms: undefined } : li))} style={{ background: 'none', border: '1px solid var(--semantic-danger)', color: 'var(--semantic-danger)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.06em', padding: '4px 8px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: 'var(--radius-xs)' }}>{t.angebotForm.confirmWording}</button>
-                    </div>
-                  )}
+                  <HeldLineNotice item={item} onKeep={() => setLineItems(prev => releaseHold(prev, i))} />
                   {item.aiConfidence === 'low' && !isHeld(item) && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> verify</span>}
                   <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
                     <textarea
@@ -707,7 +688,7 @@ export default function NewAngebotPage() {
               <button type="button" onClick={handleSave} disabled={saving || !clientName.trim() || heldCount > 0} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() || heldCount > 0 ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() || heldCount > 0 ? 0.6 : 1 }}>
                 {saving ? t.angebotForm.saving : t.angebotForm.saveAngebot}
               </button>
-              {heldCount > 0 && <p role="status" style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {t.angebotForm.heldSaveBlocked(heldCount)}</p>}
+              <HeldSaveNotice count={heldCount} />
               {saveError && <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {saveError}</p>}
             </div>
           </div>

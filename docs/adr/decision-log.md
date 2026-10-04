@@ -1493,3 +1493,35 @@ anything ambiguous goes to a person.
 **Not done:** `ANG-2026-015` was not renumbered and the sequence was not
 reset. 015 is legitimate; the gap 001–014 in the evidence lab is the recorded
 consequence of the 26 September defect.
+
+---
+
+## 2026-10-04 — Provenance is enforced at every AI door and at persistence, from one registry
+
+**Decision:** No AI-assisted commercial document may persist unsupported
+contractual content without explicit human resolution, on any screen. Three
+layers: the extraction route runs the guard; every document screen uses the
+shared adoption helper and review components; every route that stores or
+sends line items refuses a held line. The doors are named in
+`lib/documents/ai-surfaces.ts`, and gate 24 discovers them from source and
+fails on any it cannot find there.
+
+**Why:** The boundary had been built where the defect was seen and nowhere
+else. Two of three screens and two legacy routes went round it without anyone
+deciding they should. A list the gate enforces makes adding a door a visible
+act.
+
+**Rejected:** deleting the legacy routes (they are the documented rollback
+path; guarding them costs two lines); a per-screen copy of the hold logic (the
+thing that drifted); server-side extraction records to make the persistence
+check independent of client honesty (the right end state, a larger change than
+this package; recorded in risk 62).
+
+**Certification finding:** `certify` needing a running Agent Bureau is
+intentional, not accidental coupling. `audit:consistency` exists to compare
+the two applications' emitted tokens, and `audit:a11y` covers both
+applications' public routes; `docs/governance/standards.md` states both must be
+running. The Bureau has no local environment file in this checkout, so it was
+not started. Recommended: a governed, non-production Bureau certification
+environment as its own work package, rather than splitting the audits to get a
+green result.

@@ -7,6 +7,9 @@ import type { InvoiceData } from '@/lib/documents/types'
 import { fmtCurrency } from '@/lib/documents/format'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { Icon } from '@maxpromo/ui'
+import { adoptLineItems, countHeld, releaseHold } from '@/lib/documents/ai-adoption'
+import { matchExistingClient, type ClientMatch } from '@/lib/documents/client-match'
+import { ExtractionWarnings, HeldLineNotice, HeldSaveNotice, ClientMatchNotice } from '@/components/os/ExtractionReview'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -19,16 +22,19 @@ interface LineItem {
   total: number
   isFixedPrice: boolean
   aiConfidence?: 'high' | 'medium' | 'low'
+  category?: string
+  unsupportedTerms?: string[]
 }
 interface Client { id: string; name: string; company: string; email: string; address: string; city: string; country: string }
 interface AIExtracted {
   clientName: string; clientCompany: string; clientEmail: string; clientPhone?: string
   clientAddress: string; clientCity: string; clientPostcode?: string
-  lineItems: { description: string; quantity: number; unit: string; unitPrice: number; finalPrice: number; isFixedPrice: boolean; confidence?: 'high' | 'medium' | 'low' }[]
+  lineItems: { description: string; quantity: number; unit: string; unitPrice: number; finalPrice: number; isFixedPrice: boolean; confidence?: 'high' | 'medium' | 'low'; category?: string; unsupportedTerms?: string[] }[]
   anzahlung: number; anzahlungDate: string; anzahlungMethod: string
   notes: string; dueDate: string; validUntil?: string
   overallConfidence?: 'high' | 'medium' | 'low'
   extractionNotes?: string
+  warnings?: string[]
   type?: string
 }
 
@@ -162,8 +168,13 @@ export default function NewInvoicePage() {
   const [aiEnhanced,       setAiEnhanced]       = useState(false)
   const [overallConfidence, setOverallConfidence] = useState<'high' | 'medium' | 'low' | null>(null)
   const [extractionNotes,  setExtractionNotes]  = useState('')
+  const [aiWarnings,       setAiWarnings]       = useState<string[]>([])
+  const [clientMatch,      setClientMatch]      = useState<ClientMatch<Client> | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+  /* Read by applyExtracted, which the memoised image handler captures once.
+     State would be the empty list from the first render. */
+  const clientsRef = useRef<Client[]>([])
 
   const triggerImageExtract = useCallback(async (b64: string, mime: string) => {
     setAiLoading(true)
@@ -187,7 +198,7 @@ export default function NewInvoicePage() {
 
   useEffect(() => {
     fetch('/api/os/invoices?next=true').then(r => r.json()).then(d => setInvoiceNumber((d as { number: string }).number)).catch(() => {})
-    fetch('/api/os/clients').then(r => r.json()).then(d => setClients(Array.isArray(d) ? d : [])).catch(() => {})
+    fetch('/api/os/clients').then(r => r.json()).then(d => { const list = Array.isArray(d) ? d : []; clientsRef.current = list; setClients(list) }).catch(() => {})
   }, [])
 
   // ── Clipboard paste listener (active when modal is open) ──────────────────
@@ -218,6 +229,17 @@ export default function NewInvoicePage() {
     return () => window.removeEventListener('paste', onPaste)
   }, [aiModalOpen, triggerImageExtract])
 
+  function applyClient(c: Client) {
+    setClientId(c.id)
+    setClientName(c.name + (c.company ? ` — ${c.company}` : ''))
+    setClientEmails(c.email ? [c.email] : [])
+    setEmailInput('')
+    setClientStreet(c.address || '')
+    const m = (c.city || '').trim().match(/^(\d{4,5})\s+(.+)$/)
+    if (m) { setClientPostcode(m[1]); setClientCity(m[2]) }
+    else   { setClientPostcode(''); setClientCity(c.city || '') }
+  }
+
   // ── Image extraction (shared by paste, drop, file scan) ──────────────────
   function applyExtracted(d: AIExtracted) {
     if (d.clientName) setClientName(d.clientName + (d.clientCompany ? ` — ${d.clientCompany}` : ''))
@@ -228,16 +250,16 @@ export default function NewInvoicePage() {
     if (d.notes) setNotes(d.notes)
     if (d.dueDate) setDueDate(d.dueDate)
     if (d.lineItems?.length) {
-      setLineItems(d.lineItems.map(li => ({
-        description: li.description,
-        qty: li.quantity,
-        unit: li.unit || 'pauschal',
-        unit_price: li.unitPrice,
-        total: li.finalPrice,
-        isFixedPrice: li.isFixedPrice,
-        aiConfidence: li.confidence,
-      })))
+      /* adoptLineItems keeps the hold markers the server set. The mapping that
+         stood here dropped them, so a held line arrived looking clean. */
+      setLineItems(adoptLineItems(d.lineItems))
     }
+    /* An existing client is linked only on one exact, uncontested match. */
+    const match = matchExistingClient(d, clientsRef.current)
+    setClientMatch(match)
+    if (match.kind === 'linked') applyClient(match.client)
+    else if (match.kind === 'ambiguous') setClientId('')
+    setAiWarnings(d.warnings ?? [])
     if (d.anzahlung > 0) {
       setHasAnzahlung(true)
       setAnzahlung(d.anzahlung)
@@ -321,23 +343,19 @@ export default function NewInvoicePage() {
   function selectClient(id: string) {
     const c = clients.find(x => x.id === id)
     if (!c) { setClientId(''); return }
-    setClientId(c.id)
-    setClientName(c.name + (c.company ? ` — ${c.company}` : ''))
-    setClientEmails(c.email ? [c.email] : [])
-    setEmailInput('')
-    setClientStreet(c.address || '')
-    const m = (c.city || '').trim().match(/^(\d{4,5})\s+(.+)$/)
-    if (m) { setClientPostcode(m[1]); setClientCity(m[2]) }
-    else   { setClientPostcode(''); setClientCity(c.city || '') }
+    applyClient(c)
   }
 
   const fmtEur = useCallback((n: number) => fmtCurrency(n, currency), [currency])
 
   const subtotal   = lineItems.reduce((s, i) => s + Number(i.total), 0)
   const restbetrag = subtotal - (hasAnzahlung ? Number(anzahlung) : 0)
+  /* Lines holding wording or figures the source did not support. Nothing is
+     saved or sent until a person edits them or keeps them deliberately. */
+  const heldCount  = countHeld(lineItems)
 
   async function saveInvoice(sendNow = false): Promise<string | null> {
-    if (!clientName.trim() || lineItems.every(i => !i.description)) return null
+    if (!clientName.trim() || lineItems.every(i => !i.description) || heldCount > 0) return null
     const body = {
       invoice_number: invoiceNumber, client_id: clientId || undefined,
       client_name: clientName, client_email: clientEmails[0] || '',
@@ -354,6 +372,7 @@ export default function NewInvoicePage() {
       language,
     }
     const res  = await fetch('/api/os/invoices', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    if (res.status === 422) throw new Error(t.forms.heldRejected)
     if (!res.ok) {
       throw new Error(t.forms.serverError(res.status))
     }
@@ -362,6 +381,7 @@ export default function NewInvoicePage() {
   }
 
   async function handleSaveDraft() {
+    if (heldCount > 0) return
     setSaving(true)
     try {
       const id = await saveInvoice(false)
@@ -377,7 +397,11 @@ export default function NewInvoicePage() {
   }
 
   async function autoSaveClient(invoiceId: string) {
-    if (!clientName.trim()) return
+    /* Already an existing client: nothing to add to the address book. The
+       auto-save route matches on email or on the exact name, and this form
+       writes the name as "Person — Company", so a linked client used to be
+       saved a second time. */
+    if (!clientName.trim() || clientId) return
     try {
       const res = await fetch('/api/os/clients/auto-save', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -410,6 +434,7 @@ export default function NewInvoicePage() {
   }
 
   async function handleSend() {
+    if (heldCount > 0) return
     if (!clientEmails.length) {
       // Try adding whatever is typed in the input first
       if (emailInput.trim()) { addEmail(); return }
@@ -604,6 +629,8 @@ export default function NewInvoicePage() {
             </div>
           )}
 
+          <ExtractionWarnings warnings={aiEnhanced ? aiWarnings : []} />
+
           {/* Extraction notes */}
           {aiEnhanced && extractionNotes && (
             <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', padding: '10px 14px', marginBottom: '14px', borderRadius: 'var(--radius-xs)' }}>
@@ -644,6 +671,7 @@ export default function NewInvoicePage() {
 
             <div style={{ height: '1px', background: 'var(--brand-border)' }} />
 
+            <ClientMatchNotice match={clientMatch} />
             <Field label={t.invoiceForm.fieldSelectClient}>
               <select value={clientId} onChange={e => selectClient(e.target.value)} style={{ ...inp, appearance: 'none' }}>
                 <option value="">{t.invoiceForm.selectClientPlaceholder}</option>
@@ -710,6 +738,7 @@ export default function NewInvoicePage() {
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.invoiceForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
                 <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: 'var(--space-3)', marginBottom: '6px', borderRadius: 'var(--radius-xs)', position: 'relative' }}>
+                  <HeldLineNotice item={item} onKeep={() => setLineItems(prev => releaseHold(prev, i))} />
                   {item.aiConfidence === 'low' && (
                     <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}>
                       <Icon name="warning" size="xs" /> {t.forms.verifyBadge}
@@ -808,14 +837,15 @@ export default function NewInvoicePage() {
             )}
 
             <div style={{ display: 'flex', gap: '10px', paddingBottom: 'var(--space-5)' }}>
-              <button onClick={handleSaveDraft} disabled={saving} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1 }}>
+              <button onClick={handleSaveDraft} disabled={saving || heldCount > 0} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: 'pointer', textTransform: 'uppercase', opacity: saving ? 0.6 : 1 }}>
                 {saving ? t.invoiceForm.savingDraft : t.invoiceForm.saveDraft}
               </button>
-              <button onClick={handleSend} disabled={sending} style={{ background: sending ? 'var(--brand-primary-dark)' : 'var(--brand-primary)', border: 'none', color: 'var(--brand-on-primary)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: sending ? 'wait' : 'pointer', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+              <button onClick={handleSend} disabled={sending || heldCount > 0} style={{ background: sending ? 'var(--brand-primary-dark)' : 'var(--brand-primary)', border: 'none', color: 'var(--brand-on-primary)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: sending ? 'wait' : 'pointer', textTransform: 'uppercase', display: 'inline-flex', alignItems: 'center', gap: 'var(--space-2)' }}>
                 {sending && <span style={{ display: 'inline-block', width: '10px', height: '10px', border: '2px solid color-mix(in srgb, var(--brand-text) 45%, transparent)', borderTopColor: 'var(--brand-text)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />}
                 {sending ? t.invoiceForm.sendingInvoice : t.invoiceForm.sendInvoice}
               </button>
             </div>
+            <HeldSaveNotice count={heldCount} />
           </div>
         </div>
 

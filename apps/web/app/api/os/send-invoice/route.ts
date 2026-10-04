@@ -2,6 +2,7 @@ import { token } from '@maxpromo/design-tokens'
 import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { getDb, isDatabaseConfigured } from '@/lib/db'
+import { admitLineItems } from '@/lib/documents/extraction-guard'
 import { BUSINESS, type CurrencyCode, type DocumentLanguage } from '@/lib/documents/config'
 import { fmtCurrency, fmtDocDate, splitClientName } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
@@ -198,6 +199,19 @@ export async function POST(request: NextRequest) {
     if (!toEmails.length || !body.invoice_id) {
       return NextResponse.json({ error: 'invoice_id and at least one email required' }, { status: 400 })
     }
+
+    /* The email is built from the lines in this request, not from the stored
+       invoice, so the boundary applies here too: a held line is never sent. */
+    const admitted = admitLineItems(body.line_items)
+    if (admitted.held.length > 0) {
+      /* Persistence boundary: a line the provenance guard held, and no person
+         resolved, is not stored. See admitLineItems in extraction-guard.ts. */
+      return NextResponse.json(
+        { error: 'Line items hold content the source does not support', held: admitted.held },
+        { status: 422 },
+      )
+    }
+    body.line_items = admitted.items as LineItem[]
 
     console.log('[send-invoice] to:', toEmails, '| invoice:', body.invoice_number)
 

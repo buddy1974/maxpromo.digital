@@ -1,4 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { guardExtraction } from '@/lib/documents/extraction-guard'
+
+/*
+ * Legacy, not called by the interface since enhance replaced it, and kept as
+ * the documented rollback path (docs/deployment/deploy-verify.md). Because it
+ * can still produce a commercial document, it carries the same provenance
+ * guard as enhance: a rollback must not be a way round the boundary.
+ */
 
 const SYSTEM = `You are an invoice extraction assistant for MAXPROMO DIGITAL, a German AI and web development agency.
 
@@ -25,15 +33,17 @@ EXTRACT and structure:
 - Due dates if mentioned
 - Any special instructions relevant to the order
 
-For line items — write clean, professional German business descriptions. Examples:
+For line items — normalise spelling and capitalisation only. A quotation or
+invoice states what was agreed; never add scope, materials, standards,
+deliverables or conditions the input does not contain. Examples:
   Raw: "website 5 seiten 1500"
-  Clean: "Website-Entwicklung — 5 Seiten inkl. Kontaktformular und responsivem Design"
+  Clean: "Website, 5 Seiten"
 
   Raw: "logo design"
-  Clean: "Logodesign inkl. 2 Entwürfe und Reinzeichnung als AI/PDF"
+  Clean: "Logodesign"
 
   Raw: "flyer a5 500 stück"
-  Clean: "Flyerdruck A5, 500 Stück, 4/4-farbig"
+  Clean: "Flyer A5, 500 Stück"
 
 If information is missing or unclear, leave the field empty — do not invent data.
 
@@ -48,7 +58,7 @@ Return ONLY valid JSON with no explanation, no markdown, no code blocks:
   "clientPostcode": "",
   "lineItems": [
     {
-      "description": "clean professional German description",
+      "description": "the input's wording, normalised",
       "quantity": 1,
       "unit": "pauschal",
       "unitPrice": 0,
@@ -143,7 +153,7 @@ export async function POST(request: NextRequest) {
     const clean = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '')
     const parsed = JSON.parse(clean) as ExtractedInvoice
 
-    return NextResponse.json(parsed)
+    return NextResponse.json(guardExtraction(parsed, text).doc)
   } catch (error) {
     console.error('[/api/os/ai/generate-invoice]', error)
     return NextResponse.json({ error: 'Extraction failed' }, { status: 500 })
