@@ -1,6 +1,7 @@
 import { classifyProviderError, logAiFailure } from '@/lib/ai-failure'
 import { NextRequest, NextResponse } from 'next/server'
 import { ENHANCE_BASE, ENHANCE_CLIENT } from '@/lib/prompts'
+import { guardExtraction } from '@/lib/documents/extraction-guard'
 
 /* ──────────────────────────────────────────────────────────────────────
    /api/os/ai/enhance
@@ -54,7 +55,7 @@ const BUSINESS_DOC_SCHEMA = {
       items: {
         type: 'object',
         properties: {
-          description:   { type: 'string', description: 'Polished German business description' },
+          description:   { type: 'string', description: 'The source wording, normalised for spelling and capitalisation only. Never add scope, materials, standards or deliverables.' },
           quantity:      { type: 'number' },
           unit:          { type: 'string', description: 'pauschal, Stück, Stunden, Tage, Seiten, Monat, Lizenz' },
           unitPrice:     { type: 'number' },
@@ -312,6 +313,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ kind, extracted: toolBlock.input })
   }
 
-  const reconciled = reconcile(toolBlock.input as DocResult)
-  return NextResponse.json({ kind, extracted: reconciled })
+  /*
+   * Provenance before reconciliation, so the totals are computed from what
+   * survives. The prompt forbids enrichment; this is what enforces it. An
+   * evidence run saved "inkl. Material und Montage" and "gemäß DGUV
+   * Vorschrift 3" into a quotation whose source said neither.
+   */
+  const { doc: guarded, report } = guardExtraction(
+    toolBlock.input as DocResult,
+    hasText ? body.text!.trim() : null,
+  )
+  const reconciled = reconcile(guarded)
+  return NextResponse.json({ kind, extracted: reconciled, provenance: report })
 }

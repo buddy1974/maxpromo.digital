@@ -1,5 +1,42 @@
 # Change Log
 
+## 2026-10-04 — Post-evidence engineering: extraction provenance, honest numbering, client linking
+
+Internal. Nothing pushed, nothing deployed, no provider called. The first
+genuine provider-backed evidence run (one Anthropic request, 200; draft
+`ANG-2026-015` saved once) exposed three defects. All three are fixed and
+gated; the draft is preserved as the run's evidence.
+
+**Invented scope (risk 59).** The draft carried "inkl. Material und Montage",
+"gemäß DGUV Vorschrift 3" and "inkl. Prüfberichte und Abnahmedokumentation";
+the source said none of it. The prompt had asked for enrichment by example. It
+now forbids it, and `lib/documents/extraction-guard.ts` enforces the boundary
+against the pasted text on every extraction: unsupported clauses removed and
+reported, unsupported words or figures hold the line until a person edits or
+keeps them, AI-composed terms, notes, dates, deposits and included items
+withheld unless stated. Run against the actual saved output, the three lines
+come back as the source wrote them, with one held word ("elektrischer").
+
+**Preview ≠ saved number (risk 60).** The form showed ANG-2026-001 and saved
+ANG-2026-015. 015 was right: the sequence stood at 14 from the blank-form
+defect fixed on 26 September, while the preview counted stored rows, of which
+the lab had none. The preview now reads the sequence state the allocator
+advances, without advancing it, and predicts the same number. Live it shows
+ANG-2026-016 with the sequence at 15.
+
+**Client not linked (risk 61).** Exact, uncontested email or company matches
+link to the existing client; names alone, duplicates and conflicts go to a
+person. No client is created.
+
+**Payment text twice.** A presentation defect: the form copied payment terms
+into the notes, and the preview renders both. They now stay in their own
+field until save folds them into the notes once.
+
+New gate `prove:extraction-integrity` (24, 42 properties);
+`prove:document-numbering` extended to 14 properties, including
+preview-equals-allocation against the lab. Both shown red against the pre-fix
+code. Known limits of the guard are recorded as risk 62.
+
 ## 2026-09-23 — Phase B3.2: the evidence lab, proved against a real database
 
 Internal. Nothing public changed, nothing was deployed, and no capture was

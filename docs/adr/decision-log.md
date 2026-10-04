@@ -1450,3 +1450,46 @@ so the two are never read as one.
 verify through it. Find the observation the fallback cannot imitate, and say out
 loud which half of the evidence carries the verdict and which half only agrees
 with it.
+
+---
+
+## 2026-10-04 — AI extraction output is checked against its source, not trusted
+
+**Decision:** Every document extraction passes through a deterministic
+provenance guard before it reaches a form. Wording the source does not support
+is removed from trailing clauses, holds a line where it cannot be removed
+cleanly, and is withheld from free-text fields. A held line cannot be saved
+until a person edits it or keeps it deliberately. Image sources are never
+treated as verified.
+
+**Why:** The first genuine evidence run saved contractual scope the source
+never stated, at high confidence, because the prompt asked for enrichment. A
+prompt is a request; a quotation is an offer a customer can accept. "Review
+this" is not a safeguard for text the system has already presented as
+extracted.
+
+**Rejected:** fixing the prompt alone (the boundary would still rest on model
+compliance); automatic rewriting of held lines (the system would be composing
+scope of its own); blocking image extraction (useful, as long as it is labelled
+unverified).
+
+**How to apply:** New AI-populated fields in commercial documents go through
+`guardExtraction` or an equivalent source check. Gate 24 is the proof.
+
+---
+
+## 2026-10-04 — The number preview reads the allocator's state; client links need one exact match
+
+**Decision:** The quotation number preview predicts from `pg_sequences`, the
+state `nextval()` advances, never from stored rows. Existing-client linking
+after extraction happens only on one exact, uncontested email or company match.
+
+**Why:** Rows and sequence diverge exactly when numbers are consumed without
+rows, which is the defect the previous fix addressed; a row-based preview
+showed 001 before a correct 015. Filing a commercial document under the wrong
+client is worse than leaving it unlinked, so linking is conservative and
+anything ambiguous goes to a person.
+
+**Not done:** `ANG-2026-015` was not renumbered and the sequence was not
+reset. 015 is legitimate; the gap 001–014 in the evidence lab is the recorded
+consequence of the 26 September defect.

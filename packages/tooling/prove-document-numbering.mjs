@@ -20,10 +20,22 @@
  * bookkeeping smell at best; on the invoice series next door, gaps in a
  * numbered sequence are the kind of thing an auditor asks about.
  *
+ * THEN, 2026-10-04
+ *
+ * The fix held — three blank loads, no number consumed — and the first genuine
+ * save still surprised everyone: the form showed ANG-2026-001 and the record
+ * was saved as ANG-2026-015. The preview was computed from stored rows; the
+ * save allocates from the sequence. In the evidence lab there were no ANG rows
+ * and the sequence stood at 14, because of the very defect above. 015 was
+ * right. The preview was reading the wrong thing.
+ *
  * THE RULE
  *
  * Reading is a preview and consumes nothing. Saving allocates, exactly once.
- * A document number starts existing when the document does.
+ * A document number starts existing when the document does. And the preview
+ * predicts what the allocator will issue, from the state the allocator reads,
+ * so the number on the form is the number on the record unless another save
+ * intervenes.
  *
  * WHY THIS GATE NEEDS A DATABASE
  *
@@ -68,13 +80,19 @@ check(
   /nextAngebotNumber\s*\(/.test(getBlock) ? 'GET calls nextAngebotNumber()' : '',
 )
 check('the GET handler answers with a preview', /previewAngebotNumber\s*\(/.test(getBlock))
+const previewBody = (() => {
+  const i = routeSrc.indexOf('async function previewAngebotNumber')
+  return i === -1 ? '' : routeSrc.slice(i, routeSrc.indexOf('async function nextAngebotNumber'))
+})()
 check(
-  'the preview never calls nextval or the sequence function',
-  (() => {
-    const i = routeSrc.indexOf('async function previewAngebotNumber')
-    const body = routeSrc.slice(i, routeSrc.indexOf('async function nextAngebotNumber'))
-    return i > -1 && !/next_angebot_number|nextval/i.test(body)
-  })(),
+  'the preview never advances or sets a sequence',
+  previewBody !== '' && !/nextval|setval|SELECT\s+next_angebot_number\s*\(/i.test(previewBody),
+)
+check(
+  'the preview reads the sequence the allocator advances, not stored rows',
+  /pg_sequences/.test(previewBody) && /predictNextAngebotNumber\s*\(/.test(previewBody)
+    && !/ORDER BY angebot_number DESC/i.test(previewBody),
+  /ORDER BY angebot_number DESC/i.test(previewBody) ? 'preview still takes the highest stored row' : '',
 )
 
 const postBlock = routeSrc.slice(routeSrc.indexOf('export async function POST'))
@@ -83,6 +101,35 @@ check(
   /const angebot_number = await nextAngebotNumber\(\)/.test(postBlock),
   /body\.angebot_number \|\|/.test(postBlock) ? 'POST still accepts a client-supplied number' : '',
 )
+
+/* Prediction layer: pure, runs everywhere. */
+console.log('')
+console.log('The preview predicts what the allocator will issue')
+const { predictNextAngebotNumber } = await import(
+  pathToFileURL(join(ROOT, 'apps', 'web', 'lib', 'documents', 'numbering.ts')).href
+)
+const seqAt = (lastValue) => ({ lastValue, startValue: 1, incrementBy: 1 })
+{
+  /* The evidence run, exactly: sequence at 14, no ANG rows stored. */
+  const got = predictNextAngebotNumber({ year: 2026, hasAllocator: true, sequence: seqAt(14), maxStoredSuffix: null })
+  check('sequence at 14 with no stored rows predicts ANG-2026-015, not 001', got === 'ANG-2026-015', got)
+}
+{
+  const got = predictNextAngebotNumber({ year: 2026, hasAllocator: true, sequence: seqAt(15), maxStoredSuffix: 3 })
+  check('a sequence ahead of the rows wins over the rows', got === 'ANG-2026-016', got)
+}
+{
+  const got = predictNextAngebotNumber({ year: 2026, hasAllocator: true, sequence: seqAt(null), maxStoredSuffix: null })
+  check('a created but unused sequence predicts its start value', got === 'ANG-2026-001', got)
+}
+{
+  const got = predictNextAngebotNumber({ year: 2027, hasAllocator: true, sequence: null, maxStoredSuffix: 9 })
+  check('a year with no sequence yet predicts 001, as the function creates it', got === 'ANG-2027-001', got)
+}
+{
+  const got = predictNextAngebotNumber({ year: 2026, hasAllocator: false, sequence: null, maxStoredSuffix: 9 })
+  check('without the allocator function the route falls back to rows, and so does the preview', got === 'ANG-2026-010', got)
+}
 
 /* Behaviour layer: the part that actually proves it. */
 console.log('')
@@ -122,25 +169,46 @@ if (!pool) {
 } else {
   const year = new Date().getFullYear()
   const seq = `doc_seq.angebot_${year}`
+  const state = async () => {
+    const r = await pool.query(`SELECT last_value, is_called FROM ${seq}`).catch(() => null)
+    return r?.rows?.[0] ?? null
+  }
   const peek = async () => {
-    const r = await pool.query(
-      `SELECT last_value, is_called FROM ${seq}`,
-    ).catch(() => null)
-    return r?.rows?.[0] ? `${r.rows[0].last_value}/${r.rows[0].is_called}` : 'absent'
+    const s = await state()
+    return s ? `${s.last_value}/${s.is_called}` : 'absent'
+  }
+  /* The same state the route's preview reads, through the same prediction. */
+  const predict = async () => {
+    const r = await pool.query(`
+      WITH y AS (SELECT $1::int AS year)
+      SELECT y.year,
+        to_regprocedure('next_angebot_number(integer)') IS NOT NULL AS has_allocator,
+        s.sequencename IS NOT NULL AS has_sequence,
+        s.last_value::bigint AS last_value, s.start_value::bigint AS start_value,
+        s.increment_by::bigint AS increment_by,
+        (SELECT max(split_part(angebot_number, '-', 3)::int) FROM os_angebote
+          WHERE angebot_number ~ ('^ANG-' || y.year || '-[0-9]+$')) AS max_suffix
+      FROM y LEFT JOIN pg_sequences s
+        ON s.schemaname = 'doc_seq' AND s.sequencename = 'angebot_' || y.year`, [year])
+    const row = r.rows[0]
+    return predictNextAngebotNumber({
+      year: Number(row.year),
+      hasAllocator: row.has_allocator,
+      sequence: row.has_sequence
+        ? { lastValue: row.last_value === null ? null : Number(row.last_value),
+            startValue: Number(row.start_value ?? 1), incrementBy: Number(row.increment_by ?? 1) }
+        : null,
+      maxStoredSuffix: row.max_suffix === null ? null : Number(row.max_suffix),
+    })
   }
 
+  const original = await state()
   try {
     const before = await peek()
 
     /* Three preview reads, the same thing the form does on mount. */
     const previews = []
-    for (let i = 0; i < 3; i++) {
-      const r = await pool.query(
-        `SELECT angebot_number FROM os_angebote WHERE angebot_number LIKE $1
-         ORDER BY angebot_number DESC LIMIT 1`, [`ANG-${year}-%`],
-      )
-      previews.push(r.rows[0]?.angebot_number ?? `ANG-${year}-000`)
-    }
+    for (let i = 0; i < 3; i++) previews.push(await predict())
     const after = await peek()
 
     check('three preview reads leave the sequence untouched', before === after,
@@ -148,19 +216,29 @@ if (!pool) {
     check('three preview reads return the same number',
       new Set(previews).size === 1, previews.join(' -> '))
 
-    /* And the allocator must still work, or the fix broke saving. */
+    /* The number shown is the number issued. This is the 001-vs-015 check. */
+    const shown = previews[0]
     const a = await pool.query(`SELECT next_angebot_number() AS n`)
+    check('the previewed number is the number the save allocates', a.rows[0]?.n === shown,
+      `preview ${shown}, allocated ${a.rows[0]?.n}`)
+
+    /* And the allocator must still work, or the fix broke saving. */
     const b = await pool.query(`SELECT next_angebot_number() AS n`)
     check('the allocator still issues consecutive numbers',
       Boolean(a.rows[0]?.n && b.rows[0]?.n && a.rows[0].n !== b.rows[0].n),
       `${a.rows[0]?.n} then ${b.rows[0]?.n}`)
-
-    /* Leave the lab as found: the two allocations above are this gate's own
-       doing and must not become a permanent gap. */
-    await pool.query(`SELECT setval('${seq}', GREATEST(1, (SELECT last_value FROM ${seq}) - 2), true)`)
-      .catch(() => {})
-    console.log(`  note  sequence restored after the allocator test`)
   } finally {
+    /* Leave the lab exactly as found: the allocations above are this gate's
+       own doing and must not become a permanent gap. Restored to the recorded
+       state, not to "two less", which was wrong for a sequence never used. */
+    if (original) {
+      await pool.query(`SELECT setval('${seq}', $1::bigint, $2::boolean)`,
+        [original.last_value, original.is_called]).catch(() => {})
+      console.log(`  note  sequence restored to ${original.last_value}/${original.is_called}`)
+    } else {
+      await pool.query(`DROP SEQUENCE IF EXISTS ${seq}`).catch(() => {})
+      console.log('  note  sequence did not exist before this gate; removed again')
+    }
     await pool.end()
   }
 }

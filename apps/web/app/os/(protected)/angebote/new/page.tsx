@@ -7,16 +7,18 @@ import type { AngebotData } from '@/lib/documents/types'
 import { fmtCurrency } from '@/lib/documents/format'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { Icon } from '@maxpromo/ui'
+import { isHeld } from '@/lib/documents/extraction-guard'
+import { matchExistingClient } from '@/lib/documents/client-match'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
 
-interface LineItem { description: string; qty: number; unit: string; unit_price: number; total: number; isFixedPrice: boolean; aiConfidence?: 'high' | 'medium' | 'low'; category?: string }
+interface LineItem { description: string; qty: number; unit: string; unit_price: number; total: number; isFixedPrice: boolean; aiConfidence?: 'high' | 'medium' | 'low'; category?: string; unsupportedTerms?: string[] }
 interface Client   { id: string; name: string; company: string; email: string; address: string; city: string; country: string }
 interface AIExtracted {
   clientName: string; clientCompany: string; clientEmail: string; clientPhone?: string
   clientAddress: string; clientCity: string; clientPostcode?: string
-  lineItems: { description: string; quantity: number; unit: string; unitPrice: number; finalPrice: number; isFixedPrice: boolean; confidence?: 'high' | 'medium' | 'low'; category?: string }[]
+  lineItems: { description: string; quantity: number; unit: string; unitPrice: number; finalPrice: number; isFixedPrice: boolean; confidence?: 'high' | 'medium' | 'low'; category?: string; unsupportedTerms?: string[] }[]
   includedItems?: string[]
   paymentTerms?: string
   declaredTotal?: number
@@ -149,13 +151,26 @@ export default function NewAngebotPage() {
   const [includedItems,     setIncludedItems]     = useState<string[]>([])
   const [paymentTerms,      setPaymentTerms]      = useState('')
   const [aiWarnings,        setAiWarnings]        = useState<string[]>([])
+  const [clientMatchNote,   setClientMatchNote]   = useState('')
 
   const fileRef = useRef<HTMLInputElement>(null)
+  /* Read by applyExtracted, which the memoised image handler captures once.
+     State would be the empty list from the first render. */
+  const clientsRef = useRef<Client[]>([])
 
   useEffect(() => {
     fetch('/api/os/angebote?next=true').then(r => r.json()).then(d => setNumber((d as { number: string }).number)).catch(() => {})
-    fetch('/api/os/clients').then(r => r.json()).then(d => setClients(Array.isArray(d) ? d : [])).catch(() => {})
+    fetch('/api/os/clients').then(r => r.json()).then(d => { const list = Array.isArray(d) ? d : []; clientsRef.current = list; setClients(list) }).catch(() => {})
   }, [])
+
+  function applyClient(c: Client) {
+    setClientId(c.id); setClientName(c.name + (c.company ? ` — ${c.company}` : ''))
+    setClientEmail(c.email || '')
+    setClientStreet(c.address || '')
+    const m = (c.city || '').trim().match(/^(\d{4,5})\s+(.+)$/)
+    if (m) { setClientPostcode(m[1]); setClientCity(m[2]) }
+    else   { setClientPostcode(''); setClientCity(c.city || '') }
+  }
 
   // Clipboard paste
   function applyExtracted(d: AIExtracted) {
@@ -164,14 +179,28 @@ export default function NewAngebotPage() {
     if (d.clientAddress) setClientStreet(d.clientAddress)
     if (d.clientCity)    setClientCity(d.clientCity)
     if (d.clientPostcode) setClientPostcode(d.clientPostcode)
-    // Build a notes blob that captures payment terms + included items + extractor remarks
-    const noteParts: string[] = []
-    if (d.notes?.trim()) noteParts.push(d.notes.trim())
-    if (d.paymentTerms?.trim()) noteParts.push(`Zahlungsbedingungen: ${d.paymentTerms.trim()}`)
-    if (noteParts.length) setNotes(noteParts.join('\n\n'))
+    /*
+     * Payment terms stay in their own field. They used to be copied into the
+     * notes as well, and the preview renders both `payment_terms` and
+     * `notes`, so the same sentence appeared twice. handleSave folds them into
+     * the stored notes once, as before.
+     */
+    if (d.notes?.trim()) setNotes(d.notes.trim())
+
+    /* An existing client is linked only on one exact, uncontested match. */
+    const match = matchExistingClient(d, clientsRef.current)
+    if (match.kind === 'linked') {
+      applyClient(match.client)
+      setClientMatchNote(t.angebotForm.clientLinked(match.client.company || match.client.name))
+    } else if (match.kind === 'ambiguous') {
+      setClientId('')
+      setClientMatchNote(t.angebotForm.clientAmbiguous(match.candidates.length))
+    } else {
+      setClientMatchNote('')
+    }
     if (d.validUntil || d.dueDate) setValidUntil(d.validUntil || d.dueDate)
     if (d.lineItems?.length) {
-      setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice, aiConfidence: li.confidence, category: li.category })))
+      setLineItems(d.lineItems.map(li => ({ description: li.description, qty: li.quantity, unit: li.unit || 'pauschal', unit_price: li.unitPrice, total: li.finalPrice, isFixedPrice: li.isFixedPrice, aiConfidence: li.confidence, category: li.category, unsupportedTerms: li.unsupportedTerms })))
     }
     if (d.anzahlung > 0) {
       setHasAnzahlung(true); setAnzahlung(d.anzahlung)
@@ -318,21 +347,19 @@ export default function NewAngebotPage() {
   function selectClient(id: string) {
     const c = clients.find(x => x.id === id)
     if (!c) { setClientId(''); return }
-    setClientId(c.id); setClientName(c.name + (c.company ? ` — ${c.company}` : ''))
-    setClientEmail(c.email || '')
-    setClientStreet(c.address || '')
-    const m = (c.city || '').trim().match(/^(\d{4,5})\s+(.+)$/)
-    if (m) { setClientPostcode(m[1]); setClientCity(m[2]) }
-    else   { setClientPostcode(''); setClientCity(c.city || '') }
+    applyClient(c)
   }
 
   const fmtEur = useCallback((n: number) => fmtCurrency(n, currency), [currency])
 
   const subtotal   = lineItems.reduce((s, i) => s + Number(i.total), 0)
+  /* Lines holding wording or figures the source did not support. Not savable
+     until a person edits the wording out or keeps it deliberately. */
+  const heldCount  = lineItems.filter(isHeld).length
   const restbetrag = subtotal - (hasAnzahlung ? Number(anzahlung) : 0)
 
   async function handleSave() {
-    if (!clientName.trim()) return
+    if (!clientName.trim() || heldCount > 0) return
     setSaving(true)
     setSaveError('')
     try {
@@ -360,7 +387,7 @@ export default function NewAngebotPage() {
           client_name: clientName,
           client_email: clientEmail,
           client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'),
-          line_items: lineItems.filter(i => i.description),
+          line_items: lineItems.filter(i => i.description).map(li => ({ ...li, unsupportedTerms: undefined })),
           subtotal,
           total: subtotal,
           status: 'draft',
@@ -551,6 +578,9 @@ export default function NewAngebotPage() {
 
             <div style={{ height: '1px', background: 'var(--brand-border)' }} />
 
+            {clientMatchNote && (
+              <p role="status" style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.04em' }}>{clientMatchNote}</p>
+            )}
             <Field label={t.angebotForm.fieldSelectClient}>
               <select value={clientId} onChange={e => selectClient(e.target.value)} style={{ ...inp, appearance: 'none' }}>
                 <option value="">{t.angebotForm.selectClientPlaceholder}</option>
@@ -587,7 +617,13 @@ export default function NewAngebotPage() {
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '10px' }}>{t.angebotForm.lineItemsHeading}</p>
               {lineItems.map((item, i) => (
                 <div key={i} style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderLeft: itemBorderLeft(item) || '1px solid var(--brand-border)', padding: 'var(--space-3)', marginBottom: '6px', borderRadius: 'var(--radius-xs)', position: 'relative' }}>
-                  {item.aiConfidence === 'low' && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> verify</span>}
+                  {isHeld(item) && (
+                    <div role="alert" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
+                      <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {t.angebotForm.heldTerms((item.unsupportedTerms ?? []).join(', '))}</span>
+                      <button type="button" onClick={() => setLineItems(prev => prev.map((li, idx) => idx === i ? { ...li, unsupportedTerms: undefined } : li))} style={{ background: 'none', border: '1px solid var(--semantic-danger)', color: 'var(--semantic-danger)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.06em', padding: '4px 8px', cursor: 'pointer', whiteSpace: 'nowrap', borderRadius: 'var(--radius-xs)' }}>{t.angebotForm.confirmWording}</button>
+                    </div>
+                  )}
+                  {item.aiConfidence === 'low' && !isHeld(item) && <span style={{ position: 'absolute', top: '8px', right: '8px', fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', letterSpacing: '0.08em' }}><Icon name="warning" size="xs" /> verify</span>}
                   <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)' }}>
                     <textarea
                       value={item.description}
@@ -668,9 +704,10 @@ export default function NewAngebotPage() {
             <Field label={t.angebotForm.fieldNotes}><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} style={{ ...inp, resize: 'vertical' }} /></Field>
 
             <div style={{ marginBottom: 'var(--space-5)' }}>
-              <button type="button" onClick={handleSave} disabled={saving || !clientName.trim()} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() ? 0.6 : 1 }}>
+              <button type="button" onClick={handleSave} disabled={saving || !clientName.trim() || heldCount > 0} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '12px 20px', cursor: saving || !clientName.trim() || heldCount > 0 ? 'not-allowed' : 'pointer', textTransform: 'uppercase', opacity: saving || !clientName.trim() || heldCount > 0 ? 0.6 : 1 }}>
                 {saving ? t.angebotForm.saving : t.angebotForm.saveAngebot}
               </button>
+              {heldCount > 0 && <p role="status" style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {t.angebotForm.heldSaveBlocked(heldCount)}</p>}
               {saveError && <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: '10px 0 0', letterSpacing: '0.04em' }}><Icon name="warning" size="xs" /> {saveError}</p>}
             </div>
           </div>

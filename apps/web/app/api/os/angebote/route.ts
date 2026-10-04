@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
+import { predictNextAngebotNumber } from '@/lib/documents/numbering'
 
 /**
  * Atomic per-year angebot numbering — uses the Postgres sequence from
@@ -25,20 +26,46 @@ import { getDb } from '@/lib/db'
  * That is correct and harmless: `POST` allocates authoritatively, and a
  * preview that is occasionally superseded is a far smaller problem than a
  * numbering series with silent gaps in it.
+ *
+ * It is read from the sequence the allocator advances, not from stored rows.
+ * Rows and sequence disagree whenever a number was issued without a row —
+ * which is the very defect above — and the evidence run showed the form
+ * promising ANG-2026-001 while the save correctly issued ANG-2026-015. The
+ * prediction itself lives in lib/documents/numbering.ts.
  */
 async function previewAngebotNumber(): Promise<string> {
   const sql = getDb()
-  const year = new Date().getFullYear()
-  const prefix = `ANG-${year}-`
   const rows = await sql`
-    SELECT angebot_number FROM os_angebote
-    WHERE angebot_number LIKE ${prefix + '%'}
-    ORDER BY angebot_number DESC LIMIT 1`
-  if (rows.length === 0) return `${prefix}001`
-  const last = (rows[0] as { angebot_number: string }).angebot_number
-  const num = parseInt(last.replace(prefix, ''), 10)
-  if (!Number.isFinite(num)) return `${prefix}001`
-  return `${prefix}${String(num + 1).padStart(3, '0')}`
+    WITH y AS (SELECT EXTRACT(YEAR FROM now())::int AS year)
+    SELECT
+      y.year,
+      to_regprocedure('next_angebot_number(integer)') IS NOT NULL AS has_allocator,
+      s.sequencename IS NOT NULL AS has_sequence,
+      s.last_value::bigint   AS last_value,
+      s.start_value::bigint  AS start_value,
+      s.increment_by::bigint AS increment_by,
+      (SELECT max(split_part(angebot_number, '-', 3)::int) FROM os_angebote
+        WHERE angebot_number ~ ('^ANG-' || y.year || '-[0-9]+$')) AS max_suffix
+    FROM y
+    LEFT JOIN pg_sequences s
+      ON s.schemaname = 'doc_seq' AND s.sequencename = 'angebot_' || y.year` as Array<{
+    year: number; has_allocator: boolean; has_sequence: boolean
+    last_value: string | null; start_value: string | null; increment_by: string | null
+    max_suffix: number | null
+  }>
+  const r = rows[0]
+  return predictNextAngebotNumber({
+    year: Number(r.year),
+    hasAllocator: r.has_allocator,
+    sequence: r.has_sequence
+      ? {
+          lastValue: r.last_value === null ? null : Number(r.last_value),
+          startValue: Number(r.start_value ?? 1),
+          incrementBy: Number(r.increment_by ?? 1),
+        }
+      : null,
+    maxStoredSuffix: r.max_suffix === null ? null : Number(r.max_suffix),
+  })
 }
 
 /** Allocates a number and consumes it. Only a save may call this. */
