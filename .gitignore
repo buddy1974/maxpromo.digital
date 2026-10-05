@@ -54,3 +54,8 @@ _to_delete/
 apps/*/.next/
 apps/*/out/
 packages/*/dist/
+
+# Evidence inbox: captures waiting to be ingested by npm run evidence:ingest.
+# Never committed; the ingested copy and its ledger entry are the record.
+docs/evidence/*/inbox/*
+!docs/evidence/*/inbox/.gitkeep

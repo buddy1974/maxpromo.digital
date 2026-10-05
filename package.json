@@ -54,7 +54,8 @@
     "evidence:seed": "node apps/web/lib/evidence/seed.mjs",
     "evidence:reset": "node apps/web/lib/evidence/seed.mjs --reset",
     "check:proof": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/check-proof.mjs",
-    "prove:extraction-integrity": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/prove-extraction-integrity.mjs"
+    "prove:extraction-integrity": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/prove-extraction-integrity.mjs",
+    "evidence:ingest": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/ingest-evidence.mjs"
   },
   "engines": {
     "node": ">=20"

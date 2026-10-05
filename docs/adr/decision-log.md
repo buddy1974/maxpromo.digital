@@ -1542,3 +1542,24 @@ gate is written per family.
 
 **Not done:** no renumbering, no sequence reset. Numbers the old invoice
 preview consumed without a document remain gaps.
+
+---
+
+## 2026-10-05 — Evidence enters the repository through one governed tool
+
+**Decision:** A capture becomes evidence only through `npm run evidence:ingest`:
+an explicitly named PNG, from the gitignored inbox or a path a capture tool
+reported under the system temp directory, copied under the manifest's
+filename, with its hash, size and route in `LEDGER.json`. Inspection is a
+separate recorded act that must name a governed marker seen in the image.
+`check:proof` enforces both.
+
+**Why:** The manifest's explicit-naming rule was correct and unenforced, and
+five governed frames stayed in browser storage because nothing defined how
+they would arrive. Personal folders are refused by name because the one time
+"the newest screenshot" was proposed, the folder held the owner's home
+address.
+
+**Rejected:** a generic upload endpoint in the application (a new attack
+surface to move five files); broad filesystem access for the browser agent;
+treating browser tool storage ids as artefacts.

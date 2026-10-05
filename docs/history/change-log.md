@@ -1,5 +1,28 @@
 # Change Log
 
+## 2026-10-05 — Proof package reconciled; evidence gets a governed way in
+
+Internal. No capture taken, no provider called, nothing pushed or deployed.
+
+The Maxpromo OS proof registry still described the provider account as
+unusable. Repository truth now says what happened: frames 1 and 5 (2026-09-26)
+and 2–4 (2026-10-04) exist only in Chrome's tool storage and were never
+transferred, and frames 2–4 predate the provenance guard and show the defects
+it fixed, so they cannot stand for the current workflow. Package state is
+unchanged — 1 satisfied, 5 blocked — with the reasons corrected.
+
+There was no defined path from a browser capture to this repository, which is
+part of why five frames never arrived. `npm run evidence:ingest` is that
+path: explicitly named files only, from a gitignored inbox or a capture tool's
+reported temp path, never a personal folder; hash, size and route recorded in a
+ledger; inspection recorded separately with the governed marker seen.
+`check:proof` now refuses an evidence artefact with no ledger entry, a changed
+hash, or no recorded inspection.
+
+`docs/qa/chrome-recovery-contract.md` is rewritten: Phase A recaptures frames
+1 and 5 with no model call; Phase B, frames 2–4, needs exactly one provider
+request and is not authorised.
+
 ## 2026-10-05 — Invoices follow the quotation numbering rule (risk 63)
 
 Internal. Nothing pushed, nothing deployed, no provider called, no historical

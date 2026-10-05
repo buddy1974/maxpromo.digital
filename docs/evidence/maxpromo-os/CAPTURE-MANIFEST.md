@@ -1,6 +1,14 @@
 # Maxpromo OS — evidence capture manifest
 
-**Status:** awaiting five captures · created 2026-09-23 · Phase B3.2
+**Status:** awaiting five captures · created 2026-09-23 · Phase B3.2 · reconciled 2026-10-05
+
+**Where things stand, 2026-10-05.** No capture has reached this directory.
+Chrome produced frames 1 and 5 on 2026-09-26 and frames 2–4 on 2026-10-04, all
+in its own tool storage, none transferred. Frames 2–4 also predate the
+provenance guard and show the defects it fixed (risks 59–61), so they cannot
+stand for the current workflow. The current plan, and the one request it would
+need, is `docs/qa/chrome-recovery-contract.md`; each requirement's exact
+state is in `packages/config/proof.ts`.
 
 This file is the contract between the running application and
 `packages/config/proof.ts`. Every capture below maps to one media requirement
@@ -53,7 +61,9 @@ marked satisfied because a capture session happened.
 All of these were true when this manifest was written:
 
 - `MAXPROMO_EVIDENCE_MODE=1`, and the resolver selects `EVIDENCE_DATABASE_URL`
-- the evidence database holds exactly one fictional client and three documents
+- the evidence database holds exactly one fictional client and three seeded
+  documents — plus, since 2026-10-04, the draft `ANG-2026-015`, kept as the
+  record of the first genuine run and not to be removed
 - both outbound transports are inert, proved against an instrumented `fetch`
 - `/api/health` reports `database: ok` while the mode is armed
 
@@ -145,12 +155,17 @@ Save, then capture the saved quotation on its detail view, in **draft**.
 **Proves** a record exists and has not been sent.
 **Does not prove** it was ever sent or accepted.
 
-Expected: `EVD-2026-0007`, status draft, dated 2026-09-14, total 3.380,00.
+Expected: the number the server allocates on save — the form previews it, and
+since risk 60 the preview is the number issued unless another save
+intervenes — status draft, total 3.380,00. Report the saved number, not the
+previewed one, if they differ.
 
-Saving creates a second quotation for the same fictional client, which is
-correct and expected — the seeded `EVD-2026-0007` is the one the dataset
-defines, and the new one is what this capture session produced. Reset
-afterwards to return to baseline.
+(This read "Expected: `EVD-2026-0007`". That was never possible: a save
+allocates an `ANG-` number, and `EVD-2026-0007` is the seeded quotation.)
+
+Saving creates another quotation for the same fictional client, which is
+correct. Do not reset afterwards: the evidence reset removes only `EVD-`
+rows, and a saved draft is the record of the run that made it.
 
 ### 5 · `os-lifecycle-list` → `05-lifecycle-list.png`
 
@@ -210,6 +225,28 @@ domain ending `.example`. An image showing none of those is not verifiably from
 the evidence environment and is not ingested, whatever it is called.
 
 ---
+
+## The transfer, and the tool that enforces it
+
+Chrome has no access to this repository, and browser tool storage is not a
+transfer. A capture reaches this directory one way:
+
+1. It is written to disk under its exact filename above, either by the capture
+   tool (which reports the path it wrote, under the system temp directory) or
+   by the operator into `docs/evidence/maxpromo-os/inbox/`, which is
+   gitignored.
+2. `npm run evidence:ingest -- --requirement <id> --from <that exact path>
+   --captured <date> --by <who>` copies it here under the manifest's
+   filename, and records its SHA-256, size, dimensions and route in
+   `LEDGER.json`. It refuses Pictures, Screenshots, Downloads, Desktop and
+   OneDrive by name, any path outside the inbox or the temp directory, a file
+   that is not a PNG, and an existing capture without `--replace`.
+3. Someone looks at the image, against the disqualifiers above, and records it:
+   `npm run evidence:ingest -- --record-inspection <id> --saw "<marker>"
+   --by <who>`. The marker must be one of the governed ones.
+4. Only then does the requirement move to `satisfiedBy`. `check:proof`
+   refuses an evidence artefact with no ledger entry, a hash that no longer
+   matches, or no recorded inspection.
 
 ## After the captures
 

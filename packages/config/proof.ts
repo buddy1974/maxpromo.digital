@@ -567,11 +567,11 @@ const MAXPROMO_OS: ProofPackage = {
       targets: ['workflow-automation proof slot'],
       priority: 'high',
       blockedBy:
-        'CAPTURED but not ingested. A governed Chrome run produced this frame on 2026-09-26 '
-        + '(tool storage ss_53700jc04) and it passed its safety inspection. It is not in the '
-        + 'repository: Chrome has no filesystem access, so the image has not been seen, cropped '
-        + 'or committed here. A capture existing in a browser is not evidence this package may '
-        + 'claim. Satisfied when the file is ingested and inspected.',
+        'CAPTURED in Chrome on 2026-09-26 (tool storage ss_53700jc04) and inspected there; '
+        + 'never transferred. No file, hash or transfer of it exists in the repository, and '
+        + 'browser tool storage is not a governed transfer route. Needs no model call: '
+        + 'recapture per docs/qa/chrome-recovery-contract.md and ingest with npm run '
+        + 'evidence:ingest. Satisfied only once ingested and the inspection recorded.',
     },
     {
       id: 'os-extraction-result',
@@ -585,12 +585,14 @@ const MAXPROMO_OS: ProofPackage = {
       targets: ['workflow-automation proof slot'],
       priority: 'high',
       blockedBy:
-        'Blocked by an unusable provider account, not by the application. Two genuine attempts '
-        + 'returned 502; reproducing the upstream call this route makes showed the provider answering '
-        + 'HTTP 400 invalid_request_error, "credit balance is too low", identically on every '
-        + 'model. The credential authenticates and cannot be charged. Chrome correctly refused '
-        + 'to hand-fill the form. Risk 56; owner action. Error frame ss_2957teoi2 is evidence of '
-        + 'the failure and is NOT evidence of the workflow.',
+        'Risk 56 no longer blocks this: a genuine provider-backed run on 2026-10-04 (one '
+        + 'request, HTTP 200) produced a result and Chrome captured it, but only in its own '
+        + 'storage; nothing was transferred. That run predates the provenance guard, and its '
+        + 'output carried invented contractual scope (risk 59), so it shows a defect since '
+        + 'fixed and is not evidence of the current workflow. A publishable frame needs one '
+        + 'new provider request, which the owner has not authorised; proposed, not granted, '
+        + 'in the recovery contract. Error frame ss_2957teoi2 remains evidence of the earlier '
+        + 'billing failure only.',
     },
     {
       id: 'os-form-before-save',
@@ -604,9 +606,13 @@ const MAXPROMO_OS: ProofPackage = {
       targets: ['workflow-automation proof slot', 'work entry'],
       priority: 'high',
       blockedBy:
-        'Dependent. This frame is only honest when the form was populated BY the extraction, and '
-        + 'the extraction did not run (risk 56). Filling it by hand would produce exactly the '
-        + 'picture this package exists to refuse.',
+        'Captured in Chrome on 2026-10-04, not transferred. Unusable as the hero even if it '
+        + 'were: the form it shows carries the invented scope of risk 59, a previewed number '
+        + '(ANG-2026-001) that was not the saved one (ANG-2026-015, risk 60), an unlinked '
+        + 'client (risk 61), and the business bank block in the live preview, which makes '
+        + 'that frame internal. The honest frame is the current form, after a fresh '
+        + 'extraction, with any hold the guard raises left visible. Same single gated request '
+        + 'as os-extraction-result.',
     },
     {
       id: 'os-draft-record',
@@ -620,9 +626,11 @@ const MAXPROMO_OS: ProofPackage = {
       targets: ['custom-applications proof slot'],
       priority: 'medium',
       blockedBy:
-        'Dependent on the extraction and on the save that follows it. Neither happened: no '
-        + 'quotation was created by the capture session, confirmed against the evidence lab, '
-        + 'which holds exactly the three seeded documents.',
+        'The save happened: ANG-2026-015, draft, is in the evidence lab and is preserved as '
+        + 'the record of the 2026-10-04 run. Chrome captured its detail view and did not '
+        + 'transfer it. Its line items carry the invented scope of risk 59, so it is internal '
+        + 'evidence of that defect, not public proof of the workflow. Depends on the same '
+        + 'single gated request as os-extraction-result.',
     },
     {
       id: 'os-lifecycle-list',
@@ -653,10 +661,10 @@ const MAXPROMO_OS: ProofPackage = {
       targets: ['custom-applications proof slot', 'work entry'],
       priority: 'medium',
       blockedBy:
-        'CAPTURED but not ingested. Chrome produced this frame on 2026-09-26 (tool storage '
-        + 'ss_63507sdzq) showing EVD-2026-0004 sent and EVD-2026-0001 paid, and it passed its '
-        + 'safety inspection. Same position as os-source-note: the image is not in the '
-        + 'repository and has not been inspected here.',
+        'CAPTURED in Chrome on 2026-09-26 (tool storage ss_63507sdzq) showing EVD-2026-0004 '
+        + 'sent and EVD-2026-0001 paid, and inspected there; never transferred. Both '
+        + 'documents are unchanged in the lab, so a recapture shows the same state and needs '
+        + 'no model call. Satisfied only once ingested and the inspection recorded.',
     },
     {
       id: 'os-workflow-diagram',

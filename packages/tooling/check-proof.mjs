@@ -35,11 +35,25 @@
  *   node packages/tooling/check-proof.mjs
  */
 
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { createHash } from 'node:crypto'
 
 const ROOT = process.cwd()
+
+/* Every evidence ledger, keyed by artefact path; the current entry wins. */
+const ledgers = new Map()
+const evidenceRoot = join(ROOT, 'docs', 'evidence')
+if (existsSync(evidenceRoot)) {
+  for (const dir of readdirSync(evidenceRoot)) {
+    const p = join(evidenceRoot, dir, 'LEDGER.json')
+    if (!existsSync(p)) continue
+    for (const e of JSON.parse(readFileSync(p, 'utf8'))) if (!e.supersededOn) ledgers.set(e.file, e)
+  }
+}
+const ledgerFor = (artefact) => ledgers.get(artefact)
+const hashOf = (artefact) => createHash('sha256').update(readFileSync(join(ROOT, artefact))).digest('hex')
 const registry = join(ROOT, 'packages', 'config', 'proof.ts')
 if (!existsSync(registry)) {
   console.error('proof: no registry at packages/config/proof.ts')
@@ -141,6 +155,26 @@ for (const pkg of PROOF_PACKAGES) {
     if (m.satisfiedBy && !existsSync(join(ROOT, m.satisfiedBy.artefact))) {
       say(pkg, `media ${m.id} names an artefact that is not in the repository`,
         `${m.satisfiedBy.artefact} does not exist. Either it moved, or the requirement is not satisfied`)
+    }
+
+    /* (6b) A captured artefact is the one that was ingested and inspected.
+       Anything under docs/evidence/ arrives through ingest-evidence.mjs, which
+       records its hash, and is satisfied only once an inspection naming the
+       governed marker seen in it is recorded. A file swapped on disk, or
+       copied in by hand, fails here — the rule that keeps a personal
+       screenshot from becoming "evidence" because it had the right name. */
+    if (m.satisfiedBy?.artefact?.startsWith('docs/evidence/') && existsSync(join(ROOT, m.satisfiedBy.artefact))) {
+      const entry = ledgerFor(m.satisfiedBy.artefact)
+      if (!entry) {
+        say(pkg, `media ${m.id} names an evidence file with no ledger entry`,
+          'Captures enter through npm run evidence:ingest, which records where they came from')
+      } else if (entry.sha256 !== hashOf(m.satisfiedBy.artefact)) {
+        say(pkg, `media ${m.id} names an evidence file that no longer matches its ledger hash`,
+          'The file on disk is not the one that was ingested and inspected')
+      } else if (!entry.inspection) {
+        say(pkg, `media ${m.id} names an evidence file nobody has recorded inspecting`,
+          'Ingesting is not inspecting. Record what was seen with --record-inspection')
+      }
     }
 
     /* (7) Satisfied or blocked, never both. The two say opposite things
