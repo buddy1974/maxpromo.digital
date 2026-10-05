@@ -58,21 +58,47 @@ export interface NumberingState {
   maxStoredSuffix: number | null
 }
 
+/**
+ * The two numbered families. Same migration, same shape: a per-year sequence
+ * in `doc_seq`, a function that creates it on first use and calls `nextval()`,
+ * and a three-digit suffix. Invoices follow the quotation rule since risk 63.
+ */
+export const DOCUMENT_FAMILIES = {
+  angebot: { prefix: 'ANG', allocator: 'next_angebot_number', sequence: 'angebot' },
+  invoice: { prefix: 'MP',  allocator: 'next_invoice_number', sequence: 'invoice' },
+} as const
+
+export type DocumentFamily = keyof typeof DOCUMENT_FAMILIES
+
+export function formatDocumentNumber(family: DocumentFamily, year: number, n: number): string {
+  return `${DOCUMENT_FAMILIES[family].prefix}-${year}-${String(n).padStart(3, '0')}`
+}
+
 export function formatAngebotNumber(year: number, n: number): string {
-  return `ANG-${year}-${String(n).padStart(3, '0')}`
+  return formatDocumentNumber('angebot', year, n)
+}
+
+/** The number the family's allocator would issue right now, given this state. */
+export function predictNextNumber(family: DocumentFamily, state: NumberingState): string {
+  if (state.hasAllocator) {
+    const seq = state.sequence
+    /* The function creates a missing sequence with START WITH 1. */
+    if (!seq) return formatDocumentNumber(family, state.year, 1)
+    const next = seq.lastValue === null ? seq.startValue : seq.lastValue + seq.incrementBy
+    return formatDocumentNumber(family, state.year, next)
+  }
+  /* The route's own fallback when the function is missing. */
+  return formatDocumentNumber(family, state.year, (state.maxStoredSuffix ?? 0) + 1)
 }
 
 /** The number `nextAngebotNumber()` would issue right now, given this state. */
 export function predictNextAngebotNumber(state: NumberingState): string {
-  if (state.hasAllocator) {
-    const seq = state.sequence
-    /* The function creates a missing sequence with START WITH 1. */
-    if (!seq) return formatAngebotNumber(state.year, 1)
-    const next = seq.lastValue === null ? seq.startValue : seq.lastValue + seq.incrementBy
-    return formatAngebotNumber(state.year, next)
-  }
-  /* The route's own fallback when the function is missing. */
-  return formatAngebotNumber(state.year, (state.maxStoredSuffix ?? 0) + 1)
+  return predictNextNumber('angebot', state)
+}
+
+/** The number `nextInvoiceNumber()` would issue right now, given this state. */
+export function predictNextInvoiceNumber(state: NumberingState): string {
+  return predictNextNumber('invoice', state)
 }
 
 /** The per-year sequence name, as the migration's functions build it. */

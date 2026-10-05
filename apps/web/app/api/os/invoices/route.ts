@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { admitLineItems } from '@/lib/documents/extraction-guard'
+import { predictNextInvoiceNumber } from '@/lib/documents/numbering'
 
 /**
  * Atomic per-year invoice numbering. Uses the Postgres sequence created
@@ -30,6 +31,55 @@ async function nextInvoiceNumber(): Promise<string> {
   return `${prefix}${String(num + 1).padStart(3, '0')}`
 }
 
+/**
+ * What the next saved invoice will be numbered, WITHOUT consuming a number.
+ *
+ * Risk 63. The blank invoice form asked `?next=true` on mount and this route
+ * answered by calling `nextInvoiceNumber()` — `nextval()` — so opening a form
+ * burned an invoice number, twice under StrictMode, exactly the defect fixed
+ * for quotations on 26 September (risk 57). The form then sent that number
+ * back and POST stored it, so the browser chose the persisted number.
+ *
+ * Now as for quotations: the preview reads the sequence the allocator
+ * advances, without advancing it, and predicts through
+ * lib/documents/numbering.ts what `next_invoice_number()` will issue. POST
+ * allocates, once, and ignores any number in the request.
+ */
+async function previewInvoiceNumber(): Promise<string> {
+  const sql = getDb()
+  const rows = await sql`
+    WITH y AS (SELECT EXTRACT(YEAR FROM now())::int AS year)
+    SELECT
+      y.year,
+      to_regprocedure('next_invoice_number(integer)') IS NOT NULL AS has_allocator,
+      s.sequencename IS NOT NULL AS has_sequence,
+      s.last_value::bigint   AS last_value,
+      s.start_value::bigint  AS start_value,
+      s.increment_by::bigint AS increment_by,
+      (SELECT max(split_part(invoice_number, '-', 3)::int) FROM os_invoices
+        WHERE invoice_number ~ ('^MP-' || y.year || '-[0-9]+$')) AS max_suffix
+    FROM y
+    LEFT JOIN pg_sequences s
+      ON s.schemaname = 'doc_seq' AND s.sequencename = 'invoice_' || y.year` as Array<{
+    year: number; has_allocator: boolean; has_sequence: boolean
+    last_value: string | null; start_value: string | null; increment_by: string | null
+    max_suffix: number | null
+  }>
+  const r = rows[0]
+  return predictNextInvoiceNumber({
+    year: Number(r.year),
+    hasAllocator: r.has_allocator,
+    sequence: r.has_sequence
+      ? {
+          lastValue: r.last_value === null ? null : Number(r.last_value),
+          startValue: Number(r.start_value ?? 1),
+          incrementBy: Number(r.increment_by ?? 1),
+        }
+      : null,
+    maxStoredSuffix: r.max_suffix === null ? null : Number(r.max_suffix),
+  })
+}
+
 export async function GET(request: NextRequest) {
   try {
     const sql  = getDb()
@@ -38,7 +88,8 @@ export async function GET(request: NextRequest) {
     const next = searchParams.get('next')
 
     if (next === 'true') {
-      return NextResponse.json({ number: await nextInvoiceNumber() })
+      /* A preview. Reading a form must not consume a document number. */
+      return NextResponse.json({ number: await previewInvoiceNumber(), preview: true })
     }
 
     if (id) {
@@ -60,7 +111,7 @@ export async function POST(request: NextRequest) {
   try {
     const sql  = getDb()
     const body = await request.json() as {
-      invoice_number?: string; client_id?: string; client_name: string
+      client_id?: string; client_name: string
       client_email?: string; client_address?: string; line_items: unknown[]
       subtotal: number; total: number; status?: string; due_date?: string; notes?: string
       anzahlung?: number; anzahlung_date?: string; anzahlung_method?: string; restbetrag?: number
@@ -77,7 +128,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const invoice_number = body.invoice_number || await nextInvoiceNumber()
+    /*
+     * Always allocated here, never taken from the request (risk 63). A
+     * browser-supplied number let two open forms store the same one — the
+     * second save failing on the unique constraint — and let the browser, not
+     * the sequence, decide a number an auditor reads.
+     */
+    const invoice_number = await nextInvoiceNumber()
 
     // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
     const OWNER_ID = '00000000-0000-0000-0000-000000000001'

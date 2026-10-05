@@ -1,5 +1,18 @@
 # Change Log
 
+## 2026-10-05 — Invoices follow the quotation numbering rule (risk 63)
+
+Internal. Nothing pushed, nothing deployed, no provider called, no historical
+number changed.
+
+The invoice route had both quotation numbering defects at once: opening a
+blank invoice form consumed a number, because the preview called the
+allocator, and saving stored whatever number the browser sent back. Now the
+preview reads the sequence without advancing it and predicts the allocator's
+answer, the save allocates once and ignores the request, the form shows the
+number the server issued, and the invoice email takes it from the stored row.
+`prove:document-numbering` proves both families (35 properties).
+
 ## 2026-10-04 — Provenance becomes a document-system invariant
 
 Internal. Nothing pushed, nothing deployed, no provider called.

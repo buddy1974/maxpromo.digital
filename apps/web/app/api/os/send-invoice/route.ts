@@ -177,7 +177,6 @@ export async function POST(request: NextRequest) {
       client_email?: string
       client_name: string
       address?: string
-      invoice_number: string
       date: string
       due_date: string
       line_items: LineItem[]
@@ -213,19 +212,25 @@ export async function POST(request: NextRequest) {
     }
     body.line_items = admitted.items as LineItem[]
 
-    console.log('[send-invoice] to:', toEmails, '| invoice:', body.invoice_number)
+    console.log('[send-invoice] to:', toEmails.length, 'recipient(s)')
 
-    // Fall back to the invoice's stored language if the caller didn't pass one explicitly.
+    /*
+     * The number on the email is the stored one, never the request's (risk
+     * 63): the server allocates invoice numbers on save, so the only
+     * authoritative number is the row's. Stored language is the fallback when
+     * the caller did not pass one.
+     */
     const sql = getDb()
-    let language: DocumentLanguage | null = body.language ?? null
-    if (!language) {
-      const langRows = await sql`SELECT language FROM os_invoices WHERE id = ${body.invoice_id}` as { language: DocumentLanguage | null }[]
-      language = langRows[0]?.language ?? 'de'
+    const stored = await sql`SELECT invoice_number, language FROM os_invoices WHERE id = ${body.invoice_id}` as { invoice_number: string; language: DocumentLanguage | null }[]
+    if (!stored.length) {
+      return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
     }
+    const invoice_number = stored[0].invoice_number
+    const language: DocumentLanguage = body.language ?? stored[0].language ?? 'de'
 
     console.log('[send-invoice] 2. Building HTML...')
     const html = buildInvoiceEmail({
-      invoice_number: body.invoice_number,
+      invoice_number,
       client_name: body.client_name,
       address: body.address,
       date: body.date,
@@ -249,7 +254,7 @@ export async function POST(request: NextRequest) {
       to: toEmails,
       from: FROM_EMAIL,
       replyTo: 'info@maxpromo.digital',
-      subject: t.emailSubjectInvoice(body.invoice_number),
+      subject: t.emailSubjectInvoice(invoice_number),
       html,
       bcc,
     })

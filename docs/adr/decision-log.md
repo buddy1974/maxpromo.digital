@@ -1525,3 +1525,20 @@ running. The Bureau has no local environment file in this checkout, so it was
 not started. Recommended: a governed, non-production Bureau certification
 environment as its own work package, rather than splitting the audits to get a
 green result.
+
+---
+
+## 2026-10-05 — One numbering rule for every numbered business document
+
+**Decision:** Quotations and invoices share one rule and one prediction
+module: a preview never consumes, the server allocates once on save, and no
+request can supply the stored number. Anything that renders the number after
+saving — the form, the invoice email — takes it from the server.
+
+**Why:** The quotation fixes of 26 September and 4 October were applied to one
+family; the invoice family kept the original defects. A second numbered
+document type added later should inherit the rule, not rediscover it, so the
+gate is written per family.
+
+**Not done:** no renumbering, no sequence reset. Numbers the old invoice
+preview consumed without a document remain gaps.

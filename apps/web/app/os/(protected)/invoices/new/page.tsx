@@ -354,10 +354,12 @@ export default function NewInvoicePage() {
      saved or sent until a person edits them or keeps them deliberately. */
   const heldCount  = countHeld(lineItems)
 
-  async function saveInvoice(sendNow = false): Promise<string | null> {
+  /* Returns the saved invoice's id and the number the server allocated. The
+     number on the form is a preview; the saved one is authoritative (risk 63). */
+  async function saveInvoice(sendNow = false): Promise<{ id: string; number: string } | null> {
     if (!clientName.trim() || lineItems.every(i => !i.description) || heldCount > 0) return null
     const body = {
-      invoice_number: invoiceNumber, client_id: clientId || undefined,
+      client_id: clientId || undefined,
       client_name: clientName, client_email: clientEmails[0] || '',
       client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'),
       line_items: lineItems.filter(i => i.description),
@@ -376,16 +378,17 @@ export default function NewInvoicePage() {
     if (!res.ok) {
       throw new Error(t.forms.serverError(res.status))
     }
-    const data = await res.json() as { id: string }
-    return data.id
+    const data = await res.json() as { id: string; invoice_number: string }
+    setInvoiceNumber(data.invoice_number)
+    return { id: data.id, number: data.invoice_number }
   }
 
   async function handleSaveDraft() {
     if (heldCount > 0) return
     setSaving(true)
     try {
-      const id = await saveInvoice(false)
-      if (id) router.push('/os/invoices')
+      const saved = await saveInvoice(false)
+      if (saved) router.push('/os/invoices')
     } catch (err) {
       showToast(t.forms.saveFailedToast(err instanceof Error ? err.message : t.forms.saveFailed))
     } finally { setSaving(false) }
@@ -442,8 +445,9 @@ export default function NewInvoicePage() {
     }
     setSending(true); setSendError('')
     try {
-      const id = await saveInvoice(false)
-      if (!id) { setSendError(t.forms.saveInvoiceFailed); return }
+      const saved = await saveInvoice(false)
+      if (!saved) { setSendError(t.forms.saveInvoiceFailed); return }
+      const { id, number } = saved
 
       const res = await fetch('/api/os/send-invoice', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -451,7 +455,6 @@ export default function NewInvoicePage() {
           invoice_id: id,
           clientEmails,
           client_name: clientName,
-          invoice_number: invoiceNumber,
           date,
           due_date: dueDate,
           line_items: lineItems.filter(i => i.description),
@@ -473,9 +476,9 @@ export default function NewInvoicePage() {
       void autoSaveClient(id)
 
       // Show success state
-      setSentData({ id, number: invoiceNumber, emails: clientEmails, name: clientName })
+      setSentData({ id, number, emails: clientEmails, name: clientName })
       setSent(true)
-      showToast(t.forms.invoiceSentToast(invoiceNumber, clientEmails.join(', ')))
+      showToast(t.forms.invoiceSentToast(number, clientEmails.join(', ')))
     } catch (err) {
       setSendError(err instanceof Error ? err.message : t.forms.sendFailed)
     } finally { setSending(false) }
