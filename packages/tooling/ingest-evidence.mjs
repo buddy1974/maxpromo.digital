@@ -22,9 +22,14 @@
  *     refused by name, whatever the file is called.
  *   - the requirement must exist in the manifest, which fixes the filename;
  *     the operator does not choose it.
- *   - the file must be a PNG. Its SHA-256, size and dimensions are recorded in
- *     LEDGER.json, so a file later swapped on disk no longer matches its entry
- *     and `check:proof` fails.
+ *   - the file must be a PNG or a JPEG, identified by its bytes, never by its
+ *     name. It is copied byte for byte and keeps its own format: the manifest
+ *     fixes the name (`01-source-note`), the bytes decide the extension. A
+ *     capture tool that produced a JPEG produced a JPEG; renaming it .png would
+ *     misdescribe it, and converting it would make the stored file something
+ *     the browser never produced. Its SHA-256, format, size and dimensions are
+ *     recorded in LEDGER.json, so a file later swapped on disk no longer
+ *     matches its entry and `check:proof` fails.
  *   - nothing is overwritten without --replace.
  *
  * Ingesting is not inspecting. A second command records the inspection, and
@@ -83,10 +88,26 @@ export function sha256(path) {
   return createHash('sha256').update(readFileSync(path)).digest('hex')
 }
 
-function pngSize(buf) {
-  const sig = '89504e470d0a1a0a'
-  if (buf.subarray(0, 8).toString('hex') !== sig) return null
-  return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) }
+/** Format and dimensions, read from the bytes. Null for anything else. */
+export function imageInfo(buf) {
+  if (buf.subarray(0, 8).toString('hex') === '89504e470d0a1a0a') {
+    return { format: 'png', ext: '.png', width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) }
+  }
+  if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff) {
+    /* Walk the segments to the first start-of-frame, which carries the size. */
+    let i = 2
+    while (i + 9 < buf.length) {
+      if (buf[i] !== 0xff) return null
+      const marker = buf[i + 1]
+      if (marker === 0xd8 || marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) { i += 2; continue }
+      const len = buf.readUInt16BE(i + 2)
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { format: 'jpeg', ext: '.jpg', height: buf.readUInt16BE(i + 5), width: buf.readUInt16BE(i + 7) }
+      }
+      i += 2 + len
+    }
+  }
+  return null
 }
 
 const today = () => new Date().toISOString().slice(0, 10)
@@ -102,8 +123,8 @@ function ingest() {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(captured)) fail('--captured must be YYYY-MM-DD')
 
   const captures = manifestCaptures()
-  const file = captures[requirement]
-  if (!file) fail(`"${requirement}" is not a capture in CAPTURE-MANIFEST.md`)
+  const named = captures[requirement]
+  if (!named) fail(`"${requirement}" is not a capture in CAPTURE-MANIFEST.md`)
 
   const src = resolve(ROOT, from)
   if (PERSONAL.test(src)) {
@@ -117,8 +138,10 @@ function ingest() {
   if (!existsSync(src)) fail(`no such file: ${from}`)
 
   const buf = readFileSync(src)
-  const size = pngSize(buf)
-  if (!size) fail('not a PNG')
+  const size = imageInfo(buf)
+  if (!size) fail('neither a PNG nor a JPEG, judged by its bytes')
+  /* The manifest fixes the name; the bytes fix the extension. */
+  const file = named.replace(/\.png$/, size.ext)
 
   const dest = join(DIR, file)
   if (existsSync(dest) && !process.argv.includes('--replace')) {
@@ -133,6 +156,7 @@ function ingest() {
     requirement,
     file: relative(ROOT, dest).split(sep).join('/'),
     sha256: sha256(dest),
+    format: size.format,
     bytes: buf.length,
     width: size.width,
     height: size.height,

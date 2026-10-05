@@ -231,7 +231,12 @@ the evidence environment and is not ingested, whatever it is called.
 Chrome has no access to this repository, and browser tool storage is not a
 transfer. A capture reaches this directory one way:
 
-1. It is written to disk under its exact filename above, either by the capture
+**Format.** The names above fix the stem (`01-source-note`); the bytes fix the
+extension. A capture tool that produced a JPEG produced a JPEG: it is stored as
+`.jpg`, byte for byte, never renamed `.png` and never converted, because a
+converted file is not what the browser produced. PNG and JPEG only.
+
+1. It is written to disk under its exact filename above (or `.jpg`), either by the capture
    tool (which reports the path it wrote, under the system temp directory) or
    by the operator into `docs/evidence/maxpromo-os/inbox/`, which is
    gitignored.

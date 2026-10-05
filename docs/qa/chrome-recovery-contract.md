@@ -181,7 +181,8 @@ or code · production, Vercel, the unknown-provenance database, Risk 53 data.
 ## 8 · Getting the frames to the repository
 
 Chrome cannot write to the repository, and its tool storage is not a transfer.
-**Name every file exactly as above.** Then one of two routes, nothing else:
+**Name every file exactly as above** — or with `.jpg` if the tool produced a
+JPEG. Never rename one format as the other; the ingestion tool reads the bytes. Then one of two routes, nothing else:
 
 - **The capture tool writes it.** If the screenshot tool can save to disk, it
   reports the path it wrote (under the system temp directory). Put that exact
