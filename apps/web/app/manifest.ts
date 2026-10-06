@@ -39,6 +39,14 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     theme_color:      token.background,
     icons: [
       { src: domain.favicon, sizes: 'any', type: 'image/x-icon' },
+      // The hub has app-sized icons derived from the approved icon master;
+      // product domains keep the favicon alone until they have their own.
+      ...(domain.mode === 'hub'
+        ? [
+            { src: '/images/brand/maxpromo-icon-192.png', sizes: '192x192', type: 'image/png' },
+            { src: '/images/brand/maxpromo-icon-512.png', sizes: '512x512', type: 'image/png' },
+          ]
+        : []),
     ],
   }
 }

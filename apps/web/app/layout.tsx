@@ -66,6 +66,14 @@ const SITE_URL = 'https://www.maxpromo.digital'
 const HUB_METADATA: Metadata = {
   metadataBase: new URL(SITE_URL),
   applicationName: 'Maxpromo Digital',
+  // The hub's own icons, derived from the approved icon master
+  // (packages/tooling/make-brand-assets.mjs). Set here, on the hub's metadata
+  // only: product domains build their icons from the Domain Registry and never
+  // see the Apple icon, which is why it is not at the root path iOS requests.
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/images/brand/maxpromo-apple-touch-icon.png',
+  },
   title: {
     default: 'Maxpromo Digital — Business Systems Consultancy',
     template: '%s | Maxpromo Digital',

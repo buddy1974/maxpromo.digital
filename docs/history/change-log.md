@@ -1,5 +1,41 @@
 # Change Log
 
+## 2026-10-06 — Public photography and brand assets finalised
+
+Local only, not pushed, not deployed.
+
+**Founder.** Marcel's real portrait installed at the canonical
+`images/homepage/founder.jpg` for the homepage and About, DE and EN. It
+arrived as PNG data under a `.jpg` name (2.3 MB); now a real JPEG at its
+original 1122 × 1402 (4:5), 179 KB, no metadata, no retouch. The "photograph
+to follow" state is gone because the file exists — no code change.
+
+**Blog.** The six AI-generated infographic headers (invented figures,
+generated people, retired orange, a dead "free audit" link) were replaced by
+Marcel with real photographs. They arrived as JPEG data under `.png` names;
+each is now a correctly named `.jpg`, framed to the article's 16:9 (centre,
+`joomla-blocks` anchored to the top for faces), never upscaled, 43–143 KB.
+Article frontmatter in both languages points at the new files, so the article
+header and its social preview both use them.
+
+**Brand identity.** Marcel's approved masters are the source of truth, all in
+`images/brand/` except the card: the primary logo (`maxpromo-digital-logo.png`,
+MAX lime, PROMO dark, DIGITAL subordinate), the compact mark
+(`maxpromo-mark.png`), the icon master (`maxpromo-icon.png`, the black square
+with the lime and white M) and the social card (`images/seo/maxpromo-digital-og.png`,
+used as approved at 1200 × 630). `npm run brand:assets` only derives from them —
+the Organization logo `/logo.png`, `favicon.ico` at 16/32/48, and a 180 Apple
+icon plus 192/512 app icons linked from the hub alone so product domains never
+receive them — and fails if a master is missing. It replaced an earlier
+version that drew substitute visuals from code before the masters existed.
+The Brand Registry declares masters and derivatives with their dimensions. The
+header and footer keep the typographic wordmark: they are black, the approved
+logo's PROMO is dark, and no light variant is approved.
+
+**Checks.** 73 unique public media URLs across all sitemap pages, all 200.
+Rendered ratios 4:5 and 16:9 at 375 and 1280px, no overflow. verify exit 0;
+images over 500 KB down from 25 to 22 (21 photographs and cards, plus the 854 KB icon master).
+
 ## 2026-10-06 — Final browser review findings closed
 
 Four P1 findings from the owner-level Chrome review and one claim audit:

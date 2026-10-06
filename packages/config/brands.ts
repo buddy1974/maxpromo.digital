@@ -194,6 +194,17 @@ export interface BrandEntry {
   readonly appleTouchIcon: BrandAsset
   readonly manifestIcons: readonly BrandAsset[]
 
+  // ── Approved masters
+  /*
+   * Where a brand has supplied artwork, the masters every technical derivative
+   * is cut from (packages/tooling/make-brand-assets.mjs). Optional: only the
+   * company has them today. The derivatives above — favicon, app icons, the
+   * schema logo — are reductions of these, never independent designs.
+   */
+  readonly logoMaster?: BrandAsset
+  readonly mark?: BrandAsset
+  readonly iconMaster?: BrandAsset
+
   // ── Social
   readonly openGraphImage: BrandAsset
   readonly twitterImage: BrandAsset
@@ -319,15 +330,27 @@ export const BRAND_REGISTRY: readonly BrandEntry[] = [
     logo: {
       state: 'own',
       path: '/logo.png',
-      note: 'The only image mark in the platform. Used in Organization and Article JSON-LD; no component renders it.',
+      width: 1362,
+      height: 366,
+      note: 'Organization and Article JSON-LD logo: the approved primary logo, trimmed with a margin (derived; see logoMaster). No component renders it.',
     },
     logoMonochrome: NO_MONO_LOGO,
+    // The header and footer set the name in type on a black bar. The approved
+    // logo's PROMO is dark and would disappear there; no light variant is
+    // approved, so the typographic wordmark stays the on-site treatment.
     wordmark:       TYPOGRAPHIC_WORDMARK,
-    favicon:        { state: 'own', path: '/favicon.ico' },
-    appleTouchIcon: NO_APPLE_ICON,
-    manifestIcons:  [{ state: 'own', path: '/favicon.ico' }],
-    openGraphImage: { state: 'own', path: '/images/seo/maxpromo-digital-og.png', width: 1200, height: 630, note: 'Purpose-built 1.91:1 social card.' },
-    twitterImage:   { state: 'own', path: '/images/seo/maxpromo-digital-og.png', width: 1200, height: 630, note: 'Purpose-built 1.91:1 social card.' },
+    favicon:        { state: 'own', path: '/favicon.ico', note: 'PNG-in-ICO at 16, 32 and 48, derived from iconMaster.' },
+    appleTouchIcon: { state: 'own', path: '/images/brand/maxpromo-apple-touch-icon.png', width: 180, height: 180, note: 'Derived from iconMaster. Linked from the hub metadata only, and kept off the root /apple-touch-icon.png path that iOS requests by default, so product domains never receive it.' },
+    manifestIcons:  [
+      { state: 'own', path: '/favicon.ico' },
+      { state: 'own', path: '/images/brand/maxpromo-icon-192.png', width: 192, height: 192, note: 'Derived from iconMaster; hub manifest only.' },
+      { state: 'own', path: '/images/brand/maxpromo-icon-512.png', width: 512, height: 512, note: 'Derived from iconMaster; hub manifest only.' },
+    ],
+    openGraphImage: { state: 'own', path: '/images/seo/maxpromo-digital-og.png', width: 1200, height: 630, note: 'The approved social card, supplied by Marcel. The fallback where a page sets no card of its own.' },
+    twitterImage:   { state: 'own', path: '/images/seo/maxpromo-digital-og.png', width: 1200, height: 630, note: 'The approved social card, supplied by Marcel.' },
+    logoMaster: { state: 'own', path: '/images/brand/maxpromo-digital-logo.png', width: 2172, height: 724, note: 'Approved primary logo: MAX lime, PROMO dark, DIGITAL subordinate, transparent.' },
+    mark:       { state: 'own', path: '/images/brand/maxpromo-mark.png', width: 1254, height: 1254, note: 'Approved compact mark, transparent. Its dark half disappears on black, so it is not the favicon.' },
+    iconMaster: { state: 'own', path: '/images/brand/maxpromo-icon.png', width: 1536, height: 1024, note: 'Approved icon master: the rounded black square with the lime and white M, on a white canvas. Every favicon and app icon is derived from it.' },
     pdfLogo:        { state: 'n/a', path: null, note: DOCUMENT_MARK_NOTE },
     emailLogo:      { state: 'n/a', path: null, note: DOCUMENT_MARK_NOTE },
     typography: 'inherit',
@@ -484,5 +507,8 @@ export function brandAssets(brand: BrandEntry): Array<{ slot: string; asset: Bra
     { slot: 'twitterImage',    asset: brand.twitterImage },
     { slot: 'pdfLogo',         asset: brand.pdfLogo },
     { slot: 'emailLogo',       asset: brand.emailLogo },
+    ...(brand.logoMaster ? [{ slot: 'logoMaster', asset: brand.logoMaster }] : []),
+    ...(brand.mark       ? [{ slot: 'mark',       asset: brand.mark }]       : []),
+    ...(brand.iconMaster ? [{ slot: 'iconMaster', asset: brand.iconMaster }] : []),
   ]
 }
