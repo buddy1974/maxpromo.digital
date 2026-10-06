@@ -17,6 +17,7 @@ import { FounderNote } from '@/components/home/FounderNote'
 import Image from 'next/image'
 import { IntegrationMarquee } from '@/components/ui/IntegrationMarquee'
 import { CAPABILITIES } from '@/lib/capabilities'
+import { FlowSteps } from '@/components/ui/FlowSteps'
 
 /**
  * The homepage's own styles, carried by the homepage.
@@ -126,6 +127,7 @@ export default async function HomePage() {
   const tTools = await getTranslations('home.tools')
   const tFound = await getTranslations('home.founder')
   const tRes   = await getTranslations('home.resource')
+  const tPrac  = await getTranslations('home.practice')
   const tKnow  = await getTranslations('home.knowledge')
   const tClose = await getTranslations('home.closing')
 
@@ -151,7 +153,13 @@ export default async function HomePage() {
   const METHOD_QUESTIONS = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'] as const
   const METHOD_STEPS     = ['st1', 'st2', 'st3', 'st4'] as const
   const WHAT_LINES       = ['l1', 'l2', 'l3', 'l4'] as const
-  const RESOURCE_ITEMS   = ['i1', 'i2', 'i3', 'i4', 'i5', 'i6', 'i7'] as const
+  /* Three everyday flows. The step a person takes is tagged, by index, so the
+     drawing shows where judgement stays human without saying "AI" anywhere. */
+  const PRACTICE = [
+    { id: 'f1', personAt: 3 },
+    { id: 'f2', personAt: 2 },
+    { id: 'f3', personAt: -1 },
+  ] as const
 
   /* USEFUL, NOT NOISY — and that rule is applied to our own inventory.
 
@@ -234,6 +242,41 @@ export default async function HomePage() {
               cta: tCap(`${c.key}Cta`),
             }))}
           />
+        </div>
+      </section>
+
+      {/* ── 4b. In practice ─────────────────────── off-white, the translation ──
+          What the capabilities look like as everyday work, for an owner who
+          does not want to learn the words automation, agent or API to find
+          out. Three flows, drawn as steps; the person's step is tagged. */}
+      <section data-section="practice" className="section surface-operational">
+        <div className="container">
+          <div className="sec-head">
+            <SectionHeader label={tPrac('eyebrow')}>{tPrac('title')}</SectionHeader>
+            <p className="sec-lede">{tPrac('intro')}</p>
+          </div>
+
+          <div className="practice">
+            {PRACTICE.map((p) => (
+              <article key={p.id} className="practice-flow">
+                <h3 className="practice-title">{tPrac(`${p.id}Title`)}</h3>
+                <FlowSteps
+                  label={tPrac(`${p.id}Title`)}
+                  steps={(tPrac.raw(`${p.id}Steps`) as string[]).map((label, i) => ({
+                    label,
+                    person: i === p.personAt ? tPrac('personTag') : undefined,
+                  }))}
+                />
+                <p className="practice-body">{tPrac(`${p.id}Body`)}</p>
+              </article>
+            ))}
+          </div>
+
+          <p className="practice-end">{tPrac('end')}</p>
+          <div className="practice-actions">
+            <Link href="/contact?source=home-practice" className="btn btn-secondary">{tPrac('cta')}</Link>
+            <Link href="/solutions#automation-or-system" className="quiet-link">{tPrac('aosLink')}</Link>
+          </div>
         </div>
       </section>
 
@@ -354,10 +397,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 9. Start here ──────────────────────── white, the useful thing ──
-          The Business Friction Check, which is live. Result first, no email
-          gate, no score; it can conclude that the visitor does not need us.
-          The secondary action is for someone who would rather talk. */}
+      {/* ── 9. Not ready to talk? ─────────────────── white, the useful thing ──
+          The Business Friction Check, the low-commitment path. Result first,
+          no email gate, no score; it can conclude nothing is urgent. The list
+          of what it looks at was cut when the practice section arrived: the
+          page had grown, and one sentence says it. */}
       <section data-section="resource" className="section surface-plain">
         <div className="container">
           <div className="sec-head">
@@ -366,15 +410,7 @@ export default async function HomePage() {
 
           <div className="resource">
             <div className="resource-say">
-              <p className="resource-name">{tRes('name')}</p>
               <p className="resource-body">{tRes('body')}</p>
-
-              <p className="resource-lookat">{tRes('lookAt')}</p>
-              <ul className="resource-items">
-                {RESOURCE_ITEMS.map((i) => <li key={i}>{tRes(i)}</li>)}
-              </ul>
-
-              <p className="resource-outcome">{tRes('outcome')}</p>
 
               <div className="resource-actions">
                 <Link href="/friction-check" className="btn btn-primary">{tRes('cta')}</Link>

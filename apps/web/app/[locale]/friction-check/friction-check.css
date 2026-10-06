@@ -161,13 +161,21 @@
 
 /* ── Result ───────────────────────────────────────────────────────────── */
 
-.fc-honest {
-  font-size: var(--text-body);
-  line-height: var(--leading-body);
-  color: var(--brand-text);
+/* Where to start: the outcome's practical next step, marked by a rule and a
+   label rather than by colour alone. */
+.fc-start-here {
   border-left: 2px solid var(--brand-primary-edge);
   padding-left: var(--space-4);
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-6);
+}
+.fc-start-here .fc-pattern-body { color: var(--brand-text); }
+
+/* The working, under the conclusion. */
+.fc-saw {
+  font-size: var(--text-h4);
+  font-weight: var(--weight-subhead);
+  line-height: var(--leading-heading);
+  margin: var(--space-8) 0 0;
 }
 
 .fc-pattern {
@@ -177,7 +185,7 @@
 }
 
 .fc-pattern-title {
-  font-size: var(--text-h3);
+  font-size: var(--text-h4);
   font-weight: var(--weight-subhead);
   line-height: var(--leading-heading);
   margin: 0 0 var(--space-4);

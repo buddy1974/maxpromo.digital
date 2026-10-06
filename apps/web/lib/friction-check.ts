@@ -137,7 +137,30 @@ export const FRICTION_QUESTIONS: readonly FrictionQuestion[] = [
 /** answers[questionId] = optionId */
 export type FrictionAnswers = Readonly<Record<string, string>>
 
+/**
+ * The four things the check can conclude, in plain words.
+ *
+ *   nothingUrgent  no pattern is strong enough to name
+ *   system         the friction spans tools, people and stages at once
+ *   automation     a clear, repeated task stands out
+ *   simplify       friction exists, but it is waiting and confusion rather
+ *                  than one repeated task — the process comes before technology
+ *
+ * A category, never a number: it says what kind of answer fits, not how much
+ * of a problem the business has.
+ */
+export const FRICTION_OUTCOMES = ['nothingUrgent', 'simplify', 'automation', 'system'] as const
+export type FrictionOutcome = (typeof FRICTION_OUTCOMES)[number]
+
+/** Patterns that describe one repeated task a focused automation can carry. */
+const TASK_PATTERNS: readonly FrictionPattern[] = ['repeatedWork', 'documents', 'followUp']
+
+/** How many named patterns, with disconnection among them, make it a system question. */
+const SYSTEM_SPREAD = 3
+
 export interface FrictionResult {
+  /** The conclusion, decided by `outcomeOf` below. */
+  readonly outcome: FrictionOutcome
   /** Patterns worth naming, strongest first. Empty when nothing stood out. */
   readonly patterns: readonly FrictionPattern[]
   /** Raw tallies, so the page can show its working rather than assert it. */
@@ -177,19 +200,45 @@ export function scoreFriction(answers: FrictionAnswers): FrictionResult {
     }
   }
 
-  const patterns = FRICTION_PATTERNS
+  /* Every pattern that reaches the threshold, before trimming for display.
+     The outcome reads the full set; the page shows at most two. */
+  const named = FRICTION_PATTERNS
     .filter((p) => tally[p] >= NAME_AT)
     /* Ties resolve by the declared order of FRICTION_PATTERNS rather than
        arbitrarily, so the same answers always produce the same result. A
        diagnostic that reorders itself between runs is not one. */
     .sort((a, b) => tally[b] - tally[a] || FRICTION_PATTERNS.indexOf(a) - FRICTION_PATTERNS.indexOf(b))
-    .slice(0, MAX_PATTERNS)
+  const patterns = named.slice(0, MAX_PATTERNS)
 
   return {
+    outcome: outcomeOf(named),
     patterns,
     tally,
     lowFriction: patterns.length === 0,
     answered,
     total: FRICTION_QUESTIONS.length,
   }
+}
+
+/**
+ * The outcome, from the patterns that reached the threshold. Checked in this
+ * order, first match wins:
+ *
+ *   1. nothing named                                   → nothingUrgent
+ *   2. `disconnected` named AND ≥ 3 patterns named     → system
+ *      Information split across tools is what turns several separate
+ *      frictions into one process problem; another automation would move it.
+ *   3. any of repeatedWork, documents, followUp named  → automation
+ *      One task with a recognisable shape: a focused automation can carry it.
+ *   4. otherwise (waiting and/or disconnected only)    → simplify
+ *      Friction without a repeated task to automate: fix the process first.
+ *
+ * Proved for every outcome and at its boundaries by
+ * packages/tooling/prove-friction-check.mjs.
+ */
+export function outcomeOf(named: readonly FrictionPattern[]): FrictionOutcome {
+  if (named.length === 0) return 'nothingUrgent'
+  if (named.includes('disconnected') && named.length >= SYSTEM_SPREAD) return 'system'
+  if (named.some((p) => TASK_PATTERNS.includes(p))) return 'automation'
+  return 'simplify'
 }

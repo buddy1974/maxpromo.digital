@@ -366,3 +366,81 @@
   white-space: normal;
   text-align: center;
 }
+
+/* ─── Automation or system? ───────────────────────────────────────────────
+   Two sides, the system one wider on desktop because it carries more steps —
+   broader, not heavier. The anchor clears the sticky navigation. */
+.aos-section { scroll-margin-top: 80px; }
+.aos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+}
+@media (min-width: 1000px) {
+  .aos { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-8); align-items: start; }
+}
+.aos-side {
+  min-width: 0;
+  padding: var(--space-6);
+  background: var(--brand-surface);
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+}
+.aos-kind {
+  margin: 0 0 var(--space-5);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text);
+}
+.aos-body {
+  margin: var(--space-5) 0 var(--space-4);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.aos-fit-label {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+}
+.aos-fit {
+  margin: 0 0 var(--space-5);
+  padding-left: var(--space-5);
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.aos-bridge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  margin-top: var(--space-8);
+}
+.aos-bridge-text {
+  margin: 0;
+  max-width: 40rem;
+  font-size: var(--text-lede);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+
+/* ─── Capability page: which of the two fits ──────────────────────────── */
+.cp-route {
+  max-width: 68rem;
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--brand-border);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.cp-route .quiet-link { margin-right: var(--space-4); }

@@ -167,6 +167,14 @@ export default async function WorkflowAutomationPage(
               <Link href="/work/maxpromo-os" className="quiet-link">{t('c1ProofLink')}</Link>
             </p>
           </div>
+          {/* Which of the two capabilities fits: one workflow, or work that
+              has outgrown its tools. Routes to the other page and to the
+              comparison on What We Do. */}
+          <p className="cp-route">
+            {t('c1Route')}{' '}
+            <Link href="/solutions/custom-applications" className="quiet-link">{t('c1RouteOther')} &rarr;</Link>{' '}
+            <Link href="/solutions#automation-or-system" className="quiet-link">{t('c1RouteLink')} &rarr;</Link>
+          </p>
         </div>
       </section>
 

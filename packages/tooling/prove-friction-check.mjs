@@ -83,6 +83,50 @@ check('reports the real total', scoreFriction(some).total === FRICTION_QUESTIONS
 check('ignores an option id it does not recognise', scoreFriction({ q1: 'zzz' }).answered === 0)
 
 console.log('')
+console.log('Four outcomes, each reached for the reason it claims')
+
+check('all low-friction answers conclude nothing urgent', low.outcome === 'nothingUrgent')
+const waitingOnly = scoreFriction({ q3: 'b', q6: 'b' })
+check('waiting without a repeated task concludes simplify', waitingOnly.outcome === 'simplify', waitingOnly.patterns.join(','))
+const mild = scoreFriction(pick('b'))
+check('two named patterns including disconnection is still simplify, not system',
+  mild.outcome === 'simplify', mild.patterns.join(','))
+const task = scoreFriction({ q2: 'c', q5: 'c' })
+check('a clear repeated task concludes automation', task.outcome === 'automation', task.patterns.join(','))
+const threeNoSplit = scoreFriction({ q2: 'c', q3: 'b', q4: 'c', q5: 'b', q6: 'd' })
+check('three named patterns without disconnection stay automation',
+  threeNoSplit.outcome === 'automation', `${Object.entries(threeNoSplit.tally).map(([k, v]) => k + '=' + v).join(' ')}`)
+check('friction across tools, waiting and follow-up concludes system', worst.outcome === 'system')
+check('so does friction across every area at a moderate level', scoreFriction(pick('c')).outcome === 'system')
+
+console.log('')
+console.log('At the boundaries')
+
+check('a tally of two names nothing', scoreFriction({ q3: 'b' }).outcome === 'nothingUrgent')
+check('a tally of three names the pattern', scoreFriction({ q3: 'b', q6: 'b' }).patterns.includes('waiting'))
+
+console.log('')
+console.log('Exhaustively, over every possible set of answers')
+
+const { FRICTION_OUTCOMES } = await import(pathToFileURL(join(ROOT, 'apps', 'web', 'lib', 'friction-check.ts')).href)
+const reached = new Set()
+let combos = 0, invalid = 0, systemWithoutSplit = 0, outcomeDisagrees = 0
+const letters = ['a', 'b', 'c', 'd']
+for (let n = 0; n < 4 ** FRICTION_QUESTIONS.length; n++) {
+  const answers = Object.fromEntries(FRICTION_QUESTIONS.map((q, i) => [q.id, letters[Math.floor(n / 4 ** i) % 4]]))
+  const r = scoreFriction(answers)
+  combos++
+  reached.add(r.outcome)
+  if (!FRICTION_OUTCOMES.includes(r.outcome)) invalid++
+  if (r.outcome === 'system' && r.tally.disconnected < 3) systemWithoutSplit++
+  if ((r.outcome === 'nothingUrgent') !== r.lowFriction) outcomeDisagrees++
+}
+check(`every one of ${combos} answer sets has a valid outcome`, invalid === 0)
+check('all four outcomes are reachable', reached.size === FRICTION_OUTCOMES.length, [...reached].join(', '))
+check('system is never concluded without information split across tools', systemWithoutSplit === 0)
+check('nothing urgent and low friction always agree', outcomeDisagrees === 0)
+
+console.log('')
 console.log('No score, by construction')
 
 const keys = Object.keys(worst)

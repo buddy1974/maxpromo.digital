@@ -130,6 +130,19 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
               </div>
             ))}
           </div>
+
+          {/* One question that sits between the lanes: the guide helps decide
+              what to change, the check shows where; this says which kind of
+              answer fits. A link, not another lane — it is a section of What
+              We Do, not a resource of its own. */}
+          <p style={{ margin: 'var(--space-8) 0 0', maxWidth: '46rem', fontSize: 'var(--text-small)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
+            {isDE
+              ? 'Nicht sicher, ob eine Automatisierung reicht oder ein ganzes System nötig ist? '
+              : 'Not sure whether you need one automation or a whole system? '}
+            <Link href="/solutions#automation-or-system" className="quiet-link">
+              {isDE ? 'Woran wir das unterscheiden' : 'How we tell them apart'} &rarr;
+            </Link>
+          </p>
         </div>
       </section>
 

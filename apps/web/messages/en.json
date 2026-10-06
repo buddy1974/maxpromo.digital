@@ -163,21 +163,11 @@
       "portraitPending": "Photograph to follow"
     },
     "resource": {
-      "eyebrow": "Start here",
-      "title": "Before you automate anything, find out where the time is going.",
-      "name": "The Business Friction Check",
-      "body": "Six questions about an ordinary week. You see the result straight away, without giving us your email, and it is allowed to tell you that you don’t need us.",
-      "lookAt": "It looks at:",
-      "i1": "Enquiries",
-      "i2": "Repeated data entry",
-      "i3": "Documents",
-      "i4": "Follow-ups",
-      "i5": "Approvals",
-      "i6": "Customer communication",
-      "i7": "Disconnected systems",
-      "outcome": "At the end, you get a simple picture of where work is slowing down and what may be worth fixing first.",
+      "eyebrow": "Not ready to talk?",
+      "title": "Find where the friction is first.",
+      "body": "Six questions. No sales score. Just a clearer view of where work may be getting stuck.",
       "fallbackCta": "Rather talk it through",
-      "cta": "Start the check"
+      "cta": "Check the friction"
     },
     "knowledge": {
       "eyebrow": "Useful, not noisy",
@@ -192,6 +182,42 @@
       "body": "You don’t need to know what system you need. Tell us what’s happening now. We’ll start there.",
       "cta": "Tell us what’s getting in the way",
       "emailLabel": "Or write to us"
+    },
+    "practice": {
+      "eyebrow": "In practice",
+      "title": "What does this actually look like?",
+      "intro": "Usually, it starts with a piece of work that somebody is doing by hand over and over again.",
+      "f1Title": "An enquiry comes in",
+      "f1Steps": [
+        "Enquiry",
+        "Information captured",
+        "Work created",
+        "Right person reviews",
+        "Follow-up continues"
+      ],
+      "f1Body": "Instead of copying details between an inbox, a spreadsheet and another system, the information moves where it needs to go, and a person steps in where judgement is required.",
+      "f2Title": "A document arrives",
+      "f2Steps": [
+        "Document",
+        "Relevant data extracted",
+        "Checked",
+        "Stored correctly",
+        "Next action created"
+      ],
+      "f2Body": "The document does not just disappear into a folder. The useful information becomes part of the work that follows.",
+      "f3Title": "A customer needs follow-up",
+      "f3Steps": [
+        "Status changes",
+        "Correct message prepared",
+        "Customer contacted",
+        "Response captured",
+        "Team sees what happened"
+      ],
+      "f3Body": "Follow-up no longer depends on somebody remembering to check a list at the end of the day.",
+      "personTag": "Person",
+      "end": "The exact flow is different in every business. The principle is not.",
+      "cta": "Show us the repetitive work",
+      "aosLink": "One automation, or a whole system?"
     }
   },
   "newsletter": {
@@ -877,7 +903,50 @@
     "closeTitle": "What is taking too much time in your business?",
     "closeBody": "You do not need to know what system you need. Tell us what is happening now.",
     "closeCta": "Tell us what is slowing you down",
-    "closeSecondary": "See our work"
+    "closeSecondary": "See our work",
+    "aosEyebrow": "Automation or system?",
+    "aosTitle": "Sometimes one workflow is enough. Sometimes it isn’t.",
+    "aosIntro": "Not every problem needs a new application. And not every problem can be fixed with one automation.",
+    "aosA": "Automation",
+    "aosASteps": [
+      "Form",
+      "CRM",
+      "Confirmation email"
+    ],
+    "aosABody": "Useful when one clear, repetitive task needs to move faster or more reliably.",
+    "aosAFitLabel": "A good fit when",
+    "aosAFit": [
+      "one task repeats",
+      "input and output are clear",
+      "the existing tools already work",
+      "little coordination is needed"
+    ],
+    "aosALink": "Workflow automation",
+    "aosB": "System",
+    "aosBSteps": [
+      "Enquiry",
+      "Customer record",
+      "Documents",
+      "Work",
+      "Approval",
+      "Communication",
+      "History"
+    ],
+    "aosBBody": "Useful when several people, tools and decisions need to work from the same process.",
+    "aosBFitLabel": "A good fit when",
+    "aosBFit": [
+      "information moves across several tools",
+      "people need different views or permissions",
+      "work has stages and approvals",
+      "history needs to stay traceable",
+      "the current tools no longer fit the process"
+    ],
+    "aosBLink": "Custom applications",
+    "aosPersonTag": "Person",
+    "aosRecordTag": "Record",
+    "aosBridge1": "We don’t start by deciding which one to sell you.",
+    "aosBridge2": "We start by understanding the work.",
+    "aosCta": "Walk us through how the work happens today"
   },
   "capabilityPages": {
     "backToAll": "All five areas",
@@ -1066,14 +1135,20 @@
     "c1ProofLink": "Follow the whole workflow",
     "c2ProofAlt": "The invoice list of our own back office application, showing one invoice sent and one paid.",
     "c2ProofNote": "The application we run our own business on: quotations, invoices and customers in one place, built around how we work. Shown in a controlled test environment with an invented customer.",
-    "c2ProofLink": "See how a quotation is made in it"
+    "c2ProofLink": "See how a quotation is made in it",
+    "c1Route": "This page is about one clear workflow at a time. If the work itself has outgrown the tools, start with custom applications instead.",
+    "c1RouteLink": "How we tell an automation from a system",
+    "c2Route": "This page is about work that has outgrown its tools. If one clear, repetitive workflow is the problem, workflow automation is usually enough.",
+    "c2RouteLink": "How we tell a system from an automation",
+    "c1RouteOther": "Custom applications",
+    "c2RouteOther": "Workflow automation"
   },
   "frictionCheck": {
     "back": "Back",
     "ctaBody": "Tell us how the work actually happens today. We will tell you what can be simplified, what can be connected, and what should stay exactly as it is.",
-    "ctaButton": "Show us what is slowing you down",
-    "ctaNoEmail": "The result above stands on its own. You do not have to give us anything for it.",
-    "ctaTitle": "If that sounds familiar",
+    "ctaButton": "Send this context to Maxpromo",
+    "ctaNoEmail": "The result above stands on its own. Only its category goes with you to the contact form, not your answers.",
+    "ctaTitle": "Want us to look at it with you?",
     "disclaimer": "This result is based only on your six answers. It is an orientation, not an analysis of your business, and it measures nothing.",
     "disconnectedFirst": "Decide on one place where a job authoritatively stands, even while information keeps arriving through different channels. Merging the channels is rarely realistic; a shared state is.",
     "disconnectedLooks": "What belongs to one job sits in several places: email, a spreadsheet, a messenger, a note. Anyone who needs to know something first needs to know where to look.",
@@ -1094,14 +1169,8 @@
     "learnTitle": "Read this first",
     "lede": "Six questions about things that happen in an ordinary week. At the end you see what kind of friction your business has and what to do about it first. No score, no rating, no email required.",
     "looksLike": "How it shows up",
-    "lowBody": "Your answers do not point to the friction we normally remove. Information sits in one place, decisions get made without anybody waiting, and little is entered twice.",
-    "lowHonest": "In that case you probably do not need us for this right now. That is an honest result rather than an opening move.",
-    "lowNext": "If that changes as the business grows, and it usually does, this page will still be here.",
-    "lowTitle": "Much of this looks like solid organisation",
     "meta": "About four minutes. You see the result immediately.",
     "next": "Next",
-    "patternsIntro": "Your answers point mainly to one kind of friction:",
-    "patternsIntroPlural": "Your answers point mainly to two kinds of friction:",
     "progress": "Question {current} of {total}",
     "q1": "A new enquiry arrives. Where does it land?",
     "q1a": "In one place everyone can see",
@@ -1146,7 +1215,21 @@
     "waitingLooks": "Work stops while somebody waits for an approval, a piece of information or a reply. That waiting appears in no report.",
     "waitingTitle": "Waiting for decisions",
     "waitingWatch": "Removing approvals is not the goal. Some decisions belong to a person. They simply should not depend on whether somebody sees an email in time.",
-    "watchOut": "What to watch"
+    "watchOut": "What to watch",
+    "nothingUrgentTitle": "Nothing urgent",
+    "nothingUrgentBody": "Your answers don’t point to a major operational bottleneck right now. That is useful to know. We would not recommend automating work simply because it can be automated.",
+    "nothingUrgentNext": "Keep an eye on the tasks that start taking more time as the business grows.",
+    "simplifyTitle": "Worth simplifying",
+    "simplifyBody": "There are signs that part of the work has become more complicated than it needs to be. Before adding technology, the process itself is worth simplifying.",
+    "simplifyNext": "Start with the step that creates the most waiting, copying or confusion.",
+    "automationTitle": "Good automation candidate",
+    "automationBody": "You have repetitive work with a reasonably clear pattern. That is often where a focused automation can remove manual effort without changing the whole business.",
+    "automationNext": "Show us the repeated task and the tools involved.",
+    "systemTitle": "This may need a system",
+    "systemBody": "The friction appears to span several tools, people or stages of work. Another isolated automation may only move the problem. It may be worth looking at the process as one connected system.",
+    "systemNext": "Walk us through how the work happens today.",
+    "startHere": "Where to start",
+    "sawTitle": "What we saw in your answers"
   },
   "automationGuide": {
     "closeAlt": "Or just tell us how the work happens today.",

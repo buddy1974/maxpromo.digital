@@ -1,5 +1,28 @@
 # Change Log
 
+## 2026-10-06 — Commercial clarity: practice flows, automation or system, a diagnosis
+
+Local only, not pushed, not deployed.
+
+**In practice** (homepage, after What We Do): three everyday flows — an
+enquiry, a document, a follow-up — drawn as steps with the person's step
+tagged, so an owner sees what gets built without learning a technical word.
+The Friction Check entry was cut to one sentence to keep the page from only
+getting longer.
+
+**Automation or system?** (What We Do, `#automation-or-system`): one reliable
+connection beside one reliable operating flow, when each fits, linked to the
+two capability pages. Workflow Automation, Custom Applications, the homepage
+and Resources route to it with one short line each.
+
+**Friction Check.** Same six questions. The result now leads with one of four
+conclusions — nothing urgent, worth simplifying, good automation candidate,
+this may need a system — from deterministic rules on the existing tally
+(`outcomeOf` in lib/friction-check.ts), proved for every outcome, at its
+boundaries and over all 4,096 answer sets (`prove:friction-check`, 26
+properties). No score. The handoff passes the category only, never the
+answers; no email capture.
+
 ## 2026-10-06 — Public photography and brand assets finalised
 
 Local only, not pushed, not deployed.

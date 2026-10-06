@@ -163,21 +163,11 @@
       "portraitPending": "Foto folgt"
     },
     "resource": {
-      "eyebrow": "Hier anfangen",
-      "title": "Bevor Sie etwas automatisieren, finden Sie heraus, wohin die Zeit geht.",
-      "name": "Der Business Friction Check",
-      "body": "Sechs Fragen zu einer ganz normalen Woche. Das Ergebnis sehen Sie sofort, ohne uns Ihre E-Mail-Adresse zu geben, und es darf auch sagen, dass Sie uns nicht brauchen.",
-      "lookAt": "Angeschaut wird:",
-      "i1": "Anfragen",
-      "i2": "Doppelte Dateneingabe",
-      "i3": "Dokumente",
-      "i4": "Nachfassen",
-      "i5": "Freigaben",
-      "i6": "Kundenkommunikation",
-      "i7": "Getrennte Systeme",
-      "outcome": "Am Ende haben Sie ein einfaches Bild davon, wo die Arbeit hängt und was sich zuerst zu ändern lohnt.",
+      "eyebrow": "Noch nicht bereit für ein Gespräch?",
+      "title": "Finden Sie zuerst heraus, wo es klemmt.",
+      "body": "Sechs Fragen. Kein Verkaufsscore. Einfach ein klarerer Blick darauf, wo Arbeit unnötig hängen bleibt.",
       "fallbackCta": "Lieber direkt sprechen",
-      "cta": "Check starten"
+      "cta": "Reibung prüfen"
     },
     "knowledge": {
       "eyebrow": "Nützlich, nicht laut",
@@ -192,6 +182,42 @@
       "body": "Sie müssen nicht wissen, welches System Sie brauchen. Sagen Sie uns, was gerade passiert. Da fangen wir an.",
       "cta": "Sagen Sie uns, was im Weg steht",
       "emailLabel": "Oder schreiben Sie uns"
+    },
+    "practice": {
+      "eyebrow": "In der Praxis",
+      "title": "Wie sieht das konkret aus?",
+      "intro": "Oft beginnt es mit einer Aufgabe, die jemand im Betrieb immer wieder von Hand erledigt.",
+      "f1Title": "Eine Anfrage kommt rein",
+      "f1Steps": [
+        "Anfrage",
+        "Informationen erfassen",
+        "Vorgang anlegen",
+        "Zuständige Person prüft",
+        "Nachverfolgung läuft weiter"
+      ],
+      "f1Body": "Statt Angaben aus E-Mails in Tabellen und weitere Systeme zu kopieren, gelangen die Informationen dorthin, wo sie gebraucht werden. Ein Mensch übernimmt dort, wo eine Entscheidung nötig ist.",
+      "f2Title": "Ein Dokument kommt an",
+      "f2Steps": [
+        "Dokument",
+        "Relevante Daten erfassen",
+        "Prüfen",
+        "Richtig ablegen",
+        "Nächsten Schritt auslösen"
+      ],
+      "f2Body": "Das Dokument verschwindet nicht einfach in einem Ordner. Die wichtigen Informationen fließen direkt in den nächsten Arbeitsschritt.",
+      "f3Title": "Ein Kunde braucht eine Rückmeldung",
+      "f3Steps": [
+        "Status ändert sich",
+        "Passende Nachricht vorbereiten",
+        "Kunde kontaktieren",
+        "Antwort erfassen",
+        "Team sieht den aktuellen Stand"
+      ],
+      "f3Body": "Die Nachverfolgung hängt nicht mehr davon ab, dass jemand am Ende des Tages an eine Liste denkt.",
+      "personTag": "Mensch",
+      "end": "Der genaue Ablauf ist in jedem Betrieb anders. Das Prinzip bleibt gleich.",
+      "cta": "Zeigen Sie uns die wiederkehrende Arbeit",
+      "aosLink": "Eine Automatisierung oder ein ganzes System?"
     }
   },
   "newsletter": {
@@ -877,7 +903,50 @@
     "closeTitle": "Was kostet in Ihrem Betrieb zu viel Zeit?",
     "closeBody": "Sie müssen nicht wissen, welches System Sie brauchen. Sagen Sie uns, was gerade passiert.",
     "closeCta": "Sagen Sie uns, was Sie ausbremst",
-    "closeSecondary": "Unsere Arbeit ansehen"
+    "closeSecondary": "Unsere Arbeit ansehen",
+    "aosEyebrow": "Automatisierung oder System?",
+    "aosTitle": "Manchmal reicht ein Ablauf. Manchmal nicht.",
+    "aosIntro": "Nicht jedes Problem braucht eine neue Anwendung. Und nicht jedes Problem lässt sich mit einer einzelnen Automatisierung lösen.",
+    "aosA": "Automatisierung",
+    "aosASteps": [
+      "Formular",
+      "CRM-Eintrag",
+      "Bestätigung"
+    ],
+    "aosABody": "Sinnvoll, wenn eine klar definierte, wiederkehrende Aufgabe schneller oder zuverlässiger laufen soll.",
+    "aosAFitLabel": "Gut geeignet, wenn",
+    "aosAFit": [
+      "eine Aufgabe sich wiederholt",
+      "Ein- und Ausgang klar sind",
+      "die bestehenden Werkzeuge grundsätzlich funktionieren",
+      "wenig Abstimmung nötig ist"
+    ],
+    "aosALink": "Prozessautomatisierung",
+    "aosB": "System",
+    "aosBSteps": [
+      "Anfrage",
+      "Kundendatensatz",
+      "Dokumente",
+      "Arbeit",
+      "Freigabe",
+      "Kommunikation",
+      "Verlauf"
+    ],
+    "aosBBody": "Sinnvoll, wenn mehrere Personen, Werkzeuge und Entscheidungen in einem gemeinsamen Ablauf zusammenarbeiten müssen.",
+    "aosBFitLabel": "Gut geeignet, wenn",
+    "aosBFit": [
+      "Informationen durch mehrere Werkzeuge laufen",
+      "Menschen unterschiedliche Ansichten oder Rechte brauchen",
+      "die Arbeit mehrere Stufen und Freigaben hat",
+      "der Verlauf nachvollziehbar bleiben muss",
+      "die vorhandenen Werkzeuge nicht mehr zum Ablauf passen"
+    ],
+    "aosBLink": "Individuelle Anwendungen",
+    "aosPersonTag": "Mensch",
+    "aosRecordTag": "Festgehalten",
+    "aosBridge1": "Wir entscheiden nicht zuerst, was wir Ihnen verkaufen wollen.",
+    "aosBridge2": "Wir verstehen zuerst, wie die Arbeit läuft.",
+    "aosCta": "Zeigen Sie uns, wie die Arbeit heute läuft"
   },
   "capabilityPages": {
     "backToAll": "Alle fünf Bereiche",
@@ -1066,14 +1135,20 @@
     "c1ProofLink": "Den ganzen Ablauf ansehen",
     "c2ProofAlt": "Die Rechnungsliste unserer eigenen Büroanwendung mit einer versendeten und einer bezahlten Rechnung.",
     "c2ProofNote": "Die Anwendung, mit der wir unser eigenes Geschäft führen: Angebote, Rechnungen und Kunden an einem Ort, gebaut um unsere Abläufe herum. Gezeigt in einer kontrollierten Testumgebung mit einer erfundenen Kundin.",
-    "c2ProofLink": "Sehen, wie darin ein Angebot entsteht"
+    "c2ProofLink": "Sehen, wie darin ein Angebot entsteht",
+    "c1Route": "Hier geht es um einen klar umrissenen Ablauf. Ist die Arbeit selbst den Werkzeugen entwachsen, sind individuelle Anwendungen der bessere Einstieg.",
+    "c1RouteLink": "Woran wir Automatisierung und System unterscheiden",
+    "c2Route": "Hier geht es um Arbeit, die ihren Werkzeugen entwachsen ist. Ist ein einzelner, wiederkehrender Ablauf das Problem, reicht meist eine Prozessautomatisierung.",
+    "c2RouteLink": "Woran wir System und Automatisierung unterscheiden",
+    "c1RouteOther": "Individuelle Anwendungen",
+    "c2RouteOther": "Prozessautomatisierung"
   },
   "frictionCheck": {
     "back": "Zurück",
     "ctaBody": "Schildern Sie uns, wie die Arbeit heute tatsächlich abläuft. Wir sagen Ihnen, was sich vereinfachen lässt, was sich verbinden lässt und was so bleiben sollte, wie es ist.",
-    "ctaButton": "Zeigen Sie uns, was bremst",
-    "ctaNoEmail": "Das Ergebnis oben steht für sich. Sie müssen uns dafür nichts geben.",
-    "ctaTitle": "Wenn das zutrifft",
+    "ctaButton": "Diesen Kontext an Maxpromo senden",
+    "ctaNoEmail": "Das Ergebnis oben steht für sich. Ins Kontaktformular geht nur seine Kategorie mit, nicht Ihre Antworten.",
+    "ctaTitle": "Sollen wir uns das gemeinsam ansehen?",
     "disclaimer": "Dieses Ergebnis beruht ausschließlich auf Ihren sechs Antworten. Es ist eine Einordnung, keine Analyse Ihres Betriebs, und es misst nichts.",
     "disconnectedFirst": "Einen Ort bestimmen, an dem ein Vorgang verbindlich steht, auch wenn Informationen weiterhin über verschiedene Kanäle hereinkommen. Kanäle zusammenlegen ist selten realistisch, ein gemeinsamer Stand dagegen schon.",
     "disconnectedLooks": "Was zu einem Vorgang gehört, liegt an mehreren Stellen: E-Mail, Tabelle, Messenger, Notizzettel. Wer etwas wissen will, muss wissen, wo er suchen muss.",
@@ -1094,14 +1169,8 @@
     "learnTitle": "Vorher weiterlesen",
     "lede": "Sechs Fragen zu Dingen, die in einer normalen Woche passieren. Am Ende sehen Sie, welche Art von Reibung Ihr Betrieb hat und was man zuerst dagegen tut. Kein Score, keine Bewertung, keine E-Mail-Pflicht.",
     "looksLike": "Woran man es merkt",
-    "lowBody": "Ihre Antworten deuten nicht auf die Reibung hin, die wir normalerweise beseitigen. Informationen liegen an einer Stelle, Entscheidungen werden getroffen, ohne dass jemand wartet, und es wird wenig doppelt erfasst.",
-    "lowHonest": "Dann brauchen Sie uns dafür wahrscheinlich gerade nicht. Das ist ein ehrliches Ergebnis und kein Gesprächseinstieg.",
-    "lowNext": "Wenn sich das mit dem Wachstum ändert, und das tut es meistens, ist diese Seite weiterhin hier.",
-    "lowTitle": "Hier sieht vieles nach solider Organisation aus",
     "meta": "Etwa vier Minuten. Das Ergebnis sehen Sie sofort.",
     "next": "Weiter",
-    "patternsIntro": "Ihre Antworten zeigen vor allem eine Art von Reibung:",
-    "patternsIntroPlural": "Ihre Antworten zeigen vor allem zwei Arten von Reibung:",
     "progress": "Frage {current} von {total}",
     "q1": "Eine neue Anfrage kommt herein. Wo landet sie?",
     "q1a": "An einer Stelle, die alle sehen können",
@@ -1146,7 +1215,21 @@
     "waitingLooks": "Die Arbeit steht still, während jemand auf eine Freigabe, eine Information oder eine Rückmeldung wartet. Die Wartezeit taucht in keiner Auswertung auf.",
     "waitingTitle": "Warten auf Entscheidungen",
     "waitingWatch": "Freigaben abschaffen ist kein Ziel. Manche Entscheidungen gehören zu einem Menschen. Sie sollten nur nicht davon abhängen, ob jemand eine E-Mail rechtzeitig sieht.",
-    "watchOut": "Worauf zu achten ist"
+    "watchOut": "Worauf zu achten ist",
+    "nothingUrgentTitle": "Aktuell kein dringender Handlungsbedarf",
+    "nothingUrgentBody": "Ihre Antworten deuten derzeit nicht auf einen größeren Engpass im Arbeitsablauf hin. Das ist ebenfalls eine hilfreiche Erkenntnis. Wir würden keine Arbeit automatisieren, nur weil es technisch möglich ist.",
+    "nothingUrgentNext": "Behalten Sie die Aufgaben im Blick, die mit wachsendem Betrieb immer mehr Zeit benötigen.",
+    "simplifyTitle": "Vereinfachung lohnt sich",
+    "simplifyBody": "Ein Teil der Arbeit scheint komplizierter geworden zu sein als nötig. Bevor neue Technik hinzukommt, lohnt es sich, zuerst den Ablauf selbst zu vereinfachen.",
+    "simplifyNext": "Beginnen Sie bei dem Schritt, der am meisten Warten, Kopieren oder Unklarheit verursacht.",
+    "automationTitle": "Guter Kandidat für Automatisierung",
+    "automationBody": "Bei Ihnen gibt es wiederkehrende Arbeit mit einem klar erkennbaren Muster. Genau dort kann eine gezielte Automatisierung oft manuelle Arbeit reduzieren, ohne den ganzen Betrieb umzubauen.",
+    "automationNext": "Zeigen Sie uns die wiederkehrende Aufgabe und die beteiligten Werkzeuge.",
+    "systemTitle": "Hier könnte ein System sinnvoll sein",
+    "systemBody": "Der Engpass scheint mehrere Werkzeuge, Personen oder Arbeitsschritte zu betreffen. Eine weitere einzelne Automatisierung würde das Problem möglicherweise nur verschieben. Es lohnt sich, den Ablauf als zusammenhängendes System zu betrachten.",
+    "systemNext": "Zeigen Sie uns, wie die Arbeit heute tatsächlich abläuft.",
+    "startHere": "Wo Sie anfangen",
+    "sawTitle": "Was wir in Ihren Antworten gesehen haben"
   },
   "automationGuide": {
     "closeAlt": "Oder schildern Sie uns direkt, wie die Arbeit heute abläuft.",

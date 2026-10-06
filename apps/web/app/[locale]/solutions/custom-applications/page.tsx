@@ -155,6 +155,14 @@ export default async function CustomApplicationsPage(
               <Link href="/work/maxpromo-os" className="quiet-link">{t('c2ProofLink')}</Link>
             </p>
           </div>
+          {/* Which of the two capabilities fits: one workflow, or work that
+              has outgrown its tools. Routes to the other page and to the
+              comparison on What We Do. */}
+          <p className="cp-route">
+            {t('c2Route')}{' '}
+            <Link href="/solutions/workflow-automation" className="quiet-link">{t('c2RouteOther')} &rarr;</Link>{' '}
+            <Link href="/solutions#automation-or-system" className="quiet-link">{t('c2RouteLink')} &rarr;</Link>
+          </p>
         </div>
       </section>
 

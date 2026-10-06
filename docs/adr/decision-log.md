@@ -2,6 +2,23 @@
 
 ## 2026-10-06 — the launch-candidate build
 
+### The Friction Check concludes in four categories, never a number
+
+**Decision.** The result leads with one of `nothingUrgent`, `simplify`,
+`automation`, `system`, chosen in that order of precedence from the patterns
+that reach the existing threshold: nothing named → nothing urgent;
+disconnection named with three or more patterns → system; repeated work,
+documents or follow-up named → automation; otherwise → simplify.
+
+**Why.** It tells the visitor what kind of answer fits, which a list of
+patterns did not, and it can still say nothing is urgent. A system is only
+suggested when information is split across tools, because that is what turns
+several frictions into one process problem. The contact handoff carries the
+category in `source` and nothing else: answers about a business do not belong
+in a URL, and no consent architecture exists yet to send results by email.
+
+---
+
 Marcel's brief for one complete build to a launch candidate. The decisions
 below are the ones that were judgement rather than repair. Marcel reviews
 them once, with the rest of the build.

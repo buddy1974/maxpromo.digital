@@ -150,24 +150,25 @@ export default function FrictionCheckPage() {
         <section className="fc-panel">
           <p className="section-label">{t('resultEyebrow')}</p>
 
-          {result.lowFriction ? (
+          {/* The conclusion first, in plain words: what kind of answer fits,
+              and where to start. A category, never a number — see
+              lib/friction-check.ts for the deterministic rules. */}
+          <h1 className="fc-title">{t(`${result.outcome}Title`)}</h1>
+          <p className="fc-lede">{t(`${result.outcome}Body`)}</p>
+          <div className="fc-start-here">
+            <p className="fc-pattern-label">{t('startHere')}</p>
+            <p className="fc-pattern-body">{t(`${result.outcome}Next`)}</p>
+          </div>
+
+          {/* The working: which of the visitor's own answers led here. */}
+          {!result.lowFriction && (
             <>
-              <h1 className="fc-title">{t('lowTitle')}</h1>
-              <p className="fc-lede">{t('lowBody')}</p>
-              {/* The honest outcome, given the same weight as any other. */}
-              <p className="fc-honest">{t('lowHonest')}</p>
-              <p className="fc-note">{t('lowNext')}</p>
-            </>
-          ) : (
-            <>
-              <h1 className="fc-title">
-                {result.patterns.length > 1 ? t('patternsIntroPlural') : t('patternsIntro')}
-              </h1>
+              <h2 className="fc-saw">{t('sawTitle')}</h2>
               {result.patterns.map((p) => {
                 const k = PATTERN_KEYS[p]
                 return (
                   <article key={p} className="fc-pattern">
-                    <h2 className="fc-pattern-title">{t(k.title)}</h2>
+                    <h3 className="fc-pattern-title">{t(k.title)}</h3>
                     <div className="fc-pattern-part">
                       <p className="fc-pattern-label">{t('looksLike')}</p>
                       <p className="fc-pattern-body">{t(k.looks)}</p>
@@ -189,23 +190,21 @@ export default function FrictionCheckPage() {
           <p className="fc-disclaimer">{t('disclaimer')}</p>
 
           {/*
-            * The sales block is shown only when a friction pattern was found.
+            * The offer to talk is shown only when there is something to talk
+            * about. A visitor told "nothing urgent" is not then asked to show
+            * us what is slowing them down; that contradiction would undo the
+            * one thing that makes this tool worth linking to.
             *
-            * It used to render unconditionally, so a visitor who answered the
-            * low-friction option six times was told "you probably do not need
-            * us right now" and then immediately asked to show us what was
-            * slowing them down. That contradiction undoes the one thing that
-            * makes this tool worth linking to. A browser QA pass caught it.
-            *
-            * The low-friction branch keeps the guide below, which is useful
-            * whether or not they ever talk to us.
+            * The result is already on screen and nothing was asked for. The
+            * handoff carries the outcome category only — never the answers —
+            * through `source`, the parameter the contact form already reads, so
+            * the conversation starts from it with no new lead mechanism and no
+            * business detail in a URL.
             */}
           {!result.lowFriction && (
           <div className="fc-after">
             <SectionHeader label={t('ctaTitle')}>{t('ctaBody')}</SectionHeader>
-            {/* `source` is the parameter the contact form already reads as its
-                weakest signal, so this needs no change at the other end. */}
-            <Link href="/contact?source=friction-check" className="btn btn-primary fc-cta">
+            <Link href={`/contact?source=friction-check-${result.outcome}`} className="btn btn-primary fc-cta">
               {t('ctaButton')}
             </Link>
             <p className="fc-note">{t('ctaNoEmail')}</p>

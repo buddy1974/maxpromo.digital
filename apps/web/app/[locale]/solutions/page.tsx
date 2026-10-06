@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation'
 import { pageMetadata } from '@/lib/seo/og'
 import { CAPABILITIES } from '@/lib/capabilities'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
+import { FlowSteps } from '@/components/ui/FlowSteps'
 import { CapabilityRail } from '@/components/ui/CapabilityRail'
 import './solutions.css'
 
@@ -163,6 +164,52 @@ export default async function SolutionsPage({ params }: { params: Promise<{ loca
           </div>
         </section>
       ))}
+
+      {/* Automation or system? The question most visitors cannot answer for
+          themselves, and the one that decides between the first two
+          capabilities above. Drawn side by side: one reliable connection, and
+          one reliable operating flow with its approval and its record visible.
+          Neither is presented as the better one, and nothing here is priced.
+          Linked from the homepage, both capability pages and Resources. */}
+      <section id="automation-or-system" data-section="automation-or-system" className="section surface-evidence aos-section">
+        <div className="container">
+          <div className="sec-head">
+            <p className="section-label">{tWwd('aosEyebrow')}</p>
+            <h2 style={{ margin: 0 }}>{tWwd('aosTitle')}</h2>
+            <p className="sec-lede">{tWwd('aosIntro')}</p>
+          </div>
+
+          <div className="aos">
+            {([
+              { side: 'A', href: '/solutions/workflow-automation', personAt: -1, recordAt: -1 },
+              { side: 'B', href: '/solutions/custom-applications', personAt: 4, recordAt: 6 },
+            ] as const).map((c) => (
+              <article key={c.side} className={`aos-side aos-side-${c.side.toLowerCase()}`}>
+                <h3 className="aos-kind">{tWwd(`aos${c.side}`)}</h3>
+                <FlowSteps
+                  label={tWwd(`aos${c.side}`)}
+                  steps={(tWwd.raw(`aos${c.side}Steps`) as string[]).map((label, i) => ({
+                    label,
+                    person: i === c.personAt ? tWwd('aosPersonTag') : undefined,
+                    record: i === c.recordAt ? tWwd('aosRecordTag') : undefined,
+                  }))}
+                />
+                <p className="aos-body">{tWwd(`aos${c.side}Body`)}</p>
+                <p className="aos-fit-label">{tWwd(`aos${c.side}FitLabel`)}</p>
+                <ul className="aos-fit">
+                  {(tWwd.raw(`aos${c.side}Fit`) as string[]).map((f) => <li key={f}>{f}</li>)}
+                </ul>
+                <Link href={c.href} className="quiet-link">{tWwd(`aos${c.side}Link`)} &rarr;</Link>
+              </article>
+            ))}
+          </div>
+
+          <div className="aos-bridge">
+            <p className="aos-bridge-text">{tWwd('aosBridge1')}<br />{tWwd('aosBridge2')}</p>
+            <Link href="/contact?source=what-we-do-aos" className="btn btn-primary">{tWwd('aosCta')}</Link>
+          </div>
+        </div>
+      </section>
 
       {/* What happens after someone writes in. Three steps, and the third one
           says out loud that the answer can be "you do not need us". A page

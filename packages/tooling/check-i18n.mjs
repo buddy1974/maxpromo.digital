@@ -128,6 +128,9 @@ const SAME_IN_BOTH = new Set([
   'home.bureau.label', 'footer.agentBureau', 'demoRoom.brand',
   // The same product name, shortened for the footer column.
   'footer.frictionCheck',
+  // "System" is the same word in German and English; its sibling label
+  // (Automation / Automatisierung) does differ.
+  'whatWeDo.aosB',
   // ── Proper nouns, printed as they are ─────────────────────────────────────
   'integrations.calendar', 'integrations.forms',
   'contact.contactMethodWhatsApp',

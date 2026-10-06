@@ -1,0 +1,82 @@
+/* ─── FlowSteps: a flow of work, one step per line ────────────────────────────
+   Carried by the component, so every page that uses it is styled. Vertical at
+   every width: the steps sit in narrow columns and must never scroll sideways.
+   The rail and dots are decoration; the order is the list's own order. */
+
+.fsteps {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* The rail, behind the dots, from the first step to the last. */
+.fsteps::before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 10px;
+  bottom: 10px;
+  width: 1px;
+  background: var(--brand-border-strong);
+}
+
+.fstep {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding-left: var(--space-6);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+  color: var(--brand-text);
+}
+
+.fstep-dot {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin-top: -6px;
+  border-radius: var(--radius-full);
+  background: var(--brand-background);
+  border: 1px solid var(--brand-border-strong);
+}
+
+.fstep-label { min-width: 0; overflow-wrap: anywhere; }
+
+/* A person's step: lime fill with its dark edge, and a tag that says so. */
+.fstep-person .fstep-dot {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary-edge);
+}
+.fstep-person .fstep-label { font-weight: var(--weight-subhead); }
+
+/* A record: solid dark dot. */
+.fstep-record .fstep-dot {
+  background: var(--brand-text);
+  border-color: var(--brand-text);
+}
+
+.fstep-tag {
+  padding: 1px 8px;
+  border-radius: var(--radius-full);
+  background: var(--brand-surface-accent);
+  border: 1px solid var(--brand-primary-edge);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label-dense);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-primary-text);
+}
+.fstep-tag-record {
+  background: var(--brand-surface);
+  border-color: var(--brand-border-strong);
+  color: var(--brand-text-secondary);
+}
