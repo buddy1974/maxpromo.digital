@@ -59,18 +59,35 @@ the build; anything else builds.
 **Web (`apps/web/vercel.json`), corrected 2026-10-06:**
 
 ```
-git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- ../../apps/web ../../packages ../../package.json ../../package-lock.json
+if git cat-file -e "${VERCEL_GIT_PREVIOUS_SHA:-HEAD^}^{commit}" 2>/dev/null    && git diff --quiet "${VERCEL_GIT_PREVIOUS_SHA:-HEAD^}" HEAD -- ../../apps/web ../../packages ../../package.json ../../package-lock.json
+then exit 0; else exit 1; fi
 ```
 
-It compares against the last successfully deployed commit, not the previous
-commit, and it counts the root manifest and lockfile, because a dependency
-update changes the deployed runtime without touching `apps/web`. The old rule
+(One line in the file; wrapped here.)
+
+**The contract.** Vercel reads the exit code: 0 skips the build, 1 builds,
+and *anything else fails the deployment*. So the gate is fail-open — it exits
+0 only when it can prove nothing relevant changed, and 1 in every other case,
+including when it cannot compare at all.
+
+- It compares against `VERCEL_GIT_PREVIOUS_SHA`, the last successfully
+  deployed commit, falling back to `HEAD^` when that is unset or empty.
+- It counts the root manifest and lockfile, because a dependency update
+  changes the deployed runtime without touching `apps/web`.
+- Vercel's clone is shallow and may not contain the previous deployed commit.
+  The gate checks the commit is present (`git cat-file -e`) before comparing;
+  absent, unresolvable or malformed → exit 1 → build.
+
+**History, recorded rather than rewritten.** The original rule
 (`HEAD^ HEAD -- ../../apps/web ../../packages`) cancelled the Iteration 1
-release: 38 commits were pushed together, the last one changed only the root
-lockfile (the sharp security patch), and Vercel concluded nothing had changed.
-With no previous SHA the rule falls back to `HEAD^`; with a previous SHA
-missing from the shallow clone, git exits 128 and the build runs. Every
-failure mode builds rather than skips.
+release: 38 commits were pushed together and the last one changed only the
+root lockfile (the sharp security patch). The first correction (96718af) used
+the previous deployed SHA directly and assumed a SHA missing from the shallow
+clone would make git exit 128 and the build run. That was wrong: the release
+deployment failed with `fatal: bad object 77dbc20…`, because Vercel treats 128
+as an error, not as "build". The commit-presence check replaced it. Both
+failures happened before any application code was built; production stayed on
+`77dbc20` throughout.
 
 **Bureau (`apps/bureau/vercel.json`) still uses the old form** —
 `HEAD^ HEAD -- ../../apps/bureau ../../packages` — and has the same blind spot.
