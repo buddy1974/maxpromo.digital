@@ -1,0 +1,139 @@
+[
+  {
+    "requirement": "os-source-note",
+    "source": "docs/evidence/maxpromo-os/01-source-note.jpg",
+    "classification": "public-as-is",
+    "output": "apps/web/public/images/systems/maxpromo-os/01-source-note.png",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1311,
+      "height": 752
+    },
+    "redactions": [],
+    "reason": "Nothing to withhold. Cropped to the browser viewport only: the screenshot tool's blank margin is not part of the application.",
+    "sourceSha256": "2ec395e2ac93b0b82a27804883b6a2876fcb78c3fedfdc21f1667a6f7e07bfbd",
+    "outputSha256": "0164818165185f3a60c8568c5c8606af4ee1f6dec027c4d23cac6ff4a40cf6d9",
+    "bytes": 305324,
+    "width": 1311,
+    "height": 752,
+    "madeOn": "2026-10-06"
+  },
+  {
+    "requirement": "os-extraction-result",
+    "source": "docs/evidence/maxpromo-os/02-extraction-result.jpg",
+    "classification": "public-as-is",
+    "output": "apps/web/public/images/systems/maxpromo-os/02-extraction-result.png",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1311,
+      "height": 752
+    },
+    "redactions": [],
+    "reason": "Nothing to withhold: no bank or tax data in frame. The proprietor's name and business address in the preview header are the published Impressum identity. Viewport crop only.",
+    "sourceSha256": "4734b0dd85f53a022ff53654414c5be2a0379c6da1ea35b74d55291e81e12a6a",
+    "outputSha256": "5cadc8291390e86e15e9d3e12a50e07e06081012f5584e530f8c7c6e69d483f9",
+    "bytes": 333337,
+    "width": 1311,
+    "height": 752,
+    "madeOn": "2026-10-06"
+  },
+  {
+    "requirement": "os-form-before-save",
+    "source": "docs/evidence/maxpromo-os/03-form-before-save.jpg",
+    "classification": "public-derivative-required",
+    "output": "apps/web/public/images/systems/maxpromo-os/03-form-before-save.png",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1311,
+      "height": 752
+    },
+    "redactions": [
+      {
+        "left": 858,
+        "top": 348,
+        "width": 188,
+        "height": 57,
+        "removes": "account holder, IBAN and BIC lines in the live preview's payment block"
+      },
+      {
+        "left": 858,
+        "top": 422,
+        "width": 68,
+        "height": 18,
+        "removes": "bank name line in the live preview's payment block"
+      },
+      {
+        "left": 925,
+        "top": 685,
+        "width": 122,
+        "height": 15,
+        "removes": "tax number in the live preview's footer"
+      }
+    ],
+    "reason": "The original shows Maxpromo's bank details and tax number in the live preview. Those lines are covered and nothing else changes: positions, quantities, prices, total, the Save control and the quotation context are untouched. The payment reference (the quotation number) is kept.",
+    "sourceSha256": "94b15c6a312617235564142d7834a271bdc9d7242d04ff520fde56cd515b7a5a",
+    "outputSha256": "8c00bd34b8c9dbc8f31395715658602a997b24bbecf147bd3ddbb435f9a3e1fb",
+    "bytes": 263148,
+    "width": 1311,
+    "height": 752,
+    "madeOn": "2026-10-06"
+  },
+  {
+    "requirement": "os-draft-record",
+    "source": "docs/evidence/maxpromo-os/04-draft-record.jpg",
+    "classification": "public-derivative-required",
+    "output": "apps/web/public/images/systems/maxpromo-os/04-draft-record.png",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1311,
+      "height": 752
+    },
+    "redactions": [
+      {
+        "left": 367,
+        "top": 710,
+        "width": 196,
+        "height": 18,
+        "removes": "tax number and tax office in the document footer"
+      },
+      {
+        "left": 232,
+        "top": 725,
+        "width": 70,
+        "height": 15,
+        "removes": "tax office district, continued on the second footer line"
+      }
+    ],
+    "reason": "The footer carries the tax number and tax office, which belong on the Impressum and not in proof imagery. The §19 clause, the record, its status and total are untouched.",
+    "sourceSha256": "b318b495d424839d7b44313f4f8a6e3fee5b59746119f66460871143ddef3ace",
+    "outputSha256": "687102850d42f7d8d1340a098bb66587d8c97e58e338513721eb990088d44208",
+    "bytes": 232973,
+    "width": 1311,
+    "height": 752,
+    "madeOn": "2026-10-06"
+  },
+  {
+    "requirement": "os-lifecycle-list",
+    "source": "docs/evidence/maxpromo-os/05-lifecycle-list.jpg",
+    "classification": "public-as-is",
+    "output": "apps/web/public/images/systems/maxpromo-os/05-lifecycle-list.png",
+    "crop": {
+      "left": 0,
+      "top": 0,
+      "width": 1311,
+      "height": 752
+    },
+    "redactions": [],
+    "reason": "Nothing to withhold. Viewport crop only.",
+    "sourceSha256": "db130ad8e2afa7848489c261aae268f34d362c54ac9f7ceb9bddd18b57103010",
+    "outputSha256": "307fa4cc217d598b7c19e4c1ed8b325283be0c6d768191ca44727080272de03f",
+    "bytes": 147390,
+    "width": 1311,
+    "height": 752,
+    "madeOn": "2026-10-06"
+  }
+]

@@ -28,6 +28,9 @@
  *      and the one most likely to rot as files move.
  *   7. A media requirement recorded as both satisfied and blocked. They say
  *      opposite things and one of them is stale.
+ *   8. A public image made from evidence that is not the recorded derivative
+ *      of an inspected capture, or a frame whose inspection saw the bank
+ *      block published without a redaction.
  *
  * Every one of these is a rule the registry itself states. This file is the
  * part that makes the registry mean something.
@@ -194,6 +197,57 @@ for (const pkg of PROOF_PACKAGES) {
   }
 }
 
+/* (8) A public image made from evidence is the derivative that was recorded.
+   ADR-0017: publication is a projection of the evidence, and the projection is
+   declared in the package's DERIVATIVES.json by evidence:derive. Three ways it
+   can go wrong, each mechanical:
+     - the source drifted from its ledger entry, so the image no longer derives
+       from what was inspected
+     - the public file was swapped or edited after it was made
+     - a file appears beside the derivatives with no record at all — the shape a
+       hand-made, unredacted copy would take
+   And one that is the reason this rule exists: a capture whose inspection
+   recorded the bank block may not be published without a redaction. */
+let derivativesChecked = 0
+if (existsSync(evidenceRoot)) {
+  for (const dir of readdirSync(evidenceRoot)) {
+    const specPath = join(evidenceRoot, dir, 'DERIVATIVES.json')
+    if (!existsSync(specPath)) continue
+    const where = { id: `evidence/${dir}` }
+    const spec = JSON.parse(readFileSync(specPath, 'utf8'))
+    const outputs = new Set()
+    for (const d of spec) {
+      derivativesChecked++
+      outputs.add(d.output)
+      const entry = ledgerFor(d.source)
+      if (!entry || !existsSync(join(ROOT, d.source)) || hashOf(d.source) !== entry.sha256 || d.sourceSha256 !== entry.sha256) {
+        say(where, `derivative ${d.output} does not derive from the inspected evidence`,
+          'Its source is missing from the ledger, or the source hash no longer matches. Re-run evidence:derive from the ingested file')
+      }
+      if (!existsSync(join(ROOT, d.output))) {
+        say(where, `derivative ${d.output} is recorded but not on disk`, 'Run npm run evidence:derive')
+      } else if (hashOf(d.output) !== d.outputSha256) {
+        say(where, `derivative ${d.output} no longer matches its recorded hash`,
+          'A public derivative is changed only by evidence:derive, so the change is recorded')
+      }
+      if (/BANK BLOCK IN FRAME/.test(entry?.inspection?.note ?? '')
+        && (d.classification !== 'public-derivative-required' || !(d.redactions?.length > 0))) {
+        say(where, `derivative ${d.output} would publish a frame recorded with the bank block`,
+          'The inspection saw bank details; the public copy must redact them')
+      }
+    }
+    for (const folder of new Set([...outputs].map((o) => o.slice(0, o.lastIndexOf('/'))))) {
+      if (!existsSync(join(ROOT, folder))) continue
+      for (const f of readdirSync(join(ROOT, folder))) {
+        if (!outputs.has(`${folder}/${f}`)) {
+          say(where, `${folder}/${f} sits beside the evidence derivatives with no record`,
+            'Every image here must be made by evidence:derive from an inspected capture')
+        }
+      }
+    }
+  }
+}
+
 /* A rule that examines nothing looks identical to a rule that passes. ADR-0004. */
 if (statementsChecked === 0) {
   console.error('proof: the registry holds packages but no statements.')
@@ -203,7 +257,7 @@ if (statementsChecked === 0) {
 
 console.log('='.repeat(74))
 console.log('PROOF PACKAGES')
-console.log(`${PROOF_PACKAGES.length} package(s), ${statementsChecked} statement(s) checked`)
+console.log(`${PROOF_PACKAGES.length} package(s), ${statementsChecked} statement(s) checked, ${derivativesChecked} public derivative(s) verified`)
 
 for (const pkg of PROOF_PACKAGES) {
   const pub = pkg.statements.filter((s) => mayPublish(s, pkg.permissions).visibility === 'public')
