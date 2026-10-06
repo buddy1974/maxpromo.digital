@@ -411,7 +411,7 @@ findings stand.
 ### Two taxonomies, on purpose, with one of them always first
 
 **Decision.** `lib/capabilities.ts` (five concrete capabilities) and
-`lib/solutions.ts` (three operating families) both stay, and neither is derived
+`lib/solutions.ts` (three operating families; removed 2026-10-06) both stay, and neither is derived
 from the other.
 
 **Why this is not the duplication rule being broken.** Two implementations of

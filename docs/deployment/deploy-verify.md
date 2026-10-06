@@ -266,7 +266,7 @@ You should see additions in: `app/api/os/ai/enhance/`, `app/api/os/login/`,
 `app/os/(protected)/invoices/new/page.tsx`,
 `app/api/os/clients/route.ts`, `app/api/os/invoices/route.ts`,
 `app/api/os/angebote/route.ts`, `app/api/contact/route.ts`,
-`app/api/audit/route.ts`, `app/api/chat/route.ts`,
+`app/api/audit/route.ts`, `app/api/chat/route.ts` (removed 2026-10-06),
 `lib/auth.ts`, `lib/env.ts`,
 `lib/rate-limit.ts`, `lib/prompts.ts`, `middleware.ts`, `db/`, `docs/`,
 `.gitignore`, `.env.local.example`.

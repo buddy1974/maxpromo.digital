@@ -1,5 +1,52 @@
 # Change Log
 
+## 2026-10-06 — Launch candidate: the proof ships, every route earns its place
+
+Local only. Nothing pushed, nothing deployed, no provider called, no evidence
+record touched.
+
+**Proof.** The Maxpromo OS evidence became public proof: `/work/maxpromo-os`
+tells one quotation from a loosely written email to a saved draft in five
+stages, disclosed as a controlled demonstration with an invented customer.
+Work leads with it; the homepage, Workflow Automation and Custom
+Applications show it. Public images are redacted derivatives made by
+`npm run evidence:derive` and held to their record by `check:proof` rule 8;
+the five originals are byte-identical.
+
+**Routes.** `/case-studies` (unevidenced figures), `/automation-lab` (an
+unevidenced "eighteen runtimes"), the five legacy solution pages and
+`/ai-websites` now 308 to the pages that replaced them. The public
+`/api/chat` endpoint and its dead prompts are gone. Resources is four lanes
+that each have an entry. What We Do links all five capabilities and dropped
+the internal taxonomy.
+
+**Content.** Homepage Start Here starts the live Friction Check instead of
+calling it "coming next"; the guide leads the knowledge strip. About
+introduces the founder with the real-photograph slot. Industry pages carry
+the sector into Contact and lead to the real workflow. A 24-hour reply
+promise aligned to the governed one business day; "we work with" no longer
+reads as a client list.
+
+**SEO and accessibility.** All commercial routes on `pageMetadata()`;
+Agent Bureau's canonical no longer points at a redirect; robots rules match
+the locale-prefixed URLs; Organization and WebSite JSON-LD read from the
+legal record, with the founder as a Person and Article markup on the guide.
+Nested `<main>` removed from two pages; buttons wrap on phones for the whole
+class.
+
+**Security.** `audit:dependencies` (part of certify) reported a CRITICAL
+advisory in `next` 16.3.4: remote code execution in `next/og`
+`ImageResponse` (GHSA-vcvr-r3jv-pc5j), which is exactly what the social
+card at `/og` uses, from a query parameter. Patched to 16.3.8 with
+`eslint-config-next` in all three workspaces; a non-forced `npm audit fix`
+raised `source-map-js` and `brace-expansion` to patched versions for the two
+HIGH advisories. Both applications build; the dependency audit is clean.
+
+**Verification.** `npm run verify` exit 0. Accessibility 45/45 web routes.
+60 iframe renders at 320 and 375px, no overflow. 116 internal links, none
+broken, none redirecting. Rendered-HTML privacy scan of all 64 sitemap URLs:
+tax data only on the Impressum.
+
 ## 2026-10-06 — Maxpromo OS evidence closed: 6 of 6 media requirements satisfied
 
 Internal. Nothing pushed, nothing deployed, nothing sent, no code changed.

@@ -5,7 +5,7 @@ Drop images here. Components load them automatically — no code changes needed.
 ## hero.jpg
 
 **Path:** `/public/images/homepage/hero.jpg`  
-**Used by:** `components/Hero.tsx` (CSS background, right-aligned)  
+**Used by:** `components/Hero.tsx` (since removed; CSS background, right-aligned)  
 **Aspect:** Landscape — fills the right ~60% of the hero section  
 **Dimensions:** 1600×900px minimum (2x for retina: 3200×1800px)
 
@@ -24,7 +24,7 @@ url(/images/homepage/hero.jpg) center right / cover no-repeat
 ## pain/ — Pain card images
 
 **Path:** `/public/images/homepage/pain/p1.png` through `p6.png`  
-**Used by:** `components/homepage/PainCards.tsx` (rendered via `PainCardsClient.tsx` → `PainCardImage`)  
+**Used by:** `components/homepage/PainCards.tsx` (since removed; rendered via `PainCardsClient.tsx` → `PainCardImage`)  
 **Note:** The `pain/` folder does not exist yet. Until real photography is dropped here,
 `PainCardImage` silently falls back to the existing gradient + ghost-glyph + tag design —
 no broken-image icon is shown. File extension **must be `.png`** (the component requests
