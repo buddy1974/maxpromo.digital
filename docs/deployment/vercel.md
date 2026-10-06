@@ -53,11 +53,29 @@ Verified by reading the project records back: both carry the same `repoId`
 
 ## Selective rebuilds
 
-Each application ships a `vercel.json` with an `ignoreCommand`:
+Each application ships a `vercel.json` with an `ignoreCommand`. Exit 0 skips
+the build; anything else builds.
+
+**Web (`apps/web/vercel.json`), corrected 2026-10-06:**
 
 ```
-git diff --quiet HEAD^ HEAD -- ../../apps/<name> ../../packages
+git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- ../../apps/web ../../packages ../../package.json ../../package-lock.json
 ```
+
+It compares against the last successfully deployed commit, not the previous
+commit, and it counts the root manifest and lockfile, because a dependency
+update changes the deployed runtime without touching `apps/web`. The old rule
+(`HEAD^ HEAD -- ../../apps/web ../../packages`) cancelled the Iteration 1
+release: 38 commits were pushed together, the last one changed only the root
+lockfile (the sharp security patch), and Vercel concluded nothing had changed.
+With no previous SHA the rule falls back to `HEAD^`; with a previous SHA
+missing from the shallow clone, git exits 128 and the build runs. Every
+failure mode builds rather than skips.
+
+**Bureau (`apps/bureau/vercel.json`) still uses the old form** —
+`HEAD^ HEAD -- ../../apps/bureau ../../packages` — and has the same blind spot.
+Deliberately left for Iteration 2 so a public-site release did not redeploy
+Agent Bureau (known risk 67).
 
 A commit touching only the other application does not trigger a rebuild. A
 commit touching `packages/` rebuilds both, which is correct — a token change is
