@@ -29,7 +29,12 @@ budget.
 **Public derivative** — `apps/web/public/images/systems/maxpromo-os/`.
 Optimised copies, created only when a publication decision has been made, in
 the shape the existing `images/systems/<system>/` convention already uses.
-**This directory does not exist yet and must not be created during B3.** The
+**Publication decided 2026-10-06** (decision log): the directory now exists
+and holds only what `npm run evidence:derive` made from the ingested
+captures, as declared in `DERIVATIVES.json` — viewport crops, plus visible
+redaction of bank details and tax number in frames 3 and 4. `check:proof`
+rule 8 holds every file there to its record. The note that follows is kept
+as the reasoning for the separation. The
 source is the record; the derivative is a rendering of it, and conflating them
 is how a cropped, compressed, retouched image ends up being treated as the
 original.

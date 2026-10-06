@@ -1,5 +1,87 @@
 # Decision Log
 
+## 2026-10-06 — the launch-candidate build
+
+Marcel's brief for one complete build to a launch candidate. The decisions
+below are the ones that were judgement rather than repair. Marcel reviews
+them once, with the rest of the build.
+
+---
+
+### The Maxpromo OS evidence is published, under its own public framing
+
+**Decision.** The five governed captures become public proof: a story page at
+`/work/maxpromo-os`, the flagship on Work, the homepage Real Work section and
+the proof slots of Workflow Automation and Custom Applications.
+
+**Why it is allowed.** The operating systems that `docs/architecture/
+platform.md` protects are the ten showcase products marketed on their own
+domains. Maxpromo OS is the company's own back office, and its proof package
+was written for exactly these targets ("workflow-automation proof slot",
+"work entry"). It is presented as our own system at work, never offered for
+sale and never as a client's.
+
+**How.** Originals are never touched. `npm run evidence:derive` makes the
+public copies from the ledger-verified captures and records every crop and
+redaction; `check:proof` rule 8 refuses a public derivative that drifts from
+its record, a stray file beside the derivatives, or a frame inspected with the
+bank block and published without a redaction. Frames 3 and 4 cover bank
+details and tax number with visible black bars, and the page says so. The
+proprietor's name and Essen address stay: they are the Impressum identity.
+
+---
+
+### /case-studies is retired, not demoted
+
+**Decision.** 308 to `/work`. Previously an open owner question (SEO
+inventory §1, "OWNER REVIEW").
+
+**Why.** The page rendered figures the claims registry marks unevidenced and,
+for the £14,000 figure, contradicted. The brief is explicit that unsupported
+persuasive figures do not ship. Noindex would still have shipped them to every
+visitor who followed a link. The record of what was said stays in the
+catalogue and in git, and `claims.ts` still governs the keys.
+
+---
+
+### /automation-lab and the five legacy solution pages redirect
+
+**Decision.** `/automation-lab` → Workflow Automation; `customer-inquiries`
+and `ai-agents` → Workflow Automation; `websites-platforms` → Web
+Development; `reviews` and `social-media` → Content & Social Operations.
+`solutions/[slug]` and `lib/solutions.ts` are deleted.
+
+**Why.** The lab claimed "eighteen production-grade runtimes" with nothing
+behind the number. The legacy pages were thinner versions of the five
+capability pages competing for the same searches, and the What We Do hub
+was still pointing visitors at two of them. Permanent redirects keep what the
+URLs earned; nothing indexed returns a 404.
+
+---
+
+### What We Do drops the internal taxonomy
+
+**Decision.** Below the five capabilities, the three "system families", the
+seven-stage operating flow and a five-step method are removed.
+
+**Why.** They asked a visitor who had already found their capability to learn
+the company's internal model, and the five-step method contradicted the
+homepage's four. The brief: technology and architecture come after business
+meaning.
+
+---
+
+### Buttons may wrap on phones, for the whole class
+
+**Decision.** `packages/ui/components.css`: below 480px `.btn` and its variants
+may wrap.
+
+**Why.** Sentence-length calls to action pushed three routes sideways at 320px.
+The homepage already fixed this locally, twice. ADR-0015: fix the class, not
+the instance.
+
+---
+
 ## 2026-09-18 — the homepage content reset, and what it exposed in the gate
 
 ---

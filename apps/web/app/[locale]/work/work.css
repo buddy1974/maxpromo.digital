@@ -141,7 +141,7 @@
 }
 .wf-say { min-width: 0; }
 .wf-body {
-  margin: 0 0 var(--space-5);
+  margin: var(--space-5) 0 var(--space-5);
   font-size: var(--text-body);
   line-height: var(--leading-body);
   color: var(--brand-text-secondary);

@@ -1,6 +1,6 @@
 # SEO and GEO inventory
 
-**Created 2026-09-25.** The canonical route/indexability record. There is one of
+**Created 2026-09-25, revised 2026-10-06 for the launch candidate.** The canonical route/indexability record. There is one of
 these; if a second appears, one of them is wrong.
 
 Local engineering only. Nothing here has been submitted to a search engine, and
@@ -10,7 +10,7 @@ nothing can be until the site is deployed.
 
 ## 1. Indexability by route
 
-Twenty-eight public routes exist. Every one has a decision, and
+Twenty-five public route files exist after the 2026-10-06 consolidation. Every one has a decision, and
 `prove:route-governance` fails the build if a route acquires neither a sitemap
 entry nor a written exclusion.
 
@@ -25,18 +25,16 @@ entry nor a written exclusion.
 | `/solutions/web-development` | capability | new, Phase E |
 | `/solutions/content-operations` | capability | new, Phase E |
 | `/solutions/product-operations` | capability | new, Phase E |
-| `/solutions/customer-inquiries`, `/solutions/ai-agents`, `/solutions/reviews`, `/solutions/social-media`, `/solutions/websites-platforms` | capability | served by `[slug]`; retained, thinner than the five above |
 | `/industries` + six slugs | industry | genuinely sector-specific reasoning, audited today |
 | `/work` | work | the proof surface |
+| `/work/maxpromo-os` | work | the flagship proof story: our own system, one quotation, five stages |
 | `/about` | company | founder accountability and the company's position |
 | `/contact` | company | the conversion page — **had no metadata at all until today** |
 | `/friction-check` | resource | the acquisition asset; the one page built to be found |
 | `/resources` | resource | the knowledge hub |
 | `/resources/what-to-automate-first` | guide | the first guide; citation-ready by design |
 | `/blog` + `/blog/[slug]` | resource | the legacy-modernisation archive, see §4 |
-| `/case-studies` | work | historical, carries unresolved claims, see §5 |
 | `/agent-bureau` | company | the product's own surface |
-| `/automation-lab` | resource | the runtime catalogue |
 
 ### ARCHIVE / DISCOVERABLE — indexed, deliberately not promoted
 
@@ -54,7 +52,13 @@ accumulated value to solve a problem navigation already solves.
 
 | Route | Decision | Reason |
 |---|---|---|
-| `/ai-websites` | REDIRECT | 308 to `/solutions/websites-platforms`; a redirect target is not a destination |
+| `/ai-websites` | REDIRECT | 308 to `/solutions/web-development` |
+| `/case-studies` | REDIRECT | 308 to `/work`; rendered figures the claims registry marks unevidenced, one contradicted (decision-log 2026-10-06) |
+| `/automation-lab` | REDIRECT | 308 to `/solutions/workflow-automation`; claimed eighteen runtimes with nothing behind the number |
+| `/solutions/customer-inquiries`, `/solutions/ai-agents` | REDIRECT | 308 to `/solutions/workflow-automation` |
+| `/solutions/websites-platforms` | REDIRECT | 308 to `/solutions/web-development` |
+| `/solutions/reviews`, `/solutions/social-media` | REDIRECT | 308 to `/solutions/content-operations` |
+| `/services/*` | REDIRECT | 308 straight to the final capability page, no second hop |
 | `/portfolio` | NOINDEX | disallowed in robots.txt, superseded by `/work` |
 | `/data-deletion` | NOINDEX | disallowed in robots.txt; a compliance endpoint, not a page to find |
 | `/[...rest]` | n/a | the localised catch-all; renders 404 and has no URL |
@@ -62,12 +66,8 @@ accumulated value to solve a problem navigation already solves.
 
 ### OWNER REVIEW
 
-**`/case-studies`.** It is indexed and it carries the figures the claims
-registry marks `SOURCE_EXISTS_NEEDS_REVIEW` and, in one case, `CONTRADICTED`.
-Those strings are legitimately there as a record of what the company said. The
-question nobody has answered is whether a page carrying an unresolved figure
-should be the one a search engine shows for "Maxpromo case study". That is a
-commercial judgement, not an engineering one.
+None open. `/case-studies` was resolved on 2026-10-06 by retiring it (see the
+REDIRECT table and the decision log).
 
 ---
 
@@ -83,16 +83,20 @@ commercial judgement, not an engineering one.
 | Sitemap | `/contact`, `/impressum`, `/privacy` **duplicated**; `/solutions/custom-applications` **absent** | deduplicated, complete, gated |
 | hreflang | present on newer pages, absent on several older ones | emitted by the shared helper wherever it is adopted |
 
-**Still hand-rolled:** `/about`, `/industries`, `/industries/[slug]`,
-`/solutions`, `/solutions/[slug]`, `/work`, `/agent-bureau`, `/resources`,
-`/blog`, `/case-studies`, `/automation-lab`, and the legal pages. Each has
-metadata; not all have the complete social block. Migrating them to
-`pageMetadata()` is mechanical and is the obvious next increment.
+**2026-10-06:** every public commercial route now uses `pageMetadata()` —
+About, the six industry pages, Agent Bureau (whose canonical pointed at a
+redirecting URL), the blog index, What We Do and Work were migrated. Still
+hand-rolled, deliberately: the blog articles (their own `article` Open Graph
+block and per-post hreflang logic, which is correct) and the legal pages,
+which this build does not touch.
 
 ### Schema
 
-The root layout emits `Organization` and `WebSite`. Both are truthful and match
-visible page content.
+The root layout emits `Organization` and `WebSite`, read from
+`@maxpromo/config` since 2026-10-06 so they cannot drift from the Impressum,
+with the founder as a `Person` and `@id` links between them. The guide
+carries `Article` (first published 2026-09-25, author and publisher by
+`@id`).
 
 **Nothing further was added, on purpose.** No `FAQPage`, because the site has no
 FAQ section any more. No `Review` or `AggregateRating`, because there are no
@@ -170,6 +174,5 @@ or a measured retrieval difference is published. Not before.
 - **Facebook / LinkedIn re-scrape** — the old static card is cached at those
   platforms and will persist until the new one is fetched. That needs a live
   URL and the platform's own debugger.
-- **`/case-studies` indexability** — see §1, OWNER REVIEW.
 
 None of those is engineering work, and none is possible locally.

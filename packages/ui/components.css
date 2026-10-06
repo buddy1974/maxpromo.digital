@@ -48,6 +48,23 @@
               color var(--duration-base) var(--ease);
 }
 
+/* On a phone a button may wrap. `nowrap` is right for a bar of short labels
+   and wrong for a call to action that is a sentence: at 320px "Zeigen Sie
+   uns, wie die Arbeit heute läuft" cannot shrink, and pushed the page
+   sideways on three routes in the 2026-10-06 sweep. Fixed for the class here
+   rather than once more per page (ADR-0015); a short label still fits on one
+   line, so nothing that fitted before changes. */
+@media (max-width: 480px) {
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost {
+    white-space: normal;
+    text-align: center;
+    max-width: 100%;
+  }
+}
+
 .btn:disabled,
 .btn-primary:disabled,
 .btn-secondary:disabled {
