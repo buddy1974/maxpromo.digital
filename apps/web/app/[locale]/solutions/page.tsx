@@ -54,11 +54,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return pageMetadata({
     locale,
     path: '/solutions',
-    title: isDE ? 'Was wir machen' : 'What we do',
+    title: isDE ? 'Leistungen: Automatisierung, Anwendungen, Web' : 'What we do: automation, applications, web',
+    cardTitle: isDE ? 'Was wir machen' : 'What we do',
     // Names the five, in the words a business searches with.
     description: isDE
-      ? 'Prozessautomatisierung, individuelle Anwendungen, Webentwicklung, Content- und Social-Abläufe, Produkt- und Commerce-Abläufe. Wir fangen bei dem an, was Ihren Betrieb ausbremst, nicht bei dem, was wir verkaufen.'
-      : 'Workflow automation, custom applications, web development, content and social operations, product and commerce operations. We start with what is slowing the business down, not with what we sell.',
+      ? 'Prozessautomatisierung, individuelle Anwendungen, Webentwicklung, Content- und Produktabläufe. Wir fangen bei dem an, was Ihren Betrieb ausbremst.'
+      : 'Workflow automation, custom applications, web development, content and product operations. We start with what is slowing the business down.',
     family: 'company',
   })
 }

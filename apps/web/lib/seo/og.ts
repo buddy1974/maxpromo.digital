@@ -97,6 +97,13 @@ interface PageMetadataInput {
    * carries the full framing because a crawler shows og:title as-is.
    */
   readonly ogTitle?: string
+  /**
+   * An approved image instead of the generated card. The share-preview
+   * hierarchy (docs/governance/seo-inventory.md): a page-specific approved
+   * image first, the generated family card otherwise. Path is site-relative,
+   * e.g. `/images/seo/maxpromo-digital-og.png`; dimensions are the file's own.
+   */
+  readonly image?: { readonly path: string; readonly width: number; readonly height: number; readonly alt: string }
 }
 
 /**
@@ -107,16 +114,19 @@ interface PageMetadataInput {
  * without an OG image.
  */
 export function pageMetadata({
-  locale, path, title, description, family, cardTitle, ogTitle,
+  locale, path, title, description, family, cardTitle, ogTitle, image: approved,
 }: PageMetadataInput): Metadata {
   const social = ogTitle ?? title
   const loc = locale === 'en' ? 'en' : 'de'
   const url = `${SITE}/${loc}${path === '/' ? '' : path}`
-  const image = `${SITE}/og?${new URLSearchParams({
+  const image = approved ? `${SITE}${approved.path}` : `${SITE}/og?${new URLSearchParams({
     title: cardTitle ?? social,
     family,
     locale: loc,
   })}`
+  const og = approved
+    ? { url: image, width: approved.width, height: approved.height, alt: approved.alt }
+    : { url: image, width: BRAND_OG.width, height: BRAND_OG.height, alt: title }
 
   return {
     title,
@@ -126,6 +136,9 @@ export function pageMetadata({
       languages: {
         de: `/de${path === '/' ? '' : path}`,
         en: `/en${path === '/' ? '' : path}`,
+        // German is the default locale and the primary market: a searcher
+        // whose language is neither gets the German page.
+        'x-default': `/de${path === '/' ? '' : path}`,
       },
     },
     openGraph: {
@@ -136,7 +149,7 @@ export function pageMetadata({
       siteName: 'Maxpromo Digital',
       locale: loc === 'de' ? 'de_DE' : 'en_GB',
       alternateLocale: loc === 'de' ? 'en_GB' : 'de_DE',
-      images: [{ url: image, width: BRAND_OG.width, height: BRAND_OG.height, alt: title }],
+      images: [og],
     },
     twitter: {
       card: 'summary_large_image',

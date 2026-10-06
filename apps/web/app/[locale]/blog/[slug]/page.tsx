@@ -8,6 +8,8 @@ import Image from 'next/image'
 import { evaluate } from '@mdx-js/mdx'
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime'
 import { getPostBySlug, getPublishedPosts } from '@/lib/blog/posts'
+import { breadcrumbs, graph, ORGANIZATION_ID, SITE } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 
 // =============================================================================
 // STATIC PARAMS
@@ -50,6 +52,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ? {
         [locale]:      canonical,
         [otherLocale]: `https://www.maxpromo.digital/${otherLocale}/blog/${post.slug}`,
+        'x-default':   `https://www.maxpromo.digital/de/blog/${post.slug}`,
       }
     : undefined
 
@@ -63,10 +66,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       url:           canonical,
+      siteName:      'Maxpromo Digital',
       images,
       publishedTime: post.publishedAt,
       authors:       [post.author ?? 'Maxpromo Digital'],
-      locale:        locale === 'de' ? 'de_DE' : 'en_US',
+      locale:        locale === 'de' ? 'de_DE' : 'en_GB',
     },
     twitter: {
       card:        'summary_large_image',
@@ -194,37 +198,41 @@ export default async function BlogDetailPage({ params }: PageProps) {
   })
 
 
-  // JSON-LD
-  const articleUrl = `https://www.maxpromo.digital/${locale}/blog/${post.slug}`
-  const jsonLd = {
-    '@context':        'https://schema.org',
-    '@type':           'Article',
-    headline:          post.title,
-    description:       post.metaDescription ?? post.excerpt,
-    datePublished:     post.publishedAt,
-    inLanguage:        locale,
-    author:            { '@type': 'Organization', name: post.author ?? 'Maxpromo Digital' },
-    publisher:         {
-      '@type': 'Organization',
-      name:    'Maxpromo Digital',
-      url:     'https://www.maxpromo.digital',
-      logo:    { '@type': 'ImageObject', url: 'https://www.maxpromo.digital/logo.png' },
+  // JSON-LD. A BlogPosting that points at the site-wide entities by @id
+  // instead of restating the company. Every article is signed "Maxpromo
+  // Digital", so the author is the Organization; the date is the one the post
+  // carries, never the build date.
+  const articleUrl = `${SITE}/${locale}/blog/${post.slug}`
+  const tFooter    = await getTranslations('footer')
+  const jsonLd = graph(
+    {
+      '@type':           'BlogPosting',
+      '@id':             `${articleUrl}#article`,
+      headline:          post.title,
+      description:       post.metaDescription ?? post.excerpt,
+      datePublished:     post.publishedAt,
+      inLanguage:        locale === 'en' ? 'en-GB' : 'de-DE',
+      author:            post.author && post.author !== 'Maxpromo Digital'
+        ? { '@type': 'Person', name: post.author }
+        : { '@id': ORGANIZATION_ID },
+      publisher:         { '@id': ORGANIZATION_ID },
+      url:               articleUrl,
+      mainEntityOfPage:  articleUrl,
+      ...(post.featuredImage ? { image: `${SITE}${post.featuredImage}` } : {}),
+      ...(post.keywords?.length ? { keywords: post.keywords.join(', ') } : {}),
     },
-    url:               articleUrl,
-    mainEntityOfPage:  { '@type': 'WebPage', '@id': articleUrl },
-    ...(post.featuredImage ? { image: `https://www.maxpromo.digital${post.featuredImage}` } : {}),
-    ...(post.keywords?.length ? { keywords: post.keywords.join(', ') } : {}),
-  }
+    breadcrumbs(locale, [
+      { name: tFooter('blog'), path: '/blog' },
+      { name: post.title, path: `/blog/${post.slug}` },
+    ]),
+  )
 
   const whatsappMsg  = encodeURIComponent(t('whatsappMsg'))
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMsg}`
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
 
       <div style={{ background: 'var(--brand-background)', minHeight: '100vh', paddingTop: 'var(--section-y)', paddingBottom: 'var(--space-16)' }}>
 

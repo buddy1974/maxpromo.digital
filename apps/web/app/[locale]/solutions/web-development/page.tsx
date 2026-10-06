@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
+import { breadcrumbs, graph, service } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -51,16 +53,21 @@ import '../solutions.css'
 const FAMILIAR = ['c3f1', 'c3f2', 'c3f3', 'c3f4', 'c3f5', 'c3f6'] as const
 const BUILDS = ['c3b1', 'c3b2', 'c3b3', 'c3b4'] as const
 
+/* Title and description, read by the head and by the Service markup alike. */
+const meta = (isDE: boolean) => ({
+  title: isDE ? 'Webentwicklung' : 'Web development',
+  description: isDE
+    ? 'Eine Website, die einen Teil der Arbeit übernimmt: Anfragen, die ankommen, Weiterleitung nach Inhalt und Verbindung zu den Systemen, die Sie ohnehin nutzen.'
+    : 'A website that does some of the work: enquiries that arrive properly, routing by what they are, and a connection to the systems you already run.',
+})
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
   return pageMetadata({
     locale,
     path: '/solutions/web-development',
-    title: isDE ? 'Webentwicklung' : 'Web development',
-    description: isDE
-      ? 'Eine Website, die einen Teil der Arbeit übernimmt: Anfragen, die ankommen, Weiterleitung nach Inhalt und Verbindung zu den Systemen, die Sie ohnehin nutzen.'
-      : 'A website that does some of the work: enquiries that arrive properly, routing by what they are, and a connection to the systems you already run.',
+    ...meta(isDE),
     family: 'capability',
   })
 }
@@ -73,9 +80,17 @@ export default async function WebDevelopmentPage({
   const isDE = locale === 'de'
   const t = await getTranslations('capabilityPages')
   const tCap = await getTranslations('capabilities')
+  const tNav = await getTranslations('nav')
 
   return (
     <>
+      <JsonLd data={graph(
+        service(locale, '/solutions/web-development', meta(isDE).title, meta(isDE).description),
+        breadcrumbs(locale, [
+          { name: tNav('solutions'), path: '/solutions' },
+          { name: meta(isDE).title, path: '/solutions/web-development' },
+        ]),
+      )} />
       <section className="section-feature surface-authority">
         <div className="container">
           <p className="cp-back">

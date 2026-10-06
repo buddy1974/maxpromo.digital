@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
+import { breadcrumbs, graph, service } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -47,16 +49,21 @@ import '../solutions.css'
 const FAMILIAR = ['c4f1', 'c4f2', 'c4f3', 'c4f4', 'c4f5', 'c4f6'] as const
 const BUILDS = ['c4b1', 'c4b2', 'c4b3', 'c4b4'] as const
 
+/* Title and description, read by the head and by the Service markup alike. */
+const meta = (isDE: boolean) => ({
+  title: isDE ? 'Inhalte und Social Media' : 'Content and social operations',
+  description: isDE
+    ? 'Erfassen, vorbereiten, prüfen, veröffentlichen, festhalten. Die Maschine bereitet vor, ein Mensch entscheidet, wie der Betrieb nach außen klingt.'
+    : 'Capture, prepare, review, publish, record. The machine prepares; a person decides how the business sounds.',
+})
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
   return pageMetadata({
     locale,
     path: '/solutions/content-operations',
-    title: isDE ? 'Inhalte und Social Media' : 'Content and social operations',
-    description: isDE
-      ? 'Erfassen, vorbereiten, prüfen, veröffentlichen, festhalten. Die Maschine bereitet vor, ein Mensch entscheidet, wie der Betrieb nach außen klingt.'
-      : 'Capture, prepare, review, publish, record. The machine prepares; a person decides how the business sounds.',
+    ...meta(isDE),
     family: 'capability',
   })
 }
@@ -69,9 +76,17 @@ export default async function CapabilityPage({
   const isDE = locale === 'de'
   const t = await getTranslations('capabilityPages')
   const tCap = await getTranslations('capabilities')
+  const tNav = await getTranslations('nav')
 
   return (
     <>
+      <JsonLd data={graph(
+        service(locale, '/solutions/content-operations', meta(isDE).title, meta(isDE).description),
+        breadcrumbs(locale, [
+          { name: tNav('solutions'), path: '/solutions' },
+          { name: meta(isDE).title, path: '/solutions/content-operations' },
+        ]),
+      )} />
       <section className="section-feature surface-authority">
         <div className="container">
           <p className="cp-back">

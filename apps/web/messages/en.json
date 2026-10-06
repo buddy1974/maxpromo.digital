@@ -56,7 +56,8 @@
     "agb": "Terms",
     "brand": "Maxpromo Digital",
     "work": "Work",
-    "frictionCheck": "Friction Check"
+    "frictionCheck": "Friction Check",
+    "country": "Germany"
   },
   "home": {
     "hero": {
@@ -1295,7 +1296,7 @@
   },
   "osStory": {
     "metaTitle": "From a messy request to a reviewed quotation",
-    "metaDesc": "One quotation, start to finish, in the system we run our own paperwork on: a loosely written email becomes a structured draft, and a person checks and saves it. Shown in a controlled test environment.",
+    "metaDesc": "One quotation in the system we run our own paperwork on: a loosely written email becomes a draft that a person checks and saves. Shown in a controlled test environment.",
     "crumb": "Work",
     "title": "From a messy customer request to a reviewed quotation.",
     "lede": "This is the system we run our own quotations and invoices on. Below is one quotation, from the first email to the saved draft, exactly as it happens on screen.",
@@ -1305,11 +1306,11 @@
     "st1Title": "The request arrives.",
     "st1Body": "A customer writes the way people write: a greeting, a remark about next week’s appointment, the three things they need, a signature. The email is pasted into the quotation screen as it is. Nobody retypes it.",
     "st1Caption": "The original email, pasted in. Nothing has been generated yet.",
-    "st1Alt": "The quotation screen with an input window open. The pasted email lists three items: a switch cabinet conversion for a flat 2,400.00, testing of 48 portable devices at 12.50 each, and documentation for a flat 380.00.",
+    "st1Alt": "The quotation screen with an input window open. The pasted email lists three items: a switch cabinet conversion for a flat 2,400.00, testing of 48 portable devices at 12.50 each, and documentation for a flat 380.00. The sender's street and postcode in the preview are covered.",
     "st2Title": "The system structures the work.",
     "st2Body": "It reads the text and fills in the quotation: the customer, three positions, quantities and prices. The greeting, the appointment and the signature are left out. Then it checks its own result against the original and lists what it could not confirm, such as an incomplete address and a total the email never stated.",
     "st2Caption": "The filled form with the review notes the system raised. The customer was matched to the existing record.",
-    "st2Alt": "The quotation form after extraction, with a list of review notes at the top, the customer Beckmann Elektrotechnik GmbH filled in, and a live preview showing three positions totalling 3,380.00 euros.",
+    "st2Alt": "The quotation form after extraction, with a list of review notes at the top, the customer Beckmann Elektrotechnik GmbH filled in, and a live preview showing three positions totalling 3,380.00 euros. The sender's street and postcode in the preview are covered.",
     "st3Title": "A person reviews it.",
     "st3Body": "At this point nothing has been saved. The form is a proposal. Someone reads the positions, checks them against what was asked for and decides whether it is right. Anything the system could not find in the original would be held here until a person deals with it.",
     "st3Caption": "Three positions and the total, before saving. The save button has not been pressed.",

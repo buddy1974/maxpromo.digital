@@ -4,6 +4,8 @@ import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
 import { pageMetadata } from '@/lib/seo/og'
+import { breadcrumbs, graph } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { OsWorkflowDiagram } from '@/components/proof/OsWorkflowDiagram'
 import './story.css'
 
@@ -70,6 +72,9 @@ export async function generateMetadata(
     title: t('metaTitle'),
     description: t('metaDesc'),
     family: 'work',
+    // The story's own evidence travels with the link: the extraction result,
+    // the public redacted derivative, rather than a generic card.
+    image: { path: `${IMG}/02-extraction-result.png`, width: 1311, height: 752, alt: t('st2Alt') },
   })
 }
 
@@ -80,6 +85,10 @@ export default async function OsStoryPage({ params }: { params: Promise<{ locale
 
   return (
     <>
+      <JsonLd data={graph(breadcrumbs(locale, [
+        { name: t('crumb'), path: '/work' },
+        { name: t('metaTitle'), path: '/work/maxpromo-os' },
+      ]))} />
       <section className="hero-band">
         <div className="hero-panel hero-panel-inner">
           <div className="hero-copy">

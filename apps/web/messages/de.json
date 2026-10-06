@@ -56,7 +56,8 @@
     "agb": "AGB",
     "brand": "Maxpromo Digital",
     "work": "Arbeiten",
-    "frictionCheck": "Friction Check"
+    "frictionCheck": "Friction Check",
+    "country": "Deutschland"
   },
   "home": {
     "hero": {
@@ -1295,7 +1296,7 @@
   },
   "osStory": {
     "metaTitle": "Von der unsortierten Anfrage zum geprüften Angebot",
-    "metaDesc": "Ein Angebot von Anfang bis Ende, in dem System, mit dem wir unsere eigenen Unterlagen erstellen: Aus einer frei formulierten E-Mail wird ein strukturierter Entwurf, ein Mensch prüft und speichert. Gezeigt in einer kontrollierten Testumgebung.",
+    "metaDesc": "Ein Angebot im eigenen System: Aus einer frei formulierten E-Mail wird ein Entwurf, den ein Mensch prüft und speichert. Gezeigt in einer kontrollierten Testumgebung.",
     "crumb": "Arbeiten",
     "title": "Von der unsortierten Kundenanfrage zum geprüften Angebot.",
     "lede": "Mit diesem System erstellen wir unsere eigenen Angebote und Rechnungen. Hier sehen Sie ein Angebot von der ersten E-Mail bis zum gespeicherten Entwurf, so wie es tatsächlich auf dem Bildschirm abläuft.",
@@ -1305,11 +1306,11 @@
     "st1Title": "Die Anfrage kommt an.",
     "st1Body": "Eine Kundin schreibt, wie Menschen eben schreiben: eine Begrüßung, eine Bemerkung zum Termin nächste Woche, drei Positionen, eine Signatur. Die E-Mail wird so, wie sie ist, in die Angebotsmaske eingefügt. Niemand tippt etwas ab.",
     "st1Caption": "Die Original-E-Mail, eingefügt. Erzeugt wurde noch nichts.",
-    "st1Alt": "Die Angebotsmaske mit geöffnetem Eingabefenster. Die eingefügte E-Mail nennt drei Positionen: Schaltschrank-Umbau pauschal 2.400,00, Prüfung von 48 ortsveränderlichen Geräten zu je 12,50 und Dokumentation pauschal 380,00.",
+    "st1Alt": "Die Angebotsmaske mit geöffnetem Eingabefenster. Die eingefügte E-Mail nennt drei Positionen: Schaltschrank-Umbau pauschal 2.400,00, Prüfung von 48 ortsveränderlichen Geräten zu je 12,50 und Dokumentation pauschal 380,00. Straße und Postleitzahl des Absenders in der Vorschau sind abgedeckt.",
     "st2Title": "Das System strukturiert die Arbeit.",
     "st2Body": "Es liest den Text und füllt das Angebot aus: Kundin, drei Positionen, Mengen und Preise. Begrüßung, Termin und Signatur bleiben draußen. Danach gleicht es das Ergebnis mit dem Original ab und nennt, was es nicht bestätigen konnte, etwa eine unvollständige Adresse oder eine Gesamtsumme, die in der E-Mail gar nicht stand.",
     "st2Caption": "Das ausgefüllte Formular mit den Prüfhinweisen des Systems. Die Kundin wurde dem bestehenden Kundendatensatz zugeordnet.",
-    "st2Alt": "Das Angebotsformular nach dem Auslesen, oben eine Liste mit Prüfhinweisen, die Kundin Beckmann Elektrotechnik GmbH eingetragen, rechts eine Vorschau mit drei Positionen und 3.380,00 Euro Angebotssumme.",
+    "st2Alt": "Das Angebotsformular nach dem Auslesen, oben eine Liste mit Prüfhinweisen, die Kundin Beckmann Elektrotechnik GmbH eingetragen, rechts eine Vorschau mit drei Positionen und 3.380,00 Euro Angebotssumme. Straße und Postleitzahl des Absenders in der Vorschau sind abgedeckt.",
     "st3Title": "Ein Mensch prüft.",
     "st3Body": "Gespeichert ist zu diesem Zeitpunkt noch nichts. Das Formular ist ein Vorschlag. Jemand liest die Positionen, vergleicht sie mit der Anfrage und entscheidet, ob es stimmt. Was das System im Original nicht finden konnte, bliebe hier zurückgehalten, bis ein Mensch es klärt.",
     "st3Caption": "Drei Positionen und die Summe, vor dem Speichern. Der Speichern-Knopf wurde noch nicht gedrückt.",

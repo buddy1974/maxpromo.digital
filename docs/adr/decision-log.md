@@ -1688,3 +1688,39 @@ address.
 **Rejected:** a generic upload endpoint in the application (a new attack
 surface to move five files); broad filesystem access for the browser agent;
 treating browser tool storage ids as artefacts.
+
+---
+
+## 2026-10-06 — Maxpromo Digital is marked up as a service-area Organization, without a street address
+
+**Decision:** The site-wide markup is one Organization (`#organization`) with
+locality and country only, linked to a founder Person and a WebSite by `@id`.
+No LocalBusiness, geo, opening hours, areaServed or sameAs. The street address
+appears only on the Impressum, privacy notice and AGB, and in transactional
+emails. Every other page, schema node and public image omits it, and
+`audit:seo` fails if it returns.
+
+**Why:** The business serves clients where they are and does not receive them
+at premises. Publishing a street address in repeated chrome and in markup
+implied a storefront that does not exist and exposed an address that has no
+public purpose outside the legal pages. The 2026-09-16 footer decision already
+kept the tax identity out of the footer for the same reason.
+
+**Rejected:** LocalBusiness with a hidden address (markup is public by
+definition); city landing pages (thin, implied presence); an invented
+`areaServed`; editing the legal pages in this package (frozen — their
+metadata gap is recorded as a warning instead).
+
+---
+
+## 2026-10-06 — IndexNow is not adopted; Search Console via DNS is the owner's step
+
+**Decision:** No IndexNow key or ping. Discovery runs on the sitemap, Google
+Search Console (Domain property, DNS TXT) and Bing Webmaster (imported from
+Search Console). No verification token is committed.
+
+**Why:** Google does not consume IndexNow; Bing reads the sitemap; a handful of
+pages change a month. A key to manage buys nothing yet.
+
+**Revisit when:** publishing reaches several pieces a week, or Bing Webmaster
+reports slow discovery.

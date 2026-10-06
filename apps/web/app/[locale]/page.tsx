@@ -3,7 +3,7 @@ import { pageMetadata } from '@/lib/seo/og'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { currentDomain, showcaseRootMetadata } from '@/lib/domains/server'
 import { notFound } from 'next/navigation'
-import { BUSINESS } from '@maxpromo/config'
+import { BUSINESS, COMPANY_BRAND } from '@maxpromo/config'
 import { getLandingData } from '@/lib/registry/adapters/landing.adapter'
 import { LandingEngine } from '@/components/landing/LandingEngine'
 import { Link } from '@/i18n/navigation'
@@ -77,7 +77,17 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     // hand-rolled and, despite a comment warning that setting any of
     // openGraph sets all of it, still omitted og:locale entirely.
     ogTitle,
+    // The approved corporate card from the brand registry, not a generated one:
+    // the home page is the link most often shared as "the company".
+    image: homeCard(),
   })
+}
+
+function homeCard() {
+  const card = COMPANY_BRAND.openGraphImage
+  return card.path && card.width && card.height
+    ? { path: card.path, width: card.width, height: card.height, alt: BUSINESS.brand }
+    : undefined
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

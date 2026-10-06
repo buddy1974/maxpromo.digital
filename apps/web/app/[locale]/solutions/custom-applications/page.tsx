@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
+import { breadcrumbs, graph, service } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -39,6 +41,14 @@ import '../solutions.css'
 const FAMILIAR = ['c2f1', 'c2f2', 'c2f3', 'c2f4', 'c2f5', 'c2f6'] as const
 const BUILDS = ['c2b1', 'c2b2', 'c2b3', 'c2b4'] as const
 
+/* Title and description, read by the head and by the Service markup alike. */
+const meta = (isDE: boolean) => ({
+  title: isDE ? 'Individuelle Anwendungen' : 'Custom applications',
+  description: isDE
+    ? 'Wenn Tabellen und Standardsoftware nicht mehr passen: interne Anwendungen, Portale und operative Systeme, gebaut um den Ablauf, den Ihr Betrieb wirklich hat.'
+    : 'When spreadsheets and off-the-shelf software stop fitting: internal applications, portals and operational systems built around the process your business actually has.',
+})
+
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> },
 ): Promise<Metadata> {
@@ -47,10 +57,7 @@ export async function generateMetadata(
   return pageMetadata({
     locale,
     path: '/solutions/custom-applications',
-    title: isDE ? 'Individuelle Anwendungen' : 'Custom applications',
-    description: isDE
-      ? 'Wenn Tabellen und Standardsoftware nicht mehr passen: interne Anwendungen, Portale und operative Systeme, gebaut um den Ablauf, den Ihr Betrieb wirklich hat.'
-      : 'When spreadsheets and off-the-shelf software stop fitting: internal applications, portals and operational systems built around the process your business actually has.',
+    ...meta(isDE),
     family: 'capability',
   })
 }
@@ -63,9 +70,17 @@ export default async function CustomApplicationsPage(
   const isDE = locale === 'de'
   const t = await getTranslations('capabilityPages')
   const tCap = await getTranslations('capabilities')
+  const tNav = await getTranslations('nav')
 
   return (
     <>
+      <JsonLd data={graph(
+        service(locale, '/solutions/custom-applications', meta(isDE).title, meta(isDE).description),
+        breadcrumbs(locale, [
+          { name: tNav('solutions'), path: '/solutions' },
+          { name: meta(isDE).title, path: '/solutions/custom-applications' },
+        ]),
+      )} />
       <section className="section-feature surface-authority">
         <div className="container">
           <p className="cp-back">

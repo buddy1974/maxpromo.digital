@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     path: '/resources',
     title: isDE ? 'Ressourcen' : 'Resources',
     description: isDE
-      ? 'Nützlich, bevor Sie irgendetwas kaufen: ein Leitfaden, was man zuerst automatisiert, ein Check für Ihre eigene Woche, ein echter Ablauf Schritt für Schritt und Notizen aus der Arbeit.'
+      ? 'Nützlich vor jedem Kauf: was man zuerst automatisiert, ein Check für Ihre eigene Woche, ein echter Ablauf Schritt für Schritt und Notizen aus der Arbeit.'
       : 'Useful before you buy anything: a guide to what to automate first, a check of your own working week, a real workflow shown step by step, and notes from the work.',
     family: 'resource',
   })

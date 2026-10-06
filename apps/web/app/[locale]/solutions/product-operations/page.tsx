@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
+import { breadcrumbs, graph, service } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -42,16 +44,21 @@ import '../solutions.css'
 const FAMILIAR = ['c5f1', 'c5f2', 'c5f3', 'c5f4', 'c5f5', 'c5f6'] as const
 const BUILDS = ['c5b1', 'c5b2', 'c5b3', 'c5b4'] as const
 
+/* Title and description, read by the head and by the Service markup alike. */
+const meta = (isDE: boolean) => ({
+  title: isDE ? 'Produkt- und Handelsabläufe' : 'Product and commerce operations',
+  description: isDE
+    ? 'Ein führender Ort für Produktangaben, und Kanäle, die ihm folgen. Preise und Zusagen bleiben eine menschliche Entscheidung.'
+    : 'One authoritative place for product detail, and channels that follow it. Prices and promises stay a human decision.',
+})
+
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
   return pageMetadata({
     locale,
     path: '/solutions/product-operations',
-    title: isDE ? 'Produkt- und Handelsabläufe' : 'Product and commerce operations',
-    description: isDE
-      ? 'Ein führender Ort für Produktangaben, und Kanäle, die ihm folgen. Preise und Zusagen bleiben eine menschliche Entscheidung.'
-      : 'One authoritative place for product detail, and channels that follow it. Prices and promises stay a human decision.',
+    ...meta(isDE),
     family: 'capability',
   })
 }
@@ -64,9 +71,17 @@ export default async function CapabilityPage({
   const isDE = locale === 'de'
   const t = await getTranslations('capabilityPages')
   const tCap = await getTranslations('capabilities')
+  const tNav = await getTranslations('nav')
 
   return (
     <>
+      <JsonLd data={graph(
+        service(locale, '/solutions/product-operations', meta(isDE).title, meta(isDE).description),
+        breadcrumbs(locale, [
+          { name: tNav('solutions'), path: '/solutions' },
+          { name: meta(isDE).title, path: '/solutions/product-operations' },
+        ]),
+      )} />
       <section className="section-feature surface-authority">
         <div className="container">
           <p className="cp-back">

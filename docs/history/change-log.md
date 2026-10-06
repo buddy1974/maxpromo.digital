@@ -1,5 +1,37 @@
 # Change Log
 
+## 2026-10-06 — Iteration 2A: search, discovery and sharing
+
+Local only, not pushed, not deployed.
+
+**Address.** The street address left every public surface that does not
+legally need it: the global footer (now city and country), the About company
+details, the Organization markup, and proof images 01 and 02 (redacted through
+`DERIVATIVES.json` and `evidence:derive`; originals untouched). It remains on
+the Impressum, privacy notice and AGB.
+
+**Structured data.** One `@graph` per page — Organization `#organization`,
+Person `#founder`, WebSite `#website` — with no street, no LocalBusiness, no
+invented service area or profiles. Capability pages carry `Service` (no
+prices) and `BreadcrumbList`; industry pages, the OS story and the guide carry
+`BreadcrumbList`; blog posts are `BlogPosting` pointing at the Organization by
+`@id`. Shared builder: `lib/seo/schema.ts`, `components/seo/JsonLd.tsx`.
+
+**Metadata.** `x-default` hreflang → German. The duplicated brand in the
+newsletter post's title removed. `/solutions` title names its subject.
+Five over-long descriptions shortened. Blog Open Graph now declares the site
+name and `en_GB`. Sitemap no longer stamps every static page with the request
+time as `lastmod`.
+
+**Sharing.** Home shares the approved corporate card from the brand registry;
+the OS story shares its own redacted proof image; posts keep their editorial
+photographs; everything else its generated card (`pageMetadata({ image })`).
+
+**Gate.** `npm run audit:seo` reads the rendered head of every sitemap URL
+(added to `certify`). Docs: `seo-inventory.md` §7–§14,
+`search-intent-map.md`, `google-business-profile-draft.md` (OWNER REVIEW),
+`seo-owner-actions.md`.
+
 ## 2026-10-06 — Commercial clarity: practice flows, automation or system, a diagnosis
 
 Local only, not pushed, not deployed.

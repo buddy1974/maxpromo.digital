@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
+import { breadcrumbs, graph } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -70,7 +72,6 @@ export default async function WhatToAutomateFirstPage({
      author and publisher are the entities the layout declares. Nothing here
      that the page does not visibly say. */
   const articleJsonLd = {
-    '@context': 'https://schema.org',
     '@type': 'Article',
     headline: t('title'),
     description: t('lede'),
@@ -80,13 +81,14 @@ export default async function WhatToAutomateFirstPage({
     author: { '@id': 'https://www.maxpromo.digital/#founder' },
     publisher: { '@id': 'https://www.maxpromo.digital/#organization' },
   }
+  const tNav = await getTranslations('nav')
 
   return (
     <div className="guide">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-      />
+      <JsonLd data={graph(articleJsonLd, breadcrumbs(locale, [
+        { name: tNav('resources'), path: '/resources' },
+        { name: t('title'), path: '/resources/what-to-automate-first' },
+      ]))} />
       <article>
         <header className="guide-head">
           <Link href="/resources" className="quiet-link">{t('eyebrow')}</Link>

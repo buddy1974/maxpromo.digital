@@ -22,8 +22,8 @@ export async function generateMetadata({
     path: '/friction-check',
     title: isDE ? 'Business Friction Check' : 'Business Friction Check',
     description: isDE
-      ? 'Sechs Fragen zu Dingen, die in einer normalen Woche passieren. Sie sehen sofort, welche Art von Reibung Ihr Betrieb hat und was man zuerst dagegen tut. Kein Score, keine E-Mail nötig.'
-      : 'Six questions about things that happen in an ordinary week. You see straight away what kind of friction your business has and what to do about it first. No score, no email required.',
+      ? 'Sechs Fragen zu einer normalen Arbeitswoche. Sie sehen sofort, welche Art von Reibung Ihr Betrieb hat und was zuerst hilft. Kein Score, keine E-Mail nötig.'
+      : 'Six questions about an ordinary working week. You see straight away what kind of friction your business has and what to fix first. No score, no email required.',
     family: 'resource',
   })
 }

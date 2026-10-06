@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
+import { breadcrumbs, graph, service } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
@@ -54,6 +56,14 @@ const AFTER = [
 /** The approval step. Index 3 of AFTER, and the only accent in the figure. */
 const HUMAN_AT = 3
 
+/* Title and description, read by the head and by the Service markup alike. */
+const meta = (isDE: boolean) => ({
+  title: isDE ? 'Prozessautomatisierung' : 'Workflow automation',
+  description: isDE
+    ? 'Dieselben Angaben nicht mehr von Hand weiterreichen. Einmal erfassen, richtig weiterleiten, Arbeit vorbereiten, Ergebnis festhalten. Entscheidungen bleiben bei Menschen.'
+    : 'Stop moving the same information by hand. Capture once, route correctly, prepare the work, record the outcome. Decisions stay with people.',
+})
+
 export async function generateMetadata(
   { params }: { params: Promise<{ locale: string }> },
 ): Promise<Metadata> {
@@ -62,10 +72,7 @@ export async function generateMetadata(
   return pageMetadata({
     locale,
     path: '/solutions/workflow-automation',
-    title: isDE ? 'Prozessautomatisierung' : 'Workflow automation',
-    description: isDE
-      ? 'Dieselben Angaben nicht mehr von Hand weiterreichen. Einmal erfassen, richtig weiterleiten, Arbeit vorbereiten, Ergebnis festhalten. Entscheidungen bleiben bei Menschen.'
-      : 'Stop moving the same information by hand. Capture once, route correctly, prepare the work, record the outcome. Decisions stay with people.',
+    ...meta(isDE),
     family: 'capability',
   })
 }
@@ -76,9 +83,18 @@ export default async function WorkflowAutomationPage(
   const { locale } = await params
   setRequestLocale(locale)
   const t = await getTranslations('capabilityPages')
+  const tNav = await getTranslations('nav')
+  const isDE = locale === 'de'
 
   return (
     <>
+      <JsonLd data={graph(
+        service(locale, '/solutions/workflow-automation', meta(isDE).title, meta(isDE).description),
+        breadcrumbs(locale, [
+          { name: tNav('solutions'), path: '/solutions' },
+          { name: meta(isDE).title, path: '/solutions/workflow-automation' },
+        ]),
+      )} />
       <section className="section-feature surface-authority">
         <div className="container">
           <p className="cp-back">

@@ -78,11 +78,12 @@ export async function Footer() {
         <div className="site-footer-grid">
           <div>
             <p className="site-footer-brand">{t('brand')}</p>
-            <address className="site-footer-address">
-              {BUSINESS.street}<br />
-              {BUSINESS.city}<br />
-              {BUSINESS.country}
-            </address>
+            {/* City and country only. The street address belongs on the
+                Impressum, one click away, and nowhere in repeated chrome:
+                Maxpromo Digital does not receive clients at premises. */}
+            <p className="site-footer-address">
+              {BUSINESS.cityName} · {t('country')}
+            </p>
             <a href={`mailto:${BUSINESS.email}`} className="site-footer-link">
               {BUSINESS.email}
             </a>

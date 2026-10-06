@@ -121,7 +121,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of LOCALES) {
       entries.push({
         url: `${SITE_URL}/${locale}${route.path}`,
-        lastModified: new Date(),
+        // No lastmod. The repository records no per-page modification date,
+        // and the request time claimed every page changed on every fetch — a
+        // signal search engines learn to ignore for the whole sitemap. An
+        // absent date is honest; the blog's publication dates below are real.
         changeFrequency: route.changeFrequency,
         priority: route.priority,
         alternates: { languages: languageAlternates(route.path) },

@@ -2,7 +2,7 @@
   {
     "requirement": "os-source-note",
     "source": "docs/evidence/maxpromo-os/01-source-note.jpg",
-    "classification": "public-as-is",
+    "classification": "public-derivative-required",
     "output": "apps/web/public/images/systems/maxpromo-os/01-source-note.png",
     "crop": {
       "left": 0,
@@ -10,11 +10,19 @@
       "width": 1311,
       "height": 752
     },
-    "redactions": [],
-    "reason": "Nothing to withhold. Cropped to the browser viewport only: the screenshot tool's blank margin is not part of the application.",
+    "redactions": [
+      {
+        "left": 878,
+        "top": 245,
+        "width": 46,
+        "height": 32,
+        "removes": "street and postcode lines of Maxpromo's address in the preview header behind the dialog"
+      }
+    ],
+    "reason": "The quotation preview behind the dialog shows the street address of Maxpromo's business address. Maxpromo Digital does not publish a street address outside the Impressum and privacy notice, so those two lines are covered; the city line's country, the dialog and the source note are untouched. Viewport crop only.",
     "sourceSha256": "2ec395e2ac93b0b82a27804883b6a2876fcb78c3fedfdc21f1667a6f7e07bfbd",
-    "outputSha256": "0164818165185f3a60c8568c5c8606af4ee1f6dec027c4d23cac6ff4a40cf6d9",
-    "bytes": 305324,
+    "outputSha256": "0ff6487770b5d8c2b17121d33b94f6f8536195dd3c02f5f4e492d8f606a647c3",
+    "bytes": 329699,
     "width": 1311,
     "height": 752,
     "madeOn": "2026-10-06"
@@ -22,7 +30,7 @@
   {
     "requirement": "os-extraction-result",
     "source": "docs/evidence/maxpromo-os/02-extraction-result.jpg",
-    "classification": "public-as-is",
+    "classification": "public-derivative-required",
     "output": "apps/web/public/images/systems/maxpromo-os/02-extraction-result.png",
     "crop": {
       "left": 0,
@@ -30,11 +38,19 @@
       "width": 1311,
       "height": 752
     },
-    "redactions": [],
-    "reason": "Nothing to withhold: no bank or tax data in frame. The proprietor's name and business address in the preview header are the published Impressum identity. Viewport crop only.",
+    "redactions": [
+      {
+        "left": 858,
+        "top": 245,
+        "width": 66,
+        "height": 32,
+        "removes": "street and postcode lines of Maxpromo's address in the preview header"
+      }
+    ],
+    "reason": "No bank or tax data in frame. The street and postcode of Maxpromo's business address in the preview header are covered: the street address is published only on the Impressum and privacy notice. Everything the extraction produced — the client block, positions and quotation data — is untouched. Viewport crop only.",
     "sourceSha256": "4734b0dd85f53a022ff53654414c5be2a0379c6da1ea35b74d55291e81e12a6a",
-    "outputSha256": "5cadc8291390e86e15e9d3e12a50e07e06081012f5584e530f8c7c6e69d483f9",
-    "bytes": 333337,
+    "outputSha256": "f7af654cc9534004b973fb9bd22a2dc82c3050ccd8ebbebef62bfc81a9c183db",
+    "bytes": 361248,
     "width": 1311,
     "height": 752,
     "madeOn": "2026-10-06"

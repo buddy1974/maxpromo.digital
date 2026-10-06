@@ -205,7 +205,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 </div>
                 <div>
                   <dt>{isDE ? 'Sitz' : 'Based in'}</dt>
-                  <dd>{BUSINESS.street}, {BUSINESS.city}, {BUSINESS.country}</dd>
+                  <dd>{BUSINESS.cityName}, {isDE ? 'Deutschland' : 'Germany'}</dd>
                 </div>
                 <div>
                   <dt>{isDE ? 'Sprachen' : 'Languages'}</dt>

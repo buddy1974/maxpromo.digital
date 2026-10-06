@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
+import { breadcrumbs, graph } from '@/lib/seo/schema'
+import { JsonLd } from '@/components/seo/JsonLd'
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { INDUSTRIES, getIndustry, asLocale } from '@/lib/industries'
 
@@ -50,9 +52,14 @@ export default async function IndustryPage(
   const l = asLocale(locale)
   const isDE = l === 'de'
   const others = INDUSTRIES.filter((i) => i.slug !== slug)
+  const tNav = await getTranslations('nav')
 
   return (
     <>
+      <JsonLd data={graph(breadcrumbs(locale, [
+        { name: tNav('industries'), path: '/industries' },
+        { name: ind.name[l], path: `/industries/${slug}` },
+      ]))} />
       {/* Problem */}
       <section className="section-feature">
         <div className="container">
