@@ -1,5 +1,17 @@
 # Change Log
 
+## 2026-10-06 — Final browser review findings closed
+
+Four P1 findings from the owner-level Chrome review and one claim audit:
+empty client-screenshot frames removed from three capability pages; the
+Industries overclaim ("six sectors we have built for and still run")
+replaced; the public Max widget disabled for launch, so no `/api/chat/*` call
+on page load; Contact's "never shared with third parties" replaced by what
+the privacy policy supports, with the policy linked beside the button; the
+Work client entries described as projects, not live systems, because no
+client record supports the status. DE and EN. Thirteen P2 observations are
+deferred to iteration 2. verify exit 0.
+
 ## 2026-10-06 — Launch candidate: the proof ships, every route earns its place
 
 Local only. Nothing pushed, nothing deployed, no provider called, no evidence

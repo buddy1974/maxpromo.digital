@@ -8,6 +8,32 @@ them once, with the rest of the build.
 
 ---
 
+### Final browser review: four corrections and one claim audit
+
+**The public assistant is off for launch.** Max rendered on every page as
+"ask a question, get a real answer". A real answer needs a live provider
+call and production chat storage, and neither could be shown working without
+production experimentation or new provider spend. The widget no longer
+renders (`PUBLIC_CHAT_ENABLED` in the locale layout) and nothing calls
+`/api/chat/*` on load. Code kept; turn it on once it is proven where it is
+deployed. Contact and the Friction Check carry conversion.
+
+**The two client entries on Work are projects, not live systems.** The
+evidence inventory records no code, artefact, client record or consent record
+for either. "Went live", "how it runs now" and "see this running" became
+where the work started and what the system was built to do. No figure, no
+status claim.
+
+**Empty proof frames removed** from Web Development, Content & Social and
+Product & Commerce. They read as unfinished and implied a client engagement no
+evidence supports; each page already carries a process figure.
+
+**Industries no longer says "six sectors we have built for and still run."**
+**Contact** states what the details are used for, no more broadly than the
+privacy policy, and links it at the point of collection.
+
+---
+
 ### The Maxpromo OS evidence is published, under its own public framing
 
 **Decision.** The five governed captures become public proof: a story page at

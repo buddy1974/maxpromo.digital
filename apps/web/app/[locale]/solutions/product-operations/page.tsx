@@ -4,7 +4,6 @@ import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
-import { ScreenshotSlot } from '@/components/ui/ScreenshotSlot'
 import '../solutions.css'
 
 /**
@@ -137,23 +136,6 @@ export default async function CapabilityPage({
           <div className="cp-human">
             <SectionHeader label={t('c5HumanEyebrow')}>{t('c5HumanTitle')}</SectionHeader>
             <p className="cp-human-body">{t('c5HumanBody')}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Reserved, not filled. There is no published evidence of a website this
-          company built doing this, and a stock screenshot would be worse than
-          an honest empty position. */}
-      <section className="section surface-plain" data-section="proof">
-        <div className="container">
-          <div className="cp-proof">
-            <ScreenshotSlot
-              alt={t('c5Title')}
-              width={1200}
-              height={750}
-              pendingLabel={t('proofPendingLabel')}
-            />
-            <p className="cp-proof-note">{t('proofPendingNote')}</p>
           </div>
         </div>
       </section>

@@ -4,7 +4,6 @@ import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
-import { ScreenshotSlot } from '@/components/ui/ScreenshotSlot'
 import '../solutions.css'
 
 /**
@@ -37,7 +36,12 @@ import '../solutions.css'
  *
  * No reach figures, no engagement percentages, no posting cadence promises.
  * There is no measured figure this company may publish about content it
- * produced. The proof position is reserved, as everywhere else.
+ * produced.
+ *
+ * There is no proof section. An empty screenshot frame read as an unfinished
+ * page and implied a client engagement no public evidence supports, so it was
+ * removed in the final browser review (2026-10-06); the process figure above
+ * explains the capability without pretending to be evidence.
  */
 
 const FAMILIAR = ['c4f1', 'c4f2', 'c4f3', 'c4f4', 'c4f5', 'c4f6'] as const
@@ -137,23 +141,6 @@ export default async function CapabilityPage({
           <div className="cp-human">
             <SectionHeader label={t('c4HumanEyebrow')}>{t('c4HumanTitle')}</SectionHeader>
             <p className="cp-human-body">{t('c4HumanBody')}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Reserved, not filled. There is no published evidence of a website this
-          company built doing this, and a stock screenshot would be worse than
-          an honest empty position. */}
-      <section className="section surface-plain" data-section="proof">
-        <div className="container">
-          <div className="cp-proof">
-            <ScreenshotSlot
-              alt={t('c4Title')}
-              width={1200}
-              height={750}
-              pendingLabel={t('proofPendingLabel')}
-            />
-            <p className="cp-proof-note">{t('proofPendingNote')}</p>
           </div>
         </div>
       </section>

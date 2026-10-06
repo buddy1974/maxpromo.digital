@@ -81,8 +81,8 @@ export default async function IndustriesPage({ params }: { params: Promise<{ loc
             </h1>
             <p className="sec-lede" style={{ margin: 0 }}>
               {isDE
-                ? 'Sechs Branchen, die wir gebaut haben und weiter betreiben. Die Sprache ist in jeder eine andere. Die drei Stellen, an denen es klemmt, sind überall dieselben.'
-                : 'Six sectors we have built for and still run. The vocabulary is different in every one. The three places it breaks down are the same everywhere.'}
+                ? 'Sechs Branchen, sechs eigene Fachsprachen. Die drei Stellen, an denen die Arbeit klemmt, sind trotzdem überall dieselben.'
+                : 'Six sectors, six different vocabularies. The three places where work gets stuck are the same in every one.'}
             </p>
           </div>
 

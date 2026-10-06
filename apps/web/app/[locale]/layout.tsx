@@ -11,12 +11,23 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import CookieBanner from '@/components/CookieBanner'
 import Max from '@/components/max/Max'
+
+/*
+ * The public assistant is off for launch (2026-10-06, final browser review).
+ * A visible "ask a question, get a real answer" widget has to answer, and its
+ * reliability in production could not be shown without live provider calls
+ * and production chat storage — so it does not render, and nothing calls
+ * /api/chat/* on page load. Contact and the Friction Check carry the
+ * conversion. The code stays for a later iteration; flip this once the
+ * assistant is proven in its deployed environment.
+ */
+const PUBLIC_CHAT_ENABLED = false
 import { BUSINESS } from '@maxpromo/config'
 
 /**
  * Locale layout, wraps every public marketing route with the
- * translation provider and the global chrome (Navbar, Footer, Max, CookieBanner).
- * Max widget mounts in both hub and showcase branches.
+ * translation provider and the global chrome (Navbar, Footer, CookieBanner).
+ * The Max widget is gated by PUBLIC_CHAT_ENABLED above, off for launch.
  *
  * setRequestLocale() enables static rendering for translated content
  *, without it, every page would be dynamic on every request.
@@ -126,7 +137,7 @@ export default async function LocaleLayout({
           <ShowcaseChrome domain={domain} locale={locale}>
             {children}
           </ShowcaseChrome>
-          <Max />
+          {PUBLIC_CHAT_ENABLED && <Max />}
         </>
       ) : (
         <>
@@ -147,7 +158,7 @@ export default async function LocaleLayout({
           <main id="content">{children}</main>
           <Footer />
           <CookieBanner />
-          <Max />
+          {PUBLIC_CHAT_ENABLED && <Max />}
         </>
       )}
     </NextIntlClientProvider>

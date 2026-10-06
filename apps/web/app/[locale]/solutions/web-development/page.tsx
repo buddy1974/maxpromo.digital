@@ -4,7 +4,6 @@ import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { SectionHeader } from '@maxpromo/ui'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
-import { ScreenshotSlot } from '@/components/ui/ScreenshotSlot'
 import '../solutions.css'
 
 /**
@@ -36,8 +35,12 @@ import '../solutions.css'
  * No conversion percentages, no "sites like this typically see". There is no
  * measured figure this company may publish about a website it built, and
  * inventing one for a band would be the exact failure the claims registry
- * exists to catch. The proof position is built and reserved, as on the other
- * two capability pages.
+ * exists to catch.
+ *
+ * There is no proof section. An empty screenshot frame read as an unfinished
+ * page and implied a client engagement no public evidence supports, so it was
+ * removed in the final browser review (2026-10-06); the process figure above
+ * explains the capability without pretending to be evidence.
  *
  * No framework names, no technology list, no "modern stack". The reader's
  * problem is that an enquiry gets retyped; which renderer produces the page is
@@ -142,23 +145,6 @@ export default async function WebDevelopmentPage({
           <div className="cp-human">
             <SectionHeader label={t('c3HumanEyebrow')}>{t('c3HumanTitle')}</SectionHeader>
             <p className="cp-human-body">{t('c3HumanBody')}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Reserved, not filled. There is no published evidence of a website this
-          company built doing this, and a stock screenshot would be worse than
-          an honest empty position. */}
-      <section className="section surface-plain" data-section="proof">
-        <div className="container">
-          <div className="cp-proof">
-            <ScreenshotSlot
-              alt={t('c3Title')}
-              width={1200}
-              height={750}
-              pendingLabel={t('proofPendingLabel')}
-            />
-            <p className="cp-proof-note">{t('proofPendingNote')}</p>
           </div>
         </div>
       </section>

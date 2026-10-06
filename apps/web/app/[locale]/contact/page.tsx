@@ -4,6 +4,7 @@ import { FormStatus, Icon } from '@maxpromo/ui'
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import VoiceInputWidget from '@/components/voice/VoiceInputWidget'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
 import { CAPABILITIES } from '@/lib/capabilities'
@@ -406,7 +407,11 @@ export default function ContactPage() {
                   {status === 'loading' ? t('formCtaSending') : t('formCta')}
                 </button>
                 <p style={{ margin: 'var(--space-4) 0 0', fontFamily: 'var(--brand-font-mono)', fontSize: 'var(--text-label)', color: 'var(--brand-text-secondary)' }}>
-                  {t('formPrivacy')}
+                  {/* At the point of collection: what the details are used for, in
+                      no broader terms than the privacy policy supports, and the
+                      policy itself one click away. */}
+                  {t('formPrivacy')}{' '}
+                  <Link href="/privacy" className="link">{t('formPrivacyLink')}</Link>
                 </p>
               </div>
             </form>
