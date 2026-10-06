@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { BUSINESS } from '@maxpromo/config'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
+import { FounderNote } from '@/components/home/FounderNote'
 
 /**
  * app/[locale]/about/page.tsx
@@ -38,17 +40,13 @@ import { ProcessSequence } from '@/components/ui/ProcessSequence'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'about' })
-  return {
+  return pageMetadata({
+    locale,
+    path: '/about',
     title: t('metaTitle'),
     description: t('metaDesc'),
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/about`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de/about',
-        en: 'https://www.maxpromo.digital/en/about',
-      },
-    },
-  }
+    family: 'company',
+  })
 }
 
 const ARC = ['a1', 'a2', 'a3', 'a4'] as const
@@ -58,6 +56,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
   setRequestLocale(locale)
   const t = await getTranslations('about')
   const tScene = await getTranslations('scenes')
+  const tF = await getTranslations('about.founder')
   const isDE = locale === 'de'
 
   const todayList = t.raw('todayList') as string[]
@@ -72,6 +71,32 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <h1 style={{ margin: '0 0 var(--space-5)' }}>{t('title')}</h1>
             <p className="sec-lede" style={{ margin: 0 }}>{t('intro')}</p>
           </div>
+        </div>
+      </section>
+
+      {/* The person, before the history. Real photograph or the honest pending
+          slot (components/home/FounderNote.tsx) — never a stock or generated
+          face. The company is not a personality brand: the founder supplies
+          the accountability, the company does the work. No link under the
+          signature, because this is the page it would point at. */}
+      <section className="section surface-plain" data-section="founder">
+        <div className="container">
+          <FounderNote
+            copy={{
+              eyebrow: tF('eyebrow'),
+              title: tF('title'),
+              p1: tF('p1'),
+              p2: tF('p2'),
+              list: [tF('l1'), tF('l2'), tF('l3'), tF('l4')],
+              p3: tF('p3'),
+              p4: tF('p4'),
+              rule: tF('rule'),
+              name: tF('name'),
+              role: tF('role'),
+              portraitAlt: tF('portraitAlt'),
+              portraitPending: tF('portraitPending'),
+            }}
+          />
         </div>
       </section>
 
@@ -205,7 +230,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               {t('ctaDesc')}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
-              <Link href="/contact" className="btn btn-primary">{t('ctaPrimary')}</Link>
+              <Link href="/contact?source=about" className="btn btn-primary">{t('ctaPrimary')}</Link>
               <Link href="/solutions" className="btn btn-secondary">{t('ctaSecondary')}</Link>
             </div>
           </div>

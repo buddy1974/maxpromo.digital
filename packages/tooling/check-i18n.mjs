@@ -124,7 +124,7 @@ const SAME_IN_BOTH = new Set([
   // one of five flow labels whose four siblings do differ; the founder's name
   // is a person; and the Business Friction Check is a product name, which the
   // content constitution says is not translated.
-  'home.hero.f2', 'home.founder.name', 'home.resource.name',
+  'home.hero.f2', 'home.founder.name', 'about.founder.name', 'home.resource.name',
   'home.bureau.label', 'footer.agentBureau', 'demoRoom.brand',
   // The same product name, shortened for the footer column.
   'footer.frictionCheck',

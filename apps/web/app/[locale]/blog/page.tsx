@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { getPublishedPosts, type BlogPost } from '@/lib/blog/posts'
@@ -37,12 +38,16 @@ import { THEME_ORDER, themeOf, type Theme } from '@/lib/blog/themes'
  */
 
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('blog')
-  return {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'blog' })
+  return pageMetadata({
+    locale,
+    path: '/blog',
     title: t('metaTitle'),
     description: t('metaDesc'),
-  }
+    family: 'resource',
+  })
 }
 
 export default async function BlogIndexPage() {

@@ -346,6 +346,7 @@ export default async function HomePage() {
               name: tFound('name'),
               role: tFound('role'),
               cta: tFound('cta'),
+              ctaHref: '/about',
               portraitAlt: tFound('portraitAlt'),
               portraitPending: tFound('portraitPending'),
             }}

@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
+import './founder.css'
 
 /**
  * components/home/FounderNote.tsx
@@ -40,7 +41,10 @@ export interface FounderCopy {
   rule: string
   name: string
   role: string
-  cta: string
+  /** The link under the signature. Omitted where the page is already the
+   *  destination it would point at. */
+  cta?: string
+  ctaHref?: string
   portraitAlt: string
   portraitPending: string
 }
@@ -90,7 +94,9 @@ export function FounderNote({ copy }: { copy: FounderCopy }) {
           <span className="founder-role">{copy.role}</span>
         </p>
 
-        <Link href="/about" className="quiet-link">{copy.cta}</Link>
+        {copy.cta && copy.ctaHref ? (
+          <Link href={copy.ctaHref} className="quiet-link">{copy.cta}</Link>
+        ) : null}
       </div>
     </div>
   )

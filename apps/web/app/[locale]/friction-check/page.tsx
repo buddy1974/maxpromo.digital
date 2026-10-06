@@ -81,7 +81,7 @@ export default function FrictionCheckPage() {
   }
 
   return (
-    <main className="fc">
+    <div className="fc">
       {/* ── Intro ──────────────────────────────────────────────────────── */}
       {stage === 'intro' && (
         <section className="fc-panel">
@@ -223,6 +223,6 @@ export default function FrictionCheckPage() {
           </button>
         </section>
       )}
-    </main>
+    </div>
   )
 }

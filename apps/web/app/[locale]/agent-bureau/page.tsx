@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { Reveal } from '@/components/ui/Reveal'
@@ -9,28 +10,18 @@ import { Icon } from '@maxpromo/ui'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isDE = locale === 'de'
-  const title = isDE
-    ? 'Max Agent Bureau'
-    : 'Max Agent Bureau'
-  const description = isDE
-    ? 'Ein Team aus KI-Agenten übernimmt Kundenanfragen, Follow-ups, Freigaben und Berichte, jede wichtige Aktion läuft vorher über Sie.'
-    : 'A team of AI agents handles customer enquiries, follow-ups, approvals and reporting, every important action still goes through you first.'
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/systems/agent-bureau`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de/systems/agent-bureau',
-        en: 'https://www.maxpromo.digital/en/systems/agent-bureau',
-      },
-    },
-    openGraph: {
-      title,
-      description,
-      url: `https://www.maxpromo.digital/${locale}/systems/agent-bureau`,
-    },
-  }
+  // The canonical used to be /systems/agent-bureau, which 308-redirects here:
+  // a canonical pointing at a redirect asks search engines to index a URL
+  // that does not serve the page. The shared helper derives it from the path.
+  return pageMetadata({
+    locale,
+    path: '/agent-bureau',
+    title: 'Max Agent Bureau',
+    description: isDE
+      ? 'Ein Team aus KI-Agenten übernimmt Kundenanfragen, Follow-ups, Freigaben und Berichte, jede wichtige Aktion läuft vorher über Sie.'
+      : 'A team of AI agents handles customer enquiries, follow-ups, approvals and reporting, every important action still goes through you first.',
+    family: 'company',
+  })
 }
 
 /* ─── TOKENS ─── Visual Facelift v2.1 (design/visual-facelift-v2.1.md) */
@@ -372,7 +363,7 @@ export default async function AgentBureauPage({
               </Link>
             </div>
             <p style={{ fontFamily: 'var(--brand-font-mono)', fontSize: '12px', color: MUTED, letterSpacing: '0.05em', margin: '20px 0 0' }}>
-              {isDE ? 'Unverbindlich · Antwort innerhalb von 24 Stunden' : 'No commitment · Reply within 24 hours'}
+              {isDE ? 'Unverbindlich · Antwort innerhalb eines Werktags' : 'No commitment · Reply within one business day'}
             </p>
           </div>
         </section>

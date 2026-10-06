@@ -11,6 +11,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import CookieBanner from '@/components/CookieBanner'
 import Max from '@/components/max/Max'
+import { BUSINESS } from '@maxpromo/config'
 
 /**
  * Locale layout, wraps every public marketing route with the
@@ -52,34 +53,55 @@ export default async function LocaleLayout({
   const isShowcase = domain.mode === 'showcase'
 
   // Site-wide Organization + WebSite JSON-LD, Maxpromo hub only, never on
-  // white-labeled showcase product domains. Address/contact are taken
-  // verbatim from the publicly-displayed Impressum, no invented profiles.
+  // white-labeled showcase product domains. Every fact is read from
+  // @maxpromo/config, the same record the Impressum prints, so the markup
+  // cannot drift from the legal identity the way two hand-typed copies did.
+  // Only types the visible site supports: no Review, no AggregateRating, no
+  // LocalBusiness implying premises and opening hours that do not exist.
+  const SITE = `https://www.${BUSINESS.website}`
+  const isDE = locale === 'de'
   const organizationJsonLd = [
     {
-      '@context': 'https://schema.org',
-      '@type':    'Organization',
-      name:       'Maxpromo Digital',
-      url:        'https://www.maxpromo.digital',
-      logo:       'https://www.maxpromo.digital/logo.png',
+      '@context':  'https://schema.org',
+      '@type':     'Organization',
+      '@id':       `${SITE}/#organization`,
+      name:        BUSINESS.brand,
+      url:         SITE,
+      logo:        `${SITE}/logo.png`,
+      description: isDE
+        ? 'Maxpromo Digital baut und verbessert die Systeme, auf denen Betriebe laufen: Prozessautomatisierung, individuelle Anwendungen, Webentwicklung, Content- und Produktabläufe.'
+        : 'Maxpromo Digital builds and improves the systems businesses run on: workflow automation, custom applications, web development, content and product operations.',
       address: {
-        '@type':          'PostalAddress',
-        streetAddress:    'Körnerstr. 8',
-        postalCode:       '45143',
-        addressLocality:  'Essen',
-        addressCountry:   'DE',
+        '@type':         'PostalAddress',
+        streetAddress:   BUSINESS.street,
+        postalCode:      BUSINESS.postalCode,
+        addressLocality: BUSINESS.cityName,
+        addressCountry:  BUSINESS.countryCode,
+      },
+      email:   BUSINESS.email,
+      founder: {
+        '@type':  'Person',
+        '@id':    `${SITE}/#founder`,
+        name:     'Marcel Akwe',
+        jobTitle: isDE ? 'Gründer' : 'Founder',
+        url:      `${SITE}/${locale}/about`,
       },
       contactPoint: {
-        '@type':    'ContactPoint',
-        telephone:  '+49 173 3645698',
-        email:      'info@maxpromo.digital',
-        contactType: 'customer service',
+        '@type':           'ContactPoint',
+        telephone:         BUSINESS.phone,
+        email:             BUSINESS.email,
+        contactType:       'customer service',
+        availableLanguage: ['German', 'English'],
       },
     },
     {
-      '@context': 'https://schema.org',
-      '@type':    'WebSite',
-      name:       'Maxpromo Digital',
-      url:        'https://www.maxpromo.digital',
+      '@context':  'https://schema.org',
+      '@type':     'WebSite',
+      '@id':       `${SITE}/#website`,
+      name:        BUSINESS.brand,
+      url:         SITE,
+      inLanguage:  ['de-DE', 'en-GB'],
+      publisher:   { '@id': `${SITE}/#organization` },
     },
   ]
 

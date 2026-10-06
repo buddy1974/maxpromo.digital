@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/seo/og'
 import { notFound } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
@@ -29,17 +30,13 @@ export async function generateMetadata(
   const ind = getIndustry(slug)
   if (!ind) return {}
   const l = asLocale(locale)
-  return {
+  return pageMetadata({
+    locale,
+    path: `/industries/${slug}`,
     title: ind.name[l],
     description: ind.summary[l],
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/industries/${slug}`,
-      languages: {
-        de: `https://www.maxpromo.digital/de/industries/${slug}`,
-        en: `https://www.maxpromo.digital/en/industries/${slug}`,
-      },
-    },
-  }
+    family: 'industry',
+  })
 }
 
 export default async function IndustryPage(
@@ -129,7 +126,7 @@ export default async function IndustryPage(
 
               <dl className="spec" style={{ marginTop: 'var(--space-8)' }}>
                 <div>
-                  <dt>{isDE ? 'Wir arbeiten mit' : 'We work with'}</dt>
+                  <dt>{isDE ? 'Gedacht für' : 'Meant for'}</dt>
                   <dd>{ind.whoWeWorkWith[l].join(' · ')}</dd>
                 </div>
               </dl>
@@ -150,11 +147,14 @@ export default async function IndustryPage(
               {ind.next[l]}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
-              <Link href="/contact" className="btn btn-primary">
-                {isDE ? 'Gespräch vereinbaren' : 'Start a conversation'}
+              {/* The sector travels with the visitor, so the first conversation
+                  starts from it. The secondary action is proof rather than a
+                  menu: a real workflow, shown step by step. */}
+              <Link href={`/contact?source=industry-${slug}`} className="btn btn-primary">
+                {isDE ? 'Zeigen Sie uns, wie die Arbeit heute läuft' : 'Walk us through how work happens today'}
               </Link>
-              <Link href="/solutions" className="btn btn-secondary">
-                {isDE ? 'Leistungen ansehen' : 'See what we do'}
+              <Link href="/work/maxpromo-os" className="btn btn-secondary">
+                {isDE ? 'Einen echten Ablauf ansehen' : 'See a real workflow'}
               </Link>
             </div>
           </div>

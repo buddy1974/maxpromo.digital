@@ -34,7 +34,14 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/os', '/os/', '/api/', '/portfolio', '/data-deletion', '/demo', '/demo/'],
+      // Public pages live under a locale prefix, so an unprefixed '/portfolio'
+      // never matched '/en/portfolio'. Both forms are listed; the pages also
+      // carry noindex themselves.
+      disallow: [
+        '/os', '/os/', '/api/', '/demo', '/demo/',
+        '/portfolio', '/de/portfolio', '/en/portfolio',
+        '/data-deletion', '/de/data-deletion', '/en/data-deletion',
+      ],
     },
     sitemap: domain.sitemap === 'none' ? undefined : `${domain.origin}/sitemap.xml`,
     host: domain.origin,

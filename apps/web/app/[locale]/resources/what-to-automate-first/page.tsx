@@ -65,8 +65,28 @@ export default async function WhatToAutomateFirstPage({
   setRequestLocale(locale)
   const t = await getTranslations('automationGuide')
 
+  /* Article markup, because this page is one: a titled, authored piece of
+     writing. The date is the day it was first published (509868a), the
+     author and publisher are the entities the layout declares. Nothing here
+     that the page does not visibly say. */
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: t('title'),
+    description: t('lede'),
+    inLanguage: locale === 'en' ? 'en-GB' : 'de-DE',
+    datePublished: '2026-09-25',
+    mainEntityOfPage: `https://www.maxpromo.digital/${locale}/resources/what-to-automate-first`,
+    author: { '@id': 'https://www.maxpromo.digital/#founder' },
+    publisher: { '@id': 'https://www.maxpromo.digital/#organization' },
+  }
+
   return (
-    <main className="guide">
+    <div className="guide">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <article>
         <header className="guide-head">
           <Link href="/resources" className="quiet-link">{t('eyebrow')}</Link>
@@ -152,6 +172,6 @@ export default async function WhatToAutomateFirstPage({
           </p>
         </section>
       </article>
-    </main>
+    </div>
   )
 }

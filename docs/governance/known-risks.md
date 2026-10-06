@@ -1474,7 +1474,7 @@ A honeypot field check was added to `app/api/newsletter/subscribe/route.ts`, but
 
 ## 2026-07-10 — Homepage pain cards and 5 service-page hero photos still missing
 
-`public/images/homepage/pain/` and 5 `public/images/services/{slug}/hero.jpg` paths have no approved photography. Both currently degrade gracefully (no broken images), but the visual is incomplete until real photography is dropped in — shot lists exist in `public/images/homepage/README.md` and `public/images/services/README.md`.
+`public/images/homepage/pain/` and 5 `public/images/services/{slug}/hero.jpg` paths have no approved photography. Both currently degrade gracefully (no broken images), but the visual is incomplete until real photography is dropped in — shot lists exist in `docs/brand/shot-lists/` (moved out of `public/` on 2026-10-06, where they were publicly downloadable; both describe components since removed, and are kept as a record).
 
 ## 2026-07-10 — Unverified locale-leak claims from the release audit
 

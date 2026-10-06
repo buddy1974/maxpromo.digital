@@ -1,0 +1,78 @@
+/* ─── The founder block ─────────────────────────────────────────────────────
+   Carried by the component, not by a route: FounderNote appears on the
+   homepage and on About, and a style living in one route's stylesheet would
+   leave the other unstyled. Moved out of the homepage stylesheet on 2026-10-06. */
+
+.founder { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+@media (min-width: 900px) {
+  .founder { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: var(--space-10); align-items: start; }
+}
+.founder-portrait { margin: 0; }
+.founder-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--brand-border);
+}
+/* No stock face and no generated one: initials, and a line saying why. */
+.founder-photo-pending {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  background: var(--brand-surface);
+  border: 1px dashed var(--brand-border-strong);
+}
+.founder-initials {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  color: var(--brand-text-muted);
+}
+.founder-pending-note,
+.founder-role {
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text-muted);
+}
+.founder-title { margin: 0 0 var(--space-5); font-size: var(--text-h3); max-width: 34ch; }
+.founder-p {
+  margin: 0 0 var(--space-4);
+  max-width: 58ch;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+.founder-list {
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.founder-list li {
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--brand-border-strong);
+  font-size: var(--text-small);
+  line-height: var(--leading-ui);
+}
+.founder-rule {
+  margin: 0 0 var(--space-6);
+  max-width: 46ch;
+  padding: var(--space-4) var(--space-5);
+  background: var(--brand-surface-accent);
+  border: 1px solid var(--mp-lime-200);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-lede);
+  line-height: var(--leading-body);
+}
+.founder-sig { margin: 0 0 var(--space-4); max-width: none; }
+.founder-name { display: block; font-weight: 600; }
+.founder-role { display: block; color: var(--brand-text-secondary); }
