@@ -47,13 +47,11 @@ const ROOT = process.cwd()
  * from both here and the sitemap is an omission, and fails.
  */
 const SITEMAP_EXCLUDED = {
-  '/ai-websites': '308 redirect to /solutions/websites-platforms; a redirect target is not a destination',
   '/data-deletion': 'disallowed in robots.txt — a compliance endpoint, not a page to find',
   '/portfolio': 'disallowed in robots.txt — superseded by /work',
   '/[...rest]': 'the localised catch-all; it renders 404 and has no URL of its own',
   '/blog/[slug]': 'dynamic; the sitemap enumerates published slugs rather than the route',
   '/industries/[slug]': 'dynamic; the sitemap enumerates the six industry slugs',
-  '/solutions/[slug]': 'dynamic; the sitemap enumerates the solution slugs',
 }
 
 /**
@@ -64,11 +62,9 @@ const SITEMAP_EXCLUDED = {
  * a reason, because similar pages are exactly where a regression hides.
  */
 const A11Y_EXCLUDED = {
-  '/ai-websites': 'a redirect; there is no rendered page to audit',
   '/[...rest]': 'renders 404, audited as a route rather than a page',
   '/blog/[slug]': 'dynamic; a representative article would need choosing, and the index is audited',
   '/industries/[slug]': 'dynamic; all six concrete slugs are audited directly',
-  '/solutions/[slug]': 'dynamic; the concrete solution pages are audited directly',
   '/portfolio': 'disallowed in robots.txt and superseded by /work',
   '/data-deletion': 'audited in English only, which the sample already covers',
 }

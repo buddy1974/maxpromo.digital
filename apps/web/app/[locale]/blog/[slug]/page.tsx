@@ -170,8 +170,8 @@ const mdxComponents = {
 
 const SERVICES = [
   { key: 'svc1', href: '/solutions/workflow-automation' },
-  { key: 'svc2', href: '/solutions/websites-platforms' },
-  { key: 'svc3', href: '/solutions/ai-agents' },
+  { key: 'svc2', href: '/solutions/web-development' },
+  { key: 'svc3', href: '/solutions/custom-applications' },
 ] as const
 
 // =============================================================================

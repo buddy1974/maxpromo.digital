@@ -5,17 +5,12 @@ import type { IconName } from '@maxpromo/ui'
  *
  * The five concrete things a visitor arrives looking for.
  *
- * WHY THIS EXISTS BESIDE THE SOLUTION FAMILIES
- * `lib/solutions.ts` holds the operating view: how the work is grouped once
- * somebody understands what Maxpromo is. That view is correct and stays. It is
- * also useless to a person searching for a web developer, because nobody
- * searches for "business operating systems".
- *
- * So there are two levels, and one serves the other. These five are what the
- * work is called when a business asks for it. The operating families explain
- * how they fit together once the visitor is interested. Two taxonomies only
- * become a problem when they compete; here the concrete one is the door and
- * the abstract one is the room behind it.
+ * These five are what the work is called when a business asks for it, and
+ * the site is organised around them. The operating view that used to sit
+ * beside them in `lib/solutions.ts` (three system families and six legacy
+ * solution pages) was retired on 2026-10-06: it was the company's internal
+ * taxonomy, and every legacy page now redirects to the capability that
+ * replaced it.
  *
  * One source of truth: the home page rail, the home page hub diagram, the
  * Solutions sections and the contact context all read from here. The scenes

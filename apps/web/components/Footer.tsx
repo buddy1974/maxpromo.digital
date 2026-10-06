@@ -55,7 +55,7 @@ const COLUMNS = [
     links: [
       { key: 'resources',   href: '/resources' },
       { key: 'blog',        href: '/blog' },
-      { key: 'caseStudies', href: '/case-studies' },
+      { key: 'frictionCheck', href: '/friction-check' },
     ],
   },
   {

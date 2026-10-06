@@ -1,36 +1,36 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
-import { setRequestLocale, getTranslations } from 'next-intl/server'
+import { setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { getPublishedPosts } from '@/lib/blog/posts'
 import { THEME_ORDER, themeOf } from '@/lib/blog/themes'
-import { ArchitectureMap } from '@/components/ui/ArchitectureMap'
 
 /**
  * app/[locale]/resources/page.tsx
  *
- * Rebuilt in the public presentation pass.
+ * Material that is useful before anybody buys anything (ADR-0016): the start
+ * of the acquisition engine, and written to work for a reader who never
+ * contacts us.
  *
- * What it was: three rows and "Read →", then a thin list, on a page that was
- * mostly empty. It was the third page on this site using the same directory
- * pattern, and it gave the three destinations no reason to exist beyond
- * having been created.
+ * Organised by what an owner is trying to do, not by format. Four lanes, and
+ * each one has something real behind it today:
  *
- * What it is: each destination states what it answers. Written work is what we
- * learned, case studies are what we built, reference is how the systems are
- * put together. The recent list gets a real hierarchy instead of being a row
- * of titles with a minute count on the end.
+ *   decide what to change first   the guide
+ *   see where your week snags     the Business Friction Check
+ *   see a real workflow, built    the Maxpromo OS proof story
+ *   learn from the work           the written archive
  *
- * The capability pass changed the scene from a sequence to a map. Three
- * numbered steps said these were stages of one route — read the writing, then
- * the case studies, then the reference — which is not true and is not how
- * anybody uses the page. They are three parts of one body of work, and a
- * reader arrives at whichever one their question belongs to. The fan says
- * that: one source, three parts, no order.
+ * A lane is added when it has an entry, never before: a heading with nothing
+ * under it advertises absence. The guides lane links straight at its one guide
+ * rather than at an index of one, and becomes an index at three.
  *
- * The hero says "not a blog" in as many words, because the archive leans on
- * legacy modernisation and the first impression it can otherwise give — an old
- * CMS blog — is the one thing this page must not give.
+ * Gone in the 2026-10-06 build: the case studies (figures nobody could
+ * evidence; the page now redirects to Work), the automation "reference" (a
+ * catalogue of eighteen runtimes with nothing behind the number; it redirects
+ * to Workflow Automation) and the three-part diagram that drew them.
+ *
+ * The archive leans on legacy modernisation, so it is the last lane rather
+ * than the first impression, and the recent list takes one piece per area.
  */
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     path: '/resources',
     title: isDE ? 'Ressourcen' : 'Resources',
     description: isDE
-      ? 'Was wir gelernt haben, was wir gebaut haben und wie die Systeme aufgebaut sind.'
-      : 'What we have learned, what we have built, and how the systems are put together.',
+      ? 'Nützlich, bevor Sie irgendetwas kaufen: ein Leitfaden, was man zuerst automatisiert, ein Check für Ihre eigene Woche, ein echter Ablauf Schritt für Schritt und Notizen aus der Arbeit.'
+      : 'Useful before you buy anything: a guide to what to automate first, a check of your own working week, a real workflow shown step by step, and notes from the work.',
     family: 'resource',
   })
 }
@@ -51,7 +51,6 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
   const { locale } = await params
   setRequestLocale(locale)
   const isDE = locale === 'de'
-  const tScene = await getTranslations('scenes')
 
   // The most recent piece from each area rather than the five most recent
   // overall. The archive leans heavily on legacy modernisation, so a plain
@@ -64,49 +63,40 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
 
   const destinations = [
     {
-      /* Guides lead, because they are the only lane a reader can use without
-         us. Linked straight at the one guide rather than at an index of one:
-         a directory page listing a single item is a worse experience and an
-         honest reader notices immediately. It becomes an index at three.
-
-         Two further lanes are defined in the Resources architecture and are
-         deliberately absent here — System Breakdowns has nothing to show until
-         the Maxpromo OS evidence package is captured, and Field Notes has
-         nothing at all. A lane with no entries advertises absence. */
       href: '/resources/what-to-automate-first',
-      question: isDE ? 'Was Sie selbst entscheiden können' : 'What you can decide for yourself',
-      title: isDE ? 'Leitfäden' : 'Guides',
+      question: isDE ? 'Entscheiden, was zuerst dran ist' : 'Decide what to change first',
+      title: isDE ? 'Leitfaden' : 'Guide',
       desc: isDE
-        ? 'Praktische Anleitungen, die ohne uns funktionieren. Der erste: welche Arbeit sich für Automatisierung eignet, welche besser bei Menschen bleibt, und in welcher Reihenfolge man anfängt.'
-        : 'Practical guides that work without us. The first: which work suits automation, which is better left with people, and what order to start in.',
+        ? 'Welche Arbeit sich für Automatisierung eignet, welche besser bei Menschen bleibt und in welcher Reihenfolge man anfängt. Funktioniert ohne uns.'
+        : 'Which work suits automation, which is better left with people, and what order to start in. Works without us.',
       cta: isDE ? 'Leitfaden lesen' : 'Read the guide',
     },
     {
+      href: '/friction-check',
+      question: isDE ? 'Sehen, wo die Woche hakt' : 'See where your week snags',
+      title: isDE ? 'Business Friction Check' : 'Business Friction Check',
+      desc: isDE
+        ? 'Sechs Fragen zu einer normalen Arbeitswoche. Das Ergebnis kommt sofort, ohne E-Mail-Adresse und ohne Punktzahl, und es darf sagen, dass gerade nichts zu tun ist.'
+        : 'Six questions about an ordinary working week. The result comes straight away, without an email address or a score, and it is allowed to say nothing needs doing.',
+      cta: isDE ? 'Check starten' : 'Start the check',
+    },
+    {
+      href: '/work/maxpromo-os',
+      question: isDE ? 'Einen echten Ablauf ansehen' : 'See a real workflow, built',
+      title: isDE ? 'Ablauf im Detail' : 'System breakdown',
+      desc: isDE
+        ? 'Wie in unserem eigenen System aus einer unsortierten Kunden-E-Mail ein geprüftes Angebot wird, Bildschirm für Bildschirm, und wo ein Mensch entscheidet.'
+        : 'How a messy customer email becomes a reviewed quotation in our own system, screen by screen, and where a person decides.',
+      cta: isDE ? 'Ablauf ansehen' : 'See the workflow',
+    },
+    {
       href: '/blog',
-      question: isDE ? 'Was wir gelernt haben' : 'What we have learned',
+      question: isDE ? 'Aus der Arbeit lernen' : 'Learn from the work',
       title: isDE ? 'Fachbeiträge' : 'Written work',
       desc: isDE
-        ? 'Aufgeschrieben, weil es beim Bauen aufgefallen ist: Migrationen, Altsysteme, Abläufe, die in der Praxis anders laufen als im Plan. Geschrieben für Leute, die ein System betreiben.'
-        : 'Written down because it came up while building: migrations, legacy systems, and workflows that behave differently in practice than on paper. Written for people who run a system.',
+        ? 'Aufgeschrieben, weil es beim Bauen aufgefallen ist: Migrationen, Altsysteme, Abläufe, die in der Praxis anders laufen als im Plan.'
+        : 'Written down because it came up while building: migrations, legacy systems, and workflows that behave differently in practice than on paper.',
       cta: isDE ? 'Beiträge lesen' : 'Read the writing',
-    },
-    {
-      href: '/case-studies',
-      question: isDE ? 'Was wir gebaut haben' : 'What we have built',
-      title: isDE ? 'Fallstudien' : 'Case studies',
-      desc: isDE
-        ? 'Drei Projekte mit Ausgangslage, Eingriff und Ergebnis. Kundennamen bleiben unter NDA vertraulich. Keine Zahl, die wir nicht belegen können.'
-        : 'Three projects with the starting point, the intervention and the result. Client names stay confidential under NDA. No figure we cannot evidence.',
-      cta: isDE ? 'Fallstudien ansehen' : 'See the case studies',
-    },
-    {
-      href: '/automation-lab',
-      question: isDE ? 'Wie die Systeme aufgebaut sind' : 'How the systems are put together',
-      title: isDE ? 'Referenz' : 'Reference',
-      desc: isDE
-        ? 'Ein Verzeichnis der Entscheidungs-, Koordinations- und Kommunikationssysteme, die wir installieren, und wofür jedes gedacht ist.'
-        : 'A catalogue of the decision, coordination and communication runtimes we install, and what each one is for.',
-      cta: isDE ? 'Referenz öffnen' : 'Open the reference',
     },
   ]
 
@@ -117,12 +107,12 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
           <div className="sec-head sec-head-wide" style={{ marginBottom: 0 }}>
             <p className="section-label">{isDE ? 'Ressourcen' : 'Resources'}</p>
             <h1 style={{ margin: '0 0 var(--space-5)' }}>
-              {isDE ? 'Was wir wissen, offen aufgeschrieben.' : 'What we know, written down.'}
+              {isDE ? 'Nützlich, bevor Sie irgendetwas kaufen.' : 'Useful before you buy anything.'}
             </h1>
             <p className="sec-lede" style={{ margin: 0 }}>
               {isDE
-                ? 'Kein Blog. Vier verschiedene Dinge: was Sie selbst entscheiden können, was uns das Bauen dieser Systeme beigebracht hat, was dabei herausgekommen ist, und wie die Systeme selbst aufgebaut sind.'
-                : 'Not a blog. Four separate things: what you can decide for yourself, what building these systems taught us, what the work produced, and how the systems themselves are put together.'}
+                ? 'Material, das Sie nutzen können, ohne mit uns zu sprechen. Sortiert danach, was Sie gerade vorhaben.'
+                : 'Material you can use without talking to us, sorted by what you are trying to do.'}
             </p>
           </div>
         </div>
@@ -130,29 +120,7 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
 
       <section className="section surface-plain">
         <div className="container">
-          <div className="sec-head">
-            <p className="section-label">{tScene('resSceneEyebrow')}</p>
-            <h2 style={{ margin: 0 }}>{tScene('resSceneTitle')}</h2>
-          </div>
-
-          {/* The knowledge map: one body of work, three parts, no order
-              between them. On a narrow screen the same markup recomposes into
-              three readable blocks rather than shrinking the diagram. */}
-          <div style={{ marginBottom: 'var(--space-10)' }}>
-            <ArchitectureMap
-              layout="fan"
-              centre={{ label: tScene('resCentre') }}
-              nodes={[
-                { label: tScene('res1'), detail: tScene('res1d'), icon: 'documents' },
-                { label: tScene('res2'), detail: tScene('res2d'), icon: 'quality' },
-                { label: tScene('res3'), detail: tScene('res3d'), icon: 'operatingModel' },
-              ]}
-              caption={tScene('resCaption')}
-              a11yIntro={tScene('resA11y')}
-            />
-          </div>
-
-          <div className="ruled-grid">
+          <div className="ruled-grid ruled-grid-4">
             {destinations.map((d, i) => (
               <div key={d.href} className="ruled-item">
                 <p className="ruled-index">{String(i + 1).padStart(2, '0')} · {d.question}</p>

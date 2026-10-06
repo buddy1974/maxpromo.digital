@@ -1,0 +1,160 @@
+/* ─── Work: the Maxpromo OS proof story ─────────────────────────────────────
+   Route-scoped. Only /work/maxpromo-os loads this.
+
+   Each stage is text, then the screenshot at the full width of the container.
+   Side by side would halve the screenshot, and a screenshot of a form whose
+   figures cannot be read proves nothing — least of all on a phone, where the
+   image is the whole width of the screen and can be opened at full size. */
+
+.story-title {
+  margin: 0 0 var(--space-5);
+  max-width: 22ch;
+}
+
+.story-crumb {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+.story-crumb:hover,
+.story-crumb:focus-visible { color: var(--brand-text-inverted); }
+
+/* The disclosure sits inside the hero, not in a footnote. It is the first
+   thing a careful reader needs to know about everything below it. */
+.story-disclosure {
+  margin: var(--space-5) 0 0;
+  max-width: 46rem;
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--brand-primary);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-inverted-secondary);
+}
+
+.story-stages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-10);
+}
+@media (min-width: 900px) { .story-stages { gap: var(--space-12); } }
+
+.story-stage { min-width: 0; }
+
+.story-say { max-width: 44rem; margin-bottom: var(--space-6); }
+
+.story-step {
+  margin: 0 0 var(--space-2);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-primary-dark);
+}
+
+.story-stage-title {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-h3);
+  line-height: var(--leading-tight);
+}
+
+.story-body {
+  margin: 0;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text-secondary);
+}
+
+.story-shot { margin: 0; max-width: 68rem; }
+
+.story-frame {
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--brand-background);
+}
+.story-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.story-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  margin-top: var(--space-3);
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-muted);
+}
+.story-full { white-space: nowrap; }
+
+.story-redaction {
+  margin: var(--space-10) 0 0;
+  max-width: 46rem;
+  font-size: var(--text-small);
+  line-height: var(--leading-body);
+  color: var(--brand-text-muted);
+}
+
+/* ─── What this shows, and what it does not ─────────────────────────────── */
+.story-scope {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+}
+@media (min-width: 800px) {
+  .story-scope { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-10); }
+}
+
+.story-scope-label {
+  margin: 0 0 var(--space-4);
+  font-family: var(--brand-font-mono);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--brand-text);
+}
+
+.story-scope-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: var(--space-4);
+}
+.story-scope-list li {
+  position: relative;
+  padding-left: var(--space-5);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--brand-text);
+}
+.story-scope-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.75em;
+  width: 10px;
+  height: 1px;
+  background: var(--brand-primary-dark);
+}
+.story-scope-not li { color: var(--brand-text-secondary); }
+.story-scope-not li::before { background: var(--brand-border-strong); }
+
+/* ─── Close ─────────────────────────────────────────────────────────────── */
+.story-close { max-width: 42rem; }
+.story-close-body {
+  margin: 0 0 var(--space-6);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+}
+.story-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

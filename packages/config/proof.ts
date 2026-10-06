@@ -514,6 +514,43 @@ const MAXPROMO_OS: ProofPackage = {
       checked: '2026-09-20',
     },
     {
+      id: 'extraction-checked-against-source',
+      kind: 'system-fact',
+      statement:
+        'Every extraction is checked against the text it came from. Wording or ' +
+        'figures the source does not contain are removed or held until a person ' +
+        'decides, and the form says what was flagged.',
+      basis: 'repository',
+      source:
+        'apps/web/lib/documents/extraction-guard.ts, applied in ' +
+        'apps/web/app/api/os/ai/enhance/route.ts; prove:extraction-integrity',
+      checked: '2026-10-06',
+    },
+    {
+      id: 'number-issued-on-save',
+      kind: 'system-fact',
+      statement:
+        'The quotation number is issued by the server when the draft is saved, ' +
+        'not when a form is opened, and the form previews the number the save ' +
+        'will issue.',
+      basis: 'repository',
+      source: 'apps/web/app/api/os/angebote/route.ts; prove:document-numbering',
+      checked: '2026-10-06',
+    },
+    {
+      id: 'demonstration-data-is-invented',
+      kind: 'process-fact',
+      statement:
+        'The demonstration was run in a separate test environment against an ' +
+        'invented customer. No real customer, enquiry or production record ' +
+        'appears in it.',
+      basis: 'repository',
+      source:
+        'apps/web/lib/evidence/dataset.ts; packages/config/evidence.ts; ' +
+        'docs/evidence/maxpromo-os/LEDGER.json; prove:evidence-isolation',
+      checked: '2026-10-06',
+    },
+    {
       id: 'documents-are-german-compliant',
       kind: 'system-fact',
       statement:

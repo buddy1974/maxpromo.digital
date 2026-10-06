@@ -73,13 +73,27 @@ const nextConfig: NextConfig = {
    */
   async redirects() {
     const L = '/:locale(de|en)'
-    const SOLUTION_SLUGS = [
-      'customer-inquiries',
+    /*
+     * The legacy solution pages, each sent to the capability page that now
+     * does its job (2026-10-06). They were thinner duplicates of the five
+     * capabilities, rendered by solutions/[slug], and competed with them for
+     * the same searches. A permanent redirect keeps whatever those URLs earned.
+     * /services/<slug> resolves straight to the final page, not through a
+     * second hop.
+     */
+    const LEGACY_SOLUTION: Record<string, string> = {
+      'customer-inquiries': 'workflow-automation',
+      'ai-agents':          'workflow-automation',
+      'websites-platforms': 'web-development',
+      'reviews':            'content-operations',
+      'social-media':       'content-operations',
+    }
+    const CAPABILITY_SLUGS = [
       'workflow-automation',
-      'ai-agents',
-      'reviews',
-      'social-media',
-      'websites-platforms',
+      'custom-applications',
+      'web-development',
+      'content-operations',
+      'product-operations',
     ]
     const RETIRED_SYSTEM_SLUGS = [
       'restaurant-os',
@@ -95,11 +109,15 @@ const nextConfig: NextConfig = {
     return [
       // Section rename, index and children.
       { source: `${L}/services`, destination: '/:locale/solutions', permanent: true },
-      ...SOLUTION_SLUGS.map((slug) => ({
+      ...CAPABILITY_SLUGS.map((slug) => ({
         source: `${L}/services/${slug}`,
         destination: `/:locale/solutions/${slug}`,
         permanent: true,
       })),
+      ...Object.entries(LEGACY_SOLUTION).flatMap(([from, to]) => [
+        { source: `${L}/solutions/${from}`, destination: `/:locale/solutions/${to}`, permanent: true },
+        { source: `${L}/services/${from}`, destination: `/:locale/solutions/${to}`, permanent: true },
+      ]),
 
       // Public pricing was retired in v9.6. Maxpromo does not sell predefined
       // packages, so there is no price list to land on — the question "what
@@ -109,9 +127,20 @@ const nextConfig: NextConfig = {
 
       // /ai-websites served the same page as /solutions/websites-platforms —
       // identical H1, identical body, no canonical tag, no inbound link, and
-      // both submitted in the sitemap. It was a duplicate address for a page
-      // that already has one, so it becomes a redirect to it.
-      { source: `${L}/ai-websites`, destination: '/:locale/solutions/websites-platforms', permanent: true },
+      // both submitted in the sitemap. It now goes straight to the page that
+      // replaced both.
+      { source: `${L}/ai-websites`, destination: '/:locale/solutions/web-development', permanent: true },
+
+      // /case-studies carried figures the claims registry marks unevidenced
+      // and, in one case, contradicted (ADR-0007). Unsupported figures may not
+      // persuade, so the page is retired; Work is the proof surface now. The
+      // historical record stays in the repository's history.
+      { source: `${L}/case-studies`, destination: '/:locale/work', permanent: true },
+
+      // /automation-lab described "eighteen production-grade runtimes" with no
+      // evidence behind the number or the systems. The visitor it served is
+      // looking for workflow automation, which has a page of its own.
+      { source: `${L}/automation-lab`, destination: '/:locale/solutions/workflow-automation', permanent: true },
 
       // Agent Bureau keeps a public home, one level up.
       { source: `${L}/systems/agent-bureau`, destination: '/:locale/agent-bureau', permanent: true },

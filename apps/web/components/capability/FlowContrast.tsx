@@ -5,10 +5,9 @@ import { Icon, type IconName } from '@maxpromo/ui'
  *
  * The same enquiry, drawn twice: once as it runs today, once as it runs after.
  *
- * WHY THIS IS NOT ComparisonPanel
- * `components/ui/ComparisonPanel.tsx` is a before and after in words, two
- * lists side by side, and it is right for a case study where the difference is
- * a set of statements. This difference is a *shape*. The point of the section
+ * WHY THIS IS NOT A BEFORE-AND-AFTER IN WORDS
+ * Two lists side by side (the retired ComparisonPanel) suit a difference that
+ * is a set of statements. This difference is a *shape*. The point of the section
  * is that the work stops zig-zagging between hands and starts travelling in
  * one line, and a reader should see that before reading a single label.
  *

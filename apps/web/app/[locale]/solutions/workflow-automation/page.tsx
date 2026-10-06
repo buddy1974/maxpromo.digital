@@ -26,11 +26,10 @@ import '../solutions.css'
  * decisions stay with people.
  *
  * WHAT IS NOT HERE, AND WHY
- * No percentages. There is exactly one delivered workflow system this company
- * can currently describe in public, and its figures belong on the homepage
- * and in the case studies where their source is named. A capability page that
- * invents a "70% faster" to fill a band is the thing the claims audit exists
- * to catch. The proof position is built and reserved instead.
+ * No percentages. No figure about this kind of work is measured, and a
+ * capability page that invents a "70% faster" to fill a band is the thing the
+ * claims audit exists to catch. The proof is a workflow the visitor can see:
+ * our own quotation system, shown in a controlled demonstration.
  */
 
 const FAMILIAR = ['c1f1', 'c1f2', 'c1f3', 'c1f4', 'c1f5', 'c1f6'] as const
@@ -149,20 +148,24 @@ export default async function WorkflowAutomationPage(
         </div>
       </section>
 
-      {/* The proof position, reserved rather than filled. The container, its
-          ratio and the composition around it are final; the screenshot drops
-          in when a client has approved what can be shown. Placeholders rule,
-          docs/governance/standards.md. */}
+      {/* The proof position, now filled with our own system rather than a
+          client's: the extraction-and-review frame of the Maxpromo OS proof
+          package, as a public derivative (docs/evidence/maxpromo-os). The note
+          says it is our system and a controlled demonstration, and links to
+          the full story on Work. */}
       <section className="section surface-plain" data-section="proof">
         <div className="container">
           <div className="cp-proof">
             <ScreenshotSlot
-              alt={t('c1Title')}
-              width={1200}
-              height={750}
-              pendingLabel={t('proofPendingLabel')}
+              src="/images/systems/maxpromo-os/02-extraction-result.png"
+              alt={t('c1ProofAlt')}
+              width={1311}
+              height={752}
             />
-            <p className="cp-proof-note">{t('proofPendingNote')}</p>
+            <p className="cp-proof-note">
+              {t('c1ProofNote')}{' '}
+              <Link href="/work/maxpromo-os" className="quiet-link">{t('c1ProofLink')}</Link>
+            </p>
           </div>
         </div>
       </section>

@@ -15,15 +15,13 @@
 const TARGETS = [
   ['web', 'http://localhost:3020', [
     '/en', '/de',
-    '/en/solutions', '/en/solutions/customer-inquiries', '/en/solutions/workflow-automation',
-    '/en/solutions/ai-agents', '/en/solutions/websites-platforms', '/en/solutions/reviews',
-    '/en/solutions/social-media',
+    '/en/solutions', '/en/solutions/workflow-automation',
     '/en/industries', '/en/industries/healthcare', '/en/industries/construction',
     '/en/industries/property', '/en/industries/hospitality', '/en/industries/publishing',
     '/en/industries/professional-services',
-    '/en/resources', '/en/about', '/en/contact', '/en/case-studies',
+    '/en/resources', '/en/about', '/en/contact',
     '/en/agent-bureau', '/en/blog', '/en/impressum', '/en/privacy', '/en/agb',
-    '/en/automation-lab', '/en/ai-websites', '/en/data-deletion',
+    '/en/data-deletion',
     '/de/solutions', '/de/industries/healthcare', '/de/about', '/de/contact',
     /* DE carried one industry route while EN carried all six, so five German
        pages were unchecked. Parity is the point of a bilingual audit. */
@@ -48,6 +46,9 @@ const TARGETS = [
     '/en/solutions/web-development', '/de/solutions/web-development',
     '/en/solutions/content-operations', '/de/solutions/content-operations',
     '/en/solutions/product-operations', '/de/solutions/product-operations',
+    /* The Maxpromo OS proof story, 2026-10-06, added with the route. */
+    '/en/work/maxpromo-os', '/de/work/maxpromo-os',
+    '/de/resources', '/de/agent-bureau',
   ]],
   ['bureau', 'http://localhost:3021', ['/', '/impressum', '/datenschutz', '/login']],
 ]

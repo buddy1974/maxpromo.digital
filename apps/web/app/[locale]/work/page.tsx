@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
+import { pageMetadata } from '@/lib/seo/og'
 import { ProcessSequence } from '@/components/ui/ProcessSequence'
 import { SectionHeader } from '@maxpromo/ui'
 import { DEMOS } from '@/lib/demo/registry'
@@ -10,51 +12,53 @@ import './work.css'
 /**
  * app/[locale]/work/page.tsx — public.
  *
- * The commercial doorway: enough evidence that Maxpromo builds real things,
- * without putting anyone's operation on display.
+ * The proof surface the capability pages and guides point at (ADR-0016).
  *
- * WHAT THIS PAGE IS NOT
- * Not a portfolio, and not a product catalogue. The operating systems this
- * company owns are protected products marketed on their own domains
- * (docs/architecture/platform.md §1); listing them here as demo cards would be
- * a product-exposure decision dressed up as a presentation one. And no client
- * project is attributed without evidence that the attribution is allowed —
- * naming a client on a public page is their decision, not ours.
+ * THREE KINDS OF WORK, NEVER BLURRED
  *
- * So the page ships with an honest empty state for public examples and a clear
- * route to a private demonstration. That is the truthful position today:
- * the work exists, the permission to publish it does not yet.
+ *   Shown in full   our own system, the Maxpromo OS proof story. It can be
+ *                   shown on screen because it is ours and the demonstration
+ *                   ran against an invented customer — and the page says both.
+ *   Client work     described as what changed about the work, with no client
+ *                   named and no figure, because none is evidenced
+ *                   (lib/work-entries.ts holds that audit). Shown running only
+ *                   on request.
+ *   Demonstrations  public previews from the demo registry, rendered only if
+ *                   one is ever cleared for public preview.
  *
- * The private room is real and access-controlled. See lib/demo/access.ts.
- * This page never names a demonstration or links into the room.
+ * Our own demonstration is never presented as a customer case study, and a
+ * client system is never put on display.
+ *
+ * WHAT WENT, AND WHY
+ *
+ * The link to /case-studies: that page carried figures the claims registry
+ * marks unevidenced and, in one case, contradicted. It now redirects here.
+ * The "how the work is grouped" strip restated the navigation. And the
+ * "public examples are coming" empty state stopped being true the day the
+ * proof story shipped.
  */
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'work' })
-  return {
+  return pageMetadata({
+    locale,
+    path: '/work',
     title: t('metaTitle'),
     description: t('metaDesc'),
-    alternates: {
-      canonical: `https://www.maxpromo.digital/${locale}/work`,
-      languages: {
-        de: 'https://www.maxpromo.digital/de/work',
-        en: 'https://www.maxpromo.digital/en/work',
-      },
-    },
-  }
+    family: 'work',
+  })
 }
 
-const CATEGORIES = ['cat1', 'cat2', 'cat3', 'cat4'] as const
+const FLAGSHIP_STEPS = ['f1', 'f2', 'f3', 'f4', 'f5'] as const
 
 export default async function WorkPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   setRequestLocale(locale)
   const t = await getTranslations('work')
-  const tw = t
   const tcs = await getTranslations('caseStudies')
 
-  /** Public previews only. Empty until a demo is both configured and cleared
+  /** Public previews only. Rendered when a demo is both configured and cleared
    *  for public preview — never merely because the page has space. */
   const publicPreviews = DEMOS.filter((d) => d.accessMode === 'public-link')
 
@@ -86,33 +90,42 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      <section className="section surface-plain">
+      {/* ── Shown in full ──────────────────────────────────────────────────
+          The flagship. The screenshot is the hero frame of the proof package —
+          the form before save — as a redacted public derivative. */}
+      <section className="section surface-plain" data-section="flagship">
         <div className="container">
-          <div className="sec-head">
-            <p className="section-label">{t('catEyebrow')}</p>
-            <h2 style={{ margin: 0 }}>{t('catTitle')}</h2>
-          </div>
-
-          <div className="ruled-grid ruled-grid-4">
-            {CATEGORIES.map((c, i) => (
-              <div key={c} className="ruled-item">
-                <p className="ruled-index">{String(i + 1).padStart(2, '0')}</p>
-                <h3 className="ruled-title" style={{ fontSize: 'var(--text-h4)' }}>{t(c)}</h3>
-                <p className="ruled-desc">{t(`${c}d`)}</p>
-              </div>
-            ))}
+          <div className="wf">
+            <div className="wf-say">
+              <SectionHeader label={t('flagEyebrow')}>{t('flagTitle')}</SectionHeader>
+              <p className="wf-body">{t('flagBody')}</p>
+              <ol className="wf-steps">
+                {FLAGSHIP_STEPS.map((k) => <li key={k}>{t(k)}</li>)}
+              </ol>
+              <p className="wf-disclosure">{t('flagDisclosure')}</p>
+              <Link href="/work/maxpromo-os" className="btn btn-primary">{t('flagCta')}</Link>
+            </div>
+            <Link href="/work/maxpromo-os" className="wf-shot" aria-label={t('flagCta')}>
+              <Image
+                src="/images/systems/maxpromo-os/03-form-before-save.png"
+                alt={t('flagAlt')}
+                width={1311}
+                height={752}
+                sizes="(max-width: 1000px) 100vw, 640px"
+              />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* The proof entries. Each renders what it declares it has and nothing
-          more, so an entry that gains an approved screenshot later gains a
-          screenshot rather than forcing a redesign. lib/work-entries.ts holds
-          the claims audit that decides what appears at all. */}
-      <section className="section surface-plain" data-section="delivered">
+      {/* ── Client work ────────────────────────────────────────────────────
+          Each entry renders what it declares it has and nothing more.
+          lib/work-entries.ts holds the claims audit that decides what appears
+          at all. */}
+      <section className="section surface-operational" data-section="delivered">
         <div className="container">
-          <SectionHeader label={tw('provenEyebrow')}>{tw('provenTitle')}</SectionHeader>
-          <p className="sec-lede" style={{ margin: '0 0 var(--space-8)' }}>{tw('provenLede')}</p>
+          <SectionHeader label={t('provenEyebrow')}>{t('provenTitle')}</SectionHeader>
+          <p className="sec-lede" style={{ margin: '0 0 var(--space-8)' }}>{t('provenLede')}</p>
 
           <div className="we-list">
             {WORK_ENTRIES.map((e) => (
@@ -121,44 +134,40 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
                   <p className="we-meta">
                     <span className="we-tag">{tcs(e.tagKey)}</span>
                   </p>
-                  <h3 className="we-headline">{tw(e.headlineKey)}</h3>
+                  <h3 className="we-headline">{t(e.headlineKey)}</h3>
                 </header>
 
                 <div className="we-body">
                   {e.evidence.includes('before-after') && (
                     <div className="we-ba">
                       <div>
-                        <p className="we-ba-label">{tw('beforeLabel')}</p>
+                        <p className="we-ba-label">{t('beforeLabel')}</p>
                         <ul className="we-ba-list we-ba-before">
                           {e.beforeKeys.map((k) => <li key={k}>{tcs(k)}</li>)}
                         </ul>
                       </div>
                       <div>
-                        <p className="we-ba-label we-ba-label-after">{tw('afterLabel')}</p>
+                        <p className="we-ba-label we-ba-label-after">{t('afterLabel')}</p>
                         <ul className="we-ba-list we-ba-after">
                           {e.afterKeys.map((k) => <li key={k}>{tcs(k)}</li>)}
                         </ul>
                       </div>
                     </div>
                   )}
-
                 </div>
 
                 <footer className="we-foot">
-                  {e.evidence.includes('case-study') && (
-                    <Link href="/case-studies" className="quiet-link">{tw('readCase')}</Link>
-                  )}
                   {e.evidence.includes('private-demo') && (
                     <Link
                       href={`/contact?intent=demo&project=${e.id}&source=work`}
                       className="btn btn-sm"
                     >
-                      {tw('askDemo')}
+                      {t('askDemo')}
                     </Link>
                   )}
                   {CAPABILITY_HREF[e.capability] && (
                     <Link href={CAPABILITY_HREF[e.capability]} className="quiet-link">
-                      {tw('relatedLabel')}
+                      {t('relatedLabel')}
                     </Link>
                   )}
                 </footer>
@@ -172,31 +181,20 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
           the visitor to wonder about. */}
       <section className="section-compact surface-evidence" data-section="evidence-policy">
         <div className="container">
-          <SectionHeader label={tw('evidenceEyebrow')}>{tw('evidenceTitle')}</SectionHeader>
+          <SectionHeader label={t('evidenceEyebrow')}>{t('evidenceTitle')}</SectionHeader>
           <ul className="we-policy">
             {(['e1', 'e2', 'e3'] as const).map((k) => (
               <li key={k} className="we-policy-item">
-                <h3 className="we-policy-title">{tw(`${k}Title`)}</h3>
-                <p className="we-policy-body">{tw(`${k}Body`)}</p>
+                <h3 className="we-policy-title">{t(`${k}Title`)}</h3>
+                <p className="we-policy-body">{t(`${k}Body`)}</p>
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      {publicPreviews.length === 0 ? (
-        <section className="section surface-operational">
-          <div className="container">
-            <div style={{ maxWidth: '46rem' }}>
-              <h2 style={{ margin: '0 0 var(--space-4)' }}>{t('emptyTitle')}</h2>
-              <p style={{ margin: 0, fontSize: 'var(--text-body)', lineHeight: 'var(--leading-body)', color: 'var(--brand-text-secondary)' }}>
-                {t('emptyBody')}
-              </p>
-            </div>
-          </div>
-        </section>
-      ) : (
-        <section className="section surface-operational">
+      {publicPreviews.length > 0 && (
+        <section className="section surface-plain">
           <div className="container">
             <div className="ruled-grid">
               {publicPreviews.map((d) => (
@@ -224,7 +222,7 @@ export default async function WorkPage({ params }: { params: Promise<{ locale: s
             {/* Carries its origin into the existing contact architecture, so a
                 demonstration request arrives as one rather than as a generic
                 enquiry. No new lead system. */}
-            <Link href="/contact?intent=demo" className="btn btn-primary">{t('requestCta')}</Link>
+            <Link href="/contact?intent=demo&source=work" className="btn btn-primary">{t('requestCta')}</Link>
             <p style={{ margin: 'var(--space-5) 0 0', fontSize: 'var(--text-micro)', color: 'var(--brand-text-inverted-secondary)' }}>
               {t('requestNote')}
             </p>

@@ -126,6 +126,8 @@ const SAME_IN_BOTH = new Set([
   // content constitution says is not translated.
   'home.hero.f2', 'home.founder.name', 'home.resource.name',
   'home.bureau.label', 'footer.agentBureau', 'demoRoom.brand',
+  // The same product name, shortened for the footer column.
+  'footer.frictionCheck',
   // ── Proper nouns, printed as they are ─────────────────────────────────────
   'integrations.calendar', 'integrations.forms',
   'contact.contactMethodWhatsApp',

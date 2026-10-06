@@ -22,16 +22,11 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataR
 
   // Solutions — one page per business problem.
   { path: '/solutions',                      priority: 0.9, changeFrequency: 'monthly' },
-  { path: '/solutions/customer-inquiries',   priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/workflow-automation',  priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/custom-applications', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/web-development',      priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/content-operations',   priority: 0.7, changeFrequency: 'monthly' },
   { path: '/solutions/product-operations',   priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/solutions/ai-agents',            priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/solutions/reviews',              priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/solutions/social-media',         priority: 0.7, changeFrequency: 'monthly' },
-  { path: '/solutions/websites-platforms',   priority: 0.7, changeFrequency: 'monthly' },
 
   // Industries — one page per sector.
   { path: '/industries',                     priority: 0.9, changeFrequency: 'monthly' },
@@ -44,11 +39,11 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataR
 
   // Resources.
   { path: '/work',                           priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/work/maxpromo-os',               priority: 0.8, changeFrequency: 'monthly' },
   { path: '/friction-check',                 priority: 0.8, changeFrequency: 'monthly' },
   { path: '/resources/what-to-automate-first', priority: 0.7, changeFrequency: 'yearly'  },
   { path: '/resources',                      priority: 0.8, changeFrequency: 'monthly' },
   { path: '/blog',                           priority: 0.6, changeFrequency: 'weekly'  },
-  { path: '/case-studies',                   priority: 0.6, changeFrequency: 'monthly' },
 
   // Agent Bureau is the one product marketed publicly from the hub. The
   // operating systems are protected products and are deliberately absent:
@@ -57,9 +52,8 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataR
 
   { path: '/about',                          priority: 0.7, changeFrequency: 'monthly' },
   { path: '/contact',                        priority: 0.6, changeFrequency: 'monthly' },
-  // /ai-websites is gone: it served the same page as
-  // /solutions/websites-platforms and now redirects there permanently.
-  { path: '/automation-lab',                 priority: 0.5, changeFrequency: 'monthly' },
+  // Retired 2026-10-06 and permanently redirected (next.config.ts): the five
+  // legacy solution slugs, /case-studies, /automation-lab and /ai-websites.
   { path: '/impressum',                      priority: 0.3, changeFrequency: 'yearly'  },
   { path: '/privacy',                        priority: 0.3, changeFrequency: 'yearly'  },
   { path: '/agb',                          priority: 0.3, changeFrequency: 'yearly' },

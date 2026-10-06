@@ -29,7 +29,11 @@ import '../solutions.css'
  * No fake dashboard. The scene is the existing process-sequence grammar
  * showing a process, an application and the people and record around it,
  * which is an architecture rather than a screenshot of software that does not
- * exist yet. The real interface capture has a reserved position below it.
+ * exist yet. The real interface below it is our own back office, the
+ * application Maxpromo runs its quotations and invoices on, captured in a
+ * controlled demonstration and published as a derivative of the governed
+ * evidence (docs/evidence/maxpromo-os). It is our application, said so, never
+ * presented as a client's.
  */
 
 const FAMILIAR = ['c2f1', 'c2f2', 'c2f3', 'c2f4', 'c2f5', 'c2f6'] as const
@@ -141,12 +145,15 @@ export default async function CustomApplicationsPage(
         <div className="container">
           <div className="cp-proof">
             <ScreenshotSlot
-              alt={t('c2Title')}
-              width={1200}
-              height={750}
-              pendingLabel={t('proofPendingLabel')}
+              src="/images/systems/maxpromo-os/05-lifecycle-list.png"
+              alt={t('c2ProofAlt')}
+              width={1311}
+              height={752}
             />
-            <p className="cp-proof-note">{t('proofPendingNote')}</p>
+            <p className="cp-proof-note">
+              {t('c2ProofNote')}{' '}
+              <Link href="/work/maxpromo-os" className="quiet-link">{t('c2ProofLink')}</Link>
+            </p>
           </div>
         </div>
       </section>

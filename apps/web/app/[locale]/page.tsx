@@ -14,8 +14,7 @@ import { FrictionScene } from '@/components/home/FrictionScene'
 import { CapabilityBench } from '@/components/home/CapabilityBench'
 import { MethodTransform } from '@/components/home/MethodTransform'
 import { FounderNote } from '@/components/home/FounderNote'
-import { ProofMetrics } from '@/components/homepage/ProofMetrics'
-import type { ProofMetric } from '@/components/homepage/ProofMetrics'
+import Image from 'next/image'
 import { IntegrationMarquee } from '@/components/ui/IntegrationMarquee'
 import { CAPABILITIES } from '@/lib/capabilities'
 
@@ -138,34 +137,16 @@ export default async function HomePage() {
     { id: 's3', scene: 'split' as const },
   ]
 
-  /* TWO EVIDENCE STORIES, AND TWO IS THE ANSWER.
+  /* THE EVIDENCE IS A WORKFLOW YOU CAN SEE, NOT A FIGURE.
 
-     Both are from published case studies, both measured after that system went
-     live, neither rounded, strengthened or moved between projects:
-
-       78%            less time spent on manual data processing
-       3 days -> 4h   invoice cycle, start to finish
-
-     Two figures that were available are deliberately absent. £14,000/month has
-     a currency under forensic review. And "94% of invoices processed without
-     human intervention" was dropped on Marcel's instruction: it reads as
-     automation language on a page whose whole argument is to describe the
-     business before the technology, and a cold visitor cannot tell from those
-     six words what was happening before. A third number to square off a row is
-     the thing this section is least allowed to do.
-
-     Dropping it meant deleting the key, not skipping it. These figures were in
-     a `home.proof` group of their own, and next-intl serialises the whole
-     message tree into the document — so the first attempt, which simply stopped
-     rendering p2, left "94 % der Rechnungen ohne manuellen Eingriff verarbeitet"
-     sitting in the page source of every visit. Found by reading what production
-     actually served, not the component. The two live figures now sit in
-     `home.evidence` with the rest of this section's copy, and the group that
-     held the withdrawn claim, along with a stale title still promising three
-     systems, is gone.
-
-     Proof before symmetry. The grid sizes itself to what it is given. */
-  const PROOF = ['p1', 'p3'] as const
+     This section once carried case-study figures — 78 %, three days to four
+     hours — none of which has an artefact behind it; the claims registry marks
+     them unevidenced and they no longer persuade anywhere. What replaced them
+     is the one thing the company can show end to end: a quotation made in its
+     own system, five steps, the decision with a person. The steps are the
+     proof package's statements in the visitor's words. */
+  const PROOF_STEPS = ['st1', 'st2', 'st3', 'st4'] as const
+  const tGuide = await getTranslations('automationGuide')
 
   const METHOD_QUESTIONS = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'] as const
   const METHOD_STEPS     = ['st1', 'st2', 'st3', 'st4'] as const
@@ -288,24 +269,38 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── 6. Real work ──────────────────────── pale green, the evidence ── */}
+      {/* ── 6. Real work ──────────────────────── pale green, the evidence ──
+          The flagship proof: one quotation through the system we run our own
+          paperwork on, captured in a controlled environment and published as
+          a redacted derivative (docs/evidence/maxpromo-os). The visible work is
+          the proof; there is no figure on this section because none is
+          measured. */}
       <section data-section="evidence" className="section surface-evidence">
         <div className="container">
           <div className="evid-head">
             <SectionHeader label={tEvid('eyebrow')}>{tEvid('title')}</SectionHeader>
-            <Link href="/case-studies" className="quiet-link">{tEvid('viewAll')} &rarr;</Link>
+            <Link href="/work" className="quiet-link">{tEvid('viewAll')} &rarr;</Link>
           </div>
 
-          <p className="evid-lede">{tEvid('lede')}</p>
-
-          <ProofMetrics
-            metrics={PROOF.map((id): ProofMetric => ({
-              id,
-              value: tEvid(`${id}Value`),
-              label: tEvid(`${id}Label`),
-              source: tEvid(`${id}Source`),
-            }))}
-          />
+          <div className="hproof">
+            <div className="hproof-say">
+              <p className="evid-lede">{tEvid('lede')}</p>
+              <ol className="hproof-steps">
+                {PROOF_STEPS.map((k) => <li key={k}>{tEvid(k)}</li>)}
+              </ol>
+              <p className="hproof-note">{tEvid('disclosure')}</p>
+              <Link href="/work/maxpromo-os" className="btn btn-secondary">{tEvid('cta')}</Link>
+            </div>
+            <Link href="/work/maxpromo-os" className="hproof-shot" aria-label={tEvid('cta')}>
+              <Image
+                src="/images/systems/maxpromo-os/02-extraction-result.png"
+                alt={tEvid('alt')}
+                width={1311}
+                height={752}
+                sizes="(max-width: 1000px) 100vw, 640px"
+              />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -359,12 +354,9 @@ export default async function HomePage() {
       </section>
 
       {/* ── 9. Start here ──────────────────────── white, the useful thing ──
-          THE CHECK IS NOT BUILT YET, AND THIS SECTION SAYS SO.
-
-          It describes what it will look at and then tells the truth about its
-          state. There is no button to a page that does not exist: the action
-          here is the one that is genuinely available today, which is to talk to
-          us. Building the tool is a backlog item, not a link. */}
+          The Business Friction Check, which is live. Result first, no email
+          gate, no score; it can conclude that the visitor does not need us.
+          The secondary action is for someone who would rather talk. */}
       <section data-section="resource" className="section surface-plain">
         <div className="container">
           <div className="sec-head">
@@ -373,10 +365,7 @@ export default async function HomePage() {
 
           <div className="resource">
             <div className="resource-say">
-              <p className="resource-name">
-                {tRes('name')}
-                <span className="resource-status">{tRes('status')}</span>
-              </p>
+              <p className="resource-name">{tRes('name')}</p>
               <p className="resource-body">{tRes('body')}</p>
 
               <p className="resource-lookat">{tRes('lookAt')}</p>
@@ -385,15 +374,20 @@ export default async function HomePage() {
               </ul>
 
               <p className="resource-outcome">{tRes('outcome')}</p>
-              <p className="resource-note">{tRes('statusNote')}</p>
 
-              <Link href="/contact" className="btn btn-secondary">{tRes('fallbackCta')}</Link>
+              <div className="resource-actions">
+                <Link href="/friction-check" className="btn btn-primary">{tRes('cta')}</Link>
+                <Link href="/contact?source=home-start" className="quiet-link">{tRes('fallbackCta')}</Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── 10. Useful, not noisy ──────────────── off-white, the knowledge ─ */}
+      {/* ── 10. Useful, not noisy ──────────────── off-white, the knowledge ─
+          The guide leads, because it is the one piece written to be useful to
+          somebody who never contacts us. Then the two articles that belong to
+          the current direction. */}
       {knowledge.length > 0 && (
         <section data-section="knowledge" className="section-compact surface-operational">
           <div className="container">
@@ -403,9 +397,17 @@ export default async function HomePage() {
             </div>
 
             <ul className="know-list">
+              <li>
+                <Link href="/resources/what-to-automate-first" className="know-item">
+                  <span className="know-kind">{tKnow('guideKind')}</span>
+                  <span className="know-title">{tGuide('title')}</span>
+                  <span className="know-excerpt">{tKnow('guideExcerpt')}</span>
+                </Link>
+              </li>
               {knowledge.map((post) => (
                 <li key={post.slug}>
                   <Link href={`/blog/${post.slug}`} className="know-item">
+                    <span className="know-kind">{tKnow('articleKind')}</span>
                     <span className="know-title">{post.title}</span>
                     <span className="know-excerpt">{post.excerpt}</span>
                   </Link>
