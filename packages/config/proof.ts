@@ -566,12 +566,19 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot'],
       priority: 'high',
-      blockedBy:
-        'CAPTURED in Chrome on 2026-09-26 (tool storage ss_53700jc04) and inspected there; '
-        + 'never transferred. No file, hash or transfer of it exists in the repository, and '
-        + 'browser tool storage is not a governed transfer route. Needs no model call: '
-        + 'recapture per docs/qa/chrome-recovery-contract.md and ingest with npm run '
-        + 'evidence:ingest. Satisfied only once ingested and the inspection recorded.',
+      satisfiedBy: {
+        artefact: 'docs/evidence/maxpromo-os/01-source-note.jpg',
+        basis: 'system-data',
+        recordedOn: '2026-10-06',
+        note:
+          'Captured in the governed evidence runtime on 2026-10-06, transferred through the inbox, '
+          + 'ingested byte for byte as JPEG (sha256 2ec395e2ac93…, ledger). Shows the '
+          + 'KI-Angebotsgenerator open over a new quotation before any generation, with all three '
+          + 'order lines, their quantities and prices, and the surrounding message. The client\'s '
+          + 'name is below the textarea viewport; the order lines are verbatim governed source-note '
+          + 'text, which is the recorded identification basis. Supersedes the 2026-09-26 frame, '
+          + 'which never left Chrome.',
+      },
     },
     {
       id: 'os-extraction-result',
@@ -660,11 +667,16 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:9',
       targets: ['custom-applications proof slot', 'work entry'],
       priority: 'medium',
-      blockedBy:
-        'CAPTURED in Chrome on 2026-09-26 (tool storage ss_63507sdzq) showing EVD-2026-0004 '
-        + 'sent and EVD-2026-0001 paid, and inspected there; never transferred. Both '
-        + 'documents are unchanged in the lab, so a recapture shows the same state and needs '
-        + 'no model call. Satisfied only once ingested and the inspection recorded.',
+      satisfiedBy: {
+        artefact: 'docs/evidence/maxpromo-os/05-lifecycle-list.jpg',
+        basis: 'system-data',
+        recordedOn: '2026-10-06',
+        note:
+          'Captured in the governed evidence runtime on 2026-10-06, transferred through the inbox, '
+          + 'ingested byte for byte as JPEG (sha256 db130ad8e2af…, ledger). The invoice list shows '
+          + 'EVD-2026-0004, Beckmann Elektrotechnik GmbH, 1.180,00 €, GESENDET and EVD-2026-0001, '
+          + '620,00 €, BEZAHLT. No row opened. Supersedes the 2026-09-26 frame, which never left Chrome.',
+      },
     },
     {
       id: 'os-workflow-diagram',

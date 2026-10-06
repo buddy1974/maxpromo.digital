@@ -1,6 +1,6 @@
 # Maxpromo OS — evidence capture manifest
 
-**Status:** awaiting five captures · created 2026-09-23 · Phase B3.2 · reconciled 2026-10-05
+**Status:** 2 of 5 captures ingested (1, 5 — 2026-10-06) · 2–4 await Phase B · created 2026-09-23 · reconciled 2026-10-05
 
 **Where things stand, 2026-10-05.** No capture has reached this directory.
 Chrome produced frames 1 and 5 on 2026-09-26 and frames 2–4 on 2026-10-04, all
@@ -221,8 +221,14 @@ position and modification time are not evidence of anything.
 **The positive test still applies.** Every ingested image must show at least one
 of: a document number beginning `EVD-2026-`, the client `Beckmann
 Elektrotechnik GmbH` / `Katrin Beckmann`, or an address at `Musterhausen` or a
-domain ending `.example`. An image showing none of those is not verifiably from
-the evidence environment and is not ingested, whatever it is called.
+domain ending `.example` — or a verbatim line of the governed source note
+(`EVIDENCE_SOURCE_NOTE`), such as "Schaltschrank-Umbau Halle 2, pauschal
+2.400,00". The source-note frame shows the enquiry as pasted, and its textarea
+can show the order or the signature but not both; the order lines were written
+for this dataset and exist nowhere else, so they identify the environment as
+surely as the client's name. The ingestion tool reads them from `dataset.ts`.
+An image showing none of those is not verifiably from the evidence environment
+and is not ingested, whatever it is called.
 
 ---
 

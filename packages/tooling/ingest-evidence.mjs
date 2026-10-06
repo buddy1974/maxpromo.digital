@@ -60,7 +60,24 @@ export const GOVERNED_MARKERS = [
   'EVD-2026-', 'Beckmann Elektrotechnik GmbH', 'Katrin Beckmann', 'Musterhausen', '.example',
 ]
 
-const PERSONAL = /[\\/](Pictures|Bilder|Screenshots|Downloads|Desktop|OneDrive[^\\/]*)([\\/]|$)/i
+/*
+ * Or a verbatim line of the governed source note.
+ *
+ * The input frame (`os-source-note`) shows the enquiry as pasted, and the
+ * textarea can show the order lines or the signature but not both at once.
+ * The order lines — "Schaltschrank-Umbau Halle 2, pauschal 2.400,00" — were
+ * written for apps/web/lib/evidence/dataset.ts and exist nowhere else, so they
+ * identify the evidence environment as surely as the client's name does. Read
+ * from the dataset, not restated here, and only lines long enough to be
+ * distinctive count.
+ */
+export function sourceNoteLines() {
+  const dataset = readFileSync(join(ROOT, 'apps', 'web', 'lib', 'evidence', 'dataset.ts'), 'utf8')
+  const note = dataset.match(/EVIDENCE_SOURCE_NOTE = `([\s\S]*?)`/)?.[1] ?? ''
+  return note.split(/\r?\n/).map((l) => l.replace(/^-\s*/, '').trim()).filter((l) => l.length >= 30)
+}
+
+const PERSONAL =/[\\/](Pictures|Bilder|Screenshots|Downloads|Desktop|OneDrive[^\\/]*)([\\/]|$)/i
 
 const fail = (msg) => { console.error('evidence:ingest: ' + msg); process.exit(1) }
 
@@ -177,8 +194,10 @@ function recordInspection() {
   const saw = arg('--saw')
   const by = arg('--by')
   if (!saw || !by) fail('need --saw "<governed marker seen in the image>" and --by')
-  if (!GOVERNED_MARKERS.some((m) => saw.includes(m))) {
-    fail(`--saw must contain a governed marker: ${GOVERNED_MARKERS.join(' | ')}. An image showing none is not verifiably from the evidence environment.`)
+  const marker = GOVERNED_MARKERS.find((m) => saw.includes(m))
+  const sourceLine = sourceNoteLines().find((l) => saw.includes(l))
+  if (!marker && !sourceLine) {
+    fail(`--saw must contain a governed marker (${GOVERNED_MARKERS.join(' | ')}) or a verbatim line of EVIDENCE_SOURCE_NOTE. An image showing none is not verifiably from the evidence environment.`)
   }
   const ledger = readLedger()
   const entry = ledger.find((e) => e.requirement === requirement && !e.supersededOn)
@@ -186,7 +205,9 @@ function recordInspection() {
   if (sha256(join(ROOT, entry.file)) !== entry.sha256) fail(`${entry.file} no longer matches its ledger hash`)
   entry.inspection = {
     on: today(), by, saw,
-    checked: 'no real identity, credential, production data, terminal, devtools, notification or overlay',
+    basis: marker ? `governed marker: ${marker}` : `governed source-note line: ${sourceLine}`,
+    checked: 'no real identity, credential, production data, terminal, devtools, notification or error overlay',
+    ...(arg('--note') ? { note: arg('--note') } : {}),
   }
   writeLedger(ledger)
   console.log(`evidence:ingest: inspection recorded for ${requirement}. The requirement may now move to satisfiedBy in proof.ts.`)

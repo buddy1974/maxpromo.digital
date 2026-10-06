@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "requirement": "os-source-note",
+    "file": "docs/evidence/maxpromo-os/01-source-note.jpg",
+    "sha256": "2ec395e2ac93b0b82a27804883b6a2876fcb78c3fedfdc21f1667a6f7e07bfbd",
+    "format": "jpeg",
+    "bytes": 69309,
+    "width": 1456,
+    "height": 834,
+    "source": {
+      "route": "inbox",
+      "name": "01-source-note.jpg"
+    },
+    "capturedOn": "2026-10-06",
+    "capturedBy": "Marcel, Chrome governed Phase A run, transferred to inbox",
+    "ingestedOn": "2026-10-06",
+    "inspection": {
+      "on": "2026-10-06",
+      "by": "VS Claude",
+      "saw": "KI-Angebotsgenerator open over Neues Angebot, before generation; textarea shows: Schaltschrank-Umbau Halle 2, pauschal 2.400,00 / Prüfung ortsveränderlicher Geräte, 48 Stück à 12,50 / Dokumentation und Übergabeprotokoll, pauschal 380,00 / Rechnung bitte wie immer an die Buchhaltung. Client name not in the visible textarea viewport.",
+      "basis": "governed source-note line: Schaltschrank-Umbau Halle 2, pauschal 2.400,00",
+      "checked": "no real identity, credential, production data, terminal, devtools, notification or error overlay",
+      "note": "Next.js development badge bottom-left and screenshot-tool margin present; live preview shows the ZAHLUNGSDETAILS heading only, no bank data; operator's own name and business address in the OS chrome and preview header, expected per manifest. Not cropped or retouched."
+    }
+  },
+  {
+    "requirement": "os-lifecycle-list",
+    "file": "docs/evidence/maxpromo-os/05-lifecycle-list.jpg",
+    "sha256": "db130ad8e2afa7848489c261aae268f34d362c54ac9f7ceb9bddd18b57103010",
+    "format": "jpeg",
+    "bytes": 36439,
+    "width": 1456,
+    "height": 833,
+    "source": {
+      "route": "inbox",
+      "name": "05-lifecycle-list.jpg"
+    },
+    "capturedOn": "2026-10-06",
+    "capturedBy": "Marcel, Chrome governed Phase A run, transferred to inbox",
+    "ingestedOn": "2026-10-06",
+    "inspection": {
+      "on": "2026-10-06",
+      "by": "VS Claude",
+      "saw": "Rechnungen list: EVD-2026-0004 Beckmann Elektrotechnik GmbH 1.180,00 € GESENDET; EVD-2026-0001 Beckmann Elektrotechnik GmbH 620,00 € BEZAHLT. No row opened.",
+      "basis": "governed marker: EVD-2026-",
+      "checked": "no real identity, credential, production data, terminal, devtools, notification or error overlay",
+      "note": "Next.js development badge bottom-left and screenshot-tool margin present; operator's own name in the OS sidebar, expected per manifest. Not cropped or retouched."
+    }
+  }
+]
