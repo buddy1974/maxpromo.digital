@@ -591,15 +591,19 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot'],
       priority: 'high',
-      blockedBy:
-        'Risk 56 no longer blocks this: a genuine provider-backed run on 2026-10-04 (one '
-        + 'request, HTTP 200) produced a result and Chrome captured it, but only in its own '
-        + 'storage; nothing was transferred. That run predates the provenance guard, and its '
-        + 'output carried invented contractual scope (risk 59), so it shows a defect since '
-        + 'fixed and is not evidence of the current workflow. A publishable frame needs one '
-        + 'new provider request, which the owner has not authorised; proposed, not granted, '
-        + 'in the recovery contract. Error frame ss_2957teoi2 remains evidence of the earlier '
-        + 'billing failure only.',
+      satisfiedBy: {
+        artefact: 'docs/evidence/maxpromo-os/02-extraction-result.jpg',
+        basis: 'system-data',
+        recordedOn: '2026-10-06',
+        note:
+          'Captured in the governed evidence runtime on 2026-10-06 after the single authorised '
+          + 'provider request (one POST /api/os/ai/enhance, HTTP 200), transferred through the '
+          + 'inbox, ingested byte for byte as JPEG (sha256 4734b0dd85f5…, ledger). Shows the form '
+          + 'marked KI-OPTIMIERT with the guard\'s review banner and warnings left as returned, '
+          + 'the client linked to Beckmann Elektrotechnik GmbH, and the preview with the three '
+          + 'source lines at 2.400,00 / 48 × 12,50 / 380,00, total 3.380,00 €. No held line. '
+          + 'The tiled frame ss_0586y5xvy from the same run was rejected and not ingested.',
+      },
     },
     {
       id: 'os-form-before-save',
@@ -612,14 +616,22 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['workflow-automation proof slot', 'work entry'],
       priority: 'high',
-      blockedBy:
-        'Captured in Chrome on 2026-10-04, not transferred. Unusable as the hero even if it '
-        + 'were: the form it shows carries the invented scope of risk 59, a previewed number '
-        + '(ANG-2026-001) that was not the saved one (ANG-2026-015, risk 60), an unlinked '
-        + 'client (risk 61), and the business bank block in the live preview, which makes '
-        + 'that frame internal. The honest frame is the current form, after a fresh '
-        + 'extraction, with any hold the guard raises left visible. Same single gated request '
-        + 'as os-extraction-result.',
+      satisfiedBy: {
+        artefact: 'docs/evidence/maxpromo-os/03-form-before-save.jpg',
+        basis: 'system-data',
+        recordedOn: '2026-10-06',
+        note:
+          'Captured in the governed evidence runtime on 2026-10-06 from the same single request '
+          + 'as os-extraction-result, transferred through the inbox, ingested byte for byte as '
+          + 'JPEG (sha256 94b15c6a3126…, ledger). The reviewed form before save: three '
+          + 'source-faithful positions (2.400,00 pauschal, 48 × 12,50 = 600,00, 380,00 pauschal), '
+          + 'Zwischensumme and total 3.380,00 €, Angebot speichern visible. Human review was '
+          + 'inspection only; no figure was edited and Bewusst übernehmen was not used. The live '
+          + 'preview shows Maxpromo\'s own bank block, so this governed original is internal: '
+          + 'public use needs a separately made redacted derivative, which is not part of this '
+          + 'record. That the save was unused at capture rests on the run report and on the one '
+          + 'later save issuing the previewed ANG-2026-016.',
+      },
     },
     {
       id: 'os-draft-record',
@@ -632,12 +644,19 @@ const MAXPROMO_OS: ProofPackage = {
       aspect: '16:10',
       targets: ['custom-applications proof slot'],
       priority: 'medium',
-      blockedBy:
-        'The save happened: ANG-2026-015, draft, is in the evidence lab and is preserved as '
-        + 'the record of the 2026-10-04 run. Chrome captured its detail view and did not '
-        + 'transfer it. Its line items carry the invented scope of risk 59, so it is internal '
-        + 'evidence of that defect, not public proof of the workflow. Depends on the same '
-        + 'single gated request as os-extraction-result.',
+      satisfiedBy: {
+        artefact: 'docs/evidence/maxpromo-os/04-draft-record.jpg',
+        basis: 'system-data',
+        recordedOn: '2026-10-06',
+        note:
+          'Captured in the governed evidence runtime on 2026-10-06 after exactly one save '
+          + '(POST /api/os/angebote, 201), transferred through the inbox, ingested byte for byte '
+          + 'as JPEG (sha256 b318b495d424…, ledger). The detail view of ANG-2026-016, the '
+          + 'server-issued number and the one previewed, status ENTWURF, Katrin Beckmann — '
+          + 'Beckmann Elektrotechnik GmbH, three positions, Gesamt 3.380,00 €. Send, edit and '
+          + 'delete controls are visible and were not used. ANG-2026-015 from the 2026-10-04 run '
+          + 'is untouched and remains internal evidence of risk 59.',
+      },
     },
     {
       id: 'os-lifecycle-list',

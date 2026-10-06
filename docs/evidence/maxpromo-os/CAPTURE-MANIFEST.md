@@ -1,6 +1,6 @@
 # Maxpromo OS — evidence capture manifest
 
-**Status:** 2 of 5 captures ingested (1, 5 — 2026-10-06) · 2–4 await Phase B · created 2026-09-23 · reconciled 2026-10-05
+**Status:** 5 of 5 captures ingested (1, 5 — Phase A; 2–4 — Phase B, 2026-10-06) · frame 3 shows the bank block and is internal as an original · created 2026-09-23 · reconciled 2026-10-05
 
 **Where things stand, 2026-10-05.** No capture has reached this directory.
 Chrome produced frames 1 and 5 on 2026-09-26 and frames 2–4 on 2026-10-04, all

@@ -1,8 +1,12 @@
 # Chrome evidence contract — Maxpromo OS proof package
 
-**Status, 2026-10-05: Phase A READY · Phase B NOT AUTHORISED.**
-**Anthropic budget: 0 requests.** Phase B would need exactly one, and only
-Marcel can grant it (§7).
+**Status, 2026-10-06: COMPLETE.** Phase A and Phase B both ran; all five
+frames are ingested (`docs/evidence/maxpromo-os/LEDGER.json`). Phase B used its
+one authorised request. **Anthropic budget now: 0 requests.**
+
+*Status, 2026-10-05, kept for the record: Phase A READY · Phase B NOT
+AUTHORISED. Phase B would need exactly one request, and only Marcel can grant
+it (§7).*
 
 This replaces the 2026-09 recovery contract. `chrome-execution-contract.md`
 remains the record of the full September run; nothing in it is to be repeated.

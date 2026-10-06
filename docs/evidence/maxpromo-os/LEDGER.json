@@ -46,5 +46,77 @@
       "checked": "no real identity, credential, production data, terminal, devtools, notification or error overlay",
       "note": "Next.js development badge bottom-left and screenshot-tool margin present; operator's own name in the OS sidebar, expected per manifest. Not cropped or retouched."
     }
+  },
+  {
+    "requirement": "os-extraction-result",
+    "file": "docs/evidence/maxpromo-os/02-extraction-result.jpg",
+    "sha256": "4734b0dd85f53a022ff53654414c5be2a0379c6da1ea35b74d55291e81e12a6a",
+    "format": "jpeg",
+    "bytes": 85891,
+    "width": 1456,
+    "height": 834,
+    "source": {
+      "route": "inbox",
+      "name": "02-extraction-result.jpg"
+    },
+    "capturedOn": "2026-10-06",
+    "capturedBy": "Chrome Claude, governed Phase B run (storage ss_3138u2szb), transferred to inbox",
+    "ingestedOn": "2026-10-06",
+    "inspection": {
+      "on": "2026-10-06",
+      "by": "VS Claude",
+      "saw": "Neues Angebot KI-OPTIMIERT after the single generation; review banner 'Some fields need review' with five numbered warnings; notice 'Mit bestehendem Kunden verknüpft: Beckmann Elektrotechnik GmbH'; customer fields Katrin Beckmann (Beckmann Elektrotechnik GmbH), buchhaltung@beckmann-elektro.example, Industriestraße 14, Musterhausen; live preview ANG-2026-016 with 01 Schaltschrank-Umbau Halle 2 1 x 2.400,00 = 2.400,00 / 02 Prüfung ortsveränderlicher Geräte 48 x 12,50 = 600,00 / 03 Dokumentation und Übergabeprotokoll 1 x 380,00 = 380,00; Angebotssumme 3.380,00 €.",
+      "basis": "governed marker: Beckmann Elektrotechnik GmbH",
+      "checked": "no real identity, credential, production data, terminal, devtools, notification or error overlay",
+      "note": "Single clean frame, not the rejected tiled ss_0586y5xvy. Guard warnings left visible as returned, including warning 5 that the total was not stated in the source. PLZ field empty, showing its placeholder 40210 (page.tsx placeholder), not data. No bank data in frame. Next.js development badge bottom-left and screenshot-tool margin present; operator's own name and business address in the OS chrome and preview header, expected per manifest. Not cropped or retouched."
+    }
+  },
+  {
+    "requirement": "os-form-before-save",
+    "file": "docs/evidence/maxpromo-os/03-form-before-save.jpg",
+    "sha256": "94b15c6a312617235564142d7834a271bdc9d7242d04ff520fde56cd515b7a5a",
+    "format": "jpeg",
+    "bytes": 69859,
+    "width": 1456,
+    "height": 834,
+    "source": {
+      "route": "inbox",
+      "name": "03-form-before-save.jpg"
+    },
+    "capturedOn": "2026-10-06",
+    "capturedBy": "Chrome Claude, governed Phase B run (storage ss_7053cj7qm), transferred to inbox",
+    "ingestedOn": "2026-10-06",
+    "inspection": {
+      "on": "2026-10-06",
+      "by": "VS Claude",
+      "saw": "Quotation form scrolled to POSITIONEN before save: Schaltschrank-Umbau Halle 2 PAUSCHAL 2400; Prüfung ortsveränderlicher Geräte 48 Stück 12,5 = 600,00 €; Dokumentation und Übergabeprotokoll PAUSCHAL 380; Zwischensumme 3.380,00 €, total 3.380,00 €; Notizen 'Rechnung bitte wie immer an die Buchhaltung.'; ANGEBOT SPEICHERN visible; Musterhausen; live preview Angebotssumme 3.380,00 €, Verwendungszweck ANG-2026-016.",
+      "basis": "governed marker: Musterhausen",
+      "checked": "no real identity, credential, production data, terminal, devtools, notification or error overlay",
+      "note": "BANK BLOCK IN FRAME: the live preview shows Maxpromo's own Zahlungsdetails (Kontoinhaber, IBAN, BIC, bank) and the business tax number in the preview footer. Governed original kept unaltered as instructed; this original is internal, and any public use requires a separately produced redacted derivative. That the save control was unused at capture rests on the Chrome run report and on the subsequent single save issuing the previewed number ANG-2026-016; pixels alone cannot show a click did not happen. No held line shown. PLZ field empty with placeholder 40210. Next.js development badge and screenshot-tool margin present. Not cropped or retouched."
+    }
+  },
+  {
+    "requirement": "os-draft-record",
+    "file": "docs/evidence/maxpromo-os/04-draft-record.jpg",
+    "sha256": "b318b495d424839d7b44313f4f8a6e3fee5b59746119f66460871143ddef3ace",
+    "format": "jpeg",
+    "bytes": 54804,
+    "width": 1456,
+    "height": 834,
+    "source": {
+      "route": "inbox",
+      "name": "04-draft-record.jpg"
+    },
+    "capturedOn": "2026-10-06",
+    "capturedBy": "Chrome Claude, governed Phase B run (storage ss_3325l6dzq), transferred to inbox",
+    "ingestedOn": "2026-10-06",
+    "inspection": {
+      "on": "2026-10-06",
+      "by": "VS Claude",
+      "saw": "Detail view Angebote / ANG-2026-016, status ENTWURF; Katrin Beckmann — Beckmann Elektrotechnik GmbH, buchhaltung@beckmann-elektro.example, Industriestraße 14, Musterhausen; positions 01 Schaltschrank-Umbau Halle 2 1 x 2.400,00 € = 2.400,00 € / 02 Prüfung ortsveränderlicher Geräte (48 Stück) 48 x 12,50 € = 600,00 € / 03 Dokumentation und Übergabeprotokoll 1 x 380,00 € = 380,00 €; Gesamt 3.380,00 €; Notizen.",
+      "basis": "governed marker: Beckmann Elektrotechnik GmbH",
+      "checked": "no real identity, credential, production data, terminal, devtools, notification or error overlay",
+      "note": "Server-issued number ANG-2026-016 equals the previewed number. Status draft: An Kunden senden, Bearbeiten, PDF / Drucken and Löschen controls visible and, per the Chrome run report and the ENTWURF status, unused. No bank data in frame; footer shows the §19 clause and business tax number. Next.js development badge and screenshot-tool margin present. Not cropped or retouched."
+    }
   }
 ]

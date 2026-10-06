@@ -1,5 +1,23 @@
 # Change Log
 
+## 2026-10-06 — Maxpromo OS evidence closed: 6 of 6 media requirements satisfied
+
+Internal. Nothing pushed, nothing deployed, nothing sent, no code changed.
+
+Phase B ran in the governed evidence runtime with the one authorised provider
+request (one `POST /api/os/ai/enhance`, HTTP 200) and one save
+(`POST /api/os/angebote`, 201). The extraction returned the three source lines,
+2.400,00 / 48 × 12,50 / 380,00, total 3.380,00 €. The guard's warnings were
+left visible, no line was held, and nothing was edited or force-accepted. The
+save issued `ANG-2026-016`, the number previewed, in draft.
+
+Frames 2–4 came in through the inbox and `npm run evidence:ingest`, byte for
+byte as JPEG, each looked at and recorded in `LEDGER.json`. A tiled duplicate
+of frame 2 from the same run was rejected and not ingested. Frame 3 shows
+Maxpromo's own bank block in the live preview. The governed original is kept
+unaltered and is internal; public use needs a redacted derivative, which is a
+separate decision. `ANG-2026-015` is untouched.
+
 ## 2026-10-05 — Proof package reconciled; evidence gets a governed way in
 
 Internal. No capture taken, no provider called, nothing pushed or deployed.
