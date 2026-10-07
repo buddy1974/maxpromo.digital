@@ -1724,3 +1724,76 @@ pages change a month. A key to manage buys nothing yet.
 
 **Revisit when:** publishing reaches several pieces a week, or Bing Webmaster
 reports slow discovery.
+
+---
+
+## 2026-10-07 — Legal pages get technical metadata; the document text stays frozen
+
+**Decision:** `/impressum`, `/privacy` and `/agb` build their head with
+`pageMetadata()` — own title and description per language, self-canonical,
+de/en/x-default, the corporate card — and lose the page-level `nofollow`.
+
+**Why:** Canonical, hreflang and Open Graph are technical metadata, not legal
+copy. The pages pointed og:url at the homepage and declared no canonical; the
+`nofollow` made a page linked from every footer a crawl dead end and protected
+nothing. The legal wording is untouched.
+
+---
+
+## 2026-10-07 — Titles have a budget; the brand suffix gives way, not the page's words
+
+**Decision:** `documentTitle()` (`lib/seo/og.ts`) appends `| Maxpromo Digital`
+only when the result fits 65 characters, and otherwise uses the page's own
+title alone. `audit:seo` fails any title over the budget.
+
+**Why:** Twelve article titles and two work titles were cut off in results,
+always losing the end of the page's own words. og:site_name carries the brand
+to previews regardless.
+
+**Rejected:** hand-shortening every long headline (editorial rewrite of an
+archive); keeping the length check as a warning (a warning nobody acts on).
+
+---
+
+## 2026-10-07 — Document identity is served, not bundled
+
+**Decision:** The letterhead, bank and MoMo details live in
+`lib/documents/identity.ts` (server only) and reach client screens through the
+authenticated `GET /api/os/document-identity` via `useDocumentIdentity()`.
+`check:public-assets` fails the build if any of the values appears in the
+public build output.
+
+**Why:** Client components imported them as constants, which put the street
+address, tax number, IBAN and MoMo number into public static JavaScript. The
+screens already fetch their data from authenticated `/api/os` routes; the
+identity now follows the same path. Commercial documents still carry every
+legally required detail.
+
+**Rejected:** a server-component provider in the protected layout (that layout
+is a client component, and the print pages sit outside it); leaving the values
+bundled and documenting it (the fix fits the existing pattern at low risk).
+
+---
+
+## 2026-10-07 — Industry pages link to their capabilities; mapping from their own text
+
+**Decision:** Each sector names one or two capability pages in
+`lib/industries.ts`, chosen from that sector's own approach text, rendered as a
+single "What we build for it" line.
+
+**Why:** A sector reader recognised the problem and had no direct path to the
+fix. Engineering judgement from the page content, not a search-term exercise.
+
+---
+
+## 2026-10-07 — AI crawlers are allowed; IndexNow stays rejected; no `keywords` meta
+
+**Decision:** robots.txt names no AI crawler. IndexNow is not adopted (the
+2026-10-06 reasoning re-checked and unchanged). The hub's `keywords` meta is
+removed.
+
+**Why:** The site exists to be found and quoted accurately and publishes
+nothing a crawler may not read. IndexNow buys nothing at a few changes a month
+with Google not using it. The `keywords` tag is ignored by Google, read as spam
+by Bing when stuffed, and named two protected products the consultancy site
+may not market.

@@ -1,5 +1,5 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
-import { getMessages } from 'next-intl/server'
+import { getMessages, getTranslations } from 'next-intl/server'
 import { pickClientMessages } from '@/i18n/client-namespaces'
 import HtmlLangSync from '@/components/HtmlLangSync'
 import { setRequestLocale } from 'next-intl/server'
@@ -22,7 +22,7 @@ import Max from '@/components/max/Max'
  * assistant is proven in its deployed environment.
  */
 const PUBLIC_CHAT_ENABLED = false
-import { BUSINESS } from '@maxpromo/config'
+import { siteGraph } from '@/lib/seo/schema'
 
 /**
  * Locale layout, wraps every public marketing route with the
@@ -63,69 +63,11 @@ export default async function LocaleLayout({
   const domain     = await currentDomain()
   const isShowcase = domain.mode === 'showcase'
 
-  // Site-wide entity graph, Maxpromo hub only, never on white-labeled
-  // showcase product domains. Three nodes with stable @ids, so every page,
-  // article and service can point at the same company instead of restating
-  // it: #organization, #website, #founder. Every fact is read from
-  // @maxpromo/config, the record the Impressum prints.
-  //
-  // What is deliberately absent, and why (docs/governance/seo-inventory.md):
-  //   - streetAddress and postalCode. Maxpromo Digital serves clients where
-  //     they are and does not invite them to premises; the street address is
-  //     printed only where the law requires it (Impressum, privacy notice).
-  //   - LocalBusiness, openingHours, geo. No storefront, no published hours.
-  //   - areaServed and sameAs. No service area is stated on the site and no
-  //     public profile is confirmed yet; both wait for the owner, not a guess.
-  //   - Review, AggregateRating, SearchAction. Nothing on the site supports them.
-  const SITE = `https://www.${BUSINESS.website}`
-  const isDE = locale === 'de'
-  const organizationJsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type':     'Organization',
-        '@id':       `${SITE}/#organization`,
-        name:        BUSINESS.brand,
-        url:         SITE,
-        logo:        { '@type': 'ImageObject', url: `${SITE}/logo.png` },
-        description: isDE
-          ? 'Maxpromo Digital baut und verbessert die Systeme, auf denen Betriebe laufen: Prozessautomatisierung, individuelle Anwendungen, Webentwicklung, Content- und Produktabläufe.'
-          : 'Maxpromo Digital builds and improves the systems businesses run on: workflow automation, custom applications, web development, content and product operations.',
-        address: {
-          '@type':         'PostalAddress',
-          addressLocality: BUSINESS.cityName,
-          addressCountry:  BUSINESS.countryCode,
-        },
-        email:      BUSINESS.email,
-        knowsLanguage: ['de', 'en'],
-        founder:    { '@id': `${SITE}/#founder` },
-        contactPoint: {
-          '@type':           'ContactPoint',
-          telephone:         BUSINESS.phone,
-          email:             BUSINESS.email,
-          contactType:       'customer service',
-          availableLanguage: ['German', 'English'],
-        },
-      },
-      {
-        '@type':     'Person',
-        '@id':       `${SITE}/#founder`,
-        name:        'Marcel Akwe',
-        jobTitle:    isDE ? 'Gründer' : 'Founder',
-        url:         `${SITE}/${locale}/about`,
-        image:       `${SITE}/images/homepage/founder.jpg`,
-        worksFor:    { '@id': `${SITE}/#organization` },
-      },
-      {
-        '@type':     'WebSite',
-        '@id':       `${SITE}/#website`,
-        name:        BUSINESS.brand,
-        url:         SITE,
-        inLanguage:  ['de-DE', 'en-GB'],
-        publisher:   { '@id': `${SITE}/#organization` },
-      },
-    ],
-  }
+  // The site-wide entity graph (Organization, founder, WebSite), hub only,
+  // never on white-labeled showcase product domains. Built in
+  // lib/seo/schema.ts, which documents what it deliberately leaves out.
+  const tFounder = await getTranslations({ locale, namespace: 'about.founder' })
+  const organizationJsonLd = siteGraph(locale, tFounder('name'))
 
   /*
    * Only the namespaces the browser actually needs.

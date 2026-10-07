@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation'
 import { InvoiceDocument } from '@/components/documents/InvoiceDocument'
 import { DocumentToolbar } from '@/components/documents/DocumentPage'
 import { buildInvoiceWhatsAppUrl } from '@/lib/documents/whatsapp'
+import { useDocumentIdentity } from '@/components/documents/useDocumentIdentity'
 import type { InvoiceData } from '@/lib/documents/types'
 import { Icon } from '@maxpromo/ui'
 
@@ -13,6 +14,7 @@ export default function PrintPage() {
   const { id } = useParams<{ id: string }>()
   const [invoice, setInvoice] = useState<InvoiceData | null>(null)
   const [loading, setLoading] = useState(true)
+  const identity = useDocumentIdentity()
 
   useEffect(() => {
     // Auth is enforced by middleware.ts before this page renders.
@@ -42,7 +44,7 @@ export default function PrintPage() {
             <Icon name="download" size="sm" /> Als PDF speichern
           </button>
           <a
-            href={buildInvoiceWhatsAppUrl(invoice)}
+            href={identity ? buildInvoiceWhatsAppUrl(invoice, identity.business) : undefined}
             target="_blank"
             rel="noopener noreferrer"
             /* #25D366 is WhatsApp's own brand colour, not ours: a third-party

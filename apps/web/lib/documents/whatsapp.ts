@@ -12,12 +12,13 @@
  * sending an English invoice gets an English WhatsApp message to match.
  */
 
-import { BUSINESS } from './config'
+import type { DocumentIdentity } from './identity'
 import { fmtCurrency, fmtDocDate } from './format'
 import { getLabels } from './labels'
 import type { AngebotData, InvoiceData } from './types'
 
-export function buildInvoiceWhatsAppUrl(inv: InvoiceData): string {
+/** `BUSINESS` is the identity the screen loaded (useDocumentIdentity) — never imported here. */
+export function buildInvoiceWhatsAppUrl(inv: InvoiceData, BUSINESS: DocumentIdentity['business']): string {
   const t = getLabels(inv.language)
   const vat = BUSINESS.vatClause[inv.language ?? 'de']
   const items = (Array.isArray(inv.line_items) ? inv.line_items : [])
@@ -66,7 +67,7 @@ ${BUSINESS.website}`
   return `https://wa.me/?text=${encodeURIComponent(msg)}`
 }
 
-export function buildAngebotWhatsAppUrl(a: AngebotData): string {
+export function buildAngebotWhatsAppUrl(a: AngebotData, BUSINESS: DocumentIdentity['business']): string {
   const t = getLabels(a.language)
   const vat = BUSINESS.vatClause[a.language ?? 'de']
   const items = (Array.isArray(a.line_items) ? a.line_items : [])

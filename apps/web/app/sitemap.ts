@@ -60,7 +60,11 @@ const ROUTES: Array<{ path: string; priority: number; changeFrequency: MetadataR
 ]
 
 function languageAlternates(path: string): Record<string, string> {
-  return Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}${path}`]))
+  return {
+    ...Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}${path}`])),
+    // Matches the page heads (lib/seo/og.ts): German is the default.
+    'x-default': `${SITE_URL}/de${path}`,
+  }
 }
 
 /**
@@ -132,17 +136,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Blog posts are locale-specific — one post per locale per slug, and a
-  // DE post is not guaranteed to share a slug with its EN counterpart —
-  // so these are listed per-locale without a cross-locale hreflang
-  // alternate (unlike the static routes above).
+  // Blog posts are locale-specific: a DE post is not guaranteed to have an
+  // EN counterpart under the same slug. Where one is published, the pair is
+  // declared exactly as the article's own head declares it (de, en,
+  // x-default → de); where not, no alternate is claimed.
+  const published = Object.fromEntries(
+    LOCALES.map((l) => [l, new Set(getPublishedPosts(l).map((p) => p.slug))]),
+  ) as Record<(typeof LOCALES)[number], Set<string>>
   for (const locale of LOCALES) {
     for (const post of getPublishedPosts(locale)) {
+      const paired = LOCALES.every((l) => published[l].has(post.slug))
       entries.push({
         url: `${SITE_URL}/${locale}/blog/${post.slug}`,
         lastModified: new Date(post.publishedAt),
         changeFrequency: 'monthly',
         priority: 0.5,
+        ...(paired ? { alternates: { languages: languageAlternates(`/blog/${post.slug}`) } } : {}),
       })
     }
   }

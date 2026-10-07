@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * components/documents/InvoiceDocument.tsx
  *
@@ -11,7 +13,8 @@
 import { DocumentPage, SectionHeading } from './DocumentPage'
 import { DocumentTable } from './DocumentTable'
 import { PaymentSection } from './PaymentSection'
-import { BUSINESS, DEFAULT_PAYMENT_METHOD } from '@/lib/documents/config'
+import { useDocumentIdentity } from './useDocumentIdentity'
+import { DEFAULT_PAYMENT_METHOD } from '@/lib/documents/config'
 import { fmtCurrency, fmtDocDate, fmtDocFilename } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
 import type { InvoiceData } from '@/lib/documents/types'
@@ -26,6 +29,13 @@ interface InvoiceDocumentProps {
 }
 
 export function InvoiceDocument({ invoice, withFilename, toolbar }: InvoiceDocumentProps) {
+  // The letterhead, bank and MoMo details arrive from the authenticated API
+  // rather than being compiled into this component (lib/documents/identity.ts).
+  const identity = useDocumentIdentity()
+  if (!identity) {
+    return <div style={{ padding: 'var(--space-8)', fontFamily: 'monospace', color: 'var(--brand-text-secondary)' }}>…</div>
+  }
+  const BUSINESS = identity.business
   const t = getLabels(invoice.language)
   const date = fmtDocDate(invoice.created_at, invoice.language)
   const dueDate = fmtDocDate(invoice.due_date, invoice.language)
@@ -48,6 +58,7 @@ export function InvoiceDocument({ invoice, withFilename, toolbar }: InvoiceDocum
       clientName={invoice.client_name}
       clientAddress={invoice.client_address}
       toolbar={toolbar}
+      business={identity.business}
     >
       {/* Line items + totals */}
       <div style={{ padding: '24px 40px 28px' }}>
@@ -83,6 +94,7 @@ export function InvoiceDocument({ invoice, withFilename, toolbar }: InvoiceDocum
           variant="invoice"
           language={invoice.language}
           reference={invoice.invoice_number}
+          identity={identity}
         />
       </div>
     </DocumentPage>

@@ -1,104 +1,135 @@
-# Google Business Profile — DRAFT FOR OWNER REVIEW
+# Google Business Profile — ready to enter
 
-**Status: DRAFT. Nothing here has been entered anywhere.** Created 2026-10-06
-(Iteration 2A). The profile is created, verified and edited by Marcel in
-Google's own interface. No code in this repository touches a Business Profile,
-and none will.
+**Status: prepared in the repository, not entered anywhere.** Created
+2026-10-06, completed 2026-10-07 (Iteration 2A). Marcel creates, verifies and
+edits the profile in Google's own interface; no code in this repository
+touches a Business Profile, and none will. Everything below is decided except
+what only the owner can know, which is marked **OWNER FACT**.
 
 **The old Maxpromoprint profile is not touched** — not edited, merged, renamed
-or closed from here. What happens to it is Marcel's decision, made in Google's
-interface (see §7).
-
-Every line marked **OWNER REVIEW REQUIRED** is a proposal, not a fact.
+or closed from here (§8).
 
 ---
 
-## 1. Business type — service-area business, address hidden
+## 1. Business model — service-area business, address hidden
 
-Maxpromo Digital serves clients where they are and does not receive them at
-premises. Google's model for that is a **service-area business**:
+Maxpromo Digital works at its clients' premises: the founder travels to
+observe how work actually runs, collect the existing forms and documents,
+design the digital version, configure and implement it on site, train the
+staff and support adoption. Clients are not received at a Maxpromo location.
+Google's model for that is a **service-area business**:
 
-- An address is still entered for **verification**, but it is **hidden** from
-  the public profile ("I deliver goods and services to my customers" → do not
-  show the address). Google uses it only to verify and to place the service
-  area.
-- **No storefront** is claimed. No street address is shown. No pin on a
-  residence.
-- The future Esosa office address is **not** used. If a staffed office opens
-  and the owner decides to receive clients there, the type can change then.
+- In setup, answer that you **deliver goods and services to customers** and
+  that customers do **not** visit your location. The address is entered for
+  verification only and is **hidden** from the public profile.
+- No storefront, no opening hours for walk-ins, no map pin on a residence.
+- The prospective office arrangement is **not** used: it is not an approved
+  Maxpromo location. See §9 for how it is added later without rework.
 
-**OWNER REVIEW REQUIRED:** which address Google verifies against. If it is a
-residential address, it must stay hidden; a business-address service is an
-alternative (see `seo-owner-actions.md`, item 6).
+**OWNER FACT:** the address Google verifies against. If it is residential, it
+stays hidden — which a service-area profile guarantees.
 
-## 2. Name
+## 2. Name, website, phone
 
-`Maxpromo Digital` — exactly the trading name on the website and the Impressum.
-No keywords or city appended to the name (Google's guidelines forbid it, and it
-is the most common reason profiles are suspended).
+| Field | Value |
+|---|---|
+| Business name | `Maxpromo Digital` — exactly as on the website and the Impressum. Nothing appended: a keyword or city in the name breaks Google's guidelines and is the most common cause of suspension |
+| Website | `https://www.maxpromo.digital` — the canonical host; it redirects visitors to their language |
+| Phone | the business number already published on the Impressum and in the site's structured data — the same number, so the profile and the site agree |
+| Hours | leave unset. No hours are published anywhere; inventing them would be the first false fact on the profile |
 
-## 3. Categories — OWNER REVIEW REQUIRED
+## 3. Categories — candidates, to be confirmed in Google's picker
 
-Google's category list changes and must be checked in the interface at the
-time of setup. Candidates, in order of fit:
+Google's category list is only available inside its interface and changes over
+time; it could not be verified from this repository. These are **candidates**:
+type each into the category field and choose the closest exact match Google
+offers. If a candidate does not appear, skip it rather than pick something
+merely similar.
 
-| Role | Candidate (DE interface / EN) | Fit |
+| Role | Candidate to search for | Why |
 |---|---|---|
-| Primary | **Softwareunternehmen** / Software company | custom applications, workflow automation, the OS — closest to "builds the systems businesses run on" |
-| Additional | **Website-Designer** / Website designer | `/solutions/web-development` |
-| Additional | **Internetdienstleister** or **Unternehmensberater** — only if Marcel considers the description accurate | consulting part of the work; check the wording Google offers |
+| Primary | **Software company** (DE interface: "Softwareunternehmen") | custom applications, workflow automation and the operating systems are software built for a business — the core of what Maxpromo does |
+| Additional | **Business management consultant** ("Unternehmensberater") | the work starts with mapping how a business operates, before anything is built |
+| Additional | **Website designer** ("Webdesigner") | the web-development capability |
 
-**OWNER REVIEW REQUIRED:** the primary category. It is the strongest single
-relevance signal on the profile; pick the one a client would search for.
+Do not add categories for tools (automation platforms, AI) or for things the
+site does not offer.
 
-## 4. Service area — OWNER REVIEW REQUIRED
+## 4. Service area — OWNER FACT
 
-**No cities are proposed here.** The website states no service area, and
-inventing one would be the same fabrication this repository forbids elsewhere.
-Marcel decides, e.g. "Essen and the Ruhr area", "North Rhine-Westphalia", or
-"Germany" — Google allows up to 20 areas. Whatever is chosen should then also
-be stated on the website (About page) so the two agree, and may then be added
-to the Organization markup as `areaServed`.
+No cities are proposed here: the website states no service area, and choosing
+one is a business decision, not an SEO one. Google allows up to 20 areas
+(cities, postcodes or regions). Whatever is chosen, tell engineering in one
+line: it then goes into the About page and the Organization markup
+(`areaServed`) together, so profile and site say the same thing.
 
-## 5. Description (German, ≤ 750 characters) — OWNER REVIEW REQUIRED
+## 5. Description (German, ≤ 750 characters)
 
 > Maxpromo Digital baut und verbessert die Systeme, auf denen Betriebe laufen:
 > Prozessautomatisierung, individuelle Anwendungen, Webentwicklung sowie
 > Content- und Produktabläufe. Wir fangen bei dem an, was Ihren Betrieb
 > ausbremst – doppelt erfasste Daten, Werkzeuge, die nicht miteinander
-> sprechen, Aufgaben, die hinter einer Person warten – und nicht bei dem, was wir
-> verkaufen. Entscheidungen bleiben bei Menschen: Was ein System vorbereitet,
-> prüft und gibt eine Person frei. Beratung auf Deutsch und Englisch, mit Sitz
-> in Essen.
+> sprechen, Aufgaben, die hinter einer Person warten – und nicht bei dem, was
+> wir verkaufen. Wir arbeiten vor Ort bei unseren Kunden: Wir sehen uns an, wie
+> die Arbeit heute läuft, richten das System ein und schulen das Team.
+> Entscheidungen bleiben bei Menschen. Beratung auf Deutsch und Englisch, mit
+> Sitz in Essen.
 
-Every sentence is taken from, or restates, what the website already says. No
-figures, no client names, no claims of experience the evidence registry does
-not hold. Optional English version for the owner's reference only; Google shows
-one description.
+Every sentence restates what the website or the business model already says.
+No figures, no client names, no experience the evidence registry does not
+hold.
 
-## 6. Other fields
+## 6. Services (no prices)
 
-| Field | Proposal | Note |
+One service per capability, each linking to its page. Google shows a name and
+a short description; prices are left empty because none are published.
+
+| Service (DE) | Description | Page |
 |---|---|---|
-| Website | `https://www.maxpromo.digital/de` | the canonical German home page |
-| Phone | the published business number (as on the Impressum) | OWNER REVIEW REQUIRED — the same number as the site, or a dedicated line |
-| Opening hours | **leave unset**, or "by appointment" | no hours are published anywhere; do not invent them |
-| Services | Prozessautomatisierung · Individuelle Anwendungen · Webentwicklung · Content-Abläufe · Produkt- und Commerce-Abläufe | one per capability page, each linking to its page; **no prices** |
-| Photos | logo (brand master), the approved corporate card, the founder portrait | approved assets only; no generated images, no proof screenshots with client data |
-| Products / offers | none | nothing priced is published |
-| Reviews | none solicited from friends or invented | real clients may be asked after real work |
-| Posts | none at setup | a later content-distribution package, not this one |
+| Prozessautomatisierung | Dieselben Angaben nicht mehr von Hand weiterreichen. Einmal erfassen, richtig weiterleiten, Arbeit vorbereiten, Ergebnis festhalten. Entscheidungen bleiben bei Menschen. | `/de/solutions/workflow-automation` |
+| Individuelle Anwendungen | Wenn Tabellen und Standardsoftware nicht mehr passen: interne Anwendungen, Portale und operative Systeme, gebaut um den Ablauf, den Ihr Betrieb wirklich hat. | `/de/solutions/custom-applications` |
+| Webentwicklung | Eine Website, die einen Teil der Arbeit übernimmt: Anfragen, die ankommen, Weiterleitung nach Inhalt und Verbindung zu den Systemen, die Sie ohnehin nutzen. | `/de/solutions/web-development` |
+| Inhalte und Social Media | Erfassen, vorbereiten, prüfen, veröffentlichen, festhalten. Die Maschine bereitet vor, ein Mensch entscheidet, wie der Betrieb nach außen klingt. | `/de/solutions/content-operations` |
+| Produkt- und Handelsabläufe | Ein führender Ort für Produktangaben, und Kanäle, die ihm folgen. Preise und Zusagen bleiben eine menschliche Entscheidung. | `/de/solutions/product-operations` |
 
-## 7. The old Maxpromoprint profile — OWNER DECISION, nothing done here
+Names and descriptions are the pages' own titles and meta descriptions,
+word for word, so profile, search result and page agree.
 
-Options, for Marcel to weigh in Google's interface: keep it separate if the
-print business continues; mark it permanently closed if it does not; or ask
-Google support about moving it to the new name. Two active profiles for one
-business at one address can be flagged as duplicates, so this should be decided
-before the new profile is verified.
+## 7. Brand assets and photos
 
-## 8. After it is live
+| Slot | Asset | Note |
+|---|---|---|
+| Logo | the approved primary logo (`apps/web/public/logo.png`, derived from the brand master) | square crop needed by Google: use the approved icon master, not a new artwork |
+| Cover | the approved corporate card (`apps/web/public/images/seo/maxpromo-digital-og.png`) | |
+| Photos | the founder portrait (`apps/web/public/images/homepage/founder.jpg`); later, real on-site work photographed with the client's permission | no generated images, no stock, no screenshots carrying client data. The public OS proof images are redacted for the website; check each again before uploading anywhere else |
+| Reviews | ask real clients after real work | never friends, never incentivised, never invented |
+| Posts | none at setup | belongs to a later content-distribution package |
 
-- Add the profile URL to the Organization `sameAs` (one line in
-  `apps/web/app/[locale]/layout.tsx`) once it is public and confirmed.
-- Check that name, phone and website match the Impressum exactly.
+## 8. The old Maxpromoprint profile — OWNER FACT
+
+Only the owner knows whether the print business continues. Options, in
+Google's interface: keep it separate if it does; mark it permanently closed if
+it does not; ask Google support about a name change if it should become this
+business. Two active profiles for one business at one address can be flagged
+as duplicates, so decide before verifying the new one.
+
+## 9. Later: a legitimate hybrid location
+
+If a staffed office opens and the owner decides to receive clients there:
+
+1. In the profile, add the address and turn on "customers visit this
+   location"; keep the service areas.
+2. In the repository, add the office as the Organization's `location` (a
+   `Place` with its address) in `siteGraph()` (`apps/web/lib/seo/schema.ts`),
+   and the address to the About page. Nothing else changes: every page already
+   points at `#organization`.
+3. Opening hours then become publishable, on the profile and in the markup
+   together.
+
+Until then: no address, no hours, no coordinates — on the profile or the site.
+
+## 10. After it is live
+
+Send engineering the public profile URL: it goes into the Organization's
+`sameAs` in `siteGraph()`, one line. Then check that name, phone and website
+on the profile match the Impressum exactly.

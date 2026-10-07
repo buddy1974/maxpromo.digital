@@ -18,9 +18,17 @@ import type { IconName } from '@maxpromo/ui'
  * packages/tooling/check-capabilities.mjs.
  */
 
+/** The five capability pages, each at `/solutions/<id>`. */
+export type CapabilityId =
+  | 'workflow-automation'
+  | 'custom-applications'
+  | 'web-development'
+  | 'content-operations'
+  | 'product-operations'
+
 export interface Capability {
-  /** Stable id. Used as the contact page's `?capability=` context. */
-  readonly id: string
+  /** Stable id and page slug. Used as the contact page's `?capability=` context. */
+  readonly id: CapabilityId
   readonly icon: IconName
   /** Message key under the `capabilities` namespace. */
   readonly key: string

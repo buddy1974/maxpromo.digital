@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { pageMetadata } from '@/lib/seo/og'
-import { breadcrumbs, graph } from '@/lib/seo/schema'
+import { breadcrumbs, graph, ORGANIZATION_ID, pageUrl } from '@/lib/seo/schema'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
@@ -67,19 +67,23 @@ export default async function WhatToAutomateFirstPage({
   setRequestLocale(locale)
   const t = await getTranslations('automationGuide')
 
-  /* Article markup, because this page is one: a titled, authored piece of
-     writing. The date is the day it was first published (509868a), the
-     author and publisher are the entities the layout declares. Nothing here
-     that the page does not visibly say. */
+  /* Article markup, because this page is one: a titled piece of writing.
+     The date is the day it was first published (509868a). The page names no
+     person as its author, so the markup does not either: author and
+     publisher are the Organization the layout declares. Nothing here that the
+     page does not visibly say. */
+  const url = pageUrl(locale, '/resources/what-to-automate-first')
   const articleJsonLd = {
     '@type': 'Article',
+    '@id': `${url}#article`,
     headline: t('title'),
     description: t('lede'),
     inLanguage: locale === 'en' ? 'en-GB' : 'de-DE',
     datePublished: '2026-09-25',
-    mainEntityOfPage: `https://www.maxpromo.digital/${locale}/resources/what-to-automate-first`,
-    author: { '@id': 'https://www.maxpromo.digital/#founder' },
-    publisher: { '@id': 'https://www.maxpromo.digital/#organization' },
+    url,
+    mainEntityOfPage: url,
+    author: { '@id': ORGANIZATION_ID },
+    publisher: { '@id': ORGANIZATION_ID },
   }
   const tNav = await getTranslations('nav')
 

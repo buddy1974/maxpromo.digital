@@ -1,10 +1,28 @@
 import type { Metadata } from 'next'
+import { corporateCard, pageMetadata } from '@/lib/seo/og'
 import { LegalSection as Section } from '@/components/legal/LegalSection'
 
-export const metadata: Metadata = {
-  title: 'AGB / Terms & Conditions',
-  description: 'Allgemeine Geschäftsbedingungen der Maxpromo Digital, General Terms and Conditions',
-  robots: { index: true, follow: false },
+/*
+ * Technical metadata only — canonical, language alternates, social card.
+ * The document below is bilingual and unchanged; nothing here alters its
+ * legal wording. The former page-level `nofollow` is gone: it made a page
+ * linked from every footer a crawl dead end and protected nothing.
+ */
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> },
+): Promise<Metadata> {
+  const { locale } = await params
+  const isDE = locale !== 'en'
+  return pageMetadata({
+    locale,
+    path: '/agb',
+    title: isDE ? 'Allgemeine Geschäftsbedingungen (AGB)' : 'Terms and conditions',
+    description: isDE
+      ? 'Allgemeine Geschäftsbedingungen der Maxpromo Digital für Verträge über IT-Dienstleistungen, Softwareentwicklung, Automatisierung und digitale Beratung.'
+      : 'General terms and conditions of Maxpromo Digital for contracts covering IT services, software development, automation and digital consulting.',
+    family: 'company',
+    image: corporateCard('Maxpromo Digital'),
+  })
 }
 
 function Paragraph({ de, en }: { de: string; en?: string }) {

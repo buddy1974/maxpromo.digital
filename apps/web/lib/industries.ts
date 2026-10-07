@@ -23,6 +23,8 @@
  * no "AI-powered", "seamless", "leverage", "enterprise-grade", "transform".
  */
 
+import type { CapabilityId } from './capabilities'
+
 export type Locale = 'de' | 'en'
 
 interface Localised {
@@ -64,11 +66,20 @@ export interface Industry {
     readonly fragments: Localised
     readonly slows: Localised
   }
+  /**
+   * The one or two capability pages a reader from this sector needs next,
+   * most relevant first. Chosen from this entry's own `approach`, not from
+   * search terms: the sector page names the problem, the capability page
+   * explains the fix. Without this the sector pages linked to proof and to
+   * each other, and never to a solution (known risk 70).
+   */
+  readonly capabilities: readonly [CapabilityId, CapabilityId?]
 }
 
 export const INDUSTRIES: readonly Industry[] = [
   {
     slug: 'healthcare',
+    capabilities: ['workflow-automation', 'custom-applications'],
     name: { de: 'Gesundheitswesen', en: 'Healthcare' },
     summary: {
       de: 'Praxen, Pflegedienste und medizinische Einrichtungen, in denen Verwaltung Zeit frisst, die der Versorgung fehlt.',
@@ -129,6 +140,7 @@ export const INDUSTRIES: readonly Industry[] = [
 
   {
     slug: 'construction',
+    capabilities: ['custom-applications', 'workflow-automation'],
     name: { de: 'Handwerk und Bau', en: 'Construction and Trades' },
     summary: {
       de: 'Handwerksbetriebe und Baufirmen, bei denen zwischen erledigter Arbeit und bezahlter Rechnung zu viele Tage liegen.',
@@ -191,6 +203,7 @@ export const INDUSTRIES: readonly Industry[] = [
 
   {
     slug: 'property',
+    capabilities: ['workflow-automation', 'custom-applications'],
     name: { de: 'Immobilien', en: 'Property' },
     summary: {
       de: 'Makler und Verwaltungen, bei denen Anfragen schneller kommen, als sie qualifiziert werden können.',
@@ -251,6 +264,7 @@ export const INDUSTRIES: readonly Industry[] = [
 
   {
     slug: 'hospitality',
+    capabilities: ['workflow-automation', 'content-operations'],
     name: { de: 'Gastronomie', en: 'Hospitality' },
     summary: {
       de: 'Restaurants und Betriebe mit mehreren Standorten, in denen der Service die Kommunikation nebenbei erledigen muss.',
@@ -311,6 +325,7 @@ export const INDUSTRIES: readonly Industry[] = [
 
   {
     slug: 'publishing',
+    capabilities: ['custom-applications', 'content-operations'],
     name: { de: 'Verlage und Medien', en: 'Publishing and Media' },
     summary: {
       de: 'Verlage und Redaktionen, in denen der Produktionsablauf in Tabellen und E-Mail-Verläufen liegt.',
@@ -371,6 +386,7 @@ export const INDUSTRIES: readonly Industry[] = [
 
   {
     slug: 'professional-services',
+    capabilities: ['workflow-automation', 'custom-applications'],
     name: { de: 'Dienstleistung und Beratung', en: 'Professional Services' },
     summary: {
       de: 'Kanzleien, Agenturen und Beratungen, deren Umsatz an abrechenbarer Zeit hängt — und die zu viel davon verwalten.',

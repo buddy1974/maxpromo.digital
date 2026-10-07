@@ -1,10 +1,28 @@
 import type { Metadata } from 'next'
+import { corporateCard, pageMetadata } from '@/lib/seo/og'
 import { LegalSection as Section } from '@/components/legal/LegalSection'
 
-export const metadata: Metadata = {
-  title: 'Datenschutzerklärung / Privacy Policy',
-  description: 'Informationen zum Datenschutz gemäß DSGVO, Data protection information per GDPR',
-  robots: { index: true, follow: false },
+/*
+ * Technical metadata only — canonical, language alternates, social card.
+ * The document below is bilingual and unchanged; nothing here alters its
+ * legal wording. The former page-level `nofollow` is gone: it made a page
+ * linked from every footer a crawl dead end and protected nothing.
+ */
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> },
+): Promise<Metadata> {
+  const { locale } = await params
+  const isDE = locale !== 'en'
+  return pageMetadata({
+    locale,
+    path: '/privacy',
+    title: isDE ? 'Datenschutzerklärung' : 'Privacy policy',
+    description: isDE
+      ? 'Datenschutzerklärung der Maxpromo Digital: welche personenbezogenen Daten verarbeitet werden, wozu, wie lange, und welche Rechte Sie nach der DSGVO haben.'
+      : 'Privacy policy of Maxpromo Digital: which personal data is processed, why, for how long, and your rights under the GDPR.',
+    family: 'company',
+    image: corporateCard('Maxpromo Digital'),
+  })
 }
 
 

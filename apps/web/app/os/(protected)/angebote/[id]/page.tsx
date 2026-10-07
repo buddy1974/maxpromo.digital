@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { DocumentLanguage } from '@/lib/documents/config'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { useDocumentIdentity, withTaxIdentity } from '@/components/documents/useDocumentIdentity'
 import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono = 'var(--brand-font-mono)'
@@ -26,6 +27,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function AngebotDetailPage() {
   const { t, intlLocale, fmtEur, fmtDate } = useOsLocale()
+  const identity = useDocumentIdentity()
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
   const [angebot, setAngebot] = useState<Angebot | null>(null)
@@ -493,7 +495,7 @@ export default function AngebotDetailPage() {
 
       {/* §19 UStG — Kleinunternehmer status. Never charge VAT. */}
       <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', marginTop: 'var(--space-4)' }}>
-        {t.angebotDetail.legalFooter}
+        {withTaxIdentity(t.angebotDetail.legalFooter, identity)}
       </p>
     </div>
   )

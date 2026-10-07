@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation'
 import { AngebotDocument } from '@/components/documents/AngebotDocument'
 import { DocumentToolbar } from '@/components/documents/DocumentPage'
 import { buildAngebotWhatsAppUrl } from '@/lib/documents/whatsapp'
+import { useDocumentIdentity } from '@/components/documents/useDocumentIdentity'
 import type { AngebotData } from '@/lib/documents/types'
 import { Icon } from '@maxpromo/ui'
 
@@ -13,6 +14,7 @@ export default function AngebotPrintPage() {
   const { id } = useParams<{ id: string }>()
   const [angebot, setAngebot] = useState<AngebotData | null>(null)
   const [loading, setLoading] = useState(true)
+  const identity = useDocumentIdentity()
 
   useEffect(() => {
     // Auth is already enforced by middleware.ts before this page renders.
@@ -48,7 +50,7 @@ export default function AngebotPrintPage() {
             the message pre-filled; the user drags the PDF in afterwards.
           */}
           <a
-            href={buildAngebotWhatsAppUrl(angebot)}
+            href={identity ? buildAngebotWhatsAppUrl(angebot, identity.business) : undefined}
             target="_blank"
             rel="noopener noreferrer"
             /* #25D366 is WhatsApp's own brand colour, not ours: a third-party

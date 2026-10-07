@@ -1,14 +1,14 @@
 # SEO and GEO inventory
 
 **Created 2026-09-25, revised 2026-10-06 for the launch candidate, extended
-2026-10-06 by Iteration 2A (§7–§14).** The governed SEO record: indexability,
+by Iteration 2A (§7–§14, completed 2026-10-07).** The governed SEO record: indexability,
 metadata, structured data, sharing, discovery. There is one of these; if a
 second appears, one of them is wrong.
 
 Companion documents: `search-intent-map.md` (which page answers which search,
 content clusters, editorial backlog), `google-business-profile-draft.md`
-(OWNER REVIEW), `seo-owner-actions.md` (everything that needs Marcel's
-accounts). The rendered head of every sitemap URL is checked by
+(ready for the owner to enter), `seo-owner-actions.md` (only what needs
+Marcel's accounts, DNS or a business fact). The rendered head of every sitemap URL is checked by
 `npm run audit:seo` (§14).
 
 The site is live on https://www.maxpromo.digital since Iteration 1. Nothing
@@ -70,7 +70,7 @@ accumulated value to solve a problem navigation already solves.
 | `/portfolio` | NOINDEX | disallowed in robots.txt, superseded by `/work` |
 | `/data-deletion` | NOINDEX | disallowed in robots.txt; a compliance endpoint, not a page to find |
 | `/[...rest]` | n/a | the localised catch-all; renders 404 and has no URL |
-| `/impressum`, `/privacy`, `/agb` | INDEX, low priority | legal pages are in the sitemap and are not touched otherwise |
+| `/impressum`, `/privacy`, `/agb` | INDEX, low priority | in the sitemap; technical metadata since 2A (§12), document text frozen |
 
 ### OWNER REVIEW
 
@@ -95,8 +95,9 @@ REDIRECT table and the decision log).
 About, the six industry pages, Agent Bureau (whose canonical pointed at a
 redirecting URL), the blog index, What We Do and Work were migrated. Still
 hand-rolled, deliberately: the blog articles (their own `article` Open Graph
-block and per-post hreflang logic, which is correct) and the legal pages,
-which this build does not touch.
+block and per-post hreflang logic, which is correct; they share
+`documentTitle()` and `pageUrl()` since 2A). The legal pages moved to
+`pageMetadata()` in 2A (§12).
 
 ### Schema
 
@@ -170,13 +171,13 @@ Moved to `seo-owner-actions.md`, which is the one list.
 
 ---
 
-# Iteration 2A — search, discovery and sharing (2026-10-06)
+# Iteration 2A — search, discovery and sharing (2026-10-06, completed 2026-10-07)
 
-Audit first, then decisions, then changes. The audit read the rendered head of
-all 64 sitemap URLs (`audit-seo.mjs`). Structural SEO was already sound on
-every non-legal page: self-referencing canonicals, reciprocal hreflang, complete
-Open Graph and Twitter blocks, share images answering 200, no duplicate titles
-or descriptions. What it found is below, with what was done about each.
+Audit first, then decisions, then changes, then an adversarial pass. The audit
+reads the rendered head of all 64 sitemap URLs (`audit-seo.mjs`), against a
+production build. Final state: **0 failures, 0 warnings** — there are no
+warnings any more; every rule either protects an invariant or does not exist
+(§14).
 
 ## 7. Canonical host, redirects, language architecture
 
@@ -184,172 +185,217 @@ Verified on production, read-only, 2026-10-06:
 
 | Request | Result |
 |---|---|
-| `http://maxpromo.digital/` | 308 → `https://maxpromo.digital/` → 308 → `https://www.maxpromo.digital/` (two hops; acceptable, Vercel domain configuration) |
+| `http://maxpromo.digital/` | 308 → `https://maxpromo.digital/` → 308 → `https://www.maxpromo.digital/` (two hops; Vercel domain configuration, harmless) |
 | `http://www.maxpromo.digital/` | 308 → `https://www.maxpromo.digital/` |
 | `https://www.maxpromo.digital/` | 307 → `/de` (locale negotiation; temporary on purpose) |
 | trailing slash, e.g. `/de/about/` | 308 → `/de/about` |
 | unknown path | 404 |
 
+`audit:seo` re-proves the trailing-slash 308 and that a tracking query
+(`?utm_source=…`) does not change the canonical, on one page of every route
+family, every run.
+
 - **Canonical host:** `https://www.maxpromo.digital`, no trailing slash. Every
-  canonical, og:url, hreflang, sitemap `<loc>` and JSON-LD URL uses it.
-- **Languages:** `/de/...` and `/en/...`, same path in both. Each page declares
-  `de`, `en` and, since 2A, **`x-default` → the German page**: German is the
-  default locale and the primary market. Blog posts declare a pair only when
-  the same slug is published in both languages.
+  canonical, og:url, hreflang, sitemap `<loc>` and JSON-LD URL uses it, built by
+  `pageUrl()` in `lib/seo/schema.ts` or `pageMetadata()` in `lib/seo/og.ts` —
+  no page types the host by hand.
+- **Languages:** `/de/...` and `/en/...`, same path in both. Every page
+  declares `de`, `en` and **`x-default` → the German page** (German is the
+  default locale and the primary market). The sitemap declares exactly the same
+  alternates, including x-default, and the audit fails if head and sitemap
+  disagree. Blog posts declare a pair only when the same slug is published in
+  both languages (all six are); an article never borrows the other language's
+  metadata.
+- **Legal pages** are bilingual documents served at both `/de/…` and `/en/…`.
+  Each URL is self-canonical with the de/en/x-default pair, a title and
+  description in its own language, and the corporate card; the document text
+  is unchanged (§12).
 - **Bare `/`** is not in the sitemap; it negotiates and redirects.
 - **robots.txt** allows everything except `/os`, `/api/`, `/demo`,
-  `/portfolio`, `/data-deletion`, and names the canonical sitemap.
-- **Sitemap `lastmod`:** removed from static routes in 2A. It was the request
-  time, so every page claimed to have changed on every fetch — a signal search
-  engines learn to distrust for the whole file. Blog entries keep their real
-  publication date.
+  `/portfolio`, `/data-deletion`, and names the canonical sitemap. No page in
+  the sitemap carries `noindex` or `nofollow`, in a meta tag or a header.
+- **Sitemap `lastmod`:** none on static routes — the repository records no
+  per-page modification date, and the request time claimed every page changed
+  on every fetch. Blog entries carry their real publication date.
+- **No `keywords` meta.** The hub's root layout used to declare one, naming
+  two protected products (RestaurantOS, PrintShopOS) and the retired Joomla
+  positioning. Google ignores the tag, Bing reads a stuffed one as spam, and
+  protected products are never marketed from the consultancy site. Removed.
 
 ## 8. Titles and descriptions
 
-Rules: one deliberate title per page; the brand once (the template adds
-`| Maxpromo Digital`, so a metaTitle must not); a description that says what
-the page does for the reader in roughly 70–170 characters; no keyword lists.
+Rules: one deliberate title per page; the brand at most once; a description
+that says what the page does for the reader in 70–170 characters; no keyword
+lists; no figure the claims registry would not allow on a persuasive page.
 
-Changed in 2A:
+**The title budget.** Results pages cut titles at roughly 65 characters.
+`documentTitle()` in `lib/seo/og.ts` keeps the `| Maxpromo Digital` suffix
+when the result fits, and drops it — not the page's own words — when it would
+only be cut off; og:site_name carries the brand to previews either way. It
+applies to every page built with `pageMetadata()` and to blog articles, so no
+title can exceed the budget, and `audit:seo` fails one that does.
 
-| Page | Change | Why |
-|---|---|---|
-| `/blog/internal-newsletter-system` (DE, EN) | the title no longer ends in the brand twice | the metaTitle carried the brand and the template added it again; `audit:seo` now fails on it |
-| `/solutions` | title "What we do" → "What we do: automation, applications, web" / "Leistungen: Automatisierung, Anwendungen, Web"; the card keeps "What we do" | the old title carried no subject a searcher types |
-| `/solutions`, `/work/maxpromo-os`, `/friction-check`, `/de/resources`, EN newsletter post | descriptions shortened to ≤170 | they were cut off in results mid-sentence; meaning and the "controlled test environment" qualifier kept |
-
-Left as warnings, deliberately: blog article titles of 71–96 characters (the
-archive's own headlines; rewriting them is an editorial decision, listed in the
-backlog in `search-intent-map.md`), and `/de/work` at 66.
+Changed in 2A: the newsletter post no longer carries the brand twice;
+`/solutions` names its subject ("Leistungen: Automatisierung, Anwendungen,
+Web"); five descriptions that ran past 170 characters were tightened; the
+legal pages got their own titles and descriptions per language; the German
+case-study metaTitle was shortened to its subject; two English article
+descriptions that opened with unsupported population claims ("Thousands of
+businesses…", "Most businesses…") now say "Many businesses", as their German
+versions already did. Article headlines and bodies are unchanged — the blog is
+a governed archive (decision log, "Joomla is demoted, not deleted").
 
 ## 9. Structured data — one entity graph
 
-The locale layout emits one `@graph` on every hub page:
+Built in `apps/web/lib/seo/schema.ts`; no page assembles entity markup by hand.
+
+`siteGraph()`, rendered by the locale layout on every hub page (never on
+showcase product domains):
 
 | Node | `@id` | Contents |
 |---|---|---|
-| Organization | `https://www.maxpromo.digital/#organization` | name, url, logo (`/logo.png`, from the brand registry), description, **addressLocality Essen and addressCountry DE only**, email, contactPoint (the published business phone and email, German/English), founder by `@id` |
-| Person | `/#founder` | Marcel Akwe, Founder/Gründer, About-page URL, the published founder portrait, worksFor by `@id` |
+| Organization | `https://www.maxpromo.digital/#organization` | name, url, logo (`/logo.png` with its true size, from the brand registry), description, **addressLocality Essen and addressCountry DE only**, email, contactPoint (the business phone and email published on the Impressum, German/English), founder by `@id` |
+| Person | `/#founder` | the founder's name as the About page states it, Founder/Gründer, About-page URL, the published portrait (`lib/founder.ts`, the same constant the homepage renders), worksFor by `@id` |
 | WebSite | `/#website` | name, url, languages, publisher by `@id` |
 
-Below it, built in `apps/web/lib/seo/schema.ts` and always pointing at the
-graph by `@id` rather than restating the company:
+Below it, always pointing at the graph by `@id`:
 
 | Page | Markup |
 |---|---|
-| five capability pages | `Service` (name and description are the page's own title and meta description; provider `#organization`) + `BreadcrumbList` |
+| five capability pages | `Service` (name and description are the page's own title and meta description — one `meta()` per page feeds both; URL is the canonical; provider `#organization`; no offers) + `BreadcrumbList` |
 | six industry pages | `BreadcrumbList` |
 | `/work/maxpromo-os` | `BreadcrumbList` (the page shows the "Work" crumb visibly) |
-| `/resources/what-to-automate-first` | `Article` (2026-09-25, author `#founder`) + `BreadcrumbList` |
-| blog posts | `BlogPosting` (date from the post; author and publisher `#organization`, because every post is signed "Maxpromo Digital") + `BreadcrumbList` |
+| `/resources/what-to-automate-first` | `Article` (first published 2026-09-25) + `BreadcrumbList`. Author and publisher are the **Organization**: the page names no person as its author, so the markup does not either |
+| blog posts | `BlogPosting` (publication date from the post; no `dateModified`, because none is recorded; author and publisher `#organization`, as every post is signed "Maxpromo Digital") + `BreadcrumbList` |
+
+Breadcrumb names are the visible navigation labels, and every item is a
+published page; the last item is always the page itself.
 
 **Deliberately absent:**
 
-- **Street address and postcode.** Maxpromo Digital is a service-area business:
-  clients are not invited to premises. The street address appears only where
-  the law requires it — see §11.
-- **LocalBusiness, geo, openingHours.** No storefront, no published hours, no
-  coordinates. Organization is the truthful type. Revisit only if a public,
-  staffed business address exists and the owner decides to publish it.
-- **areaServed.** The site states no service area; markup may not say more than
-  the page. Owner decision (`seo-owner-actions.md`).
-- **sameAs.** No public profile has been confirmed as the company's. Add only
-  real, owner-confirmed URLs.
-- **SearchAction.** The site has no search.
-- **Offers, prices, Review, AggregateRating, FAQPage.** Nothing on the site
-  supports them. `audit:seo` fails on any offer, price or rating.
+- **Street address and postcode** — §11.
+- **LocalBusiness, geo, openingHours.** Maxpromo Digital is a service-area
+  business: the founder works at clients' premises — observing workflows,
+  collecting existing forms, configuring and implementing systems on site,
+  training staff — and does not receive clients at premises of its own.
+  Organization is the truthful type. **Future hybrid model:** when a staffed,
+  public office exists and the owner decides to publish it, it is added to
+  `siteGraph()` as the Organization's `location` (a `Place` with that address),
+  the Google profile switches to showing the address, and nothing else in the
+  graph changes — every page already points at `#organization`.
+- **areaServed.** The site states no service area; markup may not say more
+  than the page. Added together with the About page sentence when the owner
+  states one.
+- **sameAs.** No public company profile exists yet. Added when the Google
+  Business Profile (or another profile) is live.
+- **SearchAction** (the site has no search), **offers, prices, Review,
+  AggregateRating, FAQPage** (nothing on the site supports them).
+
+`audit:seo` fails on any of these appearing, on a second Organization, on a
+dangling `@id`, and on a Service, breadcrumb or article that describes another
+page.
 
 ## 10. Social and messenger previews
 
+Every published URL, pasted alone into WhatsApp, Facebook, LinkedIn or
+Messenger, shows its own title, its own description and an image that loads.
 Hierarchy, most specific first:
 
 1. **A page-specific approved image** — `pageMetadata({ image })`.
-   - Home → the approved corporate card `/images/seo/maxpromo-digital-og.png`,
-     read from the brand registry (`COMPANY_BRAND.openGraphImage`).
+   - Home and the legal pages → the approved corporate card
+     `/images/seo/maxpromo-digital-og.png` (1200×630), read from the brand
+     registry through `corporateCard()`.
    - `/work/maxpromo-os` → the public, redacted proof derivative
      `02-extraction-result.png` (1311×752), alt text from the story.
-   - Blog posts → their editorial photograph (`featuredImage`).
+   - Blog posts → their editorial photograph (`featuredImage`). One of them,
+     `newsletter.jpg`, is 643×362: above Facebook's 600×315 large-card
+     minimum and WhatsApp's thumbnail threshold, below LinkedIn's 1200×627
+     recommendation. Approved photography is not regenerated; recorded here
+     instead.
 2. **The section's generated card** — `/og?title=…&family=…`, from the page
    title and family (capability, industry, work, resource, guide, company).
 3. **The approved fallback** — the root layout's corporate card, for any page
-   that sets nothing.
+   that sets nothing (today: none in the sitemap).
 
 **Canonical sharing law:** a shared link resolves to its canonical URL; og:url
-equals the canonical; images are absolute on the canonical host; no
-`localhost`, preview host or local path appears in any head. `audit:seo` fails
-on each of these. Blog posts now declare `og:site_name` and `en_GB`, matching
-the rest of the site.
+equals the canonical; og:locale is `de_DE` or `en_GB` to match the page;
+og:image and twitter:image are absolute on the canonical host and answer 200
+with an image; no `localhost`, preview host or local path appears in any head.
+`audit:seo` fails on each. What a platform displays from its own cache can only
+be refreshed after deployment, in its own debugger (`seo-owner-actions.md`).
 
-**Checking a preview:** `npm run audit:seo` proves every og:image answers 200
-with an image. What a platform actually displays can only be checked against
-the live URL in that platform's own debugger — owner action after deployment.
+## 11. The street address — four categories, kept apart
 
-## 11. The street address
+| # | Where | State |
+|---|---|---|
+| 1 | Normal commercial pages, chrome, structured data, public images | **Not present.** Footer and About show "Essen · Deutschland/Germany"; the Organization markup carries city and country only; proof images 01 and 02 are redacted (`DERIVATIVES.json`, `evidence:derive`, originals untouched). `audit:seo` fails if the street appears on any non-legal page |
+| 2 | Impressum, privacy notice, AGB | **Present, required** (§ 5 DDG; Art. 13 GDPR; contracting party) |
+| 3 | Generated commercial documents and document emails | **Present, required** — invoices and quotations must carry the sender's identity and tax number |
+| 4 | Publicly fetchable application assets | **Not present since 2026-10-07.** The back-office document screens used to import the letterhead, bank and MoMo details as constants, which compiled the street address, tax number, IBAN and MoMo number into five public JavaScript chunks. They now live in `lib/documents/identity.ts` (server only) and reach the screens through the authenticated `GET /api/os/document-identity` (`private, no-store`; 401 without a session). `check:public-assets` scans the build output after every build and fails on any of those values. Verified end to end in evidence mode: quotation and invoice detail, both live previews, both print pages and both WhatsApp messages render the complete identity |
 
-Removed in 2A from: the global footer (now "Essen · Deutschland/Germany"), the
-About page company details (city and country), the Organization JSON-LD, and
-proof images 01 and 02 (the sender block of the quotation preview), through
-`DERIVATIVES.json` and `evidence:derive` — originals untouched, redactions
-checked by eye, alt texts say what is covered.
+Whether category 2 should show a business-address service instead of the
+current address is a legal decision for the owner (`seo-owner-actions.md`).
 
-Still present, **correctly**: the Impressum (§ 5 DDG requires a serviceable
-address), the privacy notice (Art. 13 GDPR, controller identity), the AGB
-(contracting party), and transactional emails — none of them part of the
-repeated chrome. Whether that address should be replaced by a business-address
-service is a legal decision for the owner (`seo-owner-actions.md`), not an
-engineering one.
+## 12. Legal-page technical metadata (resolved 2026-10-07)
 
-`audit:seo` fails if the street appears on any rendered page outside those
-three legal pages.
-
-## 12. Known, recorded, not fixed: legal-page metadata
-
-`/impressum`, `/privacy` and `/agb` (DE and EN) render **no canonical, no
-hreflang, and og:url = the homepage**, because they set no metadata of their
-own and inherit the root layout's. Classified **low severity** (the pages are
-indexable and in the sitemap; Google self-canonicalises; legal notices are not
-shared) and **frozen** — legal pages change only on explicit authorisation. The
-fix is one `pageMetadata()` call per page and touches no legal copy; it waits
-for that authorisation. `audit:seo` reports these as warnings on every run so
-they stay visible.
+Until 2A, `/impressum`, `/privacy` and `/agb` set a static title and
+description and nothing else, so they rendered no canonical, no hreflang, an
+og:url pointing at the homepage, and `nofollow`. Technical metadata is not
+legal copy: each page now builds its head with `pageMetadata()` — own title and
+description per language, self-canonical, de/en/x-default, the corporate card
+— and the page-level `nofollow` is gone (it made a page linked from every
+footer a crawl dead end and protected nothing). Not one word of the documents
+changed.
 
 ## 13. Search Console, Bing, IndexNow, AI discovery
 
-- **Google Search Console:** not verified. No verification token exists in the
-  repository and none will be invented. Recommended: a **Domain property
-  verified by DNS TXT record** (covers www, apex, http and https at once), done
-  by the owner at the DNS provider. Then submit
-  `https://www.maxpromo.digital/sitemap.xml`.
-- **Bing Webmaster Tools:** not verified. Simplest path: import the verified
-  Search Console property.
-- **IndexNow — evaluated, not implemented.** It needs a key file served from
-  the site root and a ping on every publish. Google does not use it; Bing and
-  Yandex do, and Bing also reads the sitemap. With a few pages changing a
-  month, the sitemap plus Bing Webmaster covers the need without a key to
-  manage. **Revisit when** publishing reaches several pieces a week, or Bing
-  Webmaster reports slow discovery. If adopted, the owner generates the key, it
-  is served as a static file, and the ping runs from the deploy, never from the
-  browser.
-- **AI and generative discovery:** no hacks. No `llms.txt` (§5 stands), no
-  hidden text for models, no Q&A blocks manufactured for extraction. What helps
-  is already here: server-rendered prose, one clear entity graph, stable URLs,
-  honest dates, internal links that explain relationships. AI crawlers are not
-  blocked in robots.txt; allowing or blocking them by name is an owner policy
-  decision, not made here.
+Ready to the external boundary: canonical host, sitemap, robots, indexability,
+schema and metadata all pass `audit:seo` on a production build. What remains
+needs the owner's accounts, and is written as exact steps in
+`seo-owner-actions.md`.
 
-## 14. Gate
+- **Google Search Console:** a **Domain property** verified by DNS TXT record
+  (covers www, apex, http and https at once). No verification token exists in
+  the repository and none will be invented; DNS verification needs no code.
+- **Bing Webmaster Tools:** import the verified Search Console property — the
+  cleanest route, no second verification.
+- **IndexNow — evaluated twice, not implemented.** It needs a key file served
+  from the site root and a ping on every publish. Google does not use it; Bing
+  and Yandex do, and Bing also reads the sitemap. The site publishes a few
+  changes a month, and every change ships by deploy, so the sitemap plus Bing
+  Webmaster covers discovery without a key to manage. **Revisit when**
+  publishing reaches several pieces a week, or Bing Webmaster reports slow
+  discovery; then the key is generated by the owner, served as a static file,
+  and pinged from the deploy, never from the browser.
+- **AI and generative discovery:** no hacks — no `llms.txt` (§5 stands), no
+  hidden text for models, no Q&A blocks manufactured for extraction. What a
+  machine needs is consistent evidence, and the graph now gives it one company
+  (`#organization`, one description in each language), one founder, one
+  website, five services each tied to its page, articles tied to their
+  publisher, and breadcrumbs that state the information architecture. The
+  important pages answer in their prose what problem they address, what
+  Maxpromo does about it, what changes afterwards, how the approach works,
+  what evidence exists (the OS story) and what to do next (contact or the
+  Friction Check). **AI crawlers are allowed** — the site exists to be found
+  and quoted accurately, and it publishes nothing a crawler may not read.
 
-`npm run audit:seo` (`packages/tooling/audit-seo.mjs`), part of `certify`.
-Needs a running server, like `audit:a11y`. It reads the rendered HTML of every
-sitemap URL and fails on: a missing title, description, canonical, Open Graph or
-Twitter field; a canonical or og:url that is not the page; duplicate titles or
-descriptions within a language; a title carrying the brand twice; hreflang that
-is missing, unpublished or not reciprocal, or an x-default that is not the
-German page; an og:image that is not an image or not on the canonical host;
-JSON-LD that does not parse, a second Organization, an Organization without
-`#organization`, a breadcrumb not ending at the page, a Service without the
-Organization as provider, any offer, price or rating; localhost, preview hosts
-or local paths in the head; the street address outside the legal pages; a
-private route in the sitemap; a sitemap URL that is not 200 or is noindex; and
-robots.txt missing its disallows or its sitemap line. Legal-page metadata
-defects (§12) and lengths are warnings.
+## 14. Gates
+
+| Gate | When | What it protects |
+|---|---|---|
+| `npm run audit:seo` (`packages/tooling/audit-seo.mjs`) | `certify`; needs the web app running | The rendered head of every sitemap URL: required fields, canonical and og:url, html lang and og:locale, robots meta and header, h1, title budget and double brand, description length, duplicates per language, hreflang and x-default, reciprocity, image reachability, the entity graph and every rule in §9, leaks, the street address, URL variants, sitemap truth, robots.txt. No warnings |
+| `npm run prove:seo-audit` | `verify`, offline | Every rule above passes a correct DE/EN page pair and fails its own defect — 58 properties. A crawler audit that stopped matching cannot pass silently |
+| `npm run check:public-assets` | `verify`, after the build | Category 4 of §11 |
+
+### Warning triage (2A start → end)
+
+The first 2A run reported 40 warnings; every one was classified and none
+remains.
+
+| Warnings | Class | Resolution |
+|---|---|---|
+| 24 — legal pages: missing canonical, missing hreflang, og:url = homepage | A, defect | Fixed (§12); the rule is a failure again |
+| 2 — Impressum description 56 characters | A, defect | Fixed: page-specific descriptions |
+| 12 — blog titles 67–96 characters | A, defect | Fixed by the title budget (§8); one German metaTitle shortened |
+| 2 — `/de/work` 66, `/de/work/maxpromo-os` 69 characters | A, defect | Fixed by the title budget |
+| — | D, false positive | None found |

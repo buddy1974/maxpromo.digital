@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import type { DocumentLanguage } from '@/lib/documents/config'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { useDocumentIdentity, withTaxIdentity } from '@/components/documents/useDocumentIdentity'
 import { TONE_VARS, toneMap } from '@maxpromo/ui'
 
 const mono = 'var(--brand-font-mono)'
@@ -22,6 +23,7 @@ const statusTone = toneMap<string>({ draft: 'neutral', sent: 'info', paid: 'posi
 
 export default function InvoiceDetailPage() {
   const { t, fmtEur, fmtDate } = useOsLocale()
+  const identity = useDocumentIdentity()
   const { id }   = useParams<{ id: string }>()
   const router   = useRouter()
   const [invoice, setInvoice] = useState<Invoice | null>(null)
@@ -257,7 +259,7 @@ export default function InvoiceDetailPage() {
 
       {/* §19 UStG — Kleinunternehmer status. Never charge VAT. */}
       <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', marginTop: 'var(--space-4)' }}>
-        {t.invoiceDetail.legalFooter}
+        {withTaxIdentity(t.invoiceDetail.legalFooter, identity)}
       </p>
     </div>
   )

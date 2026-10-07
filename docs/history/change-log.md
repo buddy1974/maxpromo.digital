@@ -1,5 +1,43 @@
 # Change Log
 
+## 2026-10-07 — Iteration 2A completed: discovery hardened end to end
+
+Local only, not pushed, not deployed.
+
+**Legal pages.** Own title and description per language, self-canonical,
+de/en/x-default, corporate card; page-level `nofollow` removed. Document text
+unchanged.
+
+**Titles.** `documentTitle()` keeps every title within 65 characters by
+dropping the brand suffix, not the page's words. Two English article
+descriptions lost unsupported population claims. The hub's `keywords` meta,
+which named two protected products, is gone.
+
+**Languages and sitemap.** The sitemap declares x-default and the blog pairs,
+exactly as the page heads do; an article no longer borrows the other
+language's metadata.
+
+**Entity graph.** Built in one place (`siteGraph()` in `lib/seo/schema.ts`):
+logo from the brand registry with its size, founder portrait from
+`lib/founder.ts`, name from the About copy. The guide's author is the
+Organization, as the page shows no person. Blog metadata uses `pageUrl()`.
+
+**Industry → capability.** Every sector page links to the one or two
+capabilities its approach describes.
+
+**Document identity off the public wire.** Street address, tax number, IBAN
+and MoMo number no longer ship in public JavaScript: `lib/documents/identity.ts`
+(server only), `GET /api/os/document-identity` (authenticated),
+`useDocumentIdentity()`. Verified on all six document surfaces in evidence mode.
+
+**Gates.** `audit:seo` rebuilt as pure check functions with no warnings (trailing
+slash, tracking query, html lang, og:locale, robots header, h1, x-default,
+sitemap alternates, entity counts, dangling @id, Service URL, article dates);
+`prove:seo-audit` (gate 25, 58 properties) proves every rule fires;
+`check:public-assets` (gate 26) scans the build output. Docs: `seo-inventory.md`
+§7–§14 rewritten, search-intent map, Google Business Profile package and owner
+actions completed; risks 68 and 70 closed, 69 narrowed to what the law requires.
+
 ## 2026-10-06 — Iteration 2A: search, discovery and sharing
 
 Local only, not pushed, not deployed.

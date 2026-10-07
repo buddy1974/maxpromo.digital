@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { primitive, token } from '@maxpromo/design-tokens'
+import { COMPANY_BRAND } from '@maxpromo/config'
 
 /**
  * lib/seo/og.ts — one social-card system, by page family.
@@ -82,6 +83,34 @@ export const BRAND_OG = {
 
 const SITE = 'https://www.maxpromo.digital'
 
+/** What the hub's title template appends (`%s | Maxpromo Digital`, lib/domains/server.ts). */
+const TITLE_SUFFIX = ' | Maxpromo Digital'
+
+/** Roughly how many characters a results page shows before cutting a title off. */
+export const TITLE_BUDGET = 65
+
+/**
+ * The document title: templated with the brand when the result still fits the
+ * budget, the page's own words alone when the suffix would only be cut off.
+ * og:site_name carries the brand to social previews either way.
+ */
+export function documentTitle(title: string): Metadata['title'] {
+  return title.length + TITLE_SUFFIX.length <= TITLE_BUDGET ? title : { absolute: title }
+}
+
+/**
+ * The approved corporate card, as a `pageMetadata({ image })` value — read
+ * from the brand registry so its path and true dimensions live in one place.
+ * Used where the company itself is the subject (home) and where a generated
+ * title card would add nothing (the legal pages).
+ */
+export function corporateCard(alt: string): PageMetadataInput['image'] {
+  const card = COMPANY_BRAND.openGraphImage
+  return card.path && card.width && card.height
+    ? { path: card.path, width: card.width, height: card.height, alt }
+    : undefined
+}
+
 interface PageMetadataInput {
   readonly locale: string
   /** Path without the locale prefix, e.g. `/solutions/web-development`. */
@@ -129,7 +158,7 @@ export function pageMetadata({
     : { url: image, width: BRAND_OG.width, height: BRAND_OG.height, alt: title }
 
   return {
-    title,
+    title: documentTitle(title),
     description,
     alternates: {
       canonical: `/${loc}${path === '/' ? '' : path}`,

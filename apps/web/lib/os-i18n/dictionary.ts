@@ -244,7 +244,8 @@ const de = {
     remainingBalance: 'Restbetrag',
     grandTotal: 'Gesamt',
     notes: 'Notizen',
-    legalFooter: 'Gemäß §19 UStG keine MwSt. · Steuernummer: 111/5339/7597 · Finanzamt Essen-NordOst',
+    // {taxNumber} and {taxOffice} are filled from the loaded document identity, never typed here.
+    legalFooter: 'Gemäß §19 UStG keine MwSt. · Steuernummer: {taxNumber} · Finanzamt {taxOffice}',
   },
   angebotList: {
     heading: 'Angebote',
@@ -310,7 +311,8 @@ const de = {
     includedItems: 'Inklusive (kostenlos)',
     paymentTerms: 'Zahlungsbedingungen',
     notes: 'Notizen',
-    legalFooter: 'Gemäß §19 UStG keine MwSt. · Steuernummer: 111/5339/7597 · Finanzamt Essen-NordOst',
+    // {taxNumber} and {taxOffice} are filled from the loaded document identity, never typed here.
+    legalFooter: 'Gemäß §19 UStG keine MwSt. · Steuernummer: {taxNumber} · Finanzamt {taxOffice}',
   },
   jobs: {
     heading: 'Aufträge / Kanban',
@@ -859,7 +861,7 @@ const en: typeof de = {
     remainingBalance: 'Remaining Balance',
     grandTotal: 'Total',
     notes: 'Notes',
-    legalFooter: 'No VAT is charged pursuant to §19 UStG. · Tax number: 111/5339/7597 · Finanzamt Essen-NordOst',
+    legalFooter: 'No VAT is charged pursuant to §19 UStG. · Tax number: {taxNumber} · Finanzamt {taxOffice}',
   },
   angebotList: {
     heading: 'Quotes',
@@ -925,7 +927,7 @@ const en: typeof de = {
     includedItems: 'Included (free of charge)',
     paymentTerms: 'Payment Terms',
     notes: 'Notes',
-    legalFooter: 'No VAT is charged pursuant to §19 UStG. · Tax number: 111/5339/7597 · Finanzamt Essen-NordOst',
+    legalFooter: 'No VAT is charged pursuant to §19 UStG. · Tax number: {taxNumber} · Finanzamt {taxOffice}',
   },
   jobs: {
     heading: 'Jobs / Kanban',

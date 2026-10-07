@@ -1,10 +1,28 @@
 import type { Metadata } from 'next'
+import { corporateCard, pageMetadata } from '@/lib/seo/og'
 import { LegalSection as Section } from '@/components/legal/LegalSection'
 
-export const metadata: Metadata = {
-  title: 'Impressum / Legal Notice',
-  description: 'Angaben gemäß § 5 DDG, Mandatory information per § 5 DDG',
-  robots: { index: true, follow: false },
+/*
+ * Technical metadata only — canonical, language alternates, social card.
+ * The document below is bilingual and unchanged; nothing here alters its
+ * legal wording. The former page-level `nofollow` is gone: it made a page
+ * linked from every footer a crawl dead end and protected nothing.
+ */
+export async function generateMetadata(
+  { params }: { params: Promise<{ locale: string }> },
+): Promise<Metadata> {
+  const { locale } = await params
+  const isDE = locale !== 'en'
+  return pageMetadata({
+    locale,
+    path: '/impressum',
+    title: isDE ? 'Impressum' : 'Legal notice (Impressum)',
+    description: isDE
+      ? 'Impressum der Maxpromo Digital: Anbieterkennzeichnung nach § 5 DDG mit Kontaktangaben und Angaben zum Unternehmen.'
+      : 'Legal notice of Maxpromo Digital: provider identification under § 5 DDG, with contact details and company information.',
+    family: 'company',
+    image: corporateCard('Maxpromo Digital'),
+  })
 }
 
 

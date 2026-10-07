@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
+import { FOUNDER_PORTRAIT } from '@/lib/founder'
 import './founder.css'
 
 /**
@@ -28,8 +29,6 @@ import './founder.css'
  * a server component. It costs one `existsSync` per render of the homepage.
  */
 
-const PORTRAIT = '/images/homepage/founder.jpg'
-
 export interface FounderCopy {
   eyebrow: string
   title: string
@@ -50,14 +49,14 @@ export interface FounderCopy {
 }
 
 export function FounderNote({ copy }: { copy: FounderCopy }) {
-  const hasPortrait = existsSync(join(process.cwd(), 'public', PORTRAIT.replace(/^\//, '')))
+  const hasPortrait = existsSync(join(process.cwd(), 'public', FOUNDER_PORTRAIT.replace(/^\//, '')))
 
   return (
     <div className="founder">
       <figure className="founder-portrait">
         {hasPortrait ? (
           <Image
-            src={PORTRAIT}
+            src={FOUNDER_PORTRAIT}
             alt={copy.portraitAlt}
             width={1200}
             height={1500}

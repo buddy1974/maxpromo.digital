@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * components/documents/AngebotDocument.tsx
  *
@@ -24,7 +26,8 @@
 import { DocumentPage, SectionHeading } from './DocumentPage'
 import { DocumentTable } from './DocumentTable'
 import { PaymentSection } from './PaymentSection'
-import { BUSINESS, BRAND_COLORS, DEFAULT_PAYMENT_METHOD } from '@/lib/documents/config'
+import { useDocumentIdentity } from './useDocumentIdentity'
+import { BRAND_COLORS, DEFAULT_PAYMENT_METHOD } from '@/lib/documents/config'
 import { fmtDocDate, fmtDocFilename, splitClientName } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
 import type { AngebotData } from '@/lib/documents/types'
@@ -38,6 +41,13 @@ interface AngebotDocumentProps {
 }
 
 export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocumentProps) {
+  // The letterhead, bank and MoMo details arrive from the authenticated API
+  // rather than being compiled into this component (lib/documents/identity.ts).
+  const identity = useDocumentIdentity()
+  if (!identity) {
+    return <div style={{ padding: 'var(--space-8)', fontFamily: 'monospace', color: 'var(--brand-text-secondary)' }}>…</div>
+  }
+  const BUSINESS = identity.business
   const t = getLabels(angebot.language)
   const date = fmtDocDate(angebot.created_at, angebot.language)
   const validTo = fmtDocDate(angebot.valid_until, angebot.language)
@@ -63,6 +73,7 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
       clientName={angebot.client_name}
       clientAddress={angebot.client_address}
       toolbar={toolbar}
+      business={identity.business}
     >
       {/* Letter intro */}
       <div style={{ padding: '24px 40px 8px' }}>
@@ -129,6 +140,7 @@ export function AngebotDocument({ angebot, withFilename, toolbar }: AngebotDocum
           variant="angebot"
           language={angebot.language}
           reference={angebot.angebot_number}
+          identity={identity}
         />
       </div>
 

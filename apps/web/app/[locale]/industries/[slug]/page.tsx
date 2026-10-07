@@ -6,6 +6,8 @@ import { notFound } from 'next/navigation'
 import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { INDUSTRIES, getIndustry, asLocale } from '@/lib/industries'
+import { getCapability } from '@/lib/capabilities'
+import { Fragment } from 'react'
 
 /**
  * app/[locale]/industries/[slug]/page.tsx
@@ -53,6 +55,8 @@ export default async function IndustryPage(
   const isDE = l === 'de'
   const others = INDUSTRIES.filter((i) => i.slug !== slug)
   const tNav = await getTranslations('nav')
+  const tCap = await getTranslations('capabilities')
+  const capabilities = ind.capabilities.flatMap((id) => (id ? [getCapability(id)!] : []))
 
   return (
     <>
@@ -111,6 +115,22 @@ export default async function IndustryPage(
                   </li>
                 ))}
               </ol>
+
+              {/* From the sector's problem to the capability that fixes it:
+                  the one or two pages this reader needs next, nothing more. */}
+              <dl className="spec" style={{ marginTop: 'var(--space-8)' }}>
+                <div>
+                  <dt>{isDE ? 'Was wir dafür bauen' : 'What we build for it'}</dt>
+                  <dd>
+                    {capabilities.map((c, i) => (
+                      <Fragment key={c.id}>
+                        {i > 0 && ' · '}
+                        <Link href={`/solutions/${c.id}`} className="link">{tCap(`${c.key}Name`)}</Link>
+                      </Fragment>
+                    ))}
+                  </dd>
+                </div>
+              </dl>
             </div>
           </div>
         </div>

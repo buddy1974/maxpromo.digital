@@ -2,14 +2,15 @@
  * components/documents/PaymentSection.tsx
  *
  * Renders the configured payment method(s) for a document — Bank
- * Transfer, MTN MoMo, or both — sourced entirely from
- * lib/documents/config.ts. Nothing here is hardcoded per-document;
+ * Transfer, MTN MoMo, or both — from the identity the document screen
+ * loaded (lib/documents/identity.ts, never imported client-side). Nothing here is hardcoded per-document;
  * only the section's framing text differs between an Invoice ("pay
  * this account") and an Angebot ("this is how you'll pay once you
  * accept" — no "due" wording on a quotation, per spec).
  */
 
-import { BANK_TRANSFER, BRAND_COLORS, BUSINESS, MTN_MOMO, type DocumentLanguage, type PaymentMethodId } from '@/lib/documents/config'
+import { BRAND_COLORS, type DocumentLanguage, type PaymentMethodId } from '@/lib/documents/config'
+import type { DocumentIdentity } from '@/lib/documents/identity'
 import { getLabels } from '@/lib/documents/labels'
 import { MomoQrCode } from './MomoQrCode'
 
@@ -24,9 +25,12 @@ interface PaymentSectionProps {
   language?: DocumentLanguage | null
   /** Invoice/Angebot number, shown as the payment reference (Verwendungszweck). */
   reference: string
+  /** From useDocumentIdentity(). */
+  identity: DocumentIdentity
 }
 
-export function PaymentSection({ method, language, reference }: PaymentSectionProps) {
+export function PaymentSection({ method, language, reference, identity }: PaymentSectionProps) {
+  const { business: BUSINESS, bank: BANK_TRANSFER, momo: MTN_MOMO } = identity
   const t = getLabels(language)
   const showBank = method === 'bank' || method === 'both'
   const showMomo = method === 'momo' || method === 'both'

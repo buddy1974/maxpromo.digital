@@ -80,18 +80,9 @@ const HUB_METADATA: Metadata = {
   },
   description:
     'Maxpromo Digital designs and builds the systems businesses run on. We remove operational friction by improving how people, processes and technology work together.',
-  keywords: [
-    'Business Systems',
-    'Software Consultancy',
-    'Workflow Automation',
-    'Legacy Modernization',
-    'Essen',
-    'Joomla Modernization',
-    'CMS Migration',
-    'Operations Software',
-    'RestaurantOS',
-    'PrintShopOS',
-  ],
+  // No `keywords`. Google ignores the tag; Bing reads a stuffed one as a
+  // spam signal; and this one named two protected products, which are never
+  // marketed from the consultancy site.
   openGraph: {
     siteName: 'Maxpromo Digital',
     title: 'Maxpromo Digital — Business Systems Consultancy',

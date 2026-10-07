@@ -28,7 +28,8 @@
  */
 
 import type { ReactNode } from 'react'
-import { BUSINESS, BRAND_COLORS, type DocumentLanguage } from '@/lib/documents/config'
+import { BRAND_COLORS, type DocumentLanguage } from '@/lib/documents/config'
+import type { DocumentIdentity } from '@/lib/documents/identity'
 import { DOCUMENT_PRINT_CSS } from '@/lib/documents/printCss'
 import { splitClientName } from '@/lib/documents/format'
 import { getLabels } from '@/lib/documents/labels'
@@ -55,6 +56,8 @@ interface DocumentPageProps {
   clientAddress?: string | null
   /** Toolbar buttons (print / WhatsApp / close) — omitted entirely for the live-preview pane. */
   toolbar?: ReactNode
+  /** Letterhead identity, from useDocumentIdentity() — never imported (lib/documents/identity.ts). */
+  business: DocumentIdentity['business']
   children: ReactNode
 }
 
@@ -62,7 +65,7 @@ const colLabel = { ...mono, fontSize: 'var(--text-label-dense)', fontWeight: 700
 
 export function DocumentPage({
   filename, language, docTypeLabel, detailsLabel, numberLabel, number, dateLabel, date,
-  secondaryDateLabel, secondaryDate, currency, clientName, clientAddress, toolbar, children,
+  secondaryDateLabel, secondaryDate, currency, clientName, clientAddress, toolbar, business, children,
 }: DocumentPageProps) {
   const { name: clientNameOnly, company } = splitClientName(clientName)
   const t = getLabels(language)
@@ -79,7 +82,7 @@ export function DocumentPage({
         {/* Compact repeating top strip — fixed in print, see printCss.ts */}
         <div data-print-topstrip style={{ padding: '9px 40px', borderBottom: '1px solid var(--brand-border)', background: 'var(--brand-surface)' }}>
           <p style={{ ...mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: 0, letterSpacing: '0.02em' }}>
-            {BUSINESS.website} &nbsp;|&nbsp; {numberLabel}: {number} &nbsp;|&nbsp; {date}
+            {business.website} &nbsp;|&nbsp; {numberLabel}: {number} &nbsp;|&nbsp; {date}
           </p>
         </div>
 
@@ -87,7 +90,7 @@ export function DocumentPage({
           {/* Title + brand line */}
           <div style={{ padding: '32px 40px 20px' }}>
             <h1 style={{ fontFamily: 'Arial,sans-serif', fontSize: '42px', fontWeight: 700, color: BRAND_COLORS.ink, margin: '0 0 10px', letterSpacing: '-0.01em' }}>{docTypeLabel}</h1>
-            <p style={{ ...mono, fontSize: 'var(--text-small)', fontWeight: 700, color: BRAND_COLORS.accentText, margin: 0, letterSpacing: '0.02em' }}>{BUSINESS.website}</p>
+            <p style={{ ...mono, fontSize: 'var(--text-small)', fontWeight: 700, color: BRAND_COLORS.accentText, margin: 0, letterSpacing: '0.02em' }}>{business.website}</p>
           </div>
           <div style={{ borderTop: `2px solid ${BRAND_COLORS.accent}`, margin: '0 40px' }} />
 
@@ -95,10 +98,10 @@ export function DocumentPage({
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-5)', padding: '24px 40px', borderBottom: '1px solid var(--brand-border)' }}>
             <div>
               <p style={colLabel}>{t.from}</p>
-              <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--brand-text)', margin: '0 0 2px' }}>{BUSINESS.legalName}</p>
-              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{BUSINESS.brandFull}</p>
-              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{BUSINESS.addressLine1}</p>
-              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: 0 }}>{BUSINESS.addressLine2}, {BUSINESS.country}</p>
+              <p style={{ fontSize: '14px', fontWeight: 700, color: 'var(--brand-text)', margin: '0 0 2px' }}>{business.legalName}</p>
+              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{business.brandFull}</p>
+              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: '0 0 2px' }}>{business.addressLine1}</p>
+              <p style={{ fontSize: '12px', color: 'var(--brand-text-muted)', margin: 0 }}>{business.addressLine2}, {business.country}</p>
             </div>
             <div>
               <p style={colLabel}>{t.to}</p>
@@ -121,7 +124,7 @@ export function DocumentPage({
         {/* Repeating footer — fixed in print, see printCss.ts */}
         <div data-print-footer style={{ padding: '9px 40px', borderTop: '1px solid var(--brand-border)', background: 'var(--brand-surface)' }}>
           <p style={{ ...mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', margin: 0 }}>
-            {BUSINESS.website} &nbsp;|&nbsp; {BUSINESS.legalName} &nbsp;|&nbsp; {BUSINESS.addressLine2} &nbsp;|&nbsp; {docTypeLabel} {number} &nbsp;|&nbsp; {t.taxNumberLabel}: {BUSINESS.steuernummer}
+            {business.website} &nbsp;|&nbsp; {business.legalName} &nbsp;|&nbsp; {business.addressLine2} &nbsp;|&nbsp; {docTypeLabel} {number} &nbsp;|&nbsp; {t.taxNumberLabel}: {business.steuernummer}
           </p>
         </div>
       </div>

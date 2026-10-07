@@ -17,7 +17,8 @@
  * printed twin are always worded identically.
  */
 
-import { BUSINESS, BANK_TRANSFER, BRAND_COLORS, type DocumentLanguage } from './config'
+import { BRAND_COLORS, type DocumentLanguage } from './config'
+import { BUSINESS, BANK_TRANSFER } from './identity'
 import { getLabels } from './labels'
 
 const BUSINESS_INK = BRAND_COLORS.ink

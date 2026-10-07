@@ -8,7 +8,8 @@ import Image from 'next/image'
 import { evaluate } from '@mdx-js/mdx'
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime'
 import { getPostBySlug, getPublishedPosts } from '@/lib/blog/posts'
-import { breadcrumbs, graph, ORGANIZATION_ID, SITE } from '@/lib/seo/schema'
+import { breadcrumbs, graph, ORGANIZATION_ID, pageUrl, SITE } from '@/lib/seo/schema'
+import { documentTitle } from '@/lib/seo/og'
 import { JsonLd } from '@/components/seo/JsonLd'
 
 // =============================================================================
@@ -33,7 +34,9 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug, locale } = await params
-  const post = getPostBySlug(slug, locale) ?? getPostBySlug(slug, locale === 'de' ? 'en' : 'de')
+  // The same lookup as the page: a post not published in this locale 404s,
+  // so its head must not borrow the other language's metadata.
+  const post = getPostBySlug(slug, locale)
   if (!post) return { title: 'Not found', robots: { index: false, follow: false } }
 
   const title       = post.metaTitle ?? post.title
@@ -41,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   // Absolute https://www. canonical — a bare-domain canonical here previously
   // caused a canonical→308→canonical redirect ping-pong when Facebook's
   // crawler scraped article URLs (confirmed via Sharing Debugger).
-  const canonical   = `https://www.maxpromo.digital/${locale}/blog/${post.slug}`
+  const canonical   = pageUrl(locale, `/blog/${post.slug}`)
   const images      = post.featuredImage ? [{ url: post.featuredImage, alt: title }] : []
 
   // Only advertise a language alternate when a published post with the same
@@ -51,13 +54,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const languages = hasOtherLocale
     ? {
         [locale]:      canonical,
-        [otherLocale]: `https://www.maxpromo.digital/${otherLocale}/blog/${post.slug}`,
-        'x-default':   `https://www.maxpromo.digital/de/blog/${post.slug}`,
+        [otherLocale]: pageUrl(otherLocale, `/blog/${post.slug}`),
+        'x-default':   pageUrl('de', `/blog/${post.slug}`),
       }
     : undefined
 
   return {
-    title,
+    title:       documentTitle(title),
     description,
     keywords:    post.keywords,
     alternates:  { canonical, ...(languages ? { languages } : {}) },
@@ -202,7 +205,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
   // instead of restating the company. Every article is signed "Maxpromo
   // Digital", so the author is the Organization; the date is the one the post
   // carries, never the build date.
-  const articleUrl = `${SITE}/${locale}/blog/${post.slug}`
+  const articleUrl = pageUrl(locale, `/blog/${post.slug}`)
   const tFooter    = await getTranslations('footer')
   const jsonLd = graph(
     {
