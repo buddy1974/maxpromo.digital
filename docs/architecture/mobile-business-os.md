@@ -173,21 +173,40 @@ joins as one notice per day from an opt-in hour (`morningBriefHour` in the link 
 
 ## 11. Backup and recovery
 
-The new tables live in the same Neon database as the rest of the OS and are therefore inside
-whatever protects it — **which this build did not verify** (Neon point-in-time restore depends on
-the plan and retention configured; not inspected). Mission Control's conversation state is
-reconstructible references; losing it loses context, not business data. File bytes in the
-OpenClaw attachment store are on one machine (known risk 75).
+The commercial tables live in the same Neon database as the rest of the OS. A **named recovery
+point is taken before migration 0011** (a Neon branch of production, recorded in §12 with its id
+and time); restoring means pointing `NEON_DATABASE_URL` at that branch or restoring production
+from it in the Neon console, then redeploying.
+
+What a restore to the pre-0011 point means:
+
+- **Document numbers.** The per-year sequences return to their values at the recovery point.
+  Any Angebot or Rechnung numbered after it disappears with its row and its number would be
+  issued again — so before restoring, list documents created since the recovery point
+  (`SELECT … WHERE created_at > <point>`) and treat any that were *sent* as issued.
+- **Audit.** `os_audit` rows after the point are lost with everything else; Mission Control's
+  event log (`mobile.turn`, `mobile.confirmation`) still records that turns and confirmations
+  happened, and Resend still holds every email sent.
+- **Telegram / Mission Control state.** Untouched by a database restore; conversation focus may
+  point at records that no longer exist and simply resolves to "not found".
+- **Local only.** Client file bytes (OpenClaw attachment store, risk 75) and Mission Control
+  `.data` are on Marcel's workstation and are covered by OpenClaw's own backup, not by Neon.
 
 ## 12. Rollout status
 
-| | |
+Kept current by each rollout step; the evidence for each line is in `docs/history/change-log.md`.
+
+| Step | State |
 |---|---|
-| **LIVE** | nothing new — production is untouched |
-| **READY, NEEDS CONFIG** (Marcel) | migration 0011 in production; `OS_AGENT_SECRET` + `OS_AGENT_ALLOWED_ACTORS` on the web project; merge + deploy web; MC link (`ensure-maxpromo-os-link.mjs`); merge + deploy Mission Control |
-| **READY, NEEDS AUTH** (Marcel) | Gateway plugin install + Telegram actor binding + tool policy (AF-33) — the Telegram side of Mobile Command, as documented in its own handover |
-| **READY, NEEDS BUSINESS DATA** | pipeline values, recurring services, payments recorded going forward (history before 0011 has none) |
-| **FUTURE** | mailbox reading, WhatsApp sending, deploy and infrastructure from the phone, durable file storage, staff roles, Telegram Mini App |
+| ADR-0018 | **accepted** for owner-only rollout (2026-10-08), with four go-live conditions |
+| Integration | web: fast-forward of `main` (no divergence from production `e9721f5`/`94b650d`); Mission Control: fast-forward of `codex/clean-room-rebuild` (production checkout) to `2080bdc` |
+| Vercel production env | `OS_AGENT_SECRET` (sensitive) and `OS_AGENT_ALLOWED_ACTORS=telegram:6090014884` set 2026-10-08; inert until the next deploy |
+| Mission Control link + owner binding | link config → `https://www.maxpromo.digital`; secret in `.data/auth` (0600); `telegram-6090014884` bound to `owner` |
+| Recovery point + migration 0011 | **waiting**: the Neon console requires the owner's login |
+| Web deploy | waiting on migration |
+| Mission Control deploy | **waiting**: the governed deploy (`scripts/deploy-production.ps1`) refuses unless elevated |
+| Gateway (restricted agent, DM allow-list, plugin) | prepared; applied after the Mission Control deploy |
+| Phone acceptance | after the above |
 
 ## 13. Operations
 
@@ -198,3 +217,57 @@ OS_AGENT_SECRET=… OS_AGENT_ALLOWED_ACTORS=telegram:100000001 npm run dev:web  
 OS_AGENT_SECRET=… npm run prove:commercial-agent                              # 85 properties
 OS_AGENT_SECRET=… MISSION_CONTROL_DIR=… npm run prove:mobile-live            # both systems
 ```
+
+## 14. Runbook
+
+### The Telegram binding model
+
+```
+Marcel's phone (Telegram numeric id 6090014884)
+ → Gateway: channels.telegram.dmPolicy=allowlist, allowFrom=[6090014884]   (strangers never reach an agent)
+ → binding telegram → agent `max-agents`, whose ONLY tool is openclaw_mobile (AF-33: no shell, files, browser, sessions)
+ → Mission Control /api/mobile-command (loopback, scoped token) — actor binding telegram-6090014884 → profile owner
+ → census → route → GREEN runs / AMBER prepares + Confirm button (token never seen by the model)
+ → Maxpromo OS /api/os/agent/v1 (HMAC, nonce, OS_AGENT_ALLOWED_ACTORS) → registry → audit
+```
+
+Marcel's desk sessions with the `main` agent (Control UI) are unchanged; only the Telegram route
+moved to `max-agents`.
+
+### Kill switch — stop all agent access in under a minute
+
+Any one of these stops it; none touches the public site or browser OS:
+
+1. **Close the OS door** (strongest): `vercel env rm OS_AGENT_ALLOWED_ACTORS production --yes`
+   and redeploy (`vercel --prod` or push) → every agent request answers 503
+   `agent_api_not_configured`. The browser OS and the public site keep working.
+2. **Unbind the phone** (instant, no deploy): in `tools/mission-control-ui`,
+   `node scripts/bind-mobile-actor.mjs --remove 6090014884` → Mobile Command refuses the next
+   turn as not authorised.
+3. **Stop the Telegram lane** (instant): `openclaw plugins disable openclaw-mobile-command`
+   and `openclaw gateway restart`.
+
+Re-enable by reversing the step. Rotation (below) is the response to a suspected leak.
+
+### Rotating the agent secret
+
+1. Delete `tools/mission-control-ui/.data/auth/maxpromo-os-agent-secret`.
+2. `node scripts/ensure-maxpromo-os-link.mjs` — mints a new one (never printed).
+3. In the maxpromo.digital repo: `vercel env rm OS_AGENT_SECRET production --yes`, then
+   `Get-Content -Raw "<path printed by step 2>" | vercel env add OS_AGENT_SECRET production --sensitive`.
+4. Redeploy the web project. Between steps 2 and 4 agent calls fail closed (401) — expected.
+
+### Changing who may act
+
+`OS_AGENT_ALLOWED_ACTORS` is a comma-separated list of `telegram:<numeric id>`. A new person
+needs: a line there, a Mission Control binding (`bind-mobile-actor.mjs <id> <profile> "<name>"`)
+with a non-owner profile, and their id in `channels.telegram.allowFrom`. Non-owner profiles never
+see business content (`mayReadBusiness`).
+
+### When something looks wrong
+
+1. "What needs my attention?" lists uncertain sends and approvals that never finished.
+2. `os_audit` (append-only) answers who, what, which record, which approval, outcome, external
+   reference; Mission Control's event log answers which Telegram turn and which confirmation.
+3. Uncertain email: check Resend (by the approval id in the idempotency key) before re-sending.
+4. Suspected misuse: kill switch 1, rotate, review `os_audit` since the suspected time.
