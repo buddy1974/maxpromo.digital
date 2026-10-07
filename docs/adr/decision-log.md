@@ -1797,3 +1797,25 @@ nothing a crawler may not read. IndexNow buys nothing at a few changes a month
 with Google not using it. The `keywords` tag is ignored by Google, read as spam
 by Bing when stuffed, and named two protected products the consultancy site
 may not market.
+
+---
+
+## 2026-10-07 — One URL, one identity: unprefixed URLs redirect permanently to /de, for everyone
+
+**Decision:** On the hub, an unprefixed URL answers 308 to the same path under
+`/de`, decided in `middleware.ts` from the path alone. `next-intl` runs with
+`localeDetection: false`, `localeCookie: false` and `alternateLinks: false`.
+x-default is the German URL, declared only in the page head and the sitemap.
+robots.txt drops the ignored `Host:` line.
+
+**Why:** Search Console chose `/` over `/de` as canonical. The defaults sent a
+temporary 307 whose target followed Accept-Language and a cookie, so `/` had no
+single destination, and the automatic `Link` header named the unprefixed URL as
+x-default against the head and sitemap. Deterministic identity outranks
+automatic language detection; a visitor switches language explicitly.
+
+**Rejected:** serving `/` as 200 German content with a canonical (two URLs for
+one page); keeping negotiation with a permanent redirect (a permanent redirect
+whose target varies is still no single identity); any crawler-specific branch
+(cloaking); a `Vary: Accept-Language` workaround.
+

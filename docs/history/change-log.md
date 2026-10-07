@@ -1,5 +1,17 @@
 # Change Log
 
+## 2026-10-07 — Iteration 2A.1: one URL, one identity (Search Console remediation)
+
+Search Console chose `/` over `/de` as canonical. Root cause: unprefixed URLs
+answered a temporary 307 whose target followed Accept-Language and a locale
+cookie, and next-intl's automatic `Link` header named the unprefixed URL as
+x-default. Now every unprefixed hub URL answers 308 to `/de…` for every
+client; no negotiation, no locale cookie, no automatic Link header; robots.txt
+drops the ignored `Host:` line. `audit:seo` gained 420 routing probes across
+seven request profiles (shown red against the previous build: 592 findings);
+`prove:seo-audit` now 70 properties. Sitemap investigated: no technical
+defect. Details: `seo-inventory.md` §7a, risks 71 (closed) and 72 (recorded).
+
 ## 2026-10-07 — Iteration 2A released to production and closed
 
 `db601e7` + `0370ab7` pushed to `main` (no history change). Vercel web deployment `dpl_B6LuMaTaByZhvGXKcxNWXLe8FJkM` built `0370ab7` from source and is aliased to https://www.maxpromo.digital. Agent Bureau created no deployment for the push; its production stayed on its previous deployment and answered 200.

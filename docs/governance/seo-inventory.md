@@ -189,7 +189,8 @@ Verified on production, read-only, 2026-10-06:
 |---|---|
 | `http://maxpromo.digital/` | 308 → `https://maxpromo.digital/` → 308 → `https://www.maxpromo.digital/` (two hops; Vercel domain configuration, harmless) |
 | `http://www.maxpromo.digital/` | 308 → `https://www.maxpromo.digital/` |
-| `https://www.maxpromo.digital/` | 307 → `/de` (locale negotiation; temporary on purpose) |
+| `https://www.maxpromo.digital/` | **308 → `/de`**, for every client (§7a; until 2026-10-07: 307, negotiated) |
+| any unprefixed path, e.g. `/solutions` | **308 → `/de/solutions`**, query kept, for every client (§7a) |
 | trailing slash, e.g. `/de/about/` | 308 → `/de/about` |
 | unknown path | 404 |
 
@@ -212,9 +213,12 @@ family, every run.
   Each URL is self-canonical with the de/en/x-default pair, a title and
   description in its own language, and the corporate card; the document text
   is unchanged (§12).
-- **Bare `/`** is not in the sitemap; it negotiates and redirects.
+- **Bare `/`** and every other unprefixed path are not pages: they are not in
+  the sitemap and answer a permanent redirect to the German URL (§7a).
 - **robots.txt** allows everything except `/os`, `/api/`, `/demo`,
-  `/portfolio`, `/data-deletion`, and names the canonical sitemap. No page in
+  `/portfolio`, `/data-deletion`, and names the canonical sitemap. No `Host:`
+  line since 2026-10-07: Google and Bing ignore it, and Search Console
+  reported it as ignored. No page in
   the sitemap carries `noindex` or `nofollow`, in a meta tag or a header.
 - **Sitemap `lastmod`:** none on static routes — the repository records no
   per-page modification date, and the request time claimed every page changed
@@ -223,6 +227,64 @@ family, every run.
   two protected products (RestaurantOS, PrintShopOS) and the retired Joomla
   positioning. Google ignores the tag, Bing reads a stuffed one as spam, and
   protected products are never marketed from the consultancy site. Removed.
+
+## 7a. One URL, one identity — locale routing law (Iteration 2A.1, 2026-10-07)
+
+**What Search Console found.** Google had chosen `https://www.maxpromo.digital/`
+as the canonical of the German home page and filed `/de` as "Duplicate, Google
+chose different canonical", while the page declared `/de`.
+
+**Root cause, reproduced before any change.** `next-intl` ran with its
+defaults. An unprefixed URL answered a **temporary 307** whose destination
+depended on the request: `/de…` without Accept-Language or with German, `/en…`
+with English — Googlebot included — and a `NEXT_LOCALE` cookie set on every
+response steered later visits. A temporary redirect tells Google the source URL
+stays the identity, and a destination that changes with the requester gives it
+no single target to consolidate on, so it kept `/`. Separately, `next-intl`
+emitted HTTP `Link` alternate headers on every page declaring **x-default as the
+unprefixed URL** (`/`, `/solutions`), contradicting the page head and the
+sitemap, which say `/de…`. No profile ever received unprefixed content as 200:
+the duplicate was an identity problem, not a rendering one.
+
+**The law.**
+
+1. A public page exists only at `/de/…` or `/en/…`. Those URLs answer 200 and
+   are their own canonical.
+2. An unprefixed URL on the hub answers **308 to the same path under `/de`**,
+   query string kept — decided in `middleware.ts` from the path alone, before
+   `next-intl`. User agent, Accept-Language and cookies take no part, so
+   Googlebot, Bingbot, browsers and curl all receive the same answer. Nobody is
+   treated specially.
+3. No language negotiation and no locale cookie (`localeDetection: false`,
+   `localeCookie: false` in `i18n/routing.ts`). A visitor changes language with
+   the switcher, which links to the other prefix.
+4. **x-default has one destination: the German URL**, declared in exactly two
+   places that must agree — the page head (`pageMetadata()`) and the sitemap.
+   `next-intl`'s automatic `Link` header is off (`alternateLinks: false`); a
+   third source is how the contradiction arose.
+5. Machine routes are outside locale routing and answer themselves:
+   `/robots.txt`, `/sitemap.xml`, `/api/*`, `/og`, `/_next/*`, static files.
+   Product showcase domains keep their own unprefixed routing (unchanged).
+
+**Protected by** `audit:seo` (420 probes per run: every route family's
+unprefixed form and prefixed page, under curl, Googlebot, Googlebot with
+`Accept-Language: en`, Bingbot, Chrome DE, Chrome EN and a locale cookie;
+plus robots, sitemap, an API route, a static image, the favicon and the card
+route) and `prove:seo-audit` (70 properties, 12 for routing). Shown red against
+the previous production build: 592 findings.
+
+**Legacy URLs** Search Console still knows (`/services`, `/de/services`,
+`/de/systems/*`, `/en/systems/*`, `/de/case-studies`, `/ai-websites`,
+`/de/contact?system=…`) end at a live canonical page through one or two
+permanent 308s; none returns a temporary redirect. No Removals requests:
+recrawling the redirects and canonicals cleans the historical state.
+
+**Sitemap "Couldn't fetch".** Investigated, no technical defect: 200,
+`application/xml`, UTF-8 without BOM, Brotli-compressed (supported by Google),
+29.6 KB, well-formed, 64 unique `https://www` locations, 192 valid
+`xhtml:link` alternates, reachable from `http://` and the apex in one 308,
+allowed by robots.txt, served identically to Googlebot. Consistent with a newly
+submitted sitemap that Search Console has not processed yet; not resubmitted.
 
 ## 8. Titles and descriptions
 
@@ -385,8 +447,8 @@ needs the owner's accounts, and is written as exact steps in
 
 | Gate | When | What it protects |
 |---|---|---|
-| `npm run audit:seo` (`packages/tooling/audit-seo.mjs`) | `certify`; needs the web app running | The rendered head of every sitemap URL: required fields, canonical and og:url, html lang and og:locale, robots meta and header, h1, title budget and double brand, description length, duplicates per language, hreflang and x-default, reciprocity, image reachability, the entity graph and every rule in §9, leaks, the street address, URL variants, sitemap truth, robots.txt. No warnings |
-| `npm run prove:seo-audit` | `verify`, offline | Every rule above passes a correct DE/EN page pair and fails its own defect — 58 properties. A crawler audit that stopped matching cannot pass silently |
+| `npm run audit:seo` (`packages/tooling/audit-seo.mjs`) | `certify`; needs the web app running | The rendered head of every sitemap URL: required fields, canonical and og:url, html lang and og:locale, robots meta and header, h1, title budget and double brand, description length, duplicates per language, hreflang and x-default, reciprocity, image reachability, the entity graph and every rule in §9, leaks, the street address, URL variants, sitemap truth, robots.txt, and the locale routing law of §7a under seven request profiles. No warnings |
+| `npm run prove:seo-audit` | `verify`, offline | Every rule above passes a correct DE/EN page pair and fails its own defect — 70 properties, 12 of them for routing (§7a). A crawler audit that stopped matching cannot pass silently |
 | `npm run check:public-assets` | `verify`, after the build | Category 4 of §11 |
 
 ### Warning triage (2A start → end)

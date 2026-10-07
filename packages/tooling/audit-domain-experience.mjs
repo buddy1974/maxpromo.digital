@@ -152,7 +152,9 @@ for (const d of DOMAIN_REGISTRY) {
   }
 
   const robots = await get(d.host, '/robots.txt')
-  check('robots names this host', robots.body.includes(`Host: ${d.origin}`), (robots.body.match(/Host: \S+/) || ['(none)'])[0])
+  // No `Host:` line: Google and Bing ignore it. The property is named by its
+  // own Sitemap line below, and must never name another domain.
+  check('robots names no other host', !/^Host: /m.test(robots.body) || robots.body.includes(`Host: ${d.origin}`), (robots.body.match(/Host: \S+/) || ['(none)'])[0])
   check('robots points at its own sitemap',
     d.sitemap === 'none' || robots.body.includes(`Sitemap: ${d.origin}/sitemap.xml`),
     (robots.body.match(/Sitemap: \S+/) || ['(none)'])[0])

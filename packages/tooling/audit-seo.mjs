@@ -50,6 +50,15 @@
  *               sitemap alternates that disagree with the page's own hreflang.
  *   robots.txt  a site-wide Disallow, a missing private disallow, or no
  *               canonical Sitemap line.
+ *   Routing     an unprefixed URL that renders instead of answering a 308 to
+ *               the same path under /de; a destination that changes with the
+ *               user agent (Googlebot, Bingbot, a browser, curl), with
+ *               Accept-Language or with a locale cookie; a NEXT_LOCALE cookie
+ *               set; an HTTP Link header declaring hreflang alternates (the
+ *               page head and the sitemap are the only governed sources);
+ *               robots.txt, sitemap.xml, an API route, a static asset or the
+ *               social-card route answering anything but its own content
+ *               (Iteration 2A.1 — Search Console found `/` kept as canonical).
  *
  * Every rule is proved to fire by `npm run prove:seo-audit`, which feeds the
  * same functions broken fixtures. There are no warnings: a rule either
@@ -294,6 +303,53 @@ export function checkRobots(txt) {
   return out
 }
 
+/** The request profiles routing must not depend on. */
+export const PROFILES = {
+  'curl':          {},
+  'googlebot':     { 'user-agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' },
+  'googlebot-en':  { 'user-agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', 'accept-language': 'en' },
+  'bingbot':       { 'user-agent': 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)' },
+  'chrome-de':     { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36', 'accept-language': 'de-DE,de;q=0.9' },
+  'chrome-en':     { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36', 'accept-language': 'en-GB,en;q=0.9' },
+  'cookie-en':     { 'accept-language': 'en', cookie: 'NEXT_LOCALE=en' },
+}
+
+/**
+ * Routing invariants, from response records:
+ *   { kind: 'unprefixed'|'page'|'machine'|'endpoint', path, profile, status, location, setCookie, link, contentType, expect? }
+ * `unprefixed` must 308 to `/de<path>` for every profile; `page` must be 200
+ * with no hreflang in its Link header; `machine` must answer 200 with the
+ * content type it names in `expect`, never a redirect; an `endpoint` (an API
+ * route, whose status reports its own health) may answer any status but a
+ * redirect, in its own content type. No response may set the locale cookie.
+ */
+export function checkRouting(records) {
+  const out = []
+  for (const r of records) {
+    const where = `${r.path} [${r.profile}]`
+    if (/NEXT_LOCALE=/.test(r.setCookie ?? '')) out.push(`${where}  sets the NEXT_LOCALE cookie`)
+    if (r.kind === 'unprefixed') {
+      const want = `/de${r.path === '/' ? '' : r.path}`
+      const loc = (r.location ?? '').replace(/^https?:\/\/[^/]+/, '')
+      if (r.status !== 308) out.push(`${where}  unprefixed URL answers ${r.status}, not a permanent 308`)
+      else if (loc.split('?')[0] !== want) out.push(`${where}  unprefixed URL redirects to ${loc}, not ${want}`)
+    }
+    if (r.kind === 'page') {
+      if (r.status !== 200) out.push(`${where}  locale page answers ${r.status}`)
+      if (/hreflang/i.test(r.link ?? '')) out.push(`${where}  HTTP Link header declares hreflang alternates`)
+    }
+    if (r.kind === 'endpoint') {
+      if (r.status >= 300 && r.status < 400) out.push(`${where}  API route redirected ${r.status} → ${r.location}`)
+      else if (r.expect && !(r.contentType ?? '').includes(r.expect)) out.push(`${where}  content type ${r.contentType}, expected ${r.expect}`)
+    }
+    if (r.kind === 'machine') {
+      if (r.status !== 200) out.push(`${where}  answers ${r.status}${r.location ? ` → ${r.location}` : ''}`)
+      else if (r.expect && !(r.contentType ?? '').includes(r.expect)) out.push(`${where}  content type ${r.contentType}, expected ${r.expect}`)
+    }
+  }
+  return out
+}
+
 async function main() {
   const args = process.argv.slice(2)
   const BASE = (args.find((a) => /^https?:\/\//.test(a)) ?? 'http://localhost:3020').replace(/\/$/, '')
@@ -351,6 +407,37 @@ async function main() {
     if (q.canonical !== url) failures.push(`${url}  a tracking query changes the canonical to ${q.canonical}`)
   }
 
+  /* Routing: one destination per unprefixed URL, whoever asks. */
+  const records = []
+  const probe = async (kind, path, expect) => {
+    for (const [profile, headers] of Object.entries(PROFILES)) {
+      const res = await fetch(`${BASE}${path}`, { redirect: 'manual', headers })
+      records.push({
+        kind, path, profile, expect,
+        status: res.status,
+        location: res.headers.get('location'),
+        setCookie: res.headers.get('set-cookie'),
+        link: res.headers.get('link'),
+        contentType: res.headers.get('content-type'),
+      })
+      await res.arrayBuffer().catch(() => {})
+    }
+  }
+  for (const url of families.values()) {
+    const path = url.slice(CANON.length)
+    await probe('page', path)
+    await probe('unprefixed', path.replace(/^\/(de|en)/, '') || '/')
+  }
+  await probe('unprefixed', '/')
+  await probe('unprefixed', '/solutions?utm_source=audit')
+  await probe('machine', '/robots.txt', 'text/plain')
+  await probe('machine', '/sitemap.xml', 'xml')
+  await probe('endpoint', '/api/health', 'json')
+  await probe('machine', '/favicon.ico', 'image')
+  await probe('machine', '/logo.png', 'image/png')
+  await probe('machine', '/og?title=Audit&family=company&locale=de', 'image')
+  failures.push(...checkRouting(records.map((r) => r.path.includes('?') ? { ...r, path: r.path.split('?')[0] } : r)))
+
   failures.push(...checkSet(pages))
   failures.push(...checkRobots(await (await fetch(`${BASE}/robots.txt`)).text()))
 
@@ -362,7 +449,7 @@ async function main() {
   }
 
   console.log('='.repeat(74))
-  console.log(`SEO — ${pages.length} sitemap URLs, ${images.size} distinct share images, ${families.size} URL variants, against ${BASE}`)
+  console.log(`SEO — ${pages.length} sitemap URLs, ${images.size} distinct share images, ${families.size} URL variants, ${records.length} routing probes, against ${BASE}`)
   if (failures.length === 0) {
     console.log('\nSEO: clean — every published page states what it is, once, in both languages')
   } else {
@@ -372,4 +459,4 @@ async function main() {
   }
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) await main()
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main()

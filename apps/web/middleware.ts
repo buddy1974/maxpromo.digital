@@ -184,7 +184,18 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Hub, and the prefixed second language of a product domain.
+  // The hub: an unprefixed URL has exactly one destination, the same path
+  // under the default locale, by permanent redirect — decided here, before
+  // next-intl, from nothing but the path. No header, cookie or user agent
+  // takes part, so Googlebot and every browser are sent to the same place
+  // (i18n/routing.ts, "One URL, one identity").
+  if (!urlLocale) {
+    const target = req.nextUrl.clone()
+    target.pathname = `/${routing.defaultLocale}${path === '/' ? '' : path}`
+    return traced(NextResponse.redirect(target, 308))
+  }
+
+  // Prefixed hub pages, and the prefixed second language of a product domain.
   const modReq = new NextRequest(req.url, {
     method:  req.method,
     headers: resolvedHeaders,

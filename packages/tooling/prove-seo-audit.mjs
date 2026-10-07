@@ -16,7 +16,7 @@
 import { pathToFileURL } from 'node:url'
 import { join } from 'node:path'
 
-const { readPage, checkPage, checkSet, checkSitemap, checkRobots, CANON } = await import(
+const { readPage, checkPage, checkSet, checkSitemap, checkRobots, checkRouting, PROFILES, CANON } = await import(
   pathToFileURL(join(process.cwd(), 'packages', 'tooling', 'audit-seo.mjs')).href,
 )
 
@@ -171,6 +171,29 @@ prove('a clean robots.txt', checkRobots(robots), null)
 prove('a site-wide disallow', checkRobots(`${robots}Disallow: /\n`), 'whole site')
 prove('robots.txt without the sitemap', checkRobots(robots.replace(/Sitemap.*\n/, '')), 'canonical sitemap')
 prove('robots.txt exposing /os', checkRobots(robots.replace('Disallow: /os\n', '')), '/os')
+
+// Routing (Iteration 2A.1): one destination per unprefixed URL, whoever asks.
+const rec = (o) => ({ profile: 'curl', setCookie: null, link: null, location: null, contentType: null, ...o })
+const goodRouting = [
+  ...Object.keys(PROFILES).map((profile) => rec({ kind: 'unprefixed', path: '/', profile, status: 308, location: '/de' })),
+  ...Object.keys(PROFILES).map((profile) => rec({ kind: 'unprefixed', path: '/solutions', profile, status: 308, location: 'https://www.maxpromo.digital/de/solutions?utm_source=x' })),
+  rec({ kind: 'page', path: '/de/solutions', status: 200, link: '</_next/static/media/a.woff2>; rel=preload; as="font"' }),
+  rec({ kind: 'machine', path: '/robots.txt', status: 200, contentType: 'text/plain', expect: 'text/plain' }),
+  rec({ kind: 'machine', path: '/sitemap.xml', status: 200, contentType: 'application/xml', expect: 'xml' }),
+  rec({ kind: 'endpoint', path: '/api/health', status: 503, contentType: 'application/json', expect: 'json' }),
+]
+prove('correct routing passes', checkRouting(goodRouting), null)
+prove('unprefixed URL rendering as a duplicate 200', checkRouting([rec({ kind: 'unprefixed', path: '/', status: 200 })]), 'not a permanent 308')
+prove('temporary 307 instead of permanent', checkRouting([rec({ kind: 'unprefixed', path: '/', status: 307, location: '/de' })]), 'not a permanent 308')
+prove('Accept-Language choosing the destination', checkRouting([rec({ kind: 'unprefixed', path: '/', profile: 'chrome-en', status: 308, location: '/en' })]), 'not /de')
+prove('Googlebot sent somewhere else', checkRouting([rec({ kind: 'unprefixed', path: '/solutions', profile: 'googlebot', status: 308, location: '/en/solutions' })]), 'not /de/solutions')
+prove('locale cookie set', checkRouting([rec({ kind: 'page', path: '/de', status: 200, setCookie: 'NEXT_LOCALE=de; Path=/' })]), 'NEXT_LOCALE')
+prove('HTTP Link header with hreflang alternates', checkRouting([rec({ kind: 'page', path: '/de', status: 200, link: '<https://www.maxpromo.digital/>; rel="alternate"; hreflang="x-default"' })]), 'Link header')
+prove('locale page not 200', checkRouting([rec({ kind: 'page', path: '/de/solutions', status: 404 })]), 'answers 404')
+prove('robots.txt redirected into a locale', checkRouting([rec({ kind: 'machine', path: '/robots.txt', status: 307, location: '/de/robots.txt', expect: 'text/plain' })]), 'answers 307')
+prove('sitemap served as HTML', checkRouting([rec({ kind: 'machine', path: '/sitemap.xml', status: 200, contentType: 'text/html', expect: 'xml' })]), 'expected xml')
+prove('API route locale-redirected', checkRouting([rec({ kind: 'endpoint', path: '/api/health', status: 308, location: '/de/api/health', expect: 'json' })]), 'API route redirected')
+prove('static asset locale-redirected', checkRouting([rec({ kind: 'machine', path: '/logo.png', status: 307, location: '/de/logo.png', expect: 'image/png' })]), 'answers 307')
 
 const failed = results.filter((r) => !r).length
 console.log('='.repeat(74))

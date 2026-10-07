@@ -10,8 +10,10 @@ import { currentDomain } from '@/lib/domains/server'
  * consultancy's sitemap — the product domain telling search engines it was a
  * different site.
  *
- * Now: the domain answers for itself. `Host` and `Sitemap` name this property,
- * and a domain the registry marks `noindex` says so instead.
+ * Now: the domain answers for itself. `Sitemap` names this property, and a
+ * domain the registry marks `noindex` says so instead. There is no `Host`
+ * line: Google and Bing ignore the directive (Search Console reports it as
+ * ignored), and the canonical host is stated by every page's canonical.
  *
  * Public marketing and product routes are crawlable. Internal tooling
  * (/os/*, /api/*), the staff portfolio login, the account-deletion utility
@@ -27,7 +29,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   const domain = await currentDomain()
 
   if (domain.robots === 'noindex') {
-    return { rules: { userAgent: '*', disallow: '/' }, host: domain.origin }
+    return { rules: { userAgent: '*', disallow: '/' } }
   }
 
   return {
@@ -44,6 +46,5 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
       ],
     },
     sitemap: domain.sitemap === 'none' ? undefined : `${domain.origin}/sitemap.xml`,
-    host: domain.origin,
   }
 }
