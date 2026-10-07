@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
+import { LEAD_STAGES, leadStage } from '@/lib/commercial/pipeline'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -12,10 +13,16 @@ interface Lead {
   converted: boolean; created_at: string
 }
 
-const statusTone = toneMap<string>({ new: 'caution', contacted: 'info', qualified: 'info', converted: 'positive', lost: 'critical' })
+/* The stage, read through the one vocabulary (lib/commercial/pipeline.ts).
+   A legacy stored value — new, converted, archived — shows as its stage. */
+const stageOf = (status: string) => leadStage(status) ?? status
+const statusTone = (status: string) => toneMap<string>({
+  discovered: 'caution', responded: 'caution', negotiation: 'info', proposal: 'info', discovery: 'info',
+  contacted: 'info', qualified: 'info', outreach_prepared: 'info', won: 'positive', lost: 'critical', on_hold: 'neutral',
+})(stageOf(status))
 
-/** Raw DB values — the persisted identity. Display text comes from t.status.*. */
-const STATUSES = ['new', 'contacted', 'qualified', 'converted', 'lost']
+/** Persisted pipeline stages. Display text comes from t.status.lead. */
+const STATUSES: readonly string[] = LEAD_STAGES
 const SOURCES  = ['manual', 'website', 'referral', 'instagram', 'facebook', 'linkedin', 'google', 'whatsapp', 'email', 'phone', 'other']
 
 function StatusBadge({ status, label }: { status: string; label: string }) {
@@ -37,7 +44,7 @@ export default function LeadsPage() {
   const [creating,  setCreating]  = useState(false)
   const [createErr, setCreateErr] = useState('')
 
-  const statusLabel = (s: string) => t.status.lead[s] ?? s
+  const statusLabel = (s: string) => t.status.lead[stageOf(s)] ?? s
   const sourceLabel = (s: string) => t.status.leadSource[s] ?? s
 
   useEffect(() => {
@@ -79,19 +86,19 @@ export default function LeadsPage() {
   async function updateStatus(id: string, status: string) {
     await fetch('/api/os/leads', {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status, converted: status === 'converted' }),
+      body: JSON.stringify({ id, status, converted: status === 'won' }),
     })
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status, converted: status === 'converted' } : l))
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, status, converted: status === 'won' } : l))
     if (selected?.id === id) setSelected(prev => prev ? { ...prev, status } : null)
   }
 
   const filtered = leads
-    .filter(l => tab === 'all' || l.status === tab)
+    .filter(l => tab === 'all' || stageOf(l.status) === tab)
     .filter(l => search === '' || `${l.name} ${l.company} ${l.email} ${l.source}`.toLowerCase().includes(search.toLowerCase()))
 
   const stats = {
     total: leads.length,
-    new: leads.filter(l => l.status === 'new').length,
+    new: leads.filter(l => stageOf(l.status) === 'discovered').length,
     converted: leads.filter(l => l.converted).length,
   }
 
@@ -202,13 +209,13 @@ export default function LeadsPage() {
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}><StatusBadge status={lead.status} label={statusLabel(lead.status)} /></td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }} onClick={e => e.stopPropagation()}>
-                      {lead.status !== 'contacted' && (
+                      {stageOf(lead.status) !== 'contacted' && (
                         <button onClick={() => updateStatus(lead.id, 'contacted')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-info)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
                           {t.leads.actionContacted}
                         </button>
                       )}
-                      {lead.status !== 'converted' && (
-                        <button onClick={() => updateStatus(lead.id, 'converted')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
+                      {stageOf(lead.status) !== 'won' && (
+                        <button onClick={() => updateStatus(lead.id, 'won')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
                           {t.leads.actionConvert}
                         </button>
                       )}
@@ -269,7 +276,7 @@ export default function LeadsPage() {
             <div style={{ marginTop: 'var(--space-5)', borderTop: '1px solid var(--brand-border)', paddingTop: '20px' }}>
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.leads.updateStatus}</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {STATUSES.filter(s => s !== selected.status).map(s => (
+                {STATUSES.filter(s => s !== stageOf(selected.status)).map(s => (
                   <button key={s} onClick={() => updateStatus(selected.id, s)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[statusTone(s)].text, background: TONE_VARS[statusTone(s)].bg, border: `1px solid ${TONE_VARS[statusTone(s)].border}`, padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
                     {statusLabel(s)}
                   </button>

@@ -8,6 +8,11 @@ export interface EmailPayload {
   html: string
   replyTo?: string
   bcc?: string[]
+  /**
+   * Sent to Resend as `Idempotency-Key`. A retried request with the same key
+   * is not delivered twice. Set by every send that follows an approval.
+   */
+  idempotencyKey?: string
 }
 
 export interface EmailResult {
@@ -51,6 +56,7 @@ export async function sendEmail(payload: EmailPayload): Promise<EmailResult> {
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
+      ...(payload.idempotencyKey ? { 'Idempotency-Key': payload.idempotencyKey.slice(0, 256) } : {}),
     },
     body: JSON.stringify({
       from: payload.from,

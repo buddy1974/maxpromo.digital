@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { TONE_VARS, toneMap } from '@maxpromo/ui'
+import { berlinDate, formatPerCurrency, receivables, type InvoiceForMoney } from '@/lib/commercial/money'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -56,7 +57,8 @@ export default function InvoicesPage() {
 
   const filtered = tab === 'all' ? invoices : invoices.filter(i => i.status === tab)
   const totals   = {
-    outstanding: invoices.filter(i => ['sent','overdue'].includes(i.status)).reduce((s,i) => s + Number(i.total), 0),
+    /* One definition of owed money (lib/commercial/money.ts). */
+    outstanding: formatPerCurrency(receivables(invoices as unknown as InvoiceForMoney[], berlinDate()).outstanding),
     paid:        invoices.filter(i => i.status === 'paid').reduce((s,i) => s + Number(i.total), 0),
   }
 
@@ -71,7 +73,7 @@ export default function InvoicesPage() {
         <div>
           <h1 style={{ fontFamily: sans, fontSize: '24px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 var(--space-1)' }}>{t.invoiceList.heading}</h1>
           <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.1em' }}>
-            {t.invoiceList.outstanding}: <span style={{ color: 'var(--brand-primary-text)' }}>{fmtEur(totals.outstanding)}</span>
+            {t.invoiceList.outstanding}: <span style={{ color: 'var(--brand-primary-text)' }}>{totals.outstanding}</span>
             &nbsp;·&nbsp; {t.invoiceList.paid}: <span style={{ color: 'var(--semantic-success)' }}>{fmtEur(totals.paid)}</span>
           </p>
         </div>

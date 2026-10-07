@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/db'
 import { predictNextAngebotNumber } from '@/lib/documents/numbering'
 import { admitLineItems } from '@/lib/documents/extraction-guard'
+import { nextAngebotNumber } from '@/lib/documents/allocate'
 
 /**
  * Atomic per-year angebot numbering — uses the Postgres sequence from
@@ -67,27 +68,6 @@ async function previewAngebotNumber(): Promise<string> {
       : null,
     maxStoredSuffix: r.max_suffix === null ? null : Number(r.max_suffix),
   })
-}
-
-/** Allocates a number and consumes it. Only a save may call this. */
-async function nextAngebotNumber(): Promise<string> {
-  const sql = getDb()
-  try {
-    const rows = await sql`SELECT next_angebot_number() AS number` as { number: string }[]
-    if (rows[0]?.number) return rows[0].number
-  } catch (err) {
-    console.warn('[angebote] next_angebot_number() missing — falling back to SELECT-MAX', err instanceof Error ? err.message : err)
-  }
-  const year = new Date().getFullYear()
-  const prefix = `ANG-${year}-`
-  const rows = await sql`
-    SELECT angebot_number FROM os_angebote
-    WHERE angebot_number LIKE ${prefix + '%'}
-    ORDER BY angebot_number DESC LIMIT 1`
-  if (rows.length === 0) return `${prefix}001`
-  const last = (rows[0] as { angebot_number: string }).angebot_number
-  const num  = parseInt(last.replace(prefix, ''), 10)
-  return `${prefix}${String(num + 1).padStart(3, '0')}`
 }
 
 export async function GET(request: NextRequest) {

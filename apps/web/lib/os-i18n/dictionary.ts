@@ -27,6 +27,8 @@
  * `locale === 'en' ? … : …` ternaries in components — add keys here.
  */
 
+import { LEAD_STAGES, STAGE_LABEL } from '@/lib/commercial/pipeline'
+
 export type OsLocale = 'de' | 'en'
 export const DEFAULT_OS_LOCALE: OsLocale = 'de'
 export const OS_LOCALE_COOKIE = 'os_locale'
@@ -425,9 +427,8 @@ const de = {
     angebot: {
       draft: 'Entwurf', sent: 'Gesendet', accepted: 'Angenommen', rejected: 'Abgelehnt', expired: 'Abgelaufen',
     } as Record<string, string>,
-    lead: {
-      new: 'Neu', contacted: 'Kontaktiert', qualified: 'Qualifiziert', converted: 'Umgewandelt', lost: 'Verloren',
-    } as Record<string, string>,
+    /* Pipeline stages, from the one vocabulary (lib/commercial/pipeline.ts). */
+    lead: Object.fromEntries(LEAD_STAGES.map((s) => [s, STAGE_LABEL[s].de])) as Record<string, string>,
     client: {
       active: 'Aktiv', inactive: 'Inaktiv',
     } as Record<string, string>,
@@ -1035,9 +1036,7 @@ const en: typeof de = {
     angebot: {
       draft: 'Draft', sent: 'Sent', accepted: 'Accepted', rejected: 'Rejected', expired: 'Expired',
     },
-    lead: {
-      new: 'New', contacted: 'Contacted', qualified: 'Qualified', converted: 'Converted', lost: 'Lost',
-    },
+    lead: Object.fromEntries(LEAD_STAGES.map((s) => [s, STAGE_LABEL[s].en])) as Record<string, string>,
     client: {
       active: 'Active', inactive: 'Inactive',
     },

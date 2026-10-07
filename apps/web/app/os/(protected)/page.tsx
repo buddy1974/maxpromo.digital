@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { TONE_VARS, toneMap } from '@maxpromo/ui'
+import { berlinDate, formatPerCurrency, receivables, type InvoiceForMoney } from '@/lib/commercial/money'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -93,9 +94,10 @@ export default function DashboardPage() {
     weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
   })
 
-  const outstanding = invoices
-    .filter(i => i.status === 'sent' || i.status === 'overdue')
-    .reduce((sum, i) => sum + Number(i.total), 0)
+  /* One definition of owed money (lib/commercial/money.ts): deposits deducted,
+     overdue by due date, each currency stated on its own. */
+  const outstanding = formatPerCurrency(
+    receivables(invoices as unknown as InvoiceForMoney[], berlinDate()).outstanding, intlLocale)
 
   const activeJobs = jobs.filter(j => !['completed', 'invoiced'].includes(j.stage)).length
 
@@ -122,7 +124,7 @@ export default function DashboardPage() {
       <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: '36px', flexWrap: 'wrap' }}>
         <MetricCard label={t.dashboard.metricClients}     value={loading ? '—' : clients.length}      sub={t.dashboard.metricClientsSub} />
         <MetricCard label={t.dashboard.metricActiveJobs}  value={loading ? '—' : activeJobs}          sub={t.dashboard.metricActiveJobsSub} />
-        <MetricCard label={t.dashboard.metricOutstanding} value={loading ? '—' : fmtEur(outstanding)} sub={t.dashboard.metricOutstandingSub} />
+        <MetricCard label={t.dashboard.metricOutstanding} value={loading ? '—' : outstanding} sub={t.dashboard.metricOutstandingSub} />
         <MetricCard label={t.dashboard.metricNewLeads}    value={loading ? '—' : newLeads}            sub={t.dashboard.metricNewLeadsSub} />
       </div>
 

@@ -329,9 +329,11 @@ console.log('Every AI route, AI screen and line-item route is registered and pro
     check(`${name}: the full provenance boundary`, problems.length === 0, problems.join('; '))
   }
 
-  /* Persistence. Any route that writes line_items into a document table. */
+  /* Persistence. Any route — or server module — that writes line_items into
+     a document table. Server modules count since the commercial service
+     (ADR-0018): moving a write out of a route must not move it out of reach. */
   const writers = [...src.entries()]
-    .filter(([p, s]) => p.startsWith('app/api/') && /(INSERT INTO|UPDATE)\s+os_(angebote|invoices)[\s\S]{0,600}line_items/.test(s))
+    .filter(([p, s]) => (p.startsWith('app/api/') || p.startsWith('lib/')) && /(INSERT INTO|UPDATE)\s+os_(angebote|invoices)[\s\S]{0,600}line_items/.test(s))
     .map(([p]) => p)
   const sendsLines = [...src.entries()]
     .filter(([p, s]) => /^app\/api\/os\/send-/.test(p) && /body\.line_items/.test(s))
@@ -342,7 +344,12 @@ console.log('Every AI route, AI screen and line-item route is registered and pro
     unregisteredWriters.length ? `unregistered: ${unregisteredWriters.join(', ')}` : lineRoutes.join(', '))
   for (const p of LINE_ITEM_ROUTES) {
     const s = src.get(p) ?? ''
-    const ok = /admitLineItems\(/.test(s) && /status: 422/.test(s) && !/JSON\.stringify\(body\.line_items\)/.test(s)
+    /* A route refuses with 422; a server module refuses by throwing before
+       the INSERT. Either way, only admitted items are stored. */
+    const refuses = p.startsWith('lib/')
+      ? /admitted\.held\.length > 0\) throw new CapabilityRefusal/.test(s) && !/JSON\.stringify\(lines\)/.test(s)
+      : /status: 422/.test(s)
+    const ok = /admitLineItems\(/.test(s) && refuses && !/JSON\.stringify\(body\.line_items\)/.test(s)
     check(`${p.replace('app/api/os/', '').replace('/route.ts', '')}: refuses held lines and stores only admitted ones`, ok)
   }
 }

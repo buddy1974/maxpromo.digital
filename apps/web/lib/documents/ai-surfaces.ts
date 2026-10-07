@@ -48,9 +48,14 @@ export const AI_SCREENS: Readonly<Record<string, AiSurfaceClass>> = {
   'app/os/(protected)/clients/page.tsx':            'contact',
 }
 
-/** Every route that stores or sends commercial-document line items. */
+/**
+ * Every route — or server module — that stores or sends commercial-document
+ * line items. The commercial service (ADR-0018) writes documents from the
+ * mobile layer; it is a door like any route and is held to the same guard.
+ */
 export const LINE_ITEM_ROUTES: readonly string[] = [
   'app/api/os/angebote/route.ts',
   'app/api/os/invoices/route.ts',
   'app/api/os/send-invoice/route.ts',
+  'lib/commercial/capabilities/documents.ts',
 ]

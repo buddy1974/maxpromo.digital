@@ -38,6 +38,9 @@ const PUBLIC_OS_API_PATHS = new Set([
   '/api/os/logout',
 ])
 
+/** Machine callers only; verified in the route, never by the cookie. */
+const AGENT_API_PREFIX = '/api/os/agent/'
+
 const intlMiddleware = createMiddleware(routing)
 
 const LOCALES = routing.locales as readonly string[]
@@ -125,6 +128,15 @@ export async function middleware(req: NextRequest) {
     }
 
     if (PUBLIC_OS_API_PATHS.has(pathname) || pathname === '/os/login') {
+      return pass()
+    }
+
+    // The signed agent API (ADR-0018). It does not use the session cookie, so
+    // the cookie check cannot be its gate: the route verifies a signature over
+    // the exact body, a single-use nonce and an allowed actor, and refuses
+    // everything else. No `x-os-user` is set — an agent request is not a
+    // logged-in staff session and must not look like one.
+    if (pathname.startsWith(AGENT_API_PREFIX)) {
       return pass()
     }
 
