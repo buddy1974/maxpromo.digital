@@ -1,8 +1,14 @@
 # Change Log
 
+## 2026-10-07 — Iteration 2A released to production and closed
+
+`db601e7` + `0370ab7` pushed to `main` (no history change). Vercel web deployment `dpl_B6LuMaTaByZhvGXKcxNWXLe8FJkM` built `0370ab7` from source and is aliased to https://www.maxpromo.digital. Agent Bureau created no deployment for the push; its production stayed on its previous deployment and answered 200.
+
+Verified against production, not local results: `audit:seo` against https://www.maxpromo.digital — 64 sitemap URLs all 200, 50 share images, 26 URL variants, **0 failures, 0 warnings**; legal pages self-canonical with de/en/x-default and their document text unchanged in the release range; no orphan page and every industry page linking to its capabilities; 375px: 14 representative routes fit, no console errors; the street address on legal pages only, the tax number on the Impressum only; none of the document-identity values in the 27 static assets the public pages reference or the 28 chunks reachable from them; `/api/os/document-identity` answers 401 anonymously. P0 = 0, P1 = 0. Iteration 2A CLOSED. Owner actions: `docs/governance/seo-owner-actions.md`.
+
 ## 2026-10-07 — Iteration 2A completed: discovery hardened end to end
 
-Local only, not pushed, not deployed.
+Local certification before release (`npm run certify` passed).
 
 **Legal pages.** Own title and description per language, self-canonical,
 de/en/x-default, corporate card; page-level `nofollow` removed. Document text

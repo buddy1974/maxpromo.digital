@@ -11,8 +11,10 @@ content clusters, editorial backlog), `google-business-profile-draft.md`
 Marcel's accounts, DNS or a business fact). The rendered head of every sitemap URL is checked by
 `npm run audit:seo` (§14).
 
-The site is live on https://www.maxpromo.digital since Iteration 1. Nothing
-has been submitted to a search console yet (§13).
+The site is live on https://www.maxpromo.digital. Iteration 2A is in
+production since 2026-10-07 (`0370ab7`), verified live: `audit:seo` against
+production, 64 URLs, 0 failures, 0 warnings. Nothing has been submitted to a
+search console yet (§13, `seo-owner-actions.md`).
 
 ---
 
