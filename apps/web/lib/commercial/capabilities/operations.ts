@@ -359,7 +359,10 @@ export const recurringCreate: CapabilityDefinition<ReturnType<typeof recurringCr
     const r = await resolveClient(ctx.sql, input)
     if ('result' in r) return r.result
     const cur = input.currency ?? 'EUR'
-    const next = input.starts_on > ctx.today ? input.starts_on : addPeriod(input.starts_on, input.frequency)
+    /* The next renewal on or after today — a service that started long ago
+       does not renew in the past. Bounded: at most 50 years of periods. */
+    let next = input.starts_on
+    for (let n = 0; next < ctx.today && n < 600; n++) next = addPeriod(next, input.frequency)
     return {
       summary: `Record ${input.service} for ${clientLabel(r.client)}`,
       preview: {
@@ -380,6 +383,7 @@ export const recurringCreate: CapabilityDefinition<ReturnType<typeof recurringCr
       INSERT INTO os_recurring (client_id, job_id, service, amount, currency, frequency, starts_on, next_renewal)
       VALUES (${p.client_id}, ${p.job_id}, ${p.service}, ${p.amount}, ${p.currency}, ${p.frequency}, ${p.starts_on}, ${p.next_renewal})
       RETURNING id` as { id: string }[]
+    ctx.committed(`Recorded ${p.service} for the client`)
     await writeAudit(ctx.sql, { actor: ctx.actor, channel: ctx.channel, operation: 'recurring.create', entityType: 'recurring', entityId: rows[0].id, after: p, approvalId, payloadHash: payloadHash('recurring.create', payload), outcome: 'succeeded' })
     return { summary: `Recorded ${p.service}: ${eur(p.amount, p.currency)} ${p.frequency}, next renewal ${p.next_renewal}.` }
   },

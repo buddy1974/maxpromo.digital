@@ -7,8 +7,8 @@
  *   1. a secret is configured (else 503 — fail closed, never open);
  *   2. the signature is valid over timestamp, nonce, method, path and body;
  *   3. the nonce has never been seen (replay → 401);
- *   4. the actor is well formed and, when OS_AGENT_ALLOWED_ACTORS is set,
- *      is on that list — the OS's own copy of "only Marcel", independent of
+ *   4. the actor is well formed and is on OS_AGENT_ALLOWED_ACTORS (required:
+ *      an unset list refuses everyone) — the OS's own copy of "only Marcel", independent of
  *      the caller's binding table.
  */
 
@@ -68,8 +68,10 @@ export async function admitAgentRequest(p: {
   const actor = typeof body.actor === 'string' ? body.actor : ''
   const channel = typeof body.channel === 'string' ? body.channel : ''
   if (!ACTOR.test(actor) || !CHANNEL.test(channel)) return { ok: false, status: 400, error: 'invalid_actor' }
+  /* Fail closed: without a declared list of who may act, nobody may. */
   const allow = allowedActors(p.allowList)
-  if (allow && !allow.has(actor)) {
+  if (!allow) return { ok: false, status: 503, error: 'agent_api_not_configured' }
+  if (!allow.has(actor)) {
     console.warn('[agent-api] refused: actor not on OS_AGENT_ALLOWED_ACTORS')
     return { ok: false, status: 403, error: 'actor_not_allowed' }
   }

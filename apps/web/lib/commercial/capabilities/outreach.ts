@@ -36,6 +36,9 @@ import { CapabilityRefusal, UncertainOutcome, type AnyCapability, type Capabilit
 import { v } from '../validate'
 
 const LANGS = ['de', 'en', 'fr'] as const
+
+/** A draft must fit, whole, on the one-screen confirmation a phone shows. */
+const MAX_DRAFT = 3000
 type Lang = typeof LANGS[number]
 
 interface DraftDetail {
@@ -103,7 +106,10 @@ function parseDraft(text: string): { subject: string | null; body: string } {
   const json = text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1)
   const parsed = JSON.parse(json) as { subject?: unknown; body?: unknown }
   if (typeof parsed.body !== 'string' || parsed.body.trim().length < 10) throw new Error('model returned no body')
-  return { subject: typeof parsed.subject === 'string' ? parsed.subject.trim().slice(0, 200) : null, body: parsed.body.trim().slice(0, 5000) }
+  const body = parsed.body.trim()
+  /* Never cut silently: a draft must fit one phone confirmation whole. */
+  if (body.length > MAX_DRAFT) throw new Error('draft too long')
+  return { subject: typeof parsed.subject === 'string' ? parsed.subject.trim().slice(0, 200) : null, body }
 }
 
 function draftLines(d: DraftDetail): string[] {
@@ -122,7 +128,7 @@ const draftInput = v.object({
   previous_draft_id: v.optional(v.uuid()),
   /** Marcel's own words. Stored as the draft; no model involved. */
   subject: v.optional(v.string({ max: 200 })),
-  body: v.optional(v.string({ max: 5000 })),
+  body: v.optional(v.string({ max: MAX_DRAFT })),
 })
 
 export const outreachDraft: CapabilityDefinition<ReturnType<typeof draftInput.parse>> = {
@@ -269,6 +275,7 @@ export const outreachSend: CapabilityDefinition<ReturnType<typeof sendInput.pars
       await writeAudit(ctx.sql, { actor: ctx.actor, channel: ctx.channel, operation: 'outreach.send', entityType: 'lead', entityId: p.lead_id, approvalId, payloadHash: hash, outcome: 'failed', error: result.error })
       throw new CapabilityRefusal(`The email was not sent: ${result.error ?? 'provider refused it'}. Nothing was recorded as sent.`)
     }
+    ctx.committed(`Sent to ${p.to}`, result.id)
     const lead = (await ctx.sql`SELECT * FROM os_leads WHERE id = ${p.lead_id}` as LeadRow[])[0]
     await logActivity(ctx.sql, {
       lead_id: p.lead_id, kind: 'email_sent', channel: 'email', actor: ctx.actor, external_ref: result.id ?? null,

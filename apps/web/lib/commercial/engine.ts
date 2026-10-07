@@ -52,8 +52,15 @@ export interface EngineRequest {
   input: unknown
 }
 
-function context(sql: Sql, actor: string, channel: string, now = new Date()): CapabilityContext {
-  return { sql, actor, channel, now, today: berlinDate(now) }
+interface Commitment { what: string; externalRef?: string }
+
+function context(sql: Sql, actor: string, channel: string, now = new Date()): CapabilityContext & { commitment: () => Commitment | null } {
+  let commitment: Commitment | null = null
+  return {
+    sql, actor, channel, now, today: berlinDate(now),
+    committed: (what, externalRef) => { commitment = { what, ...(externalRef ? { externalRef } : {}) } },
+    commitment: () => commitment,
+  }
 }
 
 function refusal(capability: string, err: unknown): EngineResponse | null {
@@ -122,6 +129,8 @@ export async function runCapability(sql: Sql, req: EngineRequest): Promise<Engin
   }
 
   await sql`UPDATE os_agent_results SET status = 'done', response = ${JSON.stringify(response)}::jsonb WHERE request_id = ${req.requestId}`
+  /* Bounded growth: a stored answer only matters while its request could be retried. */
+  if (Math.random() < 0.02) await sql`DELETE FROM os_agent_results WHERE created_at < now() - interval '7 days'`
   return response
 }
 
@@ -216,7 +225,23 @@ export async function executeApproval(
     finalStatus = 'executed'
   } catch (err) {
     const r = refusal(a.capability, err)
-    if (r) {
+    const done = ctx.commitment()
+    if (done) {
+      /* The external effect happened; what failed was recording it. Say both. */
+      console.error(`[commercial] ${a.capability} committed, then failed to record`, err instanceof Error ? err.message : err)
+      response = {
+        status: 'done',
+        capability: a.capability,
+        result: {
+          summary: `${done.what} — but the OS could not finish recording it (history, status or follow-up may be missing). Do not send it again.`,
+        },
+      }
+      finalStatus = 'executed'
+      await writeAudit(sql, {
+        actor: req.actor, channel: req.channel, operation: a.capability, approvalId: a.id, payloadHash: a.payload_hash,
+        outcome: 'succeeded', externalRef: done.externalRef, error: `recording incomplete: ${err instanceof Error ? err.message : String(err)}`,
+      })
+    } else if (r) {
       response = r
       finalStatus = 'failed'
     } else {

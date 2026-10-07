@@ -250,6 +250,14 @@ async function main() {
   check('the Angebot is sent', r?.status === 'done' && /sent/.test(r.result.summary), JSON.stringify(r))
   const after = (await sql`SELECT a.status, l.status AS lead_status, (SELECT count(*)::int FROM os_followups f WHERE f.angebot_id = a.id AND f.status = 'open') AS fups FROM os_angebote a JOIN os_leads l ON l.id = a.lead_id WHERE a.id = ${angebotId}`)[0]
   check('Angebot sent, lead at Proposal, chase follow-up set', after.status === 'sent' && after.lead_status === 'proposal' && after.fups === 1, JSON.stringify(after))
+  /* A printed field the old binding did not cover. */
+  prep = await run('proposal.send', { angebot_id: angebotId })
+  await sql`UPDATE os_angebote SET payment_terms = 'Zahlbar sofort' WHERE id = ${angebotId}`
+  r = await execute(prep.approval)
+  check('changing any printed field (payment terms) after the preview stops the send', r?.status === 'refused' && /changed after/.test(r.message), JSON.stringify(r))
+  await sql`UPDATE os_angebote SET payment_terms = NULL WHERE id = ${angebotId}`
+  /* A send prepared now and left pending: it must not run after acceptance. */
+  const staleSend = (await run('proposal.send', { angebot_id: angebotId })).approval
 
   /* ── D: proposal to project ────────────────────────────────────────── */
   section('D — proposal to project')
@@ -262,6 +270,9 @@ async function main() {
   check('lead WON, client linked, project created, recurring recorded', won.status === 'won' && won.client_id && won.a_status === 'accepted' && won.job_id && won.rec === 1, JSON.stringify(won))
   r = await run('proposal.accept', { angebot_id: angebotId })
   check('accepting again creates nothing', r?.status === 'done' && /already accepted/.test(r.result.summary), JSON.stringify(r))
+  r = await execute(staleSend)
+  const stillWon = (await sql`SELECT a.status, l.status AS lead_status FROM os_angebote a JOIN os_leads l ON l.id = a.lead_id WHERE a.id = ${angebotId}`)[0]
+  check('an old Send button pressed after acceptance sends nothing and leaves the lead won', r?.status === 'refused' && /now accepted/.test(r.message) && stillWon.status === 'accepted' && stillWon.lead_status === 'won', `${JSON.stringify(r)} ${JSON.stringify(stillWon)}`)
   r = await run('project.status', { job_id: won.job_id })
   check('the project carries the scope and value forward', r?.status === 'done' && /Website/.test(r.result.lines.join('\n')) && /1\.450/.test(r.result.summary), JSON.stringify(r?.result).slice(0, 300))
 
@@ -279,17 +290,31 @@ async function main() {
   check('the invoice is sent and a payment check is set', r?.status === 'done' && /Payment check/.test(r.result.summary), JSON.stringify(r))
   r = await run('receivables.show')
   check('receivables show the 725,00 owed', r?.status === 'done' && /725,00/.test(JSON.stringify(r.result)), r?.result?.summary)
+  r = await run('invoice.create', { angebot_id: angebotId, kind: 'final' })
+  check('no final invoice while the deposit invoice is still owed (no double billing)', r?.status === 'refused' && /still has 725,00/.test(r.message), JSON.stringify(r))
   r = await run('payment.record', { invoice_id: depId, amount: 1000 })
   check('a payment larger than the open balance is refused', r?.status === 'refused' && /more than/.test(r.message), JSON.stringify(r))
   prep = await run('payment.record', { invoice_id: depId })
   check('recording a payment is AMBER and states it is the full open balance', prep?.status === 'approval_required' && /full open balance/.test(prep.approval.preview.AMOUNT), JSON.stringify(prep?.approval?.preview))
-  r = await execute(prep.approval)
+  const part = await run('payment.record', { invoice_id: depId, amount: 500 })
+  const [pa, pb] = await Promise.all([execute(prep.approval), execute(part.approval)])
+  const paidSum = Number((await sql`SELECT coalesce(sum(amount), 0) AS s FROM os_payments WHERE invoice_id = ${depId}`)[0].s)
+  check('two payments confirmed at the same moment cannot overpay the invoice', paidSum <= 725 && [pa, pb].filter((x) => x?.status === 'done').length === 1, `${paidSum} ${JSON.stringify([pa?.status, pb?.status])}`)
+  if (paidSum < 725) {
+    prep = await run('payment.record', { invoice_id: depId })
+    r = await execute(prep.approval)
+  } else r = pa?.status === 'done' ? pa : pb
   const dep = (await sql`SELECT status, paid_date::text AS paid FROM os_invoices WHERE id = ${depId}`)[0]
   check('the deposit is marked PAID only now', r?.status === 'done' && dep.status === 'paid' && dep.paid === today, JSON.stringify(dep))
   r = await run('invoice.create', { angebot_id: angebotId, kind: 'final', due_days: 0 })
   const finalId = r?.result?.data?.invoice_id
   const fin = (await sql`SELECT total, anzahlung, restbetrag FROM os_invoices WHERE id = ${finalId}`)[0]
   check('the final invoice acknowledges the deposit received (1450 − 725 = 725)', Number(fin.total) === 1450 && Number(fin.anzahlung) === 725 && Number(fin.restbetrag) === 725, JSON.stringify(fin))
+  prep = await run('invoice.send', { invoice_id: finalId })
+  await sql`UPDATE os_invoices SET status = 'cancelled' WHERE id = ${finalId}`
+  r = await execute(prep.approval)
+  check('an invoice cancelled after its send was prepared is not sent', r?.status === 'refused' && /now cancelled/.test(r.message), JSON.stringify(r))
+  await sql`UPDATE os_invoices SET status = 'draft' WHERE id = ${finalId}`
   prep = await run('invoice.send', { invoice_id: finalId })
   await execute(prep.approval)
   await sql`UPDATE os_invoices SET due_date = ${plusDays(-10)} WHERE id = ${finalId}`

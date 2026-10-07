@@ -86,12 +86,45 @@ interface InvoiceRow {
   paid_amount?: string
 }
 
-/** What a send is bound to: the document's content, not its id alone. */
-function documentVersion(row: { line_items: unknown; total: unknown; client_name: unknown; client_email: unknown; client_address?: unknown; notes?: unknown; status?: unknown }): string {
-  return sha256Hex(stableStringify({
-    l: row.line_items, t: String(row.total), n: row.client_name, e: row.client_email, a: row.client_address ?? null, o: row.notes ?? null,
-  })).slice(0, 16)
+/**
+ * What a send is bound to: the email exactly as the client would receive it.
+ *
+ * Hashing chosen columns missed fields the builders print (currency, validity,
+ * payment terms, due date, remaining balance), so a change to one of them
+ * after the preview would have reached the client unseen. The rendered
+ * subject and HTML cover every printed field by construction; the builders are
+ * deterministic for a given row.
+ */
+function emailVersion(email: { subject: string; html: string }): string {
+  return sha256Hex(`${email.subject}\n${email.html}`).slice(0, 32)
 }
+
+function angebotEmail(a: AngebotFull): { subject: string; html: string } {
+  return { subject: getLabels(docLanguage(a.language)).emailSubjectQuote(a.angebot_number), html: buildAngebotEmail(a) }
+}
+
+function invoiceEmail(i: InvoiceRow, today: string): { subject: string; html: string } {
+  const lang = docLanguage(i.language)
+  return {
+    subject: getLabels(lang).emailSubjectInvoice(i.invoice_number),
+    html: buildInvoiceEmail({
+      invoice_number: i.invoice_number, client_name: i.client_name, address: i.client_address ?? undefined,
+      date: isoDate(i.created_at) ?? today, due_date: isoDate(i.due_date) ?? today,
+      line_items: (i.line_items ?? []).map((l) => ({ description: l.description, qty: l.qty, unit_price: Number(l.unit_price ?? l.total), total: Number(l.total) })),
+      subtotal: Number(i.subtotal ?? i.total), total: Number(i.total),
+      anzahlung: Number(i.anzahlung ?? 0) || undefined, anzahlung_date: isoDate(i.anzahlung_date) ?? undefined,
+      anzahlung_method: i.anzahlung_method ?? undefined, restbetrag: i.restbetrag !== null ? Number(i.restbetrag) : undefined,
+      currency: i.currency as CurrencyCode, language: lang,
+    }),
+  }
+}
+
+/** Acceptance is bound to the Angebot as it reads — the same rendering. */
+function documentVersion(a: AngebotFull): string {
+  return emailVersion(angebotEmail(a))
+}
+
+const SENDABLE_ANGEBOT = ['draft', 'sent']
 
 async function getAngebot(ctx: CapabilityContext, id: string): Promise<AngebotFull> {
   const rows = await ctx.sql`SELECT * FROM os_angebote WHERE id = ${id}` as AngebotFull[]
@@ -149,7 +182,7 @@ function addressOf(c: ClientRow | null): string | null {
   return lines.length ? lines.join('\n') : null
 }
 
-async function sendDocumentEmail(p: { to: string[]; subject: string; html: string; approvalId: string; what: string }) {
+async function sendDocumentEmail(ctx: CapabilityContext, p: { to: string[]; subject: string; html: string; approvalId: string; what: string }) {
   let result: Awaited<ReturnType<typeof sendEmail>>
   try {
     result = await sendEmail({
@@ -160,6 +193,7 @@ async function sendDocumentEmail(p: { to: string[]; subject: string; html: strin
     throw new UncertainOutcome(`${p.what} may or may not have been sent: the mail provider did not answer (${err instanceof Error ? err.message : 'network'}).`)
   }
   if (!result.success) throw new CapabilityRefusal(`${p.what} was not sent: ${result.error ?? 'the provider refused it'}. Its status was not changed.`)
+  ctx.committed(`${p.what} sent to ${p.to.join(', ')}`, result.id)
   return result
 }
 
@@ -359,7 +393,7 @@ export const proposalSend: CapabilityDefinition<ReturnType<typeof proposalSendIn
     const r = await resolveAngebot(ctx, input)
     if ('result' in r) return r.result
     const a = r.row
-    if (a.status === 'accepted') throw new CapabilityRefusal(`Angebot ${a.angebot_number} is already accepted.`, 'conflict')
+    if (!SENDABLE_ANGEBOT.includes(a.status)) throw new CapabilityRefusal(`Angebot ${a.angebot_number} is ${a.status}; it is not sent again.`, 'conflict')
     const to = input.to ?? (a.client_email ? [a.client_email] : [])
     if (!to.length) throw new CapabilityRefusal(`Angebot ${a.angebot_number} has no recipient email. Give one with the send.`)
     const cur = (a.currency ?? 'EUR') as CurrencyCode
@@ -382,20 +416,20 @@ export const proposalSend: CapabilityDefinition<ReturnType<typeof proposalSendIn
   async execute(ctx, payload, approvalId) {
     const p = payload as { angebot_id: string; to: string[]; version: string }
     const a = await getAngebot(ctx, p.angebot_id)
-    if (documentVersion(a) !== p.version) throw new CapabilityRefusal(`Angebot ${a.angebot_number} was changed after this send was prepared. Nothing was sent; prepare it again.`, 'conflict')
-    const lang = docLanguage(a.language)
-    const result = await sendDocumentEmail({
-      to: p.to, subject: getLabels(lang).emailSubjectQuote(a.angebot_number), html: buildAngebotEmail(a),
-      approvalId, what: `Angebot ${a.angebot_number}`,
-    })
-    await ctx.sql`UPDATE os_angebote SET status = 'sent', sent_at = now() WHERE id = ${a.id}`
+    /* Re-checked here, not only at prepare: an Angebot accepted, rejected or
+       expired since then is never sent again by an old button. */
+    if (!SENDABLE_ANGEBOT.includes(a.status)) throw new CapabilityRefusal(`Angebot ${a.angebot_number} is now ${a.status}. Nothing was sent.`, 'conflict')
+    const email = angebotEmail(a)
+    if (emailVersion(email) !== p.version) throw new CapabilityRefusal(`Angebot ${a.angebot_number} was changed after this send was prepared. Nothing was sent; prepare it again.`, 'conflict')
+    const result = await sendDocumentEmail(ctx, { to: p.to, subject: email.subject, html: email.html, approvalId, what: `Angebot ${a.angebot_number}` })
+    await ctx.sql`UPDATE os_angebote SET status = 'sent', sent_at = now() WHERE id = ${a.id} AND status IN ('draft', 'sent')`
     await logActivity(ctx.sql, {
       lead_id: a.lead_id, client_id: a.client_id, angebot_id: a.id, kind: 'proposal_sent', channel: 'email', actor: ctx.actor,
       external_ref: result.id ?? null, summary: `Angebot ${a.angebot_number} sent to ${p.to.join(', ')}`, detail: { approval_id: approvalId },
     })
     const followOn = addDays(ctx.today, 5)
     if (a.lead_id) {
-      await ctx.sql`UPDATE os_leads SET status = CASE WHEN status IN ('negotiation') THEN status ELSE 'proposal' END,
+      await ctx.sql`UPDATE os_leads SET status = CASE WHEN status IN ('negotiation', 'won', 'lost', 'converted', 'archived') THEN status ELSE 'proposal' END,
                     last_interaction_at = now(), next_action = ${`Chase Angebot ${a.angebot_number}`}, next_action_at = ${followOn}, updated_at = now()
                     WHERE id = ${a.lead_id}`
     }
@@ -538,6 +572,7 @@ export const proposalAccept: CapabilityDefinition<ReturnType<typeof acceptInput.
     /* One transaction: either the client, project, stage and links all
        exist, or none of them do. */
     await ctx.sql.transaction(queries)
+    ctx.committed(`Angebot ${a.angebot_number} recorded as accepted, with client and project`)
     await writeAudit(ctx.sql, {
       actor: ctx.actor, channel: ctx.channel, operation: 'proposal.accept', entityType: 'angebot', entityId: a.id,
       before: { status: a.status }, after: { status: 'accepted', client_id: clientId, job_id: p.job_id, new_client: Boolean(p.new_client) },
@@ -581,7 +616,8 @@ export const invoiceCreate: CapabilityDefinition<ReturnType<typeof invoiceInput.
       if ('result' in r) return r.result
       a = r.row
     } else if (input.job_id) {
-      const rows = await ctx.sql`SELECT * FROM os_angebote WHERE job_id = ${input.job_id} OR id = (SELECT angebot_id FROM os_jobs WHERE id = ${input.job_id})` as AngebotFull[]
+      /* The Angebot the project was created from — one, by the project's own link. */
+      const rows = await ctx.sql`SELECT a.* FROM os_angebote a JOIN os_jobs j ON j.angebot_id = a.id WHERE j.id = ${input.job_id}` as AngebotFull[]
       a = rows[0] ?? null
     }
 
@@ -619,10 +655,22 @@ export const invoiceCreate: CapabilityDefinition<ReturnType<typeof invoiceInput.
       } else {
         lines = (a.line_items ?? []).map((l) => ({ ...l }))
         const deposits = await ctx.sql`
-          SELECT i.id, i.status, i.total, i.paid_date::text AS paid_date,
+          SELECT i.id, i.invoice_number, i.status, i.total, i.currency, i.paid_date::text AS paid_date,
                  coalesce((SELECT sum(amount) FROM os_payments p WHERE p.invoice_id = i.id), 0)::numeric AS paid,
                  (SELECT max(received_on)::text FROM os_payments p WHERE p.invoice_id = i.id) AS last_paid
-          FROM os_invoices i WHERE i.angebot_id = ${a.id} AND i.kind = 'deposit'` as { id: string; status: string; total: string; paid_date: string | null; paid: string; last_paid: string | null }[]
+          FROM os_invoices i WHERE i.angebot_id = ${a.id} AND i.kind = 'deposit' AND i.status <> 'cancelled'` as { id: string; invoice_number: string; status: string; total: string; currency: string; paid_date: string | null; paid: string; last_paid: string | null }[]
+        /* A deposit invoice that is still a draft, or still owed, would be
+           billed twice: once on its own and again in the full final amount.
+           The final invoice waits until the deposit is settled. */
+        for (const d of deposits) {
+          if (d.status === 'draft') {
+            throw new CapabilityRefusal(`Deposit invoice ${d.invoice_number} is still a draft. Send it (or cancel it in the OS) before the final invoice.`)
+          }
+          const open = d.status === 'paid' ? 0 : Math.round((Number(d.total) - Number(d.paid)) * 100) / 100
+          if (open > 0.009) {
+            throw new CapabilityRefusal(`Deposit invoice ${d.invoice_number} still has ${eur(open, d.currency)} open. Record its payment first — the final invoice deducts only deposit money received.`)
+          }
+        }
         for (const d of deposits) {
           /* Only money actually received is acknowledged as a deposit on the
              final invoice. An unpaid deposit invoice stays owed on its own. */
@@ -649,17 +697,47 @@ export const invoiceCreate: CapabilityDefinition<ReturnType<typeof invoiceInput.
       }
     }
 
-    const invoice_number = await nextInvoiceNumber()
-    const rows = await ctx.sql`
-      INSERT INTO os_invoices
-        (invoice_number, client_id, client_name, client_email, client_address, line_items, subtotal, total, status, due_date,
-         anzahlung, anzahlung_date, anzahlung_method, restbetrag, payment_method, currency, language, angebot_id, job_id, kind)
-      VALUES
-        (${invoice_number}, ${clientId}, ${clientName}, ${clientEmail}, ${clientAddress}, ${JSON.stringify(admitted.items)}::jsonb,
-         ${total}, ${total}, 'draft', ${dueDate}, ${anzahlung}, ${anzahlungDate}, ${anzahlung > 0 ? (language === 'de' ? 'Überweisung' : 'Bank transfer') : null},
-         ${restbetrag}, ${paymentMethod}, ${currency}, ${language}, ${a?.id ?? null}, ${jobId}, ${kind})
-      RETURNING id, invoice_number` as { id: string; invoice_number: string }[]
-    const inv = rows[0]
+    const method = anzahlung > 0 ? (language === 'de' ? 'Überweisung' : 'Bank transfer') : null
+    let inv: { id: string; invoice_number: string }
+    if (a) {
+      /* A deposit or final invoice for an Angebot is unique. Under a lock on
+         that pair, the number is drawn from the allocator inside the INSERT
+         and only when no such invoice exists — so a lost race neither
+         creates a second invoice nor burns a number. */
+      const lockKey = `invoice:${a.id}:${kind}`
+      const results = await ctx.sql.transaction([
+        ctx.sql`SELECT pg_advisory_xact_lock(hashtext(${lockKey}))`,
+        ctx.sql`
+          INSERT INTO os_invoices
+            (invoice_number, client_id, client_name, client_email, client_address, line_items, subtotal, total, status, due_date,
+             anzahlung, anzahlung_date, anzahlung_method, restbetrag, payment_method, currency, language, angebot_id, job_id, kind)
+          SELECT next_invoice_number(), ${clientId}, ${clientName}, ${clientEmail}, ${clientAddress}, ${JSON.stringify(admitted.items)}::jsonb,
+                 ${total}, ${total}, 'draft', ${dueDate}::date, ${anzahlung}, ${anzahlungDate}::date, ${method},
+                 ${restbetrag}, ${paymentMethod}, ${currency}, ${language}, ${a.id}::uuid, ${jobId}::uuid, ${kind}
+          WHERE NOT EXISTS (SELECT 1 FROM os_invoices WHERE angebot_id = ${a.id} AND kind = ${kind})
+          RETURNING id, invoice_number`,
+      ]) as unknown as [unknown, { id: string; invoice_number: string }[]]
+      if (!results[1].length) {
+        const existing = await ctx.sql`SELECT id, invoice_number, status FROM os_invoices WHERE angebot_id = ${a.id} AND kind = ${kind}` as { id: string; invoice_number: string; status: string }[]
+        return {
+          summary: `${kind === 'deposit' ? 'A deposit' : 'A final'} invoice for Angebot ${a.angebot_number} was created at the same moment: ${existing[0]?.invoice_number ?? '—'}. No second one was created.`,
+          ...(existing[0] ? { focus: [focus('invoice', existing[0].id, existing[0].invoice_number)] } : {}),
+        }
+      }
+      inv = results[1][0]
+    } else {
+      const invoice_number = await nextInvoiceNumber()
+      const rows = await ctx.sql`
+        INSERT INTO os_invoices
+          (invoice_number, client_id, client_name, client_email, client_address, line_items, subtotal, total, status, due_date,
+           anzahlung, anzahlung_date, anzahlung_method, restbetrag, payment_method, currency, language, angebot_id, job_id, kind)
+        VALUES
+          (${invoice_number}, ${clientId}, ${clientName}, ${clientEmail}, ${clientAddress}, ${JSON.stringify(admitted.items)}::jsonb,
+           ${total}, ${total}, 'draft', ${dueDate}, ${anzahlung}, ${anzahlungDate}, ${method},
+           ${restbetrag}, ${paymentMethod}, ${currency}, ${language}, NULL, ${jobId}, ${kind})
+        RETURNING id, invoice_number` as { id: string; invoice_number: string }[]
+      inv = rows[0]
+    }
     await logActivity(ctx.sql, {
       client_id: clientId, job_id: jobId, invoice_id: inv.id, angebot_id: a?.id ?? null,
       kind: 'invoice_drafted', actor: ctx.actor, channel: ctx.channel,
@@ -712,7 +790,7 @@ export const invoiceSend: CapabilityDefinition<ReturnType<typeof invoiceSendInpu
         ...(due && due < ctx.today ? { WARNING: `The due date ${due} is already past.` } : {}),
         COPY: 'info@maxpromo.digital (bcc)',
       },
-      payload: { invoice_id: i.id, to, version: documentVersion(i) },
+      payload: { invoice_id: i.id, to, version: emailVersion(invoiceEmail(i, ctx.today)) },
       dedupeKey: i.id,
       expiresInMinutes: 120,
     }
@@ -720,18 +798,11 @@ export const invoiceSend: CapabilityDefinition<ReturnType<typeof invoiceSendInpu
   async execute(ctx, payload, approvalId) {
     const p = payload as { invoice_id: string; to: string[]; version: string }
     const i = await getInvoice(ctx, p.invoice_id)
-    if (documentVersion(i) !== p.version) throw new CapabilityRefusal(`Rechnung ${i.invoice_number} was changed after this send was prepared. Nothing was sent.`, 'conflict')
-    const lang = docLanguage(i.language)
-    const html = buildInvoiceEmail({
-      invoice_number: i.invoice_number, client_name: i.client_name, address: i.client_address ?? undefined,
-      date: isoDate(i.created_at) ?? ctx.today, due_date: isoDate(i.due_date) ?? ctx.today,
-      line_items: (i.line_items ?? []).map((l) => ({ description: l.description, qty: l.qty, unit_price: Number(l.unit_price ?? l.total), total: Number(l.total) })),
-      subtotal: Number(i.subtotal ?? i.total), total: Number(i.total),
-      anzahlung: Number(i.anzahlung ?? 0) || undefined, anzahlung_date: isoDate(i.anzahlung_date) ?? undefined,
-      anzahlung_method: i.anzahlung_method ?? undefined, restbetrag: i.restbetrag !== null ? Number(i.restbetrag) : undefined,
-      currency: i.currency as CurrencyCode, language: lang,
-    })
-    const result = await sendDocumentEmail({ to: p.to, subject: getLabels(lang).emailSubjectInvoice(i.invoice_number), html, approvalId, what: `Rechnung ${i.invoice_number}` })
+    /* Re-checked here: an invoice paid or cancelled since the preview is never sent. */
+    if (['paid', 'cancelled'].includes(i.status)) throw new CapabilityRefusal(`Rechnung ${i.invoice_number} is now ${i.status}. Nothing was sent.`, 'conflict')
+    const email = invoiceEmail(i, ctx.today)
+    if (emailVersion(email) !== p.version) throw new CapabilityRefusal(`Rechnung ${i.invoice_number} was changed after this send was prepared. Nothing was sent.`, 'conflict')
+    const result = await sendDocumentEmail(ctx, { to: p.to, subject: email.subject, html: email.html, approvalId, what: `Rechnung ${i.invoice_number}` })
     await ctx.sql`UPDATE os_invoices SET status = CASE WHEN status = 'draft' THEN 'sent' ELSE status END, sent_at = now() WHERE id = ${i.id}`
     const check = isoDate(i.due_date) && isoDate(i.due_date)! >= ctx.today ? addDays(isoDate(i.due_date)!, 1) : addDays(ctx.today, 7)
     await ctx.sql`INSERT INTO os_followups (due_on, reason, client_id, invoice_id, actor)
@@ -803,13 +874,32 @@ export const paymentRecord: CapabilityDefinition<ReturnType<typeof paymentInput.
       throw new CapabilityRefusal(`The open balance on ${i.invoice_number} changed since this was prepared (${eur(p.open_before, b.currency)} → ${eur(b.open, b.currency)}). Nothing was recorded.`, 'conflict')
     }
     const after = Math.round((b.open - p.amount) * 100) / 100
-    const queries = [
-      ctx.sql`INSERT INTO os_payments (invoice_id, amount, currency, received_on, method, reference, actor, approval_id)
-              VALUES (${i.id}, ${p.amount}, ${p.currency}, ${p.received_on}, ${p.method}, ${p.reference}, ${ctx.actor}, ${approvalId})`,
-    ]
-    if (after === 0) queries.push(ctx.sql`UPDATE os_invoices SET status = 'paid', paid_date = ${p.received_on} WHERE id = ${i.id}`)
-    queries.push(ctx.sql`UPDATE os_followups SET status = 'done', done_at = now() WHERE invoice_id = ${i.id} AND status = 'open' AND ${after === 0}`)
-    await ctx.sql.transaction(queries)
+    /* What the invoice asks for (as money.ts computes it). The open balance is
+       re-checked INSIDE the transaction, after a row lock, so two payment
+       approvals confirmed at the same moment cannot both pass and overpay. */
+    const asked = i.restbetrag !== null && i.restbetrag !== undefined
+      ? Number(i.restbetrag)
+      : Math.max(0, Number(i.total) - Number(i.anzahlung ?? 0))
+    const results = await ctx.sql.transaction([
+      ctx.sql`SELECT id FROM os_invoices WHERE id = ${i.id} FOR UPDATE`,
+      ctx.sql`
+        INSERT INTO os_payments (invoice_id, amount, currency, received_on, method, reference, actor, approval_id)
+        SELECT ${i.id}::uuid, ${p.amount}, ${p.currency}, ${p.received_on}::date, ${p.method}, ${p.reference}, ${ctx.actor}, ${approvalId}::uuid
+        WHERE ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) >= ${p.amount}::numeric - 0.009
+        RETURNING id`,
+      ctx.sql`
+        UPDATE os_invoices SET status = 'paid', paid_date = ${p.received_on}::date
+        WHERE id = ${i.id} AND status <> 'cancelled'
+          AND ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) <= 0.009`,
+      ctx.sql`
+        UPDATE os_followups SET status = 'done', done_at = now()
+        WHERE invoice_id = ${i.id} AND status = 'open'
+          AND ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) <= 0.009`,
+    ]) as unknown as [unknown, { id: string }[], unknown, unknown]
+    if (!results[1].length) {
+      throw new CapabilityRefusal(`Another payment on ${i.invoice_number} was recorded at the same moment; this one would overpay it. Nothing was recorded.`, 'conflict')
+    }
+    ctx.committed(`Recorded ${eur(p.amount, p.currency)} on ${i.invoice_number}${after === 0 ? " — marked PAID" : ""}`)
     await logActivity(ctx.sql, {
       client_id: i.client_id, job_id: i.job_id, invoice_id: i.id, kind: 'payment_received', actor: ctx.actor,
       summary: `${eur(p.amount, p.currency)} received on ${i.invoice_number}${after === 0 ? ' — paid in full' : `, ${eur(after, p.currency)} open`}`,
@@ -877,7 +967,7 @@ export const reminderSend: CapabilityDefinition<ReturnType<typeof reminderInput.
         OPEN: eur(b.open, b.currency),
         DUE: `${b.dueDate ?? '—'}${b.daysOverdue ? ` (${b.daysOverdue} days overdue)` : ''}`,
       },
-      payload: { invoice_id: i.id, to, open: b.open, version: documentVersion(i) },
+      payload: { invoice_id: i.id, to, open: b.open, version: emailVersion(email) },
       dedupeKey: `${i.id}:${ctx.today}`,
       expiresInMinutes: 240,
     }
@@ -886,11 +976,11 @@ export const reminderSend: CapabilityDefinition<ReturnType<typeof reminderInput.
     const p = payload as { invoice_id: string; to: string[]; open: number; version: string }
     const i = await getInvoice(ctx, p.invoice_id)
     const b = invoiceBalance(i, ctx.today)
-    if (documentVersion(i) !== p.version || Math.abs(b.open - p.open) > 0.009) {
+    if (emailVersion(buildReminderEmail(i, b.open, docLanguage(i.language))) !== p.version || Math.abs(b.open - p.open) > 0.009) {
       throw new CapabilityRefusal(`Rechnung ${i.invoice_number} changed since the reminder was prepared (open now ${eur(b.open, b.currency)}). Nothing was sent.`, 'conflict')
     }
     const email = buildReminderEmail(i, b.open, docLanguage(i.language))
-    const result = await sendDocumentEmail({ to: p.to, subject: email.subject, html: email.html, approvalId, what: `The reminder for ${i.invoice_number}` })
+    const result = await sendDocumentEmail(ctx, { to: p.to, subject: email.subject, html: email.html, approvalId, what: `The reminder for ${i.invoice_number}` })
     const next = addDays(ctx.today, 7)
     await ctx.sql`INSERT INTO os_followups (due_on, reason, client_id, invoice_id, actor)
                   VALUES (${next}, ${`Check payment after reminder for ${i.invoice_number}`}, ${i.client_id}, ${i.id}, ${ctx.actor}) ON CONFLICT DO NOTHING`

@@ -109,7 +109,10 @@ until an AMBER send is executed.
   action, digested; the Confirm token (16 random bytes, only its hash stored) is bound to it.
 - **Execute**: one conditional `UPDATE … WHERE status='pending' AND payload_hash=$ AND expires_at>now()`
   claims it; two simultaneous Confirms execute once. A replay returns the first result. A different
-  hash is refused. A document edited after preparation is refused (`documentVersion`).
+  hash is refused. A send is bound to the hash of the rendered email (every printed field) and
+  re-checks the document's status, so an edited, accepted, paid or cancelled document is not sent.
+- **Commit**: the moment an external effect happens the execution says so (`ctx.committed`); a
+  failure after it is reported as done-but-not-fully-recorded, never as "nothing done".
 - **Supersede**: preparing a different payload for the same action (same lead, same Angebot, …)
   supersedes the older pending approval, so an old button can never send an old version.
 - **Cancel**: MC's Cancel rejects the OS approval too.
@@ -153,7 +156,12 @@ joins as one notice per day from an opt-in hour (`morningBriefHour` in the link 
 
 | Threat | Control | Proved by |
 |---|---|---|
-| Stranger finds the bot | numeric-id binding in MC; OS `OS_AGENT_ALLOWED_ACTORS` | MC tests; agent proof (403) |
+| Stranger finds the bot | numeric-id binding in MC; OS `OS_AGENT_ALLOWED_ACTORS` (required) | MC tests; agent proof (403); boundary gate rule 1b |
+| A non-owner profile reads the business | business sections and notices only for profiles allowed `os.*` | MC tests |
+| An old button after the world moved on | sends re-check status at execute and are bound to the rendered email's hash | agent proof (stale send after acceptance, cancelled invoice, changed payment terms) |
+| Money twice | final invoice refused while a deposit is owed; payments re-checked under a row lock | agent proof (double billing, concurrent payments) |
+| Words misread as acts | questions and negations never route to payment or acceptance; named businesses searched by name; unreadable amounts refused | MC tests |
+| A send whose bookkeeping fails | `ctx.committed` — reported as sent, never as "nothing done" | boundary gate rule 7 |
 | Spoofed / forged call to the OS | HMAC over body+path+method+time; fail closed | boundary gate; agent proof; live forged-secret test |
 | Replay | nonce PK; ±300 s window; request-id idempotency; single-use approvals | agent proof (replay, double tap, concurrent confirm) |
 | Approval reused for another payload | payload hash binding; supersede; document version | agent proof |
@@ -187,6 +195,6 @@ OpenClaw attachment store are on one machine (known risk 75).
 npm run verify                                   # includes prove:commercial-boundary
 npm run evidence:migrate -- apps/web/db/migrations/0011-commercial-core.sql   # evidence lab only
 OS_AGENT_SECRET=… OS_AGENT_ALLOWED_ACTORS=telegram:100000001 npm run dev:web  # evidence runtime
-OS_AGENT_SECRET=… npm run prove:commercial-agent                              # 80 properties
+OS_AGENT_SECRET=… npm run prove:commercial-agent                              # 85 properties
 OS_AGENT_SECRET=… MISSION_CONTROL_DIR=… npm run prove:mobile-live            # both systems
 ```

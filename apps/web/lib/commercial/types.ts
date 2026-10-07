@@ -32,6 +32,13 @@ export interface CapabilityContext {
   /** Today in Berlin, YYYY-MM-DD. Injected so a proof can fix the clock. */
   today: string
   now: Date
+  /**
+   * Called by an AMBER execution the moment its external effect has happened
+   * (the provider accepted the email). From then on the action is reported as
+   * done whatever fails afterwards — a sent message is never reported as
+   * "failed, nothing done" because a bookkeeping write after it failed.
+   */
+  committed: (what: string, externalRef?: string) => void
 }
 
 /** What a capability returns to an interface. Text first, structure for buttons. */

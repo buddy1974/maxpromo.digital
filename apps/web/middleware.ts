@@ -73,6 +73,8 @@ export async function middleware(req: NextRequest) {
   const { locale: urlLocale, path } = splitLocale(pathname)
 
   const resolvedHeaders = new Headers(req.headers)
+  // Identity headers are set here or not at all — never passed through from a client.
+  resolvedHeaders.delete('x-os-user')
   resolvedHeaders.set('x-mp-host',           hostHeader ?? '')
   resolvedHeaders.set('x-mp-mode',           domain.mode)
   resolvedHeaders.set('x-mp-slug',           domain.productSlug ?? '')

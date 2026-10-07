@@ -46,8 +46,8 @@ platform: two implementations — two numbering series, two CRMs, two copies of 
    wrote to it are marked superseded and routed to the OS.
 3. **One signed door.** `POST /api/os/agent/v1/{capabilities|run|execute|reject}` on the web
    deployment. HMAC-SHA256 over timestamp, nonce, method, path and the exact body; a ±300 s
-   window; single-use nonces; an optional allow-list of actors (`OS_AGENT_ALLOWED_ACTORS`); fails
-   closed without a 32-character `OS_AGENT_SECRET`. The session cookie does not open it and it does
+   window; single-use nonces; a required allow-list of actors (`OS_AGENT_ALLOWED_ACTORS` — unset
+   refuses everyone); fails closed without a 32-character `OS_AGENT_SECRET`. The session cookie does not open it and it does
    not open anything else. Middleware exempts exactly `/api/os/agent/` from the cookie check and
    sets no staff identity there.
 4. **One capability registry** (`lib/commercial/registry.ts`, 42 capabilities). Each declares an
@@ -67,7 +67,7 @@ platform: two implementations — two numbering series, two CRMs, two copies of 
 and every record lands in the OS, visible on its screens, covered by its backups. A Telegram outage
 loses no business data. Consequential actions are bound twice — MC's token and the OS approval —
 and a retried request, a double tap or a replayed approval does nothing twice (proved:
-`prove:commercial-agent` 80/80, `prove:mobile-live` against the evidence runtime).
+`prove:commercial-agent` 85/85, `prove:mobile-live` against the evidence runtime).
 
 **Cost.** A second authentication mechanism on the web deployment (the fourth in `platform.md` §4),
 with a secret to provision and rotate. The OS gains tables it must now migrate and back up.
@@ -78,11 +78,23 @@ capabilities say so (NEEDS_SETUP / "not connected"), and OpenClaw's own answers 
 (Gateway plugin install, tool policy AF-33), durable storage for file bytes (today the OpenClaw
 attachment store on one machine — known risk 75), and any multi-user roles beyond the owner.
 
+## Adversarial review (2026-10-07, before this ADR was put to Marcel)
+
+An independent review found no P0 and nine P1s; all are fixed and each is now demonstrated:
+an old Send pressed after acceptance (refused; lead stays won), a cancelled invoice sent from an
+old approval (refused), printed fields outside the send binding (sends are now bound to the hash
+of the rendered email), a final invoice while the deposit is owed (refused), concurrent payments
+overpaying (row lock + balance re-checked in SQL), request ids not tied to the turn (now derived
+from the Telegram update), business content reaching non-owner profiles (owner only), questions
+and negations routed to payment or acceptance (guarded; named businesses searched by name), and
+unreadable amounts falling back to the full balance (refused). A sent email whose bookkeeping
+fails is reported as sent-but-not-fully-recorded, never as "nothing done" (`ctx.committed`).
+
 ## Verification
 
-`npm run verify` (now includes `prove:commercial-boundary`, 40 properties, each source rule shown
+`npm run verify` (now includes `prove:commercial-boundary`, 46 properties, each source rule shown
 failing first); `prove:extraction-integrity` now discovers line-item writers in `lib/`;
-`prove:commercial-agent` 80/80 against the evidence runtime with the lab restored;
+`prove:commercial-agent` 85/85 against the evidence runtime with the lab restored;
 `prove:mobile-live` — Mission Control's real service through the whole loop over the signed API.
-Mission Control: 3,817/3,819 tests (the two failures pre-exist on the base branch), lint and
+Mission Control: 3,830/3,832 tests (the two failures pre-exist on the base branch), lint and
 static-lint clean.

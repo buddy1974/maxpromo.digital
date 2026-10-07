@@ -59,7 +59,13 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
     q<{ id: string; title: string; severity: string; status: string; client_id: string | null }>(ctx.sql`SELECT i.id, i.title, i.severity, i.status, i.client_id FROM os_incidents i WHERE i.status IN ('open', 'investigating')`),
     q<{ id: string; title: string; due_date: string }>(ctx.sql`SELECT id, title, due_date::text AS due_date FROM os_jobs WHERE due_date < ${today} AND stage NOT IN ('completed', 'invoiced', 'lead', 'discovery', 'proposal')`),
     q<{ id: string; summary: string; capability: string }>(ctx.sql`SELECT id, summary, capability FROM os_approvals WHERE status = 'pending' AND expires_at > now() ORDER BY created_at`),
-    q<{ operation: string; entity_type: string | null; entity_id: string | null; created_at: Date }>(ctx.sql`SELECT operation, entity_type, entity_id, created_at FROM os_audit WHERE outcome = 'uncertain' AND created_at > now() - interval '7 days'`),
+    /* Uncertain sends, and approvals claimed for execution that never reported
+       back (the process died mid-action): both need a human look, not a retry. */
+    q<{ operation: string; entity_type: string | null; entity_id: string | null; created_at: Date }>(ctx.sql`
+      SELECT operation, entity_type, entity_id, created_at FROM os_audit WHERE outcome = 'uncertain' AND created_at > now() - interval '7 days'
+      UNION ALL
+      SELECT capability || ' (' || summary || ')', NULL, id::text, decided_at FROM os_approvals
+      WHERE status = 'executing' AND decided_at < now() - interval '15 minutes'`),
     loadInvoicesForMoney(ctx),
   ])
 

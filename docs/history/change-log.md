@@ -1,5 +1,22 @@
 # Change Log
 
+## 2026-10-07 — Mobile business layer: adversarial review and fixes
+
+Independent review of both branches: no P0; nine P1s, all fixed and demonstrated. Sends re-check
+status and are bound to the rendered email's hash (stale Angebot send after acceptance, cancelled
+invoice, changed payment terms — refused); final invoice refused while the deposit is owed;
+payments re-checked under a row lock (no overpay on concurrent confirms); deposit/final numbers
+drawn inside one locked insert (no burnt number on a race); `OS_AGENT_ALLOWED_ACTORS` required;
+`ctx.committed` so a sent email is never reported as "nothing done"; stuck executions surface as
+unclear; Mission Control derives OS request ids from the Telegram update, shows business content
+to the owner profile only, never routes a question or a negation to payment or acceptance,
+searches named businesses by name, refuses unreadable amounts and over-long confirmations.
+Hardening: parameterised `setval`, recurring renewals never in the past, `x-os-user` stripped,
+result pruning. The boundary gate found its own blind spot — a CRLF file passed rule 7 unexamined —
+and now normalises line endings and asserts it examined every AMBER execution.
+`verify` passed; boundary 46/46; agent proof 85/85; live loop passed; Mission Control 3,830/3,832
+(two pre-existing failures).
+
 ## 2026-10-07 — The mobile business layer (built, proved on the evidence lab; not merged)
 
 Branch `feature/mobile-business-os` here and in openclaw-business-os. ADR-0018 (proposed);

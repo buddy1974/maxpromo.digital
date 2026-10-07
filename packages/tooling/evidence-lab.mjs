@@ -45,7 +45,7 @@ export async function restoreLab(sql, snap, log = console.log) {
     log(`  ${t}: ${created.length} row(s) removed`)
   }
   for (const s of snap.sequences) {
-    await sql.query(`SELECT setval('doc_seq.${s.sequencename}', ${s.last_value === null ? 1 : s.last_value}, ${s.last_value !== null})`)
+    await sql.query('SELECT setval($1::regclass, $2, $3)', [`doc_seq.${s.sequencename}`, s.last_value === null ? 1 : s.last_value, s.last_value !== null])
   }
   const after = await sql`SELECT sequencename, last_value::bigint AS last_value FROM pg_sequences WHERE schemaname = 'doc_seq'`
   const sequencesRestored = snap.sequences.every((s) => after.find((a) => a.sequencename === s.sequencename)?.last_value === s.last_value)

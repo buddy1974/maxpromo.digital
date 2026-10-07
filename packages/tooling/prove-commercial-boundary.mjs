@@ -33,7 +33,9 @@ import { stripComments } from './strip-comments.mjs'
 const ROOT = join(import.meta.dirname, '..', '..')
 const WEB = join(ROOT, 'apps', 'web')
 const load = (...p) => import(pathToFileURL(join(ROOT, ...p)).href)
-const read = (...p) => stripComments(readFileSync(join(ROOT, ...p), 'utf8'))
+/* Line endings are normalised: a CRLF file must not slip past a pattern written with \n. */
+const source = (text) => stripComments(text.replace(/\r\n/g, '\n'))
+const read = (...p) => source(readFileSync(join(ROOT, ...p), 'utf8'))
 
 let failed = 0
 let passed = 0
@@ -118,7 +120,7 @@ const walk = (dir, out = []) => {
   return out
 }
 const rel = (p) => relative(WEB, p).split(sep).join('/')
-const files = new Map(['app', 'lib'].flatMap((d) => walk(join(WEB, d))).map((p) => [rel(p), stripComments(readFileSync(p, 'utf8'))]))
+const files = new Map(['app', 'lib'].flatMap((d) => walk(join(WEB, d))).map((p) => [rel(p), source(readFileSync(p, 'utf8'))]))
 
 /* Rule 1: an agent route passes the gate before engine or JSON. */
 const gatedFirst = (s) => {
@@ -131,6 +133,11 @@ check('rule 1 fails on a route that runs before the gate', !gatedFirst("runCapab
 const agentRoutes = [...files.keys()].filter((p) => /^app\/api\/os\/agent\/.*route\.ts$/.test(p))
 check('every route under api/os/agent is gated before it does anything', agentRoutes.length > 0 && agentRoutes.every((p) => gatedFirst(files.get(p))),
   `${agentRoutes.length} route(s): ${agentRoutes.filter((p) => !gatedFirst(files.get(p))).join(', ')}`)
+
+/* Rule 1b: no actor list means nobody may act — never "everybody". */
+const failsClosed = (s) => /if \(!allow\) return \{ ok: false, status: 503/.test(s) && !/if \(allow && !allow\.has/.test(s)
+check('rule 1b fails on an allow-list that is optional', !failsClosed("const allow = allowedActors(x)\n  if (allow && !allow.has(actor)) {"))
+check('the agent gate refuses every actor when OS_AGENT_ALLOWED_ACTORS is unset', failsClosed(read('apps', 'web', 'lib', 'commercial', 'agent-gate.ts')))
 
 /* Rule 2: middleware exempts exactly the agent prefix and sets no identity there. */
 const mw = read('apps', 'web', 'middleware.ts')
@@ -167,6 +174,26 @@ check('nothing in the commercial layer calculates VAT', commercial.every(([, s])
 const amberComplete = (s) => (s.match(/risk: 'AMBER',[\s\S]*?(?=\nexport const |\n\/\* ── |$)/g) ?? []).every((b) => /async prepare\(/.test(b) && /async execute\(/.test(b))
 check('rule 6 fails on an AMBER capability without execute', !amberComplete("risk: 'AMBER',\n  async prepare(ctx) {}\n"))
 check('every AMBER capability defines prepare and execute', commercial.every(([, s]) => amberComplete(s)))
+
+/* Rule 7: an execution that sends or writes declares the moment it happened,
+   so a failure after it is never reported as "nothing done". */
+const executeBlocks = (s) => (s.match(/async execute\([\s\S]*?(?=\n  },\n\})/g) ?? [])
+const commitsEffects = (s) => {
+  const helperCommits = !/async function sendDocumentEmail/.test(s) || /async function sendDocumentEmail[\s\S]*?ctx\.committed\(/.test(s)
+  return helperCommits && executeBlocks(s).every((b) => {
+    const effect = /sendEmail\(|sendDocumentEmail\(|\.transaction\(|INSERT INTO/.test(b)
+    return !effect || /ctx\.committed\(|sendDocumentEmail\(ctx,/.test(b)
+  })
+}
+check('rule 7 fails on an execution that sends without declaring it', !commitsEffects("  async execute(ctx, payload) {\n    await sendEmail({ to })\n    await logActivity()\n  },\n}"))
+const executors = commercial.filter(([, s]) => /async execute\(/.test(s))
+const executeCount = executors.reduce((n, [, s]) => n + executeBlocks(s).length, 0)
+const amberCount = commercial.reduce((n, [, s]) => n + (s.match(/risk: 'AMBER',/g) ?? []).length, 0)
+check('rule 7 examined every AMBER execution (one block per AMBER capability)', executeCount > 0 && executeCount === amberCount, `${executeCount} block(s), ${amberCount} AMBER capabilities`)
+check('every AMBER execution that sends or writes declares its commitment', executors.length > 0 && executors.every(([, s]) => commitsEffects(s)),
+  executors.filter(([, s]) => !commitsEffects(s)).map(([p]) => p).join(', '))
+const engine = read('apps', 'web', 'lib', 'commercial', 'engine.ts')
+check('the engine reports a committed effect as done, never as failed', /const done = ctx\.commitment\(\)/.test(engine) && /if \(done\) \{[\s\S]{0,600}status: 'done'/.test(engine))
 
 console.log('\n' + '='.repeat(74))
 console.log(`${passed} passed, ${failed} failed`)
