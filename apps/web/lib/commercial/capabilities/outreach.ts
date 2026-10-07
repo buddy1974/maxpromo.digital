@@ -26,6 +26,7 @@
 import { callAI } from '@/lib/ai'
 import { sendEmail } from '@/lib/email'
 import { BUSINESS } from '@/lib/documents/identity'
+import { DOCUMENT_FROM_EMAIL } from '@/lib/documents/emails'
 import { writeAudit } from '../audit'
 import { leadStage } from '../pipeline'
 import {
@@ -262,7 +263,7 @@ export const outreachSend: CapabilityDefinition<ReturnType<typeof sendInput.pars
     try {
       result = await sendEmail({
         to: p.to,
-        from: `Marcel Akwe — Maxpromo Digital <${BUSINESS.email}>`,
+        from: DOCUMENT_FROM_EMAIL,
         replyTo: BUSINESS.email,
         subject: p.subject,
         html: `<div style="font-family:Arial,sans-serif;font-size:14px;max-width:620px">${html}</div>`,

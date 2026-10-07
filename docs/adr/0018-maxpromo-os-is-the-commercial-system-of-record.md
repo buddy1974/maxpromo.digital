@@ -1,8 +1,9 @@
 # ADR-0018 — Maxpromo OS is the commercial system of record; the phone reaches it by a signed contract
 
-**Status:** proposed · 2026-10-07 · built on `feature/mobile-business-os` (this repository) and
-`feature/mobile-business-os` (openclaw-business-os). **Awaiting Marcel's decision.** Nothing is
-merged to `main`, migrated in production or deployed.
+**Status:** **accepted for owner-only production rollout** · 2026-10-08 (proposed 2026-10-07).
+Accepted on the implementation evidence below and the challenge in §"Acceptance challenge", under
+the go-live conditions recorded there. Rollout state is tracked in
+`docs/architecture/mobile-business-os.md` §12, not here.
 **Related:** ADR-0001 (one repository, separate deployments), ADR-0010 (nothing fails silently),
 ADR-0015 (a gate protects a class), the OpenClaw boundary ADR
 (`ADR-OPENCLAW-PLATFORM-BUSINESS-OS-BOUNDARY-v1.0`), and the architecture reference
@@ -89,6 +90,28 @@ from the Telegram update), business content reaching non-owner profiles (owner o
 and negations routed to payment or acceptance (guarded; named businesses searched by name), and
 unreadable amounts falling back to the full balance (refused). A sent email whose bookkeeping
 fails is reported as sent-but-not-fully-recorded, never as "nothing done" (`ctx.committed`).
+
+## Acceptance challenge (2026-10-08)
+
+Each question answered against the implemented controls, not the design intent.
+
+| Question | Answer | Control |
+|---|---|---|
+| Does this create a second source of truth? | No | Mission Control keeps references (focus ids) only; its CRM entries are superseded and unrouted; every commercial row is in `os_*` |
+| Can Telegram bypass Maxpromo OS governance? | **Only if the Telegram agent has shell or file tools** — found in this challenge | Telegram was bound to the `main` agent (`tools.profile: coding`, workspace containing Mission Control's `.data/auth`). With `exec`/`read` it could read the agent secret and sign `execute` itself, skipping Confirm (OpenClaw AF-33: the Gateway forwards tool calls unrestricted). **Go-live condition 1:** Telegram is bound to a dedicated agent whose only tool is `openclaw_mobile`, with no file, shell, browser or session tools |
+| Can one secret silently perform consequential actions? | Whoever holds `OS_AGENT_SECRET` *is* Mission Control to the OS and can prepare and execute AMBER actions | Accepted residual: the secret exists only in Vercel (sensitive) and Mission Control's `.data/auth` (0600), outside every agent's reach after condition 1; every execution is audited with actor and payload hash; rotation is the kill switch (§ operations). Compromise of either location is compromise of the business regardless |
+| Can a replay create duplicate records? | No | single-use nonces; request-id idempotency (Telegram-update-derived); single-use approvals; unique deposit/final per Angebot under an advisory lock |
+| Can stale approvals act on changed documents? | No | rendered-email hash binding; status re-checked at execute; supersede on re-prepare; open balance re-checked under a row lock |
+| Can a Telegram stranger reach the business? | No | Gateway `dmPolicy: allowlist` with the owner's numeric id (**go-live condition 2**); Mission Control numeric-id binding; OS `OS_AGENT_ALLOWED_ACTORS` (required) |
+| Can Mission Control mutate commercial state outside the registry? | No | it can only call `run`/`execute`/`reject`; the OS dispatches through `CAPABILITIES`; unknown ids and unexpected fields are refused |
+| Can a compromised browser session call the agent API? | No | the cookie does not open `/api/os/agent/*`; only an HMAC over the exact request does |
+| Can production fail open when configuration is missing? | No | no secret → 503; no actor list → 503; Mission Control without the link → `os.*` NEEDS_SETUP |
+| Can a consequential external act happen without Marcel seeing it? | No | AMBER requires the one-screen preview (≤3,600 chars, never truncated) and the Confirm token, which the model never sees |
+
+**Go-live conditions** (enforced before Telegram is enabled for Max Agents): (1) restricted
+Telegram agent as above; (2) Gateway DM allow-list of the owner's numeric id; (3) migration 0011
+applied after a recovery point exists; (4) `OS_AGENT_SECRET` and `OS_AGENT_ALLOWED_ACTORS` set
+in Vercel production.
 
 ## Verification
 

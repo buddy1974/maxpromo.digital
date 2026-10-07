@@ -4,9 +4,10 @@ import { getDb, isDatabaseConfigured } from '@/lib/db'
 import { admitLineItems } from '@/lib/documents/extraction-guard'
 import { type CurrencyCode, type DocumentLanguage } from '@/lib/documents/config'
 import { getLabels } from '@/lib/documents/labels'
-import { buildInvoiceEmail, type InvoiceEmailLineItem as LineItem } from '@/lib/documents/emails'
+import { buildInvoiceEmail, DOCUMENT_FROM_EMAIL, type InvoiceEmailLineItem as LineItem } from '@/lib/documents/emails'
 
-const FROM_EMAIL = 'MAXPROMO DIGITAL <info@maxpromo.digital>'
+// One sender for every commercial document: the configured one (risk 79, closed 2026-10-08).
+const FROM_EMAIL = DOCUMENT_FROM_EMAIL
 
 export async function POST(request: NextRequest) {
   console.log('[send-invoice] POST called')

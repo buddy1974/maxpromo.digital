@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { sendEmail } from '@/lib/email'
 import { getDb, isDatabaseConfigured } from '@/lib/db'
 import { getLabels } from '@/lib/documents/labels'
-import { buildAngebotEmail, type AngebotRow } from '@/lib/documents/emails'
+import { buildAngebotEmail, DOCUMENT_FROM_EMAIL, type AngebotRow } from '@/lib/documents/emails'
 
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'MAXPROMO DIGITAL <info@maxpromo.digital>'
+const FROM_EMAIL = DOCUMENT_FROM_EMAIL
 
 export async function POST(request: NextRequest) {
   if (!process.env.RESEND_API_KEY) {
