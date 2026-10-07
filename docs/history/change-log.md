@@ -12,6 +12,18 @@ seven request profiles (shown red against the previous build: 592 findings);
 `prove:seo-audit` now 70 properties. Sitemap investigated: no technical
 defect. Details: `seo-inventory.md` §7a, risks 71 (closed) and 72 (recorded).
 
+**Released and verified in production:** `e9721f5`, deployment
+`dpl_HMu7V658n526Rcq876muQVJM8Arx` (READY, aliased to www). `audit:seo` against
+https://www.maxpromo.digital: 64 sitemap URLs all 200, 420 routing probes,
+**0 failures, 0 warnings**. `/` and `/solutions` answer 308 to `/de…` for curl,
+Googlebot (with and without `Accept-Language: en`), Bingbot, Chrome DE/EN, a
+locale cookie and the Facebook, WhatsApp, LinkedIn and Twitter unfurlers; no
+locale cookie, no hreflang `Link` header, no `Host:` line; robots, sitemap
+(XML), `/og` and static assets answer themselves; all legacy URLs end at a live
+canonical through permanent redirects. Agent Bureau not redeployed (latest
+2026-08-11), answering 200. P0 = 0, P1 = 0. Iteration 2A.1 CLOSED; Search
+Console re-evaluates on recrawl.
+
 ## 2026-10-07 — Iteration 2A released to production and closed
 
 `db601e7` + `0370ab7` pushed to `main` (no history change). Vercel web deployment `dpl_B6LuMaTaByZhvGXKcxNWXLe8FJkM` built `0370ab7` from source and is aliased to https://www.maxpromo.digital. Agent Bureau created no deployment for the push; its production stayed on its previous deployment and answered 200.

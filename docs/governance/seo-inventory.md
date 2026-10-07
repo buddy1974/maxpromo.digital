@@ -273,6 +273,10 @@ plus robots, sitemap, an API route, a static image, the favicon and the card
 route) and `prove:seo-audit` (70 properties, 12 for routing). Shown red against
 the previous production build: 592 findings.
 
+**In production since 2026-10-07** (`e9721f5`): the same audit against
+https://www.maxpromo.digital reports 0 failures and 0 warnings, including all
+420 routing probes and the social unfurlers' user agents.
+
 **Legacy URLs** Search Console still knows (`/services`, `/de/services`,
 `/de/systems/*`, `/en/systems/*`, `/de/case-studies`, `/ai-websites`,
 `/de/contact?system=…`) end at a live canonical page through one or two
