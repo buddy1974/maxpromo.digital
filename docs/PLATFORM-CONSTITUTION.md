@@ -453,7 +453,7 @@ applied to every change.
 ## 20. Certification pipeline
 
 ```
-npm run verify     26 gates — the merge gate
+npm run verify     27 gates — the merge gate
 npm run certify    verify + a11y + consistency + platform + claims + docs
 ```
 

@@ -344,14 +344,19 @@ export const searchEverything: CapabilityDefinition<ReturnType<typeof searchInpu
  * the interface's delivered-notice ledger suppresses repeats. Twenty polls of
  * one overdue invoice are one message.
  */
-export const ownerNotices: CapabilityDefinition<ReturnType<typeof noInput.parse>> = {
+const noticesInput = v.object({
+  /** Opt-in: from this Berlin hour, the day's brief is one notice (keyed by date, so once a day). */
+  brief_from_hour: v.optional(v.integer({ min: 0, max: 23 })),
+})
+
+export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.parse>> = {
   id: 'owner.notices',
   family: 'MONITORING',
   title: 'Proactive notices',
-  description: 'Business events worth a push: new inbound leads, follow-ups due today, invoices newly overdue, renewals due, incidents, uncertain sends.',
+  description: 'Business events worth a push: new inbound leads, follow-ups due today, invoices newly overdue, renewals due, incidents, uncertain sends — and, when asked for, the morning brief once a day.',
   risk: 'GREEN',
-  input: noInput,
-  async run(ctx) {
+  input: noticesInput,
+  async run(ctx, input) {
     const week = `${ctx.today.slice(0, 4)}-w${Math.ceil((daysBetween(`${ctx.today.slice(0, 4)}-01-01`, ctx.today) + 1) / 7)}`
     const [inbound, fups] = await Promise.all([
       q<{ id: string; company: string | null; name: string | null; city: string | null; source: string }>(ctx.sql`SELECT id, company, name, city, source FROM os_leads
@@ -367,6 +372,11 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noInput.parse>
       if (i.ref?.kind === 'incident' && i.urgency >= 3) notices.push({ key: `incident:${i.ref.id}`, severity: 'critical', text: i.text, action: i.action })
       if (/renews/.test(i.text) && i.urgency >= 3) notices.push({ key: `renewal:${i.text}:${ctx.today.slice(0, 7)}`, severity: 'info', text: i.text, action: i.action })
       if (i.area === 'SYSTEM' && /Unclear whether/.test(i.text)) notices.push({ key: `uncertain:${i.text}`, severity: 'critical', text: i.text })
+    }
+    const berlinHour = Number(ctx.now.toLocaleString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', hour12: false }))
+    if (input.brief_from_hour !== undefined && berlinHour >= input.brief_from_hour) {
+      const brief = await ownerBrief.run!(ctx, {})
+      notices.push({ key: `brief:${ctx.today}`, severity: 'info', text: [brief.summary, ...(brief.lines ?? [])].join('\n') })
     }
     return {
       summary: notices.length ? `${notices.length} notice(s).` : 'No notices.',

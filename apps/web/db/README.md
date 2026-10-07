@@ -11,8 +11,15 @@ db/
 └── migrations/
     ├── 0001-document-numbering.sql     ← per-year sequences for invoice/angebot
     ├── 0002-angebote-enrichment.sql    ← included_items, payment_terms columns
-    └── 0003-multi-tenancy.sql          ← owner_id columns, os_owners table
+    ├── 0003-multi-tenancy.sql          ← owner_id columns, os_owners table
+    ├── … 0004–0010 (see the files)
+    └── 0011-commercial-core.sql        ← pipeline, activities, follow-ups, payments, recurring,
+                                           incidents, files, approvals, audit (ADR-0018)
 ```
+
+**0011 is applied to the evidence lab only** (`npm run evidence:migrate -- <file>`, which refuses
+any database holding non-evidence invoices). Production: Marcel, by hand, after a Neon backup
+branch. It is additive and idempotent and rewrites no existing value.
 
 ## Applying for the first time
 

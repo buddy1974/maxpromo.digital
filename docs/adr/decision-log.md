@@ -1,5 +1,43 @@
 # Decision Log
 
+## 2026-10-07 — the mobile business layer (ADR-0018, proposed)
+
+### The OS, not OpenClaw, keeps the business
+
+**Decision.** Commercial records — leads, pipeline, interactions, follow-ups, Angebote,
+Rechnungen, payments, recurring services, projects, client files, incidents, approvals, audit —
+live in Maxpromo OS. OpenClaw keeps the conversation and references to those records.
+**Why.** The OS already owned numbering, the legal identity and the document guards; OpenClaw's
+CRM was empty. Building the missing half in OpenClaw would have been a second CRM and a second
+numbering series.
+
+### Drafts are GREEN, sends are AMBER, acceptance and money are AMBER
+
+**Decision.** Creating a numbered draft Angebot or Rechnung runs without confirmation; sending
+anything, accepting an Angebot, recording a payment, recording recurring revenue and sending a
+reminder are prepared and confirmed. **Why.** A draft is internal and correctable, and numbering
+at save is the OS's existing rule; everything that leaves the building or changes what is owed
+needs Marcel's explicit yes to the exact payload.
+
+### Amounts and dates in speech are suggestions, not facts
+
+**Decision.** "Budget about 1800", "proposal Friday" in a voice note are logged as the interaction
+and offered back as buttons; they are not written into value or follow-up fields by themselves.
+**Why.** The brief: do not turn uncertain speech into commercial facts.
+
+### WhatsApp is opened, never sent
+
+**Decision.** The OS returns a `wa.me` link with the text filled in; "I sent it" is logged by
+Marcel. **Why.** No authorised WhatsApp integration exists; claiming a send would be false.
+
+### No new scheduler
+
+**Decision.** Proactive business notices and the opt-in morning brief ride the Gateway plugin's
+existing 60-second notice poll, with stable keys and per-poll limits. **Why.** Mission Control
+forbids timers in server code for good reason, and a second clock would be a second scheduler.
+
+---
+
 ## 2026-10-06 — the launch-candidate build
 
 ### The Friction Check concludes in four categories, never a number

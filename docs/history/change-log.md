@@ -1,5 +1,33 @@
 # Change Log
 
+## 2026-10-07 — The mobile business layer (built, proved on the evidence lab; not merged)
+
+Branch `feature/mobile-business-os` here and in openclaw-business-os. ADR-0018 (proposed);
+reference `docs/architecture/mobile-business-os.md`.
+
+- **Maxpromo OS becomes the commercial system of record the phone drives.** Migration
+  `0011-commercial-core.sql` (additive, idempotent; evidence lab only): pipeline fields on
+  `os_leads`, document↔lead↔project links, activities, follow-ups, payments, recurring,
+  incidents, files, approvals, append-only audit, agent nonces and request results.
+- **`lib/commercial`**: 42 capabilities in one registry; engine with request-id idempotency and
+  single-use, hash-bound, supersedable approvals; uncertain outcomes recorded as uncertain.
+- **`/api/os/agent/v1/*`**: signed machine door (HMAC over time, nonce, method, path, body;
+  allow-listed actors; fails closed). Middleware exempts exactly that prefix.
+- **One implementation of each rule**: allocators → `lib/documents/allocate.ts`; document emails
+  → `lib/documents/emails.ts`; owed money → `lib/commercial/money.ts` (dashboard and invoice list
+  now deduct deposits and payments, never add EUR to GBP, and derive overdue from the due date);
+  lead stages → `lib/commercial/pipeline.ts` (leads screen reads it).
+- **Gates**: `prove:commercial-boundary` (40, in `verify`); `prove:extraction-integrity` now
+  discovers line-item writers in `lib/`; `prove:commercial-agent` 80/80 and `prove:mobile-live`
+  (Mission Control's real service through the whole loop) against the evidence runtime, lab
+  restored each time. `npm run verify` passed.
+- **Mission Control** (other repository): Maxpromo OS client, `os.*` census, commerce bridge and
+  routes (EN/DE), conversational focus, Confirm bound to the OS approval, Cancel rejects it,
+  OS notices and opt-in morning brief through the existing poll, provisioning script.
+  3,817/3,819 tests (two failures pre-exist on the base branch); lint and static-lint clean.
+
+Not done (Marcel): production migration, secrets, merges, deploys, Gateway plugin install.
+
 ## 2026-10-07 — Iteration 2A.1: one URL, one identity (Search Console remediation)
 
 Search Console chose `/` over `/de` as canonical. Root cause: unprefixed URLs

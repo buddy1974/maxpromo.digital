@@ -44,6 +44,7 @@
 
 import { createHash, createHmac, randomBytes } from 'node:crypto'
 import { neon } from '@neondatabase/serverless'
+import { restoreLab, snapshotLab } from './evidence-lab.mjs'
 import { evidenceDbProblem, EVIDENCE_DB_ENV } from '../config/evidence.ts'
 
 const BASE = process.env.AGENT_PROOF_BASE ?? 'http://localhost:3020'
@@ -96,13 +97,7 @@ const run = (capability, input = {}, requestId = rid()) => post('run', { request
 const execute = (approval, hash) => post('execute', { approvalId: approval.id, payloadHash: hash ?? approval.payloadHash }).then((r) => r.json)
 
 /* ── snapshot ─────────────────────────────────────────────────────────── */
-const TABLES = ['os_payments', 'os_followups', 'os_activities', 'os_files', 'os_recurring', 'os_incidents', 'os_approvals',
-  'os_invoices', 'os_jobs', 'os_angebote', 'os_leads', 'os_clients', 'os_agent_results', 'os_agent_nonces']
-const KEY = { os_agent_results: 'request_id', os_agent_nonces: 'nonce' }
-const before = {}
-for (const t of TABLES) before[t] = new Set((await sql.query(`SELECT ${KEY[t] ?? 'id'}::text AS k FROM ${t}`)).map((r) => r.k))
-const seqState = await sql`SELECT sequencename, last_value::bigint AS last_value FROM pg_sequences WHERE schemaname = 'doc_seq'`
-const auditBefore = (await sql`SELECT count(*)::int AS n FROM os_audit`)[0].n
+const snap = await snapshotLab(sql)
 const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' })
 const plusDays = (d) => { const x = new Date(`${today}T00:00:00Z`); x.setUTCDate(x.getUTCDate() + d); return x.toISOString().slice(0, 10) }
 
@@ -364,23 +359,8 @@ async function main() {
 
 async function cleanup() {
   section('Restoring the lab')
-  for (const t of TABLES) {
-    const k = KEY[t] ?? 'id'
-    const rows = (await sql.query(`SELECT ${k}::text AS k FROM ${t}`)).map((r) => r.k).filter((x) => !before[t].has(x))
-    if (rows.length) {
-      if (t === 'os_invoices') await sql`DELETE FROM os_payments WHERE invoice_id = ANY(${rows}::uuid[])`
-      await sql.query(`DELETE FROM ${t} WHERE ${k}::text = ANY($1)`, [rows])
-    }
-    console.log(`  ${t}: ${rows.length} row(s) removed`)
-  }
-  for (const s of seqState) {
-    await sql.query(`SELECT setval('doc_seq.${s.sequencename}', ${s.last_value === null ? 1 : s.last_value}, ${s.last_value !== null})`)
-  }
-  const after = await sql`SELECT sequencename, last_value::bigint AS last_value FROM pg_sequences WHERE schemaname = 'doc_seq'`
-  const seqSame = seqState.every((s) => after.find((a) => a.sequencename === s.sequencename)?.last_value === s.last_value)
-  check('document sequences restored to their recorded values', seqSame, JSON.stringify(after))
-  const auditAfter = (await sql`SELECT count(*)::int AS n FROM os_audit`)[0].n
-  console.log(`  os_audit: ${auditAfter - auditBefore} row(s) added and kept (append-only by design)`)
+  const { sequencesRestored } = await restoreLab(sql, snap)
+  check('document sequences restored to their recorded values', sequencesRestored)
 }
 
 try {

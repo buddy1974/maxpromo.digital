@@ -131,6 +131,7 @@ accent text colour is genuinely needed, `--brand-primary-text` measures 5.00:1.
 | web | none (public) + a password gate on `/portfolio` | — |
 | bureau | NextAuth v4 JWT + argon2 | `/dashboard/**` |
 | os | signed httpOnly cookie, verified in middleware | `/os/**`, `/api/os/**` |
+| os agent API | HMAC-signed request + single-use nonce, verified in the route (ADR-0018, proposed) | `/api/os/agent/v1/*` only |
 
 These are **not** unified by the consolidation. Single sign-on across the three
 is a genuine feature with its own design; sharing a repository does not produce
