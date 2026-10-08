@@ -1,5 +1,18 @@
 # Change Log
 
+## 2026-10-08 — Max Agents go-live: production database and web
+
+Recovery branch `br-floral-brook-al8r8nk5` (LSN `0/40BF790`) taken first. Production
+(`maxpromo-automation` / `production` / `neondb`) was found to lack migrations 0009 and 0010 as
+well as 0011 — the deployed OS has been writing columns that did not exist, so saving an Angebot
+or Rechnung in production would have failed. 0009, 0010 and 0011 applied in order, each
+hash-matched to the repository file; all objects verified; existing data proven unchanged by
+per-table fingerprints. `main` fast-forwarded to `9826e92` and deployed
+(`dpl_6uKou1GW6TeUCJZCraJeLnxHLumK`). Vercel production env gained `OS_AGENT_SECRET` (sensitive)
+and `OS_AGENT_ALLOWED_ACTORS`. Production agent smoke 23/23. Public routes, canonicals, hreflang,
+OG images, robots and the 64-URL sitemap unchanged. Remaining: Mission Control deploy (elevated),
+Gateway switch, phone acceptance.
+
 ## 2026-10-07 — Mobile business layer: adversarial review and fixes
 
 Independent review of both branches: no P0; nine P1s, all fixed and demonstrated. Sends re-check

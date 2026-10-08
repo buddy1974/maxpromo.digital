@@ -55,6 +55,7 @@
     "prove:commercial-boundary": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/prove-commercial-boundary.mjs",
     "prove:commercial-agent": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=apps/web/.env.local packages/tooling/prove-commercial-agent.mjs",
     "prove:mobile-live": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=apps/web/.env.local packages/tooling/prove-mobile-live.mjs",
+    "smoke:agent-production": "node packages/tooling/smoke-agent-production.mjs",
     "evidence:migrate": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=apps/web/.env.local packages/tooling/evidence-migrate.mjs",
     "evidence:seed": "node apps/web/lib/evidence/seed.mjs",
     "evidence:reset": "node apps/web/lib/evidence/seed.mjs --reset",

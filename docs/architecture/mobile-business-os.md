@@ -202,8 +202,11 @@ Kept current by each rollout step; the evidence for each line is in `docs/histor
 | Integration | web: fast-forward of `main` (no divergence from production `e9721f5`/`94b650d`); Mission Control: fast-forward of `codex/clean-room-rebuild` (production checkout) to `2080bdc` |
 | Vercel production env | `OS_AGENT_SECRET` (sensitive) and `OS_AGENT_ALLOWED_ACTORS=telegram:6090014884` set 2026-10-08; inert until the next deploy |
 | Mission Control link + owner binding | link config → `https://www.maxpromo.digital`; secret in `.data/auth` (0600); `telegram-6090014884` bound to `owner` |
-| Recovery point + migration 0011 | **waiting**: the Neon console requires the owner's login |
-| Web deploy | waiting on migration |
+| Production database | Neon project `maxpromo-automation` (`twilight-boat-66649706`), branch `production` (`br-floral-lab-alnv2a1o`), db `neondb` — identified by schema and by matching the live app's connection to its health calls, 2026-10-08 |
+| Recovery point | branch `pre-0011-recovery-2026-10-08` (`br-floral-brook-al8r8nk5`), parent LSN `0/40BF790`, 2026-10-08 07:12:34 UTC |
+| Migrations | production lacked **0009 and 0010** as well as 0011 (the deployed OS already wrote their columns — a pre-existing defect, now fixed). Applied in order **0009 → 0010 → 0011** on 2026-10-08 through the Neon SQL editor, each text SHA-256-matched to the repository file before running. Verified: all objects present; row counts, document numbers, statuses, totals, due dates, deposits and both sequences unchanged; per-table fingerprints over the original columns identical before and after |
+| Web deploy | **live**: `9826e92`, deployment `dpl_6uKou1GW6TeUCJZCraJeLnxHLumK` (rollback target `dpl_HMu7V658n526Rcq876muQVJM8Arx`) |
+| Agent API in production | `npm run smoke:agent-production` 23/23: unsigned, wrong secret, stale, replay and foreign actor refused; reads answer from production; one approval prepared and cancelled on a labelled test lead (`MAX AGENTS TEST — do not contact`, parked as lost) — nothing executed or sent |
 | Mission Control deploy | **waiting**: the governed deploy (`scripts/deploy-production.ps1`) refuses unless elevated |
 | Gateway (restricted agent, DM allow-list, plugin) | prepared; applied after the Mission Control deploy |
 | Phone acceptance | after the above |
