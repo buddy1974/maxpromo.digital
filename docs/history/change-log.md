@@ -1,5 +1,15 @@
 # Change Log
 
+## 2026-10-09 — Phone-drafted outreach: structured model output
+
+Found exercising the live chain (Mission Control → signed API → production): model-drafted
+outreach failed in production with "The draft came back unreadable" about two times in three in
+German. The model closes a German quotation `„…"` with an ASCII quote, which broke the free-text
+JSON the draft was parsed from. `lib/ai.ts` gains `callAIJson` (same provider choice as `callAI`;
+Claude answers through one forced tool, OpenAI through JSON mode), and `outreach.draft` uses it
+with a schema; the shape is still validated. Reproduced against the real model before (2/3 parse
+failures) and after (10/10 valid, including bodies quoting `„…"`). `npm run verify` passed.
+
 ## 2026-10-08 — Max Agents go-live: production database and web
 
 Recovery branch `br-floral-brook-al8r8nk5` (LSN `0/40BF790`) taken first. Production

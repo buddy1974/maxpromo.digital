@@ -26,6 +26,60 @@ export async function callAI(
   return { content: getMockResponse(messages), model: 'mock' }
 }
 
+/**
+ * The same provider choice as `callAI`, for an answer that must be a JSON
+ * object. Claude is forced to answer through one tool whose input is the
+ * object, so the API — not the model's punctuation — guarantees valid JSON
+ * (a German „…" closed with an ASCII quote broke free-text JSON in
+ * production, 2026-10-09). OpenAI uses JSON mode. The caller still validates
+ * the shape: valid JSON is not a valid answer. `data` is null under mock.
+ */
+export async function callAIJson(
+  messages: AIMessage[],
+  systemPrompt: string,
+  schema: Record<string, unknown>,
+  options?: { maxTokens?: number; model?: string }
+): Promise<{ data: unknown; model: string }> {
+  if (process.env.ANTHROPIC_API_KEY) {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: options?.model ?? 'claude-sonnet-4-6',
+        max_tokens: options?.maxTokens ?? 1024,
+        system: systemPrompt,
+        messages: messages.filter((m) => m.role !== 'system').map((m) => ({ role: m.role, content: m.content })),
+        tools: [{ name: 'respond', description: 'Return the answer.', input_schema: schema }],
+        tool_choice: { type: 'tool', name: 'respond' },
+      }),
+    })
+    if (!res.ok) throw new Error(`Anthropic API error ${res.status}: ${await res.text()}`)
+    const data = await res.json()
+    const block = (data.content as { type: string; input?: unknown }[]).find((b) => b.type === 'tool_use')
+    return { data: block?.input ?? null, model: data.model as string }
+  }
+  if (process.env.OPENAI_API_KEY) {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        max_tokens: options?.maxTokens ?? 1024,
+        response_format: { type: 'json_object' },
+        messages: [{ role: 'system', content: systemPrompt }, ...messages.filter((m) => m.role !== 'system')],
+      }),
+    })
+    if (!res.ok) throw new Error(`OpenAI API error ${res.status}: ${await res.text()}`)
+    const data = await res.json()
+    return { data: JSON.parse(data.choices[0].message.content as string), model: data.model as string }
+  }
+  return { data: null, model: 'mock' }
+}
+
 async function callClaude(
   messages: AIMessage[],
   systemPrompt?: string,
