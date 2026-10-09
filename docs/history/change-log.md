@@ -1,5 +1,18 @@
 # Change Log
 
+## 2026-10-09 — Max Agents go-live: Gateway, restricted agent, machine certification
+
+Reconciled first: web production was `c0bf517`; Mission Control's elevated deploy had already run
+(09:49, `4456849`); the Gateway still bound Telegram to the unrestricted `main` agent. Now
+Telegram reaches only `max-agents` — one tool (`openclaw_mobile`), the `openclaw` runtime (Codex
+and Claude CLI harnesses keep their own shell, so they are excluded by a model allow-list), its own
+workspace, no skills; DMs from the owner's id only, groups disabled. The Gateway plugin was checked
+against the installed 2026.9.2 SDK and five mismatches fixed before install. Mission Control's
+`.data/auth` was found writable by Codex sandbox principals and narrowed. A config-triggered
+Gateway self-restart did not come back (outage 10:03–10:13 UTC, risk 85). Machine certification
+and the kill switch are in `docs/architecture/mobile-business-os.md` §12/§14; risks 85–89 added.
+Remaining: phone acceptance.
+
 ## 2026-10-09 — Phone-drafted outreach: structured model output
 
 Found exercising the live chain (Mission Control → signed API → production): model-drafted

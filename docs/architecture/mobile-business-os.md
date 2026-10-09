@@ -1,7 +1,7 @@
 # Maxpromo from the phone — the mobile business operating layer
 
-Status: **built and proved against the evidence lab; not merged, not migrated, not deployed.**
-Last updated: 2026-10-07. Decision record: **ADR-0018** (proposed).
+Status: **live in production; machine-verified end to end; phone acceptance pending.**
+Last updated: 2026-10-09. Decision record: **ADR-0018** (accepted for owner-only rollout).
 
 Telegram is the interface. OpenClaw is the execution layer. **Maxpromo OS is the commercial system
 of record.** This document is the single reference for how the three fit; it does not restate the
@@ -205,11 +205,13 @@ Kept current by each rollout step; the evidence for each line is in `docs/histor
 | Production database | Neon project `maxpromo-automation` (`twilight-boat-66649706`), branch `production` (`br-floral-lab-alnv2a1o`), db `neondb` — identified by schema and by matching the live app's connection to its health calls, 2026-10-08 |
 | Recovery point | branch `pre-0011-recovery-2026-10-08` (`br-floral-brook-al8r8nk5`), parent LSN `0/40BF790`, 2026-10-08 07:12:34 UTC |
 | Migrations | production lacked **0009 and 0010** as well as 0011 (the deployed OS already wrote their columns — a pre-existing defect, now fixed). Applied in order **0009 → 0010 → 0011** on 2026-10-08 through the Neon SQL editor, each text SHA-256-matched to the repository file before running. Verified: all objects present; row counts, document numbers, statuses, totals, due dates, deposits and both sequences unchanged; per-table fingerprints over the original columns identical before and after |
-| Web deploy | **live**: `9826e92`, deployment `dpl_6uKou1GW6TeUCJZCraJeLnxHLumK` (rollback target `dpl_HMu7V658n526Rcq876muQVJM8Arx`) |
-| Agent API in production | `npm run smoke:agent-production` 23/23: unsigned, wrong secret, stale, replay and foreign actor refused; reads answer from production; one approval prepared and cancelled on a labelled test lead (`MAX AGENTS TEST — do not contact`, parked as lost) — nothing executed or sent |
-| Mission Control deploy | **waiting**: the governed deploy (`scripts/deploy-production.ps1`) refuses unless elevated |
-| Gateway (restricted agent, DM allow-list, plugin) | prepared; applied after the Mission Control deploy |
-| Phone acceptance | after the above |
+| Web deploy | **live**: `f1bb825` (structured outreach drafts), deployment `dpl_83SUKtcDwsmZdK8a1tgNZ4wzusn4`; previous `c0bf517` / `dpl_7KP8rBXuF5xzKZvRnVXX9e95t3d1` is the rollback target |
+| Agent API in production | re-run 2026-10-09 before and after the `f1bb825` deploy: 23/23. `npm run smoke:agent-production` 23/23: unsigned, wrong secret, stale, replay and foreign actor refused; reads answer from production; one approval prepared and cancelled on a labelled test lead (`MAX AGENTS TEST — do not contact`, parked as lost) — nothing executed or sent |
+| Mission Control deploy | **live**: `4456849`, governed elevated deploy 2026-10-09 09:49 (pid on 127.0.0.1:4180). `67af004`/`93be5ec`/`08e3667` after it change tests and the Gateway plugin only; full suite 3832 passed, 0 errors |
+| Mission Control secrets | `.data/auth` narrowed 2026-10-09 to owner/SYSTEM/Administrators (it inherited Codex sandbox write access — risk 73) |
+| Gateway | **live** 2026-10-09: plugin `openclaw-mobile-command` linked from a frozen copy (`~/.openclaw/plugin-src/openclaw-mobile-command-08e3667`), token by SecretRef to Mission Control's token file; agent `max-agents` (own workspace, `skills: []`, model allow-list, `openclaw` runtime only, tools = `openclaw_mobile` only); binding telegram → `max-agents`; `dmPolicy: allowlist` (owner id only), `groupPolicy: disabled`. Recovery copy: `~/.openclaw/backups/gateway-pre-max-agents-20261009-100604/` |
+| Machine certification | live run of `max-agents`: tools = [`openclaw_mobile`], harness `openclaw`; file read and shell impossible; a local caller claiming Telegram + the owner's number is refused (identity comes only from Telegram ingress); through the plugin's own bridge against live Mission Control + production OS: GREEN reads, AMBER prepare → 52-byte buttons → stranger / forged token / foreign actor refused → Cancel → late Confirm and replayed Cancel return the one result; nothing sent |
+| Phone acceptance | **pending** (Marcel) |
 
 ## 13. Operations
 
@@ -247,8 +249,13 @@ Any one of these stops it; none touches the public site or browser OS:
 2. **Unbind the phone** (instant, no deploy): in `tools/mission-control-ui`,
    `node scripts/bind-mobile-actor.mjs --remove 6090014884` → Mobile Command refuses the next
    turn as not authorised.
-3. **Stop the Telegram lane** (instant): `openclaw plugins disable openclaw-mobile-command`
-   and `openclaw gateway restart`.
+3. **Stop the Telegram lane**: `openclaw plugins disable openclaw-mobile-command`
+   then `openclaw gateway restart`. With the plugin off, `max-agents` has no tool and every turn
+   stops before the model. **Always** confirm the Gateway is back (`openclaw gateway health`); if
+   port 18789 is not listening, `schtasks /Run /TN "OpenClaw Gateway"` (risk 85).
+4. **Return Telegram to the previous state**: copy
+   `~/.openclaw/backups/gateway-pre-max-agents-20261009-100604/openclaw.json` over
+   `~/.openclaw/openclaw.json`, then `openclaw gateway restart`.
 
 Re-enable by reversing the step. Rotation (below) is the response to a suspected leak.
 
