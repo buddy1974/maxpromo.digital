@@ -284,10 +284,20 @@ check('mail: the guard returns rather than continuing', /isEvidenceMode\(\)[\s\S
 check('notification: the guard precedes the Telegram call', guardsBeforeFetch(tgSrc))
 check('notification: the guard returns rather than continuing', /isEvidenceMode\(\)[\s\S]{0,300}?return \{/.test(tgSrc))
 
+/* WhatsApp: the runtime hands the provider the mode, so the guard is the
+   option. It must stand before the request, return, and the only way to
+   point sends elsewhere must be refused outside evidence mode. */
+const waSrc = code('apps/web/lib/channels/whatsapp.ts')
+const waGuard = waSrc.indexOf('if (o.evidenceMode')
+check('whatsapp: the guard precedes the Graph call', waGuard !== -1 && waGuard < waSrc.indexOf('await doFetch('))
+check('whatsapp: the guard returns rather than continuing', /if \(o\.evidenceMode[^\n]*\{\s*return \{ ok: false, kind: 'blocked'/.test(waSrc))
+check('whatsapp: the runtime hands the provider the evidence mode', /evidenceMode: isEvidenceMode\(\)/.test(code('apps/web/lib/channels/runtime.ts')))
+check('whatsapp: a send-host override is refused outside evidence mode', /if \(!opts\.evidenceMode \|\| !LOOPBACK\.test\(override\)\)/.test(code('apps/web/lib/channels/config.ts')))
+
 console.log('')
 console.log('The blocked list matches what the application can actually reach')
 
-/* The contract names four hosts. If the application grows a fifth outbound
+/* The contract names five hosts. If the application grows a sixth outbound
    host, this fails, because a host nobody classified is a host nobody blocked. */
 const SCAN = ['apps/web/lib', 'apps/web/app/api']
 const walk = (d, out = []) => {
@@ -302,7 +312,7 @@ const hosts = new Set()
 for (const dir of SCAN) {
   if (!existsSync(join(ROOT, dir))) continue
   for (const f of walk(join(ROOT, dir))) {
-    for (const m of readFileSync(f, 'utf8').matchAll(/https:\/\/(api\.[a-z0-9.-]+)/g)) hosts.add(m[1])
+    for (const m of readFileSync(f, 'utf8').matchAll(/https:\/\/((?:api|graph)\.[a-z0-9.-]+)/g)) hosts.add(m[1])
   }
 }
 const classified = new Set([...BLOCKED_OUTBOUND_HOSTS, ...ALLOWED_OUTBOUND_HOSTS])
