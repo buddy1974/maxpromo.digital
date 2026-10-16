@@ -379,6 +379,7 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.p
       if (/renews/.test(i.text) && i.urgency >= 3) notices.push({ key: `renewal:${i.text}:${ctx.today.slice(0, 7)}`, severity: 'info', text: i.text, action: i.action })
       if (i.area === 'SYSTEM' && /Unclear whether/.test(i.text)) notices.push({ key: `uncertain:${i.text}`, severity: 'critical', text: i.text })
     }
+    notices.push(...await channelNotices(ctx))
     const berlinHour = Number(ctx.now.toLocaleString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', hour12: false }))
     if (input.brief_from_hour !== undefined && berlinHour >= input.brief_from_hour) {
       const brief = await ownerBrief.run!(ctx, {})
@@ -389,6 +390,92 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.p
       data: { notices },
     }
   },
+}
+
+/* ── WhatsApp gateway notices ───────────────────────────────────────────── */
+
+type Notice = { key: string; severity: 'info' | 'warning' | 'critical'; text: string; action?: string }
+
+/**
+ * What the WhatsApp gateway needs Marcel to know (lib/channels): a customer
+ * asked for him, a lead became qualified, a reply failed or may have been
+ * delivered twice, the guard held a reply back, a message waited unanswered.
+ * Each is one row of the conversation's own trail (chat.events), so its key
+ * is the row id and it is delivered once. New WhatsApp leads already arrive
+ * through the inbound-enquiry notice above (source 'whatsapp').
+ *
+ * A database without migration 0012 has no gateway: the section is skipped,
+ * never allowed to break the other notices.
+ */
+async function channelNotices(ctx: CapabilityContext): Promise<Notice[]> {
+  try {
+    const [events, stuck] = await Promise.all([
+      q<{ id: string; event_type: string; payload: Record<string, unknown>; visitor_label: string | null; contact_phone: string | null; facts: Record<string, string> | null }>(ctx.sql`
+        SELECT e.id::text, e.event_type, e.payload, s.visitor_label, s.contact_phone, s.facts
+        FROM chat.events e JOIN chat.sessions s ON s.id = e.session_id
+        WHERE e.created_at > now() - interval '2 days'
+          AND e.event_type IN ('wa.handover', 'wa.qualified', 'wa.send_failed', 'wa.send_uncertain', 'wa.guard_blocked',
+                               'wa.os_failed', 'wa.identity_ambiguous', 'wa.possible_duplicate', 'wa.sensitive_data', 'wa.held')
+        ORDER BY e.created_at DESC LIMIT 20`),
+      q<{ id: string; visitor_label: string | null; contact_phone: string | null; facts: Record<string, string> | null; n: number }>(ctx.sql`
+        SELECT s.id, s.visitor_label, s.contact_phone, s.facts, count(*)::int AS n
+        FROM chat.messages m JOIN chat.sessions s ON s.id = m.session_id
+        WHERE m.turn_state = 'pending' AND m.created_at < now() - interval '10 minutes'
+        GROUP BY s.id LIMIT 10`),
+    ])
+    const who = (r: { visitor_label: string | null; contact_phone: string | null; facts: Record<string, string> | null }) => {
+      const name = r.facts?.company || r.facts?.contact_name || r.visitor_label || 'Unknown contact'
+      return r.contact_phone ? `${name} (+${r.contact_phone})` : name
+    }
+    const out: Notice[] = []
+    for (const e of events) {
+      const p = e.payload ?? {}
+      const label = who(e)
+      switch (e.event_type) {
+        case 'wa.handover': {
+          const reason = String(p.reason ?? '')
+          const why = { asked_for_person: 'asked for you', urgent: 'says it is urgent', complaint: 'has a complaint', existing_client: 'is a client and needs help', model: 'could not be answered by Max' }[reason] ?? 'needs you'
+          out.push({ key: `wa:${e.id}`, severity: reason === 'urgent' || reason === 'complaint' ? 'critical' : 'warning',
+            text: `WhatsApp: ${label} ${why}.${p.summary ? ` ${String(p.summary)}` : ''} Max has paused — reply from the WhatsApp Business app.` })
+          break
+        }
+        case 'wa.qualified':
+          out.push({ key: `wa:${e.id}`, severity: 'info', text: `WhatsApp lead qualified: ${label}. ${String(p.summary ?? '')}`.trim(), action: 'Show my pipeline' })
+          break
+        case 'wa.send_uncertain':
+          out.push({ key: `wa:${e.id}`, severity: 'critical', text: `WhatsApp: unclear whether Max's reply to ${label} was delivered. It will not be resent — check the chat in the app.` })
+          break
+        case 'wa.send_failed':
+          out.push({ key: `wa:${e.id}`, severity: 'warning', text: `WhatsApp: a reply to ${label} could not be sent (${String(p.kind ?? 'error')}${p.code ? ` ${String(p.code)}` : ''}).` })
+          break
+        case 'wa.guard_blocked':
+          out.push({ key: `wa:${e.id}`, severity: 'warning', text: `WhatsApp: Max held back a reply to ${label} (${(p.flags as string[] | undefined)?.join(', ') ?? 'policy'}) and told them you will answer.` })
+          break
+        case 'wa.os_failed':
+          out.push({ key: `wa:${e.id}`, severity: 'warning', text: `WhatsApp: recording ${label} in the OS failed (${String(p.op ?? '')}); it is retried on their next message.` })
+          break
+        case 'wa.identity_ambiguous':
+          out.push({ key: `wa:${e.id}`, severity: 'info', text: `WhatsApp: ${label} matches ${String(p.matches ?? 'several')} records in the OS; not linked to any.` })
+          break
+        case 'wa.possible_duplicate':
+          out.push({ key: `wa:${e.id}`, severity: 'info', text: `WhatsApp: ${label} was saved as a new lead; the name they gave matches ${String(p.matches ?? 'an')} existing record(s). Linked only by phone — merge them if they are the same business.` })
+          break
+        case 'wa.sensitive_data':
+          out.push({ key: `wa:${e.id}`, severity: 'warning', text: `WhatsApp: ${label} sent sensitive personal data. Max asked them not to; consider deleting it from the chat.` })
+          break
+        case 'wa.held':
+          out.push({ key: `wa:${e.id}`, severity: 'warning', text: `WhatsApp: a message from ${label} was not answered automatically (${String(p.hold ?? '')}). Reply from the app.` })
+          break
+      }
+    }
+    for (const s of stuck) {
+      out.push({ key: `wa-stuck:${s.id}:${ctx.today}`, severity: 'critical', text: `WhatsApp: ${s.n} message(s) from ${who(s)} waiting more than 10 minutes without an answer.` })
+    }
+    return out
+  } catch (err) {
+    console.warn('[owner.notices] WhatsApp section skipped:', err instanceof Error ? err.message.slice(0, 160) : err)
+    return []
+  }
 }
 
 export const VIEW_CAPABILITIES: AnyCapability[] = [

@@ -38,8 +38,10 @@ export async function callAIJson(
   messages: AIMessage[],
   systemPrompt: string,
   schema: Record<string, unknown>,
-  options?: { maxTokens?: number; model?: string }
+  options?: { maxTokens?: number; model?: string; timeoutMs?: number }
 ): Promise<{ data: unknown; model: string }> {
+  /* A caller answering a person in real time cannot wait for ever. */
+  const signal = options?.timeoutMs ? AbortSignal.timeout(options.timeoutMs) : undefined
   if (process.env.ANTHROPIC_API_KEY) {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -56,6 +58,7 @@ export async function callAIJson(
         tools: [{ name: 'respond', description: 'Return the answer.', input_schema: schema }],
         tool_choice: { type: 'tool', name: 'respond' },
       }),
+      signal,
     })
     if (!res.ok) throw new Error(`Anthropic API error ${res.status}: ${await res.text()}`)
     const data = await res.json()
@@ -72,6 +75,7 @@ export async function callAIJson(
         response_format: { type: 'json_object' },
         messages: [{ role: 'system', content: systemPrompt }, ...messages.filter((m) => m.role !== 'system')],
       }),
+      signal,
     })
     if (!res.ok) throw new Error(`OpenAI API error ${res.status}: ${await res.text()}`)
     const data = await res.json()

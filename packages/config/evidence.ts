@@ -49,10 +49,11 @@
  * WHAT THE MODE FORBIDS
  *
  * Every outbound path that could reach a person. The web application talks to
- * exactly four hosts, established by reading the source rather than by memory:
+ * exactly five hosts, established by reading the source rather than by memory:
  *
  *   api.resend.com      customer email          BLOCKED in evidence mode
  *   api.telegram.org    internal notification   BLOCKED in evidence mode
+ *   graph.facebook.com  WhatsApp replies        BLOCKED in evidence mode (a loopback simulator only)
  *   api.anthropic.com   model inference         allowed
  *   api.openai.com      model inference         allowed
  *
@@ -95,7 +96,7 @@ export const EVIDENCE_MARKER = 'EVD'
 export const EVIDENCE_DOC_PREFIX = `${EVIDENCE_MARKER}-2026-`
 
 /** Outbound hosts the evidence environment must never reach. */
-export const BLOCKED_OUTBOUND_HOSTS = ['api.resend.com', 'api.telegram.org'] as const
+export const BLOCKED_OUTBOUND_HOSTS = ['api.resend.com', 'api.telegram.org', 'graph.facebook.com'] as const
 
 /** Outbound hosts that stay open, because they carry no customer contact. */
 export const ALLOWED_OUTBOUND_HOSTS = ['api.anthropic.com', 'api.openai.com'] as const
