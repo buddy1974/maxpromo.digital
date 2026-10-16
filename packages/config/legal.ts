@@ -41,7 +41,8 @@ export const BUSINESS = {
   /** Bare form. Render "FA {finanzamt}" where that prefix is wanted. */
   finanzamt: 'Essen-NordOst',
   email: 'info@maxpromo.digital',
-  phone: '+49 173 3645698',
+  /** Public business and WhatsApp number (owner decision 2026-10-16). */
+  phone: '+49 174 5910734',
   website: 'maxpromo.digital',
 } as const
 
@@ -63,6 +64,13 @@ export const BUSINESS = {
  * the same reason this module exists at all.
  */
 export const WHATSAPP_NUMBER = BUSINESS.phone.replace(/\D/g, '')
+
+/**
+ * The same number as a `tel:` link. The Impressum and the privacy notice used
+ * to write the number out themselves, href and text, and so would have kept
+ * the old one when this module changed. They read it from here now.
+ */
+export const PHONE_HREF = `tel:+${WHATSAPP_NUMBER}`
 
 /** Required on every commercial surface (Kleinunternehmer § 19 UStG). Do not change. */
 export const UST_CLAUSE = {

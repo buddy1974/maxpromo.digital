@@ -26,7 +26,7 @@ Nothing in this document has touched the real number, Meta, or production.
 | Platform logger with redaction | `@maxpromo/observability` | **REUSED** |
 | Evidence boundary (no outbound contact in evidence mode) | `packages/config/evidence.ts` + `prove:evidence-isolation` | **EXTENDED** — `graph.facebook.com` blocked; the gate only scanned `api.*` hosts and could not have seen it |
 | Outbound WhatsApp | none — the OS opens `wa.me` links for Marcel's outreach, never sends | **UNCHANGED for outreach.** The gateway only *replies* inside a window the customer opened (ADR-0019) |
-| Legal phone `BUSINESS.phone` | `@maxpromo/config` → `+49 173 3645698` | **NOT CHANGED** — differs from the new number. Marcel decided (2026-10-16) +49 174 5910734 is the intended public number, migrated under control: [inventory](../governance/public-number-migration.md) |
+| Legal phone `BUSINESS.phone` | `@maxpromo/config` → `+49 174 5910734` | **MIGRATED 2026-10-16** (repository; live on the next deploy) from `+49 173 3645698` — the legal number and the business WhatsApp are now the same number: [migration record](../governance/public-number-migration.md) |
 
 The decisive finding: every one of the 48 registry capabilities is written for the owner. GREEN
 means "safe for Marcel", and Marcel may read the whole business (`commercial.search`,
@@ -281,9 +281,10 @@ carries the click-paths.
    `whatsapp_business_management` and `whatsapp_business_messaging`) **or** choose a BSP. Decision
    with cost implications — Marcel's.
 3. **Payment method** on the WhatsApp Business Account (Cloud API messages are billed).
-4. **Legal identity** (intended number decided 2026-10-16; migration planned from [the inventory](../governance/public-number-migration.md)): the public number in `@maxpromo/config` (`BUSINESS.phone`, Impressum) is
-   `+49 173 3645698`; the business WhatsApp is `+49 174 5910734`. Which number the Impressum shows
-   is a legal decision.
+4. **Legal identity** — done in the repository 2026-10-16: `BUSINESS.phone` (and so the Impressum)
+   is the business WhatsApp number `+49 174 5910734`, formerly `+49 173 3645698`
+   ([migration record](../governance/public-number-migration.md)). Live on the next deploy of
+   `maxpromo-web`, which is Marcel's.
 5. **Privacy notice** update and processor terms (§8).
 6. Values for Vercel (never in chat): `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN` (generate
    locally), `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_BUSINESS_ACCOUNT_ID`, `WHATSAPP_ACCESS_TOKEN`

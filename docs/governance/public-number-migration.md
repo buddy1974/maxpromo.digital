@@ -1,74 +1,118 @@
-# Public number migration — inventory
+# Public number migration
 
-Status: **inventory only; nothing changed.** Recorded 2026-10-16 on Marcel's decision.
+Status: **migrated in the repository 2026-10-16; not deployed.** Owner decision by Marcel,
+2026-10-16. The inventory below was recorded first (commit `eea46e8`), then executed.
 
-| | Number |
-|---|---|
-| Current public / legal number | `+49 173 3645698` |
-| Intended new public business / WhatsApp number (owner decision 2026-10-16) | `+49 174 5910734` |
-
-Marcel decided the new number is the intended public number **and** that it is not to be swapped
-in blindly. This is the inventory for a controlled migration. It covers every tracked file in the
-repository (`git grep` for every spelling of the old number, and every consumer of
-`BUSINESS.phone` / `WHATSAPP_NUMBER`). Legal identity is locked (`CLAUDE.md`): changing it is
-Marcel's call, made on this list.
-
-## Where the number is written
-
-The number is written out **three** times. It should be written once.
-
-| # | File | Line | Class | How |
-|---|---|---|---|---|
-| W1 | `packages/config/legal.ts` | `BUSINESS.phone` | **configuration / runtime** — the source of truth | literal |
-| W2 | `apps/web/app/[locale]/impressum/page.tsx` | Telefon (`tel:` href + text) | **legal / Impressum** | **hard-coded literal, not read from W1** |
-| W3 | `apps/web/app/[locale]/privacy/page.tsx` | controller contact (`tel:` href + text) | **legal / privacy notice** | **hard-coded literal, not read from W1** |
-
-## Where it is derived from `BUSINESS.phone` (changes with W1 automatically)
-
-| # | File | Use | Class |
+| | Number | `tel:` | `wa.me` |
 |---|---|---|---|
-| D1 | `packages/config/legal.ts` `WHATSAPP_NUMBER` | digits for `wa.me` | **WhatsApp / wa.me** |
-| D2 | `apps/web/app/[locale]/blog/[slug]/page.tsx` (2 links) | "Chat with us on WhatsApp" on every article | **WhatsApp / wa.me** · public contact |
-| D3 | `apps/web/lib/seo/schema.ts` | JSON-LD `contactPoint.telephone` (Organization) | **structured data** |
-| D4 | `apps/web/lib/documents/identity.ts` → `BUSINESS.phone` | document identity, served to the OS print screens by `/api/os/document-identity` | **invoices / documents** |
-| D5 | `apps/web/lib/documents/emailHtml.ts` (letterhead line and footer) | Angebot and Rechnung emails | **invoices / documents** |
-| D6 | `apps/web/lib/documents/whatsapp.ts` (2 messages) | the business's number printed inside the share-by-WhatsApp text of an Angebot / Rechnung | **invoices / documents** |
+| **Current** public business / legal / WhatsApp number | `+49 174 5910734` | `tel:+491745910734` | `wa.me/491745910734` |
+| Retired from the current public identity on 2026-10-16 | `+49 173 3645698` | — | — |
 
-## Not affected
+The new number is the real Maxpromo WhatsApp Business number. This migration changes **contact
+identity only**: it does not connect the WhatsApp Cloud API, does not enable automation, does not
+touch the gateway (`lib/channels/` addresses Meta by phone-number **id**, never by the number text),
+and does not apply migration 0012 anywhere.
 
-| Item | Why |
-|---|---|
-| `apps/web/lib/commercial/capabilities/outreach.ts` `wa.me/${phone}` | the *recipient's* number (a lead's), not the business's |
-| `apps/web/lib/documents/whatsapp.ts` `wa.me/?text=` | no recipient number; the user picks the chat |
-| WhatsApp gateway (`lib/channels/`) | addressed by Meta's phone-number **id** (`WHATSAPP_PHONE_NUMBER_ID`), never by the number text |
-| Test harnesses | fictional `+49 1520 000xxxx` range only |
+## How it was done
 
-## Historical / reference — never rewritten
+Not a search-and-replace. In order:
 
-| Item | Class |
-|---|---|
-| Angebote and Rechnungen already sent, and their emails (Resend) | **historical** — issued documents keep the number they were issued with |
-| `docs/architecture/whatsapp-gateway.md`, `docs/governance/known-risks.md` (risk 98), this file | **reference** — they name the old number in order to describe the mismatch |
-| Evidence images under `docs/evidence/` | **not verified** — images are not searchable as text; check before republishing any |
+1. **Removed the duplicate source of truth** (risk 100). The Impressum and the privacy notice wrote
+   the number themselves, text and `tel:` href. They now read `BUSINESS.phone` and the new derived
+   `PHONE_HREF` from `@maxpromo/config`. No other wording on either page changed.
+2. **Changed the one value**: `BUSINESS.phone` in `packages/config/legal.ts`. `WHATSAPP_NUMBER`
+   (digits for `wa.me`) and `PHONE_HREF` (`tel:+…`) are derived from it, never written out.
 
-## Outside this repository (not inventoried here)
+The number is now written **once** in the codebase.
 
-Google Business Profile, the WhatsApp Business App profile, email signatures, printed material,
-social profiles, Mission Control / OpenClaw configuration. Listed so the migration plan asks.
+## Surfaces migrated
 
-## Conflicts this inventory found
+| # | Surface | File | How it gets the number |
+|---|---|---|---|
+| W1 | Central legal identity | `packages/config/legal.ts` `BUSINESS.phone` | **the value** |
+| — | `tel:` href | `packages/config/legal.ts` `PHONE_HREF` (new, exported from `@maxpromo/config`) | derived |
+| D1 | `wa.me` digits | `packages/config/legal.ts` `WHATSAPP_NUMBER` | derived |
+| W2 | Impressum — Telefon, text and `tel:` link | `apps/web/app/[locale]/impressum/page.tsx` | `BUSINESS.phone`, `PHONE_HREF` (was hard-coded) |
+| W3 | Privacy notice — controller contact, text and `tel:` link | `apps/web/app/[locale]/privacy/page.tsx` | `BUSINESS.phone`, `PHONE_HREF` (was hard-coded) |
+| D2 | "Chat with us on WhatsApp" on every article (2 links) | `apps/web/app/[locale]/blog/[slug]/page.tsx` | `WHATSAPP_NUMBER` |
+| D3 | Organization JSON-LD `contactPoint.telephone` | `apps/web/lib/seo/schema.ts` | `BUSINESS.phone` |
+| D4 | Document identity (OS print screens via `/api/os/document-identity`) | `apps/web/lib/documents/identity.ts` | `BUSINESS.phone` |
+| D5 | Angebot and Rechnung emails — letterhead line and footer | `apps/web/lib/documents/emailHtml.ts`, `emails.ts` | document identity |
+| D5b | Payment-reminder email footer (`reminder.send`) | `apps/web/lib/commercial/capabilities/documents.ts` → `buildEmailFooterHtml` | document identity |
+| D6 | Angebot and Rechnung share-by-WhatsApp text | `apps/web/lib/documents/whatsapp.ts` | document identity |
 
-1. **W2 and W3 duplicate the legal identity.** `legal.ts` itself says a contact number "belongs
-   where the Impressum gets its number, so that the two cannot disagree" — but the Impressum and
-   the privacy notice do not get it from there. Changing only `BUSINESS.phone` would leave the
-   Impressum and privacy notice on the old number while the site's WhatsApp links, structured data
-   and documents moved — the Impressum would disagree with everything else. The controlled
-   migration should first make W2 and W3 read `BUSINESS.phone`, as a no-op change verified
-   separately, and only then change the value once.
-2. **WhatsApp links follow the legal number.** `WHATSAPP_NUMBER` is derived from `BUSINESS.phone` by
-   design. Today every article's "Chat with us on WhatsApp" opens a chat with `+49 173 3645698`,
-   not the business WhatsApp. If the legal number and the WhatsApp number are ever meant to differ,
-   that is a deliberate split of D1 from W1 — a decision, not a find-and-replace.
-3. **Documents carry the number.** Changing it changes every Angebot/Rechnung email and share
-   text from that moment; already-issued documents keep the old number. Both are expected, but the
-   old number should stay reachable (or forwarded) for as long as issued documents name it.
+**Checked and not carrying a phone number:** the printed Angebot/Rechnung PDFs (letterhead has no
+phone line), the website footer (`© {year} Maxpromo Digital` only), Agent Bureau (`apps/bureau` has
+no business phone), environment files (no `WHATSAPP_NUMBER` or phone variable in any `.env*`).
+
+**Not the business's number, unchanged:** `outreach.ts` `wa.me/${phone}` (a lead's number),
+`apps/web/lib/documents/whatsapp.ts` `wa.me/?text=` (no recipient), `lib/telegram.ts` `tel:` helper and
+`api/max-agent/submit` (a sender's number), test harnesses (fictional `+49 1520 000xxxx` range).
+
+## Every remaining occurrence of the old number — classification
+
+`git grep -E "3645698|364 ?56 ?98|173[ ./-]?364"` over every tracked file after the migration.
+**Zero occurrences in code, configuration, templates or tests.** Every remaining occurrence is in
+documentation:
+
+| File | Why it is kept | Class |
+|---|---|---|
+| `docs/governance/public-number-migration.md` (this file) | names the retired number | **EXPECTED HISTORICAL** |
+| `docs/adr/decision-log.md` (two entries) | the decisions as made: "stays until a controlled migration", and the migration itself | **EXPECTED HISTORICAL** |
+| `docs/history/change-log.md` | records the change from the old value | **EXPECTED HISTORICAL** |
+| `docs/governance/known-risks.md` risk 98 | describes the defect it resolved | **EXPECTED HISTORICAL** |
+| `docs/architecture/whatsapp-gateway.md` (reuse table, owner actions §14) | "migrated from `+49 173 3645698`" | **EXPECTED HISTORICAL** |
+
+No occurrence is classed **BUG / MISSED CURRENT REFERENCE**.
+
+**Outside the tracked tree, intentionally untouched:** Angebote and Rechnungen already issued and
+their sent emails (Resend) keep the number they were issued with; rows in the production database
+are not modified. Evidence images under `docs/evidence/` are not text-searchable and were not
+rewritten; check any one before republishing it.
+
+## Verification (2026-10-16)
+
+1. **Source-level render** of the real modules (scratch harness resolving `@/` and
+   `@maxpromo/config`, nothing stubbed): `BUSINESS.phone` = `+49 174 5910734`; `PHONE_HREF` =
+   `tel:+491745910734`; `WHATSAPP_NUMBER` = `491745910734`; document identity phone new;
+   `buildAngebotEmail` and `buildInvoiceEmail` in DE and EN each carry the new number twice (header,
+   footer) and the old one nowhere; `buildEmailFooterHtml` (reminder) DE/EN new; both WhatsApp share
+   texts new; Organization JSON-LD `"telephone":"+49 174 5910734"`. 13/13 passed.
+2. **Rendered pages** from the production build (`next start`), see the table below.
+3. **`npm run verify`** — all gates, typecheck, lint, build, budgets, public-assets.
+4. **Deep search** — old number in every spelling: only the documentation rows above.
+
+Rendered from the production build (`next start`, Host header per domain). Counts include the
+React payload, which repeats visible text:
+
+| Page | HTTP | New number | `tel:+491745910734` | `wa.me/491745910734` | JSON-LD telephone | Old number |
+|---|---|---|---|---|---|---|
+| `maxpromo.digital/de/impressum`, `/en/impressum` | 200 | yes | yes | — | new | **0** |
+| `maxpromo.digital/de/privacy`, `/en/privacy` | 200 | yes | yes | — | new | **0** |
+| `maxpromo.digital/de`, `/en` | 200 | yes | — | — | new | **0** |
+| an article, `/de/blog/…` and `/en/blog/…` | 200 | — | — | 4 (no other `wa.me` number) | — | **0** |
+| `restaurant-os.de/impressum` (product domain, operator's Impressum) | 200 | yes | yes | — | — | **0** |
+
+The old number appears in no file under `apps/web/.next/static` or `.next/server`.
+`npm run verify` passed (exit 0; every gate, including `prove:whatsapp-gateway`, typecheck, lint,
+build, budgets, public-assets). One unrelated incident on the way: the first run failed typecheck on
+the dev-server route types under `.next/dev/types`, a gitignored file generated by a dev server and found
+garbled (two writes interleaved, 15:00 that day); the generated folder was removed and the rerun
+passed. No source file was involved.
+
+## Production and deployment status
+
+- **Not deployed.** Nothing pushed. The live `maxpromo.digital` and the product domains keep
+  showing `+49 173 3645698` until Marcel deploys `maxpromo-web`; the change goes live with that
+  deploy and needs no other step (no environment variable carries the number).
+- WhatsApp Cloud API not connected; `WHATSAPP_AUTOMATION` unset (off); production migration 0012
+  not applied; no production secret added.
+
+## Outside this repository — Marcel's manual updates
+
+Google Business Profile · the WhatsApp Business App profile (already the new number — check the
+profile's displayed contact details, website and description) · Facebook page · Instagram profile ·
+LinkedIn and any other social or directory profiles · email signatures (Gmail and any other client)
+· printed material (business cards, flyers, letterhead stock) · Mission Control / OpenClaw
+configuration if it names a contact number · Resend or other sender profiles if they carry one ·
+the old line: keep it reachable or forwarded while issued documents naming it are current.

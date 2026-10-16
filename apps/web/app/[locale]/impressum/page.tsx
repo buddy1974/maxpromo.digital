@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { BUSINESS, PHONE_HREF } from '@maxpromo/config'
 import { corporateCard, pageMetadata } from '@/lib/seo/og'
 import { LegalSection as Section } from '@/components/legal/LegalSection'
 
@@ -69,7 +70,7 @@ export default function ImpressumPage() {
 
         <Section label="Kontakt / Contact">
           <p style={{ margin: 0 }}>
-            Telefon: <a href="tel:+491733645698" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>+49 173 3645698</a><br />
+            Telefon: <a href={PHONE_HREF} style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>{BUSINESS.phone}</a><br />
             E-Mail: <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>info@maxpromo.digital</a><br />
             Web: <a href="https://maxpromo.digital" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>https://maxpromo.digital</a>
           </p>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { BUSINESS, PHONE_HREF } from '@maxpromo/config'
 import { corporateCard, pageMetadata } from '@/lib/seo/og'
 import { LegalSection as Section } from '@/components/legal/LegalSection'
 
@@ -68,8 +69,8 @@ export default function PrivacyPage() {
             <a href="mailto:info@maxpromo.digital" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
               info@maxpromo.digital
             </a>{' '}·{' '}
-            <a href="tel:+491733645698" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
-              +49 173 3645698
+            <a href={PHONE_HREF} style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
+              {BUSINESS.phone}
             </a>
           </p>
           <p style={{ color: 'var(--brand-text-secondary)', marginBottom: 0 }}>

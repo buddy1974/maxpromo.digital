@@ -1,5 +1,18 @@
 # Change Log
 
+## 2026-10-16 — public number migrated to +49 174 5910734 (repository; not deployed)
+
+`@maxpromo/config` `BUSINESS.phone` is now `+49 174 5910734` (was `+49 173 3645698`), and a derived
+`PHONE_HREF` (`tel:+491745910734`) joins `WHATSAPP_NUMBER`. The Impressum and the privacy notice no
+longer hard-code the number (risk 100); they read it from the config, so the number is written once.
+Everything derived follows: `tel:` links, every article's `wa.me/491745910734`, the Organization
+JSON-LD `contactPoint.telephone`, the Angebot/Rechnung email header and footer, the payment-reminder
+footer, and both WhatsApp share texts. Printed PDFs carry no phone number and are unaffected.
+Historical records — issued documents, change-log and decision-log entries, the gateway's earlier
+statements — are not rewritten. Verified by rendering every surface (record in
+`docs/governance/public-number-migration.md`) and `npm run verify`. Not deployed; WhatsApp
+production unchanged (off).
+
 ## 2026-10-16 — ADR-0019 accepted; public-number inventory
 
 Marcel accepted ADR-0019; its status, the decision log and the documents that cited it as proposed

@@ -1,5 +1,15 @@
 # Decision Log
 
+## 2026-10-16 — the public number is migrated (Marcel)
+
+**Decision.** +49 174 5910734 is the official public Maxpromo Digital business and WhatsApp number;
++49 173 3645698 is retired from the current public identity. Executed as a controlled migration
+from the inventory, not a search-and-replace: the Impressum and the privacy notice first stopped
+writing the number themselves and now read `BUSINESS.phone` / `PHONE_HREF`, then the one value in
+`@maxpromo/config` changed. **Scope.** Repository only — no deploy, no Meta connection, WhatsApp
+automation stays off, production migration 0012 stays unapplied. Issued documents and historical
+records keep the number they carried. Record: `docs/governance/public-number-migration.md`.
+
 ## 2026-10-16 — ADR-0019 accepted; the public number; WhatsApp production stays off (Marcel)
 
 ### ADR-0019 is accepted
