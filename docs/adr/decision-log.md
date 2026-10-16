@@ -1,5 +1,45 @@
 # Decision Log
 
+## 2026-10-16 — the WhatsApp gateway (ADR-0019, proposed)
+
+### A public channel gets no tools
+
+**Decision.** WhatsApp conversations are answered by a model with no tools; code chooses every
+action from validated fields, and only four operations reach Maxpromo OS (`lead.check` by phone,
+`lead.create`, `note.add` on the conversation's lead, `incident.create` on a client's own
+record). **Why.** Every registry capability is written for the owner; a stranger given any of them
+could read the business. Fixed code paths are smaller and provable; a tool list is an injection target.
+
+### The gateway is in the web deployment, not behind Mission Control
+
+**Decision.** `/api/channels/whatsapp` in `apps/web`; the Telegram lane is untouched.
+**Why.** Meta needs a public endpoint; Mission Control is loopback-only and owner-only.
+
+### Identity is the verified number
+
+**Decision.** A conversation is linked to an existing lead or client only by the WhatsApp-verified
+phone. A match on a typed or displayed name creates a separate lead and a notice.
+**Why.** Found by the live run: two senders with the same profile name were merged, and the same
+path would let anyone claiming a client's company name reach that client's record.
+
+### Replies only; outreach stays manual
+
+**Decision.** The gateway answers inside the customer's 24-hour window and never initiates or sends
+templates. "WhatsApp is opened, never sent" (2026-10-07) stands for Marcel's outreach.
+
+### Marcel's typing wins
+
+**Decision.** A Business App echo makes the conversation Marcel's; Max's in-flight reply is
+suppressed; Max returns after 48 h of Marcel's silence. Handover acknowledgements are fixed text
+sent only after the handover is recorded. **Why.** Two voices in one chat is worse than a slow one,
+and "I have let Marcel know" must be true.
+
+### Off by default, then shadow
+
+**Decision.** `WHATSAPP_AUTOMATION` defaults to `off`; rollout goes off → shadow (drafts only) →
+on with a pilot allow-list. **Why.** A public number is the business's front door; the first days
+are read by Marcel before anything is sent automatically.
+
 ## 2026-10-07 — the mobile business layer (ADR-0018, proposed)
 
 ### The OS, not OpenClaw, keeps the business

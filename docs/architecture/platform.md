@@ -132,6 +132,7 @@ accent text colour is genuinely needed, `--brand-primary-text` measures 5.00:1.
 | bureau | NextAuth v4 JWT + argon2 | `/dashboard/**` |
 | os | signed httpOnly cookie, verified in middleware | `/os/**`, `/api/os/**` |
 | os agent API | HMAC-signed request + single-use nonce, verified in the route (ADR-0018, proposed) | `/api/os/agent/v1/*` only |
+| channel webhook | Meta `X-Hub-Signature-256` (HMAC-SHA256 of the raw body with the app secret), verified in the route before parsing; GET handshake by verify token (ADR-0019, proposed) | `/api/channels/whatsapp` only — reaches the conversation engine, never the OS screens or the agent API |
 
 These are **not** unified by the consolidation. Single sign-on across the three
 is a genuine feature with its own design; sharing a repository does not produce

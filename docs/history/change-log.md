@@ -1,5 +1,27 @@
 # Change Log
 
+## 2026-10-16 — WhatsApp → Max → Maxpromo OS: the conversation gateway (local; not connected to Meta)
+
+Reconciled first: the Telegram lane is owner-only, every registry capability is owner-scoped, the
+`chat` schema already modelled conversations with a handover state, and `owner.notices` already
+reaches Marcel's phone through the Gateway poll. Built on those (ADR-0019, proposed):
+`/api/channels/whatsapp` (signature over the raw body, fail-closed configuration, idempotent
+ingest, answer after the response), `lib/channels/` (channel-neutral types, WhatsApp adapter,
+policy, guard, bilingual copy, prompt and model contract, orchestrator with ports, Neon store, OS
+bridge with a four-operation allow-list), migration `0012-channel-gateway.sql` (additive; evidence
+lab only), WhatsApp notices in `owner.notices`, a timeout on `callAIJson`, `graph.facebook.com`
+classified and blocked in evidence mode (the isolation gate could not see non-`api.` hosts).
+Proofs: `prove:whatsapp-gateway` (offline, in verify) and `prove:whatsapp-live` (real route,
+evidence DB, real model, loopback Graph). The live runs found and the fixes closed: identity merged
+by display name (now phone-only linking), the takeover floor missing "Kann ich mit Marcel
+sprechen?", the guard's discount rule never matching "20 % Rabatt", and the guard replacing the
+live-demo answer because of "kostet" (price rule narrowed), and (by review) a new conversation
+reading as German before anyone wrote, and a shadow-mode draft counting as the AI disclosure.
+Evidence: `npm run verify` passed (28 gates; `prove:whatsapp-gateway` 229); `prove:whatsapp-live`
+54/54 (real model; lab restored); `prove:commercial-agent` 85/85 (owner lane unaffected). Measured
+locally against the us-east-2 evidence lab: webhook ack median 471 ms, model median 5.4 s, full
+turn median 9.6 s. Nothing touched Meta, the real number or production.
+
 ## 2026-10-09 — Max Agents go-live: Gateway, restricted agent, machine certification
 
 Reconciled first: web production was `c0bf517`; Mission Control's elevated deploy had already run

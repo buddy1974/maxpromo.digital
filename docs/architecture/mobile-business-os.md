@@ -62,6 +62,7 @@ Marcel's phone ── Telegram ──▶ OpenClaw Gateway (one bot, long polling
 | Contact person | Maxpromo OS (`os_leads.name`, `os_clients.name`) | — (MC CRM superseded) |
 | Lead / opportunity / pipeline stage | Maxpromo OS `os_leads` | MC: focus reference |
 | Conversation (chat context) | Mission Control `.data/mobile-command/conversations` | — |
+| Customer conversation (WhatsApp, public) | Maxpromo OS `chat.sessions` / `chat.messages` (0012) — see `whatsapp-gateway.md`, ADR-0019 | Telegram lane: notices only |
 | Activity / interaction / note | Maxpromo OS `os_activities` | MC event log: that a turn happened, not what |
 | Follow-up | Maxpromo OS `os_followups` | — |
 | Angebot (proposal) | Maxpromo OS `os_angebote` + `doc_seq.angebot_*` | — |
