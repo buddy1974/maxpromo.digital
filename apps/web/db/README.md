@@ -19,7 +19,8 @@ db/
                                            OS links, takeover, window, lease, outbound ledger (ADR-0019)
 ```
 
-**0012 is applied to the evidence lab only** (2026-10-16); production waits for ADR-0019.
+**0012 is applied to the evidence lab only** (2026-10-16). ADR-0019 is accepted, but applying 0012 to
+production is a separate owner decision and has not been made.
 **0011 was applied to the evidence lab only** (`npm run evidence:migrate -- <file>`, which refuses
 any database holding non-evidence invoices). Production: Marcel, by hand, after a Neon backup
 branch. It is additive and idempotent and rewrites no existing value.

@@ -1,6 +1,8 @@
 # WhatsApp → Max → Maxpromo OS — the conversation gateway
 
-Status: **built and proved locally; not connected to Meta.** Decision record: **[ADR-0019](../adr/0019-a-public-channel-gets-no-tools.md) (proposed)**.
+Status: **built and proved locally; not connected to Meta.** Decision record: **[ADR-0019](../adr/0019-a-public-channel-gets-no-tools.md) (accepted 2026-10-16)**.
+Production stays **off** by owner decision: acceptance authorised no Meta connection, production
+migration, production secret or deploy.
 Last updated: 2026-10-16.
 
 The public WhatsApp Business number (+49 174 5910734) becomes the first doorway through which a
@@ -24,7 +26,7 @@ Nothing in this document has touched the real number, Meta, or production.
 | Platform logger with redaction | `@maxpromo/observability` | **REUSED** |
 | Evidence boundary (no outbound contact in evidence mode) | `packages/config/evidence.ts` + `prove:evidence-isolation` | **EXTENDED** — `graph.facebook.com` blocked; the gate only scanned `api.*` hosts and could not have seen it |
 | Outbound WhatsApp | none — the OS opens `wa.me` links for Marcel's outreach, never sends | **UNCHANGED for outreach.** The gateway only *replies* inside a window the customer opened (ADR-0019) |
-| Legal phone `BUSINESS.phone` | `@maxpromo/config` → `+49 173 3645698` | **NOT CHANGED** — differs from the new number; legal identity is Marcel's (owner action) |
+| Legal phone `BUSINESS.phone` | `@maxpromo/config` → `+49 173 3645698` | **NOT CHANGED** — differs from the new number. Marcel decided (2026-10-16) +49 174 5910734 is the intended public number, migrated under control: [inventory](../governance/public-number-migration.md) |
 
 The decisive finding: every one of the 48 registry capabilities is written for the owner. GREEN
 means "safe for Marcel", and Marcel may read the whole business (`commercial.search`,
@@ -279,7 +281,7 @@ carries the click-paths.
    `whatsapp_business_management` and `whatsapp_business_messaging`) **or** choose a BSP. Decision
    with cost implications — Marcel's.
 3. **Payment method** on the WhatsApp Business Account (Cloud API messages are billed).
-4. **Legal identity:** the public number in `@maxpromo/config` (`BUSINESS.phone`, Impressum) is
+4. **Legal identity** (intended number decided 2026-10-16; migration planned from [the inventory](../governance/public-number-migration.md)): the public number in `@maxpromo/config` (`BUSINESS.phone`, Impressum) is
    `+49 173 3645698`; the business WhatsApp is `+49 174 5910734`. Which number the Impressum shows
    is a legal decision.
 5. **Privacy notice** update and processor terms (§8).

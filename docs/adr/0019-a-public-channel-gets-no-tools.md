@@ -1,8 +1,10 @@
 # ADR-0019 — A public channel gets no tools: WhatsApp reaches Maxpromo OS through four fixed operations
 
-**Status:** **proposed** · 2026-10-16 · awaiting Marcel. Built and proved locally; nothing is
-connected to Meta or production. Acceptance is required before production migration 0012, the
-Vercel environment, or webhook registration.
+**Status:** **accepted** · 2026-10-16 (proposed the same day), by Marcel, on the implementation
+evidence in §Verification. Acceptance settles the architecture only. It does **not** authorise any
+production step: WhatsApp production stays **off** — Meta is not connected, production migration
+0012 is not applied, no production secret is set, and nothing is pushed or deployed because of this
+acceptance. Each of those remains a separate owner decision (reference §13–14).
 **Related:** ADR-0018 (the OS is the commercial system of record), ADR-0010 (nothing fails
 silently), ADR-0004 (checks must fail loudly). Reference: `docs/architecture/whatsapp-gateway.md`.
 

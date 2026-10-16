@@ -1,5 +1,16 @@
 # Change Log
 
+## 2026-10-16 — ADR-0019 accepted; public-number inventory
+
+Marcel accepted ADR-0019; its status, the decision log and the documents that cited it as proposed
+now say accepted, each stating that acceptance authorises no production step (WhatsApp production
+stays off: no Meta connection, no production migration 0012, no production secrets, no deploy).
+Recorded the intended public number +49 174 5910734 and inventoried every use of the current one
+(`docs/governance/public-number-migration.md`): written three times — `BUSINESS.phone`, and
+hard-coded in the Impressum and the privacy notice — and derived into WhatsApp links, JSON-LD and
+the Angebot/Rechnung emails and share texts. Nothing in the code changed. All WhatsApp engineering
+and its evidence (entry below) stand unchanged.
+
 ## 2026-10-16 — WhatsApp → Max → Maxpromo OS: the conversation gateway (local; not connected to Meta)
 
 Reconciled first: the Telegram lane is owner-only, every registry capability is owner-scoped, the

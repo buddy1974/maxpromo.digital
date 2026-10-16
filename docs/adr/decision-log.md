@@ -1,6 +1,29 @@
 # Decision Log
 
-## 2026-10-16 — the WhatsApp gateway (ADR-0019, proposed)
+## 2026-10-16 — ADR-0019 accepted; the public number; WhatsApp production stays off (Marcel)
+
+### ADR-0019 is accepted
+
+**Decision.** "A public channel gets no tools: WhatsApp reaches Maxpromo OS through four fixed
+operations" is accepted. **Scope.** The architecture only. Acceptance authorises no production
+step.
+
+### WhatsApp production stays off
+
+**Decision.** Meta is not connected, production migration 0012 is not applied, no production
+secret is added, and nothing is pushed or deployed because of the acceptance. Each is a later,
+separate owner decision.
+
+### The intended public number is +49 174 5910734 — migrated under control, not replaced blindly
+
+**Decision.** +49 174 5910734 is the intended new public business and WhatsApp number. The current
+legal/public number (+49 173 3645698) stays until a controlled migration, planned from the
+inventory in `docs/governance/public-number-migration.md`. **Why.** The number is written in three
+places, not one (the Impressum and the privacy notice hard-code it), and it reaches WhatsApp links,
+structured data and every commercial document; a blind replacement would leave the Impressum
+disagreeing with the rest of the site.
+
+## 2026-10-16 — the WhatsApp gateway (ADR-0019, proposed; accepted the same day — see above)
 
 ### A public channel gets no tools
 
