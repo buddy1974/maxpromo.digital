@@ -1,5 +1,8 @@
 # Email operating system — local engineering report
 
+Historical initial report. Webhook details are superseded by the
+[Hostinger contract reconciliation](hostinger-contract-2026-10-22.md).
+
 2026-10-22 · Marcel Tabit Akwe · **NO-GO for connecting the real mailbox**.
 
 WHAT: governed email inside the existing OS and owner capability lane.

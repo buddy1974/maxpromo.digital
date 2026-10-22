@@ -1,5 +1,14 @@
 # Change Log
 
+## 2026-10-22 — Hostinger webhook contract reconciliation, local only
+
+Reconciled the supplied official Bearer/message.received contract, independent delivery
+and mailbox IDs, deterministic RFC threading, previews and encrypted expiring content work.
+Added additive migration 0014, claim-bound retention leases and adversarial/concurrent proofs.
+Production remains undeployed; download host/media and external Telegram runtime activation
+remain explicit boundaries. See the [contract report](../reports/hostinger-contract-2026-10-22.md)
+and [activation procedure](../deployment/hostinger-activation.md).
+
 ## 2026-10-22 — governed email channel, local only
 
 Added a disabled Hostinger adapter, safe normalized mail storage migration, owner-only

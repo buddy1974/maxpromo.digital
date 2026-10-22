@@ -43,6 +43,9 @@ business_links, events, action_audit. Attachments are bounded, sanitized metadat
 messages rather than a redundant byte store/table. Existing `os_approvals`, `os_audit`
 and `os_agent_results` retain governance and caller replay history.
 
+The Hostinger contract extension in migration 0014 supersedes generic provider-ID
+mapping for that adapter; see the current activation section below.
+
 Accounts start disabled. Ingestion validates normalized internal mail, then uses a
 single SQL statement and unique `(account_id, provider_message_id)`/event identities.
 Only the winning delivery creates a message or updates thread attention. An idempotent
@@ -119,65 +122,41 @@ mail-only capabilities; actor/request ID are bound server-side. Approval executi
 requesting actor and email capability before calling the existing engine. No arbitrary
 capability can be smuggled through the Inbox.
 
-`POST /api/channels/mail` authenticates the documented Bearer webhook secret, limits actual
-stream bytes, and fails closed with 503 until the event contract is verified. It has no
-production acknowledgment/ingestion path. Bodies and secret values are not logged. Provider
-errors expose outcome/status only, not provider response bodies. External redirects are denied.
+`POST /api/channels/mail` now authenticates and validates the owner-supplied official
+message.received contract. It returns 200 only after atomic durable acceptance; invalid
+configuration or database failure remains fail-closed. Delivery and mailbox-event IDs
+are distinct, RFC headers reconstruct conservative same-sender threads, and previews are
+never authoritative full bodies. Signed locators are encrypted, not exposed to clients.
 
-## Activation procedure — NO-GO until completed
+## Reconciled storage and activation
 
-Marcel's account actions, only after local review:
+Migration 0014 adds independent header/date/preview state and durable deliveries,
+content_jobs and content_assets. No production migration or account activation occurred.
+Full body/private attachment processing ports have lease, expiry, SSRF/pinned-DNS,
+size/media and durable-reference controls. No live retrieval factory is installed:
+verified download host/media constraints are still required. Existing outbound actions
+remain disabled and the Resend commercial path is unchanged.
 
-1. Authorize scoped read access for only info@maxpromo.digital; provide API credential securely
-   through the deployment secret store, never chat or a committed file.
-2. Obtain mailbox resource ID using documented `/api/v1/me` under that restricted token.
-3. Authorize a test delivery to a controlled HTTPS staging endpoint and securely provide the
-   one-time webhook Bearer secret. Do not point a live production webhook at today's 503 route.
-4. Supply a redacted real Test delivery fixture and delivery status evidence. Required contract
-   facts: mailbox binding, message/folder/UID identity, event identity, retry/replay behavior,
-   truncated content retrieval, UID validity/move behavior. Exact JSON field names remain unknown.
+Canonical production target is https://www.maxpromo.digital/api/channels/mail, derived
+from the Domain Registry. Read-only HEAD on 2026-10-22 returned 404: local code is not
+currently deployed. Do not configure a real receiver before approved deployment/readiness.
 
-Engineering activation work remains ours after that external evidence arrives: implement/test
-the real normalizer, reconciliation/checkpoint worker, safe body synchronization, provider
-mutation ledger and uncertain-send reconciliation; wire the already-existing approval engine
-to the adapter; verify external Telegram focus/notifyActors; complete isolated end-to-end tests.
-No request to Marcel to code or create files is required.
+Required inbound variable names are EMAIL_PROVIDER, HOSTINGER_WEBHOOK_SECRET and the
+existing OS_SESSION_SECRET/database configuration. The old webhook-secret alias is removed;
+no API token or configurable API base is required for inbound webhook receipt. No real
+API token is requested or used. Existing owner-agent/Telegram/AI variables retain their
+existing purposes; no second bot or notice consumer is created.
 
-Then separately approve production: migration backup/check, privacy/retention and attachment
-policy, auth/API/DB/Cloudflare/Vercel/environment checks, staging replay tests, sender identity
-verification, only then deployment and controlled activation. Begin read-only with a pilot.
-Live sending is a separate owner decision, with exact recipient preview and delivery evidence.
-
-Environment variable names only:
-
-- `HOSTINGER_MAIL_WEBHOOK_SECRET` — implemented route requirement, minimum 32 characters
-- `OS_SESSION_SECRET` — existing cookie authentication
-- `OS_AGENT_SECRET`, `OS_AGENT_ALLOWED_ACTORS` — existing signed private agent lane
-- `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` — existing notification helper, not a new bot
-- `MAXPROMO_EVIDENCE_MODE`, `EVIDENCE_DATABASE_URL` — isolated evidence runs only
-- `NEON_DATABASE_URL`, `DATABASE_URL` — existing resolver; never use production in evidence
-- `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` — existing optional generated drafts/summary backends
-
-There are deliberately no invented Hostinger API-token/mailbox-ID environment variables:
-the adapter currently receives token and mailboxResourceId as explicit constructor options.
-Final runtime environment names will be documented when that activation wiring is implemented.
-No environment switch can activate today's webhook or mutation port.
-
-Exact current webhook configuration: **do not configure production**. Future candidate path
-`https://maxpromo.digital/api/channels/mail`, method POST, event `message.received`, documented
-`Authorization: Bearer <webhook-secret>` authentication. No HMAC header or handshake is assumed.
-Verify routing/TLS and test fixture before installation. Today's expected authenticated result
-is 503 `webhook_contract_not_verified`, so it is unsuitable for live delivery.
-
-Rollback: disable provider/account processing first, stop webhook delivery in provider control
-panel with owner authorization, roll application back; retain additive mail schema and audit
-for reconciliation. Never drop evidence/production tables as an application rollback.
+The [Hostinger activation runbook](../deployment/hostinger-activation.md) is the single
+current source for exact environment names, Hostinger/Vercel steps, signed-URL boundary,
+external Telegram notifyActors status, verification and rollback. This supersedes the
+initial missing-webhook-contract blocker: the parser/receipt contract is now implemented.
 
 ## Remaining risks
 
-Real synchronization, attachment bytes, outbox reconciliation and external Telegram routing
-cannot be certified by mock contracts. UID/folder identity and send uncertainty need production
-provider evidence. Existing notification consumer configuration gap remains. Full external
-mobile journeys and real delivery are unverified. These are activation blockers, not P2 polish.
-P2: retention automation, richer attachment scanning, indexed multilingual search, reply-all/
-forward previews, mailbox management/aliases where separately verified, large-thread pagination.
+Production deployment/migration/account authorization and real signed-download host/media
+constraints remain required. Body/attachment workers and durable private-storage backend
+are not activated. External Gateway source/configuration is absent from this machine;
+owner notice generation is preserved but proactive mobile delivery remains unverified.
+Provider outbound reconciliation, richer search, attachment scanning/retention and large
+thread pagination remain staged. No production mailbox, WhatsApp or DNS change occurred.

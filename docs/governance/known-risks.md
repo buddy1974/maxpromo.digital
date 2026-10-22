@@ -1743,15 +1743,16 @@ Last updated: 2026-09-04 (v7.0 — enterprise polish)
 
 ### Email channel activation blockers — 2026-10-22
 
-ADR-0020 is implemented locally and remains disconnected. A verified Hostinger test
-delivery contract (mailbox/folder/UID/retry semantics), body synchronization, durable
-provider mutation reconciliation and production approval are required before connection.
+ADR-0020 remains disconnected in production. The owner-supplied Hostinger message.received
+contract is now implemented/tested locally (distinct delivery/event IDs, threading and
+preview semantics). Verified signed-download host/media constraints, safe body/storage
+activation, outbound reconciliation and production approval remain required.
 Existing proactive notice generation is reused; external Mission Control `notifyActors`
 and natural-language thread/draft focus routing remain unverified. This reconciles the
 brief's "risk 90" with the existing proactive-notices item (89); neither is claimed fixed
 by adding a second Telegram transport. Attachment bytes/retention remain disabled until
 their authenticated retrieval and privacy controls are implemented. See
-[activation details](../architecture/email-channel.md).
+[activation details](../deployment/hostinger-activation.md).
 
 Certification also reports the pre-existing tooling import of `@neondatabase/serverless`
 without a tooling dependency declaration (present before this mission). No new dependency

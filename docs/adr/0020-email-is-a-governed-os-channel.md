@@ -26,15 +26,25 @@ GREEN permits read/search/draft and internal state. AMBER sends/trashes only an 
 prepared payload through the existing engine. Permanent delete is not offered. Email
 text cannot execute tools, expose secrets, alter security or authorize commitments.
 
-## Fail-closed activation boundary
+## Contract reconciliation and activation boundary — 2026-10-22
 
-Official Hostinger documentation establishes Bearer-secret webhook authentication,
-but not a complete event identity/body/retry contract. The route therefore authenticates
-and bounds bytes, then returns 503; it does not parse, acknowledge or ingest mail.
-The real fixture must establish how mailbox, folder, UID and threading references map
-to durable account/message identity before activation. Provider folder UIDs must not
-be mistaken for globally unique message IDs. Moves and UID validity resets need an
-explicit synchronization strategy; RFC Message-ID alone is also attacker controlled.
+Marcel supplied the official message.received payload and identifier semantics.
+The route now authenticates and bounds bytes, validates event and fixed mailbox, and
+returns 200 only after atomic durable acceptance. Delivery id and mailbox eventId are
+separate; eventId is not an IMAP UID or RFC Message-ID. Same-sender, uncontested RFC
+reply/reference matches reconstruct threads; subject alone never merges them.
+
+The two webhook body fields are previews (at most 200 characters), never authoritative
+full text. Signed body/attachment locators are encrypted with a domain-separated key
+derived from the existing session secret. Durable metadata, content jobs and private
+storage-reference ports extend the existing channel. Download domains/body media shape
+were not supplied: there is no live transport factory or automatic URL fetching.
+Retrieval requires exact verified hosts, public pinned DNS, TLS hostname verification,
+bounded responses and private durable storage; it remains blocked pending those facts.
+
+Canonical route target is https://www.maxpromo.digital/api/channels/mail, derived from
+the Domain Registry. Read-only HEAD on 2026-10-22 returned 404: the local route is not
+deployed. No production activation is authorized by this reconciliation.
 
 This ADR does not authorize configuration of a production webhook or migration.
 Local test contracts are not represented as Hostinger webhook contracts.
