@@ -93,7 +93,15 @@ async function post(action, payload, opts = {}) {
 
 let seq = 0
 const rid = () => `proof-${Date.now().toString(36)}-${(seq++).toString(36)}-${randomBytes(3).toString('hex')}`
-const run = (capability, input = {}, requestId = rid()) => post('run', { requestId, capability, input }).then((r) => r.json)
+// --dictated verifies the commercial workflow without spending model credits.
+// It does not certify language-model resistance to hostile research.
+const dictated = process.argv.includes('--dictated')
+const run = (capability, input = {}, requestId = rid()) => {
+  const effective = dictated && capability === 'outreach.draft' && !input.body
+    ? { ...input, subject: 'Ihre Online-Buchung', body: 'Guten Tag,\n\nich bin Marcel von Maxpromo Digital. Wie organisieren Sie Ihre Buchungen heute?\n\nViele Grüße\nMarcel' }
+    : input
+  return post('run', { requestId, capability, input: effective }).then((r) => r.json)
+}
 const execute = (approval, hash) => post('execute', { approvalId: approval.id, payloadHash: hash ?? approval.payloadHash }).then((r) => r.json)
 
 /* ── snapshot ─────────────────────────────────────────────────────────── */
@@ -104,6 +112,7 @@ const plusDays = (d) => { const x = new Date(`${today}T00:00:00Z`); x.setUTCDate
 async function main() {
   console.log('='.repeat(74))
   console.log('COMMERCIAL AGENT API — end to end against the evidence lab')
+  if (dictated) console.log('DICTATED MODE: no language-model calls; hostile-research checks cover side effects, not model behaviour.')
 
   const alive = await fetch(BASE + '/api/health').then((r) => r.ok).catch(() => false)
   if (!alive) { console.error(`\nNo server at ${BASE}. Start the evidence runtime first.`); process.exit(1) }

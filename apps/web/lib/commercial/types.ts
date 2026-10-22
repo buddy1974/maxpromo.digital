@@ -58,7 +58,7 @@ export interface CapabilityResult {
 }
 
 export interface FocusRef {
-  kind: 'lead' | 'client' | 'angebot' | 'invoice' | 'job' | 'incident' | 'approval' | 'draft'
+  kind: 'lead' | 'client' | 'angebot' | 'invoice' | 'job' | 'incident' | 'approval' | 'draft' | 'email_thread' | 'email_draft'
   id: string
   label: string
 }

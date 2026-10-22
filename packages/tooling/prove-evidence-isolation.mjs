@@ -294,10 +294,20 @@ check('whatsapp: the guard returns rather than continuing', /if \(o\.evidenceMod
 check('whatsapp: the runtime hands the provider the evidence mode', /evidenceMode: isEvidenceMode\(\)/.test(code('apps/web/lib/channels/runtime.ts')))
 check('whatsapp: a send-host override is refused outside evidence mode', /if \(!opts\.evidenceMode \|\| !LOOPBACK\.test\(override\)\)/.test(code('apps/web/lib/channels/config.ts')))
 
+const hostingerSrc = code('apps/web/lib/mail/provider.ts')
+check('hostinger: evidence guard precedes the injected transport',
+  hostingerSrc.indexOf('gate.isEvidenceMode()') !== -1 &&
+  hostingerSrc.indexOf('gate.isEvidenceMode()') < hostingerSrc.indexOf('await transport('))
+check('hostinger: missing gate, disabled channel and unverified fixture fail closed',
+  /if \(!gate\?\.enabled \|\| !gate\.fixtureVerified \|\| gate\.isEvidenceMode\(\)/.test(hostingerSrc) &&
+  /throw new MailProviderError\('blocked'\)/.test(hostingerSrc))
+check('hostinger: no ambient fetch fallback or configurable API host',
+  !/\bfetch\(/.test(hostingerSrc) && hostingerSrc.includes('https://api.mail.hostinger.com/api/v1/mailboxes/'))
+
 console.log('')
 console.log('The blocked list matches what the application can actually reach')
 
-/* The contract names five hosts. If the application grows a sixth outbound
+/* The contract names every host. If the application grows another outbound
    host, this fails, because a host nobody classified is a host nobody blocked. */
 const SCAN = ['apps/web/lib', 'apps/web/app/api']
 const walk = (d, out = []) => {

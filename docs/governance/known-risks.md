@@ -1741,6 +1741,25 @@ Last updated: 2026-09-04 (v7.0 — enterprise polish)
 
 ## Resolution path
 
+### Email channel activation blockers — 2026-10-22
+
+ADR-0020 is implemented locally and remains disconnected. A verified Hostinger test
+delivery contract (mailbox/folder/UID/retry semantics), body synchronization, durable
+provider mutation reconciliation and production approval are required before connection.
+Existing proactive notice generation is reused; external Mission Control `notifyActors`
+and natural-language thread/draft focus routing remain unverified. This reconciles the
+brief's "risk 90" with the existing proactive-notices item (89); neither is claimed fixed
+by adding a second Telegram transport. Attachment bytes/retention remain disabled until
+their authenticated retrieval and privacy controls are implemented. See
+[activation details](../architecture/email-channel.md).
+
+Certification also reports the pre-existing tooling import of `@neondatabase/serverless`
+without a tooling dependency declaration (present before this mission). No new dependency
+was added under the owner's no-dependency-change instruction. The advisory audit reports
+13 existing advisories: 5 high development-only and 8 moderate; no dependency or lockfile
+change belongs to this mission. Full certification remains blocked by that declaration
+finding even when merge verification passes.
+
 Risks 1–5 are resolved by Auth-1 through Auth-4.
 Risk 6 is resolved by Auth-0.
 Risks 7–10 require process and documentation steps alongside Auth implementation.

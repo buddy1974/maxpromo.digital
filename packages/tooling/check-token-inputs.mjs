@@ -236,7 +236,7 @@ const dangling = [...REFERENCED.entries()]
  */
 
 /** Evidence of the transport itself: the module that posts to the mail API. */
-const TRANSPORT = /api\.resend\.com/
+const TRANSPORT = /api\.(?:resend\.com|mail\.hostinger\.com)/
 
 /**
  * Local import specifiers only. A package cannot be part of this app's graph.
@@ -295,7 +295,9 @@ for (const app of APPS) {
   const files = walk(appBase)
 
   // 1. The transport, by behaviour rather than by name.
-  const transports = files.filter((f) => TRANSPORT.test(readFileSync(f, 'utf8')))
+  // Fixtures do not create new transport anchors. Keep them in the import graph:
+  // a production module importing a test file must not escape the markup rule.
+  const transports = files.filter((f) => !/\.(?:test|spec)\.[cm]?[jt]sx?$/.test(f) && TRANSPORT.test(readFileSync(f, 'utf8')))
   if (transports.length === 0) continue
   transportsFound += transports.length
 

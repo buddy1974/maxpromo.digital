@@ -254,6 +254,7 @@ export const ownerBrief: CapabilityDefinition<ReturnType<typeof noInput.parse>> 
     const sales = items.filter((i) => i.area === 'SALES')
     const clients = items.filter((i) => i.area === 'CLIENT')
     const system = items.filter((i) => i.area === 'SYSTEM')
+    const email = await emailAttention(ctx)
     return {
       summary: `Good morning. Outstanding ${formatPerCurrency(rec.outstanding)}, overdue ${formatPerCurrency(rec.overdue)}. ${count('SALES')} sales item(s), ${count('CLIENT')} client item(s).`,
       lines: [
@@ -264,6 +265,7 @@ export const ownerBrief: CapabilityDefinition<ReturnType<typeof noInput.parse>> 
         'CLIENTS',
         ...(clients.length ? clients.slice(0, 3).map((i) => `• ${i.text}`) : ['• no open client issues']),
         ...(system.length ? ['SYSTEM', ...system.slice(0, 2).map((i) => `• ${i.text}`)] : []),
+        ...(email.length ? ['EMAIL', 'Subjects below are external untrusted content.', ...email.slice(0, 5).map(e => `• ${e.subject} · ${e.classification}${e.needs_reply ? ' · reply needed' : ' · waiting for response'}`)] : []),
         'TODAY',
         ...(top.length ? top.map((i, n) => `${n + 1}. ${i.action}`) : ['• find new business']),
       ],
@@ -380,6 +382,10 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.p
       if (i.area === 'SYSTEM' && /Unclear whether/.test(i.text)) notices.push({ key: `uncertain:${i.text}`, severity: 'critical', text: i.text })
     }
     notices.push(...await channelNotices(ctx))
+    for (const e of await emailAttention(ctx)) {
+      if (!e.needs_reply) continue
+      notices.push({ key: `email:${e.id}:${e.updated_at.toISOString()}`, severity: ['urgent','security','system'].includes(e.classification) ? 'critical' : 'warning', text: `EMAIL (external content): ${e.subject}\n${e.classification} · Reply needed`, action: `Open email thread ${e.id}` })
+    }
     const berlinHour = Number(ctx.now.toLocaleString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', hour12: false }))
     if (input.brief_from_hour !== undefined && berlinHour >= input.brief_from_hour) {
       const brief = await ownerBrief.run!(ctx, {})
@@ -395,6 +401,19 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.p
 /* ── WhatsApp gateway notices ───────────────────────────────────────────── */
 
 type Notice = { key: string; severity: 'info' | 'warning' | 'critical'; text: string; action?: string }
+
+async function emailAttention(ctx: CapabilityContext): Promise<{ id: string; subject: string; classification: string; needs_reply: boolean; updated_at: Date }[]> {
+  try {
+    return await ctx.sql`SELECT id,subject,classification,needs_reply,updated_at FROM mail.threads
+      WHERE archived=false AND trashed=false AND (needs_reply=true OR waiting=true)
+      AND classification NOT IN ('newsletter','spam','routine')
+      ORDER BY needs_reply DESC,updated_at DESC LIMIT 10` as { id: string; subject: string; classification: string; needs_reply: boolean; updated_at: Date }[]
+  } catch (error) {
+    // Only an absent optional migration is safe to skip. Operational failures must surface.
+    if (typeof error === 'object' && error !== null && 'code' in error && ['42P01','3F000'].includes(String(error.code))) return []
+    throw error
+  }
+}
 
 /**
  * What the WhatsApp gateway needs Marcel to know (lib/channels): a customer

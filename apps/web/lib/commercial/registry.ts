@@ -13,6 +13,7 @@ import { DOCUMENT_CAPABILITIES } from './capabilities/documents'
 import { OPERATIONS_CAPABILITIES } from './capabilities/operations'
 import { OUTREACH_CAPABILITIES } from './capabilities/outreach'
 import { SALES_CAPABILITIES } from './capabilities/sales'
+import { MAIL_CAPABILITIES } from './capabilities/mail'
 import { VIEW_CAPABILITIES } from './capabilities/views'
 import type { AnyCapability } from './types'
 
@@ -22,6 +23,7 @@ const ALL: AnyCapability[] = [
   ...DOCUMENT_CAPABILITIES,
   ...OPERATIONS_CAPABILITIES,
   ...VIEW_CAPABILITIES,
+  ...MAIL_CAPABILITIES,
 ]
 
 export const CAPABILITIES: ReadonlyMap<string, AnyCapability> = (() => {
