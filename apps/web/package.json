@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev --port 3020",
     "build": "next build",
+    "postbuild": "node scripts/email/prove-release-model.ts",
     "start": "next start --port 3020",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",

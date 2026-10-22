@@ -11,3 +11,6 @@
   host/media policy and pinned DNS, not just HTTPS or a provider-authenticated envelope.
 - A locked deployed receiver should reject missing credentials without reporting a service
   outage. Conditional release authorization does not waive required model-backed checks.
+- Vercel env run may export empty production secrets and overlay local dotenv values.
+  Never label that fallback as current-production-key proof. Keep non-exportable model
+  credentials in-cloud and isolate a build child against evidence data for certification.

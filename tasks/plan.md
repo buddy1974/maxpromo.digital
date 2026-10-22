@@ -28,3 +28,21 @@ secret absent; prove safe methods and migration replay; preserve all download/ow
 VERIFICATION: full verify, explicit email/storage/commercial proofs, build/auth/regressions;
 inspect production metadata by names only. Production SQL still needs its existing backup
 and reviewed Neon/psql procedure; do not run evidence tools against production.
+
+## Owner-authorized locked infrastructure deployment — 2026-10-22
+
+WHAT: apply only mail0013/0014 and deploy the accepted receiver, locked by absent
+HOSTINGER_WEBHOOK_SECRET. Marcel explicitly authorizes this separate infrastructure scope.
+EFFORT: verify non-model checks; identify Vercel production DB against Neon branch;
+capture backup; apply reviewed SQL atomically; verify structure/empty mail; push normal
+main/Vercel path; prove public405/401, application health and unchanged mail counts.
+VERIFICATION: full verify, email/storage/fresh SQL/locked HTTP/security/dependency/dictated
+proofs; no model-backed reruns. Prior model gate remains FAILED/BLOCKED EXTERNALLY —
+ANTHROPIC API CREDIT INSUFFICIENT. No full Email OS certification or Hostinger action.
+
+Owner update: credit restored/new model key installed in Vercel; EMAIL_PROVIDER configured
+by Marcel. Re-test current credential without exporting it. Vercel production secrets are
+not exported by env run; local dotenv fallback is not production-key evidence. Use an
+opt-in postbuild child proof in the SAME Vercel project/candidate build, with build-only
+evidence DB input, fresh agent credentials and outbound suppression. Runtime configuration
+and commercial gates stay intact; successful candidate is promoted only after verification.
