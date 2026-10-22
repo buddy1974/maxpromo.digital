@@ -10,8 +10,9 @@ for(const [env,success] of [
   [{...base,VERCEL_ENV:'preview'},false],
   [{...base,EMAIL_RELEASE_EVIDENCE_DB:''},false],
   [{...base,EMAIL_RELEASE_EVIDENCE_DB:base.NEON_DATABASE_URL},false],
+  [{...base,EMAIL_RELEASE_EXPECTED_DB_ENDPOINT:'wrong-endpoint'},false],
 ] as const){
   const result=spawnSync(process.execPath,[script],{env,encoding:'utf8',timeout:5000})
   assert.equal(result.status===0,success,'Release proof must stay opt-in and refuse unavailable/production evidence targets')
 }
-console.log('4 release-build isolation guards passed; no server, database or model called.')
+console.log('5 release-build isolation guards passed; no server, database or model called.')

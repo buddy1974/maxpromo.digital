@@ -11,6 +11,9 @@ if(process.env.EMAIL_RELEASE_MODEL_PROOF==='1'){
   const production=selection.ok?selection.url:undefined
   const identity=(value:string)=>{const url=new URL(value);return `${url.hostname.replace(/-pooler\./,'.')}${url.pathname}`}
   if(process.env.VERCEL_ENV!=='production' || !target || !production || identity(target)===identity(production))throw new Error('Release proof isolation unavailable')
+  const expected=process.env.EMAIL_RELEASE_EXPECTED_DB_ENDPOINT
+  if(expected && new URL(production).hostname.split('.')[0].replace(/-pooler$/,'')!==expected)throw new Error('Production database identity mismatch')
+  if(expected)console.log('Production database endpoint matches the reviewed Neon production branch')
   const env:NodeJS.ProcessEnv={...process.env,MAXPROMO_EVIDENCE_MODE:'1',EVIDENCE_DATABASE_URL:target,
     NEON_DATABASE_URL:'',DATABASE_URL:'',OS_AGENT_SECRET:randomBytes(32).toString('hex'),
     OS_AGENT_ALLOWED_ACTORS:'telegram:100000001',EMAIL_PROVIDER:'disabled',WHATSAPP_AUTOMATION:'off',
