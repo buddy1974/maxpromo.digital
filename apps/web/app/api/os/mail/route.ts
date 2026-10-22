@@ -30,7 +30,7 @@ export const GET = withAuth(async (req, { session }) => {
       const rows = await sql`SELECT t.*,EXISTS(SELECT 1 FROM mail.messages WHERE thread_id=t.id AND NOT is_read) AS unread
         FROM mail.threads t WHERE id=${thread}::uuid`
       if (!rows.length) return NextResponse.json({ error: 'Not found' }, { status: 404, headers })
-      const messages = await sql`SELECT id,sender,recipients,cc,subject,body_text,received_at,is_read,attachments
+      const messages = await sql`SELECT id,sender,recipients,cc,subject,body_text,preview_text,body_state,event_at,email_date,received_at,is_read,attachments
         FROM mail.messages WHERE thread_id=${thread}::uuid ORDER BY received_at LIMIT 200`
       const links = await businessLinks(sql, [thread])
       return NextResponse.json({ thread: { ...rows[0], business_label: businessLabel(links) }, messages, links }, { headers })

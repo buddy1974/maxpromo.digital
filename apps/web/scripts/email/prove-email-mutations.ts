@@ -18,10 +18,10 @@ assert.notEqual(source,mutated,'Mutation must change actual source')
 await assert.rejects(()=>evidenceBlocked(mutated), /Evidence must stop the transport/)
 const providerUrl=url(emit(source))
 const routeSource=readFileSync('apps/web/app/api/channels/mail/route.ts','utf8').replace(/^import .*$/gm,'')
-const before=process.env.HOSTINGER_MAIL_WEBHOOK_SECRET
-process.env.HOSTINGER_MAIL_WEBHOOK_SECRET='synthetic-secret-for-mutation-only-000001'
+const before=process.env.HOSTINGER_WEBHOOK_SECRET
+process.env.HOSTINGER_WEBHOOK_SECRET='synthetic-secret-for-mutation-only-000001'
 async function refusesForged(code: string) {
-  const route=await import(url(`import {readBoundedPayload,verifyWebhookBearer} from '${providerUrl}'; const NextResponse={json:(body,options={})=>Response.json(body,options)}; const enforceRateLimit=()=>null; const MAX_MAIL_BYTES=262144; ${emit(code)}`))
+  const route=await import(url(`import {readBoundedPayload,verifyWebhookBearer} from '${providerUrl}'; const NextResponse={json:(body,options={})=>Response.json(body,options)}; const enforceRateLimit=()=>null; const MAX_MAIL_BYTES=262144; const HOSTINGER_MAILBOX="info@maxpromo.digital";const parseHostingerWebhook=()=>{throw new Error("invalid")};const acceptHostingerMail=async()=>{};const getDb=()=>{}; ${emit(code)}`))
   const result=await route.POST(new Request('https://local.invalid',{method:'POST',body:'{}'}))
   assert.equal(result.status,401,'Forged webhook must be refused')
 }
@@ -31,7 +31,19 @@ try {
   assert.notEqual(broken,routeSource)
   await assert.rejects(()=>refusesForged(broken), /Forged webhook must be refused/)
 } finally {
-  if(before===undefined) delete process.env.HOSTINGER_MAIL_WEBHOOK_SECRET
-  else process.env.HOSTINGER_MAIL_WEBHOOK_SECRET=before
+  if(before===undefined) delete process.env.HOSTINGER_WEBHOOK_SECRET
+  else process.env.HOSTINGER_WEBHOOK_SECRET=before
 }
-console.log('2 real source protection mutations caught: evidence transport gate and webhook authentication.')
+const parserSource=readFileSync('apps/web/lib/mail/hostingerWebhook.ts','utf8')
+const normalizationUrl=url(emit(readFileSync('apps/web/lib/mail/normalization.ts','utf8')))
+const contentUrl=url(emit(readFileSync('apps/web/lib/mail/content.ts','utf8').replace("from './normalization'",`from '${normalizationUrl}'`)))
+async function refusesWrongMailbox(code: string) {
+  const parser=await import(url(emit(code.replace("from './normalization'",`from '${normalizationUrl}'`).replace("from './content'",`from '${contentUrl}'`))))
+  const event={id:'82470320-5364-57eb-8c8e-8004ec3c9573',event:'message.received',timestamp:'2026-04-03T12:00:00Z',data:{eventId:'opaque-123',mailboxAddress:'attacker@example.com',messageId:'<a@b.com>',inReplyTo:'',references:[],subject:'test',from:'a@b.com',to:['attacker@example.com'],cc:[],date:'invalid',plainBody:'',htmlBody:'',bodyUrl:'',attachments:[]}}
+  assert.throws(()=>parser.parseHostingerWebhook(event,'info@maxpromo.digital'),/wrong_mailbox/,'Wrong mailbox must be refused')
+}
+await refusesWrongMailbox(parserSource)
+const wrongMailbox=parserSource.replace("if (mailbox !== address(configuredMailbox))",'if (false)')
+assert.notEqual(wrongMailbox,parserSource)
+await assert.rejects(()=>refusesWrongMailbox(wrongMailbox),/Wrong mailbox must be refused/)
+console.log('3 real source protection mutations caught: evidence transport gate, webhook authentication and mailbox binding.')

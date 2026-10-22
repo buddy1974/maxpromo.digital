@@ -67,6 +67,9 @@ try {
   try {
     await client.query('BEGIN')
     await client.query(readFileSync(resolve(root, 'apps/web/db/migrations/0013-email-channel.sql'), 'utf8'))
+    // Remove only this mission's earlier evidence-only prototype signature, never data.
+    await client.query('DROP FUNCTION IF EXISTS mail.complete_content(uuid,uuid,text,jsonb)')
+    await client.query(readFileSync(resolve(root, 'apps/web/db/migrations/0014-hostinger-contract.sql'), 'utf8'))
     await client.query('COMMIT')
   } catch (error) { await client.query('ROLLBACK'); throw error } finally { client.release() }
   console.log('PASS additive mail migration applied only to guarded evidence target')
@@ -118,6 +121,53 @@ try {
   check('invalid link confidence rejected by database', await rejected(() => sql`INSERT INTO mail.business_links(thread_id,entity_kind,entity_id,match_status) VALUES(${thread.id},'lead','fixture','trusted')`))
   check('unknown thread link rejected by foreign key', await rejected(() => sql`INSERT INTO mail.business_links(thread_id,entity_kind,entity_id,match_status) VALUES(${randomUUID()},'lead','fixture','possible')`))
   check('duplicate mailbox identity rejected by unique key', await rejected(() => sql`INSERT INTO mail.accounts(id,address,provider) VALUES(${account + '-duplicate'},${sender},'evidence')`))
+  await sql`UPDATE mail.accounts SET provider='hostinger' WHERE id=${account}`
+  const contract={deliveryId:randomUUID(),eventId:`contract:${randomUUID()}`,mailbox:sender,messageId:`<${randomUUID()}@example.invalid>`,inReplyTo:'',references:[] as string[],
+    subject:'Contract enquiry',sender,recipients:['owner@example.invalid'],cc:[],eventAt:new Date().toISOString(),emailDate:'2026-04-03T06:21:33Z',previewText:'Preview only',
+    attachments:[{id:'attachment-1',filename:'document.pdf',size:5,contentType:'application/octet-stream'}],classification:'lead',needsReply:true}
+  const expires=new Date(Date.now()+60*60*1000).toISOString()
+  const accept=async(p:typeof contract)=>await sql`SELECT * FROM mail.accept_hostinger(${account},${JSON.stringify(p)}::jsonb,'{"ciphertext":"synthetic-ciphertext-not-url"}'::jsonb,${expires}::timestamptz)`
+  const contractRace=await Promise.all(Array.from({length:12},()=>accept(contract)))
+  check('real Hostinger delivery race accepts exactly once',contractRace.filter(result=>result[0]?.created).length===1)
+  const [accepted]=await sql`SELECT m.*,t.updated_at FROM mail.messages m JOIN mail.threads t ON t.id=m.thread_id WHERE m.account_id=${account} AND provider_message_id=${contract.eventId}`
+  check('eventId is mailbox message identity and preview is not authoritative body',accepted.provider_message_id===contract.eventId && accepted.body_state==='preview' && accepted.body_text==='' && accepted.preview_text===contract.previewText)
+  check('provider event timestamp and email Date are stored independently',new Date(accepted.event_at).toISOString()===contract.eventAt && new Date(accepted.email_date).toISOString()==='2026-04-03T06:21:33.000Z')
+  const secondDelivery={...contract,deliveryId:randomUUID()}
+  check('same event through a different webhook delivery does not ingest twice',!(await accept(secondDelivery))[0].created)
+  const [durable]=await sql`SELECT (SELECT count(*)::int FROM mail.deliveries WHERE account_id=${account} AND provider_event_id=${contract.eventId}) AS deliveries,
+    (SELECT count(*)::int FROM mail.content_jobs WHERE message_id=${accepted.id}) AS jobs,
+    (SELECT count(*)::int FROM mail.content_assets WHERE message_id=${accepted.id}) AS assets`
+  check('distinct deliveries retained while content work/assets remain once',durable.deliveries===2 && durable.jobs===1 && durable.assets===1)
+  const [afterDuplicate]=await sql`SELECT updated_at FROM mail.threads WHERE id=${accepted.thread_id}`
+  check('duplicates cannot generate new owner notice timestamp',new Date(afterDuplicate.updated_at).getTime()===new Date(accepted.updated_at).getTime())
+  const [noEffects]=await sql`SELECT j.attempts,(SELECT count(*)::int FROM mail.action_audit WHERE thread_id=${accepted.thread_id}) AS actions FROM mail.content_jobs j WHERE j.message_id=${accepted.id}`
+  check('webhook acceptance runs no AI or outbound action',noEffects.attempts===0 && noEffects.actions===0)
+  check('delivery ID cannot be rebound to another event',await rejected(()=>accept({...contract,eventId:'different-event'})))
+  check('database mailbox binding rejects a different mailbox',await rejected(()=>accept({...contract,deliveryId:randomUUID(),eventId:'wrong-mailbox-event',mailbox:'other@example.invalid'})))
+  const [leadCount]=await sql`SELECT count(*)::int AS n FROM os_leads WHERE email=${sender}`
+  check('duplicate webhook acceptance cannot create leads',leadCount.n===1)
+  const reply={...contract,deliveryId:randomUUID(),eventId:`reply:${randomUUID()}`,messageId:`<${randomUUID()}@example.invalid>`,inReplyTo:contract.messageId,references:[contract.messageId],attachments:[]}
+  const replyResult=(await accept(reply))[0]
+  check('RFC reply references reconstruct same-sender thread',replyResult.thread_id===accepted.thread_id)
+  const foreignReply={...reply,deliveryId:randomUUID(),eventId:`foreign:${randomUUID()}`,messageId:`<${randomUUID()}@example.invalid>`,sender:'stranger@example.invalid'}
+  check('spoofed reference from another sender cannot join business thread',(await accept(foreignReply))[0].thread_id!==accepted.thread_id)
+  const sameSubject={...contract,deliveryId:randomUUID(),eventId:`subject:${randomUUID()}`,messageId:`<${randomUUID()}@example.invalid>`,attachments:[]}
+  check('subject matching alone never merges threads',(await accept(sameSubject))[0].thread_id!==accepted.thread_id)
+  const [job]=await sql`UPDATE mail.content_jobs SET state='processing',lease_token=gen_random_uuid(),lease_until=now()+interval '1 minute' WHERE message_id=${accepted.id} RETURNING id,lease_token`
+  const [wrongLease]=await sql`SELECT mail.complete_content(${job.id},${randomUUID()},'Full body','[]'::jsonb,'other',false) AS done`
+  check('stale content worker cannot complete another lease',wrongLease.done===false)
+  const asset=[{id:'attachment-1',storageRef:'private:sha256-fixture',sha256:'a'.repeat(64),size:5,contentType:'application/pdf'}]
+  const [completion]=await sql`SELECT mail.complete_content(${job.id},${job.lease_token},'Full body beyond a 200-character preview: urgent security incident',${JSON.stringify(asset)}::jsonb,'system',true) AS done`
+  const [retained]=await sql`SELECT m.body_state,m.body_text,j.sealed_locator,a.storage_ref FROM mail.messages m JOIN mail.content_jobs j ON j.message_id=m.id JOIN mail.content_assets a ON a.message_id=m.id WHERE m.id=${accepted.id}`
+  check('full body and private durable attachment reference commit together',completion.done && retained.body_state==='complete' && retained.body_text.startsWith('Full body') && retained.storage_ref===asset[0].storageRef)
+  check('completed content clears temporary locator ciphertext',JSON.stringify(retained.sealed_locator)==='{}')
+  const [fullTriage]=await sql`SELECT classification FROM mail.threads WHERE id=${accepted.thread_id}`
+  check('authoritative full body can escalate preview triage atomically',fullTriage.classification==='system')
+  const [completeReplay]=await sql`SELECT mail.complete_content(${job.id},${job.lease_token},'Changed on replay',${JSON.stringify(asset)}::jsonb,'other',false) AS done`
+  check('completed content replay cannot overwrite authoritative body',completeReplay.done===false)
+  await accept(contract)
+  const [retryBody]=await sql`SELECT body_state,body_text FROM mail.messages WHERE id=${accepted.id}`
+  check('webhook retry cannot replace completed full body with its preview',retryBody.body_state==='complete' && retryBody.body_text===retained.body_text)
   console.log(`EMAIL STORAGE: ${passed} checks passed against isolated evidence DB; no real mail used`)
 } catch (error) {
   // Driver errors can include URLs/SQL parameters. Print only a safe classification.
@@ -128,6 +178,9 @@ try {
   if (created) {
     try {
       await sql`DELETE FROM mail.business_links WHERE thread_id IN (SELECT id FROM mail.threads WHERE account_id=${account})`
+      await sql`DELETE FROM mail.content_assets WHERE message_id IN (SELECT id FROM mail.messages WHERE account_id=${account})`
+      await sql`DELETE FROM mail.content_jobs WHERE message_id IN (SELECT id FROM mail.messages WHERE account_id=${account})`
+      await sql`DELETE FROM mail.deliveries WHERE account_id=${account}`
       await sql`DELETE FROM mail.events WHERE account_id=${account}`
       await sql`DELETE FROM mail.messages WHERE account_id=${account}`
       await sql`DELETE FROM mail.threads WHERE account_id=${account}`

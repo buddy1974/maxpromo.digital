@@ -9,7 +9,7 @@ interface MailThread {
 }
 interface MailMessage {
   id: string; sender: string; recipients: string[]; cc: string[]; subject: string; body_text: string
-  received_at: string; is_read: boolean
+  received_at: string; is_read: boolean; body_state?: string; preview_text?: string
   attachments: { id: string; filename: string; size: number; contentType: string }[]
 }
 type Filter = 'inbox' | 'unread' | 'needs_reply' | 'waiting' | 'client' | 'lead' | 'billing' | 'system' | 'archived'
@@ -164,7 +164,8 @@ export default function InboxPage() {
               {detail.messages.map(message => <article key={message.id} className="mb-4 border border-[var(--brand-border)] p-4">
                 <dl className="space-y-2 break-words text-xs text-[var(--brand-text-secondary)]"><div><dt className="inline font-semibold">{c.from}: </dt><dd className="inline">{message.sender}</dd></div><div><dt className="inline font-semibold">{c.to}: </dt><dd className="inline">{message.recipients.join(', ')}</dd></div>{message.cc.length > 0 && <div><dt className="inline font-semibold">{c.cc}: </dt><dd className="inline">{message.cc.join(', ')}</dd></div>}</dl>
                 <time className="mt-3 block text-xs text-[var(--brand-text-secondary)]" dateTime={message.received_at}>{timestamp(message.received_at)}</time>
-                <p className="mt-4 whitespace-pre-wrap break-words text-sm wrap-anywhere">{message.body_text || c.noBody}</p>
+                {message.body_state === 'preview' && <p className="mt-3 text-xs text-[var(--brand-text-secondary)]">{locale === 'de' ? 'Vorschau (max. 200 Zeichen). Vollständiger Inhalt noch nicht abgerufen.' : 'Preview (up to 200 characters). Full content has not been retrieved.'}</p>}
+                <p className="mt-4 whitespace-pre-wrap break-words text-sm wrap-anywhere">{message.body_state === 'preview' ? message.preview_text || c.noBody : message.body_text || c.noBody}</p>
                 {message.attachments.length > 0 && <div className="mt-4 border-t border-[var(--brand-border)] pt-4"><h3 className="text-sm font-semibold">{c.attachments}</h3><ul className="mt-2 space-y-2 text-xs">{message.attachments.map(attachment => <li key={attachment.id} className="break-words">{attachment.filename} · {Math.ceil(attachment.size / 1024)} KB · {attachment.contentType}</li>)}</ul><p className="mt-3 text-xs text-[var(--brand-text-secondary)]">{c.metadata}</p></div>}
               </article>)}
             </>}

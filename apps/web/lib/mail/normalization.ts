@@ -24,7 +24,7 @@ export function normalizeMail(value: InboundMail): InboundMail {
       return { id: a.id.slice(0,512), filename: filename(a.filename), size: a.size, contentType: 'application/octet-stream' }
     }) }
 }
-export function classifyMail(mail: InboundMail): { classification: string; needsReply: boolean; important: boolean } {
+export function classifyMail(mail: Pick<InboundMail,'subject'|'text'>): { classification: string; needsReply: boolean; important: boolean } {
   // Conservative triage labels, never authority to execute anything.
   const text = `${mail.subject}\n${mail.text}`.slice(0, 12000)
   if (/security|sicherheit|incident|ausfall|urgent|dringend/i.test(text)) return { classification: 'system', needsReply: true, important: true }
