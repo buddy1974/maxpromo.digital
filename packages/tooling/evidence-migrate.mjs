@@ -23,7 +23,7 @@
 
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { Pool } from '@neondatabase/serverless'
+import { Pool } from '../../apps/web/scripts/evidenceDatabase.ts'
 import { evidenceDbProblem, EVIDENCE_DB_ENV, EVIDENCE_DOC_PREFIX } from '../config/evidence.ts'
 
 const file = process.argv[2]

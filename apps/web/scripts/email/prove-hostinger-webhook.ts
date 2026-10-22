@@ -32,7 +32,18 @@ async function request(body: string,expected: number,authorization: string|null=
   assert.equal(response.status,expected);const output=await response.text();assert(!output.includes(secret)&&!output.includes('temporary'));checks++
 }
 try {
-  delete process.env.HOSTINGER_WEBHOOK_SECRET;await request('{}',503)
+  delete process.env.HOSTINGER_WEBHOOK_SECRET;await request('{}',401)
+  for(const value of ['', 'malformed secret', 'x'.repeat(4097)]){
+    process.env.HOSTINGER_WEBHOOK_SECRET=value;await request('{}',401)
+  }
+  for(const method of ['GET','HEAD'] as const){
+    const response=await route[method]()
+    assert.equal(response.status,405);assert.equal(response.headers.get('allow'),'POST')
+    assert.equal(response.headers.get('cache-control'),'no-store')
+    if(method==='HEAD')assert.equal(await response.text(),'')
+    checks++
+  }
+  assert.equal(route.accepted.length,0,'Locked receipt/read-only methods never open the database');checks++
   process.env.HOSTINGER_WEBHOOK_SECRET=secret;process.env.EMAIL_PROVIDER='hostinger';process.env.OS_SESSION_SECRET='synthetic-locator-key-000000000000000000001'
   for(const authorization of [null,'Basic abc','Bearer','Bearer ','Bearer wrong','Bearer one two']) await request('{}',401,authorization)
   await request('{',400);await request('x'.repeat(262145),413)

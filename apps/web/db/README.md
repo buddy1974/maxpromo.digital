@@ -15,8 +15,10 @@ db/
     ├── … 0004–0010 (see the files)
     ├── 0011-commercial-core.sql        ← pipeline, activities, follow-ups, payments, recurring,
     │                                      incidents, files, approvals, audit (ADR-0018)
-    └── 0012-channel-gateway.sql        ← WhatsApp conversations on the chat schema: identity,
+    ├── 0012-channel-gateway.sql        ← WhatsApp conversations on the chat schema: identity,
                                            OS links, takeover, window, lease, outbound ledger (ADR-0019)
+    ├── 0013-email-channel.sql          ← governed mail metadata, associations and audit
+    └── 0014-hostinger-contract.sql     ← independent delivery/RFC IDs, previews, sealed jobs/assets
 ```
 
 **0012 is applied to the evidence lab only** (2026-10-16). ADR-0019 is accepted, but applying 0012 to
@@ -24,6 +26,38 @@ production is a separate owner decision and has not been made.
 **0011 was applied to the evidence lab only** (`npm run evidence:migrate -- <file>`, which refuses
 any database holding non-evidence invoices). Production: Marcel, by hand, after a Neon backup
 branch. It is additive and idempotent and rewrites no existing value.
+
+### Mail production preparation (2026-10-22)
+
+Mail migrations 0013 then 0014 require the existing baseline os_leads/os_clients (id/email),
+gen_random_uuid, JSONB, PL/pgSQL and advisory locks. They do not require 0011 or 0012.
+Do not apply unrelated commercial/WhatsApp migrations as part of mail preparation.
+Fresh PostgreSQL 17 tests apply baseline plus only these two files, ingest a fixture,
+replay both over populated data and prove failed transactional DDL/DML rolls back.
+The evidence proof also replays both against this run's complete mail/business fixtures.
+
+Use the existing reviewed Neon SQL editor/psql procedure, not evidence:migrate against
+production. Production application is not included in a code-only deployment approval:
+first verify the actual catalog/role privileges and capture a recoverable Neon backup
+branch. In one transaction set local lock_timeout='5s' and statement_timeout='60s', apply
+0013, then 0014 and commit. With psql use ON_ERROR_STOP=1 and --single-transaction with
+the two ordered -f files and local timeout statements. On timeout/error roll back and
+investigate; do not keep retrying against busy tables or change production limits blindly.
+
+Both files are additive and create no enabled mailbox. 0014 upgrades an old delivery-ID
+type only if it is not already text; replay leaves existing data intact. No commercial
+row is rewritten. DDL needs CREATE/schema/table/function privileges and takes table locks.
+Existing unrelated historical migrations are not all replay-safe (for example 0007 uses
+plain CREATE); do not rerun the entire migration directory based on the older blanket
+idempotency statement below. Inspect the actual applied catalog first.
+
+After an authorized migration, provision only the intended account deliberately; never
+reuse an evidence account. Receipt additionally requires provider selection, a genuine
+webhook secret and the existing session key. Until then POST stays locked before DB access.
+If a deployed application is rolled back, retain mail tables/data; no destructive down
+migration. A failed transaction leaves no partial schema. Restoring a backup after real
+receipt is a separate recovery decision because it can discard later business data.
+See [Hostinger activation](../../../docs/deployment/hostinger-activation.md).
 
 ## Applying for the first time
 
@@ -41,7 +75,8 @@ psql "$NEON_DATABASE_URL" -f db/migrations/0003-multi-tenancy.sql
 
 The baseline `schema.sql` uses `IF NOT EXISTS` everywhere, so running
 it against the live DB is safe — it will create only what's missing.
-The migrations are also idempotent.
+Check each migration before replay. Mail 0013/0014 replay is proven; some older
+migrations use plain CREATE and must not be blindly reapplied.
 
 **Apply in this order, one at a time:**
 

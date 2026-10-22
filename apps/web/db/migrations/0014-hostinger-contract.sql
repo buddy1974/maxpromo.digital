@@ -13,7 +13,13 @@ CREATE TABLE IF NOT EXISTS mail.deliveries (
  event_at timestamptz NOT NULL, accepted_at timestamptz NOT NULL DEFAULT now(),
  PRIMARY KEY(account_id,delivery_id)
 );
-ALTER TABLE mail.deliveries ALTER COLUMN delivery_id TYPE text USING delivery_id::text;
+-- Upgrade the early evidence prototype only; avoid a redundant ALTER lock on replay.
+DO $$ BEGIN
+ IF EXISTS(SELECT 1 FROM information_schema.columns WHERE table_schema='mail'
+   AND table_name='deliveries' AND column_name='delivery_id' AND data_type<>'text') THEN
+   ALTER TABLE mail.deliveries ALTER COLUMN delivery_id TYPE text USING delivery_id::text;
+ END IF;
+END $$;
 CREATE TABLE IF NOT EXISTS mail.content_jobs (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(), message_id uuid NOT NULL UNIQUE REFERENCES mail.messages,
  sealed_locator jsonb NOT NULL, expires_at timestamptz NOT NULL,

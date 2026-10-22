@@ -43,7 +43,7 @@
  */
 
 import { createHash, createHmac, randomBytes } from 'node:crypto'
-import { neon } from '@neondatabase/serverless'
+import { neon } from '../../apps/web/scripts/evidenceDatabase.ts'
 import { restoreLab, snapshotLab } from './evidence-lab.mjs'
 import { evidenceDbProblem, EVIDENCE_DB_ENV } from '../config/evidence.ts'
 

@@ -7,11 +7,19 @@ import { acceptHostingerMail, HOSTINGER_MAILBOX } from '@/lib/mail/hostingerInge
 import { getDb } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
+// Read-only methods must not touch configuration, storage or the provider.
+export function GET() {
+  return NextResponse.json({error:'method_not_allowed'},{status:405,headers:{Allow:'POST','Cache-Control':'no-store'}})
+}
+export function HEAD() {
+  return new Response(null,{status:405,headers:{Allow:'POST','Cache-Control':'no-store'}})
+}
 export async function POST(req: NextRequest) {
   const limited = enforceRateLimit(req, { scope: 'mail-webhook', limit: 120, windowMs: 60_000 })
   if (limited) return limited
   const secret = process.env.HOSTINGER_WEBHOOK_SECRET
-  if (!secret || secret.length > 4096 || /\s/.test(secret)) return NextResponse.json({ error: 'not_configured' }, { status: 503 })
+  // A deployed but unconfigured receiver is locked, not an unavailable service.
+  if (!secret || secret.length > 4096 || /\s/.test(secret)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   if (!verifyWebhookBearer(req.headers.get('authorization'), secret)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   let raw: string
   try { raw = await readBoundedPayload(req, MAX_MAIL_BYTES) } catch (error) {

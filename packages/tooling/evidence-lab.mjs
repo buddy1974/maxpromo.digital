@@ -11,7 +11,7 @@
  * Refuses to run unless the evidence gates pass (evidenceDbProblem).
  */
 
-import { neon } from '@neondatabase/serverless'
+import { neon } from '../../apps/web/scripts/evidenceDatabase.ts'
 import { evidenceDbProblem, EVIDENCE_DB_ENV } from '../config/evidence.ts'
 
 export const LAB_TABLES = [
