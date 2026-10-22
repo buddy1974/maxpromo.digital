@@ -27,3 +27,17 @@ No new dependencies, real mailbox access, production writes, deployment or push.
 Final verification: all 29 verify gates, 166 email checks, 36 isolated mail SQL checks,
 85 dictated commercial checks, typecheck, lint and builds passed. Model-backed commercial
 checks remain externally blocked by insufficient credit. Desktop/390px mobile inspected.
+
+## Locked production preparation review
+
+Reviewed no-secret401, GET/HEAD405, no database import side effects, no content scheduler/
+provider factory, WhatsApp default OFF and unchanged owner-only notice lane. Migration
+replay preserves complete synthetic records; fresh PostgreSQL17 proves baseline-only
+compatibility and failed transactional rollback. Vercel actual production catalog was
+inspected SELECT-only:17.11, prerequisites present, mail tables absent. No production writes.
+Updated existing Next.js/ESLint to16.4.2, sharp0.35.5; dependency audit now passes without
+new direct dependencies or waivers. Shared SQL test driver belongs to web's declared package.
+Final verify29 gates, email172, evidence storage40, fresh SQL9, built HTTP10, security11,
+typecheck/lint/build/docs passed. Required commercial model proof20pass/5fail from insufficient
+credit, including Vercel-provided model environment; dictated85/85. Conditional push/deploy
+not exercised. Pre-existing OpenClaw deletion remains excluded.

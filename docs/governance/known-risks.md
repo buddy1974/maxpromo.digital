@@ -1754,12 +1754,13 @@ by adding a second Telegram transport. Attachment bytes/retention remain disable
 their authenticated retrieval and privacy controls are implemented. See
 [activation details](../deployment/hostinger-activation.md).
 
-Certification also reports the pre-existing tooling import of `@neondatabase/serverless`
-without a tooling dependency declaration (present before this mission). No new dependency
-was added under the owner's no-dependency-change instruction. The advisory audit reports
-13 existing advisories: 5 high development-only and 8 moderate; no dependency or lockfile
-change belongs to this mission. Full certification remains blocked by that declaration
-finding even when merge verification passes.
+Production preparation resolved the tooling dependency ownership finding through the web
+workspace's declared SQL proof driver; no new direct dependency was added. It also found
+and patched the release-blocking Next.js critical advisory: both apps and shared ESLint
+configuration now use 16.4.2 (sharp 0.35.5). The final dependency audit passes with 13
+reported advisories: 5 high development-only and 8 moderate, no production High/Critical.
+The required real-model commercial proof remains blocked by insufficient model credit;
+dictated commercial proof passes. No release exception or security waiver was created.
 
 Risks 1–5 are resolved by Auth-1 through Auth-4.
 Risk 6 is resolved by Auth-0.

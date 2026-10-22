@@ -18,3 +18,13 @@ VERIFICATION: malformed/auth/SSRF/replay/mutation proofs, real isolated SQL conc
 existing verify/commercial/WhatsApp/UI suites. No real Hostinger/API tokens/production writes.
 Activation remains an owner deployment decision; signed URL hosts/content media shape require
 verified provider evidence before installing any live download transport.
+
+## Locked production preparation — 2026-10-22
+
+WHAT: prepare and, only after the required checks pass, push/deploy the accepted mail
+channel through the existing main/Vercel path. No Hostinger contact, token setup or mail.
+EFFORT: inspect migration/env/release truth; return non-5xx fail-closed responses while
+secret absent; prove safe methods and migration replay; preserve all download/owner gates.
+VERIFICATION: full verify, explicit email/storage/commercial proofs, build/auth/regressions;
+inspect production metadata by names only. Production SQL still needs its existing backup
+and reviewed Neon/psql procedure; do not run evidence tools against production.

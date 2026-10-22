@@ -1,5 +1,14 @@
 # Change Log
 
+## 2026-10-22 — locked email production preparation
+
+Prepared missing-secret401/GET-HEAD405 behavior, migration replay/fresh PostgreSQL proofs
+and production environment/catalog inventory. Patched release-blocking Next.js advisory
+to16.4.2 and corrected proof dependency ownership without adding a direct dependency.
+Release remains blocked by the required model-backed commercial proof's insufficient
+credit failure. No push/deployment/production migration or Hostinger action.
+See the [production preparation report](../reports/email-production-preparation-2026-10-22.md).
+
 ## 2026-10-22 — Hostinger webhook contract reconciliation, local only
 
 Reconciled the supplied official Bearer/message.received contract, independent delivery

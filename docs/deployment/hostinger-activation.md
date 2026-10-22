@@ -24,8 +24,10 @@ request occurs. No domain is inferred from the example hostname.
 POST /api/channels/mail enforces the existing rate limit, strict Bearer verification
 (constant-time digest comparison), declared and streamed size, UTF-8/JSON schema, event,
 mailbox, header/filename/URL checks, provider activation selection and encryption config.
-Malformed data returns 400, unauthorized 401, oversized 413, unavailable configuration/DB
-503. It returns 200 after the database transaction accepts a new or duplicate receipt.
+Malformed data returns 400, unauthorized or absent/invalid webhook secret 401, oversized 413.
+Authenticated requests with other unavailable configuration/DB return 503. GET/HEAD return
+405 with Allow: POST and no-store, without storage/provider work. It returns 200 after
+the database transaction accepts a new or duplicate receipt.
 It never returns 200 before durability and never calls a model, sends mail or creates leads.
 
 Migration 0014 extends messages with independent RFC headers, event/email dates, preview
@@ -78,12 +80,19 @@ https://www.maxpromo.digital/api/channels/mail
 Derived from packages/config/domains.ts canonical hub origin and the actual App Router
 route. HEAD returned 404 on 2026-10-22, so it is not presently a live receiver.
 
-Required names for inbound acceptance:
+Required names for inbound acceptance (production names inventoried with Vercel env ls,
+2026-10-22; values were not printed or changed):
 
 - EMAIL_PROVIDER — literal lowercase hostinger selects the adapter; unset leaves receipt disabled.
 - HOSTINGER_WEBHOOK_SECRET — the exact one-time provider-issued token, canonical new name.
 - OS_SESSION_SECRET — existing valid session/encryption key; preserve its current value.
 - NEON_DATABASE_URL or DATABASE_URL — existing production resolver, only after migration approval.
+
+Vercel Production already has OS_SESSION_SECRET and NEON_DATABASE_URL, plus existing
+OS_AGENT_SECRET/OS_AGENT_ALLOWED_ACTORS and the legacy Telegram variables. It has neither
+EMAIL_PROVIDER nor HOSTINGER_WEBHOOK_SECRET. No duplicate DATABASE_URL is needed.
+Code deployment requires neither missing mail variable: absence deliberately locks receipt.
+Do not set a placeholder webhook secret or rotate the existing session key.
 
 Do not keep the old HOSTINGER_MAIL_WEBHOOK_SECRET alias: it has been replaced. This task
 does not read or modify either production secret. No duplicate variable is supported.
@@ -94,12 +103,14 @@ Evidence uses MAXPROMO_EVIDENCE_MODE and EVIDENCE_DATABASE_URL only, with existi
 
 ## Exact remaining owner actions
 
-1. Review this local change and separately authorize the production migration/account
-   provisioning and Vercel deployment. We perform that engineering work after approval;
-   Marcel does not need to write code, SQL or local files. Keep processing disabled meanwhile.
-2. Supply the missing signed-download host/media contract or redacted response evidence.
+1. Code-only push/deployment is conditionally authorized by Marcel's production-preparation
+   mission, after all required release checks pass. Production migration/account provisioning
+   still requires its reviewed backup/application boundary. We perform that engineering work;
+   Marcel does not need to write code, SQL or local files. Keep receipt disabled meanwhile.
+2. For later full-content activation, supply the missing signed-download host/media contract or redacted response evidence.
    No API token or actual signed URL needs to be placed in chat. Authorize storage/retention
-   activation once the durable backend is verified.
+   activation once the durable backend is verified. Safe preview receipt does not require
+   full-content downloading; leave jobs blocked_policy and never present previews as complete.
 3. After deployed readiness, configure Hostinger mailbox info@maxpromo.digital, HTTPS URL
    above, event message.received. Prefer a disabled webhook during setup. If creation cannot
    remain disabled, stop before creation and agree a controlled setup window; retry guarantees
@@ -123,5 +134,7 @@ content workers, keep audit/metadata for reconciliation, then roll application b
 drop mail records as a code rollback. The provider mailbox remains the transport/source mail.
 
 **Current verdict: NO-GO for creating/enabling the real webhook.** The route is not deployed,
-production migration/account/secret setup is not authorized, and full-content download
-constraints are still unverified. Local parsing, durable acceptance and safety ports are ready.
+the required model-backed commercial release proof is blocked by insufficient credit, and
+production mail migrations/account have not been applied. No Hostinger secret exists yet.
+Full-content constraints remain a separate later activation gate; preview receipt is supported.
+See the [production preparation report](../reports/email-production-preparation-2026-10-22.md).

@@ -36,6 +36,11 @@ Fresh PostgreSQL 17 tests apply baseline plus only these two files, ingest a fix
 replay both over populated data and prove failed transactional DDL/DML rolls back.
 The evidence proof also replays both against this run's complete mail/business fixtures.
 
+Read-only Vercel Production catalog verified on 2026-10-22: PostgreSQL17.11, both baseline
+id/email pairs, required UUID/hash functions, public schema usage/CRM SELECT and database
+CREATE privileges present; mail tables absent. This proves prerequisites, not application
+of the migrations or a backup/restore procedure. No business rows were read or changed.
+
 Use the existing reviewed Neon SQL editor/psql procedure, not evidence:migrate against
 production. Production application is not included in a code-only deployment approval:
 first verify the actual catalog/role privileges and capture a recoverable Neon backup

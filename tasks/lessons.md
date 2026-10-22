@@ -9,3 +9,5 @@
   Preserve opaque ID case; an example hex/UUID shape is not an undocumented provider guarantee.
 - Webhook text previews must not silently become full-body context. Signed URLs require verified
   host/media policy and pinned DNS, not just HTTPS or a provider-authenticated envelope.
+- A locked deployed receiver should reject missing credentials without reporting a service
+  outage. Conditional release authorization does not waive required model-backed checks.
