@@ -8,6 +8,7 @@ brief/notice attention integration (ADR-0020). Added offline contract, security,
 rendered UI and real isolated SQL evidence proofs. Existing Resend commercial delivery
 and public WhatsApp architecture remain unchanged. No production mail, database migration,
 credentials, webhook configuration, push or deployment is part of this change.
+See the [21-part local engineering report](../reports/email-channel-local-2026-10-22.md).
 
 ## 2026-10-16 — public number migrated to +49 174 5910734 (repository; not deployed)
 
