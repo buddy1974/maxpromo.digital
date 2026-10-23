@@ -1744,7 +1744,8 @@ Last updated: 2026-09-04 (v7.0 — enterprise polish)
 ### Email channel activation blockers — 2026-10-22
 
 ADR-0020 infrastructure is deployed locked in production. Hostinger transport remains
-disconnected: the genuine webhook secret is absent. The approved real account binding is
+awaiting its first authenticated Test: the genuine webhook secret is installed in the
+fresh2026-10-23 Production deployment; no provider request was made by this mission. The approved real account binding is
 provisioned and owner Inbox configured:true on2026-10-23. The owner-supplied
 message.received contract is implemented/tested (distinct delivery/event IDs, threading
 and previews). Signed-download host/media verification and safe storage activation remain
@@ -1765,7 +1766,8 @@ The historical credit failure remains recorded. Owner restored model credit/key;
 the current-production in-cloud commercial proof passed85/85 in the locked release.
 Mail0013/0014 and the approved single mailbox binding are provisioned, public405/401 verified,
 all mail activity counts zero. Ready for owner webhook creation/private secret installation;
-Hostinger secret is absent and no webhook/Test has been performed by this mission.
+Hostinger secret was installed privately by Marcel and a fresh Production runtime was
+built/promoted afterward. No Hostinger Test has been performed by this mission.
 No commercial/model/security gate was waived. See
 [locked release](../reports/email-locked-production-2026-10-23.md).
 

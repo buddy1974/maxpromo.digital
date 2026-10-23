@@ -37,4 +37,5 @@ commercial workflow regression passed 85 checks.
 - [x] Public receiver405/401, authenticated OS/document endpoints200, homepages200, health ok.
 - [x] Recheck zero messages/events/actions/jobs and unchanged commercial catalog; WhatsApp OFF.
 - [x] Owner approved and single real Hostinger mailbox binding provisioned2026-10-23; Inbox configured:true, no mail activity.
-- [ ] Then Hostinger webhook creation/private genuine secret/Test/controlled acceptance, not performed.
+- [x] Owner privately installed genuine secret; fresh ff3fefc Production build/promote with presence-only assertion, public405/401 verified.
+- [ ] Hostinger Test/controlled acceptance remain owner steps; agent has not contacted Hostinger.

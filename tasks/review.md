@@ -65,3 +65,12 @@ accounts1/mailbox_matches1 and acceptance predicate true. All eight activity tab
 Owner Inbox200/configured:true/threads0, public405/401 and OS/document/homepage/health checks
 pass; WhatsApp503/OFF. HOSTINGER_WEBHOOK_SECRET absent. Email177/storage40 passed without
 production fixtures or Hostinger contact. No secret, Telegram runtime or download changes.
+
+### Production environment refresh — 2026-10-23
+
+UI cancellation log proves ignored-build exit0, no application changes. Permanent rule
+preserved; clean certified ff3fefc CLI force/stage/promote succeeded after secret installation.
+In-cloud secret-presence/provider assertion passed without values. Production Ready
+dpl_3eb5eCWCpihA87C9XkLdyzrPE59b serves www; actual public405/401 and OS/site200 checks pass,
+one enabled binding/all mail activity0, WhatsApp OFF. No Hostinger Test/request/send/fetch,
+downloads or Telegram permissions changed. Ready for Marcel's first provider Test.

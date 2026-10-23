@@ -1,5 +1,9 @@
 # Engineering lessons
 
+- Environment-only production releases need a new deployment after secret installation.
+  A Git redeploy can intentionally cancel on the unchanged-app ignore rule; inspect the
+  actual log and use the established CLI release path, preserving permanent ignore logic.
+
 - PostgreSQL data-modifying CTEs share a snapshot: do not UPDATE a row inserted
   by a sibling CTE through a table scan. Return needed identities or perform an
   idempotent follow-up metadata repair. Verify concurrency against real isolated SQL.

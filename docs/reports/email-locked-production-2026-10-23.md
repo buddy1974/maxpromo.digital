@@ -7,6 +7,41 @@ before Hostinger activation. EFFORT: local/remote verification, production ident
 Neon recovery branch, transactional SQL, normal Git/Vercel release and public owner checks.
 VERIFICATION: infrastructure is deployed and healthy. Mail is not activated.
 
+## Production environment refresh — 2026-10-23
+
+This follow-up supersedes the absent-secret/readiness state below. Marcel privately installed
+HOSTINGER_WEBHOOK_SECRET after deployment dpl_HzZADZ7kT6GVDUFxfEXYGvGYooEJ. UI redeploys
+were canceled in1–2s: latest hbvja4mgr build log explicitly reports the Ignored Build Step
+returned0. The apps/web/vercel.json git-diff rule saw no watched changes; not a model/build
+failure or supersession. Root apps/web, Next.js, Node24 and permanent ignore rule preserved.
+
+Used the established CLI staged-production/force/promote path with a clean ff3fefc worktree.
+No application file changed, no dummy commit, no secret export or environment mutation.
+A temporary deployment-only build command asserted nonempty HOSTINGER_WEBHOOK_SECRET and
+EMAIL_PROVIDER=hostinger in-cloud before the normal npm run build. It printed only
+"Mail environment presence verified; values hidden". Build succeeded. No real authenticated
+webhook request was used to probe the secret. Fresh Production environment snapshot supplies
+the same configured variables to the built runtime; secret correctness awaits Hostinger Test.
+
+New deployment dpl_3eb5eCWCpihA87C9XkLdyzrPE59b, created2026-10-23 07:27:48 Europe/Berlin,
+Ready/Production, URL https://maxpromo-digital-rbla7z1ps-buddy1974s-projects.vercel.app.
+Created after the secret installation, promoted successfully; inspecting www.maxpromo.digital
+resolves to this ID. Source ff3fefcdba4e210b7480d604d343ead75218e51a; runtime code matches
+previously certified b21c070 (intervening changes are documentation). Public health commit
+is empty for this CLI build, so source identity comes from verified release checkout.
+
+After promotion: GET405, HEAD405, unauthenticated/Basic/wrong-Bearer POST401; owner
+Inbox200/configured:true/threads0; authenticated OS/clients/Angebot/Rechnung200; EN/DE
+homepages200, health200/ok. WhatsApp503/unconfigured/OFF. Refreshed production SQL:
+exactly one enabled hostinger:info@maxpromo.digital binding, mailbox_matches1,
+acceptance guard true; messages/events/deliveries/actions/jobs all0. No production writes.
+
+No Hostinger contact/Test/email fetch/send, model call, download activation, mailbox/secret
+mutation or Telegram permission change. Downloads remain disabled. No secret value retrieved,
+printed or exported. Earlier CLI preparation errors (relative config path and256-character
+build-command limit) were corrected locally before the successful build, without touching
+production source/settings. SAFE TO PRESS HOSTINGER TEST; agent stops at this boundary.
+
 ## Approved mailbox binding follow-up — 2026-10-23
 
 This follow-up supersedes the pending-binding boundary/verdict in items18–20 below;

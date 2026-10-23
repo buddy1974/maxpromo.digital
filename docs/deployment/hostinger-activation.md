@@ -8,7 +8,9 @@ The locked receiver is deployed and healthy. Public receiver GET/HEAD405, reject
 Mail0013/0014 are applied:9 tables/18 indexes/2 functions. Marcel approved the single
 hostinger:info@maxpromo.digital account binding on2026-10-23; it is now provisioned,
 enabled and recognized by the owner Inbox API. All mail activity counts remain zero.
-It is SAFE TO CREATE HOSTINGER WEBHOOK; receipt stays locked until the genuine secret is installed. Current production
+Marcel subsequently installed the genuine secret. A fresh Production deployment on2026-10-23
+passed an in-cloud presence-only check and now serves the public domain; SAFE TO PRESS HOSTINGER TEST.
+No authenticated Test was performed by the agent. Current production
 model proof passed85/85 in-cloud. [Release evidence](../reports/email-locked-production-2026-10-23.md).
 
 ## Verified input
@@ -101,7 +103,7 @@ Required names for inbound acceptance (production names inventoried with Vercel 
 Vercel Production has OS_SESSION_SECRET and NEON_DATABASE_URL, plus existing
 OS_AGENT_SECRET/OS_AGENT_ALLOWED_ACTORS and the legacy Telegram variables. Marcel added
 EMAIL_PROVIDER=hostinger and restored the model key/credit. HOSTINGER_WEBHOOK_SECRET is
-still absent. No duplicate DATABASE_URL is needed.
+now present in Production and was included in the refreshed deployment. No duplicate DATABASE_URL is needed.
 Code deployment requires neither missing mail variable: absence deliberately locks receipt.
 Do not set a placeholder webhook secret or rotate the existing session key.
 
@@ -115,8 +117,9 @@ Evidence uses MAXPROMO_EVIDENCE_MODE and EVIDENCE_DATABASE_URL only, with existi
 ## Exact remaining owner actions
 
 1. Completed: locked infrastructure, reviewed migrations and the separately approved single
-   mailbox binding. Owner Inbox reports configured:true/threads0. HOSTINGER_WEBHOOK_SECRET
-   remains absent. No additional repository approval or SQL work is needed.
+   mailbox binding. Owner Inbox reports configured:true/threads0. Marcel installed
+   HOSTINGER_WEBHOOK_SECRET privately; the refreshed runtime passed presence verification.
+   No additional repository approval or SQL work is needed.
 2. For later full-content activation, supply the missing signed-download host/media contract or redacted response evidence.
    No API token or actual signed URL needs to be placed in chat. Authorize storage/retention
    activation once the durable backend is verified. Safe preview receipt does not require
@@ -144,10 +147,11 @@ Rollback: disable the Hostinger webhook without deleting it, unset provider sele
 content workers, keep audit/metadata for reconciliation, then roll application back. Never
 drop mail records as a code rollback. The provider mailbox remains the transport/source mail.
 
-**Current verdict: SAFE TO CREATE HOSTINGER WEBHOOK.**
-The route, migrations and approved mailbox binding are ready; current production model proof passes.
-No Hostinger secret exists yet. Create the webhook in Hostinger, retain its one-time token
-privately and install it as HOSTINGER_WEBHOOK_SECRET in Vercel Production. Do not mistake
-creation for verified activation: Test and controlled acceptance remain subsequent owner steps.
+**Current verdict: SAFE TO PRESS HOSTINGER TEST.**
+Marcel installed HOSTINGER_WEBHOOK_SECRET privately. Production deployment
+dpl_3eb5eCWCpihA87C9XkLdyzrPE59b was built afterward from ff3fefc, passed presence/provider
+assertions without printing values and was promoted. Public405/401 and owner OS checks pass;
+one enabled account and zero mail activity remain. Test and controlled acceptance remain
+subsequent owner steps; the agent never used the genuine secret in a request.
 Full-content constraints remain a separate later activation gate; preview receipt is supported.
 See the [production preparation report](../reports/email-production-preparation-2026-10-22.md).
