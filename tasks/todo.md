@@ -51,4 +51,14 @@ commercial workflow regression passed 85 checks.
 - [x] Controlled real email 13:41Z (with PDF): one accepted delivery, Inbox verified, no side effects.
 - [x] Attachment metadata-only, no download; body preview-only; business objects unchanged.
 - [x] Read-only production SQL (owner-approved): 1 delivery/event/message/thread/job/asset, keys live, 0 side effects.
-- [x] Hostinger activation mission closed GREEN 2026-10-23. Next: Email OS facelift, then OS/Bureau reconciliation (not started).
+- [x] Hostinger activation mission closed GREEN 2026-10-23.
+
+## Next approved architecture sequence (none started)
+
+1. [ ] Maxpromo OS / Max Agent Bureau two-repo forensic reconciliation and boundary cleanup
+2. [ ] Lock the Business Control Plane ↔ Agent Control Plane integration contract
+3. [ ] Maxpromo OS daily command-centre reconciliation
+4. [ ] Email OS premium facelift inside the reconciled architecture
+5. [ ] Agent Bureau UX/governance refinement
+6. [ ] Telegram Owner Control Plane integration
+7. [ ] Broader channel convergence and later productization
