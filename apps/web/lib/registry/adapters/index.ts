@@ -5,7 +5,6 @@
  *
  * Import rules:
  *   Public pages   → homepage.adapter, systems.adapter only
- *   OS /protected  → os.adapter (also homepage + systems if needed)
  *   Never          → import directly from lib/registry/products.ts in a page
  *
  * Shared utilities (locale resolution, CTA helpers) re-exported for
@@ -42,14 +41,6 @@ export {
 } from './landing.adapter'
 export type { LandingData } from './landing.adapter'
 
-// ── OS adapter
-export {
-  toOSRegistryRow,
-  getOSRegistry,
-  getOSRegistryByTrack,
-  getOSRegistryRow,
-} from './os.adapter'
-export type { OSRegistryRow } from './os.adapter'
 
 // ── Shared utilities (for custom transforms)
 export {

@@ -136,8 +136,20 @@ export default function PrivacyPage() {
           </p>
           <ul style={{ paddingLeft: '1.25rem' }}>
             <li>
-              <strong style={{ color: 'var(--brand-text)' }}>Vercel Inc.</strong> (Hosting, USA)-{' '}
+              <strong style={{ color: 'var(--brand-text)' }}>Vercel Inc.</strong> (Hosting, USA; die Anwendung läuft in der Region Frankfurt, EU / the application runs in the Frankfurt region, EU)-{' '}
               <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <strong style={{ color: 'var(--brand-text)' }}>Neon Inc.</strong> (Datenbank / database, Region Frankfurt, EU)-{' '}
+              <a href="https://neon.com/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <strong style={{ color: 'var(--brand-text)' }}>Telegram</strong> (interne Benachrichtigung über neue Anfragen / internal notification of new enquiries)-{' '}
+              <a href="https://telegram.org/privacy" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--brand-text-secondary)', textDecoration: 'none' }}>
                 Privacy Policy
               </a>
             </li>

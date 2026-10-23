@@ -57,7 +57,7 @@ interface MaxPanelProps {
  * behind it in this repository: Max is a free-text conversation against
  * /api/chat/message, with no quick-reply set, no score and no contact stage.
  * The scored guided audit those features belong to exists only as an orphaned
- * endpoint (/api/max-agent/submit) with no caller. Building them would mean
+ * endpoint with no caller (removed 2026-10-23, control-plane reconciliation). Building them would mean
  * writing new conversation branching and a new scoring rule, which the same
  * brief forbids. Reported rather than invented.
  *
