@@ -650,9 +650,41 @@ by the tool), losing only writes made to the EU database after cutover.
   since 07:26Z; downloads not wired; WhatsApp 503.
 - Observation (minor, existing): the document `lang` stays `de` while the OS renders English.
 
+### Hostinger provider reconciliation live — 2026-10-23 22:50 UTC
+
+- Owner stored `HOSTINGER_MAIL_API_TOKEN` (Sensitive, Production); `vercel env ls` shows it beside
+  `HOSTINGER_MAILBOX_RESOURCE_ID` (presence only, no value read).
+- A git redeploy of f133b64 was cancelled by the ignored-build step (no file changed since the last
+  build), so the clean tree was deployed with `vercel deploy --prod`: web
+  `dpl_EYDDFZ4URsFToAm2U4rqubmeoDQU` Ready, `/api/health` ok, `release.commit 19479aa`
+  (f133b64 plus docs). No code change was made to trigger it.
+- Hostinger ground truth (read-only): the Rechnung message is uid 35 in `INBOX.Junk`.
+- First owner view of `/os/inbox` ran the reconciler: log `mail.provider_state source=inbox
+  configured=true checked=3 quarantined=1 failed=false`.
+- Database (read-only): the Rechnung thread `quarantine=provider_junk`, message
+  `provider_state=junk`, `provider_folder=INBOX.Junk`, `needs_reply=false`, 0 business links, not
+  archived, not trashed; the inbound enquiry and the new Instagram digest verified `inbox` and
+  untouched. Leads 6, clients 2, invoices 2, approvals 5, receipts 1; no agent results, leads or
+  approvals since 20:53Z.
+- Owner browser (desktop and 390 px): Inbox 2, Unread 2, Needs reply 1, Waiting/Clients/Leads/
+  Billing/System/Archived 0, Spam 1 = the Rechnung message with "Hostinger filed this as spam",
+  "Hostinger folder: INBOX.Junk", Not spam, metadata-only attachment. `/api/os/attention`: MONEY 2,
+  SALES 1 (`enquiryNew`), nothing from the Junk message. No horizontal scroll.
+- Unchanged: Hostinger Sent (latest 07:26Z), no successful non-GET request on either app, no 5xx
+  apart from the deliberate legacy-door probe, WhatsApp 503, downloads not wired.
+- Regression: `npm run verify` exit 0, 51/51 mail unit tests, control planes 33/33, 28/28
+  production HTTP boundary checks.
+
+### Release decision — MAXPROMO PLATFORM MEGA-RUN: GREEN
+
+The owner's release criteria (healthy production, intact security boundaries, working control
+planes, working provider reconciliation, resolved Junk issue, no critical engineering blocker) are
+met. The Bureau US → Frankfurt database move (risk 111) and deleting the paused shadow project are
+recorded infrastructure follow-ups, not release blockers.
+
 ### Next phase (not started)
 
 **STRIPE ↔ MAXPROMO MONEY ARCHITECTURE** — Stripe as a payment rail inside the Money domain of the
 Business Control Plane (quote → invoice → payment → webhook → ledger → reconciliation → fee →
 balance → payout → Revolut → `/os` attention and briefing). Maxpromo OS stays the source of truth.
-Starts only after this run is closed, under separate instruction.
+Approved as the next phase (2026-10-24); started only under separate instruction.

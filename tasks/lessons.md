@@ -65,3 +65,5 @@
   `/` is rewritten to a Windows path; run it from PowerShell.
 - A copy-then-switch database move needs a post-switch proof that the old database received no
   writes after the copy; matching checksums at copy time are not enough.
+- An ignored-build step that diffs against the previous deployment also cancels env-only
+  redeploys; deploy the clean tree with `vercel deploy --prod` instead of adding a dummy change.

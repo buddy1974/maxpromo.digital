@@ -1,5 +1,12 @@
 # Change Log
 
+## 2026-10-23 — Hostinger provider reconciliation live; mega-run GREEN
+
+- Owner stored `HOSTINGER_MAIL_API_TOKEN`; web redeployed (`dpl_EYDDFZ4URsFToAm2U4rqubmeoDQU`).
+- Reconciler quarantined the Hostinger Junk message (`provider_junk`); it left Inbox, Needs reply,
+  Billing and attention and is visible under Spam. Nothing deleted or sent.
+- Risks 114 and 115 resolved. Mega-run declared GREEN; Stripe ↔ Maxpromo Money is the next phase.
+
 ## 2026-10-23 — Closure continuation
 
 - First positive Bureau → OS production call: existing 2026-05-30 submission forwarded via the

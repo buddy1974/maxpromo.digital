@@ -169,3 +169,7 @@ production database first, then the Hostinger REST variables (recommended), then
 Exact SQL and verification: `docs/architecture/control-plane-reconciliation.md` §22.
 
 Released 2026-10-23: web `dpl_4GGd98RRNvuA8pbxgKPaFUBJp9dW`, Bureau `maxpromo-agents-lnkmh6exl`, both on 1bfa5cf in fra1.
+
+Env-only redeploy (2026-10-23): the ignored-build step cancels a git redeploy when no app file
+changed, so a new Production variable is picked up with `vercel deploy --prod` from the clean repo
+root instead (`dpl_EYDDFZ4URsFToAm2U4rqubmeoDQU`, reports 19479aa).

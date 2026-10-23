@@ -25,7 +25,7 @@ Hostinger Mail connector, read-only, mailbox `info@maxpromo.digital`:
   The `data` object had exactly the 14 documented fields (eventId, mailboxAddress, messageId,
   inReplyTo, references, subject, from, to, cc, date, plainBody, htmlBody, bodyUrl, attachments)
   and `unknownKeys: 0`.
-- **Public OpenAPI:** `api.mail.hostinger.com/openapi/openapi.json`, 152 KB.
+- **Public OpenAPI:** `https://api.mail.hostinger.com/openapi/openapi.json`, 152 KB.
   - No webhook payload schema.
   - Webhook create/update accepts only `events: ["message.received"]`, with no folder filter.
   - Zero occurrences of "spam" or "junk".
@@ -147,3 +147,10 @@ lead. `Rechnung` matched `billing` with `needsReply: true`. Nothing considered:
 - **Window:** messages received in the last 14 days with `provider_state='unverified'`, 10 per pass,
   newest first.
 - **Hardening in this run:** the check now also runs after `GET /api/os/attention`.
+
+## 12. Production activation (2026-10-23 22:50 UTC)
+
+Token stored by the owner; production redeployed. The first Inbox view reconciled 3 messages and
+quarantined 1: the Rechnung message (Hostinger `INBOX.Junk`, uid 35) is now `provider_junk`,
+needs_reply false, shown only under Spam with its Hostinger folder; nothing deleted, linked or sent.
+The other two messages were confirmed in `INBOX`. Full evidence: reconciliation §22.

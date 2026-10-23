@@ -182,3 +182,7 @@ the Junk message, the first positive Bureau → OS flush, the shadow pause and t
 **Closure continuation:** positive Bureau → OS proven in production (lead 4a9f088a…, receipt, outbox
 cleared, replay no call); shadow paused; resource id set; EU tool gained `--recheck`. Remaining:
 Hostinger token, Junk message, EU database (all owner-gated).
+
+**Hostinger activation:** token stored by the owner, redeployed, reconciler live (3 checked,
+1 quarantined); Junk message only under Spam; verify, mail tests, control planes and production
+probes pass. **MEGA-RUN GREEN.** Infrastructure follow-ups: Bureau EU database, shadow deletion.
