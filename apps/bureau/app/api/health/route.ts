@@ -66,7 +66,7 @@ const CHECKS: readonly HealthCheck[] = [
         // `unvalidated`, not `ok` — see HealthState in @maxpromo/observability.
         // A credential being set is not the dependency working.
         ? { state: "unvalidated", note: "credential present; validity not checked here" }
-        : { state: "degraded", note: "no provider key — the agents cannot run" };
+        : { state: "degraded", note: "no provider key — model-based agents cannot run; the deterministic Intake agent is unaffected" };
     },
   },
 ];

@@ -43,7 +43,7 @@ interface Item {
 
 /** One key per item kind plus its values, so /os can render the sentence in German or English
  * (risk 109). Values are record data (names, numbers, dates), never translated. */
-export type AttentionKey = 'leadReplied' | 'negotiationQuiet' | 'discoveryNoStep' | 'followUp' | 'angebotWaiting' | 'angebotExpired'
+export type AttentionKey = 'enquiryNew' | 'leadReplied' | 'negotiationQuiet' | 'discoveryNoStep' | 'followUp' | 'angebotWaiting' | 'angebotExpired'
   | 'angebotNotInvoiced' | 'projectNotInvoiced' | 'invoiceOverdue' | 'invoiceDraft' | 'renewal' | 'incident' | 'projectLate'
   | 'approvalsWaiting' | 'uncertainSend' | 'paymentsDisagree' | 'agentEvent'
 export interface AttentionMessage { key: AttentionKey; params: Record<string, string | number> }
@@ -55,7 +55,7 @@ function score(i: Item): number {
 
 async function collect(ctx: CapabilityContext): Promise<Item[]> {
   const today = ctx.today
-  const [leads, fups, sentAngebote, acceptedNoDeposit, completedNoFinal, renewals, incidents, lateJobs, approvals, uncertain, invoices] = await Promise.all([
+  const [leads, fups, sentAngebote, acceptedNoDeposit, completedNoFinal, renewals, incidents, lateJobs, approvals, uncertain, invoices, intakes] = await Promise.all([
     q<LeadRow>(ctx.sql`SELECT * FROM os_leads WHERE status = ANY(${statusesFor([...OPEN_STAGES])})`),
     q<{ id: string; due_on: string; reason: string; lead_id: string | null; company: string | null; name: string | null; city: string | null; value: string | null; currency: string | null }>(ctx.sql`SELECT f.id, f.due_on::text AS due_on, f.reason, f.lead_id, l.company, l.name, l.city, l.value, l.currency
             FROM os_followups f LEFT JOIN os_leads l ON l.id = f.lead_id
@@ -78,17 +78,23 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
       SELECT capability || ' (' || summary || ')', NULL, id::text, decided_at FROM os_approvals
       WHERE status = 'executing' AND decided_at < now() - interval '15 minutes'`),
     loadInvoicesForMoney(ctx),
+    /* Enquiries a channel handed to the OS (ADR-0021): the channel each lead last arrived through. */
+    q<{ lead_id: string; source: string }>(ctx.sql`SELECT DISTINCT ON (lead_id) lead_id::text AS lead_id, source FROM os_intake_receipts ORDER BY lead_id, received_at DESC`),
   ])
   const agentEvents = await agentAttention(ctx)
 
   const items: Item[] = []
   const leadValue = (l: { value: string | null }) => Number(l.value ?? 0)
+  const intakeSource = new Map(intakes.map((r) => [r.lead_id, r.source]))
 
   for (const l of leads) {
     const s = leadStage(l.status)!
     const idle = daysBetween(isoDate(l.last_interaction_at ?? l.created_at) ?? today, today)
     const ref = focus('lead', l.id, leadLabel(l))
-    if (s === 'responded') items.push({ area: 'SALES', text: `${leadLabel(l)} replied — answer them`, msg: m('leadReplied', { lead: leadLabel(l) }), amount: leadValue(l), currency: l.currency, probability: 0.4, urgency: 3, action: `Write ${l.company ?? l.name}`, ref, commercial: true })
+    /* A channel enquiry nobody has answered yet: the first thing a sales day needs. It leaves
+       attention as soon as the lead moves past 'discovered'. */
+    if (s === 'discovered' && intakeSource.has(l.id)) items.push({ area: 'SALES', text: `New enquiry from ${leadLabel(l)} (${intakeSource.get(l.id)}) — reply`, msg: m('enquiryNew', { lead: leadLabel(l), source: intakeSource.get(l.id)! }), amount: leadValue(l), currency: l.currency, probability: 0.3, urgency: 3, action: `Write ${l.company ?? l.name}`, ref, commercial: true })
+    else if (s === 'responded') items.push({ area: 'SALES', text: `${leadLabel(l)} replied — answer them`, msg: m('leadReplied', { lead: leadLabel(l) }), amount: leadValue(l), currency: l.currency, probability: 0.4, urgency: 3, action: `Write ${l.company ?? l.name}`, ref, commercial: true })
     else if (s === 'negotiation' && idle >= 5) items.push({ area: 'SALES', text: `Negotiation with ${leadLabel(l)} quiet for ${idle} days`, msg: m('negotiationQuiet', { lead: leadLabel(l), days: idle }), amount: leadValue(l), currency: l.currency, probability: STAGE_WEIGHT.negotiation, urgency: 2, action: `What happened with ${l.company ?? l.name}?`, ref, commercial: true })
     else if (s === 'discovery' && !l.next_action_at) items.push({ area: 'SALES', text: `${leadLabel(l)} in discovery with no next step — prepare the Angebot?`, msg: m('discoveryNoStep', { lead: leadLabel(l) }), amount: leadValue(l), currency: l.currency, probability: STAGE_WEIGHT.discovery, urgency: 2, action: `Prepare an Angebot for ${l.company ?? l.name}`, ref, commercial: true })
   }
