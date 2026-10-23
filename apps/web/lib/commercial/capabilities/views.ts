@@ -26,7 +26,9 @@ import { v } from '../validate'
 
 interface Item {
   area: 'SALES' | 'MONEY' | 'CLIENT' | 'SYSTEM' | 'AGENT'
+  /** English sentence for the brief and notices; interfaces render `msg` in their own locale. */
   text: string
+  msg: AttentionMessage
   /** Amount at stake, in the item's own currency; 0 when none. */
   amount: number
   currency: string
@@ -38,6 +40,14 @@ interface Item {
   ref?: FocusRef
   commercial: boolean
 }
+
+/** One key per item kind plus its values, so /os can render the sentence in German or English
+ * (risk 109). Values are record data (names, numbers, dates), never translated. */
+export type AttentionKey = 'leadReplied' | 'negotiationQuiet' | 'discoveryNoStep' | 'followUp' | 'angebotWaiting' | 'angebotExpired'
+  | 'angebotNotInvoiced' | 'projectNotInvoiced' | 'invoiceOverdue' | 'invoiceDraft' | 'renewal' | 'incident' | 'projectLate'
+  | 'approvalsWaiting' | 'uncertainSend' | 'paymentsDisagree' | 'agentEvent'
+export interface AttentionMessage { key: AttentionKey; params: Record<string, string | number> }
+const m = (key: AttentionKey, params: Record<string, string | number> = {}): AttentionMessage => ({ key, params })
 
 function score(i: Item): number {
   return (i.amount || 100) * i.probability * i.urgency
@@ -78,14 +88,15 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
     const s = leadStage(l.status)!
     const idle = daysBetween(isoDate(l.last_interaction_at ?? l.created_at) ?? today, today)
     const ref = focus('lead', l.id, leadLabel(l))
-    if (s === 'responded') items.push({ area: 'SALES', text: `${leadLabel(l)} replied — answer them`, amount: leadValue(l), currency: l.currency, probability: 0.4, urgency: 3, action: `Write ${l.company ?? l.name}`, ref, commercial: true })
-    else if (s === 'negotiation' && idle >= 5) items.push({ area: 'SALES', text: `Negotiation with ${leadLabel(l)} quiet for ${idle} days`, amount: leadValue(l), currency: l.currency, probability: STAGE_WEIGHT.negotiation, urgency: 2, action: `What happened with ${l.company ?? l.name}?`, ref, commercial: true })
-    else if (s === 'discovery' && !l.next_action_at) items.push({ area: 'SALES', text: `${leadLabel(l)} in discovery with no next step — prepare the Angebot?`, amount: leadValue(l), currency: l.currency, probability: STAGE_WEIGHT.discovery, urgency: 2, action: `Prepare an Angebot for ${l.company ?? l.name}`, ref, commercial: true })
+    if (s === 'responded') items.push({ area: 'SALES', text: `${leadLabel(l)} replied — answer them`, msg: m('leadReplied', { lead: leadLabel(l) }), amount: leadValue(l), currency: l.currency, probability: 0.4, urgency: 3, action: `Write ${l.company ?? l.name}`, ref, commercial: true })
+    else if (s === 'negotiation' && idle >= 5) items.push({ area: 'SALES', text: `Negotiation with ${leadLabel(l)} quiet for ${idle} days`, msg: m('negotiationQuiet', { lead: leadLabel(l), days: idle }), amount: leadValue(l), currency: l.currency, probability: STAGE_WEIGHT.negotiation, urgency: 2, action: `What happened with ${l.company ?? l.name}?`, ref, commercial: true })
+    else if (s === 'discovery' && !l.next_action_at) items.push({ area: 'SALES', text: `${leadLabel(l)} in discovery with no next step — prepare the Angebot?`, msg: m('discoveryNoStep', { lead: leadLabel(l) }), amount: leadValue(l), currency: l.currency, probability: STAGE_WEIGHT.discovery, urgency: 2, action: `Prepare an Angebot for ${l.company ?? l.name}`, ref, commercial: true })
   }
   for (const f of fups) {
     const overdue = f.due_on < today
     items.push({
       area: 'SALES', text: `${overdue ? `Overdue since ${f.due_on}: ` : ''}${f.reason}${f.company || f.name ? ` — ${leadLabel(f)}` : ''}`,
+      msg: m('followUp', { since: overdue ? f.due_on : '', reason: f.reason, lead: f.company || f.name ? leadLabel(f) : '' }),
       amount: Number(f.value ?? 0), currency: f.currency ?? 'EUR', probability: 0.2, urgency: overdue ? 3 : 2,
       action: f.lead_id ? `What happened with ${f.company ?? f.name}?` : 'Who needs follow-up?', ref: f.lead_id ? focus('lead', f.lead_id, leadLabel(f)) : undefined, commercial: true,
     })
@@ -93,46 +104,46 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
   for (const a of sentAngebote) {
     const age = a.sent_at ? daysBetween(isoDate(a.sent_at)!, today) : 0
     const expired = a.valid_until && a.valid_until < today
-    if (age >= 5 || expired) items.push({ area: 'SALES', text: `Angebot ${a.angebot_number} (${a.client_name}, ${eur(a.total, a.currency)}) ${expired ? `expired ${a.valid_until}` : `waiting ${age} days`}`, amount: Number(a.total), currency: a.currency, probability: expired ? 0.2 : STAGE_WEIGHT.proposal, urgency: expired ? 3 : 2, action: `Chase Angebot ${a.angebot_number}`, ref: focus('angebot', a.id, a.angebot_number), commercial: true })
+    if (age >= 5 || expired) items.push({ area: 'SALES', text: `Angebot ${a.angebot_number} (${a.client_name}, ${eur(a.total, a.currency)}) ${expired ? `expired ${a.valid_until}` : `waiting ${age} days`}`, msg: expired ? m('angebotExpired', { number: a.angebot_number, client: a.client_name, amount: eur(a.total, a.currency), date: a.valid_until ?? '' }) : m('angebotWaiting', { number: a.angebot_number, client: a.client_name, amount: eur(a.total, a.currency), days: age }), amount: Number(a.total), currency: a.currency, probability: expired ? 0.2 : STAGE_WEIGHT.proposal, urgency: expired ? 3 : 2, action: `Chase Angebot ${a.angebot_number}`, ref: focus('angebot', a.id, a.angebot_number), commercial: true })
   }
   for (const a of acceptedNoDeposit) {
-    items.push({ area: 'MONEY', text: `Angebot ${a.angebot_number} accepted (${a.client_name}) and not invoiced`, amount: Number(a.total) / 2, currency: a.currency, probability: 0.95, urgency: 3, action: `Invoice 50% deposit for ${a.angebot_number}`, ref: focus('angebot', a.id, a.angebot_number), commercial: true })
+    items.push({ area: 'MONEY', text: `Angebot ${a.angebot_number} accepted (${a.client_name}) and not invoiced`, msg: m('angebotNotInvoiced', { number: a.angebot_number, client: a.client_name }), amount: Number(a.total) / 2, currency: a.currency, probability: 0.95, urgency: 3, action: `Invoice 50% deposit for ${a.angebot_number}`, ref: focus('angebot', a.id, a.angebot_number), commercial: true })
   }
   for (const j of completedNoFinal) {
-    items.push({ area: 'MONEY', text: `Project “${j.title}” completed and not finally invoiced`, amount: Number(j.value ?? 0), currency: 'EUR', probability: 0.95, urgency: 3, action: `Create final invoice for ${j.title}`, ref: focus('job', j.id, j.title), commercial: true })
+    items.push({ area: 'MONEY', text: `Project “${j.title}” completed and not finally invoiced`, msg: m('projectNotInvoiced', { title: j.title }), amount: Number(j.value ?? 0), currency: 'EUR', probability: 0.95, urgency: 3, action: `Create final invoice for ${j.title}`, ref: focus('job', j.id, j.title), commercial: true })
   }
   const rec = receivables(invoices, today)
   for (const b of rec.overdueInvoices) {
-    items.push({ area: 'MONEY', text: `${b.client} owes ${eur(b.open, b.currency)} on ${b.number}, ${b.daysOverdue} days overdue`, amount: b.open, currency: b.currency, probability: 0.8, urgency: b.daysOverdue > 14 ? 3 : 2, action: `Remind ${b.number}`, ref: focus('invoice', b.id, b.number), commercial: true })
+    items.push({ area: 'MONEY', text: `${b.client} owes ${eur(b.open, b.currency)} on ${b.number}, ${b.daysOverdue} days overdue`, msg: m('invoiceOverdue', { client: b.client, amount: eur(b.open, b.currency), number: b.number, days: b.daysOverdue }), amount: b.open, currency: b.currency, probability: 0.8, urgency: b.daysOverdue > 14 ? 3 : 2, action: `Remind ${b.number}`, ref: focus('invoice', b.id, b.number), commercial: true })
   }
   for (const b of rec.drafts) {
-    items.push({ area: 'MONEY', text: `Draft invoice ${b.number} (${b.client}, ${eur(b.open, b.currency)}) not sent`, amount: b.open, currency: b.currency, probability: 0.9, urgency: 2, action: `Send invoice ${b.number}`, ref: focus('invoice', b.id, b.number), commercial: true })
+    items.push({ area: 'MONEY', text: `Draft invoice ${b.number} (${b.client}, ${eur(b.open, b.currency)}) not sent`, msg: m('invoiceDraft', { number: b.number, client: b.client, amount: eur(b.open, b.currency) }), amount: b.open, currency: b.currency, probability: 0.9, urgency: 2, action: `Send invoice ${b.number}`, ref: focus('invoice', b.id, b.number), commercial: true })
   }
   for (const r of renewals) {
-    items.push({ area: 'MONEY', text: `${r.company ?? r.name}: ${r.service} renews ${r.next_renewal} (${eur(r.amount, r.currency)})`, amount: Number(r.amount), currency: r.currency, probability: 0.85, urgency: r.next_renewal <= today ? 3 : 1, action: 'Show recurring revenue', commercial: true })
+    items.push({ area: 'MONEY', text: `${r.company ?? r.name}: ${r.service} renews ${r.next_renewal} (${eur(r.amount, r.currency)})`, msg: m('renewal', { client: r.company ?? r.name, service: r.service, date: r.next_renewal, amount: eur(r.amount, r.currency) }), amount: Number(r.amount), currency: r.currency, probability: 0.85, urgency: r.next_renewal <= today ? 3 : 1, action: 'Show recurring revenue', commercial: true })
   }
   for (const i of incidents) {
     const sev = ['critical', 'high'].includes(i.severity)
-    items.push({ area: i.client_id ? 'CLIENT' : 'SYSTEM', text: `${i.severity.toUpperCase()} incident: ${i.title} (${i.status})`, amount: 0, currency: 'EUR', probability: 0, urgency: sev ? 3 : 1, action: 'Any incidents?', ref: focus('incident', i.id, i.title), commercial: false })
+    items.push({ area: i.client_id ? 'CLIENT' : 'SYSTEM', text: `${i.severity.toUpperCase()} incident: ${i.title} (${i.status})`, msg: m('incident', { severity: i.severity, title: i.title, status: i.status }), amount: 0, currency: 'EUR', probability: 0, urgency: sev ? 3 : 1, action: 'Any incidents?', ref: focus('incident', i.id, i.title), commercial: false })
   }
   for (const j of lateJobs) {
-    items.push({ area: 'CLIENT', text: `Project “${j.title}” past its deadline ${j.due_date}`, amount: 0, currency: 'EUR', probability: 0, urgency: 2, action: `Status of ${j.title}`, ref: focus('job', j.id, j.title), commercial: false })
+    items.push({ area: 'CLIENT', text: `Project “${j.title}” past its deadline ${j.due_date}`, msg: m('projectLate', { title: j.title, date: j.due_date }), amount: 0, currency: 'EUR', probability: 0, urgency: 2, action: `Status of ${j.title}`, ref: focus('job', j.id, j.title), commercial: false })
   }
   if (approvals.length) {
-    items.push({ area: 'MONEY', text: `${approvals.length} action(s) waiting for your approval`, amount: 0, currency: 'EUR', probability: 0, urgency: 2, action: 'What needs my approval?', commercial: false })
+    items.push({ area: 'MONEY', text: `${approvals.length} action(s) waiting for your approval`, msg: m('approvalsWaiting', { count: approvals.length }), amount: 0, currency: 'EUR', probability: 0, urgency: 2, action: 'What needs my approval?', commercial: false })
   }
   for (const u of uncertain) {
-    items.push({ area: 'SYSTEM', text: `Unclear whether ${u.operation} on ${isoDate(u.created_at)} reached the recipient — check before resending`, amount: 0, currency: 'EUR', probability: 0, urgency: 3, action: 'Show what is uncertain', commercial: false })
+    items.push({ area: 'SYSTEM', text: `Unclear whether ${u.operation} on ${isoDate(u.created_at)} reached the recipient — check before resending`, msg: m('uncertainSend', { operation: u.operation, date: isoDate(u.created_at) ?? '' }), amount: 0, currency: 'EUR', probability: 0, urgency: 3, action: 'Show what is uncertain', commercial: false })
   }
   if (rec.reconcile.length) {
-    items.push({ area: 'MONEY', text: `${rec.reconcile.length} invoice(s) where status and recorded payments disagree`, amount: 0, currency: 'EUR', probability: 0, urgency: 1, action: 'Who owes me money?', commercial: false })
+    items.push({ area: 'MONEY', text: `${rec.reconcile.length} invoice(s) where status and recorded payments disagree`, msg: m('paymentsDisagree', { count: rec.reconcile.length }), amount: 0, currency: 'EUR', probability: 0, urgency: 1, action: 'Who owes me money?', commercial: false })
   }
   /* What the Agent Control Plane reported and Marcel has not seen. Recommendations
      and completions inform; blocked, failed and exceptions need a look. */
   for (const e of agentEvents) {
     const ref = e.business_kind && e.business_id && e.business_kind !== 'email_thread' ? focus(e.business_kind as FocusRef['kind'], e.business_id, e.title.slice(0, 60)) : undefined
     items.push({
-      area: 'AGENT', text: `Agent ${e.agent} ${AGENT_VERB[e.kind] ?? e.kind}: ${e.title}`, amount: 0, currency: 'EUR', probability: 0,
+      area: 'AGENT', text: `Agent ${e.agent} ${AGENT_VERB[e.kind] ?? e.kind}: ${e.title}`, msg: m('agentEvent', { agent: e.agent, kind: e.kind, title: e.title }), amount: 0, currency: 'EUR', probability: 0,
       urgency: e.severity === 'critical' ? 3 : e.severity === 'warning' ? 2 : 1, action: 'Show agent events', ref, commercial: false,
     })
   }
@@ -173,7 +184,7 @@ export async function attentionSnapshot(ctx: CapabilityContext) {
   for (const i of ranked) counts[i.area]++
   return {
     counts,
-    items: ranked.map((i) => ({ area: i.area, text: i.text, action: i.action, urgency: i.urgency, ref: i.ref ?? null })),
+    items: ranked.map((i) => ({ area: i.area, text: i.text, msg: i.msg, action: i.action, urgency: i.urgency, ref: i.ref ?? null })),
     email: email.map((e) => ({ id: e.id, subject: e.subject, classification: e.classification, needsReply: e.needs_reply, updatedAt: e.updated_at.toISOString() })),
     approvals: approvals.map((a) => ({
       id: a.id, capability: a.capability, summary: a.summary, preview: a.preview, payloadHash: a.payload_hash,

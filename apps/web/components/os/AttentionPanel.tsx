@@ -20,7 +20,7 @@ type Area = 'SALES' | 'MONEY' | 'CLIENT' | 'SYSTEM' | 'AGENT'
 interface Ref { kind: string; id: string; label?: string }
 interface Snapshot {
   counts: Record<Area, number>
-  items: { area: Area; text: string; action: string; urgency: number; ref: Ref | null }[]
+  items: { area: Area; text: string; msg?: { key: string; params: Record<string, string | number> }; action: string; urgency: number; ref: Ref | null }[]
   email: { id: string; subject: string; classification: string; needsReply: boolean }[]
   approvals: { id: string; summary: string }[]
   agentEvents: { id: string; agent: string; kind: string; severity: string; title: string; detail: string | null }[]
@@ -71,7 +71,12 @@ export function AttentionPanel() {
   if (!data) return <section aria-label={a.title} style={box}><p style={label}>{a.title}</p><p role="status" style={{ fontFamily: sans, margin: 0, color: 'var(--brand-text-muted)' }}>{a.loading}</p></section>
 
   /* Agent events and the approval count have their own rows above and below. */
-  const items = data.items.filter((i) => i.area !== 'AGENT' && i.action !== 'What needs my approval?').slice(0, 8)
+  const items = data.items.filter((i) => i.area !== 'AGENT' && i.msg?.key !== 'approvalsWaiting').slice(0, 8)
+  /* The sentence in the viewer's locale; the English text only if a newer server sends an unknown key. */
+  const sentence = (i: Snapshot['items'][number]) => {
+    const render = i.msg ? (a.items as Record<string, (p: Record<string, string | number>) => string>)[i.msg.key] : undefined
+    return render ? render(i.msg!.params) : i.text
+  }
   const replies = data.email.filter((e) => e.needsReply)
   const quiet = items.length === 0 && data.approvals.length === 0 && replies.length === 0 && data.agentEvents.length === 0
   const areas = (Object.keys(data.counts) as Area[]).filter((k) => data.counts[k] > 0)
@@ -108,7 +113,7 @@ export function AttentionPanel() {
             return (
               <li key={n} style={{ display: 'flex', gap: '10px', alignItems: 'baseline', minWidth: 0 }}>
                 <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: tone, minWidth: '64px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{a[`area${i.area}` as const]}</span>
-                <span style={{ fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)', overflowWrap: 'anywhere', flex: 1 }}>{i.text}</span>
+                <span style={{ fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)', overflowWrap: 'anywhere', flex: 1 }}>{sentence(i)}</span>
                 {href && <Link href={href} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)' }}>{a.open}</Link>}
               </li>
             )

@@ -29,6 +29,9 @@
 
 import { LEAD_STAGES, STAGE_LABEL } from '@/lib/commercial/pipeline'
 
+/** Attention message parameters (views.ts AttentionMessage). */
+type P = Record<string, string | number>
+
 export type OsLocale = 'de' | 'en'
 export const DEFAULT_OS_LOCALE: OsLocale = 'de'
 export const OS_LOCALE_COOKIE = 'os_locale'
@@ -104,6 +107,26 @@ const de = {
     acknowledge: 'Gesehen',
     open: 'Öffnen',
     externalNote: 'Betreffzeilen und Agententexte sind externe Inhalte.',
+    /** One sentence per attention item kind (views.ts AttentionKey); values are record data. */
+    items: {
+      leadReplied: (p: P) => `${p.lead} hat geantwortet — bitte antworten`,
+      negotiationQuiet: (p: P) => `Verhandlung mit ${p.lead} seit ${p.days} Tagen ruhig`,
+      discoveryNoStep: (p: P) => `${p.lead}: Erstgespräch ohne nächsten Schritt — Angebot vorbereiten?`,
+      followUp: (p: P) => `${p.since ? `Überfällig seit ${p.since}: ` : ''}${p.reason}${p.lead ? ` — ${p.lead}` : ''}`,
+      angebotWaiting: (p: P) => `Angebot ${p.number} (${p.client}, ${p.amount}) wartet seit ${p.days} Tagen`,
+      angebotExpired: (p: P) => `Angebot ${p.number} (${p.client}, ${p.amount}) ist am ${p.date} abgelaufen`,
+      angebotNotInvoiced: (p: P) => `Angebot ${p.number} angenommen (${p.client}), aber noch nicht abgerechnet`,
+      projectNotInvoiced: (p: P) => `Projekt „${p.title}“ abgeschlossen, Schlussrechnung fehlt`,
+      invoiceOverdue: (p: P) => `${p.client} schuldet ${p.amount} aus ${p.number}, seit ${p.days} Tagen überfällig`,
+      invoiceDraft: (p: P) => `Rechnungsentwurf ${p.number} (${p.client}, ${p.amount}) noch nicht versendet`,
+      renewal: (p: P) => `${p.client}: ${p.service} verlängert sich am ${p.date} (${p.amount})`,
+      incident: (p: P) => `Störung (${p.severity}): ${p.title} (${p.status})`,
+      projectLate: (p: P) => `Projekt „${p.title}“ hat die Frist ${p.date} überschritten`,
+      approvalsWaiting: (p: P) => Number(p.count) === 1 ? '1 Aktion wartet auf deine Freigabe' : `${p.count} Aktionen warten auf deine Freigabe`,
+      uncertainSend: (p: P) => `Unklar, ob ${p.operation} vom ${p.date} angekommen ist — vor erneutem Senden prüfen`,
+      paymentsDisagree: (p: P) => Number(p.count) === 1 ? '1 Rechnung, bei der Status und erfasste Zahlungen abweichen' : `${p.count} Rechnungen, bei denen Status und erfasste Zahlungen abweichen`,
+      agentEvent: (p: P) => `Agent ${p.agent} ${({ completed: 'hat abgeschlossen', blocked: 'ist blockiert', failed: 'ist fehlgeschlagen', exception: 'meldet eine Ausnahme', recommendation: 'empfiehlt', waiting: 'wartet' } as Record<string, string>)[String(p.kind)] ?? p.kind}: ${p.title}`,
+    },
   },
   approvalsPage: {
     title: 'Freigaben',
@@ -754,6 +777,25 @@ const en: typeof de = {
     acknowledge: 'Seen',
     open: 'Open',
     externalNote: 'Subjects and agent text are external content.',
+    items: {
+      leadReplied: (p: P) => `${p.lead} replied — answer them`,
+      negotiationQuiet: (p: P) => `Negotiation with ${p.lead} quiet for ${p.days} days`,
+      discoveryNoStep: (p: P) => `${p.lead} in discovery with no next step — prepare the Angebot?`,
+      followUp: (p: P) => `${p.since ? `Overdue since ${p.since}: ` : ''}${p.reason}${p.lead ? ` — ${p.lead}` : ''}`,
+      angebotWaiting: (p: P) => `Angebot ${p.number} (${p.client}, ${p.amount}) waiting ${p.days} days`,
+      angebotExpired: (p: P) => `Angebot ${p.number} (${p.client}, ${p.amount}) expired ${p.date}`,
+      angebotNotInvoiced: (p: P) => `Angebot ${p.number} accepted (${p.client}) and not invoiced`,
+      projectNotInvoiced: (p: P) => `Project “${p.title}” completed and not finally invoiced`,
+      invoiceOverdue: (p: P) => `${p.client} owes ${p.amount} on ${p.number}, ${p.days} days overdue`,
+      invoiceDraft: (p: P) => `Draft invoice ${p.number} (${p.client}, ${p.amount}) not sent`,
+      renewal: (p: P) => `${p.client}: ${p.service} renews ${p.date} (${p.amount})`,
+      incident: (p: P) => `${String(p.severity).toUpperCase()} incident: ${p.title} (${p.status})`,
+      projectLate: (p: P) => `Project “${p.title}” past its deadline ${p.date}`,
+      approvalsWaiting: (p: P) => Number(p.count) === 1 ? '1 action waiting for your approval' : `${p.count} actions waiting for your approval`,
+      uncertainSend: (p: P) => `Unclear whether ${p.operation} on ${p.date} reached the recipient — check before resending`,
+      paymentsDisagree: (p: P) => Number(p.count) === 1 ? '1 invoice where status and recorded payments disagree' : `${p.count} invoices where status and recorded payments disagree`,
+      agentEvent: (p: P) => `Agent ${p.agent} ${({ completed: 'completed', blocked: 'is blocked', failed: 'failed', exception: 'found an exception', recommendation: 'recommends', waiting: 'is waiting' } as Record<string, string>)[String(p.kind)] ?? p.kind}: ${p.title}`,
+    },
   },
   approvalsPage: {
     title: 'Approvals',

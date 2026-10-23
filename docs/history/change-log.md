@@ -1,5 +1,12 @@
 # Change Log
 
+## 2026-10-23 — /os attention in the viewer's language (risk 109)
+
+Attention items carry a message key and record values; the `/os` panel renders them from the OS
+dictionary (German default, English). Brief and notices keep the English text. Proof:
+`prove:control-planes` 32/32 (17 keys, German ≠ English, live agent item in German); local
+production-build check showed the overdue-invoice item in German and English.
+
 ## 2026-10-23 — Provider spam state and mail quarantine (ADR-0022)
 
 **Root cause:** Hostinger filed the "Rechnung" lure into Junk, but its webhook carries no folder

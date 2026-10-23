@@ -102,6 +102,7 @@ submission, on dashboard view and daily by cron). The `/os` dashboard leads with
 Marcel's attention today", from the same model as the brief and the notices.
 
 Known gaps:
-- Attention item text is English-only; it is shared with the brief and notices.
+- ~~Attention item text is English-only~~ resolved 2026-10-23: items carry a message key; `/os` renders
+  German or English. The brief and notices keep English text.
 - `jsonb` reorders approval preview fields.
 - The Bureau's demo sections remain, clearly labelled as sample data.

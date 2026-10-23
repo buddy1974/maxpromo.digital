@@ -159,6 +159,17 @@ try {
   const snap = await attentionSnapshot(ctx)
   const ours = snap.agentEvents.find((e: { title: string }) => e.title === ev.title)
   check('the agent failure appears in /os attention under AGENT', !!ours && snap.counts.AGENT >= 1 && snap.items.some((i: { area: string; text: string }) => i.area === 'AGENT' && i.text.includes(run)))
+  /* Risk 109: /os renders each item in the viewer's locale from a key and its record values. */
+  const { OS_DICTIONARY } = await import('@/lib/os-i18n/dictionary')
+  const viewsSource = readFileSync(resolve(root, 'apps/web/lib/commercial/capabilities/views.ts'), 'utf8')
+  const union = viewsSource.slice(viewsSource.indexOf('export type AttentionKey ='), viewsSource.indexOf('export interface AttentionMessage'))
+  const keys = [...union.matchAll(/'([a-zA-Z]+)'/g)].map((k) => k[1])
+  const sample = { lead: 'L', days: 3, since: '2026-10-01', reason: 'R', number: 'N', client: 'C', amount: '1 €', date: '2026-10-02', title: 'T', service: 'S', severity: 'high', status: 'open', count: 2, operation: 'O', agent: 'intake', kind: 'failed' }
+  const dict = (l: 'de' | 'en') => OS_DICTIONARY[l].attention.items as Record<string, (p: typeof sample) => string>
+  check(`every attention key (${keys.length}) has a German and an English sentence, and they differ`,
+    keys.length >= 17 && keys.every((k) => typeof dict('de')[k] === 'function' && typeof dict('en')[k] === 'function' && dict('de')[k](sample) !== dict('en')[k](sample)))
+  const agentItem = snap.items.find((i: { area: string; text: string }) => i.area === 'AGENT' && i.text.includes(run)) as { msg: { key: string; params: typeof sample } } | undefined
+  check('the live agent item carries its key and values; German renders it in German', agentItem?.msg.key === 'agentEvent' && dict('de').agentEvent(agentItem.msg.params).includes('ist fehlgeschlagen') && dict('de').agentEvent(agentItem.msg.params).includes(run))
   const owner = await runCapability(sql, { requestId: `${run}-notices`, actor: 'telegram:1', channel: 'telegram', capability: 'owner.notices', input: {} })
   check('…and in owner.notices, once, keyed by the event (the future Telegram owner plane)',
     owner.status === 'done' && (((owner as { result: { data: unknown } }).result.data as { notices: { key: string }[] }).notices.filter((n) => n.key === `agent:${ours!.id}`).length === 1))
