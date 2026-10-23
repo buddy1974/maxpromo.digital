@@ -4,6 +4,12 @@ This extends ADR-0020; it does not introduce another mail or notification archit
 
 ## Current locked production status — 2026-10-23
 
+**Latest owner Test returned400: DO NOT RETRY HOSTINGER TEST.** Production records prove
+authenticated requests reached the route and were rejected before storage, but the original
+payload/rejection field was not retained. Await redacted delivery request/response detail;
+do not weaken validation. [Incident evidence](../reports/hostinger-first-test-2026-10-23.md).
+The readiness checks below precede this genuine provider Test and do not certify its payload.
+
 The locked receiver is deployed and healthy. Public receiver GET/HEAD405, rejected POST401.
 Mail0013/0014 are applied:9 tables/18 indexes/2 functions. Marcel approved the single
 hostinger:info@maxpromo.digital account binding on2026-10-23; it is now provisioned,
@@ -147,7 +153,9 @@ Rollback: disable the Hostinger webhook without deleting it, unset provider sele
 content workers, keep audit/metadata for reconciliation, then roll application back. Never
 drop mail records as a code rollback. The provider mailbox remains the transport/source mail.
 
-**Current verdict: SAFE TO PRESS HOSTINGER TEST.**
+**Current verdict: DO NOT RETRY HOSTINGER TEST.**
+The first genuine owner Test returned400; its actual redacted request/response contract is
+required before a compatibility fix can be justified. Earlier infrastructure readiness:
 Marcel installed HOSTINGER_WEBHOOK_SECRET privately. Production deployment
 dpl_3eb5eCWCpihA87C9XkLdyzrPE59b was built afterward from ff3fefc, passed presence/provider
 assertions without printing values and was promoted. Public405/401 and owner OS checks pass;

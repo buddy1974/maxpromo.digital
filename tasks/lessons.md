@@ -1,5 +1,9 @@
 # Engineering lessons
 
+- Webhook readiness probes cannot certify a provider's Test payload contract. Preserve
+  safe fixed rejection stage/reason codes (never bodies, URLs, secrets or raw exceptions)
+  so a genuine authenticated400 can be traced without weakening validation.
+
 - Environment-only production releases need a new deployment after secret installation.
   A Git redeploy can intentionally cancel on the unchanged-app ignore rule; inspect the
   actual log and use the established CLI release path, preserving permanent ignore logic.

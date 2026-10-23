@@ -74,3 +74,13 @@ In-cloud secret-presence/provider assertion passed without values. Production Re
 dpl_3eb5eCWCpihA87C9XkLdyzrPE59b serves www; actual public405/401 and OS/site200 checks pass,
 one enabled binding/all mail activity0, WhatsApp OFF. No Hostinger Test/request/send/fetch,
 downloads or Telegram permissions changed. Ready for Marcel's first provider Test.
+
+### First genuine provider Test400 — 2026-10-23
+
+Two production serverless400 records confirm reachability and passed Bearer authentication;
+deployed400 path rejects body/JSON/schema before account/storage. Original payload/response
+body/reason not retained: exact rejected field remains external evidence boundary, no blind
+Test compatibility bypass added. Safe fixed-code diagnostics added; full verify29, email185,
+route46 and SQL40 pass. Intentional log-payload mutation caught/restored, route46 rerun clean.
+All production mail counts0 and one enabled binding; public405/401 and OS/site healthy.
+Do not retry Hostinger Test until actual redacted Test request/response detail is reconciled.

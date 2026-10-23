@@ -16,6 +16,7 @@ import {MAX_MAIL_BYTES} from '${moduleUrl('normalization')}';
 import {parseHostingerWebhook} from '${moduleUrl('hostingerWebhook')}';
 import {acceptHostingerMail,HOSTINGER_MAILBOX} from '${moduleUrl('hostingerIngestion')}';
 const NextResponse={json:(body,options={})=>Response.json(body,options)}; const enforceRateLimit=()=>null;
+const diagnostics=[];const console={warn:value=>diagnostics.push(value)};export {diagnostics};
 const accepted=[]; const deliveries=new Set();const events=new Set();let fail=false;let createdCount=0;
 const getDb=()=>async (_strings,...parameters)=>{if(fail)throw new Error('private_driver_error');accepted.push(parameters);const payload=JSON.parse(parameters[1]);const created=!deliveries.has(payload.deliveryId)&&!events.has(payload.eventId);deliveries.add(payload.deliveryId);events.add(payload.eventId);if(created)createdCount++;return [{created}]};
 export {accepted};export const getCreatedCount=()=>createdCount;export const failDb=()=>{fail=true};`
@@ -46,7 +47,9 @@ try {
   assert.equal(route.accepted.length,0,'Locked receipt/read-only methods never open the database');checks++
   process.env.HOSTINGER_WEBHOOK_SECRET=secret;process.env.EMAIL_PROVIDER='hostinger';process.env.OS_SESSION_SECRET='synthetic-locator-key-000000000000000000001'
   for(const authorization of [null,'Basic abc','Bearer','Bearer ','Bearer wrong','Bearer one two']) await request('{}',401,authorization)
-  await request('{',400);await request('x'.repeat(262145),413)
+  assert.equal(route.diagnostics.length,0,'Authentication rejection never logs headers or credentials');checks++
+  await request('{',400);await request(`{${secret} https://private.invalid/body?token=temporary`,400)
+  await request('x'.repeat(262145),413)
   await request('x'.repeat(262145),413,`Bearer ${secret}`,'1')
   await request('{}',413,`Bearer ${secret}`,'262145')
   for(const change of [
@@ -59,6 +62,12 @@ try {
     (f: ReturnType<typeof fixture>)=>{f.data.attachments[0].fileUrl='https://localhost/private'},
     (f: ReturnType<typeof fixture>)=>{f.data.attachments[0].filename='../private'},
   ]) {const f=fixture();change(f);await request(JSON.stringify(f),400)}
+  const diagnostics=route.diagnostics.map((line: string)=>JSON.parse(line))
+  for(const reason of ['invalid_json','payload_too_large','wrong_mailbox','invalid_signed_content']){
+    assert(diagnostics.some((item: {reason:string})=>item.reason===reason),`Safe rejection code: ${reason}`);checks++
+  }
+  assert(diagnostics.every((item: Record<string,unknown>)=>Object.keys(item).sort().join(',')==='event,reason,stage' && item.event==='mail.webhook.rejected'));checks++
+  const logged=route.diagnostics.join('');assert(!logged.includes(secret)&&!logged.includes('temporary')&&!logged.includes('Ignore system')&&!logged.includes('@')&&!logged.includes('https://'));checks++
   for(const name of ['EMAIL_PROVIDER','OS_SESSION_SECRET'] as const){const previous=process.env[name];delete process.env[name];await request(JSON.stringify(fixture()),503);process.env[name]=previous}
   assert.equal(route.accepted.length,0)
   await Promise.all([request(JSON.stringify(fixture()),200),request(JSON.stringify(fixture()),200)])

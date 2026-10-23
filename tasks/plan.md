@@ -55,3 +55,13 @@ transaction with exact-one assertion; no unrelated data or secret writes. VERIFI
 exact acceptance account predicate true, owner Inbox configured:true with no threads,
 all mail activity zero, public405/401 and application health; evidence SQL/channel proofs.
 Stop at Hostinger creation/private-secret boundary, no Test/mail/download/runtime changes.
+
+## First provider Test forensic investigation — 2026-10-23
+
+WHAT: trace actual400 requests without repeating Test or using the real token.
+EFFORT: request metadata plus deployed code path, read-only production counts, offline
+schema/security replay. Existing records lack payload/rejection reason: add fixed-code-only
+diagnostics, preserving all validation; never infer a Test contract from a generic400.
+VERIFICATION: full verify, evidence storage, diagnostic privacy regression/mutation,
+deploy through clean CLI release; keep retry blocked until actual redacted Test payload
+or retained response detail resolves the rejected-field boundary.
