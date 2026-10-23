@@ -109,7 +109,7 @@ const de = {
     externalNote: 'Betreffzeilen und Agententexte sind externe Inhalte.',
     /** One sentence per attention item kind (views.ts AttentionKey); values are record data. */
     items: {
-      enquiryNew: (p: P) => `Neue Anfrage von ${p.lead} (${p.source}) — bitte antworten`,
+      enquiryNew: (p: P) => `Neue Anfrage von ${p.lead} (${({ agent_bureau_form: 'Agent-Bureau-Formular', email: 'E-Mail', website: 'Website-Formular' } as Record<string, string>)[String(p.source)] ?? p.source}) — bitte antworten`,
       leadReplied: (p: P) => `${p.lead} hat geantwortet — bitte antworten`,
       negotiationQuiet: (p: P) => `Verhandlung mit ${p.lead} seit ${p.days} Tagen ruhig`,
       discoveryNoStep: (p: P) => `${p.lead}: Erstgespräch ohne nächsten Schritt — Angebot vorbereiten?`,
@@ -779,7 +779,7 @@ const en: typeof de = {
     open: 'Open',
     externalNote: 'Subjects and agent text are external content.',
     items: {
-      enquiryNew: (p: P) => `New enquiry from ${p.lead} (${p.source}) — reply`,
+      enquiryNew: (p: P) => `New enquiry from ${p.lead} (${({ agent_bureau_form: 'Agent Bureau form', email: 'email', website: 'website form' } as Record<string, string>)[String(p.source)] ?? p.source}) — reply`,
       leadReplied: (p: P) => `${p.lead} replied — answer them`,
       negotiationQuiet: (p: P) => `Negotiation with ${p.lead} quiet for ${p.days} days`,
       discoveryNoStep: (p: P) => `${p.lead} in discovery with no next step — prepare the Angebot?`,
