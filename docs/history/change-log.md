@@ -6,7 +6,12 @@
 or spam field, and the OS never read the folder from the REST API. The subject regex made it
 `billing` / Needs reply.
 
-**In the repository (released after migration 0016 and the next push):**
+**Production:** migration 0016 applied to the OS database (Neon console, one transaction):
+9 columns, `mail.sender_blocks`, `apply_provider_state`; threads 2 / messages 2, leads 5 /
+invoices 2 unchanged, 0 rows quarantined; deployed `accept_hostinger` md5 2b4b791b… equals the
+repository. The previously deployed code stays compatible.
+
+**In the repository (released by the next push):**
 - migration 0016: provider state per message, quarantine and owner verdict per thread,
   `mail.sender_blocks`, quarantine-aware `accept_hostinger` / `complete_content`,
   `apply_provider_state` (schema and functions only; no rows changed);

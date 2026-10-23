@@ -1,7 +1,7 @@
 # ADR-0022 — Provider spam state and mail quarantine
 
-Status: **accepted (owner correction 2026-10-23); implemented in the repository; production
-release pending migration 0016 and the owner push.** Extends ADR-0020 (email is a governed OS
+Status: **accepted (owner correction 2026-10-23); implemented in the repository; migration 0016
+applied to production 2026-10-23; application release pending the owner push.** Extends ADR-0020 (email is a governed OS
 channel). Evidence: [provider spam investigation](../reports/hostinger-provider-spam-2026-10-23.md).
 
 ## Context
