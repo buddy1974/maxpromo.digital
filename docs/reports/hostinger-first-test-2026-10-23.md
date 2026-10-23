@@ -46,6 +46,14 @@ adding a payload field to the diagnostic log failed the real route proof; source
 route46 passed again. Existing auth/mailbox/evidence mutations remain caught. No real model,
 provider transport or production fixture was used by these proofs.
 
+Released diagnostic commit9bffeab87a7872a0c57945aa474127d4501d520a through normal main/Git
+deployment dpl_3dEo92YhvcJRK1anW4SUPyDScmWZ, Production/Ready, created07:42:26 Europe/Berlin.
+www.maxpromo.digital resolves to it; public health reports9bffeab. Post-release public
+405/401, owner OS/Inbox/documents200, homepages200 and health ok verified again. Refreshed
+production counts remain0 with exactly one enabled account. No further provider400/retry
+appeared in the inspected window; only the original two have been retained. The diagnostic
+release cannot retroactively reconstruct either old payload or its response body.
+
 Pending external evidence: redacted JSON/response detail from the failed Hostinger delivery,
 without Authorization, secrets, personal contents or signed URL query values. Do not press
 Test again merely to guess. A legitimate provider-test contract, if different, must be
