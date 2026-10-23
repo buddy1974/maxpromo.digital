@@ -51,3 +51,8 @@ export function describeHostingerStructure(value: unknown, configuredMailbox: st
     urls:{body:urlClass(data.bodyUrl),firstAttachment:urlClass(first.fileUrl)},
     firstAttachment:knownShape(attachments[0],ATTACHMENT)}
 }
+/** Accepted receipts: how many undocumented data keys arrived. A count only, never a name. */
+export function unknownDataKeys(value: unknown): number {
+  const data=object(value)&&object(value.data)?value.data:{}
+  return Object.keys(data).filter(key=>!(DATA as readonly string[]).includes(key)).length
+}

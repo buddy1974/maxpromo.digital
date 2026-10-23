@@ -25,6 +25,20 @@ test('atomic acceptance separates delivery and mailbox IDs and stores URLs only 
     assert.equal(values[3],'2026-10-23T10:00:00.000Z')
     return [{created:calls===1}]
   }) as unknown as Sql
-  assert.deepEqual(await acceptHostingerMail(sql,event,secret,new Date('2026-10-22T12:00:00Z')),{created:true})
-  assert.deepEqual(await acceptHostingerMail(sql,event,secret,new Date('2026-10-24T12:00:00Z')),{created:false})
+  assert.deepEqual(await acceptHostingerMail(sql,event,secret,new Date('2026-10-22T12:00:00Z')),{created:true,messageId:''})
+  assert.deepEqual(await acceptHostingerMail(sql,event,secret,new Date('2026-10-24T12:00:00Z')),{created:false,messageId:''})
+})
+test('provider-spam shape: an invoice lure carries structural signals and never asks for a reply',async()=>{
+  // The webhook has no spam field, so acceptance can only pass structure; Junk is applied later.
+  const lure:VerifiedHostingerEvent={deliveryId:'d-lure',eventId:'e-lure',mailbox:'info@maxpromo.digital',messageId:'<lure@sender.example>',inReplyTo:'',references:[],
+    subject:'(#B2NDI4SR) Ihre Rechnung',sender:'no-reply@sender.example',recipients:['info@maxpromo.digital'],cc:[],eventAt:'2026-10-23T15:58:24Z',emailDate:null,
+    previewText:'Rechnung',bodyUrl:null,attachments:[{id:'e-lure:0',filename:'Rechnung.html',size:1815,contentType:'application/octet-stream',fileUrl:null}],degraded:[]}
+  const seen:Record<string,unknown>[]=[]
+  const sql=(async(_s:TemplateStringsArray,...values:unknown[])=>{seen.push(JSON.parse(String(values[1])));return [{created:true,message_id:'m-1'}]}) as unknown as Sql
+  assert.deepEqual(await acceptHostingerMail(sql,lure,secret,new Date('2026-10-23T16:00:00Z')),{created:true,messageId:'m-1'})
+  assert.equal(seen[0].classification,'billing');assert.equal(seen[0].needsReply,false)
+  assert.equal(seen[0].suspect,true);assert.deepEqual(seen[0].riskSignals,['active_attachment','automated_sender'])
+  const genuine={...lure,deliveryId:'d-ok',eventId:'e-ok',sender:'client@company.example',subject:'Automation enquiry',attachments:[]}
+  seen.length=0;await acceptHostingerMail(sql,genuine,secret,new Date('2026-10-23T16:00:00Z'))
+  assert.equal(seen[0].needsReply,true);assert.equal(seen[0].suspect,false);assert.deepEqual(seen[0].riskSignals,[])
 })

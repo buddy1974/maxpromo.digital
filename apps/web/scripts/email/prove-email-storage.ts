@@ -73,6 +73,7 @@ try {
     // Remove only this mission's earlier evidence-only prototype signature, never data.
     await client.query('DROP FUNCTION IF EXISTS mail.complete_content(uuid,uuid,text,jsonb)')
     await client.query(readFileSync(resolve(root, 'apps/web/db/migrations/0014-hostinger-contract.sql'), 'utf8'))
+    await client.query(readFileSync(resolve(root, 'apps/web/db/migrations/0016-mail-provider-state.sql'), 'utf8'))
     await client.query('COMMIT')
   } catch (error) { await client.query('ROLLBACK'); throw error } finally { client.release() }
   console.log('PASS additive mail migration applied only to guarded evidence target')
@@ -184,6 +185,52 @@ try {
   await accept(contract)
   const [retryBody]=await sql`SELECT body_state,body_text FROM mail.messages WHERE id=${accepted.id}`
   check('webhook retry cannot replace completed full body with its preview',retryBody.body_state==='complete' && retryBody.body_text===retained.body_text)
+  // ── Provider spam state (ADR-0022). The webhook carries no folder; the REST folder result is
+  // applied by mail.apply_provider_state. Same real functions as production, synthetic rows only.
+  const attention = async (threadId: string) => (await sql`SELECT count(*)::int AS n FROM mail.threads WHERE id=${threadId}::uuid
+    AND archived=false AND trashed=false AND (needs_reply=true OR waiting=true)
+    AND quarantine IS NULL AND classification NOT IN ('newsletter','spam','routine')`)[0].n as number
+  const fresh = (over: Record<string, unknown> = {}) => ({ ...contract, deliveryId: randomUUID() as string, eventId: `spam:${randomUUID()}`, messageId: `<${randomUUID()}@example.invalid>`, attachments: [] as typeof contract.attachments, ...over }) as typeof contract
+  const lureSender = `lure-${randomUUID()}@example.invalid`
+  const billing = fresh({ subject: 'Ihre Rechnung', sender: lureSender, classification: 'billing', needsReply: true })
+  const billingRow = (await accept(billing))[0]
+  const [beforeJunk] = await sql`SELECT t.quarantine,t.needs_reply,m.provider_state FROM mail.threads t JOIN mail.messages m ON m.thread_id=t.id WHERE m.id=${billingRow.message_id}::uuid`
+  check('provider spam: receipt alone cannot know the folder; message starts unverified and in attention', beforeJunk.quarantine === null && beforeJunk.provider_state === 'unverified' && await attention(billingRow.thread_id) === 1)
+  const [junked] = await sql`SELECT mail.apply_provider_state(${billingRow.message_id}::uuid,'junk','INBOX.Junk',35) AS outcome`
+  const [afterJunk] = await sql`SELECT t.quarantine,t.needs_reply,m.provider_state,m.provider_folder,m.provider_uid FROM mail.threads t JOIN mail.messages m ON m.thread_id=t.id WHERE m.id=${billingRow.message_id}::uuid`
+  check('provider spam: Hostinger Junk quarantines the thread and clears reply attention', junked.outcome === 'quarantined' && afterJunk.quarantine === 'provider_junk' && afterJunk.needs_reply === false && afterJunk.provider_folder === 'INBOX.Junk' && Number(afterJunk.provider_uid) === 35)
+  check('provider spam: quarantined billing mail is outside the attention/brief/notice query', await attention(billingRow.thread_id) === 0)
+  await sql`UPDATE mail.threads SET quarantine=NULL,quarantined_at=NULL,owner_verdict='not_spam',needs_reply=true WHERE id=${billingRow.thread_id}::uuid`
+  const [again] = await sql`SELECT mail.apply_provider_state(${billingRow.message_id}::uuid,'junk','INBOX.Junk',35) AS outcome`
+  const [verdict] = await sql`SELECT quarantine,needs_reply FROM mail.threads WHERE id=${billingRow.thread_id}::uuid`
+  check('provider spam: the owner "Not spam" verdict is never overridden by the provider signal', again.outcome === 'recorded' && verdict.quarantine === null && verdict.needs_reply === true)
+  const moved = (await accept(fresh({ sender: lureSender })))[0]
+  await sql`SELECT mail.apply_provider_state(${moved.message_id}::uuid,'junk','INBOX.Junk',36)`
+  const [released] = await sql`SELECT mail.apply_provider_state(${moved.message_id}::uuid,'inbox','INBOX',90) AS outcome`
+  check('provider spam: the provider moving mail back to the Inbox lifts only its own quarantine', released.outcome === 'released' && (await sql`SELECT quarantine FROM mail.threads WHERE id=${moved.thread_id}::uuid`)[0].quarantine === null)
+  const lure = fresh({ sender: lureSender, subject: 'Ihre Rechnung', classification: 'billing', needsReply: false, suspect: true, riskSignals: ['active_attachment', 'automated_sender'],
+    inReplyTo: billing.messageId, references: [billing.messageId], attachments: [{ id: 'lure-0', filename: 'Rechnung.html', size: 1815, contentType: 'application/octet-stream' }] })
+  const lureRow = (await accept(lure))[0]
+  const [lureThread] = await sql`SELECT t.quarantine,t.needs_reply,m.risk_signals,(SELECT count(*)::int FROM mail.business_links b WHERE b.thread_id=t.id) AS links FROM mail.threads t JOIN mail.messages m ON m.thread_id=t.id WHERE m.id=${lureRow.message_id}::uuid`
+  check('structural phishing from an unknown sender is quarantined at receipt, with signals stored and no links', lureThread.quarantine === 'suspected_phishing' && lureThread.needs_reply === false && lureThread.links === 0 && JSON.stringify(lureThread.risk_signals) === '["active_attachment","automated_sender"]')
+  check('quarantined mail never joins an existing conversation through its reply headers', lureRow.thread_id !== billingRow.thread_id)
+  const knownLure = (await accept(fresh({ suspect: true, riskSignals: ['active_attachment'] })))[0]
+  check('the same structural signal from a known lead/client is not quarantined', (await sql`SELECT quarantine FROM mail.threads WHERE id=${knownLure.thread_id}::uuid`)[0].quarantine === null)
+  const blockedSender = `blocked-${randomUUID()}@example.invalid`
+  await sql`INSERT INTO mail.sender_blocks(account_id,address,created_by) VALUES(${account},${blockedSender},'os:marcel')`
+  const blocked = (await accept(fresh({ sender: blockedSender, classification: 'lead', needsReply: true })))[0]
+  const [blockedThread] = await sql`SELECT quarantine,needs_reply FROM mail.threads WHERE id=${blocked.thread_id}::uuid`
+  check('mail from a sender Marcel blocked is quarantined at receipt and asks for no reply', blockedThread.quarantine === 'blocked_sender' && blockedThread.needs_reply === false && await attention(blocked.thread_id) === 0)
+  const [lureJob] = await sql`UPDATE mail.content_jobs SET state='processing',lease_token=gen_random_uuid(),lease_until=now()+interval '1 minute' WHERE message_id=${lureRow.message_id}::uuid RETURNING id,lease_token`
+  const [lureBefore] = await sql`SELECT updated_at FROM mail.threads WHERE id=${lureRow.thread_id}::uuid`
+  const lureAsset = [{ id: 'lure-0', storageRef: 'private:sha256-lure', sha256: 'b'.repeat(64), size: 1815, contentType: 'application/octet-stream' }]
+  await sql`SELECT mail.complete_content(${lureJob.id},${lureJob.lease_token},'urgent security incident: pay now',${JSON.stringify(lureAsset)}::jsonb,'system',true)`
+  const [lureAfter] = await sql`SELECT needs_reply,updated_at FROM mail.threads WHERE id=${lureRow.thread_id}::uuid`
+  check('full content can never raise attention on a quarantined thread', lureAfter.needs_reply === false && new Date(lureAfter.updated_at).getTime() === new Date(lureBefore.updated_at).getTime())
+  check('invalid provider state rejected by database', await rejected(() => sql`UPDATE mail.messages SET provider_state='spam-ish' WHERE id=${lureRow.message_id}::uuid`))
+  check('invalid quarantine reason and owner verdict rejected by database', await rejected(() => sql`UPDATE mail.threads SET quarantine='deleted' WHERE id=${lureRow.thread_id}::uuid`) && await rejected(() => sql`UPDATE mail.threads SET owner_verdict='maybe' WHERE id=${lureRow.thread_id}::uuid`))
+  const [kept] = await sql`SELECT count(*)::int AS n FROM mail.messages WHERE id IN (${billingRow.message_id}::uuid,${lureRow.message_id}::uuid,${blocked.message_id}::uuid)`
+  check('quarantine never deletes mail', kept.n === 3)
   // Compare complete rows, not just counts: a replay must preserve bodies, leases,
   // attachment references, owner triage and the related synthetic CRM records.
   // Every snapshot predicate is restricted to this run's randomly named fixture.
@@ -213,6 +260,7 @@ try {
     for (let replay = 1; replay <= 2; replay++) {
       await replayClient.query(readFileSync(resolve(root, 'apps/web/db/migrations/0013-email-channel.sql'), 'utf8'))
       await replayClient.query(readFileSync(resolve(root, 'apps/web/db/migrations/0014-hostinger-contract.sql'), 'utf8'))
+      await replayClient.query(readFileSync(resolve(root, 'apps/web/db/migrations/0016-mail-provider-state.sql'), 'utf8'))
       const afterReplay = await snapshot()
       check(`migration replay ${replay} preserves complete synthetic mail rows`, JSON.stringify(afterReplay.mail) === JSON.stringify(beforeReplay.mail))
       check(`migration replay ${replay} preserves complete synthetic lead/client rows`, JSON.stringify(afterReplay.business) === JSON.stringify(beforeReplay.business))
@@ -231,6 +279,7 @@ try {
       await sql`DELETE FROM mail.business_links WHERE thread_id IN (SELECT id FROM mail.threads WHERE account_id=${account})`
       await sql`DELETE FROM mail.content_assets WHERE message_id IN (SELECT id FROM mail.messages WHERE account_id=${account})`
       await sql`DELETE FROM mail.content_jobs WHERE message_id IN (SELECT id FROM mail.messages WHERE account_id=${account})`
+      await sql`DELETE FROM mail.sender_blocks WHERE account_id=${account}`
       await sql`DELETE FROM mail.deliveries WHERE account_id=${account}`
       await sql`DELETE FROM mail.events WHERE account_id=${account}`
       await sql`DELETE FROM mail.messages WHERE account_id=${account}`

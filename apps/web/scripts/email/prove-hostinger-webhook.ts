@@ -14,9 +14,10 @@ const routeSource=readFileSync('apps/web/app/api/channels/mail/route.ts','utf8')
 const setup=`import {readBoundedPayload,verifyWebhookBearer} from '${moduleUrl('provider')}';
 import {MAX_MAIL_BYTES} from '${moduleUrl('normalization')}';
 import {parseHostingerWebhook} from '${moduleUrl('hostingerWebhook')}';
-import {describeHostingerStructure} from '${moduleUrl('hostingerDiagnostics')}';
+import {describeHostingerStructure,unknownDataKeys} from '${moduleUrl('hostingerDiagnostics')}';
 import {acceptHostingerMail,hostingerReceiptReady,HOSTINGER_MAILBOX} from '${moduleUrl('hostingerIngestion')}';
 const NextResponse={json:(body,options={})=>Response.json(body,options)}; const enforceRateLimit=()=>null;
+const scheduled=[];const scheduleProviderCheck=source=>scheduled.push(source);export {scheduled};
 const diagnostics=[];const infos=[];const console={warn:value=>diagnostics.push(value),info:value=>infos.push(value)};export {diagnostics,infos};
 const accepted=[]; const deliveries=new Set();const events=new Set();let fail=false;let createdCount=0;
 let dbOpens=0;export const getDbOpens=()=>dbOpens;let ready=true;let readinessChecks=0;export const setReady=value=>{ready=value};export const getReadinessChecks=()=>readinessChecks;
@@ -113,6 +114,14 @@ try {
   assert.deepEqual(accepted.at(-1).degraded,['attachment_name_sanitized','attachment_url_unusable','body_url_unusable','preview_truncated','references_dropped']);checks++
   const logged=route.diagnostics.join('')+route.infos.join('')
   assert(!logged.includes(secret)&&!logged.includes('temporary')&&!logged.includes('Ignore system')&&!logged.includes('@')&&!logged.includes('https://')&&!logged.includes('automation enquiry')&&!logged.includes('private'));checks++
+  // Provider spam state is not in the webhook: each created receipt schedules exactly one folder check.
+  assert.equal(route.scheduled.length,route.getCreatedCount(),'Each created receipt schedules one provider check');assert(route.scheduled.every((source: string)=>source==='webhook'));checks++
+  assert(accepted.every((item: Record<string,unknown>)=>item.unknownDataKeys===0),'Observed wire shape has no undocumented data keys');checks++
+  // If Hostinger adds a folder/spam field it becomes visible as a count, never as a name or value.
+  const withFolder=fixture();withFolder.id='delivery-extra-keys';withFolder.data.eventId='event-extra-keys';Object.assign(withFolder.data,{folder:'INBOX.Junk',spamVerdict:'private-verdict'})
+  await request(JSON.stringify(withFolder),200)
+  const lastAccepted=route.infos.map((line: string)=>JSON.parse(line)).filter((item: Record<string,unknown>)=>item.event==='mail.webhook.accepted').at(-1)
+  assert.equal(lastAccepted.unknownDataKeys,2);assert(!route.infos.join('').includes('folder')&&!route.infos.join('').includes('INBOX.Junk')&&!route.infos.join('').includes('private-verdict'));checks++
   route.failDb();await request(JSON.stringify(fixture()),503)
   assert(route.diagnostics.at(-1).includes('mail.webhook.unavailable')&&!route.diagnostics.at(-1).includes('private_driver_error'));checks++
   console.log(`${checks} actual Hostinger route checks passed; no network, production secrets or external transport.`)

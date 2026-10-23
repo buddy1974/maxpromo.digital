@@ -1,6 +1,7 @@
 import { createCipheriv, createDecipheriv, hkdfSync, randomBytes } from 'node:crypto'
 import type { Sql } from '@/lib/commercial/types'
 import { classifyMail } from './normalization'
+import { assessMailRisk } from './risk'
 import type { VerifiedHostingerEvent } from './hostingerWebhook'
 
 export const HOSTINGER_MAILBOX = 'info@maxpromo.digital'
@@ -36,15 +37,18 @@ export async function hostingerReceiptReady(sql: Sql): Promise<boolean> {
 /** Atomic acceptance only; no URL fetch, model, lead creation or external action. */
 export async function acceptHostingerMail(sql: Sql, event: VerifiedHostingerEvent, encryptionSecret: string, now = new Date()) {
   const classification=classifyMail({subject:event.subject,text:event.previewText})
+  // Structural signals only; the provider's spam folder is applied afterwards (providerState.ts).
+  const risk=assessMailRisk({sender:event.sender,attachments:event.attachments})
   const sealed=sealLocators({bodyUrl:event.bodyUrl,attachments:event.attachments.map(a=>({id:a.id,fileUrl:a.fileUrl}))},encryptionSecret,`${HOSTINGER_ACCOUNT}:${event.eventId}`)
   const safe={deliveryId:event.deliveryId,eventId:event.eventId,mailbox:event.mailbox,messageId:event.messageId,
     inReplyTo:event.inReplyTo,references:event.references,subject:event.subject,sender:event.sender,
     recipients:event.recipients,cc:event.cc,eventAt:event.eventAt,emailDate:event.emailDate,previewText:event.previewText,
     attachments:event.attachments.map(a=>({id:a.id,filename:a.filename,size:a.size,contentType:a.contentType})),
-    classification:classification.classification,needsReply:classification.needsReply}
+    classification:classification.classification,needsReply:classification.needsReply&&risk.replyable,
+    riskSignals:risk.signals,suspect:risk.suspect}
   // Provider TTL starts no later than receipt. Never extend an expired locator on retry.
   const expires=new Date(Math.min(Date.parse(event.eventAt),now.getTime())+24*60*60*1000)
   const rows=await sql`SELECT * FROM mail.accept_hostinger(${HOSTINGER_ACCOUNT},${JSON.stringify(safe)}::jsonb,${JSON.stringify(sealed)}::jsonb,${expires.toISOString()}::timestamptz)`
   if(!rows[0]) throw new Error('mail_acceptance_unavailable')
-  return {created:rows[0].created===true}
+  return {created:rows[0].created===true,messageId:String(rows[0].message_id ?? '')}
 }

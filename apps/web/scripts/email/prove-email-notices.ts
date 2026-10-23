@@ -27,6 +27,9 @@ check('important system email produces compact owner notice', () => {
   assert.equal(notice.data.notices.length, 1)
   assert.match(notice.data.notices[0].text, /external content[\s\S]*Urgent service incident/)
 })
+check('quarantined mail (provider Junk, phishing, owner spam, blocked) is excluded from attention, brief and notices', () => {
+  assert.match(queried, /quarantine IS NULL/)
+})
 check('SQL suppresses spam/newsletters/routine but includes system alerts', () => {
   assert.match(queried, /NOT IN \('newsletter','spam','routine'\)/)
   assert(!queried.includes("'routine','system'"))
@@ -49,4 +52,10 @@ const absent = await views.ownerNotices.run({ ...ctx, sql: missingSql }, {})
 check('absent optional mail migration does not break notices', () => assert.equal(absent.data.notices.length, 0))
 await assert.rejects(views.ownerNotices.run({ ...ctx, sql: async () => { throw Object.assign(new Error('database unavailable'), { code: '08006' }) } }, {}), /database unavailable/)
 check('operational DB failure is not silently presented as empty mailbox', () => assert(true))
+// Mutation: without the quarantine predicate the real attention SQL would surface provider spam.
+const mutated = emit(readFileSync('apps/web/lib/commercial/capabilities/views.ts','utf8').replace('AND quarantine IS NULL AND ', 'AND ')).replace(/^import[\s\S]*?from ['"][^'"]+['"];\r?\n/gm, '')
+assert.notEqual(mutated, source, 'Mutation must change the actual attention query')
+const weakened = await import(`data:text/javascript;base64,${Buffer.from(ports + mutated).toString('base64')}`)
+records = [important]; await weakened.ownerNotices.run(ctx, {})
+check('mutation removing the quarantine predicate is detected', () => assert.doesNotMatch(queried, /quarantine IS NULL/))
 console.log(`${passed} email notice/brief checks passed; no network.`)

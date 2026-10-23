@@ -7,7 +7,7 @@ import { join, resolve, sep } from 'node:path'
 const output = mkdtempSync(join(tmpdir(), 'maxpromo-mail-proof-'))
 try {
   execFileSync(process.execPath, ['apps/web/scripts/email/compile-mail-tests.ts',output], { stdio: 'inherit' })
-  execFileSync(process.execPath, ['--test',...['provider','channel','hostingerWebhook','content','contentWorker','contentStore','hostingerIngestion'].map(file=>join(output,`mail/${file}.test.js`))], { stdio: 'inherit' })
+  execFileSync(process.execPath, ['--test',...['provider','channel','hostingerWebhook','content','contentWorker','contentStore','hostingerIngestion','risk','providerState'].map(file=>join(output,`mail/${file}.test.js`))], { stdio: 'inherit' })
   for (const file of ['prove-email-owner.ts','prove-email-ui.ts','prove-hostinger-webhook.ts','prove-email-actions.ts','prove-email-engine.ts','prove-email-notices.ts','prove-email-inbox-api.ts','prove-email-mutations.ts','prove-release-guards.ts']) {
     execFileSync(process.execPath, ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON',join('apps/web/scripts/email',file)], { stdio: 'inherit' })
   }

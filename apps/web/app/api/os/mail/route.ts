@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { withAuth } from '@/lib/auth'
 import { getDb } from '@/lib/db'
 import type { Sql } from '@/lib/commercial/types'
+import { hostingerStateReader } from '@/lib/mail/providerState'
+import { scheduleProviderCheck } from '@/lib/mail/providerSchedule'
 
 export const dynamic = 'force-dynamic'
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -15,6 +17,8 @@ async function businessLinks(sql: Sql, ids: string[]): Promise<Link[]> {
     LEFT JOIN os_jobs j ON b.entity_kind='project' AND j.id::text=b.entity_id
     WHERE b.thread_id=ANY(${ids}::uuid[])` as Link[]
 }
+/** Whether the provider's spam folder can be read (owner-connected Hostinger REST API). */
+const providerCheck = () => hostingerStateReader() !== null
 const businessLabel = (links: Link[]) => links.map(link => `${link.match_status === 'possible' ? 'Possible match: ' : ''}${link.label ?? link.entity_kind}`).join(' · ')
 
 export const GET = withAuth(async (req, { session }) => {
@@ -30,23 +34,27 @@ export const GET = withAuth(async (req, { session }) => {
       const rows = await sql`SELECT t.*,EXISTS(SELECT 1 FROM mail.messages WHERE thread_id=t.id AND NOT is_read) AS unread
         FROM mail.threads t WHERE id=${thread}::uuid`
       if (!rows.length) return NextResponse.json({ error: 'Not found' }, { status: 404, headers })
-      const messages = await sql`SELECT id,sender,recipients,cc,subject,body_text,preview_text,body_state,event_at,email_date,received_at,is_read,attachments
+      const messages = await sql`SELECT id,sender,recipients,cc,subject,body_text,preview_text,body_state,event_at,email_date,received_at,is_read,attachments,
+        provider_state,provider_folder,risk_signals
         FROM mail.messages WHERE thread_id=${thread}::uuid ORDER BY received_at LIMIT 200`
       const links = await businessLinks(sql, [thread])
-      return NextResponse.json({ thread: { ...rows[0], business_label: businessLabel(links) }, messages, links }, { headers })
+      return NextResponse.json({ thread: { ...rows[0], business_label: businessLabel(links) }, messages, links, providerCheck: providerCheck() }, { headers })
     }
     const threads = await sql`SELECT t.*,
       (SELECT entity_kind FROM mail.business_links WHERE thread_id=t.id AND match_status='owner_confirmed' ORDER BY entity_kind LIMIT 1) AS business_kind,
       (SELECT sender FROM mail.messages WHERE thread_id=t.id ORDER BY received_at DESC LIMIT 1) AS sender,
       (SELECT left(CASE WHEN body_state='preview' THEN preview_text ELSE body_text END,200) FROM mail.messages WHERE thread_id=t.id ORDER BY received_at DESC LIMIT 1) AS preview,
-      EXISTS(SELECT 1 FROM mail.messages WHERE thread_id=t.id AND NOT is_read) AS unread
+      EXISTS(SELECT 1 FROM mail.messages WHERE thread_id=t.id AND NOT is_read) AS unread,
+      (SELECT provider_state FROM mail.messages WHERE thread_id=t.id ORDER BY received_at DESC LIMIT 1) AS provider_state
       FROM mail.threads t WHERE (${query}='' OR EXISTS(
         SELECT 1 FROM mail.messages m WHERE m.thread_id=t.id AND
         (strpos(lower(m.subject),lower(${query}))>0 OR strpos(lower(m.sender),lower(${query}))>0 OR strpos(lower(m.body_text),lower(${query}))>0 OR strpos(lower(m.preview_text),lower(${query}))>0)))
       ORDER BY t.updated_at DESC LIMIT 100`
     const accounts = await sql`SELECT id FROM mail.accounts WHERE enabled LIMIT 1`
     const links = await businessLinks(sql, threads.map(t => t.id as string))
-    return NextResponse.json({ configured: accounts.length > 0, threads: threads.map(t => ({ ...t, business_label: businessLabel(links.filter(link => link.thread_id === t.id)) })) }, { headers })
+    // Unverified provider state is checked after this response; the next load shows it.
+    scheduleProviderCheck('inbox')
+    return NextResponse.json({ configured: accounts.length > 0, providerCheck: providerCheck(), threads: threads.map(t => ({ ...t, business_label: businessLabel(links.filter(link => link.thread_id === t.id)) })) }, { headers })
   } catch {
     // Never log mail bodies, SQL parameters, database URL or provider error text.
     return NextResponse.json({ error: 'Inbox unavailable' }, { status: 503, headers })

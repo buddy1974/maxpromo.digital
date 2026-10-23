@@ -3,8 +3,9 @@ import { enforceRateLimit } from '@/lib/rate-limit'
 import { MAX_MAIL_BYTES } from '@/lib/mail/normalization'
 import { readBoundedPayload, verifyWebhookBearer } from '@/lib/mail/provider'
 import { parseHostingerWebhook } from '@/lib/mail/hostingerWebhook'
-import { describeHostingerStructure } from '@/lib/mail/hostingerDiagnostics'
+import { describeHostingerStructure, unknownDataKeys } from '@/lib/mail/hostingerDiagnostics'
 import { acceptHostingerMail, hostingerReceiptReady, HOSTINGER_MAILBOX } from '@/lib/mail/hostingerIngestion'
+import { scheduleProviderCheck } from '@/lib/mail/providerSchedule'
 import { getDb } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
@@ -63,7 +64,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ok:true,ingested:false},{status:200,headers:noStore})
     }
     const result=await acceptHostingerMail(sql,event,encryptionSecret)
-    log('info', { event: 'mail.webhook.accepted', created: result.created, deliveryId: event.deliveryId, degraded: event.degraded })
+    // unknownDataKeys is a count, never names: a new provider field (e.g. a folder) becomes visible.
+    log('info', { event: 'mail.webhook.accepted', created: result.created, deliveryId: event.deliveryId, degraded: event.degraded, unknownDataKeys: unknownDataKeys(payload) })
+    // The webhook carries no spam/folder state; the provider's folder is read after the response.
+    if(result.created) scheduleProviderCheck('webhook')
     return NextResponse.json({ok:true},{status:200,headers:noStore})
   } catch {
     // Deliberately no driver error, payload, signed URL or token in logs/responses.

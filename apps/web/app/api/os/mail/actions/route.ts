@@ -5,7 +5,7 @@ import { executeApproval, rejectApproval, runCapability } from '@/lib/commercial
 
 export const dynamic = 'force-dynamic'
 const MAX_BYTES = 16 * 1024
-const MAIL = new Set(['email.search','email.read','email.attachments','email.draft','email.send','email.state','email.trash','email.link','email.save_lead','email.summary','email.triage'])
+const MAIL = new Set(['email.search','email.read','email.attachments','email.draft','email.send','email.state','email.trash','email.link','email.save_lead','email.summary','email.triage','email.spam'])
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const headers = { 'Cache-Control': 'private, no-store' }
 const reply = (error: string, status: number) => NextResponse.json({ error }, { status, headers })

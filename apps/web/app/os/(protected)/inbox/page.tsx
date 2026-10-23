@@ -7,20 +7,26 @@ import { UNKNOWN_SENDER } from '@/lib/mail/normalization'
 interface MailThread {
   id: string; subject: string; classification: string; needs_reply: boolean; waiting: boolean
   archived: boolean; trashed: boolean; updated_at: string; sender: string; preview?: string | null; unread: boolean; business_label?: string; business_kind?: 'client' | 'lead' | 'project'
+  quarantine?: Quarantine | null; owner_verdict?: 'spam' | 'not_spam' | null; provider_state?: string | null
 }
+type Quarantine = 'provider_junk' | 'suspected_phishing' | 'owner_spam' | 'blocked_sender'
 interface MailMessage {
   id: string; sender: string; recipients: string[]; cc: string[]; subject: string; body_text: string
   received_at: string; is_read: boolean; body_state?: string; preview_text?: string
   attachments: { id: string; filename: string; size: number; contentType: string }[]
+  provider_state?: string; provider_folder?: string | null; risk_signals?: string[]
 }
-type Filter = 'inbox' | 'unread' | 'needs_reply' | 'waiting' | 'client' | 'lead' | 'billing' | 'system' | 'archived'
-const filters: Filter[] = ['inbox', 'unread', 'needs_reply', 'waiting', 'client', 'lead', 'billing', 'system', 'archived']
+type Filter = 'inbox' | 'unread' | 'needs_reply' | 'waiting' | 'client' | 'lead' | 'billing' | 'system' | 'archived' | 'spam'
+const filters: Filter[] = ['inbox', 'unread', 'needs_reply', 'waiting', 'client', 'lead', 'billing', 'system', 'archived', 'spam']
 const labels = {
-  en: { inbox: 'Inbox', unread: 'Unread', needs_reply: 'Needs reply', waiting: 'Waiting', client: 'Clients', lead: 'Leads', billing: 'Billing', system: 'System', archived: 'Archived', search: 'Search mail', refresh: 'Refresh', loading: 'Loading mail…', error: 'Mail could not be loaded. Try again.', empty: 'No matching conversations.', disconnected: 'Mailbox not connected', connection: 'Hostinger activation is pending. Stored conversations remain available below.', select: 'Select a conversation to read messages and business context.', back: 'Back to conversations', from: 'From', to: 'To', cc: 'Cc', attachments: 'Attachments', metadata: 'Metadata only. Attachment downloads are not enabled.', safe: 'Plain text only. Remote images and active HTML are blocked.', noBody: 'No plain text body available.', context: 'Business context', unlinked: 'No verified business association', noSubject: '(No subject)', count: 'conversations', unknownSender: 'Unknown sender' },
-  de: { inbox: 'Posteingang', unread: 'Ungelesen', needs_reply: 'Antwort nötig', waiting: 'Wartend', client: 'Kunden', lead: 'Leads', billing: 'Abrechnung', system: 'System', archived: 'Archiviert', search: 'E-Mails durchsuchen', refresh: 'Aktualisieren', loading: 'E-Mails werden geladen…', error: 'E-Mails konnten nicht geladen werden. Bitte erneut versuchen.', empty: 'Keine passenden Konversationen.', disconnected: 'Postfach nicht verbunden', connection: 'Die Hostinger-Aktivierung steht aus. Gespeicherte Konversationen bleiben unten verfügbar.', select: 'Konversation auswählen, um Nachrichten und Geschäftskontext zu lesen.', back: 'Zurück zu Konversationen', from: 'Von', to: 'An', cc: 'Cc', attachments: 'Anhänge', metadata: 'Nur Metadaten. Downloads sind noch nicht aktiviert.', safe: 'Nur Klartext. Externe Bilder und aktives HTML sind blockiert.', noBody: 'Kein Klartext verfügbar.', context: 'Geschäftskontext', unlinked: 'Keine bestätigte Geschäftszuordnung', noSubject: '(Kein Betreff)', count: 'Konversationen', unknownSender: 'Unbekannter Absender' },
+  en: { inbox: 'Inbox', unread: 'Unread', needs_reply: 'Needs reply', waiting: 'Waiting', client: 'Clients', lead: 'Leads', billing: 'Billing', system: 'System', archived: 'Archived', search: 'Search mail', refresh: 'Refresh', loading: 'Loading mail…', error: 'Mail could not be loaded. Try again.', empty: 'No matching conversations.', disconnected: 'Mailbox not connected', connection: 'Hostinger activation is pending. Stored conversations remain available below.', select: 'Select a conversation to read messages and business context.', back: 'Back to conversations', from: 'From', to: 'To', cc: 'Cc', attachments: 'Attachments', metadata: 'Metadata only. Attachment downloads are not enabled.', safe: 'Plain text only. Remote images and active HTML are blocked.', noBody: 'No plain text body available.', context: 'Business context', unlinked: 'No verified business association', noSubject: '(No subject)', count: 'conversations', unknownSender: 'Unknown sender', spam: 'Spam' },
+  de: { inbox: 'Posteingang', unread: 'Ungelesen', needs_reply: 'Antwort nötig', waiting: 'Wartend', client: 'Kunden', lead: 'Leads', billing: 'Abrechnung', system: 'System', archived: 'Archiviert', search: 'E-Mails durchsuchen', refresh: 'Aktualisieren', loading: 'E-Mails werden geladen…', error: 'E-Mails konnten nicht geladen werden. Bitte erneut versuchen.', empty: 'Keine passenden Konversationen.', disconnected: 'Postfach nicht verbunden', connection: 'Die Hostinger-Aktivierung steht aus. Gespeicherte Konversationen bleiben unten verfügbar.', select: 'Konversation auswählen, um Nachrichten und Geschäftskontext zu lesen.', back: 'Zurück zu Konversationen', from: 'Von', to: 'An', cc: 'Cc', attachments: 'Anhänge', metadata: 'Nur Metadaten. Downloads sind noch nicht aktiviert.', safe: 'Nur Klartext. Externe Bilder und aktives HTML sind blockiert.', noBody: 'Kein Klartext verfügbar.', context: 'Geschäftskontext', unlinked: 'Keine bestätigte Geschäftszuordnung', noSubject: '(Kein Betreff)', count: 'Konversationen', unknownSender: 'Unbekannter Absender', spam: 'Spam' },
 }
+/** Quarantined mail appears only under Spam: never in the Inbox, Needs reply or a business view. */
 function matches(thread: MailThread, filter: Filter): boolean {
   if (thread.trashed) return false
+  if (filter === 'spam') return Boolean(thread.quarantine)
+  if (thread.quarantine) return false
   if (filter === 'archived') return thread.archived
   if (thread.archived) return false
   if (filter === 'inbox') return true
@@ -35,6 +41,19 @@ export default function InboxPage() {
   const { locale, intlLocale } = useOsLocale()
   const c = labels[locale]
   const actions = locale === 'de' ? { draft: 'Entwurf vorbereiten', body: 'Antwortentwurf', read: 'Als gelesen markieren', unread: 'Als ungelesen markieren', local: 'Nur intern in Maxpromo OS. Hostinger wird nicht geändert. Es wird nichts gesendet.', working: 'Wird gespeichert…', error: 'Aktion konnte nicht abgeschlossen werden.', saved: 'Intern gespeichert. Nichts gesendet.' } : { draft: 'Prepare draft', body: 'Reply draft', read: 'Mark read', unread: 'Mark unread', local: 'Local to Maxpromo OS. Hostinger is unchanged. Nothing will be sent.', working: 'Saving…', error: 'Action could not be completed.', saved: 'Saved locally. Nothing sent.' }
+  const spam = locale === 'de' ? {
+    reason: { provider_junk: 'Von Hostinger als Spam eingestuft', suspected_phishing: 'Phishing-Verdacht: aktiver Anhang von unbekanntem Absender', owner_spam: 'Von dir als Spam markiert', blocked_sender: 'Absender blockiert' } as Record<Quarantine, string>,
+    note: 'In Quarantäne: erscheint nicht im Posteingang, nicht unter „Antwort nötig“, nicht im Briefing und wird nicht an Agenten übergeben. Links und Anhänge werden nicht geöffnet.',
+    notSpam: 'Kein Spam', markSpam: 'Als Spam markieren', block: 'Absender blockieren', confirmBlock: 'Blockieren bestätigen', cancel: 'Abbrechen',
+    folder: 'Hostinger-Ordner', checking: 'Hostinger-Ordner wird geprüft', notConnected: 'Hostinger-Spamprüfung nicht verbunden', notFound: 'In Hostinger nicht gefunden',
+    signals: { active_attachment: 'aktiver Anhang (HTML/Skript)', double_extension: 'doppelte Dateiendung', automated_sender: 'automatischer Absender (keine Antwort möglich)' } as Record<string, string>,
+  } : {
+    reason: { provider_junk: 'Hostinger filed this as spam', suspected_phishing: 'Suspected phishing: active attachment from an unknown sender', owner_spam: 'You marked this as spam', blocked_sender: 'Sender blocked' } as Record<Quarantine, string>,
+    note: 'Quarantined: not in the Inbox, not under Needs reply, not in the briefing and never passed to agents. Links and attachments are not opened.',
+    notSpam: 'Not spam', markSpam: 'Mark as spam', block: 'Block sender', confirmBlock: 'Confirm block', cancel: 'Cancel',
+    folder: 'Hostinger folder', checking: 'Checking the Hostinger folder', notConnected: 'Hostinger spam check not connected', notFound: 'Not found in Hostinger',
+    signals: { active_attachment: 'active attachment (HTML/script)', double_extension: 'double file extension', automated_sender: 'automated sender (no replies)' } as Record<string, string>,
+  }
   const [threads, setThreads] = useState<MailThread[]>([])
   const [configured, setConfigured] = useState<boolean | null>(null)
   const [filter, setFilter] = useState<Filter>('inbox')
@@ -49,12 +68,15 @@ export default function InboxPage() {
   const [draftBody, setDraftBody] = useState({ threadId: '', body: '' })
   const [actionPending, setActionPending] = useState(false)
   const [actionResult, setActionResult] = useState<{ threadId: string; text: string; error: boolean } | null>(null)
+  const [armBlock, setArmBlock] = useState(false)
+  const [providerCheck, setProviderCheck] = useState(false)
 
-  async function runLocalAction(capability: 'email.draft' | 'email.state', input: Record<string, string>) {
+  async function runLocalAction(capability: 'email.draft' | 'email.state' | 'email.spam', input: Record<string, string | boolean>) {
     if (!selected || actionPending) return
     const threadId = selected
     setActionPending(true)
     setActionResult(null)
+    setArmBlock(false)
     try {
       const response = await fetch('/api/os/mail/actions', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store',
@@ -80,10 +102,11 @@ export default function InboxPage() {
       try {
         const response = await fetch(`/api/os/mail?q=${encodeURIComponent(search)}`, { signal: controller.signal, cache: 'no-store' })
         if (!response.ok) throw new Error('mail_unavailable')
-        const data: { threads: MailThread[]; configured: boolean } = await response.json()
+        const data: { threads: MailThread[]; configured: boolean; providerCheck?: boolean } = await response.json()
         if (!Array.isArray(data.threads)) throw new Error('invalid_mail_response')
         setThreads(data.threads)
         setConfigured(data.configured)
+        setProviderCheck(data.providerCheck === true)
       } catch {
         if (!controller.signal.aborted) setError(true)
       } finally {
@@ -138,12 +161,12 @@ export default function InboxPage() {
         <section aria-label={c.inbox} aria-busy={loading} className={`${selected ? 'hidden lg:block' : ''} min-w-0`}>
           <p className="border-b border-[var(--brand-border)] p-4 text-xs text-[var(--brand-text-secondary)]">{visible.length} {c.count}</p>
           {loading ? <p role="status" className="p-4 text-sm">{c.loading}</p> : error ? <p role="alert" className="p-4 text-sm">{c.error}</p> : visible.length === 0 ? <p className="p-4 text-sm text-[var(--brand-text-secondary)]">{c.empty}</p> : visible.map(thread => (
-            <button key={thread.id} type="button" aria-pressed={selected === thread.id} onClick={() => { setDetail(null); setDetailError(false); setSelected(thread.id) }} className={`block w-full min-w-0 border-b border-[var(--brand-border)] p-4 text-left ${selected === thread.id ? 'bg-[var(--brand-surface-subtle)]' : ''}`}>
+            <button key={thread.id} type="button" aria-pressed={selected === thread.id} onClick={() => { setDetail(null); setDetailError(false); setArmBlock(false); setSelected(thread.id) }} className={`block w-full min-w-0 border-b border-[var(--brand-border)] p-4 text-left ${selected === thread.id ? 'bg-[var(--brand-surface-subtle)]' : ''}`}>
               <div className="flex items-center gap-2">{thread.unread && <span className="text-xs font-semibold">{c.unread}</span>}<span className="truncate text-sm font-semibold">{thread.sender === UNKNOWN_SENDER ? c.unknownSender : thread.sender}</span></div>
               <p className="mt-2 break-words text-sm">{thread.subject || c.noSubject}</p>
               {thread.preview && <p className="mt-1 line-clamp-2 break-words text-xs text-[var(--brand-text-secondary)] wrap-anywhere">{thread.preview}</p>}
               {thread.business_label && <p className="mt-2 truncate text-xs text-[var(--brand-text-secondary)]">{thread.business_label}</p>}
-              <div className="mt-3 flex flex-wrap gap-2 text-xs text-[var(--brand-text-secondary)]"><time dateTime={thread.updated_at}>{timestamp(thread.updated_at)}</time><span>{thread.classification}</span>{thread.needs_reply && <span className="font-semibold">{c.needs_reply}</span>}{thread.waiting && <span>{c.waiting}</span>}</div>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs text-[var(--brand-text-secondary)]"><time dateTime={thread.updated_at}>{timestamp(thread.updated_at)}</time>{thread.quarantine ? <span className="font-semibold">{spam.reason[thread.quarantine]}</span> : <><span>{thread.classification}</span>{thread.needs_reply && <span className="font-semibold">{c.needs_reply}</span>}{thread.waiting && <span>{c.waiting}</span>}</>}</div>
             </button>
           ))}
         </section>
@@ -154,7 +177,30 @@ export default function InboxPage() {
               <h2 className="break-words font-semibold">{detail.thread.subject || c.noSubject}</h2>
               <p className="mt-3 text-sm text-[var(--brand-text-secondary)]">{c.context}: {detail.thread.business_label || c.unlinked}</p>
               <p className="my-4  text-xs text-[var(--brand-text-secondary)]">{c.safe}</p>
-              <div className="mb-4 border border-[var(--brand-border)] p-4">
+              {(() => {
+                const latest = detail.messages[detail.messages.length - 1]
+                const state = latest?.provider_state
+                // A recorded folder is a fact whatever the connection is now; otherwise say why it is unknown.
+                const where = state && state !== 'unverified' && state !== 'not_found' ? `${spam.folder}: ${latest?.provider_folder ?? state}`
+                  : state === 'not_found' ? spam.notFound : providerCheck ? spam.checking : spam.notConnected
+                const signals = Array.from(new Set(detail.messages.flatMap(message => message.risk_signals ?? [])))
+                return <div role={detail.thread.quarantine ? 'status' : undefined} className="mb-4 border border-[var(--brand-border)] bg-[var(--brand-surface-subtle)] p-4 text-sm">
+                  {detail.thread.quarantine && <><p className="font-semibold">{spam.reason[detail.thread.quarantine]}</p><p className="mt-1 text-xs text-[var(--brand-text-secondary)]">{spam.note}</p></>}
+                  <p className={`${detail.thread.quarantine ? 'mt-3 ' : ''}text-xs text-[var(--brand-text-secondary)]`}>{where}</p>
+                  {signals.length > 0 && <p className="mt-1 text-xs text-[var(--brand-text-secondary)]">{signals.map(signal => spam.signals[signal] ?? signal).join(' · ')}</p>}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {detail.thread.quarantine
+                      ? <button type="button" className={button} disabled={actionPending} onClick={() => void runLocalAction('email.spam', { verdict: 'not_spam' })}>{actionPending ? actions.working : spam.notSpam}</button>
+                      : <>
+                        <button type="button" className={button} disabled={actionPending} onClick={() => void runLocalAction('email.spam', { verdict: 'spam' })}>{spam.markSpam}</button>
+                        {armBlock
+                          ? <><button type="button" className="btn-primary btn-sm" disabled={actionPending} onClick={() => void runLocalAction('email.spam', { verdict: 'spam', block_sender: true })}>{actionPending ? actions.working : spam.confirmBlock}</button><button type="button" className={button} onClick={() => setArmBlock(false)}>{spam.cancel}</button></>
+                          : <button type="button" className={button} disabled={actionPending} onClick={() => setArmBlock(true)}>{spam.block}</button>}
+                      </>}
+                  </div>
+                </div>
+              })()}
+              {!detail.thread.quarantine && <div className="mb-4 border border-[var(--brand-border)] p-4">
                 <p className="mb-4 text-xs text-[var(--brand-text-secondary)]">{actions.local}</p>
                 <button className={button} disabled={actionPending} type="button" onClick={() => void runLocalAction('email.state', { action: detail.thread.unread ? 'mark_read' : 'mark_unread' })}>{actionPending ? actions.working : detail.thread.unread ? actions.read : actions.unread}</button>
                 <form className="mt-4" onSubmit={event => { event.preventDefault(); const body = draftBody.threadId === selected ? draftBody.body.trim() : ''; if (body) void runLocalAction('email.draft', { body }) }}>
@@ -162,7 +208,7 @@ export default function InboxPage() {
                   <textarea id="email-draft" value={draftBody.threadId === selected ? draftBody.body : ''} onChange={event => setDraftBody({ threadId: selected, body: event.target.value })} rows={5} maxLength={3000} required className="textarea min-w-0" />
                   <button type="submit" className={`${button} mt-3 `} disabled={actionPending || draftBody.threadId !== selected || !draftBody.body.trim()}>{actionPending ? actions.working : actions.draft}</button>
                 </form>
-              </div>
+              </div>}
               {detail.messages.map(message => <article key={message.id} className="mb-4 border border-[var(--brand-border)] p-4">
                 <dl className="space-y-2 break-words text-xs text-[var(--brand-text-secondary)]"><div><dt className="inline font-semibold">{c.from}: </dt><dd className="inline">{message.sender === UNKNOWN_SENDER ? c.unknownSender : message.sender}</dd></div><div><dt className="inline font-semibold">{c.to}: </dt><dd className="inline">{message.recipients.join(', ')}</dd></div>{message.cc.length > 0 && <div><dt className="inline font-semibold">{c.cc}: </dt><dd className="inline">{message.cc.join(', ')}</dd></div>}</dl>
                 <time className="mt-3 block text-xs text-[var(--brand-text-secondary)]" dateTime={message.received_at}>{timestamp(message.received_at)}</time>

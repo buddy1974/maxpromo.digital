@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs'
 import ts from 'typescript'
 const id = '10000000-0000-0000-0000-000000000001'
 const otherId = '10000000-0000-0000-0000-000000000002'
-const state = { owner: 'marcel', installed: true, missing: false, failure: false, read: false, statements: [] as string[], queryValues: [] as unknown[][] }
+const state = { owner: 'marcel', installed: true, missing: false, failure: false, read: false, statements: [] as string[], queryValues: [] as unknown[][], reader: null as null | object, scheduled: [] as string[] }
 Object.assign(globalThis, { __mailInboxProof: state })
 const fixture = {
   threads: [{ id, subject: '<script>external untrusted subject</script>', classification: 'lead' }, { id: otherId, subject: 'Second client', classification: 'other' }],
@@ -14,6 +14,7 @@ const fixture = {
 Object.assign(globalThis, { __mailInboxFixture: fixture })
 const source = ts.transpileModule(readFileSync('apps/web/app/api/os/mail/route.ts','utf8'), { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText.replace(/^import[\s\S]*?from ['"][^'"]+['"];\r?\n/gm, '')
 const ports = `const s=globalThis.__mailInboxProof,f=globalThis.__mailInboxFixture;
+const hostingerStateReader=()=>s.reader;const scheduleProviderCheck=source=>s.scheduled.push(source);
 const NextResponse={json:(body,options={})=>new Response(JSON.stringify(body),{status:options.status??200,headers:options.headers})};
 const withAuth=fn=>req=>s.owner ? fn(req,{session:{sub:s.owner}}) : NextResponse.json({error:'Unauthorized'},{status:401});
 const getDb=()=>async(parts,...values)=>{
@@ -67,6 +68,17 @@ await check('batch business labels stay within each thread', () => {
 })
 await check('search input stays parameterized literal text', () => assert(state.queryValues.some(values=>values.includes('100%_invoice'))))
 await check('provider disabled status remains explicit', () => assert.equal(listing.configured,false))
+await check('provider spam state: listing reports an unconnected provider check and schedules a bounded check', () => {
+  assert.equal(listing.providerCheck,false); assert(state.scheduled.length>0 && state.scheduled.every(source=>source==='inbox'))
+})
+await check('provider spam state: connected reader is reported to the owner', async () => {
+  state.reader={}; const data=await (await api.GET(request())).json(); assert.equal(data.providerCheck,true); state.reader=null
+})
+await check('provider spam state: thread list and messages carry provider state and risk signals, never URLs', () => {
+  assert(state.statements.some(query=>query.includes('AS provider_state') && query.includes('SELECT t.*')))
+  assert(state.statements.some(query=>query.includes('provider_state,provider_folder,risk_signals') && query.includes('FROM mail.messages WHERE thread_id=')))
+  assert(!state.statements.some(query=>/sealed_locator|body_url|file_url/i.test(query)))
+})
 await check('database error response exposes no body or secret', async () => {
   state.failure=true; const response=await api.GET(request()); assert.equal(response.status,503); assert.deepEqual(await response.json(),{error:'Inbox unavailable'}); state.failure=false
 })

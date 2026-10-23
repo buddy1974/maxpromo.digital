@@ -9,6 +9,7 @@ const validate = ts.transpileModule(readFileSync('apps/web/lib/commercial/valida
 const validatorUrl = `data:text/javascript;base64,${Buffer.from(validate).toString('base64')}`
 const imports = `import {v} from '${validatorUrl}';
 class CapabilityRefusal extends Error {}
+const UNKNOWN_SENDER = 'unknown-sender@sender.invalid';
 const callAIJson = async () => ({model:'proof',data:{summary:'External message asks about business automation.'}});
 const runCapability = async (sql, req) => { globalThis.__emailLeadRequests.push(req); return {status:'done',result:{summary:'Existing possible matches; no lead created.',data:{created:false},choices:[]}}; };
 const executeMailAction = async (input) => { globalThis.__emailOwnerEffects.push(input); throw new CapabilityRefusal('Provider disabled'); };
@@ -86,5 +87,62 @@ check('internal triage is audited and sends nothing', () => {
   assert(statements.some(s => s.text.includes('UPDATE mail.threads SET needs_reply')))
   assert(statements.some(s => s.text.includes("'triage','done'")))
   assert.equal(effects.length, 1)
+})
+// Provider spam / quarantine: spam is never business-action input, and Marcel's verdicts are local and audited.
+const junkThread = { id, account_id: 'company', subject: '(#B2NDI4SR) Ihre Rechnung', classification: 'billing', needs_reply: false, quarantine: 'provider_junk' }
+const junkStatements: { text: string; values: unknown[] }[] = []
+const junkSql = async (strings: TemplateStringsArray, ...values: unknown[]) => {
+  const text = strings.join('?'); junkStatements.push({ text, values })
+  if (text.includes('SELECT * FROM mail.threads')) return [junkThread]
+  if (text.includes('SELECT sender FROM mail.messages')) return [{ sender: junkSender }]
+  if (text.includes('SELECT thread_id,payload')) return [{ thread_id: id, payload: { to: 'no-reply@sender.example', subject: 'Re: x', body: 'y' } }]
+  if (text.includes('FROM os_clients WHERE lower(email)')) return knownSender ? [{ '?column?': 1 }] : []
+  return []
+}
+let junkSender = 'no-reply@sender.example', knownSender = false
+const junkCtx = { ...ctx, sql: junkSql, actor: 'os:marcel', channel: 'os' }
+const leadsBefore = leadRequests.length
+await assert.rejects(mail.mailDraft.run(junkCtx, { thread_id: id, body: 'reply' }), /in Spam/)
+await assert.rejects(mail.mailSend.prepare(junkCtx, { draft_id: id }), /in Spam/)
+await assert.rejects(mail.mailLink.run(junkCtx, { thread_id: id, entity_kind: 'client', entity_id: id }), /in Spam/)
+await assert.rejects(mail.mailSaveLead.run(junkCtx, { thread_id: id, company: 'x' }), /in Spam/)
+await assert.rejects(mail.mailSummary.run(junkCtx, { thread_id: id }), /in Spam/)
+check('quarantined mail refuses reply, send, link, lead and model summary', () => {
+  assert.equal(leadRequests.length, leadsBefore); assert.equal(effects.length, 1)
+  assert(!junkStatements.some(s => /INSERT INTO mail\.(action_audit|business_links)/.test(s.text)))
+})
+await assert.rejects(mail.mailSend.execute({ ...junkCtx, sql: async (strings: TemplateStringsArray, ...values: unknown[]) => strings.join('?').includes('SELECT id FROM mail.action_audit') ? [{ id }] : junkSql(strings, ...values) }, prepared.payload, id), /in Spam/)
+check('an approval prepared before the spam decision cannot send afterwards', () => assert.equal(effects.length, 1))
+const searchSql = async (strings: TemplateStringsArray, ...values: unknown[]) => { junkStatements.push({ text: strings.join('?'), values }); return [] }
+await mail.mailSearch.run({ ...junkCtx, sql: searchSql }, {})
+check('search excludes quarantined threads unless the Spam view is asked for', () => {
+  const last = junkStatements.at(-1)!; assert(last.text.includes('t.quarantine IS NOT NULL')); assert(last.values.includes('inbox'))
+  assert.doesNotThrow(() => mail.mailSearch.input.parse({ view: 'spam' }, 'input'))
+})
+junkStatements.length = 0
+const released = await mail.mailSpam.run(junkCtx, { thread_id: id, verdict: 'not_spam' })
+check('Not spam releases locally, records the verdict, lifts a block and is audited', () => {
+  assert.match(released.summary, /Hostinger is unchanged/)
+  assert(junkStatements.some(s => s.text.includes("quarantine=NULL") && s.text.includes("owner_verdict='not_spam'")))
+  assert(junkStatements.some(s => s.text.includes('DELETE FROM mail.sender_blocks')))
+  assert(junkStatements.some(s => s.text.includes("'not_spam','done'")))
+})
+junkStatements.length = 0
+await mail.mailSpam.run(junkCtx, { thread_id: id, verdict: 'spam', block_sender: true })
+check('Block sender quarantines this and earlier undecided mail from the sender; nothing is deleted', () => {
+  assert(junkStatements.some(s => s.text.includes('INSERT INTO mail.sender_blocks') && s.values.includes('no-reply@sender.example')))
+  assert(junkStatements.some(s => s.text.includes("quarantine='blocked_sender'") && s.text.includes('owner_verdict IS NULL')))
+  assert(junkStatements.some(s => s.text.includes("owner_verdict='spam'") && s.values.includes('blocked_sender')))
+  assert(!junkStatements.some(s => /\bDELETE FROM mail\.(messages|threads)/.test(s.text)))
+})
+for (const [sender, known, pattern] of [['unknown-sender@sender.invalid', false, /could not be identified/], ['info@maxpromo.digital', false, /own domain/], ['client@company.example', true, /leads or clients/]] as const) {
+  junkSender = sender; knownSender = known; junkStatements.length = 0
+  await assert.rejects(mail.mailSpam.run(junkCtx, { thread_id: id, verdict: 'spam', block_sender: true }), pattern)
+  assert(!junkStatements.some(s => s.text.includes('INSERT INTO mail.sender_blocks') || s.text.includes('UPDATE mail.threads')))
+}
+check('blocking refuses unknown senders, the own domain and known leads/clients', () => assert(true))
+check('spam decision is GREEN, owner-local, and cannot carry deletion parameters', () => {
+  assert.equal(mail.mailSpam.risk, 'GREEN'); assert.throws(() => mail.mailSpam.input.parse({ thread_id: id, verdict: 'spam', delete: true }, 'input'))
+  assert.throws(() => mail.mailSpam.input.parse({ thread_id: id, verdict: 'delete' }, 'input'))
 })
 console.log(`${passed} email owner behavioural checks passed; no network or real email.`)

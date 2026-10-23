@@ -465,11 +465,13 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.p
 
 type Notice = { key: string; severity: 'info' | 'warning' | 'critical'; text: string; action?: string }
 
+/** Quarantined mail (provider Junk, suspected phishing, owner spam, blocked sender) never
+ * reaches attention, the brief or notices (ADR-0022). */
 async function emailAttention(ctx: CapabilityContext): Promise<{ id: string; subject: string; classification: string; needs_reply: boolean; updated_at: Date }[]> {
   try {
     return await ctx.sql`SELECT id,subject,classification,needs_reply,updated_at FROM mail.threads
       WHERE archived=false AND trashed=false AND (needs_reply=true OR waiting=true)
-      AND classification NOT IN ('newsletter','spam','routine')
+      AND quarantine IS NULL AND classification NOT IN ('newsletter','spam','routine')
       ORDER BY needs_reply DESC,updated_at DESC LIMIT 10` as { id: string; subject: string; classification: string; needs_reply: boolean; updated_at: Date }[]
   } catch (error) {
     // Only an absent optional migration is safe to skip. Operational failures must surface.
