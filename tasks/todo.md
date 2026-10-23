@@ -56,6 +56,9 @@ commercial workflow regression passed 85 checks.
 ## Next approved architecture sequence (none started)
 
 1. [ ] Maxpromo OS / Max Agent Bureau two-repo forensic reconciliation and boundary cleanup
+   - [x] Forensic baseline and target delta: `docs/architecture/control-plane-reconciliation.md` (2026-10-23).
+   - [ ] Owner decisions: G1 EU claim/region, G2 agent door, G3 shadow Bureau project, approval interpretation (§15), Bureau product/tenant role.
+   - [ ] Boundary cleanup (hygiene release G4, G10, G13, G17) after those decisions.
 2. [ ] Lock the Business Control Plane ↔ Agent Control Plane integration contract
 3. [ ] Maxpromo OS daily command-centre reconciliation
 4. [ ] Email OS premium facelift inside the reconciled architecture

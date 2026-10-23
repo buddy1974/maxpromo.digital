@@ -19,6 +19,7 @@ these documents; none keeps its own copy.
 - **New to the platform?** `architecture/platform.md`
 - **Making a change?** `governance/standards.md`
 - **Locked out of Agent Bureau?** `deployment/agent-bureau-owner-access.md`
+- **How do the OS, Agent Bureau and Telegram fit together today?** `architecture/control-plane-reconciliation.md`
 - **Wondering why something is the way it is?** `adr/`
 - **Looking at what competitors do?** `research/competitive-intelligence-2026.md`
 - **Asking what evidence we actually have?** `research/evidence-inventory-2026.md`
