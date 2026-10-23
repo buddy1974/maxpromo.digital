@@ -94,3 +94,7 @@ downloads/model/notices/actions; changes fall through strict parsing. Full verif
 (38 native/59 route), SQL40 and explicit tsc pass. Unconditional-detector mutation caught;
 four safety mutations total. No production Test or secret use. Retry verdict follows actual
 production health/mail0 verification; this is connectivity only, not real-message certification.
+
+Production850b427 / dpl_6ntgsvX8ze3LjmiAiZjwhxsLHUbK Ready and canonical domain verified;
+public405/401, OS/site200 and health ok, Inbox configured:true/threads0, one account and
+all mail activity0, WhatsApp OFF. Safe owner retry; no agent Hostinger Test or secret use.

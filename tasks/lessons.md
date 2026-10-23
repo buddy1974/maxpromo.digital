@@ -1,5 +1,9 @@
 # Engineering lessons
 
+- Distinguish payload mailbox validation from database account lookup. A wrong_mailbox400
+  can reject the provider's synthetic sample before getDb. Prove exact fixture incompatibilities
+  locally; acknowledge only the complete evidenced connectivity fixture with zero side effects.
+
 - Webhook readiness probes cannot certify a provider's Test payload contract. Preserve
   safe fixed rejection stage/reason codes (never bodies, URLs, secrets or raw exceptions)
   so a genuine authenticated400 can be traced without weakening validation.

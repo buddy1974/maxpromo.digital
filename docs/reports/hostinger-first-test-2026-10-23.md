@@ -44,8 +44,17 @@ retry, unsafe URLs and prior adversarial checks remain intact. Four safety mutat
 including intentionally replacing the exact detector with unconditional true. Initial
 TypeScript narrowing and mutation-harness import issues were fixed and the full suite rerun.
 
-After deploying and checking production health/mail0, another owner Test is justified for
-this explicitly supported sample; it is not proof of real-message ingestion or full content.
+Deployed850b42766f5b7bd958c1611cdaaf359d53c4e67b through normal main/Git production release:
+dpl_6ntgsvX8ze3LjmiAiZjwhxsLHUbK, Ready/Production, created2026-10-23 11:27:19 Europe/Berlin,
+https://maxpromo-digital-oui0x53uh-buddy1974s-projects.vercel.app. www.maxpromo.digital points
+to it; health reports850b427. Actual GET/HEAD405, unauthenticated/Basic/wrong-Bearer POST401,
+OS/Inbox/client/Angebot/Rechnung200, EN/DE homepages200 and health ok. Inbox configured:true,
+threads0. Read-only production SQL after deployment: accounts1/matches1/enabled true;
+messages/events/deliveries/actions/jobs0. WhatsApp503/unconfigured/OFF. No Hostinger contact,
+Test, secret use, real-mail write/send/fetch, downloads or Telegram permission change.
+
+Another owner Test is justified for this explicitly supported sample; it is not proof of
+real-message ingestion or full content. SAFE TO RETRY HOSTINGER TEST.
 **Supersedes the earlier retry blocker below.** Agent never uses production secret/Test.
 
 The owner reported Hostinger's active info@maxpromo.digital / message.received Test
