@@ -114,3 +114,24 @@ Expected: HTTP 200 `{"ok":true,"ingested":false}` in Hostinger's Recent deliveri
 session configuration, the real wire shape passing the parser, and production database
 reachability with the enabled binding. It does not prove ingestion; the controlled real
 email after it does. If it returns anything else, the log line names the exact stage.
+
+## 7. Hostinger Test result — GREEN
+
+2026-10-23 13:34:32.853Z, one Test via the owner-authorized Hostinger Mail connector
+(webhook 01a1672e-5ac4-71ba-b7c6-21fc616252ae, active, info@maxpromo.digital, message.received,
+exact production URL). Hostinger reported httpStatus 200, success true.
+Vercel request 7jkmm-1792762472853-50e6209c3be8 on dpl_GQwE9b3vtfvKRFcMt1EdwLrRSNvy: POST 200,
+`{"event":"mail.webhook.acknowledged","disposition":"no_mailbox_identity","degraded":[]}`.
+No degradation codes: the real wire (Message-ID, From, dates) parses cleanly.
+
+Read-only production counts afterwards: mail.messages/threads/deliveries/events/content_jobs/
+content_assets/business_links/action_audit all 0; chat.events 0; os_jobs, os_followups,
+os_files 0; os_leads 5, os_clients 2, os_angebote 1, os_invoices 2 (pre-existing baseline).
+The synthetic Test created no mail, thread, CRM object, job, notice or action.
+
+## 8. Remaining: controlled real email
+
+Not yet sent: the agent's attempt to send from the connected Gmail session was refused by the
+session permission policy, so the owner sends it. Expected: one mail.messages row, one thread,
+classification lead/needs reply (subject contains "automation enquiry"), preview-only body,
+possible CRM link only if the sender already exists, no new lead, no outbound, no Telegram.

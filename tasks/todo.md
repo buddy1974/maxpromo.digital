@@ -47,5 +47,5 @@ commercial workflow regression passed 85 checks.
 - [x] Owner diagnostic retries (10:55Z, 12:35Z) identified an empty eventId; no other field fault.
 - [x] Independent review: opaque ids, no-identity acknowledgement, content normalization, bypass removed (016ceb5).
 - [x] Production schema re-verified read-only; 016ceb5 deployed and boundary-checked.
-- [ ] Owner Hostinger Test → expect 200 {ok:true,ingested:false}.
+- [x] Hostinger Test 13:34Z → 200 success, acknowledged no_mailbox_identity, degraded [], zero writes.
 - [ ] Controlled real email → message/thread/Inbox/no side effects; then retry/idempotency check.
