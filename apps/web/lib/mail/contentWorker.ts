@@ -45,7 +45,7 @@ export async function processContentJob(id:string,ports:ContentWorkerPorts,now?:
     for(const attachment of job.attachments){
       if(job.expiresAt<=clock()) return fail('expired')
       const locator=job.locators.attachments.find(a=>a.id===attachment.id)
-      if(!locator) throw new Error('missing_attachment')
+      if(!locator?.fileUrl) throw new Error('missing_attachment')
       const key=createHash('sha256').update(`${job.messageId}:${attachment.id}`).digest('hex')
       const asset=await ports.retainAttachment(locator.fileUrl,attachment,key)
       if(asset.id!==attachment.id || asset.size!==attachment.size || !/^[a-f0-9]{64}$/.test(asset.sha256) || !asset.storageRef || /^https?:/i.test(asset.storageRef)) throw new Error('invalid_asset')

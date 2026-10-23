@@ -59,7 +59,7 @@ const ingest = store.ingestMail as (sql: unknown, input: Inbound) => Promise<boo
 const suggest = store.suggestBusinessLinks as (sql: unknown, thread: string, sender: string) => Promise<void>
 const account = `MAIL-EVIDENCE-${randomUUID()}`
 const sender = `${account.toLowerCase()}@example.invalid`
-const leadId = randomUUID(); const clientId = randomUUID()
+const leadId = randomUUID(); const clientId = randomUUID(); const emptyLeadId = randomUUID()
 let created = false; let passed = 0
 function check(name: string, result: boolean) { assert.ok(result, name); passed++; console.log(`PASS ${name}`) }
 async function rejected(query: () => Promise<unknown>): Promise<boolean> { try { await query(); return false } catch { return true } }
@@ -125,7 +125,7 @@ try {
   check('unknown thread link rejected by foreign key', await rejected(() => sql`INSERT INTO mail.business_links(thread_id,entity_kind,entity_id,match_status) VALUES(${randomUUID()},'lead','fixture','possible')`))
   check('duplicate mailbox identity rejected by unique key', await rejected(() => sql`INSERT INTO mail.accounts(id,address,provider) VALUES(${account + '-duplicate'},${sender},'evidence')`))
   await sql`UPDATE mail.accounts SET provider='hostinger' WHERE id=${account}`
-  const contract={deliveryId:randomUUID(),eventId:`contract:${randomUUID()}`,mailbox:sender,messageId:`<${randomUUID()}@example.invalid>`,inReplyTo:'',references:[] as string[],
+  const contract={deliveryId:randomUUID() as string,eventId:`contract:${randomUUID()}`,mailbox:sender,messageId:`<${randomUUID()}@example.invalid>`,inReplyTo:'',references:[] as string[],
     subject:'Contract enquiry',sender,recipients:['owner@example.invalid'],cc:[],eventAt:new Date().toISOString(),emailDate:'2026-04-03T06:21:33Z',previewText:'Preview only',
     attachments:[{id:'attachment-1',filename:'document.pdf',size:5,contentType:'application/octet-stream'}],classification:'lead',needsReply:true}
   const expires=new Date(Date.now()+60*60*1000).toISOString()
@@ -156,6 +156,19 @@ try {
   check('spoofed reference from another sender cannot join business thread',(await accept(foreignReply))[0].thread_id!==accepted.thread_id)
   const sameSubject={...contract,deliveryId:randomUUID(),eventId:`subject:${randomUUID()}`,messageId:`<${randomUUID()}@example.invalid>`,attachments:[]}
   check('subject matching alone never merges threads',(await accept(sameSubject))[0].thread_id!==accepted.thread_id)
+  // Provider IDs are opaque: printable characters Hostinger never promised to avoid stay literal parameters.
+  const opaque={...contract,deliveryId:`delivery "quoted"/${randomUUID()}`,eventId:`opaque id/with 'quotes'; -- \u00fcnicode \u2603${randomUUID()}`,messageId:'',attachments:[]}
+  const opaqueRace=await Promise.all(Array.from({length:4},()=>accept(opaque)))
+  const [opaqueRow]=await sql`SELECT provider_message_id FROM mail.messages WHERE account_id=${account} AND provider_message_id=${opaque.eventId}`
+  check('opaque provider identifiers round-trip exactly and dedupe once',opaqueRace.filter(result=>result[0]?.created).length===1 && opaqueRow?.provider_message_id===opaque.eventId)
+  // Unknown senders use a reserved .invalid address; even a lead with an empty email never matches.
+  await sql`INSERT INTO os_leads(id,name,email,source) VALUES(${emptyLeadId}::uuid,${account},'','manual')`
+  const unknown={...contract,deliveryId:randomUUID(),eventId:`unknown:${randomUUID()}`,messageId:'',sender:'unknown-sender@sender.invalid',attachments:[{id:'large-0',filename:'large.bin',size:50*1024*1024,contentType:'application/octet-stream'}]}
+  const unknownResult=(await accept(unknown))[0]
+  const [unknownLinks]=await sql`SELECT count(*)::int AS n FROM mail.business_links WHERE thread_id=${unknownResult.thread_id}::uuid`
+  check('unknown sender never links to CRM records',unknownResult.created && unknownLinks.n===0)
+  const [large]=await sql`SELECT size_bytes FROM mail.content_assets WHERE message_id=${unknownResult.message_id}::uuid`
+  check('attachment metadata above the download limit is retained, not refused',Number(large.size_bytes)===50*1024*1024)
   const [job]=await sql`UPDATE mail.content_jobs SET state='processing',lease_token=gen_random_uuid(),lease_until=now()+interval '1 minute' WHERE message_id=${accepted.id} RETURNING id,lease_token`
   const [wrongLease]=await sql`SELECT mail.complete_content(${job.id},${randomUUID()},'Full body','[]'::jsonb,'other',false) AS done`
   check('stale content worker cannot complete another lease',wrongLease.done===false)
@@ -223,7 +236,7 @@ try {
       await sql`DELETE FROM mail.messages WHERE account_id=${account}`
       await sql`DELETE FROM mail.threads WHERE account_id=${account}`
       await sql`DELETE FROM mail.accounts WHERE id=${account}`
-      await sql`DELETE FROM os_leads WHERE id=${leadId}::uuid AND name=${account}`
+      await sql`DELETE FROM os_leads WHERE id IN (${leadId}::uuid,${emptyLeadId}::uuid) AND name=${account}`
       await sql`DELETE FROM os_clients WHERE id=${clientId}::uuid AND name=${account}`
       console.log('PASS cleaned only this run\'s MAIL-EVIDENCE rows')
     } catch { console.error(`EMAIL STORAGE: cleanup required for synthetic account ${account}`); process.exitCode = 1 }

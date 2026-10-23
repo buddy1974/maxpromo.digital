@@ -38,10 +38,11 @@ export const GET = withAuth(async (req, { session }) => {
     const threads = await sql`SELECT t.*,
       (SELECT entity_kind FROM mail.business_links WHERE thread_id=t.id AND match_status='owner_confirmed' ORDER BY entity_kind LIMIT 1) AS business_kind,
       (SELECT sender FROM mail.messages WHERE thread_id=t.id ORDER BY received_at DESC LIMIT 1) AS sender,
+      (SELECT left(CASE WHEN body_state='preview' THEN preview_text ELSE body_text END,200) FROM mail.messages WHERE thread_id=t.id ORDER BY received_at DESC LIMIT 1) AS preview,
       EXISTS(SELECT 1 FROM mail.messages WHERE thread_id=t.id AND NOT is_read) AS unread
       FROM mail.threads t WHERE (${query}='' OR EXISTS(
         SELECT 1 FROM mail.messages m WHERE m.thread_id=t.id AND
-        (strpos(lower(m.subject),lower(${query}))>0 OR strpos(lower(m.sender),lower(${query}))>0 OR strpos(lower(m.body_text),lower(${query}))>0)))
+        (strpos(lower(m.subject),lower(${query}))>0 OR strpos(lower(m.sender),lower(${query}))>0 OR strpos(lower(m.body_text),lower(${query}))>0 OR strpos(lower(m.preview_text),lower(${query}))>0)))
       ORDER BY t.updated_at DESC LIMIT 100`
     const accounts = await sql`SELECT id FROM mail.accounts WHERE enabled LIMIT 1`
     const links = await businessLinks(sql, threads.map(t => t.id as string))

@@ -6,7 +6,7 @@ import type { VerifiedHostingerEvent } from './hostingerWebhook'
 export const HOSTINGER_MAILBOX = 'info@maxpromo.digital'
 export const HOSTINGER_ACCOUNT = `hostinger:${HOSTINGER_MAILBOX}`
 interface SealedLocator { version: 1; nonce: string; tag: string; ciphertext: string }
-export interface ContentLocators { bodyUrl: string | null; attachments: { id: string; fileUrl: string }[] }
+export interface ContentLocators { bodyUrl: string | null; attachments: { id: string; fileUrl: string | null }[] }
 function key(secret: string) {
   if (secret.length < 32) throw new Error('mail_locator_key_unavailable')
   return Buffer.from(hkdfSync('sha256',secret,'maxpromo-os','mail-signed-locators-v1',32))
@@ -25,6 +25,12 @@ export function openLocators(value: SealedLocator, secret: string, binding: stri
     decipher.setAAD(Buffer.from(binding)); decipher.setAuthTag(Buffer.from(value.tag,'base64'))
     return JSON.parse(Buffer.concat([decipher.update(Buffer.from(value.ciphertext,'base64')),decipher.final()]).toString('utf8')) as ContentLocators
   } catch { throw new Error('mail_locator_unavailable') }
+}
+
+/** Read-only: the same binding predicate mail.accept_hostinger enforces. No write. */
+export async function hostingerReceiptReady(sql: Sql): Promise<boolean> {
+  const rows=await sql`SELECT 1 FROM mail.accounts WHERE id=${HOSTINGER_ACCOUNT} AND enabled AND provider='hostinger' AND lower(address)=${HOSTINGER_MAILBOX}`
+  return rows.length===1
 }
 
 /** Atomic acceptance only; no URL fetch, model, lead creation or external action. */

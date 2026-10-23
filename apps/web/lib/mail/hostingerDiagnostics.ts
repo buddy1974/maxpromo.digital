@@ -1,5 +1,4 @@
 import { isIP } from 'node:net'
-import { HOSTINGER_CONNECTIVITY_SAMPLE, isHostingerConnectivityTest } from './hostingerConnectivity'
 
 type Shape = Record<string,unknown>
 const object = (value: unknown): value is Shape => !!value && typeof value==='object' && !Array.isArray(value)
@@ -11,9 +10,8 @@ function field(value: unknown): Shape {
 }
 function identifier(value: unknown): Shape {
   return {...field(value),...(typeof value==='string'?{
-    empty:value.length===0,valid:/^[A-Za-z0-9][A-Za-z0-9_.:-]{0,255}$/.test(value),
-    whitespace:/\s/.test(value),nonAscii:/[^\x00-\x7f]/.test(value),
-    otherCharacters:/[^A-Za-z0-9_.:-]/.test(value),
+    empty:value.length===0,whitespace:/\s/.test(value),control:/[\u0000-\u001f\u007f-\u009f]/.test(value),
+    nonAscii:/[^\x00-\x7f]/.test(value),
   }:{})}
 }
 /** Categories only: never hostname, URL, query, credentials or DNS/network I/O. */
@@ -30,38 +28,26 @@ function urlClass(value: unknown): string {
     return 'dns_name'
   } catch { return 'invalid_url' }
 }
-/** Traversal follows ONLY the fixed public expected keys/array slots. Unknown names and
- * values are never returned, even if an attacker uses a secret as a property name.
+const ENVELOPE=['id','event','timestamp','data'] as const
+const DATA=['eventId','mailboxAddress','messageId','inReplyTo','references','subject','from','to','cc','date','plainBody','htmlBody','bodyUrl','attachments'] as const
+const ATTACHMENT=['contentType','filename','sizeBytes','fileUrl'] as const
+/** Only fixed documented field NAMES are traversed; unknown keys are counted, never named,
+ * so a hostile key cannot turn into log content. Values are never returned.
  */
-function mismatches(value: unknown, expected: unknown, path='$'): string[] {
-  if(Array.isArray(expected)) {
-    if(!Array.isArray(value))return [path]
-    return [...(value.length!==expected.length?[`${path}.length`]:[]),...expected.flatMap((item,index)=>mismatches(value[index],item,`${path}[${index}]`))]
-  }
-  if(object(expected)) {
-    if(!object(value))return [path]
-    return [...(Object.keys(value).some(key=>!Object.prototype.hasOwnProperty.call(expected,key))?[`${path}.$unknownKeys`]:[]),
-      ...Object.keys(expected).flatMap(key=>mismatches(value[key],expected[key],`${path}.${key}`))]
-  }
-  return value===expected?[]:[path]
-}
-function knownShape(value: unknown, expected: Shape): Shape {
+function knownShape(value: unknown, keys: readonly string[]): Shape {
   const record=object(value)?value:{}
-  return {type:type(value),unknownKeys:object(value)?Object.keys(value).filter(key=>!Object.prototype.hasOwnProperty.call(expected,key)).length:0,
-    fields:Object.fromEntries(Object.keys(expected).map(key=>[key,field(record[key])]))}
+  return {type:type(value),unknownKeys:Object.keys(record).filter(key=>!keys.includes(key)).length,
+    fields:Object.fromEntries(keys.map(key=>[key,field(record[key])]))}
 }
 /** Authenticated rejected JSON only. Fixed schema, bounded output, no application state. */
-export function describeHostingerStructure(value: unknown): Shape {
+export function describeHostingerStructure(value: unknown, configuredMailbox: string): Shape {
   const envelope=object(value)?value:{},data=object(envelope.data)?envelope.data:{}
   const attachments=Array.isArray(data.attachments)?data.attachments:[]
   const first=object(attachments[0])?attachments[0]:{}
-  const result: Shape={version:1,matcherMatched:isHostingerConnectivityTest(value),
-    mismatchFields:mismatches(value,HOSTINGER_CONNECTIVITY_SAMPLE),
-    envelope:knownShape(value,HOSTINGER_CONNECTIVITY_SAMPLE),data:knownShape(envelope.data,HOSTINGER_CONNECTIVITY_SAMPLE.data),
+  return {version:2,envelope:knownShape(value,ENVELOPE),data:knownShape(envelope.data,DATA),
     identifiers:{delivery:identifier(envelope.id),event:identifier(data.eventId)},
-    mailboxRole:data.mailboxAddress==='info@maxpromo.digital'?'configured':data.mailboxAddress==='test@hostinger.com'?'documented_test':typeof data.mailboxAddress==='string'?'other':type(data.mailboxAddress),
+    eventKnown:envelope.event==='message.received',
+    mailboxRole:typeof data.mailboxAddress!=='string'?type(data.mailboxAddress):data.mailboxAddress.trim().toLowerCase()===configuredMailbox?'configured':'other',
     urls:{body:urlClass(data.bodyUrl),firstAttachment:urlClass(first.fileUrl)},
-    firstAttachment:knownShape(attachments[0],HOSTINGER_CONNECTIVITY_SAMPLE.data.attachments[0]),
-    testMarkers:Object.fromEntries(['test','isTest','is_test'].map(key=>[key,{type:type(envelope[key]),...(typeof envelope[key]==='boolean'?{booleanValue:envelope[key]}:{})}]))}
-  return result
+    firstAttachment:knownShape(attachments[0],ATTACHMENT)}
 }

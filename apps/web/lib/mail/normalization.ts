@@ -1,5 +1,7 @@
 /** Untrusted mail is data. This module has no model, tools, network or business writes. */
 export const MAX_MAIL_BYTES = 256 * 1024
+/** Reserved TLD (RFC 2606): can never equal a real lead/client address or thread sender. */
+export const UNKNOWN_SENDER = 'unknown-sender@sender.invalid'
 export interface Attachment { id: string; filename: string; size: number; contentType: string }
 export interface InboundMail {
   accountId: string; messageId: string; threadId: string; sender: string; recipients: string[]; cc: string[]
