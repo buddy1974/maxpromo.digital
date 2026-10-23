@@ -5,7 +5,7 @@ import { hostingerStateReader, reconcileProviderState } from './providerState'
 /** Check provider spam state after the response: receipt never waits on, or fails because
  * of, the Hostinger REST API. No-op until the owner connects the API (ADR-0022).
  */
-export function scheduleProviderCheck(source: 'webhook' | 'inbox') {
+export function scheduleProviderCheck(source: 'webhook' | 'inbox' | 'attention') {
   const reader = hostingerStateReader()
   if (!reader) return
   after(async () => {

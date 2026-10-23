@@ -6,6 +6,7 @@ import { attentionSnapshot } from '@/lib/commercial/capabilities/views'
 import { acknowledgeAgentEvent } from '@/lib/commercial/agent-events'
 import { OWNER_ACTOR } from '@/lib/commercial/engine'
 import { OWNER_HEADERS, ownerReply, readOwnerJson } from '@/lib/owner-request'
+import { scheduleProviderCheck } from '@/lib/mail/providerSchedule'
 
 /**
  * GET  /api/os/attention   what needs Marcel today: ranked items across sales,
@@ -26,6 +27,8 @@ export const GET = withAuth(async (_request, { session }) => {
     const snapshot = await attentionSnapshot({
       sql: getDb(), actor: OWNER_ACTOR, channel: 'os', now, today: berlinDate(now), committed: () => {},
     })
+    // Provider Junk still unverified (a failed earlier check) leaves attention on the next view (ADR-0022).
+    scheduleProviderCheck('attention')
     return NextResponse.json(snapshot, { headers: OWNER_HEADERS })
   } catch (err) {
     console.error('[os/attention]', err instanceof Error ? err.message : err)

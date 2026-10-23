@@ -28,8 +28,8 @@ import { join, resolve } from 'node:path'
 import { randomUUID } from 'node:crypto'
 
 const [mode, sourceFile, targetFile] = process.argv.slice(2)
-if (!['--rehearse', '--migrate'].includes(mode) || !sourceFile || (mode === '--migrate' && !targetFile)) {
-  console.error('usage: --rehearse <source-env> | --migrate <source-env> <target-env>')
+if (!['--rehearse', '--migrate', '--recheck'].includes(mode) || !sourceFile || (mode !== '--rehearse' && !targetFile)) {
+  console.error('usage: --rehearse <source-env> | --migrate <source-env> <target-env> | --recheck <source-env> <evidence.json>')
   process.exit(2)
 }
 const IMAGE = 'postgres:17-alpine'
@@ -87,6 +87,20 @@ function compare(a, b, label) {
 
 const source = direct(urlFrom(sourceFile))
 console.log(`source host ${hostOf(source)}`)
+
+/* --recheck: run AFTER DATABASE_URL points at the EU database and the release is live.
+   A write that reached the US source between the dump and the switch would otherwise be
+   lost silently. Identical fingerprints prove nothing was written after the copy. */
+if (mode === '--recheck') {
+  const evidence = JSON.parse(readFileSync(targetFile, 'utf8'))
+  if (evidence.mode !== '--migrate' || evidence.sourceHost !== hostOf(source)) {
+    console.error('evidence is not from a --migrate run of this source; refusing'); process.exit(2)
+  }
+  const now = fingerprint(source)
+  const ok = compare(evidence.tables, now, 'source now vs. source at copy time')
+  if (!ok) console.error('Writes reached the US source after the copy. Do not delete it: replay the differing tables into the EU database first.')
+  process.exit(ok ? 0 : 1)
+}
 const work = mkdtempSync(join(tmpdir(), 'bureau-eu-'))
 const dumpName = 'bureau.dump'
 let local = null
