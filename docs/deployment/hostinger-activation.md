@@ -2,6 +2,14 @@
 
 This extends ADR-0020; it does not introduce another mail or notification architecture.
 
+## Current locked production status — 2026-10-23
+
+Main b21c070 is deployed and healthy. Public receiver GET/HEAD405, rejected POST401.
+Mail0013/0014 are applied:9 tables/18 indexes/2 functions, all mail counts zero. No mailbox
+account was seeded. Provisioning the real mailbox binding is the pending owner decision
+before authenticated Test readiness; do not create the webhook yet. Current production
+model proof passed85/85 in-cloud. [Release evidence](../reports/email-locked-production-2026-10-23.md).
+
 ## Verified input
 
 Source: official Hostinger contract supplied directly by Marcel on 2026-10-22.
@@ -78,7 +86,8 @@ Production target to paste **after authorized deployment and readiness checks**:
 https://www.maxpromo.digital/api/channels/mail
 
 Derived from packages/config/domains.ts canonical hub origin and the actual App Router
-route. HEAD returned 404 on 2026-10-22, so it is not presently a live receiver.
+route. Production GET/HEAD405 and unauthenticated POST401 verified on2026-10-23. This is
+a deployed locked receiver, not active mailbox ingestion.
 
 Required names for inbound acceptance (production names inventoried with Vercel env ls,
 2026-10-22; values were not printed or changed):
@@ -88,9 +97,10 @@ Required names for inbound acceptance (production names inventoried with Vercel 
 - OS_SESSION_SECRET — existing valid session/encryption key; preserve its current value.
 - NEON_DATABASE_URL or DATABASE_URL — existing production resolver, only after migration approval.
 
-Vercel Production already has OS_SESSION_SECRET and NEON_DATABASE_URL, plus existing
-OS_AGENT_SECRET/OS_AGENT_ALLOWED_ACTORS and the legacy Telegram variables. It has neither
-EMAIL_PROVIDER nor HOSTINGER_WEBHOOK_SECRET. No duplicate DATABASE_URL is needed.
+Vercel Production has OS_SESSION_SECRET and NEON_DATABASE_URL, plus existing
+OS_AGENT_SECRET/OS_AGENT_ALLOWED_ACTORS and the legacy Telegram variables. Marcel added
+EMAIL_PROVIDER=hostinger and restored the model key/credit. HOSTINGER_WEBHOOK_SECRET is
+still absent. No duplicate DATABASE_URL is needed.
 Code deployment requires neither missing mail variable: absence deliberately locks receipt.
 Do not set a placeholder webhook secret or rotate the existing session key.
 
@@ -103,20 +113,21 @@ Evidence uses MAXPROMO_EVIDENCE_MODE and EVIDENCE_DATABASE_URL only, with existi
 
 ## Exact remaining owner actions
 
-1. Code-only push/deployment is conditionally authorized by Marcel's production-preparation
-   mission, after all required release checks pass. Production migration/account provisioning
-   still requires its reviewed backup/application boundary. We perform that engineering work;
-   Marcel does not need to write code, SQL or local files. Keep receipt disabled meanwhile.
+1. Locked infrastructure is deployed and reviewed mail migrations are committed after a
+   production recovery branch. The migrations-only data authorization seeded no account.
+   Approve the proposed real mailbox binding in the release report; the agent executes it,
+   with secret absent and no mail processing. Marcel need not write code, SQL or local files.
 2. For later full-content activation, supply the missing signed-download host/media contract or redacted response evidence.
    No API token or actual signed URL needs to be placed in chat. Authorize storage/retention
    activation once the durable backend is verified. Safe preview receipt does not require
    full-content downloading; leave jobs blocked_policy and never present previews as complete.
-3. After deployed readiness, configure Hostinger mailbox info@maxpromo.digital, HTTPS URL
+3. After mailbox-binding readiness, configure Hostinger mailbox info@maxpromo.digital, HTTPS URL
    above, event message.received. Prefer a disabled webhook during setup. If creation cannot
    remain disabled, stop before creation and agree a controlled setup window; retry guarantees
    are not assumed. Copy the one-time token securely; never regenerate casually.
-4. Put HOSTINGER_WEBHOOK_SECRET and EMAIL_PROVIDER in the intended Vercel environment via
-   its secret settings and authorize the resulting deployment. Confirm the existing session
+4. Put only the genuine HOSTINGER_WEBHOOK_SECRET in the intended Vercel environment via
+   its secret settings and authorize the resulting deployment. EMAIL_PROVIDER is already
+   configured; do not duplicate it. Confirm the existing session
    key and account/migrations are ready; no DNS change or API-token rotation is needed.
 5. Use Hostinger Test; require HTTP 200 and inspect Recent deliveries timestamp/status/
    duration. Repeat the same delivery fixture and verify one message/job/notice. Verify
@@ -133,8 +144,9 @@ Rollback: disable the Hostinger webhook without deleting it, unset provider sele
 content workers, keep audit/metadata for reconciliation, then roll application back. Never
 drop mail records as a code rollback. The provider mailbox remains the transport/source mail.
 
-**Current verdict: NO-GO for creating/enabling the real webhook.** The route is not deployed,
-the required model-backed commercial release proof is blocked by insufficient credit, and
-production mail migrations/account have not been applied. No Hostinger secret exists yet.
+**Current verdict: NO-GO for creating/enabling the real webhook until mailbox binding is approved.**
+The route is deployed, migrations are applied and the current production model proof passes.
+No Hostinger secret exists yet. The empty account table deliberately prevents acceptance
+even after future authentication until that binding is provisioned.
 Full-content constraints remain a separate later activation gate; preview receipt is supported.
 See the [production preparation report](../reports/email-production-preparation-2026-10-22.md).

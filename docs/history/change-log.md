@@ -1,5 +1,14 @@
 # Change Log
 
+## 2026-10-23 — Email OS locked infrastructure deployed
+
+Mail0013/0014 applied atomically after Neon recovery branch;9 tables/18 indexes/2 functions,
+zero mail rows and unchanged commercial catalog. Main b21c070 deployed through Vercel;
+public receiver GET/HEAD405 and rejected POST401 verified, owner OS/site healthy.
+Current production model certified in-cloud85/85 without exporting the key, with isolated
+evidence data and simulated sends. Hostinger secret absent; account binding remains pending
+owner decision; no real mail/provider activation. [Release evidence](../reports/email-locked-production-2026-10-23.md).
+
 ## 2026-10-22 — locked email production preparation
 
 Prepared missing-secret401/GET-HEAD405 behavior, migration replay/fresh PostgreSQL proofs

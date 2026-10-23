@@ -1733,7 +1733,7 @@ Last updated: 2026-09-04 (v7.0 — enterprise polish)
 | 95 | **The output guard is pattern-based** | It refuses prices, discounts, commitments, links, emails, phone numbers, secret shapes and leaked instructions. It can misfire: twice in live runs it replaced a good demo answer ("das kostet Sie jeden Freitag zwei Stunden") with the fallback until the price rule was narrowed (2026-10-16). It can also miss an unusual phrasing; the prompt is the first defence. A refusal is visible to Marcel as a notice, so drift is observable. |
 | 96 | **No sweeper for a conversation that failed mid-processing** | If processing dies after ingest (function timeout, database outage), the messages stay pending until the customer writes again or the lease expires and another delivery arrives; Marcel gets a "waiting > 10 minutes" notice. A scheduled sweep would answer or hold them without a new message (no scheduler exists on this platform). |
 | 97 | **WhatsApp message text reaches the model provider in the US** | Every answered message is sent to the configured model provider (Anthropic) for inference; Meta transports it. Processor terms, the transfer mechanism and the privacy notice are owner/legal actions (whatsapp-gateway.md §8). |
-| 98 | ~~The public number in the legal identity is not the WhatsApp number~~ | **RESOLVED in the repository 2026-10-16 — not yet live.** `BUSINESS.phone` is now `+49 174 5910734`, the business WhatsApp number, and every derived surface (Impressum, privacy notice, `tel:` and `wa.me` links, JSON-LD, Angebot/Rechnung emails and share texts) follows it. **Remaining:** the live sites keep showing `+49 173 3645698` until Marcel deploys `maxpromo-web`; documents issued before the change name the old number, so it should stay reachable or forwarded while they are current. Record: `docs/governance/public-number-migration.md`. |
+| 98 | ~~The public number in the legal identity is not the WhatsApp number~~ | **RESOLVED in the repository 2026-10-16; public deployment verified 2026-10-23.** `BUSINESS.phone` is now `+49 174 5910734`, the business WhatsApp number, and every derived surface (Impressum, privacy notice, `tel:` and `wa.me` links, JSON-LD, Angebot/Rechnung emails and share texts) follows it. The deployed German Impressum has the current `tel:+491745910734` and no old `tel:` link. Documents issued before the change name the old number, so it should stay reachable or forwarded while they are current. Record: `docs/governance/public-number-migration.md`. |
 | 100 | ~~The Impressum and the privacy notice hard-code the phone number~~ | **RESOLVED in the repository 2026-10-16.** Both pages read `BUSINESS.phone` (text) and `PHONE_HREF` (`tel:` link) from `@maxpromo/config`; the number is written once. Other identity lines on those pages (name, address, email) are still written out on the page — not part of the number migration, left unchanged. |
 | 99 | **Model cost from many numbers** | The per-conversation daily allowance bounds one sender; it does not bound many. Meta's own spam controls and the per-instance webhook limit are the only global brakes; a platform-wide daily budget is backlog. |
 
@@ -1743,10 +1743,11 @@ Last updated: 2026-09-04 (v7.0 — enterprise polish)
 
 ### Email channel activation blockers — 2026-10-22
 
-ADR-0020 remains disconnected in production. The owner-supplied Hostinger message.received
-contract is now implemented/tested locally (distinct delivery/event IDs, threading and
-preview semantics). Verified signed-download host/media constraints, safe body/storage
-activation, outbound reconciliation and production approval remain required.
+ADR-0020 infrastructure is deployed locked in production. Hostinger transport remains
+disconnected: the real account binding and webhook secret are absent. The owner-supplied
+message.received contract is implemented/tested (distinct delivery/event IDs, threading
+and previews). Signed-download host/media verification and safe storage activation remain
+later full-content gates; outbound reconciliation/activation remains separate.
 Existing proactive notice generation is reused; external Mission Control `notifyActors`
 and natural-language thread/draft focus routing remain unverified. This reconciles the
 brief's "risk 90" with the existing proactive-notices item (89); neither is claimed fixed
@@ -1759,8 +1760,12 @@ workspace's declared SQL proof driver; no new direct dependency was added. It al
 and patched the release-blocking Next.js critical advisory: both apps and shared ESLint
 configuration now use 16.4.2 (sharp 0.35.5). The final dependency audit passes with 13
 reported advisories: 5 high development-only and 8 moderate, no production High/Critical.
-The required real-model commercial proof remains blocked by insufficient model credit;
-dictated commercial proof passes. No release exception or security waiver was created.
+The historical credit failure remains recorded. Owner restored model credit/key;
+the current-production in-cloud commercial proof passed85/85 in the locked release.
+Mail0013/0014 are deployed, public405/401 verified, all mail counts zero. Account binding
+is pending the owner decision before webhook Test readiness; Hostinger secret is absent.
+No commercial/model/security gate was waived. See
+[locked release](../reports/email-locked-production-2026-10-23.md).
 
 Risks 1–5 are resolved by Auth-1 through Auth-4.
 Risk 6 is resolved by Auth-0.

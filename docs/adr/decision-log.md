@@ -1930,3 +1930,15 @@ one page); keeping negotiation with a permanent redirect (a permanent redirect
 whose target varies is still no single identity); any crawler-specific branch
 (cloaking); a `Vary: Accept-Language` workaround.
 
+
+## 2026-10-23 — Locked email infrastructure production boundary
+
+Marcel explicitly authorized the locked receiver deployment and only reviewed mail0013/0014
+migrations, without waiving the historical failed model proof or activating mail transport.
+He then restored credit and the production model key. The exact commercial proof passed
+85/85 inside Vercel's current Production build, with an evidence-only child and simulated
+outbound mail; the key was not exported. Normal main/Vercel release b21c070 is healthy,
+public mail methods return405/401, and production mail is empty. Mailbox binding approval,
+real Hostinger secret/Test/controlled acceptance remain activation boundaries. Existing
+Telegram owner restrictions and download fail-closed gates are unchanged. Full evidence:
+[locked release](../reports/email-locked-production-2026-10-23.md).

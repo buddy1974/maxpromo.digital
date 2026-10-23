@@ -28,4 +28,13 @@ commercial workflow regression passed 85 checks.
 - [x] Full verify, email172, storage40, fresh SQL9, built HTTP10, security11 and dependency audit.
 - [x] Reproduce required commercial model failure with Vercel model environment; dictated85 passes.
 - [x] Document and commit; leave only genuine funding/release/activation boundaries.
-- [ ] Push/deploy after required model-backed proof passes. No Hostinger webhook action yet.
+- [x] Push/deploy locked infrastructure under explicit owner decision; current in-cloud model85/85 passed.
+
+## Locked production result — 2026-10-23
+
+- [x] Normal main push and Vercel Git release b21c070, remote verification success.
+- [x] Production recovery branch and only0013/0014 atomic migration;9 tables/18 indexes/2 functions.
+- [x] Public receiver405/401, authenticated OS/document endpoints200, homepages200, health ok.
+- [x] Recheck zero messages/events/actions/jobs and unchanged commercial catalog; WhatsApp OFF.
+- [ ] Pending owner decision: provision real mailbox binding (migrations seed no account).
+- [ ] Then Hostinger webhook creation/private genuine secret/Test/controlled acceptance, not performed.

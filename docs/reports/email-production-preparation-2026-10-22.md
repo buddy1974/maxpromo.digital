@@ -1,5 +1,11 @@
 # Email OS — locked production preparation
 
+Historical preparation snapshot. The later [locked production release](email-locked-production-2026-10-23.md)
+records deployment/migration completion and the restored-credit in-cloud model proof.
+Correction: env run can overlay local dotenv and export empty production secrets; its
+earlier local fallback was not proof of the exact production credential. The later in-cloud
+proof avoids export/fallback and certifies the current production model environment.
+
 Owner: Marcel Tabit Akwe · 2026-10-22 · **NO-GO for creating the Hostinger webhook**.
 
 WHAT: prepare the accepted channel for a code-only locked production deployment.

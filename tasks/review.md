@@ -41,3 +41,18 @@ Final verify29 gates, email172, evidence storage40, fresh SQL9, built HTTP10, se
 typecheck/lint/build/docs passed. Required commercial model proof20pass/5fail from insufficient
 credit, including Vercel-provided model environment; dictated85/85. Conditional push/deploy
 not exercised. Pre-existing OpenClaw deletion remains excluded.
+
+## Locked production release — 2026-10-23
+
+Owner explicitly authorized locked migration/deploy independently of historical billing;
+then restored credit/key. Real commercial proof85/85 passed in Vercel's Production build
+using current non-exportable model credential, evidence-only child and simulated sends.
+Expected Neon production endpoint matched in-cloud. Main b21c070 passed remote CI/Vercel.
+Only mail0013/0014 applied in a bounded transaction through existing Neon SQL editor,
+after recovery branch br-nameless-block-alpbxno2.9 tables/18 indexes/2 functions, all mail
+counts0; public/chat catalog unchanged. Mailbox binding remains pending owner decision.
+Public GET/HEAD405, rejected POST401; owner login/OS/Inbox/client/Angebot/Rechnung200;
+homepages200, health200/ok. WhatsApp503/unconfigured/OFF. No mail/Hostinger/model request
+from locked route, no Telegram runtime changes/download transport activation.
+Local verify29, email177, SQL40, fresh9, built HTTP10, security11; dependency audit clean.
+Final dictated85/85 after isolated rerun. Only unrelated original OpenClaw deletion retained.
