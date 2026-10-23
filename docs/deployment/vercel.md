@@ -119,6 +119,7 @@ separate is what keeps the two databases separate.
 | `RESEND_API_KEY` / `RESEND_FROM_EMAIL` | ✓ | — |
 | `OS_PASSWORD` / `OS_SESSION_SECRET` | ✓ | — |
 | `HOSTINGER_WEBHOOK_SECRET` / `EMAIL_PROVIDER` | ✓ | — |
+| `HOSTINGER_MAIL_API_TOKEN` / `HOSTINGER_MAILBOX_RESOURCE_ID` (read-only provider spam state, ADR-0022; **not set yet**) | owner to set | — |
 | `OS_BUREAU_AGENT_SECRET` | ✓ (verifies) | ✓ (signs) — one fresh value, 2026-10-23 |
 | `OS_BUREAU_ALLOWED_AGENTS` | `bureau:intake,bureau:console` | — |
 | `OS_AGENT_SECRET` / `OS_AGENT_ALLOWED_ACTORS` | — (removed 2026-10-23; legacy door closed) | — |

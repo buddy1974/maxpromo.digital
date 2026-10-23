@@ -1978,3 +1978,20 @@ Rejected:
 - business approvals in the Bureau;
 - reusing the legacy secret;
 - prompting for approval on every owner click.
+
+## 2026-10-23 — Provider spam state and mail quarantine (ADR-0022)
+
+Owner correction: the example "Rechnung" mail was already in Hostinger's Junk, yet the OS showed
+it as `billing` / Needs reply. Investigation found the webhook carries no folder or spam field
+and fires for Junk mail; the folder is only available from the REST API, which was never wired.
+
+Decision ([ADR-0022](0022-provider-spam-state-and-mail-quarantine.md)):
+- provider Junk, read read-only after receipt from the REST folder API, is the primary signal;
+- quarantine is a thread state that removes mail from every attention, business and agent path;
+- Marcel's verdict always wins (Not spam / Mark as spam / Block sender), locally and audited;
+- structural signals (active attachment, double extension, automated sender) cover provider misses.
+
+Rejected: hard-coding the sender; irreversible provider trust; fetching raw source for spam
+headers; an invented webhook field; a model classifier as the primary signal; retroactive data
+changes inside the migration.
+

@@ -1,5 +1,24 @@
 # Change Log
 
+## 2026-10-23 — Provider spam state and mail quarantine (ADR-0022)
+
+**Root cause:** Hostinger filed the "Rechnung" lure into Junk, but its webhook carries no folder
+or spam field, and the OS never read the folder from the REST API. The subject regex made it
+`billing` / Needs reply.
+
+**In the repository (released after migration 0016 and the next push):**
+- migration 0016: provider state per message, quarantine and owner verdict per thread,
+  `mail.sender_blocks`, quarantine-aware `accept_hostinger` / `complete_content`,
+  `apply_provider_state` (schema and functions only; no rows changed);
+- read-only provider-state reconciler (folders + Message-ID search, after the response);
+- structural risk signals; automated senders never need a reply;
+- quarantine excluded from Inbox views, search, attention, brief, notices and every business
+  action; Spam view with Not spam / Mark as spam / two-step Block sender;
+- accepted-receipt logs count undocumented webhook keys.
+
+**Proofs:** unit 51/51; evidence SQL 56/56; webhook route 71; Inbox API 17; owner 24;
+notices 10 (mutation caught); UI 41; local production-build browser check including 390 px.
+
 ## 2026-10-23 — Control-plane reconciliation (ADR-0021)
 
 **Production changes:**

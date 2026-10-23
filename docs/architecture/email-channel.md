@@ -152,6 +152,18 @@ current source for exact environment names, Hostinger/Vercel steps, signed-URL b
 external Telegram notifyActors status, verification and rollback. This supersedes the
 initial missing-webhook-contract blocker: the parser/receipt contract is now implemented.
 
+## Provider spam state and quarantine (ADR-0022)
+
+Hostinger's `message.received` fires for mail it files into Junk and carries no folder or spam
+field. The OS therefore reads the provider folder after receipt through the REST API
+(`lib/mail/providerState.ts`: special-use folders + Message-ID header search, read-only port,
+`after()`), and applies it with `mail.apply_provider_state`. Quarantine
+(`provider_junk` · `suspected_phishing` · `owner_spam` · `blocked_sender`) is a thread state:
+quarantined mail appears only under **Spam** and never reaches attention, the brief, notices or
+any business action. Marcel's verdict always wins. Structural signals (`lib/mail/risk.ts`) cover
+provider misses. The reconciler is inactive until `HOSTINGER_MAIL_API_TOKEN` and
+`HOSTINGER_MAILBOX_RESOURCE_ID` are set.
+
 ## Remaining risks
 
 Production deployment/migration/account authorization and real signed-download host/media
