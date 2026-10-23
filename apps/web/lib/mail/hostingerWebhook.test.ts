@@ -1,6 +1,44 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { parseHostingerWebhook } from './hostingerWebhook'
+import { HOSTINGER_CONNECTIVITY_SAMPLE, isHostingerConnectivityTest } from './hostingerConnectivity'
+
+test('connectivity recognition is exact and independent of JSON property order, never a production-mail exemption', () => {
+  assert.equal(isHostingerConnectivityTest(HOSTINGER_CONNECTIVITY_SAMPLE),true)
+  assert.equal(isHostingerConnectivityTest({...HOSTINGER_CONNECTIVITY_SAMPLE,data:{...HOSTINGER_CONNECTIVITY_SAMPLE.data}}),true)
+  assert.equal(isHostingerConnectivityTest(Object.fromEntries(Object.entries(HOSTINGER_CONNECTIVITY_SAMPLE).reverse())),true)
+  const real=fixture();assert.equal(isHostingerConnectivityTest(real),false)
+  assert.equal(isHostingerConnectivityTest({...HOSTINGER_CONNECTIVITY_SAMPLE,extra:true}),false)
+  assert.equal(isHostingerConnectivityTest({...HOSTINGER_CONNECTIVITY_SAMPLE,data:{...HOSTINGER_CONNECTIVITY_SAMPLE.data,extra:true}}),false)
+  assert.equal(isHostingerConnectivityTest({...HOSTINGER_CONNECTIVITY_SAMPLE,data:null}),false)
+})
+test('changing any sample leaf cannot qualify as connectivity traffic', () => {
+  function leaves(value: unknown, path: (string|number)[]=[]): (string|number)[][] {
+    if(value && typeof value==='object')return Object.entries(value).flatMap(([key,item])=>leaves(item,[...path,key]))
+    return [path]
+  }
+  for(const path of leaves(HOSTINGER_CONNECTIVITY_SAMPLE)) {
+    const altered=JSON.parse(JSON.stringify(HOSTINGER_CONNECTIVITY_SAMPLE)) as Record<string,unknown>
+    let parent=altered
+    for(const key of path.slice(0,-1))parent=parent[key] as Record<string,unknown>
+    const key=path.at(-1)!
+    parent[key]=typeof parent[key]==='string'?`${parent[key]} altered`:0
+    assert.equal(isHostingerConnectivityTest(altered),false,`Changed ${path.join('.')}`)
+  }
+})
+
+test('exact displayed sample first fails mailbox validation, before database lookup; placeholder URLs independently fail', () => {
+  const sample=structuredClone(HOSTINGER_CONNECTIVITY_SAMPLE)
+  assert.throws(()=>parseHostingerWebhook(sample,'info@maxpromo.digital'),{message:'wrong_mailbox'})
+  sample.data.mailboxAddress='info@maxpromo.digital'
+  assert.throws(()=>parseHostingerWebhook(sample,'info@maxpromo.digital'),{message:'invalid_signed_content'})
+  sample.data.attachments[0].fileUrl='https://downloads.hostinger.com/file'
+  assert.throws(()=>parseHostingerWebhook(sample,'info@maxpromo.digital'),{message:'invalid_signed_content'})
+  sample.data.bodyUrl='https://downloads.hostinger.com/body'
+  const parsed=parseHostingerWebhook(sample,'info@maxpromo.digital')
+  assert.equal(parsed.emailDate,'2026-04-03T06:21:33.000Z')
+  assert.equal(parsed.eventAt,'2026-04-03T12:00:00.422Z')
+})
 
 const mailbox = 'info@maxpromo.digital'
 function fixture() {

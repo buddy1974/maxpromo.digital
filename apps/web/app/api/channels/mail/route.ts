@@ -3,6 +3,7 @@ import { enforceRateLimit } from '@/lib/rate-limit'
 import { MAX_MAIL_BYTES } from '@/lib/mail/normalization'
 import { readBoundedPayload, verifyWebhookBearer } from '@/lib/mail/provider'
 import { parseHostingerWebhook } from '@/lib/mail/hostingerWebhook'
+import { isHostingerConnectivityTest } from '@/lib/mail/hostingerConnectivity'
 import { acceptHostingerMail, HOSTINGER_MAILBOX } from '@/lib/mail/hostingerIngestion'
 import { getDb } from '@/lib/db'
 
@@ -42,16 +43,24 @@ export async function POST(req: NextRequest) {
     rejection('validation', 'invalid_json')
     return NextResponse.json({error:'invalid_event'}, {status:400})
   }
+  const encryptionSecret=process.env.OS_SESSION_SECRET
+  const configured=process.env.EMAIL_PROVIDER==='hostinger' && !!encryptionSecret && encryptionSecret.length>=32
+  // Only the exact owner-supplied public fixture, AFTER authentication and size/JSON
+  // checks. No getDb, mail acceptance, locator, model or notice is reachable here.
+  if(isHostingerConnectivityTest(payload)) {
+    if(!configured) return NextResponse.json({error:'not_configured'},{status:503})
+    return NextResponse.json({ok:true,test:true},{status:200,headers:{'Cache-Control':'no-store'}})
+  }
   try { event=parseHostingerWebhook(payload,HOSTINGER_MAILBOX) } catch (error) {
     const reason=error instanceof Error && validationReasons.has(error.message) ? error.message : 'invalid_event'
     rejection('validation', reason)
     return NextResponse.json({error:'invalid_event'}, {status:400})
   }
-  if(process.env.EMAIL_PROVIDER!=='hostinger' || !process.env.OS_SESSION_SECRET || process.env.OS_SESSION_SECRET.length<32) {
+  if(!configured) {
     return NextResponse.json({error:'not_configured'},{status:503})
   }
   try {
-    await acceptHostingerMail(getDb(),event,process.env.OS_SESSION_SECRET)
+    await acceptHostingerMail(getDb(),event,encryptionSecret)
     return NextResponse.json({ok:true},{status:200})
   } catch {
     // Deliberately no driver error, payload, signed URL or token in logs/responses.

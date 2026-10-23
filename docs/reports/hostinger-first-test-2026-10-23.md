@@ -1,5 +1,53 @@
 # First genuine Hostinger Test — forensic record
 
+## Exact displayed contract reconciliation — 2026-10-23
+
+Marcel supplied the complete UI example. BEFORE changing the route, the exact sample with
+synthetic Bearer auth reproduced400/validation/wrong_mailbox and no storage. This is payload
+mailbox validation, NOT the later database account lookup. Thus it is fully consistent with
+the original production400-before-storage trace. Original wire bytes were not retained;
+do not claim they are proven identical to the displayed example.
+
+Field comparison against the actual strict parser:
+
+| Field | Local result |
+| --- | --- |
+| delivery UUID, event, opaque eventId | Accepted unchanged |
+| timestamp with six fractional digits | Accepted; normalized independently to milliseconds |
+| mailboxAddress test@hostinger.com | FIRST rejection wrong_mailbox against info@maxpromo.digital |
+| Message-Id, In-Reply-To, References | Valid; empty reply/header alternatives still supported |
+| Date with two spaces after comma | Accepted independently as2026-04-03T06:21:33Z |
+| from/to/cc, subject, plainBody, empty htmlBody | Valid shapes; display names remain non-authoritative |
+| attachment name/type/sizeBytes | Valid; MIME remains untrusted metadata |
+| attachment fileUrl https://download-url | Independently rejected invalid_signed_content: single-label placeholder host |
+| bodyUrl https://download-url | Independently rejected after fixing attachment URL locally; same reason |
+| unknown/missing fields | Strict connectivity match rejects either; existing real-mail parser unchanged |
+
+Only mailbox and URL candidates were changed in successive LOCAL clones to prove remaining
+fields parse. Neither production validation nor URL policy was weakened. Documentation
+annotations were not treated as transmitted comments; JSON parsing remains strict.
+
+Compatibility: only the complete exact public sample, all keys/values/array order, with no
+extra fields, is recognized as connectivity traffic. Object key order is irrelevant.
+It passes existing Bearer, rate/size/JSON and provider/session-config gates, then returns
+200 {ok:true,test:true}/no-store without opening DB, invoking ingestion, sealing URLs,
+creating mail/audit/business records, downloading, modeling or notifying. Repeats are
+stateless acknowledgements; real event dedupe remains untouched. Any changed ID, timestamp,
+address, content, URL, array or extra field falls through to the normal strict parser.
+This deliberately does not guess a broader/dynamic Test contract.
+
+Verification: full verify29 gates, email202 checks (38 native/59 actual route), isolated
+SQL40, explicit TypeScript pass, lint/build pass. Every sample leaf was mutated and refused;
+repeated Test acknowledgements opened storage0 times; missing/wrong auth401, missing
+provider/session503, tampered sample/wrong-mailbox real events400. Real message concurrency/
+retry, unsafe URLs and prior adversarial checks remain intact. Four safety mutations caught,
+including intentionally replacing the exact detector with unconditional true. Initial
+TypeScript narrowing and mutation-harness import issues were fixed and the full suite rerun.
+
+After deploying and checking production health/mail0, another owner Test is justified for
+this explicitly supported sample; it is not proof of real-message ingestion or full content.
+**Supersedes the earlier retry blocker below.** Agent never uses production secret/Test.
+
 The owner reported Hostinger's active info@maxpromo.digital / message.received Test
 returned400. No agent repeated Test, used the genuine Bearer token or contacted Hostinger.
 

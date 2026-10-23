@@ -84,3 +84,13 @@ Test compatibility bypass added. Safe fixed-code diagnostics added; full verify2
 route46 and SQL40 pass. Intentional log-payload mutation caught/restored, route46 rerun clean.
 All production mail counts0 and one enabled binding; public405/401 and OS/site healthy.
 Do not retry Hostinger Test until actual redacted Test request/response detail is reconciled.
+
+### Exact displayed Hostinger connectivity contract
+
+Owner-supplied sample reproduced authenticated400/wrong_mailbox before DB; correcting only
+mailbox exposed unsafe placeholder attachment/body URLs. Real parser untouched. Exact full
+synthetic fixture now acknowledged after authentication/config gates, no DB open/ingestion/
+downloads/model/notices/actions; changes fall through strict parsing. Full verify29/email202
+(38 native/59 route), SQL40 and explicit tsc pass. Unconditional-detector mutation caught;
+four safety mutations total. No production Test or secret use. Retry verdict follows actual
+production health/mail0 verification; this is connectivity only, not real-message certification.

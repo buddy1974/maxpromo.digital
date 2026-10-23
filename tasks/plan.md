@@ -65,3 +65,12 @@ diagnostics, preserving all validation; never infer a Test contract from a gener
 VERIFICATION: full verify, evidence storage, diagnostic privacy regression/mutation,
 deploy through clean CLI release; keep retry blocked until actual redacted Test payload
 or retained response detail resolves the rejected-field boundary.
+
+## Exact displayed connectivity contract — 2026-10-23
+
+Reproduced exact owner-supplied UI sample: strict parser/route first400 wrong_mailbox
+(payload validation, not database account lookup). Correcting only mailbox then rejects
+attachment and body placeholder URLs independently. Preserve strict ingestion; acknowledge
+only the complete exact synthetic fixture after existing auth/body/config gates, before
+any DB/content/model/notice work. Verify all-field mutation rejection, no storage on repeated
+Test, real-message strictness, full suite/storage/build; deploy then verify public and mail0.

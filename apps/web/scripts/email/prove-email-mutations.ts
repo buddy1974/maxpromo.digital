@@ -17,11 +17,12 @@ const mutated = source.replace(' || gate.isEvidenceMode()', '')
 assert.notEqual(source,mutated,'Mutation must change actual source')
 await assert.rejects(()=>evidenceBlocked(mutated), /Evidence must stop the transport/)
 const providerUrl=url(emit(source))
+const connectivityUrl=url(emit(readFileSync('apps/web/lib/mail/hostingerConnectivity.ts','utf8')))
 const routeSource=readFileSync('apps/web/app/api/channels/mail/route.ts','utf8').replace(/^import .*$/gm,'')
 const before=process.env.HOSTINGER_WEBHOOK_SECRET
 process.env.HOSTINGER_WEBHOOK_SECRET='synthetic-secret-for-mutation-only-000001'
 async function refusesForged(code: string) {
-  const route=await import(url(`import {readBoundedPayload,verifyWebhookBearer} from '${providerUrl}'; const NextResponse={json:(body,options={})=>Response.json(body,options)}; const enforceRateLimit=()=>null; const MAX_MAIL_BYTES=262144; const HOSTINGER_MAILBOX="info@maxpromo.digital";const parseHostingerWebhook=()=>{throw new Error("invalid")};const acceptHostingerMail=async()=>{};const getDb=()=>{}; ${emit(code)}`))
+  const route=await import(url(`import {readBoundedPayload,verifyWebhookBearer} from '${providerUrl}'; import {isHostingerConnectivityTest} from '${connectivityUrl}'; const NextResponse={json:(body,options={})=>Response.json(body,options)}; const enforceRateLimit=()=>null; const MAX_MAIL_BYTES=262144; const HOSTINGER_MAILBOX="info@maxpromo.digital";const parseHostingerWebhook=()=>{throw new Error("invalid")};const acceptHostingerMail=async()=>{};const getDb=()=>{}; const console={warn:()=>{}}; ${emit(code)}`))
   const result=await route.POST(new Request('https://local.invalid',{method:'POST',body:'{}'}))
   assert.equal(result.status,401,'Forged webhook must be refused')
 }
@@ -47,3 +48,15 @@ const wrongMailbox=parserSource.replace("if (mailbox !== address(configuredMailb
 assert.notEqual(wrongMailbox,parserSource)
 await assert.rejects(()=>refusesWrongMailbox(wrongMailbox),/Wrong mailbox must be refused/)
 console.log('3 real source protection mutations caught: evidence transport gate, webhook authentication and mailbox binding.')
+
+async function refusesChangedTest(code: string) {
+  const detector=await import(url(emit(code)))
+  const changed=structuredClone(detector.HOSTINGER_CONNECTIVITY_SAMPLE);changed.data.plainBody='malicious replacement'
+  assert.equal(detector.isHostingerConnectivityTest(changed),false,'Changed connectivity fixture must be refused')
+}
+const connectivitySource=readFileSync('apps/web/lib/mail/hostingerConnectivity.ts','utf8')
+await refusesChangedTest(connectivitySource)
+const permissive=connectivitySource.replace('return exact(value,HOSTINGER_CONNECTIVITY_SAMPLE)','return true')
+assert.notEqual(permissive,connectivitySource)
+await assert.rejects(()=>refusesChangedTest(permissive),/Changed connectivity fixture must be refused/)
+console.log('1 exact-connectivity protection mutation caught; modified sample cannot bypass validation.')

@@ -39,5 +39,6 @@ commercial workflow regression passed 85 checks.
 - [x] Owner approved and single real Hostinger mailbox binding provisioned2026-10-23; Inbox configured:true, no mail activity.
 - [x] Owner privately installed genuine secret; fresh ff3fefc Production build/promote with presence-only assertion, public405/401 verified.
 - [ ] Hostinger Test/controlled acceptance remain owner steps; agent has not contacted Hostinger.
-- [ ] First owner Test400 investigated: authentication passed, body/schema rejected before DB;
-  obtain actual redacted Test contract/response detail before retry or compatibility change.
+- [x] Exact displayed sample reproduces wrong_mailbox before DB; placeholder URLs independently unsafe.
+- [x] Narrow authenticated no-write connectivity acknowledgement; full verify/email202/SQL40 pass.
+- [ ] Owner retry against deployed compatibility path, then controlled real-message acceptance.
