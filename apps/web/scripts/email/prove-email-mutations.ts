@@ -18,11 +18,12 @@ assert.notEqual(source,mutated,'Mutation must change actual source')
 await assert.rejects(()=>evidenceBlocked(mutated), /Evidence must stop the transport/)
 const providerUrl=url(emit(source))
 const connectivityUrl=url(emit(readFileSync('apps/web/lib/mail/hostingerConnectivity.ts','utf8')))
+const diagnosticsUrl=url(emit(readFileSync('apps/web/lib/mail/hostingerDiagnostics.ts','utf8').replace("from './hostingerConnectivity'",`from '${connectivityUrl}'`)))
 const routeSource=readFileSync('apps/web/app/api/channels/mail/route.ts','utf8').replace(/^import .*$/gm,'')
 const before=process.env.HOSTINGER_WEBHOOK_SECRET
 process.env.HOSTINGER_WEBHOOK_SECRET='synthetic-secret-for-mutation-only-000001'
 async function refusesForged(code: string) {
-  const route=await import(url(`import {readBoundedPayload,verifyWebhookBearer} from '${providerUrl}'; import {isHostingerConnectivityTest} from '${connectivityUrl}'; const NextResponse={json:(body,options={})=>Response.json(body,options)}; const enforceRateLimit=()=>null; const MAX_MAIL_BYTES=262144; const HOSTINGER_MAILBOX="info@maxpromo.digital";const parseHostingerWebhook=()=>{throw new Error("invalid")};const acceptHostingerMail=async()=>{};const getDb=()=>{}; const console={warn:()=>{}}; ${emit(code)}`))
+  const route=await import(url(`import {readBoundedPayload,verifyWebhookBearer} from '${providerUrl}'; import {isHostingerConnectivityTest} from '${connectivityUrl}'; import {describeHostingerStructure} from '${diagnosticsUrl}'; const NextResponse={json:(body,options={})=>Response.json(body,options)}; const enforceRateLimit=()=>null; const MAX_MAIL_BYTES=262144; const HOSTINGER_MAILBOX="info@maxpromo.digital";const parseHostingerWebhook=()=>{throw new Error("invalid")};const acceptHostingerMail=async()=>{};const getDb=()=>{}; const console={warn:()=>{}}; ${emit(code)}`))
   const result=await route.POST(new Request('https://local.invalid',{method:'POST',body:'{}'}))
   assert.equal(result.status,401,'Forged webhook must be refused')
 }
@@ -60,3 +61,15 @@ const permissive=connectivitySource.replace('return exact(value,HOSTINGER_CONNEC
 assert.notEqual(permissive,connectivitySource)
 await assert.rejects(()=>refusesChangedTest(permissive),/Changed connectivity fixture must be refused/)
 console.log('1 exact-connectivity protection mutation caught; modified sample cannot bypass validation.')
+
+async function hidesStructuralValues(code: string) {
+  const diagnostic=await import(url(emit(code.replace("from './hostingerConnectivity'",`from '${connectivityUrl}'`))))
+  const output=JSON.stringify(diagnostic.describeHostingerStructure({data:{eventId:'',subject:'PRIVATE_MUTATION_SENTINEL'}}))
+  assert(!output.includes('PRIVATE_MUTATION_SENTINEL'),'Structural diagnostics must hide values')
+}
+const diagnosticSource=readFileSync('apps/web/lib/mail/hostingerDiagnostics.ts','utf8')
+await hidesStructuralValues(diagnosticSource)
+const leaking=diagnosticSource.replace('return result','return {...result,raw:value}')
+assert.notEqual(leaking,diagnosticSource)
+await assert.rejects(()=>hidesStructuralValues(leaking),/Structural diagnostics must hide values/)
+console.log('1 structural-log privacy mutation caught; raw values cannot reach diagnostics.')

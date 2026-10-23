@@ -4,6 +4,7 @@ import { MAX_MAIL_BYTES } from '@/lib/mail/normalization'
 import { readBoundedPayload, verifyWebhookBearer } from '@/lib/mail/provider'
 import { parseHostingerWebhook } from '@/lib/mail/hostingerWebhook'
 import { isHostingerConnectivityTest } from '@/lib/mail/hostingerConnectivity'
+import { describeHostingerStructure } from '@/lib/mail/hostingerDiagnostics'
 import { acceptHostingerMail, HOSTINGER_MAILBOX } from '@/lib/mail/hostingerIngestion'
 import { getDb } from '@/lib/db'
 
@@ -15,8 +16,9 @@ const validationReasons = new Set([
   'wrong_mailbox', 'invalid_event_date', 'invalid_references', 'invalid_preview',
   'invalid_attachments', 'unsafe_filename', 'invalid_attachment_size', 'invalid_signed_content',
 ])
-function rejection(stage: 'body' | 'validation', reason: string) {
-  console.warn(JSON.stringify({ event: 'mail.webhook.rejected', stage, reason }))
+function rejection(stage: 'body' | 'validation', reason: string, payload?: unknown) {
+  console.warn(JSON.stringify({ event: 'mail.webhook.rejected', stage, reason,
+    ...(payload===undefined?{}:{structure:describeHostingerStructure(payload)}) }))
 }
 // Read-only methods must not touch configuration, storage or the provider.
 export function GET() {
@@ -53,7 +55,7 @@ export async function POST(req: NextRequest) {
   }
   try { event=parseHostingerWebhook(payload,HOSTINGER_MAILBOX) } catch (error) {
     const reason=error instanceof Error && validationReasons.has(error.message) ? error.message : 'invalid_event'
-    rejection('validation', reason)
+    rejection('validation', reason, payload)
     return NextResponse.json({error:'invalid_event'}, {status:400})
   }
   if(!configured) {

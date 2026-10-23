@@ -1,5 +1,10 @@
 # Engineering lessons
 
+- A UI example is not a wire fixture. A real rejection reason proves only its exact guard:
+  invalid_event_id does not distinguish empty IDs from forbidden characters. Emit bounded
+  known-field structural metadata, never values/arbitrary key names, before inventing a
+  dynamic provider-Test discriminator or broadening acceptance.
+
 - Distinguish payload mailbox validation from database account lookup. A wrong_mailbox400
   can reject the provider's synthetic sample before getDb. Prove exact fixture incompatibilities
   locally; acknowledge only the complete evidenced connectivity fixture with zero side effects.

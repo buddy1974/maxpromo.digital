@@ -98,3 +98,13 @@ production health/mail0 verification; this is connectivity only, not real-messag
 Production850b427 / dpl_6ntgsvX8ze3LjmiAiZjwhxsLHUbK Ready and canonical domain verified;
 public405/401, OS/site200 and health ok, Inbox configured:true/threads0, one account and
 all mail activity0, WhatsApp OFF. Safe owner retry; no agent Hostinger Test or secret use.
+
+### Second genuine Test invalid_event_id
+
+Authoritative request875lg-1792750845538-f09330a94976/10:20:45.538Z on6ntgsv returned400,
+validation/invalid_event_id. Auth passed; matcher false; real eventId is bounded string
+outside accepted ID grammar, exact length/value unknown. No unsupported discriminator added.
+Known-field-only structural diagnostics added and proved value-private/bounded; empty and
+invalid-character synthetic class fixtures retain400/no DB. Full verify29/email213(native40/
+route67)/SQL40/tsc/lint/build pass. Five mutations caught including raw structural value leak.
+Deploy then prove canonical route/health/counts before any owner diagnostic retry.

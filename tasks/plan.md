@@ -74,3 +74,14 @@ attachment and body placeholder URLs independently. Preserve strict ingestion; a
 only the complete exact synthetic fixture after existing auth/body/config gates, before
 any DB/content/model/notice work. Verify all-field mutation rejection, no storage on repeated
 Test, real-message strictness, full suite/storage/build; deploy then verify public and mail0.
+
+## Second genuine Test — real-wire diagnostics
+
+Located2026-10-23T10:20:45.538Z /875lg-1792750845538-f09330a94976 on production6ntgsv:
+400/validation/invalid_event_id. Auth passed; exact documented fixture did not match.
+Wire eventId is a bounded string that fails identifier syntax; exact length/value unknown.
+Do not infer empty ID/dynamic discriminator or broaden acceptance. Add bounded known-field
+types/lengths, matcher mismatch path names, URL categories and ID-format flags, never values
+or arbitrary unknown names. Prove privacy mutation and no side effects, full verify/SQL,
+deploy and verify health/mail0. Next request must distinguish empty/invalid-format IDs and
+all known fixture differences; test success is not promised without an evidenced discriminator.

@@ -2,6 +2,33 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { parseHostingerWebhook } from './hostingerWebhook'
 import { HOSTINGER_CONNECTIVITY_SAMPLE, isHostingerConnectivityTest } from './hostingerConnectivity'
+import { describeHostingerStructure } from './hostingerDiagnostics'
+
+test('wire invalid-event-id class is diagnosed by length/type/format without inferring a Test discriminator', () => {
+  for(const id of ['', 'synthetic id', 'synthetic/id', 'synthetic@id']) {
+    const sample=structuredClone(HOSTINGER_CONNECTIVITY_SAMPLE);sample.data.eventId=id
+    assert.throws(()=>parseHostingerWebhook(sample,'info@maxpromo.digital'),{message:'invalid_event_id'})
+    const detail=describeHostingerStructure(sample)
+    assert.equal(detail.matcherMatched,false)
+    assert.deepEqual(detail.mismatchFields,['$.data.eventId'])
+    assert.equal(isHostingerConnectivityTest(sample),false)
+  }
+})
+test('structural diagnostics never serialize values or unknown key names and remain bounded', () => {
+  const privateText='SYNTHETIC_PRIVATE_SENTINEL'
+  const sample=structuredClone(HOSTINGER_CONNECTIVITY_SAMPLE)
+  sample.data.subject=privateText;sample.data.plainBody=privateText;sample.data.from=`${privateText}@private.invalid`
+  sample.data.bodyUrl=`https://${privateText}:credential@private.invalid/path?secret=${privateText}`
+  sample.data.attachments[0].fileUrl=`https://private.invalid/${privateText}?token=${privateText}`
+  const payload={...sample,[privateText]:privateText,data:{...sample.data,[privateText]:privateText}}
+  const output=JSON.stringify(describeHostingerStructure(payload))
+  assert(!output.includes(privateText));assert(!output.includes('https://'));assert(!output.includes('@'))
+  assert(output.length<4096)
+  assert.equal((describeHostingerStructure(payload).urls as Record<string,unknown>).body,'credentials')
+  for(const value of [null,[],{},'synthetic',1,true])assert(JSON.stringify(describeHostingerStructure(value)).length<4096)
+  const huge={...sample,data:{...sample.data,attachments:Array.from({length:1000},()=>({[privateText]:privateText})),to:Array(1000).fill(privateText)}}
+  assert(JSON.stringify(describeHostingerStructure(huge)).length<4096)
+})
 
 test('connectivity recognition is exact and independent of JSON property order, never a production-mail exemption', () => {
   assert.equal(isHostingerConnectivityTest(HOSTINGER_CONNECTIVITY_SAMPLE),true)

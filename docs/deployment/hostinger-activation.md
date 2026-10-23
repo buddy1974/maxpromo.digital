@@ -4,6 +4,11 @@ This extends ADR-0020; it does not introduce another mail or notification archit
 
 ## Current locked production status — 2026-10-23
 
+Latest REAL retry returned400/validation/invalid_event_id, proving the wire differs from
+the displayed valid-ID example. Acceptance remains strict; bounded value-free structural
+diagnostics are added for the next decisive investigation. No dynamic Test discriminator
+has been invented. [Authoritative retry evidence](../reports/hostinger-second-test-2026-10-23.md).
+
 The first owner Test400 was reproduced from the exact UI sample: payload mailbox mismatch,
 then independently unsafe placeholder URLs. A narrow authenticated exact-sample connectivity
 acknowledgement now avoids all storage/business effects; real-mail validation is unchanged.
@@ -152,7 +157,9 @@ Rollback: disable the Hostinger webhook without deleting it, unset provider sele
 content workers, keep audit/metadata for reconciliation, then roll application back. Never
 drop mail records as a code rollback. The provider mailbox remains the transport/source mail.
 
-**Current verdict after verified compatibility deployment: SAFE TO RETRY HOSTINGER TEST.**
+**Next retry is diagnostic, not guaranteed success.** After the structural diagnostic
+deployment and health/mail0 checks, one owner retry can decisively identify the known-field
+shape and eventId validity/length without logging values. No broader Test acceptance exists.
 Only the complete exact displayed sample returns a no-write connectivity acknowledgement
 after authentication. Changed fixtures retain strict rejection and safe reason diagnostics.
 The original failed wire payload was not retained; a differing actual Test remains fail-closed.
