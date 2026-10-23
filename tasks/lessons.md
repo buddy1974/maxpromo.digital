@@ -51,3 +51,12 @@
   on jsonb for display order.
 - Python heredocs turn "\n" in embedded JS into real newlines; edit code with the Edit tool,
   not string-substituting scripts, when the payload contains escapes.
+- Before any release push, compare every app's pending migrations with its production schema.
+  The OS migrations were applied; the Bureau's were "deferred to the EU move" and would have
+  broken the Bureau on release.
+- A provider webhook is not the provider's state. Hostinger fires `message.received` for Junk mail
+  and sends no folder; spam state has to be read where it lives (the folder API).
+- Count unknown payload keys on accepted events, not only rejected ones, so a contract change
+  becomes visible without logging values.
+- This session's permission policy allows additive schema SQL only sometimes and never data
+  corrections or secret-store writes; plan those as owner steps with exact SQL and verification.

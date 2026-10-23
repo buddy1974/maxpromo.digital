@@ -1,5 +1,14 @@
 # Change Log
 
+## 2026-10-23 — Release closure check (not released)
+
+Pre-push forensic check: 10 commits (e0a7c07..ab9b6c5) verified; OS migrations 0015/0016 already
+in production. Found the Bureau production database missing migration 0002 (outbox columns) —
+a release blocker; the session could not apply it, so nothing was pushed. Production verified
+read-only: web health ok (containment build), auth boundaries, webhook 405/401, WhatsApp 503,
+agent door 401, no outbound mail, no new inbound; Bureau on c0bf517. Owner runbook:
+reconciliation §22. Next phase recorded: STRIPE ↔ MAXPROMO MONEY ARCHITECTURE (not started).
+
 ## 2026-10-23 — /os attention in the viewer's language (risk 109)
 
 Attention items carry a message key and record values; the `/os` panel renders them from the OS

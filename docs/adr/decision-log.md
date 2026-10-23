@@ -1995,3 +1995,11 @@ Rejected: hard-coding the sender; irreversible provider trust; fetching raw sour
 headers; an invented webhook field; a model classifier as the primary signal; retroactive data
 changes inside the migration.
 
+## 2026-10-23 — Next phase: Stripe ↔ Maxpromo money architecture (recorded, not started)
+
+Stripe is live as an external payment capability (pay.maxpromo.digital being provisioned). It will
+enter Maxpromo OS as a **payment rail inside the Money domain of the Business Control Plane**:
+quote → invoice → Stripe payment → webhook → payment ledger → invoice reconciliation → fee →
+available balance → payout → Revolut → `/os` attention and briefing. Maxpromo OS remains the
+operational source of truth; Stripe is not a CRM, a business brain or a separate dashboard.
+Instructed separately after the current run closes.

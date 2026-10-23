@@ -502,3 +502,76 @@ the production release waits for the owner push (the session could not push or d
 
 Rollback: restore the previous `DATABASE_URL` and redeploy. The US database is untouched by
 the migration.
+
+## 22. Release closure status — 2026-10-23 (evening)
+
+The mega-run (control planes ADR-0021, provider spam ADR-0022, attention i18n) is complete in the
+repository and verified, but **not released**. A pre-push forensic check found a release blocker,
+and the remaining steps are owner-gated by the session's permission policy.
+
+### Release blocker found before pushing
+
+The Bureau's new schema selects three outbox columns (`apps/bureau/lib/db/migrations/0002_intake_outbox.sql`).
+A read-only check of the Bureau production database (Neon `fancy-dew-58624069`, production
+branch) showed **none of them exist** (1 lead submission, 0 agent runs). The Bureau build does not
+run migrations. Pushing first would break the Bureau lead form and dashboard. Applying the
+additive SQL from the session was refused by the permission policy, so the push was not made.
+
+| Item | State |
+|---|---|
+| Code: ADR-0021 + ADR-0022 + risk 109 (10 commits, e0a7c07..ab9b6c5) | **DONE**, verified locally; not pushed |
+| OS migrations 0015, 0016 | **DEPLOYED** to production OS database, verified |
+| Bureau migration 0002 (outbox) | **OWNER ACTION REQUIRED**: not applied; blocks the release |
+| Web production | containment CLI build (legacy agent door closed); health ok; boundaries verified |
+| Bureau production | old release `c0bf517` (Next.js security fix not yet live) |
+| Hostinger provider-state reconciler | code done; `HOSTINGER_MAIL_API_TOKEN` and `HOSTINGER_MAILBOX_RESOURCE_ID` absent |
+| Production Junk message | `billing` / Needs reply, `unverified` (unchanged, as designed) |
+| Shadow Bureau | credentials 0, Git disconnected, SSO on deployment URLs; `maxpromo-agent-bureau.vercel.app` still serves a static page |
+| Bureau database region | us-east-1; EU project not created |
+| G12 two AI adapters, G9 seeded demo data | open product decisions (risks 112, 113) |
+
+### Owner release runbook (in this order)
+
+1. **Bureau outbox migration.** Neon console → project `maxpromo-agent-bureau` → branch
+   `production` → SQL Editor → run:
+
+   ```sql
+   BEGIN;
+   ALTER TABLE "lead_submissions" ADD COLUMN IF NOT EXISTS "forward_attempts" integer DEFAULT 0 NOT NULL;
+   ALTER TABLE "lead_submissions" ADD COLUMN IF NOT EXISTS "last_forward_at" timestamp with time zone;
+   ALTER TABLE "lead_submissions" ADD COLUMN IF NOT EXISTS "last_forward_error" text;
+   COMMIT;
+   SELECT string_agg(column_name, ',' ORDER BY column_name) FROM information_schema.columns
+   WHERE table_name='lead_submissions' AND column_name LIKE '%forward%';
+   ```
+
+   Expected: `forward_attempts,last_forward_at,last_forward_error`. Additive; old code keeps working.
+2. **Hostinger REST credentials** (recommended before the push, so the first release already reads
+   the Junk folder). Vercel → `maxpromo-digital` → Settings → Environment Variables → Production:
+   - `HOSTINGER_MAILBOX_RESOURCE_ID` = `AC1ed17f505bab0e80dbce2fb31cc7` (not a secret: the mailbox
+     id returned by the Hostinger Mail API `GET /me` for info@maxpromo.digital);
+   - `HOSTINGER_MAIL_API_TOKEN` = a Hostinger Mail API token for info@maxpromo.digital, created in
+     hPanel where Mail API / agent access tokens are issued (mark it Sensitive). It enables only the
+     read-only folder lookup (ADR-0022); the code never sends, moves, flags or deletes with it.
+3. **Push:** `! git push origin main`. Vercel builds both projects (web and `maxpromo-agents`).
+4. **Verification after the push** (the session can run all of it):
+   - `www.maxpromo.digital/api/health` and `agents.maxpromo.digital/api/health` report the new commit;
+   - `/os` attention panel and `/os/approvals` (German and English), `/os/inbox` Spam view;
+   - the Bureau outbox forwards the 2026-05-30 submission (dashboard view or the 06:00 cron) and it
+     appears in `/os/leads`;
+   - with step 2 done: opening `/os/inbox` triggers the reconciler; the Junk message then shows under
+     Spam as "Von Hostinger als Spam eingestuft" with "Hostinger-Ordner: INBOX.Junk", and the log shows
+     `mail.provider_state` with `quarantined: 1`.
+5. **Junk message without step 2:** `/os/inbox` → open "(#B2NDI4SR) Ihre Rechnung…" → **Als Spam markieren**.
+   The reconciler can still correct it automatically until 2026-11-06 (14-day lookback).
+6. **Shadow Bureau:** Vercel dashboard → `maxpromo-agent-bureau` → Settings → Pause Project
+   (this CLI version has no pause command).
+7. **EU database:** the runbook in §21 (create `maxpromo-agent-bureau-eu`, Frankfurt, PostgreSQL 17;
+   `migrate-to-eu.mjs --migrate`; switch `DATABASE_URL`; flip `databaseRegion`; deploy).
+
+### Next phase (not started)
+
+**STRIPE ↔ MAXPROMO MONEY ARCHITECTURE** — Stripe as a payment rail inside the Money domain of the
+Business Control Plane (quote → invoice → payment → webhook → ledger → reconciliation → fee →
+balance → payout → Revolut → `/os` attention and briefing). Maxpromo OS stays the source of truth.
+Starts only after this run is closed, under separate instruction.

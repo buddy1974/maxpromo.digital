@@ -158,3 +158,19 @@ The shadow Bureau was retired except for its running deployment, which needs an 
 
 **Production:** migration 0015 applied; fresh trust provisioned.
 **Owner:** push, pause the shadow project, create the EU Neon project.
+
+### Provider spam state (ADR-0022) and release closure — 2026-10-23
+
+**Spam:** Hostinger's webhook fires for Junk mail and carries no folder; the OS never read the
+folder. Fixed with a read-only REST reconciler, thread quarantine, owner verdicts and structural
+signals. Unit 51/51, evidence SQL 56/56, route/UI/owner/notice proofs, local production-build
+browser check incl. 390 px. Migration 0016 applied to production (verified, md5 match).
+
+**Attention i18n (risk 109):** items carry message keys; `/os` renders German or English;
+control planes 32/32.
+
+**Closure check:** pre-push inspection found the Bureau production database lacks the outbox
+columns its new code selects; the session's attempt to apply the additive SQL was refused, so the
+push was withheld rather than shipping a broken Bureau. Production HTTP boundaries, WhatsApp OFF,
+agent door 401, no outbound mail and no new inbound were verified read-only. Owner runbook in
+reconciliation §22. Not GREEN until the owner steps run and production is verified.

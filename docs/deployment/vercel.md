@@ -161,3 +161,9 @@ history stays readable — it is not authoritative for anything.
 `docs/deployment/deploy-verify.md` holds the route-by-route checklist. In
 short: both locales of the homepage, one solution page, one industry page, the
 protected OS login, the bureau dashboard login, and one generated document.
+
+## Pending release — 2026-10-23
+
+Ten commits are ready but unreleased. **Order matters:** Bureau migration 0002 on the Bureau
+production database first, then the Hostinger REST variables (recommended), then `git push origin main`.
+Exact SQL and verification: `docs/architecture/control-plane-reconciliation.md` §22.

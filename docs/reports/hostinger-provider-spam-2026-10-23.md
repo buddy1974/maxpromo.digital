@@ -113,3 +113,11 @@ lead. `Rechnung` matched `billing` with `needsReply: true`. Nothing considered:
   Until then, provider Junk is not detected automatically (risk 114).
 - The production message (UID 35) stays `billing`/Needs reply until the reconciler runs within
   its 14-day lookback, or Marcel presses Spam (risk 115).
+
+## 10. Closure status (2026-10-23 evening)
+
+- Migration 0016: **deployed** to production and verified.
+- Application code: **done, not released** (push blocked by Bureau migration 0002, risk 116).
+- Reconciler credentials: **absent** in production (owner, risk 114). With both set before the push,
+  the first `/os/inbox` load quarantines the Junk message automatically.
+- Junk message: unchanged (`billing`, Needs reply, `unverified`); no new mail since 13:41Z; no outbound.

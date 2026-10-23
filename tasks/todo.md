@@ -53,13 +53,25 @@ commercial workflow regression passed 85 checks.
 - [x] Read-only production SQL (owner-approved): 1 delivery/event/message/thread/job/asset, keys live, 0 side effects.
 - [x] Hostinger activation mission closed GREEN 2026-10-23.
 
+## Next approved product phase (after this run is formally closed; NOT started)
+
+**STRIPE ↔ MAXPROMO MONEY ARCHITECTURE** — Stripe as a payment rail inside the Money domain of the
+Business Control Plane; Maxpromo OS remains the source of truth. To be instructed separately.
+
 ## Next approved architecture sequence (none started)
 
 1. [ ] Maxpromo OS / Max Agent Bureau two-repo forensic reconciliation and boundary cleanup
    - [x] Forensic baseline and target delta: `docs/architecture/control-plane-reconciliation.md` (2026-10-23).
    - [x] Owner decisions locked 2026-10-23 (EU infrastructure, door containment, shadow retirement, approval ownership, tenant 1).
    - [x] Reconciliation implemented and verified (ADR-0021); production containment, migration 0015, trust and shadow retirement done.
-   - [ ] Owner: push main (release both apps), pause the shadow Vercel project, create the EU Neon project, then run the EU cutover runbook.
+   - [x] Provider spam state and quarantine (ADR-0022) implemented and verified; migration 0016 applied to production.
+   - [x] /os attention rendered in the viewer's language (risk 109).
+   - [x] Release closure pre-push check: Bureau migration 0002 missing in production (release blocker), documented in reconciliation §22.
+   - [ ] OWNER: run Bureau migration 0002 SQL (§22 step 1) — blocks the release.
+   - [ ] OWNER: set HOSTINGER_MAIL_API_TOKEN and HOSTINGER_MAILBOX_RESOURCE_ID on maxpromo-digital (§22 step 2).
+   - [ ] OWNER: push main (§22 step 3); then the session verifies production (§22 step 4).
+   - [ ] OWNER: Junk message → Als Spam markieren if step 2 is not done (§22 step 5).
+   - [ ] OWNER: pause the shadow Vercel project; create the EU Neon project and run the §21 runbook.
 2. [x] Lock the Business Control Plane ↔ Agent Control Plane integration contract (ADR-0021, contract v1 with per-client credentials)
 3. [ ] Maxpromo OS daily command-centre reconciliation
 4. [ ] Email OS premium facelift inside the reconciled architecture
