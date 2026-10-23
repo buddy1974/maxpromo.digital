@@ -73,7 +73,10 @@ export default function InvoiceDetailPage() {
     setDeleting(true)
     const res = await fetch(`/api/os/invoices?id=${invoice.id}`, { method: 'DELETE' })
     if (res.ok) router.push('/os/invoices')
-    else setDeleting(false)
+    else {
+      setDeleting(false)
+      alert(((await res.json().catch(() => ({}))) as { error?: string }).error ?? t.common.actionFailed)
+    }
   }
 
   if (loading) return (

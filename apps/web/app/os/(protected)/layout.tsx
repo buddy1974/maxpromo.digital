@@ -55,6 +55,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
     { icon: 'leads'      as const, label: t.sidebar.navLeads,      href: '/os/leads' },
     { icon: 'newsletter' as const, label: t.sidebar.navNewsletter, href: '/os/newsletter' },
     { icon: 'inbox'      as const, label: t.sidebar.navInbox,      href: '/os/inbox' },
+    { icon: 'approvals'  as const, label: t.sidebar.navApprovals,  href: '/os/approvals' },
   ]
 
   const EXT_LINKS = [

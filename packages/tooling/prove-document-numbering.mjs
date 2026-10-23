@@ -132,8 +132,14 @@ for (const f of FAMILIES) {
   check('the new-invoice form does not send a number to be stored', save !== '' && !/invoice_number:\s*invoiceNumber/.test(save))
   check('the form takes the allocated number from the save response', /setInvoiceNumber\(data\.invoice_number\)/.test(save))
   const send = read('apps', 'web', 'app', 'api', 'os', 'send-invoice', 'route.ts')
+  /* Since ADR-0021 the whole email is the stored invoice (risk 80 closed): the
+     route renders the row through the same function as the governed
+     invoice.send, and the renderer takes the number from that row. */
+  const docs = read('apps', 'web', 'lib', 'commercial', 'capabilities', 'documents.ts')
   check('the invoice email carries the stored number, not the request\'s',
-    /SELECT invoice_number, language FROM os_invoices/.test(send) && !/body\.invoice_number/.test(send))
+    /renderStoredInvoiceEmail\(sql, body\.invoice_id/.test(send) &&
+    !/body\.(invoice_number|line_items|total|subtotal|client_name|due_date)/.test(send) &&
+    /invoice_number: i\.invoice_number/.test(docs))
 }
 
 /* ── Prediction layer: pure, runs everywhere ──────────────────────────────── */

@@ -51,6 +51,7 @@ export default function InvoicesPage() {
     if (!confirm(t.invoiceList.deleteConfirm(num))) return
     const res = await fetch(`/api/os/invoices?id=${id}`, { method: 'DELETE' })
     if (res.ok) setInvoices(prev => prev.filter(i => i.id !== id))
+    else alert(((await res.json().catch(() => ({}))) as { error?: string }).error ?? t.common.actionFailed)
   }
 
   const tabLabel = (key: string) => key === 'all' ? t.status.filterAll : (t.status.invoice[key] ?? key)

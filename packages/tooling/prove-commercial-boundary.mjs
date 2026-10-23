@@ -164,6 +164,16 @@ check('rule 4 fails on a send without a key', !sendsOk("sendEmail({ to, subject,
 const senders = commercial.filter(([, s]) => /sendEmail\(/.test(s))
 check('every commercial email send carries a provider idempotency key', senders.length > 0 && senders.every(([, s]) => sendsOk(s)),
   `${senders.length} sender(s)`)
+/* Rule 4b (ADR-0021): the OS screens' own routes are held to the same rule —
+   an owner direct send happens once. They send through lib/commercial/direct
+   or carry a key themselves; none may call the transport without one. */
+const osRoutes = [...files.entries()].filter(([p]) => /^app\/api\/os\/.*route\.ts$/.test(p))
+const osSenders = osRoutes.filter(([, s]) => /sendEmail\(/.test(s))
+check('every /api/os route that sends email carries a provider idempotency key', osSenders.every(([, s]) => sendsOk(s)),
+  osSenders.filter(([, s]) => !sendsOk(s)).map(([p]) => p).join(', '))
+const directSenders = osRoutes.filter(([, s]) => /sendDocumentDirect\(/.test(s)).map(([p]) => p)
+check('the document send routes go through the audited, idempotent direct-send path',
+  ['app/api/os/send-angebot/route.ts', 'app/api/os/send-invoice/route.ts'].every((p) => directSenders.includes(p)), directSenders.join(', '))
 
 /* Rule 5: no VAT arithmetic in the commercial layer (§19 UStG). */
 const vatFree = (s) => !/\b(vat_?rate|mwst|umsatzsteuer\s*\(|tax_?rate)\b|\*\s*0?\.19\b|\*\s*1\.19\b/i.test(s)

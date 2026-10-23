@@ -1,4 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { writeAudit } from '@/lib/commercial/audit'
+import { OWNER_ACTOR } from '@/lib/commercial/engine'
+import { DIRECT_CHANNEL } from '@/lib/commercial/direct'
+import { berlinDate } from '@/lib/commercial/money'
+import { markPaidDirect } from '@/lib/commercial/capabilities/documents'
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 import { getDb } from '@/lib/db'
 import { admitLineItems } from '@/lib/documents/extraction-guard'
 import { predictNextInvoiceNumber } from '@/lib/documents/numbering'
@@ -136,16 +143,28 @@ export async function POST(request: NextRequest) {
   }
 }
 
+/**
+ * Only a draft can be deleted. An issued invoice has a number in the legal
+ * sequence (GoBD): it is cancelled, never removed, so the series has no gap.
+ * Every deletion is audited as an owner direct action.
+ */
 export async function DELETE(request: NextRequest) {
   try {
     const sql = getDb()
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    await sql`DELETE FROM os_invoices WHERE id = ${id}`
+    if (!id || !UUID.test(id)) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    const rows = await sql`DELETE FROM os_invoices WHERE id = ${id} AND status = 'draft' RETURNING invoice_number` as { invoice_number: string }[]
+    if (!rows.length) {
+      const found = await sql`SELECT status FROM os_invoices WHERE id = ${id}` as { status: string }[]
+      if (!found.length) return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
+      await writeAudit(sql, { actor: OWNER_ACTOR, channel: DIRECT_CHANNEL, operation: 'invoice.delete.direct', entityType: 'invoice', entityId: id, outcome: 'refused', error: `status ${found[0].status}` })
+      return NextResponse.json({ error: `An issued invoice (${found[0].status}) cannot be deleted — cancel it instead.`, code: 'issued' }, { status: 409 })
+    }
+    await writeAudit(sql, { actor: OWNER_ACTOR, channel: DIRECT_CHANNEL, operation: 'invoice.delete.direct', entityType: 'invoice', entityId: id, before: { invoice_number: rows[0].invoice_number, status: 'draft' }, outcome: 'succeeded' })
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('[/api/os/invoices DELETE]', error)
+    console.error('[/api/os/invoices DELETE]', error instanceof Error ? error.message : error)
     return NextResponse.json({ error: 'Failed to delete invoice' }, { status: 500 })
   }
 }
@@ -159,7 +178,17 @@ export async function PATCH(request: NextRequest) {
       payment_method?: string; currency?: string; language?: string
     }
 
-    if (!body.id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    if (!body.id || !UUID.test(body.id)) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+
+    /* Marking paid records the payment behind it (owner direct action), so
+       "paid" and the money model never disagree (the old legacyPaid gap). */
+    if (body.status === 'paid') {
+      const today = berlinDate()
+      const done = await markPaidDirect(sql, body.id, body.paid_date ?? today, today, OWNER_ACTOR, DIRECT_CHANNEL)
+      if (!done.ok) return NextResponse.json({ error: done.error }, { status: done.status })
+      const rows = await sql`SELECT * FROM os_invoices WHERE id = ${body.id}`
+      return NextResponse.json(rows[0])
+    }
 
     const admitted = body.line_items ? admitLineItems(body.line_items) : null
     if (admitted && admitted.held.length > 0) {
@@ -185,8 +214,15 @@ export async function PATCH(request: NextRequest) {
         currency       = COALESCE(${body.currency as string | null}, currency),
         language       = COALESCE(${body.language as string | null}, language)
       WHERE id = ${body.id}
-      RETURNING *`
+      RETURNING *` as Record<string, unknown>[]
 
+    /* Changing an issued invoice is allowed (corrections happen) and recorded. */
+    if (rows[0] && rows[0].status !== 'draft') {
+      await writeAudit(sql, {
+        actor: OWNER_ACTOR, channel: DIRECT_CHANNEL, operation: 'invoice.update.direct', entityType: 'invoice', entityId: body.id,
+        after: Object.fromEntries(Object.entries(body).filter(([k]) => k !== 'id' && k !== 'line_items')), outcome: 'succeeded',
+      })
+    }
     return NextResponse.json(rows[0])
   } catch (error) {
     console.error('[/api/os/invoices PATCH]', error)

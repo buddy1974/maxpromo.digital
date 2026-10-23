@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { sendEmail } from '@/lib/email'
 import { getDb, isDatabaseConfigured } from '@/lib/db'
-import { getLabels } from '@/lib/documents/labels'
-import { buildAngebotEmail, DOCUMENT_FROM_EMAIL, type AngebotRow } from '@/lib/documents/emails'
+import { renderStoredAngebotEmail } from '@/lib/commercial/capabilities/documents'
+import { recipients, sendDocumentDirect } from '@/lib/commercial/direct'
+import { CapabilityRefusal } from '@/lib/commercial/types'
 
-const FROM_EMAIL = DOCUMENT_FROM_EMAIL
+/**
+ * Marcel sends an Angebot from /os — an owner direct action (ADR-0021).
+ * The email is the stored Angebot rendered exactly as the governed
+ * `proposal.send` renders it; the send is idempotent and audited.
+ */
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function POST(request: NextRequest) {
   if (!process.env.RESEND_API_KEY) {
@@ -24,62 +30,40 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const body = await request.json() as {
-      angebot_id: string
-      sendCopyToMarcel?: boolean
-      clientEmails?: string[]
-    }
-
-    if (!body.angebot_id) {
+    const body = await request.json() as { angebot_id?: unknown; sendCopyToMarcel?: boolean; clientEmails?: unknown; resend?: boolean }
+    if (typeof body.angebot_id !== 'string' || !UUID.test(body.angebot_id)) {
       return NextResponse.json({ error: 'angebot_id required' }, { status: 400 })
     }
 
     const sql = getDb()
-    const rows = await sql`SELECT * FROM os_angebote WHERE id = ${body.angebot_id}` as AngebotRow[]
-    if (rows.length === 0) {
-      return NextResponse.json({ error: 'Angebot not found' }, { status: 404 })
+    let rendered: Awaited<ReturnType<typeof renderStoredAngebotEmail>>
+    try {
+      rendered = await renderStoredAngebotEmail(sql, body.angebot_id)
+    } catch (err) {
+      if (err instanceof CapabilityRefusal) return NextResponse.json({ error: 'Angebot not found' }, { status: 404 })
+      throw err
     }
-    const angebot = rows[0]
+    const angebot = rendered.row
+    const to = recipients(body.clientEmails, angebot.client_email)
+    if (!to) return NextResponse.json({ error: 'No usable client email on this Angebot' }, { status: 400 })
 
-    const toEmails = body.clientEmails?.length
-      ? body.clientEmails
-      : angebot.client_email ? [angebot.client_email] : []
-    if (toEmails.length === 0) {
-      return NextResponse.json({ error: 'No client email on this Angebot' }, { status: 400 })
-    }
-
-    const html = buildAngebotEmail(angebot)
-    const bcc = body.sendCopyToMarcel !== false ? ['info@maxpromo.digital'] : []
-    const t = getLabels(angebot.language ?? 'de')
-
-    const result = await sendEmail({
-      to: toEmails,
-      from: FROM_EMAIL,
-      replyTo: 'info@maxpromo.digital',
-      subject: t.emailSubjectQuote(angebot.angebot_number),
-      html,
-      bcc,
+    const sent = await sendDocumentDirect(sql, {
+      operation: 'proposal.send.direct', entityType: 'angebot', entityId: angebot.id, to,
+      subject: rendered.subject, html: rendered.html, copyToOwner: body.sendCopyToMarcel !== false, resend: body.resend === true,
     })
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: 'Email send failed', detail: result.error },
-        { status: 502 },
-      )
+    if (!sent.ok) {
+      return NextResponse.json({ error: 'Email send failed', detail: sent.error }, { status: 502 })
     }
 
     await sql`
       UPDATE os_angebote
       SET status = 'sent', sent_at = NOW()
-      WHERE id = ${angebot.id}`
+      WHERE id = ${angebot.id} AND status IN ('draft', 'sent')`
 
-    return NextResponse.json({ success: true, id: result.id })
+    return NextResponse.json({ success: true, id: sent.id })
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error)
     console.error('[/api/os/send-angebot]', msg)
-    return NextResponse.json(
-      { error: 'Failed to send angebot', detail: msg },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: 'Failed to send angebot' }, { status: 500 })
   }
 }

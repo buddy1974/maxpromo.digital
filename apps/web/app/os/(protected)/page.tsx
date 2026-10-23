@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { TONE_VARS, toneMap } from '@maxpromo/ui'
 import { berlinDate, formatPerCurrency, receivables, type InvoiceForMoney } from '@/lib/commercial/money'
+import { AttentionPanel } from '@/components/os/AttentionPanel'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -119,6 +120,8 @@ export default function DashboardPage() {
           {today}
         </p>
       </div>
+
+      <AttentionPanel />
 
       {/* Metrics */}
       <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: '36px', flexWrap: 'wrap' }}>

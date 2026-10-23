@@ -124,6 +124,22 @@ function documentVersion(a: AngebotFull): string {
   return emailVersion(angebotEmail(a))
 }
 
+/**
+ * The stored document's email, rendered exactly as the governed capabilities
+ * render it. The OS screens send through these too, so a browser send and an
+ * agent-requested send of the same record are byte-identical (risk 80 closed:
+ * nothing printed comes from the request).
+ */
+export async function renderStoredAngebotEmail(sql: CapabilityContext['sql'], id: string) {
+  const row = await getAngebot({ sql } as CapabilityContext, id)
+  return { row, ...angebotEmail(row) }
+}
+
+export async function renderStoredInvoiceEmail(sql: CapabilityContext['sql'], id: string, today: string) {
+  const row = await getInvoice({ sql } as CapabilityContext, id)
+  return { row, ...invoiceEmail(row, today) }
+}
+
 const SENDABLE_ANGEBOT = ['draft', 'sent']
 
 async function getAngebot(ctx: CapabilityContext, id: string): Promise<AngebotFull> {
@@ -874,29 +890,8 @@ export const paymentRecord: CapabilityDefinition<ReturnType<typeof paymentInput.
       throw new CapabilityRefusal(`The open balance on ${i.invoice_number} changed since this was prepared (${eur(p.open_before, b.currency)} → ${eur(b.open, b.currency)}). Nothing was recorded.`, 'conflict')
     }
     const after = Math.round((b.open - p.amount) * 100) / 100
-    /* What the invoice asks for (as money.ts computes it). The open balance is
-       re-checked INSIDE the transaction, after a row lock, so two payment
-       approvals confirmed at the same moment cannot both pass and overpay. */
-    const asked = i.restbetrag !== null && i.restbetrag !== undefined
-      ? Number(i.restbetrag)
-      : Math.max(0, Number(i.total) - Number(i.anzahlung ?? 0))
-    const results = await ctx.sql.transaction([
-      ctx.sql`SELECT id FROM os_invoices WHERE id = ${i.id} FOR UPDATE`,
-      ctx.sql`
-        INSERT INTO os_payments (invoice_id, amount, currency, received_on, method, reference, actor, approval_id)
-        SELECT ${i.id}::uuid, ${p.amount}, ${p.currency}, ${p.received_on}::date, ${p.method}, ${p.reference}, ${ctx.actor}, ${approvalId}::uuid
-        WHERE ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) >= ${p.amount}::numeric - 0.009
-        RETURNING id`,
-      ctx.sql`
-        UPDATE os_invoices SET status = 'paid', paid_date = ${p.received_on}::date
-        WHERE id = ${i.id} AND status <> 'cancelled'
-          AND ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) <= 0.009`,
-      ctx.sql`
-        UPDATE os_followups SET status = 'done', done_at = now()
-        WHERE invoice_id = ${i.id} AND status = 'open'
-          AND ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) <= 0.009`,
-    ]) as unknown as [unknown, { id: string }[], unknown, unknown]
-    if (!results[1].length) {
+    const inserted = await recordPaymentLocked(ctx.sql, i, { amount: p.amount, currency: p.currency, receivedOn: p.received_on, method: p.method, reference: p.reference, actor: ctx.actor, approvalId })
+    if (!inserted) {
       throw new CapabilityRefusal(`Another payment on ${i.invoice_number} was recorded at the same moment; this one would overpay it. Nothing was recorded.`, 'conflict')
     }
     ctx.committed(`Recorded ${eur(p.amount, p.currency)} on ${i.invoice_number}${after === 0 ? " — marked PAID" : ""}`)
@@ -911,6 +906,65 @@ export const paymentRecord: CapabilityDefinition<ReturnType<typeof paymentInput.
     })
     return { summary: `Recorded ${eur(p.amount, p.currency)} on ${i.invoice_number}. ${after === 0 ? 'Marked PAID.' : `${eur(after, p.currency)} still open.`}`, focus: [focus('invoice', i.id, i.invoice_number)] }
   },
+}
+
+/**
+ * The one way a payment is recorded — by an approved agent action
+ * (payment.record) or by Marcel marking an invoice paid in /os. What the
+ * invoice asks for is computed as money.ts computes it, and the open balance
+ * is re-checked INSIDE the transaction after a row lock, so two payments
+ * recorded at the same moment cannot both pass and overpay.
+ * Returns false when the payment would overpay and nothing was recorded.
+ */
+export async function recordPaymentLocked(sql: CapabilityContext['sql'], i: InvoiceRow, p: {
+  amount: number; currency: string; receivedOn: string; method: string | null; reference: string | null; actor: string; approvalId: string | null
+}): Promise<boolean> {
+  const asked = i.restbetrag !== null && i.restbetrag !== undefined
+    ? Number(i.restbetrag)
+    : Math.max(0, Number(i.total) - Number(i.anzahlung ?? 0))
+  const results = await sql.transaction([
+    sql`SELECT id FROM os_invoices WHERE id = ${i.id} FOR UPDATE`,
+    sql`
+      INSERT INTO os_payments (invoice_id, amount, currency, received_on, method, reference, actor, approval_id)
+      SELECT ${i.id}::uuid, ${p.amount}, ${p.currency}, ${p.receivedOn}::date, ${p.method}, ${p.reference}, ${p.actor}, ${p.approvalId}::uuid
+      WHERE ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) >= ${p.amount}::numeric - 0.009
+      RETURNING id`,
+    sql`
+      UPDATE os_invoices SET status = 'paid', paid_date = ${p.receivedOn}::date
+      WHERE id = ${i.id} AND status <> 'cancelled'
+        AND ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) <= 0.009`,
+    sql`
+      UPDATE os_followups SET status = 'done', done_at = now()
+      WHERE invoice_id = ${i.id} AND status = 'open'
+        AND ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) <= 0.009`,
+  ]) as unknown as [unknown, { id: string }[], unknown, unknown]
+  return results[1].length > 0
+}
+
+/**
+ * Marcel marks an invoice paid in /os — an owner direct action (ADR-0021).
+ * It records the open balance as a payment through the same locked path, so
+ * "paid" always has the payment behind it, and audits as the owner.
+ */
+export async function markPaidDirect(sql: CapabilityContext['sql'], invoiceId: string, receivedOn: string, today: string, actor: string, channel: string):
+  Promise<{ ok: true } | { ok: false; status: 404 | 409; error: string }> {
+  let i: InvoiceRow
+  try { i = await getInvoice({ sql } as CapabilityContext, invoiceId) } catch { return { ok: false, status: 404, error: 'Invoice not found' } }
+  if (i.status === 'draft') return { ok: false, status: 409, error: 'A draft has not been issued and cannot be paid.' }
+  if (i.status === 'cancelled') return { ok: false, status: 409, error: 'This invoice is cancelled.' }
+  if (receivedOn > today) return { ok: false, status: 409, error: 'A payment cannot be received in the future.' }
+  const b = invoiceBalance(i, today)
+  if (b.open <= 0) {
+    /* Nothing owed: deposit and payments already cover it. Only the label is behind. */
+    await sql`UPDATE os_invoices SET status = 'paid', paid_date = COALESCE(paid_date, ${receivedOn}::date) WHERE id = ${i.id} AND status <> 'cancelled'`
+  } else if (!await recordPaymentLocked(sql, i, { amount: b.open, currency: b.currency, receivedOn, method: null, reference: 'marked paid in Maxpromo OS', actor, approvalId: null })) {
+    return { ok: false, status: 409, error: 'Another payment was recorded at the same moment. Reload and check.' }
+  }
+  await writeAudit(sql, {
+    actor, channel, operation: 'payment.mark_paid.direct', entityType: 'invoice', entityId: i.id,
+    before: { status: i.status, open: b.open }, after: { status: 'paid', open: 0, amount: Math.max(b.open, 0) }, outcome: 'succeeded',
+  })
+  return { ok: true }
 }
 
 /* ── reminder.send ──────────────────────────────────────────────────────── */
