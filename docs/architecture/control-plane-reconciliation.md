@@ -637,6 +637,19 @@ proves none happened (or lists the tables to replay). Cutover requires a short w
 (away from 06:00 UTC); rollback is restoring the old `DATABASE_URL` (the US database is never written
 by the tool), losing only writes made to the EU database after cutover.
 
+### Final production state — 2026-10-23 21:15 UTC
+
+- Web `dpl_39Nj3Qzn3buKvdYLWBLHcTHawMmK` serves f133b64; Bureau `dpl_HgaTpMsCyBrV73iu3sjdTf7VbC7i`
+  serves fe5eda3 (f133b64 changed no Bureau file; its build was skipped by the ignore rule). Both fra1.
+- 31/31 production HTTP checks (owner/API auth, webhook, WhatsApp OFF, agent door per client,
+  removed routes, voice-enhance origin, Bureau gates, intake validation, shadow 503).
+- Owner browser: attention SALES 1 (`enquiryNew`, readable channel name) and MONEY 2 in English and
+  German; Inbox, Spam view, Approvals, Leads at 390 px without horizontal scroll.
+- Records: leads 6 (the one new intake lead), clients 2, invoices 2, quotes 1, jobs 0; both mails
+  unchanged; no successful non-GET request since 20:56Z on either app; Hostinger Sent unchanged
+  since 07:26Z; downloads not wired; WhatsApp 503.
+- Observation (minor, existing): the document `lang` stays `de` while the OS renders English.
+
 ### Next phase (not started)
 
 **STRIPE ↔ MAXPROMO MONEY ARCHITECTURE** — Stripe as a payment rail inside the Money domain of the

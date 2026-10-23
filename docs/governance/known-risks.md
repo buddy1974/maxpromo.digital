@@ -1755,6 +1755,7 @@ Last updated: 2026-09-04 (v7.0 — enterprise polish)
 | 115 | **The 2026-10-23 Junk message is still `billing` / Needs reply in production** | Accepted before ADR-0022; the migration changes no rows. Production snapshot after migration 0016: `billing`, needs_reply true, provider_state `unverified`. Applying the verified provider state to this one row from the console was refused by the session permission policy. It is corrected automatically when the reconciler runs within its 14-day lookback (after risk 114 is closed, before 2026-11-06), or immediately by Marcel pressing Spam on it in `/os/inbox`. |
 | 116 | ~~**Release blocked: Bureau migration 0002 not applied in production**~~ **RESOLVED 2026-10-23** | The owner applied the SQL; the session verified the columns read-only and released 1bfa5cf to both projects. |
 | 117 | ~~**Shadow Bureau production alias still public**~~ **RESOLVED 2026-10-23** | Proven obsolete (no Git link, 0 variables, 0 crons, no dependants, no code references) and paused via the Vercel API; its alias answers 503. Kept as CANDIDATE FOR DELETION until the owner authorizes deletion. |
+| 118 | **Document language attribute does not follow the OS locale** | The root layout sets `<html lang="de">`; with the OS switched to English, screen readers still announce German. Accessibility only; content renders correctly. **Action:** set `lang` from the OS locale cookie in the `/os` layout during the next OS UI phase. |
 
 ---
 

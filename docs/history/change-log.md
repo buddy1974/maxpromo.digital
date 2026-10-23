@@ -7,6 +7,7 @@
   second run made no OS call.
 - Shadow Bureau proven obsolete and paused (alias 503); deletion awaits owner authorization.
 - `HOSTINGER_MAILBOX_RESOURCE_ID` set in production; provider check also after `/api/os/attention`.
+- Final production: web `dpl_39Nj3Qzn3buKvdYLWBLHcTHawMmK` (f133b64), Bureau `dpl_HgaTpMsCyBrV73iu3sjdTf7VbC7i` (fe5eda3).
 - `/os` attention: a channel enquiry received through intake and still `discovered` is a SALES item
   ("New enquiry from … — reply"); found when the forwarded Bureau lead raised no attention.
 - Bureau health note: the missing AI key blocks model-based agents only, not the deterministic Intake agent.
