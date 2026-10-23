@@ -1,5 +1,15 @@
 # Change Log
 
+## 2026-10-23 — Hostinger real-wire contract accepted (016ceb5)
+
+Independent review of the Codex activation work. Production diagnostics showed the genuine
+Test carries an empty eventId; the parser's invented id grammar rejected it. Provider ids
+are now opaque bounded strings; no-identity events are acknowledged read-only and never
+stored; only envelope faults return 400 and content quirks are normalized with fixed codes;
+exact-sample bypass removed; Inbox list preview and preview search. Verify exit 0, email
+route 67/native 39/mutations 6/SQL 43/UI 31. No migration (function md5 matches 0014).
+[contract resolution](../reports/hostinger-contract-resolution-2026-10-23.md)
+
 ## 2026-10-23 — Approved single production mailbox binding
 
 Provisioned exactly hostinger:info@maxpromo.digital after explicit owner approval and

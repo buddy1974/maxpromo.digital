@@ -85,3 +85,12 @@ types/lengths, matcher mismatch path names, URL categories and ID-format flags, 
 or arbitrary unknown names. Prove privacy mutation and no side effects, full verify/SQL,
 deploy and verify health/mail0. Next request must distinguish empty/invalid-format IDs and
 all known fixture differences; test success is not promised without an evidenced discriminator.
+
+
+## Takeover — real-wire contract resolution
+
+WHAT: make the receiver accept Hostinger's actual message.received, including its Test.
+EFFORT: read production structural logs first; research the public contract; opaque ids;
+envelope-only 400; content normalization; remove the overfitted bypass; prove with route,
+mutation, SQL and UI tests; verify production schema read-only; deploy via main.
+VERIFICATION: verify exit 0; canonical 405/401/health; one owner Test with a stated expected result.

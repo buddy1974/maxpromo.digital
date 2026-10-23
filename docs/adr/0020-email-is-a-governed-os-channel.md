@@ -31,7 +31,8 @@ text cannot execute tools, expose secrets, alter security or authorize commitmen
 Marcel supplied the official message.received payload and identifier semantics.
 The route now authenticates and bounds bytes, validates event and fixed mailbox, and
 returns 200 only after atomic durable acceptance. Delivery id and mailbox eventId are
-separate; eventId is not an IMAP UID or RFC Message-ID. Same-sender, uncontested RFC
+separate; eventId is not an IMAP UID or RFC Message-ID. Both are opaque bounded strings;
+an empty eventId (Hostinger Test) is acknowledged without ingestion (decision-log 2026-10-23). Same-sender, uncontested RFC
 reply/reference matches reconstruct threads; subject alone never merges them.
 
 The two webhook body fields are previews (at most 200 characters), never authoritative

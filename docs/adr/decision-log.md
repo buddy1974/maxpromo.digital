@@ -1942,3 +1942,16 @@ public mail methods return405/401, and production mail is empty. Mailbox binding
 real Hostinger secret/Test/controlled acceptance remain activation boundaries. Existing
 Telegram owner restrictions and download fail-closed gates are unchanged. Full evidence:
 [locked release](../reports/email-locked-production-2026-10-23.md).
+
+
+## 2026-10-23 — Provider identifiers are opaque; content never blocks a receipt
+
+Hostinger documents eventId only as an opaque mailbox-message identity, and its Test sends
+it empty. Decision: validate provider ids by type, length and printability only; treat an
+empty eventId as "no mailbox message" and acknowledge it after a read-only binding check
+without storing anything; reserve HTTP 400 for envelope faults (event, ids, mailbox,
+timestamp) and normalize untrusted content instead of refusing it, because refusal loses
+mail and repeated failures pause the webhook. The exact documentation-sample bypass is
+removed rather than extended: there is no documented Test discriminator and none is invented.
+Rejected: a character grammar for ids; ingesting no-identity events keyed by delivery id
+(would put synthetic Test mail in the Inbox); continuing to 400 the Test. Evidence: [contract resolution](../reports/hostinger-contract-resolution-2026-10-23.md).

@@ -1,3 +1,6 @@
+> **Superseded 2026-10-23:** the diagnostic retries happened (10:55Z, 12:35Z) and proved an
+> empty eventId. Resolution and current guidance: [contract resolution](hostinger-contract-resolution-2026-10-23.md).
+
 # Second genuine Hostinger Test — authoritative wire diagnostics
 
 Located request875lg-1792750845538-f09330a94976 at2026-10-23T10:20:45.538Z,

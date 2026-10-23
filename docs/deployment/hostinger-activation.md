@@ -2,7 +2,20 @@
 
 This extends ADR-0020; it does not introduce another mail or notification architecture.
 
-## Current locked production status — 2026-10-23
+## Current production status — 2026-10-23 (supersedes the notes below)
+
+Two further genuine Tests on the diagnostic build proved the real wire: authenticated
+message.received for info@maxpromo.digital with an **empty eventId**, empty bodyUrl and no
+attachments. Commit 016ceb5 treats provider ids as opaque bounded strings, acknowledges an
+event without mailbox identity read-only (200 ingested:false, never stored), and accepts
+real mail with content faults normalized instead of refused. The exact-sample connectivity
+bypass is removed. Deployed dpl_GQwE9b3vtfvKRFcMt1EdwLrRSNvy, production schema verified
+read-only (9/18/2, one enabled binding, zero mail). [contract resolution](../reports/hostinger-contract-resolution-2026-10-23.md).
+
+Next owner step: Hostinger **Test**, expecting 200 {"ok":true,"ingested":false}. Then one
+controlled real email to info@maxpromo.digital. Downloads, outbound and Telegram routing stay off.
+
+## Earlier locked production status — 2026-10-23
 
 Latest REAL retry returned400/validation/invalid_event_id, proving the wire differs from
 the displayed valid-ID example. Acceptance remains strict; bounded value-free structural

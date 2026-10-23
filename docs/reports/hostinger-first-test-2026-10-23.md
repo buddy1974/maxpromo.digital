@@ -1,3 +1,6 @@
+> **Superseded 2026-10-23:** the exact-sample connectivity acknowledgement never matched real
+> Test traffic and was removed in 016ceb5. See [contract resolution](hostinger-contract-resolution-2026-10-23.md).
+
 # First genuine Hostinger Test — forensic record
 
 ## Exact displayed contract reconciliation — 2026-10-23

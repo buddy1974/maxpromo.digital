@@ -31,3 +31,9 @@
 - Vercel env run may export empty production secrets and overlay local dotenv values.
   Never label that fallback as current-production-key proof. Keep non-exportable model
   credentials in-cloud and isolate a build child against evidence data for certification.
+
+- Read the diagnostics you deployed before asking for another owner test: the answer to
+  "what is eventId on the wire" sat in Vercel logs from two retries nobody recorded.
+- Do not impose a grammar on provider-owned opaque ids, and do not 400 an authenticated
+  provider over content quirks: refusal loses mail and auto-pauses the webhook.
+- A bypass keyed to documentation examples is overfitted; check it against real traffic.

@@ -44,5 +44,8 @@ commercial workflow regression passed 85 checks.
 - [ ] Owner retry against deployed compatibility path, then controlled real-message acceptance.
 - [x] Second REAL retry located400/validation/invalid_event_id; acceptance unchanged.
 - [x] Structural diagnostics c1bab75 deployed/verified, full verify29/email213/SQL40; no values logged.
-- [ ] One owner diagnostic request to identify eventId length/format and known-field mismatches;
-  prove a safe real-wire Test discriminator before any broader acknowledgement.
+- [x] Owner diagnostic retries (10:55Z, 12:35Z) identified an empty eventId; no other field fault.
+- [x] Independent review: opaque ids, no-identity acknowledgement, content normalization, bypass removed (016ceb5).
+- [x] Production schema re-verified read-only; 016ceb5 deployed and boundary-checked.
+- [ ] Owner Hostinger Test → expect 200 {ok:true,ingested:false}.
+- [ ] Controlled real email → message/thread/Inbox/no side effects; then retry/idempotency check.

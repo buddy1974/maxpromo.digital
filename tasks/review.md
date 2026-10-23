@@ -113,3 +113,11 @@ Verified c1bab75 / dpl_CUufN295SyNCE1cefW2ZvRNhs2TJ Ready/Production on canonica
 GET/HEAD405, rejected POST401, OS/site200 and health ok; Inbox configured:true/threads0,
 one binding and messages/events/deliveries/actions/jobs0; WhatsApp OFF. One owner diagnostic
 retry is now safe and structurally decisive, not a promise of successful acknowledgement.
+
+
+### Independent takeover review — contract resolution
+
+Found two unrecorded genuine Tests in production logs proving an empty eventId. Rejected the
+invented id grammar and the exact-sample bypass; content faults no longer refuse receipts.
+Verify exit 0; route 67, native 39, mutations 6, SQL 43, UI 31. 016ceb5 live on
+dpl_GQwE9b3vtfvKRFcMt1EdwLrRSNvy; schema/function md5 verified read-only. Owner Test is next.
