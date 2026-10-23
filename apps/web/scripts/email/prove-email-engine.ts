@@ -18,7 +18,7 @@ class CapabilityRefusal extends Error{}; class UncertainOutcome extends Error{};
 const isPrepared=p=>'payload' in p && 'preview' in p;
 `
 const engine = await import(`data:text/javascript;base64,${Buffer.from(ports + emitted).toString('base64')}`)
-interface Approval { id: string; capability: string; payload: Record<string, unknown>; payload_hash: string; status: string; expires_at: string; result: unknown }
+interface Approval { id: string; capability: string; payload: Record<string, unknown>; payload_hash: string; status: string; expires_at: string; result: unknown; requested_by: string }
 let row: Approval
 const sql = async (parts: TemplateStringsArray, ...values: unknown[]) => {
   const text = parts.join('?')
@@ -36,7 +36,7 @@ function check(label: string, test: () => void) { test(); count++; console.log(`
 for (const capability of ['email.send','email.trash']) {
   state.caps.set(capability, { risk: 'AMBER', execute: async () => { state.effects++; await Promise.resolve(); return { summary: 'Simulated only' } } })
   const req = { approvalId: '10000000-0000-0000-0000-000000000001', payloadHash: 'a'.repeat(64), actor: 'telegram:100000001', channel: 'telegram' }
-  const fresh = () => ({ id: req.approvalId, capability, payload: { to: 'nobody@example.test' }, payload_hash: req.payloadHash, status: 'pending', expires_at: new Date(Date.now() + 60000).toISOString(), result: null })
+  const fresh = () => ({ id: req.approvalId, capability, payload: { to: 'nobody@example.test' }, payload_hash: req.payloadHash, status: 'pending', expires_at: new Date(Date.now() + 60000).toISOString(), result: null, requested_by: req.actor })
   row = fresh()
   const before = state.effects
   const responses = await Promise.all([engine.executeApproval(sql, req), engine.executeApproval(sql, req)])

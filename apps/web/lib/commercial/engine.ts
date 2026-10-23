@@ -169,8 +169,12 @@ async function createApproval(
   }
 }
 
+/** The owner deciding in the OS itself (cookie session). */
+export const OWNER_ACTOR = 'os:marcel'
+
 interface ApprovalRow {
   id: string
+  requested_by: string
   capability: string
   payload: Record<string, unknown>
   payload_hash: string
@@ -183,19 +187,24 @@ export async function executeApproval(
   sql: Sql,
   req: { approvalId: string; payloadHash: string; actor: string; channel: string },
 ): Promise<EngineResponse> {
-  /* Claim. One statement decides: pending, same hash, not expired. */
+  /* Claim. One statement decides: pending, same hash, not expired, and an
+     executor bound to the request — the actor that asked for it (a client
+     confirming its own owner's tap) or the owner deciding in the OS. An
+     agent can request; it cannot approve someone else's request. */
   const claimed = await sql`
     UPDATE os_approvals SET status = 'executing', decided_by = ${req.actor}, decided_at = now()
     WHERE id = ${req.approvalId} AND status = 'pending' AND payload_hash = ${req.payloadHash} AND expires_at > now()
-    RETURNING id, capability, payload, payload_hash, status, expires_at, result` as ApprovalRow[]
+      AND (requested_by = ${req.actor} OR ${req.actor} = ${OWNER_ACTOR})
+    RETURNING id, capability, payload, payload_hash, status, expires_at, result, requested_by` as ApprovalRow[]
 
   if (claimed.length === 0) {
-    const found = await sql`SELECT id, capability, payload, payload_hash, status, expires_at, result FROM os_approvals WHERE id = ${req.approvalId}` as ApprovalRow[]
+    const found = await sql`SELECT id, capability, payload, payload_hash, status, expires_at, result, requested_by FROM os_approvals WHERE id = ${req.approvalId}` as ApprovalRow[]
     const a = found[0]
     const capability = a?.capability ?? 'unknown'
     let message: string
     let code: string
     if (!a) { code = 'not_found'; message = 'There is no such approval.' }
+    else if (a.requested_by !== req.actor && req.actor !== OWNER_ACTOR) { code = 'not_requester'; message = 'Only the owner can decide an action another interface requested. Nothing was done.' }
     else if (a.payload_hash !== req.payloadHash) { code = 'payload_changed'; message = 'This approval was for a different version of the action. Nothing was done.' }
     else if (a.status === 'executed' && a.result) {
       /* A replay or a double tap. The first answer, and nothing new. */
@@ -273,6 +282,7 @@ export async function rejectApproval(
   const rows = await sql`
     UPDATE os_approvals SET status = 'rejected', decided_by = ${req.actor}, decided_at = now()
     WHERE id = ${req.approvalId} AND status = 'pending'
+      AND (requested_by = ${req.actor} OR ${req.actor} = ${OWNER_ACTOR})
     RETURNING capability, summary` as { capability: string; summary: string }[]
   if (!rows.length) return { status: 'refused', capability: 'approval.reject', code: 'not_pending', message: 'Nothing is waiting under that approval.' }
   await writeAudit(sql, { actor: req.actor, channel: req.channel, operation: `${rows[0].capability}.reject`, approvalId: req.approvalId, outcome: 'succeeded' })

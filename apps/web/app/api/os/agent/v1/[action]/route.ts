@@ -1,22 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb, isDatabaseConfigured } from '@/lib/db'
-import { admitAgentRequest } from '@/lib/commercial/agent-gate'
+import { admitAgentRequest, clientMayUse, type AgentAction } from '@/lib/commercial/agent-gate'
 import { executeApproval, rejectApproval, runCapability } from '@/lib/commercial/engine'
 import { census } from '@/lib/commercial/registry'
+import { recordAgentEvents } from '@/lib/commercial/agent-events'
 
 /**
- * The commercial agent API (ADR-0018).
+ * The cross-plane door into the Business Control Plane (ADR-0018, ADR-0021).
  *
- * One signed door for machine callers — OpenClaw Mission Control today. It is
- * not reachable with the OS session cookie and the session cookie is not
- * reachable with it: middleware lets `/api/os/agent/` through only to this
- * handler, and this handler admits nothing without a valid signature over the
- * exact body, a fresh nonce and an allowed actor (lib/commercial/agent-gate.ts).
+ * One signed door for machine clients — the Agent Bureau, and later a
+ * Telegram owner client. It is not reachable with the OS session cookie and
+ * the session cookie is not reachable with it: middleware lets
+ * `/api/os/agent/` through only to this handler, and this handler admits
+ * nothing without a valid signature over the exact body, a fresh nonce, an
+ * allowed actor and a client allowed to take this action
+ * (lib/commercial/agent-gate.ts).
  *
- *   POST /api/os/agent/v1/capabilities   the census
+ *   POST /api/os/agent/v1/capabilities   the census this client may use
  *   POST /api/os/agent/v1/run            { requestId, actor, channel, capability, input }
- *   POST /api/os/agent/v1/execute        { approvalId, payloadHash, actor, channel }
- *   POST /api/os/agent/v1/reject         { approvalId, actor, channel }
+ *   POST /api/os/agent/v1/execute        { approvalId, payloadHash, actor, channel }   (not the Bureau)
+ *   POST /api/os/agent/v1/reject         { approvalId, actor, channel }                (not the Bureau)
+ *   POST /api/os/agent/v1/events         { actor, channel, events: AgentEvent[] }      (Bureau only)
  *
  * Every answer is JSON with a `status` the caller must read: done,
  * approval_required, refused or failed. A 200 is never a claim that something
@@ -25,11 +29,11 @@ import { census } from '@/lib/commercial/registry'
 
 export const maxDuration = 60
 
-const ACTIONS = new Set(['capabilities', 'run', 'execute', 'reject'])
+const ACTIONS = new Set<AgentAction>(['capabilities', 'run', 'execute', 'reject', 'events'])
 
 export async function POST(request: NextRequest, ctx: { params: Promise<{ action: string }> }) {
   const { action } = await ctx.params
-  if (!ACTIONS.has(action)) return NextResponse.json({ error: 'not_found' }, { status: 404 })
+  if (!ACTIONS.has(action as AgentAction)) return NextResponse.json({ error: 'not_found' }, { status: 404 })
 
   const rawBody = await request.text()
   if (rawBody.length > 256 * 1024) return NextResponse.json({ error: 'too_large' }, { status: 413 })
@@ -37,8 +41,8 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ action
   const sql = isDatabaseConfigured() ? getDb() : null
   const gate = await admitAgentRequest({
     sql,
-    secret: process.env.OS_AGENT_SECRET,
-    allowList: process.env.OS_AGENT_ALLOWED_ACTORS,
+    env: process.env,
+    action: action as AgentAction,
     headers: request.headers,
     method: 'POST',
     path: new URL(request.url).pathname,
@@ -46,16 +50,22 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ action
   })
   if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status })
   const db = sql!
-  const { actor, channel, body } = gate
+  const { client, actor, channel, body } = gate
 
   try {
     if (action === 'capabilities') {
-      return NextResponse.json({ status: 'done', capabilities: census() })
+      return NextResponse.json({ status: 'done', capabilities: census().filter((c) => clientMayUse(client, c.id)) })
+    }
+    if (action === 'events') {
+      return NextResponse.json(await recordAgentEvents(db, { client: client.id, actor, events: body.events }))
     }
     if (action === 'run') {
       const requestId = typeof body.requestId === 'string' && /^[A-Za-z0-9:_.-]{8,120}$/.test(body.requestId) ? body.requestId : null
       const capability = typeof body.capability === 'string' ? body.capability : null
       if (!requestId || !capability) return NextResponse.json({ error: 'requestId and capability are required' }, { status: 400 })
+      if (!clientMayUse(client, capability)) {
+        return NextResponse.json({ status: 'refused', capability, code: 'not_permitted', message: 'This client may not use that capability.' })
+      }
       return NextResponse.json(await runCapability(db, { requestId, actor, channel, capability, input: body.input ?? {} }))
     }
     const approvalId = typeof body.approvalId === 'string' && /^[0-9a-f-]{36}$/i.test(body.approvalId) ? body.approvalId : null

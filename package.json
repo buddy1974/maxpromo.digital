@@ -69,7 +69,8 @@
     "check:public-assets": "node packages/tooling/check-public-assets.mjs",
     "evidence:ingest": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/ingest-evidence.mjs",
     "evidence:derive": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/derive-evidence.mjs",
-    "brand:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/make-brand-assets.mjs"
+    "brand:assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON packages/tooling/make-brand-assets.mjs",
+    "prove:control-planes": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --experimental-transform-types --import ./apps/web/scripts/control-planes/alias-register.mjs apps/web/scripts/control-planes/prove-control-planes.ts"
   },
   "engines": {
     "node": ">=20"

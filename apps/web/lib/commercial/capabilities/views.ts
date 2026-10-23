@@ -20,11 +20,12 @@ import {
 import { OPEN_STAGES, STAGE_WEIGHT, leadStage, statusesFor } from '../pipeline'
 import { addTo, daysBetween, formatPerCurrency, monthlyEquivalent, receivables, type PerCurrency } from '../money'
 import { loadInvoicesForMoney } from './documents'
+import { openAgentEvents, type StoredAgentEvent } from '../agent-events'
 import type { AnyCapability, CapabilityContext, CapabilityDefinition, CapabilityResult, FocusRef } from '../types'
 import { v } from '../validate'
 
 interface Item {
-  area: 'SALES' | 'MONEY' | 'CLIENT' | 'SYSTEM'
+  area: 'SALES' | 'MONEY' | 'CLIENT' | 'SYSTEM' | 'AGENT'
   text: string
   /** Amount at stake, in the item's own currency; 0 when none. */
   amount: number
@@ -68,6 +69,7 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
       WHERE status = 'executing' AND decided_at < now() - interval '15 minutes'`),
     loadInvoicesForMoney(ctx),
   ])
+  const agentEvents = await agentAttention(ctx)
 
   const items: Item[] = []
   const leadValue = (l: { value: string | null }) => Number(l.value ?? 0)
@@ -125,7 +127,64 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
   if (rec.reconcile.length) {
     items.push({ area: 'MONEY', text: `${rec.reconcile.length} invoice(s) where status and recorded payments disagree`, amount: 0, currency: 'EUR', probability: 0, urgency: 1, action: 'Who owes me money?', commercial: false })
   }
+  /* What the Agent Control Plane reported and Marcel has not seen. Recommendations
+     and completions inform; blocked, failed and exceptions need a look. */
+  for (const e of agentEvents) {
+    const ref = e.business_kind && e.business_id && e.business_kind !== 'email_thread' ? focus(e.business_kind as FocusRef['kind'], e.business_id, e.title.slice(0, 60)) : undefined
+    items.push({
+      area: 'AGENT', text: `Agent ${e.agent} ${AGENT_VERB[e.kind] ?? e.kind}: ${e.title}`, amount: 0, currency: 'EUR', probability: 0,
+      urgency: e.severity === 'critical' ? 3 : e.severity === 'warning' ? 2 : 1, action: 'Show agent events', ref, commercial: false,
+    })
+  }
   return items
+}
+
+const AGENT_VERB: Record<string, string> = {
+  completed: 'completed', blocked: 'is blocked', failed: 'failed', exception: 'found an exception', recommendation: 'recommends', waiting: 'is waiting',
+}
+
+/* Optional until migration 0015 exists, exactly like the mail and WhatsApp sections. */
+async function agentAttention(ctx: CapabilityContext): Promise<StoredAgentEvent[]> {
+  try {
+    return await openAgentEvents(ctx.sql)
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error && ['42P01', '3F000'].includes(String(error.code))) return []
+    throw error
+  }
+}
+
+/**
+ * Everything /os shows under "what needs Marcel's attention today", in one
+ * read: the ranked items (sales, money, clients, system, agents), email
+ * threads needing a reply, and the approvals waiting for him. The same
+ * collection the brief and the notices use — there is one attention model.
+ */
+export async function attentionSnapshot(ctx: CapabilityContext) {
+  const [items, email, approvals, agentEvents] = await Promise.all([
+    collect(ctx),
+    emailAttention(ctx),
+    q<{ id: string; capability: string; summary: string; preview: Record<string, string>; payload_hash: string; expires_at: Date; requested_by: string; created_at: Date }>(ctx.sql`
+      SELECT id, capability, summary, preview, payload_hash, expires_at, requested_by, created_at FROM os_approvals
+      WHERE status = 'pending' AND expires_at > now() ORDER BY created_at LIMIT 20`),
+    agentAttention(ctx),
+  ])
+  const ranked = items.sort((a, b) => b.urgency - a.urgency || score(b) - score(a))
+  const counts = { SALES: 0, MONEY: 0, CLIENT: 0, SYSTEM: 0, AGENT: 0 }
+  for (const i of ranked) counts[i.area]++
+  return {
+    counts,
+    items: ranked.map((i) => ({ area: i.area, text: i.text, action: i.action, urgency: i.urgency, ref: i.ref ?? null })),
+    email: email.map((e) => ({ id: e.id, subject: e.subject, classification: e.classification, needsReply: e.needs_reply, updatedAt: e.updated_at.toISOString() })),
+    approvals: approvals.map((a) => ({
+      id: a.id, capability: a.capability, summary: a.summary, preview: a.preview, payloadHash: a.payload_hash,
+      requestedBy: a.requested_by, createdAt: a.created_at.toISOString(), expiresAt: a.expires_at.toISOString(),
+    })),
+    agentEvents: agentEvents.map((e) => ({
+      id: e.id, agent: e.agent, kind: e.kind, severity: e.severity, title: e.title, detail: e.detail,
+      businessRef: e.business_kind && e.business_id ? { kind: e.business_kind, id: e.business_id } : null,
+      approvalId: e.approval_id, occurredAt: e.occurred_at.toISOString(),
+    })),
+  }
 }
 
 const noInput = v.object({})
@@ -141,7 +200,7 @@ export const ownerAttention: CapabilityDefinition<ReturnType<typeof noInput.pars
   input: noInput,
   async run(ctx) {
     const items = (await collect(ctx)).sort((a, b) => b.urgency - a.urgency || score(b) - score(a))
-    const counts = { SALES: 0, MONEY: 0, CLIENT: 0, SYSTEM: 0 }
+    const counts = { SALES: 0, MONEY: 0, CLIENT: 0, SYSTEM: 0, AGENT: 0 }
     for (const i of items) counts[i.area]++
     const head = (Object.entries(counts) as [keyof typeof counts, number][]).filter(([, n]) => n > 0).map(([a, n]) => `${n} ${a}`).join(' · ')
     return {
@@ -382,6 +441,10 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.p
       if (i.area === 'SYSTEM' && /Unclear whether/.test(i.text)) notices.push({ key: `uncertain:${i.text}`, severity: 'critical', text: i.text })
     }
     notices.push(...await channelNotices(ctx))
+    for (const e of await agentAttention(ctx)) {
+      if (e.severity === 'info') continue
+      notices.push({ key: `agent:${e.id}`, severity: e.severity as Notice['severity'], text: `Agent ${e.agent} ${AGENT_VERB[e.kind] ?? e.kind}: ${e.title}` })
+    }
     for (const e of await emailAttention(ctx)) {
       if (!e.needs_reply) continue
       notices.push({ key: `email:${e.id}:${e.updated_at.toISOString()}`, severity: ['urgent','security','system'].includes(e.classification) ? 'critical' : 'warning', text: `EMAIL (external content): ${e.subject}\n${e.classification} · Reply needed`, action: `Open email thread ${e.id}` })

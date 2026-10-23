@@ -7,7 +7,8 @@ const validator = `data:text/javascript;base64,${Buffer.from(emit(readFileSync('
 const source = emit(readFileSync('apps/web/lib/commercial/capabilities/views.ts','utf8')).replace(/^import[\s\S]*?from ['"][^'"]+['"];\r?\n/gm, '')
 const ports = `import {v} from '${validator}';
 const q=async p=>await p, addDays=x=>x, OPEN_STAGES=[],statusesFor=()=>[],loadInvoicesForMoney=async()=>[],
-receivables=()=>({outstanding:{},overdue:{},overdueInvoices:[],drafts:[],reconcile:[]}), formatPerCurrency=()=> '0',daysBetween=()=>1;
+receivables=()=>({outstanding:{},overdue:{},overdueInvoices:[],drafts:[],reconcile:[]}), formatPerCurrency=()=> '0',daysBetween=()=>1,
+openAgentEvents=async()=>[];
 `
 const views = await import(`data:text/javascript;base64,${Buffer.from(ports + source).toString('base64')}`)
 let queried = ''

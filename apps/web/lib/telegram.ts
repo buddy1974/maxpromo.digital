@@ -76,67 +76,10 @@ function emailLink(email: string | null | undefined): string {
 function phoneLink(phone: string | null | undefined): string {
   if (!phone?.trim()) return '—'
   const safe = e(phone.trim())
-  return `<a href="tel:${phone.trim()}">${safe}</a>`
-}
-
-// ── Business Diagnostic ────────────────────────────────────────────────────
-
-export interface DiagnosticNotificationData {
-  name: string
-  company: string
-  email: string
-  phone?: string
-  ceoQuestion?: string
-  detectedCategories?: string[]
-}
-
-export function buildDiagnosticMessage(d: DiagnosticNotificationData): string {
-  const cats = (d.detectedCategories ?? []).map((c) => `  - ${e(c)}`).join('\n') || '  —'
-  return [
-    '<b>New Business Diagnostic</b>',
-    '',
-    `<b>Company:</b> ${e(d.company)}`,
-    `<b>Contact:</b> ${e(d.name)}`,
-    `<b>Email:</b> ${emailLink(d.email)}`,
-    d.phone?.trim() ? `<b>Phone:</b> ${phoneLink(d.phone)}` : null,
-    '',
-    '<b>Main frustration:</b>',
-    `  ${e(d.ceoQuestion?.slice(0, 400))}`,
-    '',
-    '<b>Detected opportunities:</b>',
-    cats,
-    '',
-    `<b>Source:</b> business_diagnostic`,
-    `<b>Time:</b> ${ts()}`,
-  ].filter((l) => l !== null).join('\n')
-}
-
-// ── Automation Audit ───────────────────────────────────────────────────────
-
-export interface AuditNotificationData {
-  name: string
-  company: string
-  email: string
-  orgType?: string
-  timeDrains?: string[]
-  goal?: string
-}
-
-export function buildAuditMessage(d: AuditNotificationData): string {
-  return [
-    '<b>New Automation Audit Lead</b>',
-    '',
-    `<b>Company:</b> ${e(d.company)}`,
-    `<b>Name:</b> ${e(d.name)}`,
-    `<b>Email:</b> ${emailLink(d.email)}`,
-    '',
-    d.orgType ? `<b>Org type:</b> ${e(d.orgType)}` : null,
-    d.timeDrains?.length ? `<b>Time drains:</b> ${e(d.timeDrains.join(', '))}` : null,
-    d.goal ? `<b>Goal:</b> ${e(d.goal.slice(0, 300))}` : null,
-    '',
-    `<b>Source:</b> automation_audit`,
-    `<b>Time:</b> ${ts()}`,
-  ].filter((l) => l !== null).join('\n')
+  /* Public form input: the href is escaped as well as the text, and only
+     dialable characters survive, so an attribute cannot be broken out of. */
+  const dial = phone.trim().replace(/[^0-9+]/g, '')
+  return `<a href="tel:${dial}">${safe}</a>`
 }
 
 // ── Contact Form ───────────────────────────────────────────────────────────
@@ -220,6 +163,35 @@ export function buildNewsletterMessage(d: NewsletterNotificationData): string {
     d.name?.trim() ? `<b>Name:</b> ${e(d.name)}` : null,
     '',
     `<b>Source:</b> newsletter`,
+    `<b>Time:</b> ${ts()}`,
+  ].filter((l) => l !== null).join('\n')
+}
+
+// ── Enquiry handed to the OS by a channel or the Agent Bureau ──────────────
+
+export interface IntakeNotificationData {
+  source: string
+  outcome: 'created' | 'matched'
+  name?: string | null
+  company?: string | null
+  email?: string | null
+  phone?: string | null
+  message?: string | null
+}
+
+export function buildIntakeMessage(d: IntakeNotificationData): string {
+  return [
+    d.outcome === 'created' ? '<b>New enquiry</b>' : '<b>New enquiry from an existing lead</b>',
+    '',
+    `<b>Name:</b> ${e(d.name)}`,
+    `<b>Company:</b> ${e(d.company)}`,
+    `<b>Email:</b> ${emailLink(d.email)}`,
+    d.phone?.trim() ? `<b>Phone:</b> ${phoneLink(d.phone)}` : null,
+    '',
+    '<b>Message:</b>',
+    `  ${e(d.message?.slice(0, 600))}`,
+    '',
+    `<b>Source:</b> ${e(d.source)} · in Maxpromo OS`,
     `<b>Time:</b> ${ts()}`,
   ].filter((l) => l !== null).join('\n')
 }
