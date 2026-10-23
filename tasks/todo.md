@@ -42,3 +42,7 @@ commercial workflow regression passed 85 checks.
 - [x] Exact displayed sample reproduces wrong_mailbox before DB; placeholder URLs independently unsafe.
 - [x] Narrow authenticated no-write connectivity acknowledgement; full verify/email202/SQL40 pass.
 - [ ] Owner retry against deployed compatibility path, then controlled real-message acceptance.
+- [x] Second REAL retry located400/validation/invalid_event_id; acceptance unchanged.
+- [x] Structural diagnostics c1bab75 deployed/verified, full verify29/email213/SQL40; no values logged.
+- [ ] One owner diagnostic request to identify eventId length/format and known-field mismatches;
+  prove a safe real-wire Test discriminator before any broader acknowledgement.

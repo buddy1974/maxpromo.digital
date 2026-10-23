@@ -43,3 +43,18 @@ return400: this is a decisive structural investigation, not a claim of compatibi
 guaranteed200. If no safe Test discriminator emerges, keep rejecting and require provider
 contract evidence rather than treating arbitrary wrong-mailbox messages as connectivity.
 No agent Hostinger contact/Test/secret use/send/fetch or environment/permission change.
+
+## Verified production release
+
+Application c1bab755c9f93b950922bf90611e0524ce689fd9, deployment
+dpl_CUufN295SyNCE1cefW2ZvRNhs2TJ, created2026-10-23 12:34:10 Europe/Berlin,
+Ready/Production, https://maxpromo-digital-n6kwsw9kw-buddy1974s-projects.vercel.app.
+www.maxpromo.digital resolves to this deployment; public health reportsc1bab75.
+Actual public GET405/HEAD405; unauthenticated/Basic/wrong-Bearer POST401. Authenticated
+OS/Inbox/client/Angebot/Rechnung200; EN/DE homepages200, health200/ok; Inbox configured:true,
+threads0. Read-only production counts after release: accounts1/matches1/enabled true;
+messages/events/deliveries/actions/jobs0. WhatsApp503/unconfigured/OFF. No audit-only rows
+or fake mail introduced. No secret use/rotation, Hostinger contact/Test or other activation.
+
+SAFE TO RETRY HOSTINGER TEST for one decisive structural diagnostic request. This is NOT
+a promise of200: acceptance is unchanged until a safe real-wire Test discriminator is proven.

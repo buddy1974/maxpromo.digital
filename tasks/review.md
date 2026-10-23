@@ -108,3 +108,8 @@ Known-field-only structural diagnostics added and proved value-private/bounded; 
 invalid-character synthetic class fixtures retain400/no DB. Full verify29/email213(native40/
 route67)/SQL40/tsc/lint/build pass. Five mutations caught including raw structural value leak.
 Deploy then prove canonical route/health/counts before any owner diagnostic retry.
+
+Verified c1bab75 / dpl_CUufN295SyNCE1cefW2ZvRNhs2TJ Ready/Production on canonical www.
+GET/HEAD405, rejected POST401, OS/site200 and health ok; Inbox configured:true/threads0,
+one binding and messages/events/deliveries/actions/jobs0; WhatsApp OFF. One owner diagnostic
+retry is now safe and structurally decisive, not a promise of successful acknowledgement.
