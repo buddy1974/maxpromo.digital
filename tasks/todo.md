@@ -36,5 +36,5 @@ commercial workflow regression passed 85 checks.
 - [x] Production recovery branch and only0013/0014 atomic migration;9 tables/18 indexes/2 functions.
 - [x] Public receiver405/401, authenticated OS/document endpoints200, homepages200, health ok.
 - [x] Recheck zero messages/events/actions/jobs and unchanged commercial catalog; WhatsApp OFF.
-- [ ] Pending owner decision: provision real mailbox binding (migrations seed no account).
+- [x] Owner approved and single real Hostinger mailbox binding provisioned2026-10-23; Inbox configured:true, no mail activity.
 - [ ] Then Hostinger webhook creation/private genuine secret/Test/controlled acceptance, not performed.

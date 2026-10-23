@@ -7,6 +7,46 @@ before Hostinger activation. EFFORT: local/remote verification, production ident
 Neon recovery branch, transactional SQL, normal Git/Vercel release and public owner checks.
 VERIFICATION: infrastructure is deployed and healthy. Mail is not activated.
 
+## Approved mailbox binding follow-up — 2026-10-23
+
+This follow-up supersedes the pending-binding boundary/verdict in items18–20 below;
+the earlier migration/deployment observations remain historical evidence.
+
+Marcel explicitly approved only the prepared row. Neon console target was reverified:
+maxpromo-automation, project twilight-boat-66649706, production branch br-floral-lab-alnv2a1o,
+database neondb, PostgreSQL17.11. Preflight accounts0/matching bindings0, schema exactly
+id/address/provider/enabled, no custom triggers. One bounded, locked transaction inserted
+exactly one row and committed, asserting row count and the actual acceptance predicate:
+
+    id: hostinger:info@maxpromo.digital
+    address: info@maxpromo.digital
+    provider: hostinger
+    enabled: true
+
+No secret/capability/owner fields were invented. This schema is the existing single-company
+OS mailbox store; the owner Inbox API requires session.sub=marcel. No unrelated business
+or WhatsApp table was modified. Post-commit accounts1/mailbox_matches1, acceptance guard true;
+threads/messages/events/deliveries/action_audit/content_jobs/content_assets/business_links all0.
+
+Live owner Inbox200 now reports configured:true/threads0, proving the missing-account
+configuration blocker resolved without bypassing webhook authentication or submitting mail.
+Public GET405/HEAD405, unauthenticated/Basic/wrong-Bearer POST401. Owner OS/Inbox/client/
+quotation/invoice endpoint checks200, EN/DE homepages200, health200/ok. Public health now
+reports release.commit=f4594ae. WhatsApp503/unconfigured, anonymous mail and owner APIs401.
+Production environment names rechecked: HOSTINGER_WEBHOOK_SECRET absent; no env values read
+or changed. Email-channel177 and isolated evidence SQL40 checks passed after provisioning.
+TypeScript check and the production build passed; lint retained only existing warnings.
+
+No Hostinger contact/webhook/Test, mail fetch/send, model invocation or download occurred.
+Telegram notifyActors remains external OpenClaw configuration with existing owner restrictions;
+full-body/attachment transports remain disabled with SSRF/encrypted-locator protections intact.
+
+**SAFE TO CREATE HOSTINGER WEBHOOK.** Next: Hostinger Agentic Mail → Webhooks → Add webhook,
+mailbox info@maxpromo.digital, event message.received, URL https://www.maxpromo.digital/api/channels/mail.
+Prefer disabled during setup; keep the one-time generated Bearer token private and install
+only in Vercel Production HOSTINGER_WEBHOOK_SECRET, never chat. This mission stops before
+creation, secret installation, Test or real acceptance; these remain owner steps.
+
 1. **Real model proof.** 85/85 passed inside Vercel's actual Production build environment
    on candidate dpl_EAAUMZ4CAc2J6bfoEnuHZhA1jhZ8, commit b21c070. The model key remained
    in-cloud; an evidence-only child runtime used fresh agent credentials and simulated

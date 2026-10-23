@@ -46,3 +46,12 @@ not exported by env run; local dotenv fallback is not production-key evidence. U
 opt-in postbuild child proof in the SAME Vercel project/candidate build, with build-only
 evidence DB input, fresh agent credentials and outbound suppression. Runtime configuration
 and commercial gates stay intact; successful candidate is promoted only after verification.
+
+## Approved single mailbox binding — 2026-10-23
+
+WHAT: provision only the prepared hostinger:info@maxpromo.digital account row, explicitly
+approved by Marcel. EFFORT: recheck schema/production target/no existing binding; bounded
+transaction with exact-one assertion; no unrelated data or secret writes. VERIFICATION:
+exact acceptance account predicate true, owner Inbox configured:true with no threads,
+all mail activity zero, public405/401 and application health; evidence SQL/channel proofs.
+Stop at Hostinger creation/private-secret boundary, no Test/mail/download/runtime changes.

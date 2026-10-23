@@ -1,5 +1,14 @@
 # Change Log
 
+## 2026-10-23 — Approved single production mailbox binding
+
+Provisioned exactly hostinger:info@maxpromo.digital after explicit owner approval and
+live production/schema/duplicate preflight. No secrets or unrelated data changed.
+Owner Inbox configured:true/threads0; all mail activity tables remain empty. Public405/401,
+OS/site healthy, WhatsApp OFF. Hostinger secret absent and provider never contacted.
+Ready for owner webhook creation/private secret installation; Test is not performed.
+[Evidence and activation boundary](../reports/email-locked-production-2026-10-23.md).
+
 ## 2026-10-23 — Email OS locked infrastructure deployed
 
 Mail0013/0014 applied atomically after Neon recovery branch;9 tables/18 indexes/2 functions,

@@ -56,3 +56,12 @@ homepages200, health200/ok. WhatsApp503/unconfigured/OFF. No mail/Hostinger/mode
 from locked route, no Telegram runtime changes/download transport activation.
 Local verify29, email177, SQL40, fresh9, built HTTP10, security11; dependency audit clean.
 Final dictated85/85 after isolated rerun. Only unrelated original OpenClaw deletion retained.
+
+### Approved mailbox binding — 2026-10-23
+
+Reverified same Neon production project/branch/database, account schema and no existing
+bindings/custom triggers. Exact reviewed row inserted atomically with count assertion;
+accounts1/mailbox_matches1 and acceptance predicate true. All eight activity tables zero.
+Owner Inbox200/configured:true/threads0, public405/401 and OS/document/homepage/health checks
+pass; WhatsApp503/OFF. HOSTINGER_WEBHOOK_SECRET absent. Email177/storage40 passed without
+production fixtures or Hostinger contact. No secret, Telegram runtime or download changes.

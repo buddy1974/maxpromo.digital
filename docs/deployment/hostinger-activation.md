@@ -4,10 +4,11 @@ This extends ADR-0020; it does not introduce another mail or notification archit
 
 ## Current locked production status — 2026-10-23
 
-Main b21c070 is deployed and healthy. Public receiver GET/HEAD405, rejected POST401.
-Mail0013/0014 are applied:9 tables/18 indexes/2 functions, all mail counts zero. No mailbox
-account was seeded. Provisioning the real mailbox binding is the pending owner decision
-before authenticated Test readiness; do not create the webhook yet. Current production
+The locked receiver is deployed and healthy. Public receiver GET/HEAD405, rejected POST401.
+Mail0013/0014 are applied:9 tables/18 indexes/2 functions. Marcel approved the single
+hostinger:info@maxpromo.digital account binding on2026-10-23; it is now provisioned,
+enabled and recognized by the owner Inbox API. All mail activity counts remain zero.
+It is SAFE TO CREATE HOSTINGER WEBHOOK; receipt stays locked until the genuine secret is installed. Current production
 model proof passed85/85 in-cloud. [Release evidence](../reports/email-locked-production-2026-10-23.md).
 
 ## Verified input
@@ -40,8 +41,8 @@ It never returns 200 before durability and never calls a model, sends mail or cr
 
 Migration 0014 extends messages with independent RFC headers, event/email dates, preview
 and body-state fields, and adds deliveries, content_jobs and content_assets. The existing
-mail account must be provisioned/enabled deliberately. No production account is seeded
-or enabled by this reconciliation. The database acceptance function checks both the
+mail account must be provisioned/enabled deliberately. Migrations never seed an account;
+the separately owner-approved real binding was provisioned on2026-10-23. The database acceptance function checks both the
 account and mailbox, serializes a mailbox transaction with an advisory lock, deduplicates
 delivery and message identities, and inserts exactly one content job/event/message.
 Changed delivery-to-event bindings fail closed. Duplicate messages under another delivery
@@ -113,10 +114,9 @@ Evidence uses MAXPROMO_EVIDENCE_MODE and EVIDENCE_DATABASE_URL only, with existi
 
 ## Exact remaining owner actions
 
-1. Locked infrastructure is deployed and reviewed mail migrations are committed after a
-   production recovery branch. The migrations-only data authorization seeded no account.
-   Approve the proposed real mailbox binding in the release report; the agent executes it,
-   with secret absent and no mail processing. Marcel need not write code, SQL or local files.
+1. Completed: locked infrastructure, reviewed migrations and the separately approved single
+   mailbox binding. Owner Inbox reports configured:true/threads0. HOSTINGER_WEBHOOK_SECRET
+   remains absent. No additional repository approval or SQL work is needed.
 2. For later full-content activation, supply the missing signed-download host/media contract or redacted response evidence.
    No API token or actual signed URL needs to be placed in chat. Authorize storage/retention
    activation once the durable backend is verified. Safe preview receipt does not require
@@ -144,9 +144,10 @@ Rollback: disable the Hostinger webhook without deleting it, unset provider sele
 content workers, keep audit/metadata for reconciliation, then roll application back. Never
 drop mail records as a code rollback. The provider mailbox remains the transport/source mail.
 
-**Current verdict: NO-GO for creating/enabling the real webhook until mailbox binding is approved.**
-The route is deployed, migrations are applied and the current production model proof passes.
-No Hostinger secret exists yet. The empty account table deliberately prevents acceptance
-even after future authentication until that binding is provisioned.
+**Current verdict: SAFE TO CREATE HOSTINGER WEBHOOK.**
+The route, migrations and approved mailbox binding are ready; current production model proof passes.
+No Hostinger secret exists yet. Create the webhook in Hostinger, retain its one-time token
+privately and install it as HOSTINGER_WEBHOOK_SECRET in Vercel Production. Do not mistake
+creation for verified activation: Test and controlled acceptance remain subsequent owner steps.
 Full-content constraints remain a separate later activation gate; preview receipt is supported.
 See the [production preparation report](../reports/email-production-preparation-2026-10-22.md).

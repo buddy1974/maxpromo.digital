@@ -44,8 +44,9 @@ of the migrations or a backup/restore procedure. No business rows were read or c
 Later owner-authorized locked release applied0013/0014 on2026-10-22 through the Neon SQL
 editor in one bounded transaction after recovery branch pre-email-os-20261022
 (br-nameless-block-alpbxno2, expires2026-10-29). Post-release structure:9 tables,18 indexes,
-2 functions, unchanged public/chat catalog. All mail tables remain empty, including accounts;
-real mailbox binding needs the pending owner decision. No commercial/WhatsApp migration ran.
+2 functions, unchanged public/chat catalog. After separate owner approval on2026-10-23,
+exactly one enabled hostinger:info@maxpromo.digital account was inserted. All eight other
+mail tables remain empty. No commercial/WhatsApp migration or business-row change ran.
 See [release evidence](../../../docs/reports/email-locked-production-2026-10-23.md).
 
 Use the existing reviewed Neon SQL editor/psql procedure, not evidence:migrate against
