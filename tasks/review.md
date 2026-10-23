@@ -121,3 +121,13 @@ Found two unrecorded genuine Tests in production logs proving an empty eventId. 
 invented id grammar and the exact-sample bypass; content faults no longer refuse receipts.
 Verify exit 0; route 67, native 39, mutations 6, SQL 43, UI 31. 016ceb5 live on
 dpl_GQwE9b3vtfvKRFcMt1EdwLrRSNvy; schema/function md5 verified read-only. Owner Test is next.
+
+### First real inbound mail
+
+One genuine POST (dm56h-1792762908253-322021585cdf) → 200 created:true degraded [], no retry.
+Owner API/UI: one thread, one message, lead/needs reply, unread, preview only, PDF metadata
+exact (1,548,450 B), no URL exposed; filters and search correct; Leads 0 by documented design.
+Business objects unchanged, Sent empty since arrival, WhatsApp 503, health ok. Email-channel
+pass; storage 43/43 (evidence-DB transport flaky). Owner-approved read-only SQL: exactly 1 delivery/event/message/thread/content job
+(blocked_policy, 0 attempts)/asset (pending, no storage_ref/sha256), sealed locator only,
+links/audit/approvals/agent/chat 0 since arrival, dedupe keys live. Mission GREEN.

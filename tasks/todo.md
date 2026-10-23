@@ -48,4 +48,7 @@ commercial workflow regression passed 85 checks.
 - [x] Independent review: opaque ids, no-identity acknowledgement, content normalization, bypass removed (016ceb5).
 - [x] Production schema re-verified read-only; 016ceb5 deployed and boundary-checked.
 - [x] Hostinger Test 13:34Z → 200 success, acknowledged no_mailbox_identity, degraded [], zero writes.
-- [ ] Controlled real email → message/thread/Inbox/no side effects; then retry/idempotency check.
+- [x] Controlled real email 13:41Z (with PDF): one accepted delivery, Inbox verified, no side effects.
+- [x] Attachment metadata-only, no download; body preview-only; business objects unchanged.
+- [x] Read-only production SQL (owner-approved): 1 delivery/event/message/thread/job/asset, keys live, 0 side effects.
+- [x] Hostinger activation mission closed GREEN 2026-10-23. Next: Email OS facelift, then OS/Bureau reconciliation (not started).

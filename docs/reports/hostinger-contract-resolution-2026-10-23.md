@@ -129,9 +129,119 @@ content_assets/business_links/action_audit all 0; chat.events 0; os_jobs, os_fol
 os_files 0; os_leads 5, os_clients 2, os_angebote 1, os_invoices 2 (pre-existing baseline).
 The synthetic Test created no mail, thread, CRM object, job, notice or action.
 
-## 8. Remaining: controlled real email
+## 8. Controlled real email (owner-sent)
 
-Not yet sent: the agent's attempt to send from the connected Gmail session was refused by the
-session permission policy, so the owner sends it. Expected: one mail.messages row, one thread,
-classification lead/needs reply (subject contains "automation enquiry"), preview-only body,
-possible CRM link only if the sender already exists, no new lead, no outbound, no Telegram.
+Planned as a no-attachment test. Marcel sent it from an external Yahoo address; it also carried
+one PDF, which made it a more useful test than planned (section 9).
+
+## 9. First real inbound mail — evidence
+
+**Provider (Hostinger Mail connector, read-only).** INBOX UID 45, date 2026-10-23T13:41:37Z,
+from akwe.marcel@yahoo.com to info@maxpromo.digital, subject
+`MXP-INBOUND-PROOF-20261023 automation enquiry`, RFC Message-ID present (mail.yahoo.com),
+no In-Reply-To, plain text ~111 bytes, one attachment `abbaland.pdf` application/pdf
+1,548,450 bytes. The one webhook (01a1672e…, active, message.received, exact production URL)
+did not change.
+
+**Webhook (Vercel request logs).** Exactly one POST /api/channels/mail since the Test:
+
+| Field | Value |
+| --- | --- |
+| request | dm56h-1792762908253-322021585cdf, 2026-10-23T13:41:48.253Z, 10.7 s after mailbox arrival |
+| deployment | dpl_GQwE9b3vtfvKRFcMt1EdwLrRSNvy (release 016ceb5) |
+| response | 200 (returned only after `mail.accept_hostinger` committed) |
+| log | `{"event":"mail.webhook.accepted","created":true,"deliveryId":"e4d1cd84-8ebd-5685-8c8b-1f9e4731910c","degraded":[]}` |
+
+A non-empty eventId was present: a 64-character lowercase hex string, unlike the empty Test
+value. `degraded: []` means From, Message-ID, dates, filename and sizeBytes all parsed with no
+normalization. Every request from 13:41Z to 14:45Z was scanned (each window under the 100-row
+cap, so complete): no second webhook POST (no Hostinger retry), and no POST to contact,
+newsletter, max-agent, os/agent, os/mail/actions, send-angebot or send-invoice. The only
+other non-GET was a scanner's POST /xmlrpc.php → 404.
+
+**Owner Inbox API and UI (authenticated production browser, GET only).** configured true,
+exactly one thread (ba40ffeb…, provider_thread_id `hostinger:<eventId>`, account
+hostinger:info@maxpromo.digital), one message (7e70435c…): sender akwe.marcel@yahoo.com,
+recipients [info@maxpromo.digital], cc [], event_at/received_at 13:41:48.198Z, email_date
+13:41:37Z, is_read false, body_state `preview`, body_text empty, preview = the 110-character
+body. Classification `lead`, needs_reply true, waiting/archived/trashed false, business links
+none. Attachment metadata: filename `abbaland.pdf`, size 1,548,450 (identical to the provider),
+contentType `application/octet-stream` (provider MIME deliberately untrusted), id `<eventId>:0`.
+The response contains no fileUrl, bodyUrl, URL, nonce, ciphertext or lease token.
+
+Rendered: list row shows Unread, sender, subject, preview, "23 Oct 2026, 15:41", lead, Needs
+reply. Detail shows From/To, no Cc row (empty), the preview label "Full content has not been
+retrieved", the plain-text notice, the attachment as `abbaland.pdf · 1513 KB · application/
+octet-stream` with "Metadata only. Attachment downloads are not enabled", no link, img or
+iframe. Filters: Inbox 1, Unread 1, Needs reply 1, Waiting 0, Clients 0, Leads 0, Billing 0,
+System 0, Archived 0. Search by proof code, by sender and by preview word finds it; nonsense
+finds nothing. At 390 px wide: no horizontal scroll, list → detail with Back. Nothing was
+marked read, drafted or archived.
+
+**Leads filter = 0 is the documented design, not a fault.** Clients/Leads views require an
+owner-confirmed CRM link (email-channel.md, "Inbox and owner experience"). The sender is no
+existing lead or client, so no link was suggested, and the `lead` classification shows as a
+chip. Whether a new enquiry should also appear under Leads is a product decision for Marcel.
+The code was not changed.
+
+**Classification path.** Rule-based only: `classifyMail` in normalization.ts, a fixed regex
+order (system → billing → routine → lead → other) over subject plus preview. "enquiry" and
+"automation" in the subject matched `lead`/needsReply. No model, no confidence score, no
+fallback. Summary and AI reply refuse preview-only messages.
+
+**Business objects (owner OS APIs).** leads 5, clients 2, quotes 1, invoices 2, jobs 0:
+unchanged from baseline. None of them contains the sender. No lead or client was created.
+`accept_hostinger` only *suggests* links to existing records with the same address, and
+none matched.
+
+**Side effects.** Hostinger Sent: newest item 07:26Z, nothing after arrival. No outbound route
+was called. Telegram is sent only from the contact, newsletter and max-agent routes, and none
+was called. Email attention is a pull notice read by the WhatsApp gateway, and the gateway is
+OFF (/api/channels/whatsapp 503). No model call is on the receipt path. Receiver still
+GET 405 and unauthenticated POST 401. Health ok, database ok, release 016ceb5.
+
+**Body and attachment security.** Only `plainBody` (≤200 code points) is stored. htmlBody is
+never read or stored. The UI renders plain text in a `<p>` with no innerHTML. A bodyUrl or
+fileUrl only survives if it passes the syntax check, and then only as an AES-256-GCM sealed
+locator bound to account:eventId, never in message metadata or a response. No production
+code calls `fetchSignedContent`, and no worker, cron or allowlisted host exists, so nothing was
+fetched. Downloads stay disabled, and SSRF policy is unchanged.
+
+**Direct production SQL (owner-approved, read-only).** Two SELECT-only queries ran in the
+Neon console (maxpromo-automation / production br-floral-lab-alnv2a1o / neondb), each inside
+`BEGIN READ ONLY … ROLLBACK`. They printed lengths, key names and booleans only; no locator,
+URL or credential was shown. The first was blocked by the session permission policy until
+Marcel approved it explicitly.
+
+| Fact | Production |
+| --- | --- |
+| counts | accounts 1, threads 1, messages 1, deliveries 1, events 1, content_jobs 1, content_assets 1, business_links 0, action_audit 0, chat.events 0 |
+| delivery | e4d1cd84-…, provider_event_id length 64 = message provider_message_id, linked to the message; event_at 13:41:48.198Z, accepted_at 13:41:49.313Z |
+| event | one `received`, thread ba40ffeb…, created 13:41:49.313Z (same transaction) |
+| message | RFC Message-ID `<…@mail.yahoo.com>` stored, in_reply_to null, references = one Yahoo `.ref` id (persisted, matched nothing), body_state preview, body_text 0, preview 111 chars, unread, attachments jsonb has no URL |
+| content job | blocked_policy, attempts 0, no lease, expires 2026-10-24T13:41:48.198Z; locator keys exactly ciphertext/nonce/tag/version, version 1, ciphertext 1,688 base64 chars, no plaintext URL |
+| asset | key `<eventId>:0`, abbaland.pdf, 1,548,450 B, application/octet-stream, **pending**, storage_ref null, sha256 null |
+| business objects | os_leads 5, os_clients 2, os_angebote 1, os_invoices 2, os_jobs 0, os_followups 0, os_files 0: baseline |
+| approvals | os_approvals 5, all `outreach.send` from 2026-10-08/09; 0 since 13:41Z |
+| since 13:41Z | os_audit, os_activities, os_agent_results, os_incidents, chat.messages, chat.leads_telegram all 0 |
+| live keys | deliveries PK(account_id, delivery_id); messages UNIQUE(account_id, provider_message_id); threads UNIQUE(account_id, provider_thread_id); content_jobs UNIQUE(message_id); content_assets UNIQUE(message_id, attachment_key); events PK(id); action_audit UNIQUE(approval_id); 15 PK/unique in total |
+
+Production matched the expected state exactly; nothing needed reconciling. The 1,688-character
+ciphertext shows Hostinger did send signed body/file URLs that passed the syntax check. They
+exist only sealed, bound to account:eventId, and expire with the job. No allowlisted host,
+transport or worker exists, so nothing can open them until the download contract is verified.
+
+**Verdict: HOSTINGER EMAIL OS GREEN.** All 19 completion conditions are proven by provider,
+log, owner-API/UI and direct database evidence.
+
+**Dedupe and retry.** Hostinger did not retry this delivery, so the proof is the transactional
+function plus the isolated real-SQL proofs: 12 concurrent duplicate deliveries commit one
+message; one event via a different delivery is not ingested twice; a delivery id cannot be
+rebound to another event; opaque ids dedupe exactly once; subject-only and cross-sender
+references never merge. prove:email-channel exit 0. prove:email-storage passed 43/43 on 2 of 4
+runs. The other 2 failed on connection to the isolated evidence database (`evidence database
+unavailable`, Neon pooler), never on an assertion.
+
+**Cleanup.** No activation-only artifact remains: the exact-sample bypass was deleted in 016ceb5.
+The structural diagnostics for rejected envelopes are value-free and decide incidents, so they
+are kept. No code change was needed. Nothing was committed apart from this documentation.

@@ -37,3 +37,9 @@
 - Do not impose a grammar on provider-owned opaque ids, and do not 400 an authenticated
   provider over content quirks: refusal loses mail and auto-pauses the webhook.
 - A bypass keyed to documentation examples is overfitted; check it against real traffic.
+- Owner-sent proof mail rarely matches the plan (this one carried a PDF). Design the receiver
+  so unplanned content degrades to safe metadata instead of needing a new test.
+- Before claiming "Leads" visibility, read the filter: it means an owner-confirmed CRM link,
+  not the triage classification.
+- A sealed-locator length is evidence without exposure: 1,688 ciphertext chars proved real
+  signed URLs arrived and were sealed, without revealing a single URL.

@@ -2,7 +2,18 @@
 
 This extends ADR-0020; it does not introduce another mail or notification architecture.
 
-## Current production status — 2026-10-23 (supersedes the notes below)
+## Current production status — first real mail, 2026-10-23 (supersedes below)
+
+Hostinger Test passed (200 ingested:false, 13:34Z). The first real external mail
+(13:41:37Z, with one 1.5 MB PDF) was accepted once: request dm56h-1792762908253-322021585cdf,
+200, created:true, degraded []. Owner Inbox shows one thread/message, lead, Needs reply,
+preview only, attachment as metadata only. No retry, outbound, Telegram, CRM object or
+download. Read-only production SQL confirmed exactly 1 delivery/event/message/thread/job/asset,
+job blocked_policy, asset pending with no storage, 0 links/audit/approvals. **Activation closed: GREEN.**
+Downloads, outbound and Telegram routing remain off until separately activated.
+[evidence](../reports/hostinger-contract-resolution-2026-10-23.md#9-first-real-inbound-mail--evidence)
+
+## Earlier status — 2026-10-23
 
 Two further genuine Tests on the diagnostic build proved the real wire: authenticated
 message.received for info@maxpromo.digital with an **empty eventId**, empty bodyUrl and no
