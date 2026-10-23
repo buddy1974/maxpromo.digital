@@ -6,12 +6,17 @@ One repository, separate projects. Deploy independently, govern together.
 
 ## Projects
 
-| Project | Root Directory | Domains | Database |
-|---|---|---|---|
-| `maxpromo-digital` | `apps/web` | maxpromo.digital + 9 product domains | Neon `eu-central-1` |
-| `maxpromo-agents` | `apps/bureau` | agents.maxpromo.digital | Neon `us-east-1` |
+| Project | Root Directory | Domains | Functions | Database |
+|---|---|---|---|---|
+| `maxpromo-digital` | `apps/web` | maxpromo.digital + 9 product domains | `fra1` (from the ADR-0021 release; `iad1` before) | Neon `eu-central-1` |
+| `maxpromo-agents` | `apps/bureau` | agents.maxpromo.digital | `fra1` (from the ADR-0021 release; `iad1` before) | Neon `us-east-1` until the EU cutover (runbook in `docs/architecture/control-plane-reconciliation.md` §21) |
 
-Both build from `buddy1974/maxpromo.digital`, production branch `main`.
+Both build from `buddy1974/maxpromo.digital`, production branch `main`. The function region
+is set in each app's `vercel.json` (`regions`), so it is reviewed like code.
+
+**Retired 2026-10-23:** the standalone `maxpromo-agent-bureau` project (pre-monorepo copy).
+Git disconnected, every variable removed, repository archived; its last deployment runs on
+its build-time snapshot until the project is paused (owner action).
 
 ### Why not one project
 
@@ -89,10 +94,11 @@ as an error, not as "build". The commit-presence check replaced it. Both
 failures happened before any application code was built; production stayed on
 `77dbc20` throughout.
 
-**Bureau (`apps/bureau/vercel.json`) still uses the old form** —
-`HEAD^ HEAD -- ../../apps/bureau ../../packages` — and has the same blind spot.
-Deliberately left for Iteration 2 so a public-site release did not redeploy
-Agent Bureau (known risk 67).
+**Bureau (`apps/bureau/vercel.json`) used the old form** until 2026-10-23, and it did
+exactly what the web incident predicted: every Bureau build after `c0bf517` was cancelled,
+so the Next.js 16.4.2 security fix never reached agents.maxpromo.digital (known risks 67
+and 106). It now uses the same commit-presence form as web, including the root manifest
+and lockfile.
 
 A commit touching only the other application does not trigger a rebuild. A
 commit touching `packages/` rebuilds both, which is correct — a token change is
@@ -107,21 +113,29 @@ separate is what keeps the two databases separate.
 
 | Variable | web | bureau |
 |---|---|---|
-| `DATABASE_URL` | eu-central-1 instance | us-east-1 instance |
-| `ANTHROPIC_API_KEY` | ✓ | ✓ |
-| `OPENAI_API_KEY` | ✓ | ✓ |
-| `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | ✓ | ✓ |
+| `DATABASE_URL` / `NEON_DATABASE_URL` | `NEON_DATABASE_URL`, eu-central-1 | `DATABASE_URL`, us-east-1 until the EU cutover |
+| `ANTHROPIC_API_KEY` | ✓ | — (no AI key in production; the AI Lab cannot run) |
+| `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | ✓ (the only Telegram sender) | — (removed 2026-10-23) |
 | `RESEND_API_KEY` / `RESEND_FROM_EMAIL` | ✓ | — |
 | `OS_PASSWORD` / `OS_SESSION_SECRET` | ✓ | — |
-| `PORTFOLIO_PASSWORD` | ✓ | — |
+| `HOSTINGER_WEBHOOK_SECRET` / `EMAIL_PROVIDER` | ✓ | — |
+| `OS_BUREAU_AGENT_SECRET` | ✓ (verifies) | ✓ (signs) — one fresh value, 2026-10-23 |
+| `OS_BUREAU_ALLOWED_AGENTS` | `bureau:intake,bureau:console` | — |
+| `OS_AGENT_SECRET` / `OS_AGENT_ALLOWED_ACTORS` | — (removed 2026-10-23; legacy door closed) | — |
+| `BUREAU_OS_BUSINESS_ID` | — | the Bureau tenant that is Maxpromo |
+| `CRON_SECRET` | — | ✓ (daily intake-outbox flush) |
 | `AUTH_SECRET` | — | ✓ |
-| `UPSTASH_REDIS_REST_URL` / `_TOKEN` | — | ✓ |
+| `PORTFOLIO_PASSWORD` | ✓ | — |
 | `NEXT_PUBLIC_SITE_URL` | — | ✓ |
 
-> ⚠️ **Open compliance item.** The bureau database is in `us-east-1` while
-> `agents.maxpromo.digital` publicly claims EU hosting. Recorded in
-> `docs/governance/known-risks.md`. Resolve before onboarding further personal
-> data.
+The two `OS_BUREAU_AGENT_SECRET` copies must be equal; the web gate refuses it if it ever
+equals another client's secret (ADR-0021). Rotate by setting a new value on both projects and
+deploying both.
+
+> ⚠️ **Compliance item, partly resolved.** Functions move to Frankfurt with the ADR-0021
+> release, and the Bureau's legal text now states the database region from
+> `apps/bureau/config/infrastructure.ts` instead of claiming the EU. The database itself
+> stays in `us-east-1` until the EU cutover. Recorded in `docs/governance/known-risks.md`.
 
 ---
 

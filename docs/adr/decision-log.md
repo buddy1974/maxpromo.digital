@@ -1955,3 +1955,26 @@ mail and repeated failures pause the webhook. The exact documentation-sample byp
 removed rather than extended: there is no documented Test discriminator and none is invented.
 Rejected: a character grammar for ids; ingesting no-identity events keyed by delivery id
 (would put synthetic Test mail in the Inbox); continuing to 400 the Test. Evidence: [contract resolution](../reports/hostinger-contract-resolution-2026-10-23.md).
+
+## 2026-10-23 — Three control planes and one cross-plane contract (ADR-0021)
+
+Owner decisions after the forensic baseline:
+- **Approval ownership:** the Agent Bureau governs agents; Maxpromo OS owns business state and
+  the approval record and execution of business actions.
+- **Bureau role:** both Maxpromo's own agent control plane (tenant 1) and a future product.
+- **EU:** fix the infrastructure, not just the claim.
+- **Retirement and containment:** retire the shadow Bureau; close the dormant agent door.
+
+Implemented as [ADR-0021](0021-control-planes-and-the-cross-plane-contract.md):
+- per-client credentials and authority on the signed door;
+- requester/owner executor binding;
+- `lead.intake` with a permanent receipt ledger, and agent events projected into `/os`;
+- owner direct actions that are audited and idempotent;
+- the Intake agent as the first real Max Agent;
+- `fra1` functions for both apps.
+
+Rejected:
+- merging applications or databases;
+- business approvals in the Bureau;
+- reusing the legacy secret;
+- prompting for approval on every owner click.

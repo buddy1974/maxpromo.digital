@@ -57,9 +57,10 @@ commercial workflow regression passed 85 checks.
 
 1. [ ] Maxpromo OS / Max Agent Bureau two-repo forensic reconciliation and boundary cleanup
    - [x] Forensic baseline and target delta: `docs/architecture/control-plane-reconciliation.md` (2026-10-23).
-   - [ ] Owner decisions: G1 EU claim/region, G2 agent door, G3 shadow Bureau project, approval interpretation (§15), Bureau product/tenant role.
-   - [ ] Boundary cleanup (hygiene release G4, G10, G13, G17) after those decisions.
-2. [ ] Lock the Business Control Plane ↔ Agent Control Plane integration contract
+   - [x] Owner decisions locked 2026-10-23 (EU infrastructure, door containment, shadow retirement, approval ownership, tenant 1).
+   - [x] Reconciliation implemented and verified (ADR-0021); production containment, migration 0015, trust and shadow retirement done.
+   - [ ] Owner: push main (release both apps), pause the shadow Vercel project, create the EU Neon project, then run the EU cutover runbook.
+2. [x] Lock the Business Control Plane ↔ Agent Control Plane integration contract (ADR-0021, contract v1 with per-client credentials)
 3. [ ] Maxpromo OS daily command-centre reconciliation
 4. [ ] Email OS premium facelift inside the reconciled architecture
 5. [ ] Agent Bureau UX/governance refinement

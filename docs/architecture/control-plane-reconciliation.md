@@ -169,7 +169,7 @@ Bureau approvals, OS approvals, Mission Control Confirm/Cancel, and the abandone
 ## 5. Current Telegram implementation
 
 - **Senders:** `apps/web/lib/telegram.ts` (suppressed in evidence mode) and the Bureau's
-  `lib/integrations/telegram/notify.ts` (not suppressed). They are near-identical, use the same
+  `lib/integrations/telegram/notify.ts` (not suppressed; removed 2026-10-23 by ADR-0021). They are near-identical, use the same
   env names and both live outside `packages/`. Three Vercel projects hold a
   `TELEGRAM_BOT_TOKEN`: web (154 days), and both Bureau projects (147 days).
 - **Inbound:** no inbound Telegram path exists in either repository. Inbound worked only
@@ -461,3 +461,44 @@ P3 UX/operations, P4 tech debt, P5 optional.
   dashboard was not inspected: it needs a password, which the agent does not enter.
 - Code traces: OS, Bureau (both copies, 204 files each, divergence by hash) and
   OpenClaw/Telegram (filesystem, scheduled tasks, ports, Codex logs).
+
+## 21. Implementation status — 2026-10-23 (ADR-0021)
+
+Owner decisions locked the approval interpretation (§15), the Bureau's dual role (Maxpromo is
+tenant 1) and EU infrastructure as the target. Implemented in the repository and verified;
+the production release waits for the owner push (the session could not push or deploy).
+
+| Gap | State | Evidence |
+|---|---|---|
+| G2 agent door | **Contained in production**: `OS_AGENT_ALLOWED_ACTORS` and then `OS_AGENT_SECRET` removed; a deployment built after the removal is live (health `release.commit` empty = CLI build). Door code kept; per-client credentials added | Vercel env listing; ADR-0021 |
+| G3 shadow Bureau | **Retired except its running deployment**: Git disconnected, every credential removed from the project (0 env vars), GitHub repository archived. No unique code (subtree split point), no unique data (it shares the one Bureau database, proven by the Neon project list and endpoint). Pausing the project is an owner action (CLI requires interactive confirmation) | §20 |
+| G4 Bureau drift | Ignore rule fixed (web form, counts root lockfile); ships on the next push | `apps/bureau/vercel.json` |
+| G5 leads | `lead.intake` (receipt ledger) plus the Intake agent and outbox; the Bureau keeps no lead after the OS confirms. The one existing submission (2026-05-30) is forwarded by the first flush after release | `prove:control-planes` 30/30, HTTP contract 7/7 |
+| G6/G15 attention | `/os` dashboard leads with the attention panel; `/os/approvals` decides; agent events project in and can be acknowledged | local evidence-mode browser check, desktop and 390 px |
+| G7 browser writes | Document sends from the stored record, idempotent and audited; newsletter idempotent, audited, honest counts; mark-paid records the payment; issued invoices cannot be deleted | `prove:commercial-boundary` 48/48, `prove:document-numbering` 35/35 |
+| G9 Bureau demo | Registry honest (nine agents `offline`, Intake `live`); dashboard Live section separated from a labelled sample-data preview; shadow approval route and buttons removed | i18n gate |
+| G10 Bureau approvals | Moot: the decision route is removed; the page is a read-only OS projection | — |
+| G11 Telegram | Bureau sender removed; the OS is the only sender; Bureau Telegram variables removed | grep, Vercel env |
+| G12 AI wrapper | **Open**: two provider adapters remain (web `lib/ai.ts`, Bureau `lib/ai/*`); the Bureau has no production key | known risk |
+| G13 executor binding | Done in SQL claim | mutation-tested |
+| G14 voice-enhance | Origin and same-site check, body and context caps, rate limit kept | code |
+| G16 dead code | Removed: `lib/env.ts`, the OS registry adapter, four dead message builders, `/api/max-agent/submit`, the Bureau approval routes and their client component | reference search before each deletion |
+| G17 docs | This report, ADR-0021, the risk register, deployment notes | `audit:docs` |
+| G1 EU | Functions pinned to `fra1` (web and Bureau). Privacy notices made factual; the Bureau hero's legal claim removed. **The database move awaits an EU Neon project, which the session could not create (owner action)**. Rehearsal proved the copy: 35 tables, 125 rows, identical counts and checksums | `migrate-to-eu.mjs --rehearse` |
+
+### EU database cutover — runbook
+
+1. In the Neon console create project `maxpromo-agent-bureau-eu`, region AWS Europe Central 1
+   (Frankfurt), PostgreSQL 17. Put its connection string in a local file as
+   `DATABASE_URL=...` (never in chat).
+2. `node apps/bureau/scripts/migrate-to-eu.mjs --migrate <current-bureau-env-file> <eu-env-file>`.
+   It refuses a non-EU, non-empty or identical target. It fingerprints the source, dumps,
+   restores, compares every table, applies the outbox migration and compares again.
+3. Replace `DATABASE_URL` on the `maxpromo-agents` Vercel project with the EU URL.
+4. In the same release set `databaseRegion: "eu-central-1"` in `apps/bureau/config/infrastructure.ts`.
+   The privacy notice then states the EU region, which is now true.
+5. Deploy. Check `/api/health` database ok, log in, submit one test enquiry, and see it in `/os/leads`.
+6. Keep the US project for 14 days as the recovery point, then delete it.
+
+Rollback: restore the previous `DATABASE_URL` and redeploy. The US database is untouched by
+the migration.

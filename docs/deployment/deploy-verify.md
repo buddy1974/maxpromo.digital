@@ -38,8 +38,9 @@ OS_SESSION_SECRET=<paste-the-generated-string-from-1a>
 ```
 
 Reference: see `.env.local.example` for the full list of vars and what
-each does. `lib/env.ts` will refuse to start if `OS_PASSWORD` < 8
-chars or `OS_SESSION_SECRET` < 32 chars.
+each does. `lib/auth.ts` refuses every session while `OS_SESSION_SECRET` is
+shorter than 32 characters. (A startup check in a separate env module was
+never imported by anything and was removed on 2026-10-23.)
 
 ### 1c. Update Vercel project settings
 
@@ -267,7 +268,7 @@ You should see additions in: `app/api/os/ai/enhance/`, `app/api/os/login/`,
 `app/api/os/clients/route.ts`, `app/api/os/invoices/route.ts`,
 `app/api/os/angebote/route.ts`, `app/api/contact/route.ts`,
 `app/api/audit/route.ts`, `app/api/chat/route.ts` (removed 2026-10-06),
-`lib/auth.ts`, `lib/env.ts`,
+`lib/auth.ts` (the env module listed here before was removed 2026-10-23),
 `lib/rate-limit.ts`, `lib/prompts.ts`, `middleware.ts`, `db/`, `docs/`,
 `.gitignore`, `.env.local.example`.
 
@@ -278,8 +279,10 @@ npm run lint
 npm run build
 ```
 
-Both must pass clean. If `npm run build` fails on `lib/env.ts`
-("OS_SESSION_SECRET must be set"), it means env validation is firing
+Both must pass clean. The build does not validate secrets: the env module
+that was described here was removed on 2026-10-23 because nothing imported it,
+and `OS_SESSION_SECRET` is checked by `lib/auth.ts` per request. If a build
+ever does fail on a missing secret, env validation is firing
 in build context — that's expected if you didn't add the var to your
 build environment yet. Either set it, or skip build verification and
 let Vercel handle it (Vercel will use the Production env vars you set

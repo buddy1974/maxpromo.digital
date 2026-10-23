@@ -1,5 +1,37 @@
 # Change Log
 
+## 2026-10-23 — Control-plane reconciliation (ADR-0021)
+
+**Production changes:**
+- Legacy agent door closed: allow-list and secret removed, and a containment deployment is live.
+- Migration 0015 applied: `os_intake_receipts` and `os_agent_events`, 0 rows; existing data
+  unchanged (leads 5, approvals 5).
+- Bureau↔OS trust provisioned with a fresh secret on both projects; Bureau Telegram duplicates
+  removed.
+- Shadow Bureau retired: Git disconnected, 0 variables, repository archived.
+
+**In the repository (released by the next push):**
+- per-client signed door with Bureau authority and executor binding;
+- `lead.intake` and the Intake agent with an outbox;
+- `/os` attention panel and `/os/approvals`;
+- audited, idempotent owner sends; mark-paid records the payment; issued invoices cannot be
+  deleted; risk 80 closed;
+- voice-enhance bounds;
+- dead code removed;
+- the Bureau approvals page is a projection; the Bureau registry is honest; Live versus
+  sample-data dashboard;
+- both apps pinned to `fra1`; factual privacy text;
+- Bureau ignore rule fixed.
+
+**Proofs:**
+- `prove:control-planes` 30/30, with two mutations caught;
+- HTTP contract 7/7;
+- commercial boundary 48/48; document numbering 35/35;
+- EU migration rehearsal 35/35 tables identical.
+
+**Open:** the EU Neon project (owner); the push itself.
+[reconciliation](../architecture/control-plane-reconciliation.md)
+
 ## 2026-10-23 — Hostinger real-wire contract accepted (016ceb5)
 
 Independent review of the Codex activation work. Production diagnostics showed the genuine

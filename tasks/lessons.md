@@ -43,3 +43,11 @@
   not the triage classification.
 - A sealed-locator length is evidence without exposure: 1,688 ciphertext chars proved real
   signed URLs arrived and were sealed, without revealing a single URL.
+- A gate fix applied to one app and "deliberately left" for the other is a scheduled incident:
+  the Bureau's old ignore rule silently kept a critical security fix out of production for weeks.
+- Source-pattern proofs pin implementations, not guarantees. When an invariant gets stronger
+  (email from the stored record), update the proof to the stronger invariant, not the old string.
+- jsonb reorders keys: never compare stored engine answers by serialised JSON, and never rely
+  on jsonb for display order.
+- Python heredocs turn "\n" in embedded JS into real newlines; edit code with the Edit tool,
+  not string-substituting scripts, when the payload contains escapes.

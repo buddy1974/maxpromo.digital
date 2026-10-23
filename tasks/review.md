@@ -131,3 +131,30 @@ Business objects unchanged, Sent empty since arrival, WhatsApp 503, health ok. E
 pass; storage 43/43 (evidence-DB transport flaky). Owner-approved read-only SQL: exactly 1 delivery/event/message/thread/content job
 (blocked_policy, 0 attempts)/asset (pending, no storage_ref/sha256), sealed locator only,
 links/audit/approvals/agent/chat 0 since arrival, dedupe keys live. Mission GREEN.
+
+### Control-plane reconciliation (ADR-0021)
+
+**Containment:** the legacy door was closed in production, with a live deployment proving it.
+The shadow Bureau was retired except for its running deployment, which needs an owner pause.
+
+**Contract:**
+- per-client secrets and authority on the existing signed door;
+- the Bureau can run its allow-listed capabilities and report events, never execute or reject;
+- executor bound to the requester or the owner.
+
+**Implemented:**
+- `lead.intake` is idempotent forever (receipt ledger) and the Intake agent forwards through an
+  outbox, so the Bureau keeps no lead;
+- `/os` leads with the shared attention model and `/os/approvals` decides;
+- owner direct sends are idempotent and audited, documents come from the stored record,
+  mark-paid records the payment, and issued invoices cannot be deleted.
+
+**Proofs:**
+- SQL 30/30, with two mutations caught;
+- HTTP 7/7;
+- boundary 48/48; numbering 35/35;
+- EU rehearsal 35/35;
+- local browser checks at desktop and 390 px.
+
+**Production:** migration 0015 applied; fresh trust provisioned.
+**Owner:** push, pause the shadow project, create the EU Neon project.
