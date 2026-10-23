@@ -1,5 +1,15 @@
 # Change Log
 
+## 2026-10-23 — Closure continuation
+
+- First positive Bureau → OS production call: existing 2026-05-30 submission forwarded via the
+  Bureau's own cron; OS lead 4a9f088a… created once, receipt recorded, Bureau outbox cleared,
+  second run made no OS call.
+- Shadow Bureau proven obsolete and paused (alias 503); deletion awaits owner authorization.
+- `HOSTINGER_MAILBOX_RESOURCE_ID` set in production; provider check also after `/api/os/attention`.
+- EU migration tool: `--recheck` mode proves no writes reached the US database after the copy;
+  runbook gains PostgreSQL 17, a write-free window and the recheck step.
+
 ## 2026-10-23 — Release 1bfa5cf (ADR-0021, ADR-0022, risk 109)
 
 Owner applied Bureau migration 0002 (verified read-only). Pushed 11 commits; web

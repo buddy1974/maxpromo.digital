@@ -68,11 +68,13 @@ Business Control Plane; Maxpromo OS remains the source of truth. To be instructe
    - [x] /os attention rendered in the viewer's language (risk 109).
    - [x] Release closure pre-push check: Bureau migration 0002 missing in production (release blocker), documented in reconciliation §22.
    - [x] Bureau migration 0002 applied by the owner; verified read-only by the session.
-   - [ ] OWNER: set HOSTINGER_MAIL_API_TOKEN and HOSTINGER_MAILBOX_RESOURCE_ID on maxpromo-digital (§22 step 2).
+   - [x] HOSTINGER_MAILBOX_RESOURCE_ID set on maxpromo-digital production.
+   - [ ] OWNER: create the Hostinger Mail API token and set HOSTINGER_MAIL_API_TOKEN (Sensitive) on maxpromo-digital production.
    - [x] Pushed 4013782..1bfa5cf; both projects deployed and verified in production (reconciliation §22 Release).
-   - [ ] Pending: first Bureau → OS intake flush (dashboard view or 06:00 UTC cron) → 2026-05-30 submission in /os/leads.
+   - [x] First positive Bureau → OS call: 2026-05-30 submission → OS lead 4a9f088a… (cron triggered early; replay made no call).
    - [ ] OWNER: Junk message → Als Spam markieren if step 2 is not done (§22 step 5).
-   - [ ] OWNER: pause the shadow Vercel project; create the EU Neon project and run the §21 runbook.
+   - [x] Shadow Bureau paused (OBSOLETE / PAUSED / CANDIDATE FOR DELETION).
+   - [ ] OWNER: create the EU Neon project (PostgreSQL 17, Frankfurt); then the §21 runbook incl. --recheck.
 2. [x] Lock the Business Control Plane ↔ Agent Control Plane integration contract (ADR-0021, contract v1 with per-client credentials)
 3. [ ] Maxpromo OS daily command-centre reconciliation
 4. [ ] Email OS premium facelift inside the reconciled architecture

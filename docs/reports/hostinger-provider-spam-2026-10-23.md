@@ -121,3 +121,29 @@ lead. `Rechnung` matched `billing` with `needsReply: true`. Nothing considered:
 - Reconciler credentials: **absent** in production (owner, risk 114). With both set before the push,
   the first `/os/inbox` load quarantines the Junk message automatically.
 - Junk message: unchanged (`billing`, Needs reply, `unverified`); no new mail since 13:41Z; no outbound.
+
+## 11. Reconciler review (2026-10-23, closure continuation)
+
+- **Credentials:** `hostingerStateReader` reads `HOSTINGER_MAIL_API_TOKEN` and
+  `HOSTINGER_MAILBOX_RESOURCE_ID` (must match `^AC[A-Za-z0-9]+$`); either missing, or evidence
+  mode, returns `null` and nothing runs.
+- **Endpoints:** `GET /api/v1/mailboxes/{id}/folders` and
+  `POST /api/v1/mailboxes/{id}/folders/{folder}/messages/search` with
+  `{header:"Message-ID:<…>", since}`; Bearer token; 8 s timeout; redirects refused; no cache.
+- **Read-only:** the reader object exposes only `folders` and `search` (asserted in tests);
+  send/move/flag are unreachable from it.
+- **Mapping:** special-use `\Junk` → `provider_junk` quarantine (unless the owner said not spam);
+  `\Inbox` → recorded, lifts only a `provider_junk` quarantine; `\Trash` → recorded; not found →
+  retried up to 5 times, then `not_found` (no quarantine).
+- **Failures:** an API error, timeout or malformed response (strict response validation) ends the
+  pass with `failed: true`, changes nothing further and logs only counts. Missing credentials →
+  no-op.
+- **Legitimate mail:** never deleted. It is hidden from the Inbox only if Hostinger itself files it
+  as Junk, if it carries an active attachment from a sender who is no lead or client, or if Marcel
+  blocks the sender; all of it is visible under Spam with "Not spam".
+- **Before reconciliation:** provider Junk can carry `billing` / Needs reply for the seconds until
+  the after-response check, or until the next Inbox or attention view if that check failed. Mail
+  never creates leads, approvals or agent actions automatically.
+- **Window:** messages received in the last 14 days with `provider_state='unverified'`, 10 per pass,
+  newest first.
+- **Hardening in this run:** the check now also runs after `GET /api/os/attention`.

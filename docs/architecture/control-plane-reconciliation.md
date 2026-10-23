@@ -489,7 +489,7 @@ the production release waits for the owner push (the session could not push or d
 ### EU database cutover — runbook
 
 1. In the Neon console create project `maxpromo-agent-bureau-eu`, region AWS Europe Central 1
-   (Frankfurt), PostgreSQL 17. Put its connection string in a local file as
+   (Frankfurt), **PostgreSQL 17** (the source is 17.11; the tool uses PostgreSQL 17 clients). Put its connection string in a local file as
    `DATABASE_URL=...` (never in chat).
 2. `node apps/bureau/scripts/migrate-to-eu.mjs --migrate <current-bureau-env-file> <eu-env-file>`.
    It refuses a non-EU, non-empty or identical target. It fingerprints the source, dumps,
@@ -497,8 +497,12 @@ the production release waits for the owner push (the session could not push or d
 3. Replace `DATABASE_URL` on the `maxpromo-agents` Vercel project with the EU URL.
 4. In the same release set `databaseRegion: "eu-central-1"` in `apps/bureau/config/infrastructure.ts`.
    The privacy notice then states the EU region, which is now true.
-5. Deploy. Check `/api/health` database ok, log in, submit one test enquiry, and see it in `/os/leads`.
-6. Keep the US project for 14 days as the recovery point, then delete it.
+5. Deploy, outside 06:00 UTC and with no form traffic expected (a few minutes). Check `/api/health`
+   database ok and that `agents.maxpromo.digital` responds.
+6. `node apps/bureau/scripts/migrate-to-eu.mjs --recheck <current-bureau-env-file> <evidence.json>`
+   (the path printed by step 2). It must report identical; otherwise replay the listed tables
+   before going further.
+7. Keep the US project for 14 days as the recovery point, then delete it.
 
 Rollback: restore the previous `DATABASE_URL` and redeploy. The US database is untouched by
 the migration.
@@ -589,6 +593,45 @@ additive SQL from the session was refused by the permission policy, so the push 
   2xx in production logs since the release; Hostinger Sent unchanged since 07:26Z; downloads not wired.
 - Pending: the first positive Bureau → OS signed call (intake flush) runs on a Bureau dashboard view or
   the daily 06:00 UTC cron and forwards the 2026-05-30 submission into `/os/leads`.
+
+### Closure continuation — 2026-10-23 (late evening)
+
+**First positive Bureau → OS call (production).** Triggered the Bureau's own daily job early with
+`vercel crons run /api/agents/intake/flush` (Vercel supplies `CRON_SECRET`; nothing secret handled):
+- 20:52:38.770Z cron invoked → Bureau `GET /api/agents/intake/flush` 200 (20:52:39) → signed
+  `POST /api/os/agent/v1/run` 200 on the OS (20:52:40).
+- OS (read-only SQL): leads 5 → 6; `os_intake_receipts` 1 row
+  `agent_bureau_form : 011b093a-d322-4dd8-98d3-a9c3f3451fcc : created : 4a9f088a-adff-4391-a35f-b282b2bd2ff9`;
+  lead row exists, source `agent_bureau_form`, status `discovered`, created 20:52:41Z (the
+  2026-05-30 enquiry date is kept as receipt `received_at` and lead `last_interaction_at`); one
+  request-idempotency row; one activity; approvals 5, clients 2, invoices 2, threads 2 unchanged; 0 audit rows.
+- Bureau (read-only SQL): outbox empty; one `agent_runs` row `intake / completed / created /
+  os_lead 4a9f088a… / submission 011b093a…`, finished 20:52:41.817Z.
+- Replay: a second cron run (20:55:39Z) returned 200 and made **no** OS call (outbox empty). A
+  re-sent submission is answered `duplicate` by the receipt ledger (evidence proof: 10 concurrent
+  deliveries → 1 lead; HTTP contract 7/7). The OS sends its single new-lead Telegram notice by design.
+
+**Shadow Bureau — OBSOLETE / PAUSED / CANDIDATE FOR DELETION.** Project `maxpromo-agent-bureau`
+(`prj_3OWjluaJPD4Rcrnupylmpwq1Vgqf`): no Git link, 0 env vars, 0 cron definitions, only its own
+`*.vercel.app` aliases; `agents.maxpromo.digital` belongs to `maxpromo-agents` (DNS → vercel-dns);
+no code references (docs only); 32 requests in 3 days (forensic probes and crawlers). Paused via
+the Vercel API (`paused: true`); its alias now answers 503 while `agents.maxpromo.digital` and its
+health stay 200. Project and archived repository kept until the owner authorizes deletion.
+
+**Hostinger reconciler.** `HOSTINGER_MAILBOX_RESOURCE_ID` set on `maxpromo-digital` production
+(non-secret). `HOSTINGER_MAIL_API_TOKEN` remains an owner action. The reconciler now also runs after
+`GET /api/os/attention`, so an earlier failed check cannot leave provider Junk on the dashboard.
+
+**EU database readiness (not migrated).** Source: Neon `fancy-dew-58624069`, us-east-1,
+PostgreSQL 17.11; consumers: only `maxpromo-agents` (`DATABASE_URL`); the shadow is paused with no
+variables. Writers: public enquiry form, Intake agent (cron 06:00 UTC and dashboard view), activity
+and login. Rate limits live in Redis, not this database. The tool copies with pg_dump custom format
+(ids, sequences and timestamps preserved), refuses non-EU / identical / non-empty targets and compares
+every table's count and checksum. **Gap fixed:** it could not detect writes reaching the US database
+after the dump and before the `DATABASE_URL` switch; `--recheck <source-env> <evidence.json>` now
+proves none happened (or lists the tables to replay). Cutover requires a short write-free window
+(away from 06:00 UTC); rollback is restoring the old `DATABASE_URL` (the US database is never written
+by the tool), losing only writes made to the EU database after cutover.
 
 ### Next phase (not started)
 

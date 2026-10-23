@@ -178,3 +178,7 @@ reconciliation §22. Not GREEN until the owner steps run and production is verif
 **Release 1bfa5cf:** owner applied Bureau 0002; verified; pushed; both projects Ready on 1bfa5cf in
 fra1; production verified read-only and in the owner browser. Not GREEN: Hostinger REST credentials,
 the Junk message, the first positive Bureau → OS flush, the shadow pause and the EU database remain.
+
+**Closure continuation:** positive Bureau → OS proven in production (lead 4a9f088a…, receipt, outbox
+cleared, replay no call); shadow paused; resource id set; EU tool gained `--recheck`. Remaining:
+Hostinger token, Junk message, EU database (all owner-gated).

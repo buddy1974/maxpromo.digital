@@ -34,7 +34,7 @@ fetched it.
 
    It reads metadata only: never a body, source, attachment or signed URL. The port exposes
    `folders` and `search` only, so it cannot move, flag, send or delete. It runs in `after()`,
-   so receipt never waits on it or fails because of it. It is a no-op until the owner connects
+   so receipt never waits on it or fails because of it. It also runs after the Inbox and attention reads (bounded, after the response). It is a no-op until the owner connects
    `HOSTINGER_MAIL_API_TOKEN` and `HOSTINGER_MAILBOX_RESOURCE_ID`.
 2. **Quarantine is a thread state, not a classification.** `mail.threads.quarantine` takes one of
    `provider_junk`, `suspected_phishing`, `owner_spam` or `blocked_sender`. A quarantined thread is

@@ -60,3 +60,8 @@
   becomes visible without logging values.
 - This session's permission policy allows additive schema SQL only sometimes and never data
   corrections or secret-store writes; plan those as owner steps with exact SQL and verification.
+- `vercel crons run <path>` runs a production cron with Vercel's own secret: the cleanest way to
+  exercise a protected scheduled path early without handling the secret. From Git Bash a leading
+  `/` is rewritten to a Windows path; run it from PowerShell.
+- A copy-then-switch database move needs a post-switch proof that the old database received no
+  writes after the copy; matching checksums at copy time are not enough.
