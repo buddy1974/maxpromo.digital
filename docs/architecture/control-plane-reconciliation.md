@@ -611,6 +611,10 @@ additive SQL from the session was refused by the permission policy, so the push 
   re-sent submission is answered `duplicate` by the receipt ledger (evidence proof: 10 concurrent
   deliveries → 1 lead; HTTP contract 7/7). The OS sends its single new-lead Telegram notice by design.
 
+**Defect found and fixed:** the forwarded enquiry was in the pipeline but raised no `/os` attention
+item. Attention now includes `enquiryNew` for intake-received leads still in `discovered`
+(control planes 33/33).
+
 **Shadow Bureau — OBSOLETE / PAUSED / CANDIDATE FOR DELETION.** Project `maxpromo-agent-bureau`
 (`prj_3OWjluaJPD4Rcrnupylmpwq1Vgqf`): no Git link, 0 env vars, 0 cron definitions, only its own
 `*.vercel.app` aliases; `agents.maxpromo.digital` belongs to `maxpromo-agents` (DNS → vercel-dns);

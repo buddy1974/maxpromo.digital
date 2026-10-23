@@ -7,6 +7,9 @@
   second run made no OS call.
 - Shadow Bureau proven obsolete and paused (alias 503); deletion awaits owner authorization.
 - `HOSTINGER_MAILBOX_RESOURCE_ID` set in production; provider check also after `/api/os/attention`.
+- `/os` attention: a channel enquiry received through intake and still `discovered` is a SALES item
+  ("New enquiry from … — reply"); found when the forwarded Bureau lead raised no attention.
+- Bureau health note: the missing AI key blocks model-based agents only, not the deterministic Intake agent.
 - EU migration tool: `--recheck` mode proves no writes reached the US database after the copy;
   runbook gains PostgreSQL 17, a write-free window and the recheck step.
 
