@@ -5,6 +5,7 @@ import { ApprovalCard } from "@/components/dashboard/ApprovalCard";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { MetricCard } from "@/components/dashboard/MetricCard";
+import { LivePanel } from "@/components/dashboard/LivePanel";
 import { getDashboardData } from "@/lib/db/queries/dashboard";
 import { getCurrentUser } from "@/lib/auth/session";
 import type { AgentProposal } from "@/types/agent";
@@ -31,6 +32,7 @@ export default async function DashboardOverviewPage() {
   if (data.empty) {
     return (
       <DashboardShell title={ts("overview")}>
+        <LivePanel businessId={user.businessId} />
         <EmptyState
           title={te("workspaceEmpty")}
           hint={te("workspaceEmptyHint")}
@@ -93,6 +95,13 @@ export default async function DashboardOverviewPage() {
   return (
     <DashboardShell title={ts("overview")}>
       <div className="space-y-8">
+        <LivePanel businessId={user.businessId} />
+
+        <div className="rounded-lg border border-hairline bg-surface-subtle p-5">
+          <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">{t("previewTitle")}</p>
+          <p className="mt-2 text-sm text-ink-secondary">{t("previewBanner")}</p>
+        </div>
+
         <BriefingPanel briefing={briefing} />
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

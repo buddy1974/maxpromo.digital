@@ -43,14 +43,37 @@ export interface AgentRecord {
   connectedSections: string[];
   supportedOperatingStages: OperatingStageKey[];
   playbooks: string[];
-  lastActivity: string;
+  /**
+   * Static registry data never claims activity: null here. A live agent's
+   * real activity is its agent_runs rows, read where it is shown.
+   */
+  lastActivity: string | null;
+  /** live = has a runtime that acts (Intake); designed = defined, no runtime yet. */
+  runtime: "live" | "designed";
 }
 
 export const AGENTS: AgentRecord[] = [
   {
+    // The first agent with a runtime (ADR-0021): hands enquiries captured on this
+    // site to Maxpromo OS through lead.intake. Deterministic, no model.
+    id: "intake-agent",
+    name: "Intake",
+    status: "active",
+    riskLevel: "low",
+    requiresApproval: false,
+    capabilityIds: ["capture", "handover", "retry"],
+    allowedCount: 2,
+    blockedCount: 3,
+    connectedSections: ["approvals"],
+    supportedOperatingStages: ["audit"],
+    playbooks: [],
+    lastActivity: null,
+    runtime: "live",
+  },
+  {
     id: "chief-of-staff",
     name: "Chief of Staff",
-    status: "active",
+    status: "offline",
     riskLevel: "low",
     requiresApproval: true,
     capabilityIds: ["prioritize", "brief", "coordinate"],
@@ -59,12 +82,13 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["tasks", "projects", "approvals"],
     supportedOperatingStages: ["audit", "diagnose", "design", "manual_delivery", "install", "maintain"],
     playbooks: ["pb-daily-briefing", "pb-missed-inquiry", "pb-shadow-ai-policy"],
-    lastActivity: "2026-05-29T07:55:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
   {
     id: "lead-agent",
     name: "Lead Agent",
-    status: "proposing",
+    status: "offline",
     riskLevel: "medium",
     requiresApproval: true,
     capabilityIds: ["research", "enrich", "qualify"],
@@ -73,12 +97,13 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["leads", "contacts"],
     supportedOperatingStages: ["audit", "manual_delivery"],
     playbooks: ["pb-missed-inquiry"],
-    lastActivity: "2026-05-29T08:10:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
   {
     id: "research-agent",
     name: "Research Agent",
-    status: "idle",
+    status: "offline",
     riskLevel: "low",
     requiresApproval: true,
     capabilityIds: ["scan", "summarize"],
@@ -87,12 +112,13 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["research"],
     supportedOperatingStages: ["audit", "diagnose"],
     playbooks: [],
-    lastActivity: "2026-05-28T16:20:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
   {
     id: "crm-agent",
     name: "CRM Agent",
-    status: "active",
+    status: "offline",
     riskLevel: "medium",
     requiresApproval: true,
     capabilityIds: ["followup", "hygiene"],
@@ -101,12 +127,13 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["contacts", "projects"],
     supportedOperatingStages: ["manual_delivery", "systemize"],
     playbooks: ["pb-missed-inquiry"],
-    lastActivity: "2026-05-29T07:40:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
   {
     id: "calendar-agent",
     name: "Calendar Agent",
-    status: "idle",
+    status: "offline",
     riskLevel: "medium",
     requiresApproval: true,
     capabilityIds: ["schedule", "remind"],
@@ -115,12 +142,13 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["briefing", "tasks"],
     supportedOperatingStages: ["manual_delivery"],
     playbooks: [],
-    lastActivity: "2026-05-29T06:30:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
   {
     id: "content-agent",
     name: "Content Agent",
-    status: "proposing",
+    status: "offline",
     riskLevel: "medium",
     requiresApproval: true,
     capabilityIds: ["plan", "draft"],
@@ -129,12 +157,13 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["playbooks"],
     supportedOperatingStages: ["systemize"],
     playbooks: [],
-    lastActivity: "2026-05-28T18:05:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
   {
     id: "operations-agent",
     name: "Operations Agent",
-    status: "active",
+    status: "offline",
     riskLevel: "low",
     requiresApproval: true,
     capabilityIds: ["track", "flag"],
@@ -143,12 +172,13 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["projects", "tasks"],
     supportedOperatingStages: ["audit", "diagnose", "systemize", "maintain"],
     playbooks: [],
-    lastActivity: "2026-05-29T08:00:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
   {
     id: "document-agent",
     name: "Document Agent",
-    status: "idle",
+    status: "offline",
     riskLevel: "medium",
     requiresApproval: true,
     capabilityIds: ["compose", "extract"],
@@ -157,12 +187,13 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["documents"],
     supportedOperatingStages: ["systemize", "manual_delivery"],
     playbooks: [],
-    lastActivity: "2026-05-28T15:45:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
   {
     id: "follow-up-agent",
     name: "Follow-Up Agent",
-    status: "active",
+    status: "offline",
     riskLevel: "medium",
     requiresApproval: true,
     capabilityIds: ["detect", "prepare"],
@@ -171,7 +202,8 @@ export const AGENTS: AgentRecord[] = [
     connectedSections: ["waitingRoom", "contacts"],
     supportedOperatingStages: ["manual_delivery", "maintain"],
     playbooks: ["pb-missed-inquiry"],
-    lastActivity: "2026-05-29T07:20:00Z",
+    lastActivity: null,
+    runtime: "designed",
   },
 ];
 

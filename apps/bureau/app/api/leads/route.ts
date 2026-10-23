@@ -1,17 +1,22 @@
 import { NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
 import { getDb, isDbConfigured } from "@/lib/db";
 import { attribution, leadSubmissions } from "@/lib/db/schema";
 import { leadSchema } from "@/lib/validation/lead";
-import { notifyTelegram } from "@/lib/integrations/telegram/notify";
+import { flushIntakeOutbox, forwardSubmission } from "@/lib/agents/intake";
 import { checkRateLimit, getClientIp, LEADS_LIMIT } from "@/lib/security/rate-limit";
 
 // Neon HTTP driver runs on the Node runtime.
 export const runtime = "nodejs";
 
 /**
- * Public lead capture. Flow (anti-vibe-code): rate-limit -> validate -> persist
- * -> notify -> typed result. No fake success: if persistence fails, the client
- * is told.
+ * Public lead capture. Flow: rate-limit -> validate -> outbox -> Intake agent
+ * hands it to Maxpromo OS (ADR-0021) -> typed result.
+ *
+ * The lead belongs to Maxpromo OS. The Bureau keeps the submission only until
+ * the OS confirms it, so an OS outage never loses an enquiry: the row waits in
+ * the outbox and is retried. No fake success: if even the outbox write fails,
+ * the client is told. Marcel is notified by the OS, once, when it records it.
  */
 export async function POST(req: Request) {
   // Auth-4: rate-limit by IP before any processing. 5 req / 60s.
@@ -85,9 +90,14 @@ export async function POST(req: Request) {
       }
     }
 
-    // Notify (flag-gated, never throws). Fire after persistence.
+    // Hand it to the OS now; whatever is still waiting from earlier goes too.
     if (row?.id) {
-      await notifyTelegram(lead, row.id);
+      const [stored] = await db.select().from(leadSubmissions).where(eq(leadSubmissions.id, row.id)).limit(1);
+      if (stored) {
+        const result = await forwardSubmission(stored);
+        if (!result.forwarded) console.warn("[leads] kept in outbox for retry:", result.reason);
+      }
+      await flushIntakeOutbox(3).catch((err) => console.error("[leads] outbox flush failed:", err instanceof Error ? err.message : err));
     }
 
     return NextResponse.json({ ok: true }, { status: 201 });

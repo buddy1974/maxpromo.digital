@@ -40,7 +40,7 @@
     "bodyEmphasis": "Sie sie freigeben.",
     "ctaPrimary": "Geschäfts-Check anfragen",
     "ctaSecondary": "Das Team ansehen",
-    "footnote": "DSGVO-konform, in der EU gehostet, gebaut in Essen. "
+    "footnote": "Gebaut in Essen. Wie Daten verarbeitet werden, steht im Datenschutzhinweis. "
   },
   "footer": {
     "blurb": "Ein Produkt von {brand}. Überwachte KI-Betriebssysteme, installiert in echten Betrieben.",
@@ -317,7 +317,23 @@
     "waitingFor": "wartet {duration}",
     "trailPrepared": "Aktion vorbereitet (nicht ausgeführt)",
     "trailAwaiting": "Wartet auf menschliche Freigabe",
-    "trailAgent": "Agent: {agent}"
+    "trailAgent": "Agent: {agent}",
+    "liveTitle": "Im Betrieb",
+    "liveHint": "Was die Agenten mit Laufzeit tatsächlich tun. Alles unterhalb dieses Abschnitts sind Beispieldaten.",
+    "intakeAgent": "Intake-Agent",
+    "intakeClear": "Jede Anfrage ist in Maxpromo OS angekommen.",
+    "intakeWaiting": "{count, plural, one {# Anfrage wartet} other {# Anfragen warten}} darauf, Maxpromo OS zu erreichen.",
+    "intakeLastError": "Letzter Grund: {reason}",
+    "intakeNotConfigured": "Noch nicht mit Maxpromo OS verbunden: Anfragen warten hier, bis die Verbindung eingerichtet ist.",
+    "recentRuns": "Letzte Läufe",
+    "noRuns": "Noch keine Läufe erfasst.",
+    "runCompleted": "abgeschlossen",
+    "runFailed": "fehlgeschlagen",
+    "requestedTitle": "Beantragte Geschäftsaktionen",
+    "requestedCount": "{count, plural, =0 {Nichts wartet auf Marcel} one {# wartet auf Marcel} other {# warten auf Marcel}}",
+    "openInOs": "In Maxpromo OS öffnen",
+    "previewTitle": "Produktvorschau — Beispieldaten",
+    "previewBanner": "Die folgenden Abschnitte zeigen das Produkt Agent Bureau mit Beispieldaten. Sie sind nicht der Betrieb von Maxpromo, und nichts darin wird ausgeführt."
   },
   "approvals": {
     "supervisedNote": "Eine Freigabe protokolliert nur die Entscheidung und den Audit-Trail. In dieser Vorschau wird keine externe Nachricht, E-Mail, Kalender-Aktion oder CRM-Aktualisierung ausgeführt.",
@@ -326,7 +342,20 @@
     "proposedAction": "Vorgeschlagene Aktion",
     "expectedOutcome": "Erwartetes Ergebnis",
     "auditTrail": "Audit-Trail",
-    "auditTrailPreview": "Audit-Trail (Vorschau)"
+    "auditTrailPreview": "Audit-Trail (Vorschau)",
+    "osNote": "Agenten beantragen hier geschäftliche Aktionen; sie entscheiden sie nie. Jeder Antrag unten liegt in Maxpromo OS und wird dort erst ausgeführt, wenn Marcel ihn freigibt.",
+    "decideInOs": "In Maxpromo OS entscheiden",
+    "requestedBy": "Beantragt von",
+    "noRequests": "In den letzten 30 Tagen haben Agenten keine geschäftlichen Aktionen beantragt.",
+    "notLinked": "Dieser Workspace ist mit keinem Geschäftssystem verbunden, daher gibt es keine geschäftlichen Freigaben.",
+    "unavailable": "Maxpromo OS ist gerade nicht erreichbar. Hier entscheidet das Bureau nichts; bitte gleich erneut versuchen.",
+    "statePending": "Wartet auf Marcel",
+    "stateExecuted": "Freigegeben und ausgeführt",
+    "stateRejected": "Abgelehnt",
+    "stateExpired": "Abgelaufen",
+    "stateSuperseded": "Durch neueren Antrag ersetzt",
+    "stateFailed": "Fehlgeschlagen",
+    "stateExecuting": "Wird ausgeführt"
   },
   "auditConsole": {
     "noAudit": "Kein Audit im Demo-Workspace",
@@ -484,6 +513,38 @@
     }
   },
   "agentRegistry": {
+    "intake-agent": {
+      "role": "Übergabe von Anfragen",
+      "description": "Nimmt jede Anfrage von dieser Website entgegen und trägt sie in Maxpromo OS ein, wo der Lead geführt wird. Hält sie sicher fest und wiederholt, wenn das OS nicht erreichbar ist.",
+      "caps": [
+        "Erfassen",
+        "Übergeben",
+        "Wiederholen"
+      ],
+      "capDescs": [
+        "Hält eine eingegangene Anfrage, bis Maxpromo OS sie hat.",
+        "Trägt sie über lead.intake in Maxpromo OS ein — einmal, auch bei doppelter Zustellung.",
+        "Wiederholt, was das OS nicht annehmen konnte, und meldet Fehler in /os."
+      ],
+      "allowed": [
+        "Anfrage in Maxpromo OS eintragen",
+        "Fehler an Maxpromo OS melden"
+      ],
+      "blocked": [
+        "E-Mails senden",
+        "Eine eigene Lead-Datenbank führen",
+        "Geschäftliche Freigaben entscheiden"
+      ],
+      "pains": [
+        "Anfragen gehen zwischen Systemen verloren",
+        "Doppelte Leads"
+      ],
+      "outcomes": [
+        "Ein Ort für jeden Lead",
+        "Keine Anfrage geht verloren"
+      ],
+      "next": "Den Ausgang leer halten."
+    },
     "chief-of-staff": {
       "role": "Zentrale Intelligenz & Koordination",
       "description": "Priorisiert die Arbeit, erstellt das tägliche Briefing, koordiniert die übrigen Agenten und legt Entscheidungen zur Freigabe vor.",

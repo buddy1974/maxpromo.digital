@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BUSINESS } from "@maxpromo/config";
+import { BUREAU_INFRASTRUCTURE, REGION_LABEL_DE } from "@/config/infrastructure";
 import { Nav } from "@/components/marketing/Nav";
 import { Footer } from "@/components/marketing/Footer";
 import { getTranslations } from "next-intl/server";
@@ -10,9 +11,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("datenschutzTitle"), description: t("datenschutzDescription"), robots: { index: false } };
 }
 
-// Baseline DSGVO notice for the contact form. Reflects what the page actually
-// does (form -> Neon EU + optional Telegram notification). Marcel should have a
-// lawyer review before scaling paid traffic.
+// Baseline DSGVO notice for the contact form. States what the page actually does
+// (ADR-0021): the enquiry is held briefly in the Bureau database and handed to
+// Maxpromo OS, where it is processed; regions come from config/infrastructure.ts,
+// never from prose. Marcel should have a lawyer review before scaling paid traffic.
 export default async function DatenschutzPage() {
   const t = await getTranslations("legal");
   const c = await getTranslations("common");
@@ -76,11 +78,16 @@ export default async function DatenschutzPage() {
 
           <Section title="4. Speicherung und Empfänger">
             <p>
-              Ihre Daten werden in einer Datenbank gespeichert, die in einem
-              Rechenzentrum innerhalb der EU (Neon, Region Frankfurt) betrieben
-              wird. Zur internen Benachrichtigung über neue Anfragen kann eine
-              Nachricht an einen Messaging-Dienst (Telegram) gesendet werden.
-              Eine Weitergabe zu Werbezwecken an Dritte erfolgt nicht.
+              Ihre Anfrage wird zunächst in der Datenbank des Max Agent Bureau
+              gespeichert (Neon Inc., Region {REGION_LABEL_DE[BUREAU_INFRASTRUCTURE.databaseRegion]})
+              und unmittelbar an unser Geschäftssystem Maxpromo OS übergeben
+              (Datenbank: Neon Inc., Region EU, Frankfurt). Nach der Übergabe wird sie im Bureau gelöscht;
+              kann sie nicht sofort übergeben werden, bleibt sie dort, bis die Übergabe gelingt.
+            </p>
+            <p>
+              Die Anwendung wird von Vercel Inc. (USA) betrieben und läuft in der Region{" "}
+              {REGION_LABEL_DE[BUREAU_INFRASTRUCTURE.functionRegion]}. Über neue Anfragen werden wir
+              intern per Telegram benachrichtigt. Eine Weitergabe zu Werbezwecken an Dritte erfolgt nicht.
             </p>
           </Section>
 

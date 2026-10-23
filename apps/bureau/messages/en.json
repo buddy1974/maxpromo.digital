@@ -40,7 +40,7 @@
     "bodyEmphasis": "you approve it.",
     "ctaPrimary": "Request a business check",
     "ctaSecondary": "See the team",
-    "footnote": "GDPR-compliant, hosted in the EU, built in Essen. "
+    "footnote": "Built in Essen. How data is processed is set out in the privacy notice. "
   },
   "footer": {
     "blurb": "A product of {brand}. Supervised AI operating systems, installed in real businesses.",
@@ -317,7 +317,23 @@
     "waitingFor": "waiting {duration}",
     "trailPrepared": "Action prepared (not executed)",
     "trailAwaiting": "Waiting for a human approval",
-    "trailAgent": "Agent: {agent}"
+    "trailAgent": "Agent: {agent}",
+    "liveTitle": "Live",
+    "liveHint": "What the agents with a runtime are actually doing. Everything below this section is sample data.",
+    "intakeAgent": "Intake agent",
+    "intakeClear": "Every enquiry has reached Maxpromo OS.",
+    "intakeWaiting": "{count, plural, one {# enquiry is} other {# enquiries are}} waiting to reach Maxpromo OS.",
+    "intakeLastError": "Last reason: {reason}",
+    "intakeNotConfigured": "Not connected to Maxpromo OS yet: enquiries wait here until the connection is configured.",
+    "recentRuns": "Recent runs",
+    "noRuns": "No runs recorded yet.",
+    "runCompleted": "completed",
+    "runFailed": "failed",
+    "requestedTitle": "Business actions requested",
+    "requestedCount": "{count, plural, =0 {Nothing waiting for Marcel} one {# waiting for Marcel} other {# waiting for Marcel}}",
+    "openInOs": "Open in Maxpromo OS",
+    "previewTitle": "Product preview — sample data",
+    "previewBanner": "The sections below show the Agent Bureau product with sample data. They are not Maxpromo's operations and nothing in them executes."
   },
   "approvals": {
     "supervisedNote": "Approving records the decision and the audit trail, nothing more. In this preview no message, email, calendar action or CRM update is executed.",
@@ -326,7 +342,20 @@
     "proposedAction": "Proposed action",
     "expectedOutcome": "Expected outcome",
     "auditTrail": "Audit trail",
-    "auditTrailPreview": "Audit trail (preview)"
+    "auditTrailPreview": "Audit trail (preview)",
+    "osNote": "Agents here request business actions; they never decide them. Each request below is held by Maxpromo OS, which executes it only after Marcel approves it there.",
+    "decideInOs": "Decide in Maxpromo OS",
+    "requestedBy": "Requested by",
+    "noRequests": "No business actions requested by agents in the last 30 days.",
+    "notLinked": "This workspace is not linked to a business system, so there are no business approvals to show.",
+    "unavailable": "Maxpromo OS could not be reached. Nothing here is decided by the Bureau; try again shortly.",
+    "statePending": "Waiting for Marcel",
+    "stateExecuted": "Approved and executed",
+    "stateRejected": "Rejected",
+    "stateExpired": "Expired",
+    "stateSuperseded": "Replaced by a newer request",
+    "stateFailed": "Failed",
+    "stateExecuting": "Executing"
   },
   "auditConsole": {
     "noAudit": "No audit in the demo workspace",
@@ -484,6 +513,38 @@
     }
   },
   "agentRegistry": {
+    "intake-agent": {
+      "role": "Enquiry handover",
+      "description": "Takes each enquiry submitted on this site and records it in Maxpromo OS, where the lead lives. Keeps it safe and retries if the OS is unreachable.",
+      "caps": [
+        "Capture",
+        "Handover",
+        "Retry"
+      ],
+      "capDescs": [
+        "Holds a submitted enquiry until Maxpromo OS has it.",
+        "Records it in Maxpromo OS through lead.intake — once, even when delivered twice.",
+        "Retries what the OS could not take and reports failures to /os."
+      ],
+      "allowed": [
+        "Record an enquiry in Maxpromo OS",
+        "Report a failure to Maxpromo OS"
+      ],
+      "blocked": [
+        "Sending email",
+        "Keeping its own lead database",
+        "Deciding business approvals"
+      ],
+      "pains": [
+        "Enquiries lost between systems",
+        "Duplicate leads"
+      ],
+      "outcomes": [
+        "One place for every lead",
+        "No enquiry lost"
+      ],
+      "next": "Keep the outbox empty."
+    },
     "chief-of-staff": {
       "role": "Coordination and priorities",
       "description": "Prioritises the work, produces the daily briefing, coordinates the other agents and puts decisions up for approval.",

@@ -90,7 +90,7 @@ export async function AgentIdentityCard({
         <div>
           <Label>{c("lastActivity")}</Label>
           <p className="mt-1 font-mono text-label text-ink-muted">
-            {formatDateTime(agent.lastActivity, locale)}
+            {agent.lastActivity ? formatDateTime(agent.lastActivity, locale) : "—"}
           </p>
         </div>
       </div>

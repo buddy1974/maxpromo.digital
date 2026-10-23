@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import {
   index,
+  integer,
   pgEnum,
   pgTable,
   text,
@@ -37,6 +38,11 @@ export const leadSubmissions = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
+    // Intake outbox (ADR-0021): a submission lives here only until Maxpromo OS
+    // has it. Forwarded rows are deleted; these count failed attempts.
+    forwardAttempts: integer("forward_attempts").notNull().default(0),
+    lastForwardAt: timestamp("last_forward_at", { withTimezone: true }),
+    lastForwardError: text("last_forward_error"),
   },
   (t) => ({
     createdIdx: index("lead_created_idx").on(t.createdAt),
