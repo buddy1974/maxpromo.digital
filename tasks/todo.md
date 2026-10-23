@@ -67,9 +67,10 @@ Business Control Plane; Maxpromo OS remains the source of truth. To be instructe
    - [x] Provider spam state and quarantine (ADR-0022) implemented and verified; migration 0016 applied to production.
    - [x] /os attention rendered in the viewer's language (risk 109).
    - [x] Release closure pre-push check: Bureau migration 0002 missing in production (release blocker), documented in reconciliation §22.
-   - [ ] OWNER: run Bureau migration 0002 SQL (§22 step 1) — blocks the release.
+   - [x] Bureau migration 0002 applied by the owner; verified read-only by the session.
    - [ ] OWNER: set HOSTINGER_MAIL_API_TOKEN and HOSTINGER_MAILBOX_RESOURCE_ID on maxpromo-digital (§22 step 2).
-   - [ ] OWNER: push main (§22 step 3); then the session verifies production (§22 step 4).
+   - [x] Pushed 4013782..1bfa5cf; both projects deployed and verified in production (reconciliation §22 Release).
+   - [ ] Pending: first Bureau → OS intake flush (dashboard view or 06:00 UTC cron) → 2026-05-30 submission in /os/leads.
    - [ ] OWNER: Junk message → Als Spam markieren if step 2 is not done (§22 step 5).
    - [ ] OWNER: pause the shadow Vercel project; create the EU Neon project and run the §21 runbook.
 2. [x] Lock the Business Control Plane ↔ Agent Control Plane integration contract (ADR-0021, contract v1 with per-client credentials)

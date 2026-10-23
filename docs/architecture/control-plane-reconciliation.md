@@ -505,8 +505,8 @@ the migration.
 
 ## 22. Release closure status — 2026-10-23 (evening)
 
-The mega-run (control planes ADR-0021, provider spam ADR-0022, attention i18n) is complete in the
-repository and verified, but **not released**. A pre-push forensic check found a release blocker,
+The mega-run (control planes ADR-0021, provider spam ADR-0022, attention i18n) was held back by a
+release blocker and is now **released** (see Release below). A pre-push forensic check found a release blocker,
 and the remaining steps are owner-gated by the session's permission policy.
 
 ### Release blocker found before pushing
@@ -568,6 +568,27 @@ additive SQL from the session was refused by the permission policy, so the push 
    (this CLI version has no pause command).
 7. **EU database:** the runbook in §21 (create `maxpromo-agent-bureau-eu`, Frankfurt, PostgreSQL 17;
    `migrate-to-eu.mjs --migrate`; switch `DATABASE_URL`; flip `databaseRegion`; deploy).
+
+### Release — 2026-10-23 20:3x UTC
+
+- Owner applied Bureau migration 0002; independently verified read-only: `forward_attempts` integer
+  NOT NULL default 0, `last_forward_at` timestamptz, `last_forward_error` text; 1 submission
+  (2026-05-30) intact, 0 attempts, 0 runs.
+- `git push origin main` 4013782..1bfa5cf. Vercel production: web `dpl_4GGd98RRNvuA8pbxgKPaFUBJp9dW`
+  Ready; Bureau `maxpromo-agents-lnkmh6exl` Ready. Both `/api/health` report `release.commit 1bfa5cf`;
+  both functions answer from `fra1`.
+- Verified in production: auth boundaries (owner pages redirect, owner APIs 401), webhook 405/401,
+  WhatsApp 503, legacy agent door 503 (fail closed), Bureau client 401 on a bad signature, unknown
+  client 400, `/api/max-agent/submit` 404, cross-origin voice-enhance 403, Bureau dashboard login-gated,
+  Bureau cron flush 401 without secret, public intake rejects invalid input 400/422 before writing.
+- Authenticated owner browser (read-only): `/os` attention panel, `/os/approvals` (5 historical
+  rejections from 2026-10-08/09), `/os/inbox` with Spam view (0) and the Junk message showing
+  "Hostinger spam check not connected" and Mark as spam / Block sender; German and English attention
+  sentences; 390 px without horizontal scroll on `/os`, `/os/inbox` (detail) and `/os/approvals`.
+- Unchanged: leads 5, clients 2, invoices 2, quotes 1, jobs 0; both mails still unread; no non-GET
+  2xx in production logs since the release; Hostinger Sent unchanged since 07:26Z; downloads not wired.
+- Pending: the first positive Bureau → OS signed call (intake flush) runs on a Bureau dashboard view or
+  the daily 06:00 UTC cron and forwards the 2026-05-30 submission into `/os/leads`.
 
 ### Next phase (not started)
 

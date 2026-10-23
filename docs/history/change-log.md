@@ -1,5 +1,12 @@
 # Change Log
 
+## 2026-10-23 — Release 1bfa5cf (ADR-0021, ADR-0022, risk 109)
+
+Owner applied Bureau migration 0002 (verified read-only). Pushed 11 commits; web
+`dpl_4GGd98RRNvuA8pbxgKPaFUBJp9dW` and Bureau deployments Ready, both report 1bfa5cf and run in
+fra1. Production verification (boundaries, owner browser DE/EN and 390 px, Spam view, contract
+client checks, intake validation, no side effects): reconciliation §22 Release.
+
 ## 2026-10-23 — Release closure check (not released)
 
 Pre-push forensic check: 10 commits (e0a7c07..ab9b6c5) verified; OS migrations 0015/0016 already

@@ -174,3 +174,7 @@ columns its new code selects; the session's attempt to apply the additive SQL wa
 push was withheld rather than shipping a broken Bureau. Production HTTP boundaries, WhatsApp OFF,
 agent door 401, no outbound mail and no new inbound were verified read-only. Owner runbook in
 reconciliation §22. Not GREEN until the owner steps run and production is verified.
+
+**Release 1bfa5cf:** owner applied Bureau 0002; verified; pushed; both projects Ready on 1bfa5cf in
+fra1; production verified read-only and in the owner browser. Not GREEN: Hostinger REST credentials,
+the Junk message, the first positive Bureau → OS flush, the shadow pause and the EU database remain.
