@@ -57,11 +57,21 @@ export async function moneySnapshot(ctx: CapabilityContext): Promise<MoneySnapsh
     /* Card refunds and chargebacks draw on the Stripe balance, and Stripe keeps its fee: a fully refunded
        charge leaves the balance at minus the fee. A reversal counts against "not yet paid out" until a
        payout's balance transactions name it (money.reversals.payout_id, 0022) — exact, not estimated. */
-    optional<{ amount: string; currency: string; effective_on: string | null; paid_out: boolean }[]>(ctx.sql`
+    (ctx.sql`
       SELECT r.amount, r.currency, r.effective_on::text AS effective_on, (r.payout_id IS NOT NULL) AS paid_out
       FROM money.reversals r
       WHERE r.provider = 'stripe' AND r.status IN ('pending', 'succeeded')
-        AND EXISTS (SELECT 1 FROM money.charges c WHERE c.payment_id = r.payment_id AND c.state = 'applied')`, []),
+        AND EXISTS (SELECT 1 FROM money.charges c WHERE c.payment_id = r.payment_id AND c.state = 'applied')` as unknown as Promise<{ amount: string; currency: string; effective_on: string | null; paid_out: boolean }[]>)
+      /* Before 0022 the payout link of a reversal is unknown: fall back to its charge's payout (the
+         earlier rule) rather than dropping refunds and overstating what Stripe owes. */
+      .catch(error => {
+        if (!(typeof error === 'object' && error !== null && 'code' in error && String(error.code) === '42703')) throw error
+        return optional<{ amount: string; currency: string; effective_on: string | null; paid_out: boolean }[]>(ctx.sql`
+          SELECT r.amount, r.currency, r.effective_on::text AS effective_on, bool_or(c.payout_id IS NOT NULL) AS paid_out
+          FROM money.reversals r JOIN money.charges c ON c.payment_id = r.payment_id AND c.state = 'applied'
+          WHERE r.provider = 'stripe' AND r.status IN ('pending', 'succeeded')
+          GROUP BY r.id, r.amount, r.currency, r.effective_on`, [])
+      }),
     optional<{ provider_payout: string; amount: string; currency: string; status: string; arrival_date: string | null; reconciled_at: Date | null; bank_reference: string | null }[]>(ctx.sql`
       SELECT provider_payout, amount, currency, status, arrival_date::text AS arrival_date, reconciled_at, bank_reference FROM money.payouts ORDER BY created_at DESC LIMIT 12`, []),
     railIssues(ctx.sql),
