@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { withAuth } from '@/lib/auth'
 import { getDb } from '@/lib/db'
-import { attachmentPolicy, contentDisposition } from '@/lib/mail/attachments'
-import { attachmentReader } from '@/lib/mail/attachments.server'
+import { attachmentPolicy, contentDisposition, MAX_ATTACHMENT_BYTES } from '@/lib/mail/attachments'
+import { attachmentReader, matchProviderAttachment } from '@/lib/mail/attachments.server'
 
 export const dynamic = 'force-dynamic'
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -19,7 +19,8 @@ export const GET = withAuth(async (req, { session }) => {
   if (req.headers.get('sec-fetch-site') === 'cross-site') return deny('Invalid origin', 403)
   const message = req.nextUrl.searchParams.get('message') ?? ''
   const attachment = req.nextUrl.searchParams.get('attachment') ?? ''
-  if (!UUID.test(message) || !/^[A-Za-z0-9_=-]{1,512}$/.test(attachment)) return deny('Invalid request', 400)
+  // The stored id is the webhook's `<hash>:<index>`; it only selects a row, never reaches a URL.
+  if (!UUID.test(message) || !/^[A-Za-z0-9_=:-]{1,512}$/.test(attachment)) return deny('Invalid request', 400)
   try {
     const sql = getDb()
     const rows = await sql`SELECT m.id,m.thread_id,m.attachments,m.provider_folder,m.provider_uid,m.provider_state,m.risk_signals,t.quarantine
@@ -33,7 +34,11 @@ export const GET = withAuth(async (req, { session }) => {
     if (!policy.allowed) return deny(policy.reason, 409)
     const reader = attachmentReader()
     if (!reader) return deny('Mailbox API not connected', 503)
-    const stream = await reader.attachment({ folder: m.provider_folder!, uid: Number(m.provider_uid) }, attachment, policy.maxBytes)
+    const ref = { folder: m.provider_folder!, uid: Number(m.provider_uid) }
+    const located = matchProviderAttachment(meta, await reader.get(ref))
+    if (!located) return deny('Attachment not found in the mailbox', 404)
+    // The provider's own size may differ by a few bytes from the webhook's; bound by the larger.
+    const stream = await reader.attachment(ref, located.id, Math.max(policy.maxBytes, Math.min(located.sizeBytes + 64 * 1024, MAX_ATTACHMENT_BYTES + 64 * 1024)))
     await sql`INSERT INTO mail.action_audit(thread_id,action,status,payload) VALUES(${m.thread_id}::uuid,'attachment_download','done',
       ${JSON.stringify({ actor: `os:${session.sub}`, message_id: m.id, size: meta.size, type: policy.contentType })}::jsonb)`
     return new NextResponse(stream, { headers: {

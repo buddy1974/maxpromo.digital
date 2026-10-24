@@ -79,6 +79,16 @@ await assert.rejects(new Response(stream).arrayBuffer()); passed++; console.log(
 await rejects('a declared oversized attachment is refused before streaming', () => provider(() => new Response('x', { headers: { 'content-length': '999999' } })).attachment({ folder: 'INBOX', uid: 3 }, 'YWJj', 100))
 await rejects('evidence mode blocks every provider call', () => new HostingerMailProvider({ token: 't', mailboxResourceId: 'AC1', transport: fetch, gate: { enabled: true, fixtureVerified: true, isEvidenceMode: () => true } }).text({ folder: 'INBOX', uid: 1 }))
 
+/* ── webhook attachment → provider attachment (production shapes, 2026-10-24) ── */
+const { matchProviderAttachment } = await import('../../lib/mail/attachments.server.ts')
+const rest = (filename: string, size: number, id: string, inline = false) => ({ id, filename, sizeBytes: size, inline, contentType: 'application/octet-stream', contentId: null })
+const stored = { id: 'f8cf3bb87113d9504e0b18d394e8ec8c2f86fb79830fe3db76870dd3d366dc56:0', filename: 'abbaland.pdf' }
+check('the stored attachment is found by name although the provider reports another size and id', matchProviderAttachment(stored, { attachments: [rest('abbaland.pdf', 1548455, 'YXR0YWNobWVudDpJTkJPWDo0MDoy')] })?.id === 'YXR0YWNobWVudDpJTkJPWDo0MDoy')
+check('a name normalised at ingestion still matches (Sonderführung → Sonderf__hrung style)', matchProviderAttachment({ id: 'h:0', filename: 'Rechnung_2026_.html' }, { attachments: [rest('Rechnung:2026/.html', 10, 'QQ')] })?.id === 'QQ')
+check('without a name match, the position among real attachments decides; inline images do not count', matchProviderAttachment({ id: 'h:1', filename: 'renamed.pdf' }, { attachments: [rest('logo.png', 1, 'IN', true), rest('a.pdf', 1, 'A'), rest('b.pdf', 1, 'B')] })?.id === 'B')
+check('two attachments with the same name are ambiguous and nothing is served', matchProviderAttachment({ id: 'h:0', filename: 'scan.pdf' }, { attachments: [rest('scan.pdf', 1, 'A'), rest('scan.pdf', 2, 'B')] }) === null)
+check('no match at all serves nothing', matchProviderAttachment({ id: 'h:7', filename: 'x.pdf' }, { attachments: [rest('y.pdf', 1, 'A')] }) === null)
+
 /* ── HTML to text ── */
 const converted = htmlToText('<html><head><title>x</title><style>p{color:red}</style></head><body><p>Hallo&nbsp;Marcel,</p><script>steal()</script><p>Preis: 1.200&euro; &amp; mehr</p><ul><li>Eins</li><li>Zwei</li></ul><img src="https://t.example/p.gif"><a href="https://evil.example">Link</a></body></html>')
 check('HTML becomes plain text: scripts, styles, images and URLs disappear', !converted.includes('steal') && !converted.includes('color') && !converted.includes('https://') && converted.includes('Hallo Marcel,') && converted.includes('Preis: 1.200€ & mehr') && converted.includes('• Eins'))

@@ -137,7 +137,8 @@ export class HostingerMailProvider implements EmailProvider {
   }
   /** Attachment bytes as a stream that errors past maxBytes. Nothing is stored. */
   async attachment(ref: MessageRef, attachmentId: string, maxBytes: number): Promise<ReadableStream<Uint8Array>> {
-    if (!/^[A-Za-z0-9_=-]{1,512}$/.test(attachmentId) || !Number.isSafeInteger(maxBytes) || maxBytes < 1 || maxBytes > 30 * 1024 * 1024) throw new MailProviderError('failed')
+    // Provider ids are base64 (`attachment:<folder>:<uid>:<part>`); encoded into the path below.
+    if (!/^[A-Za-z0-9+/_=-]{1,512}$/.test(attachmentId) || !Number.isSafeInteger(maxBytes) || maxBytes < 1 || maxBytes > 30 * 1024 * 1024) throw new MailProviderError('failed')
     const response = await this.open(`${refPath(ref)}/attachments/${encodeURIComponent(attachmentId)}`)
     if (!response.ok || !response.body) throw new MailProviderError('failed', response.status)
     const length = response.headers.get('content-length')
