@@ -98,6 +98,7 @@ Business Control Plane; Maxpromo OS remains the source of truth. To be instructe
 ## Stripe ↔ Money + Email completion run 2026-10-24
 - [x] Money domain + Stripe rail (ADR-0025, migration 0019) — built, proven (offline, evidence DB, local HTTP, browser).
 - [x] Document emails through the mailbox with PDF; outgoing attachments; bounces (migration 0020).
-- [ ] OWNER: Stripe test key + webhook endpoint (API 2024-06-20) + signing secret; then one test payment and refund.
+- [x] Stripe sandbox: restricted test key + endive Snapshot destination + signing secret installed; signed events verified and deduplicated in production (2026-10-24).
+- [ ] Sandbox Checkout paying an OS invoice, then a sandbox refund.
 - [ ] OWNER: live restricted key + live signing secret + STRIPE_LIVE=1; one low-value live payment, refunded.
 - [ ] OWNER: one real quote/invoice email to your own Gmail/Outlook/Apple Mail; check the PDF and the reply threading.

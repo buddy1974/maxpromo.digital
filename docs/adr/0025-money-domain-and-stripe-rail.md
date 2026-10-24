@@ -92,3 +92,22 @@ Resend remains only for the contact form, newsletter and outreach (risk 127).
 
 Payment Links (Stripe's) are not used. Partial payments by card are possible only as "pay the open
 balance". Automatic payout ↔ Revolut statement matching needs a Revolut API connection (none).
+
+## Amendment — 2026-10-24 (Stripe API contract upgrade, sandbox webhook)
+
+- **API version `2026-09-30.endive`** (Stripe's latest GA, also the dashboard's "Latest version"), replacing
+  `2024-06-20`. Every breaking change from acacia through endive was reviewed against the parameters and fields
+  this rail sends and reads. The ones near it — `payment_method_types` removed from Checkout Sessions and
+  PaymentIntents (endive), the Checkout currency-conversion field (clover), shipping details (basil), `ui_mode`
+  enum values (dahlia) — are not used. Charge, PaymentIntent, Refund, Dispute, Payout and Balance Transaction
+  fields read here are unchanged.
+- **Events in another API version are refused** (400, logged with the version): only a misconfigured destination
+  sends them, and their shape is not the one this code reads.
+- **Event destination** (sandbox, created 2026-10-24): scope *Your account*, payload style **Snapshot** (v1
+  resources; thin events carry no object and would need a fetch per event), API version `2026-09-30.endive`,
+  exactly the 20 events the rail handles, endpoint `https://www.maxpromo.digital/api/channels/stripe`.
+- **Key**: a restricted key with exactly three permissions — Checkout Sessions *write*, Charges and Refunds
+  *write*, Balance *read* — covers every call the rail makes (create/expire session, refund, list refunds,
+  balance transactions incl. by payout). The standard secret key is not used.
+- **A test rail never reaches a customer**: invoice emails carry the card link only on the live rail; the pay
+  page says "test mode" when the rail is a test rail.

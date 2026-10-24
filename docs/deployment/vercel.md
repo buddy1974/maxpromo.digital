@@ -193,4 +193,5 @@ root instead (`dpl_EYDDFZ4URsFToAm2U4rqubmeoDQU`, reports 19479aa).
   `STRIPE_PAYMENTS_DISABLED=1` (kill switch).
 - Document emails no longer need `RESEND_API_KEY`; they need the mailbox send path
   (`HOSTINGER_MAIL_API_TOKEN`, `HOSTINGER_MAILBOX_RESOURCE_ID`, not `MAIL_SEND_DISABLED`).
-- Webhook endpoint for the Stripe dashboard: `https://www.maxpromo.digital/api/channels/stripe`, API version 2024-06-20.
+- Webhook endpoint for the Stripe dashboard: `https://www.maxpromo.digital/api/channels/stripe` — event destination, scope Your account, Snapshot, API version `2026-09-30.endive` (events in any other version are refused).
+- 2026-10-24: `STRIPE_SECRET_KEY` (restricted **sandbox** key) and `STRIPE_WEBHOOK_SECRET` (sandbox destination) set on Production, sensitive. Card payment runs in test mode; customer emails carry no card link until the live rail.

@@ -31,7 +31,7 @@ Declared GREEN 2026-10-23 for the platform release — not for the product commi
 | 8 | Ask Max | **DONE** (released, verified live with the production model) | §Command centre |
 | 9 | Agent Bureau refinement | **PARTIAL** | §Planes — mock CRM removed; example data labelled; visual check is the owner's |
 | 10 | Telegram Owner Control Plane | **PARTIAL** → **OWNER** activation | §Planes |
-| 11 | Stripe ↔ Money | **PARTIAL** → **OWNER** (keys) | §Money — Money domain, payment requests, verified webhook, refunds, disputes, fees, payouts, reconciliation built and proven against a real Postgres with a fake rail (ADR-0025, migration 0019). No Stripe key, no live payment observed. |
+| 11 | Stripe ↔ Money | **PARTIAL** (sandbox connected) | §Money — built and proven against a real Postgres with a fake rail (ADR-0025, migration 0019); 2026-10-24 Stripe API upgraded to `2026-09-30.endive` and the **sandbox** connected to production: signed events verified, ingested once, unknown money held and resolved. Not yet: a sandbox Checkout paying an OS invoice + refund; any live payment. |
 | 12 | Broader channel convergence (WhatsApp, voice, more connectors) | **DEFERRED** | WhatsApp gateway exists and is OFF (503); no voice channel |
 | 13 | Bureau database US → Frankfurt | **OWNER** | Runbook §21; Neon project creation is an owner action |
 | 14 | Delete the paused shadow Bureau | **OWNER** (authorisation) | Paused 2026-10-23, candidate for deletion |
@@ -140,16 +140,11 @@ screen. Phase B builds it and tests it on Android and iOS.
 
 ## Stripe — owner items
 
-Nothing below is needed to keep using bank transfer. Card payment switches on when 1–3 exist.
+Nothing below is needed to keep using bank transfer.
 
-1. Stripe **test mode** secret key (`sk_test_…`, or a restricted `rk_test_…`) as `STRIPE_SECRET_KEY` — first on a Preview or the local evidence runtime. Never pasted in chat.
-2. In the Stripe dashboard (test mode): **Developers → Webhooks → Add endpoint** `https://www.maxpromo.digital/api/channels/stripe`, **API version 2024-06-20**, events:
-   `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`,
-   `payment_intent.succeeded`, `payment_intent.payment_failed`, `charge.succeeded`, `charge.updated`, `charge.refunded`,
-   `refund.created`, `refund.updated`, `refund.failed`, `charge.dispute.created`, `charge.dispute.updated`, `charge.dispute.closed`,
-   `payout.created`, `payout.updated`, `payout.paid`, `payout.failed`, `payout.canceled`.
-   Its **signing secret** (`whsec_…`) as `STRIPE_WEBHOOK_SECRET` (test and live endpoints have different secrets; during a rotation both may be listed, comma-separated).
-3. **Live**: the live key (restricted key preferred: Checkout Sessions write; PaymentIntents, Charges, Balance transactions, Payouts, Disputes read; Refunds write) as `STRIPE_SECRET_KEY` on `maxpromo-digital` Production, the live endpoint's signing secret, and **`STRIPE_LIVE=1`** — the explicit go-live switch; without it a live key does nothing.
-4. Decisions: card payment for all EUR/GBP invoices (as built) or opt-in per invoice; whether invoice emails carry the pay link from day one (as built: yes, whenever the rail is connected).
-5. Not needed any more: `pay.maxpromo.digital` DNS. The pay page is `https://www.maxpromo.digital/<de|en>/pay/<token>`; Stripe's hosted checkout takes the card.
+1. **Sandbox — DONE 2026-10-24** (under the owner's browser authority): restricted key `maxpromo-os-money-sandbox` (Checkout Sessions write, Charges and Refunds write, Balance read) as `STRIPE_SECRET_KEY`, and the destination `we_1UU0afKQCb9O3UXuOXWareak` (Your account · Snapshot · `2026-09-30.endive` · 20 events) with its signing secret as `STRIPE_WEBHOOK_SECRET`, both on `maxpromo-digital` Production, marked sensitive, installed without the values being displayed. The OS shows "Card payment on (test mode)".
+2. Event list (for the live destination, same scope, payload style and version): `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`, `payment_intent.succeeded`, `payment_intent.payment_failed`, `charge.succeeded`, `charge.updated`, `charge.refunded`, `refund.created`, `refund.updated`, `refund.failed`, `charge.dispute.created`, `charge.dispute.updated`, `charge.dispute.closed`, `payout.created`, `payout.updated`, `payout.paid`, `payout.failed`, `payout.canceled`.
+3. **Live**: a live restricted key with the same three permissions as `STRIPE_SECRET_KEY`, a live destination as in 2 with its own signing secret as `STRIPE_WEBHOOK_SECRET`, and **`STRIPE_LIVE=1`** — the explicit go-live switch; without it a live key does nothing. The sandbox key and secret are replaced at the same time.
+4. Decisions: card payment for all EUR/GBP invoices (as built) or opt-in per invoice; invoice emails carry the pay link on the live rail only (as built).
+5. Not needed: `pay.maxpromo.digital` DNS. The pay page is `https://www.maxpromo.digital/<de|en>/pay/<token>`; Stripe's hosted checkout takes the card.
 6. Owner switch: `STRIPE_PAYMENTS_DISABLED=1` disconnects the rail at once.
