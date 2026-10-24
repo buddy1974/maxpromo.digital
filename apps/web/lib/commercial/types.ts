@@ -12,6 +12,9 @@ import type { Validator } from './validate'
 
 export type Sql = ReturnType<typeof getDb>
 
+/** The owner deciding in the OS itself (cookie session). */
+export const OWNER_ACTOR = 'os:marcel'
+
 /** GREEN runs. AMBER is prepared, shown, confirmed, then executed once. RED is never offered. */
 export type Risk = 'GREEN' | 'AMBER' | 'RED'
 

@@ -388,6 +388,25 @@ a.attn-row:hover .attn-text, a.attn-row:focus-visible .attn-text { text-decorati
   .money-big { font-size: 30px; }
 }
 
+/* ── Lead screen (ADR-0027): the Money card language, plus evidence and drafts ─────── */
+.lead-title { margin: 0; font-size: 24px; overflow-wrap: anywhere; }
+.lead-contact { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--text-small); overflow-wrap: anywhere; }
+.lead-contact a, .lead-contact span { min-height: 32px; display: inline-flex; align-items: center; color: var(--brand-text); }
+.lead-waiting { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); padding: var(--space-3); border-left: 3px solid var(--brand-primary); background: var(--brand-surface-subtle); }
+.lead-score { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+.lead-score .money-big { flex: none; white-space: nowrap; }
+.lead-page h3.money-label { margin-top: var(--space-4); }
+@media (max-width: 899px) { .lead-back { display: none; } }
+.lead-summary { margin: 0 0 var(--space-3); }
+.lead-quote { margin: var(--space-1) 0; padding-left: var(--space-3); border-left: 2px solid var(--brand-border-strong); color: var(--brand-text-secondary); font-style: italic; overflow-wrap: anywhere; }
+.lead-draft { border-top: 1px solid var(--brand-border); padding: var(--space-3) 0; }
+.lead-draft:first-of-type { border-top: none; padding-top: 0; }
+.lead-subject { margin: var(--space-1) 0; font-weight: 700; overflow-wrap: anywhere; }
+.lead-body { margin: 0 0 var(--space-3); white-space: pre-wrap; overflow-wrap: anywhere; }
+.lead-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+.lead-actions > .btn-primary, .lead-actions > .btn-secondary, .lead-button { min-height: 44px; display: inline-flex; align-items: center; }
+.lead-page .money-form select { min-height: 44px; font-size: 16px; padding: 0 var(--space-2); border: 1px solid var(--brand-border); background: var(--brand-surface); color: var(--brand-text); }
+
 /* ── Approval preview (governed actions): what will happen, before it happens ─────── */
 .approval-preview { display: grid; grid-template-columns: minmax(90px, max-content) minmax(0, 1fr); gap: var(--space-1) var(--space-3); margin: 0 0 var(--space-3); }
 .approval-preview dt { font-family: var(--brand-font-mono); font-size: var(--text-label-dense); color: var(--brand-text-secondary); letter-spacing: 0.06em; }

@@ -9,7 +9,7 @@ export interface EngineResult {
   code?: string
 }
 
-export function ownerApi(endpoint: '/api/os/mail/actions' | '/api/os/money/actions') {
+export function ownerApi(endpoint: '/api/os/mail/actions' | '/api/os/money/actions' | '/api/os/leads/actions') {
   async function post(body: Record<string, unknown>): Promise<EngineResult> {
     const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store', body: JSON.stringify(body) })
     // The shell's badges (replies, approvals, money issues) recount after any owner action.

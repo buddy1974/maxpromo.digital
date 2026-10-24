@@ -18,6 +18,7 @@ import { HOSTINGER_ACCOUNT, HOSTINGER_MAILBOX } from './hostingerIngestion'
 import { FAMILIES, PLACEHOLDER, isFamily, type FamilyId, type Language } from './identity/families'
 import { renderEmail } from './identity/render'
 import { draftAttachmentPayload } from './draftAttachments'
+import { prospectPolicy } from '@/lib/leads/sendPolicy'
 
 export const SENDER_DISPLAY_NAME = 'Maxpromo Digital'
 export const MAX_RECIPIENTS = 20
@@ -119,6 +120,9 @@ export async function deliverDraft(sql: Sql, req: DeliverRequest, choice: Transp
   try {
     const problems = sendProblems(d)
     if (problems.length) throw new CapabilityRefusal(problems.join(' '))
+    // Prospect mail is checked again at the moment it leaves: a reply or a withdrawn basis since the confirmation stops it.
+    const policy = await prospectPolicy(sql, d)
+    if (!policy.allowed) throw new CapabilityRefusal(policy.reason)
     if (d.thread_id) {
       const t = await sql`SELECT quarantine FROM mail.threads WHERE id=${d.thread_id}::uuid` as { quarantine: string | null }[]
       if (t[0]?.quarantine) throw new CapabilityRefusal('This conversation is in Spam. Mark it as not spam before replying.')

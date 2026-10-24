@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from 'next/server'
+import { NextResponse, after, type NextRequest } from 'next/server'
 import { enforceRateLimit } from '@/lib/rate-limit'
 import { MAX_MAIL_BYTES } from '@/lib/mail/normalization'
 import { readBoundedPayload, verifyWebhookBearer } from '@/lib/mail/provider'
@@ -7,6 +7,7 @@ import { describeHostingerStructure, unknownDataKeys } from '@/lib/mail/hostinge
 import { acceptHostingerMail, hostingerReceiptReady, HOSTINGER_MAILBOX } from '@/lib/mail/hostingerIngestion'
 import { scheduleProviderCheck } from '@/lib/mail/providerSchedule'
 import { getDb } from '@/lib/db'
+import { applyLeadReply } from '@/lib/leads/workflow'
 
 export const dynamic = 'force-dynamic'
 const noStore = { 'Cache-Control': 'no-store' }
@@ -68,6 +69,8 @@ export async function POST(req: NextRequest) {
     log('info', { event: 'mail.webhook.accepted', created: result.created, deliveryId: event.deliveryId, degraded: event.degraded, unknownDataKeys: unknownDataKeys(payload) })
     // The webhook carries no spam/folder state; the provider's folder is read after the response.
     if(result.created) scheduleProviderCheck('webhook', undefined, { notify: true })
+    // A reply from a lead stops what was waiting to go to them (ADR-0027 §3, rule 5).
+    if(result.created && result.messageId) after(() => applyLeadReply(sql, result.messageId).then(() => undefined).catch(() => undefined))
     return NextResponse.json({ok:true},{status:200,headers:noStore})
   } catch {
     // Deliberately no driver error, payload, signed URL or token in logs/responses.

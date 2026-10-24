@@ -1,5 +1,15 @@
 # Decision Log
 
+## 2026-10-25 — ADR-0027 accepted with modifications (Marcel)
+
+**Accepted.** Maxpromo OS is the owner control plane, Agent Bureau the governed workforce behind it, the model gateway
+the single model-access layer; leads + outreach are the next workload, video/content/social after that. **OpenClaw is no
+longer part of the architecture.** No MCP zoo, no provider zoo, no generic workflow platform. OpenRouter stays opt-in.
+UWG §7 is a send boundary, not a build blocker. **Implemented (agent, for Marcel's inspection):** gateway shipped; lead
+research and code scoring on the existing lead record; outreach moved onto the Email OS; a prospect send policy that
+needs a recorded basis; five written workflow rules, automatic ones behind `LEAD_WORKFLOW=1`; the lead screen. **Recommended,
+not added:** Google Places API (New) Text Search as the one discovery provider when Marcel wants "category X around Y".
+
 ## 2026-10-24 — ADR-0027 proposed: model gateway, leads, workflow layer (agent proposal, awaiting Marcel)
 
 **Proposed.** Following Marcel's direction (OpenRouter + Leads + Agent Bureau + workflow engine, then one real prospect

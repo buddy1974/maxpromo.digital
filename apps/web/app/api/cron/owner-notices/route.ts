@@ -4,6 +4,7 @@ import { cronAuthorized } from '@/lib/cron'
 import { berlinDate } from '@/lib/commercial/money'
 import { dispatchOwnerNotices } from '@/lib/owner/notices'
 import { sweepScheduledMail } from '@/lib/mail/outbound'
+import { sweepLeads } from '@/lib/leads/workflow'
 
 /**
  * GET /api/cron/owner-notices — the daily Vercel cron (vercel.json): the morning brief and any
@@ -22,8 +23,9 @@ export async function GET(request: NextRequest) {
     // The brief is due from 06:00 Berlin; the cron runs after that, so this run includes it.
     const result = await dispatchOwnerNotices(sql, { briefFromHour: 6 })
     const mail = await sweepScheduledMail(sql, berlinDate()).catch(() => null)
-    console.info(JSON.stringify({ event: 'owner.notices', source: 'cron', ...result, scheduledMail: mail }))
-    return NextResponse.json({ status: 'done', ...result, scheduledMail: mail })
+    const leads = await sweepLeads(sql, berlinDate()).catch(() => null)
+    console.info(JSON.stringify({ event: 'owner.notices', source: 'cron', ...result, scheduledMail: mail, leads }))
+    return NextResponse.json({ status: 'done', ...result, scheduledMail: mail, leads })
   } catch (err) {
     console.error('[cron/owner-notices]', err instanceof Error ? err.message : err)
     return NextResponse.json({ status: 'failed' }, { status: 500 })

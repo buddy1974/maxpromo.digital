@@ -10,9 +10,15 @@ import { listDraftAttachments } from '@/lib/mail/draftAttachments'
 import { deliverDraft, renderDraft, sendProblems, SENDER_DISPLAY_NAME, MAX_RECIPIENTS, type DraftRow } from '@/lib/mail/outbound'
 import { FAMILY_IDS, FAMILIES } from '@/lib/mail/identity/families'
 import { threadContext } from '@/lib/mail/context'
+import { prospectPolicy, type Basis } from '@/lib/leads/sendPolicy'
 import { CapabilityRefusal, type AnyCapability, type CapabilityContext, type CapabilityDefinition } from '../types'
 import { v } from '../validate'
 
+/** Why this prospect email may be sent, shown on the confirmation (lib/leads/sendPolicy.ts). */
+const BASIS_TEXT: Record<Basis, string> = {
+  enquiry: 'They contacted Maxpromo first', consent: 'Consent recorded by Marcel', customer: 'Existing customer (recorded by Marcel)',
+  test: 'Test recipient — evidence route, not a prospect',
+}
 const emails = v.optional(v.array(v.email(), { max: MAX_RECIPIENTS }))
 const ref = (id: string, label: string) => ({ kind: 'email_draft' as const, id, label })
 
@@ -114,6 +120,8 @@ export const mailDeliver: CapabilityDefinition<ReturnType<typeof deliverInput.pa
     if (!d) throw new CapabilityRefusal('No draft to send.', 'not_found')
     const problems = sendProblems(d)
     if (problems.length) throw new CapabilityRefusal(problems.join(' '))
+    const policy = await prospectPolicy(ctx.sql, d)
+    if (!policy.allowed) throw new CapabilityRefusal(policy.reason)
     if (d.thread_id) await openThread(ctx, d.thread_id)
     const { family, rendered, ref: threadRef } = await renderDraft(ctx.sql, d)
     const days = d.follow_up_days ?? FAMILIES[family].followUpDays
@@ -129,6 +137,7 @@ export const mailDeliver: CapabilityDefinition<ReturnType<typeof deliverInput.pa
         THREAD: d.mode === 'new' ? 'New conversation' : threadRef ? 'Continues the conversation' : 'Reply (original location unknown: sent without thread headers)',
         FOLLOW_UP: days === null ? 'None' : `In ${days} day(s) if no answer`,
         SEND: at ? `Scheduled: ${berlin(at)} (Berlin)` : 'Now',
+        ...(policy.basis !== 'not_prospect' ? { BASIS: BASIS_TEXT[policy.basis] } : {}),
       },
       payload: { draft_id: d.id, revision: d.revision, content, ...(at ? { send_at: at.toISOString() } : {}) },
       dedupeKey: `draft:${d.id}`, expiresInMinutes: 15,

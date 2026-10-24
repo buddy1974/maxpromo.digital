@@ -1,5 +1,22 @@
 # Change Log
 
+## 2026-10-25 — Gateway in production; first lead workflow (ADR-0027 accepted with modifications)
+
+- Model gateway `4b5b05c` pushed and deployed (web + Bureau); production Ask Max and Quick Scan extraction verified.
+  The Bureau health check now asks the gateway.
+- Lead research (`lead.research`): reads the prospect's own website safely (public hosts only, robots.txt, 4 pages),
+  keeps only findings quoted verbatim from the cited page, screens injected instructions, scores by code with reasons.
+  Stored in `os_leads.research.site` — no new table, no migration.
+- Outreach on the Email OS: drafts are mail drafts (family outreach/follow_up, linked to the lead, editable in the
+  Inbox); `outreach.send` sends through `deliverDraft` (Hostinger), no longer Resend.
+- Prospect send policy: a recorded basis (enquiry, consent, customer, test recipient) is required, checked at
+  confirmation and as the mail leaves; `lead.basis` (owner only); no setting enables cold email.
+- Workflow rules (`lib/leads/workflow.ts`): auto-research, auto-draft, follow-up draft (behind `LEAD_WORKFLOW=1`);
+  a reply always moves the lead to Responded, cancels "if no reply" follow-ups and withdraws queued outreach.
+- Lead screen `/os/leads/:id` (phone-first): evidence, score reasons, basis, draft, approval, timeline. The list opens
+  it and creates through `lead.create`. Shared `useOwnerAction` (Money and Leads).
+- Gate 33 `prove:lead-research` (34 properties); `prove:lead-workflow-evidence` (39, evidence database).
+
 ## 2026-10-24 — One model gateway (ADR-0027, proposed)
 
 - New package `@maxpromo/ai`: every model call in the web app and the Bureau goes through `complete()` / `completeJson()`

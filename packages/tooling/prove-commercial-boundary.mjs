@@ -162,8 +162,14 @@ check('the commercial layer allocates document numbers only through lib/document
 const sendsOk = (s) => (s.match(/sendEmail\(\{[\s\S]*?\}\)/g) ?? []).every((call) => /idempotencyKey:/.test(call))
 check('rule 4 fails on a send without a key', !sendsOk("sendEmail({ to, subject, html })"))
 const senders = commercial.filter(([, s]) => /sendEmail\(/.test(s))
-check('every commercial email send carries a provider idempotency key', senders.length > 0 && senders.every(([, s]) => sendsOk(s)),
+check('every commercial email send through Resend carries a provider idempotency key', senders.every(([, s]) => sendsOk(s)),
   `${senders.length} sender(s)`)
+/* Since ADR-0027 outreach leaves through the mailbox: the one claim-once send path (deliverDraft),
+   which sends a confirmed draft revision exactly once and never retries. Not vacuous: the file must
+   exist and must send that way. */
+const outreachSrc = commercial.find(([p]) => p.endsWith('capabilities/outreach.ts'))?.[1] ?? ''
+check('outreach sends only through the claim-once mailbox path (deliverDraft), never Resend directly',
+  /deliverDraft\(/.test(outreachSrc) && !/sendEmail\(/.test(outreachSrc))
 /* Rule 4b (ADR-0021): the OS screens' own routes are held to the same rule —
    an owner direct send happens once. They send through lib/commercial/direct
    or carry a key themselves; none may call the transport without one. */

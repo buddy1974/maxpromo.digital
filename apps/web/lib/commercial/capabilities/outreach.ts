@@ -13,27 +13,37 @@
  * enforces on the public site (ADR-0007). External content is quoted to it as
  * data, never as instructions.
  *
- * SEND (AMBER) is email only. The prepared payload carries the exact
- * recipient, subject and body; the approval is bound to their hash, so an
- * edited draft needs a new approval. The provider receives an idempotency key
- * derived from the approval, so a retry cannot send twice.
+ * An email draft is also an Email OS draft (mail.drafts, family `outreach` or
+ * `follow_up`, linked to the lead) — the same draft Marcel sees and edits in
+ * the Inbox, sent by the same one implementation (ADR-0027 §2, closing risk
+ * 127: outreach no longer goes through Resend).
+ *
+ * SEND (AMBER) is email only. The confirmation shows the exact sender,
+ * recipient, subject, text and the basis for writing to them; it is bound to
+ * the draft revision, so an edited draft needs a new confirmation. The send is
+ * deliverDraft: one claim, one send, never retried, and the prospect policy
+ * (lib/leads/sendPolicy.ts) is checked at confirmation and again as it leaves.
+ * A sent first contact leaves an "if no reply" follow-up.
  *
  * WHATSAPP is never sent by the OS — no authorised integration exists. The OS
  * returns a wa.me link that opens WhatsApp with the text filled in, and says
  * so. "I sent it" is then logged by Marcel through activity.log.
  */
 
+import { createHash } from 'node:crypto'
 import { callAIJson } from '@/lib/ai'
-import { sendEmail } from '@/lib/email'
 import { BUSINESS } from '@/lib/documents/identity'
-import { DOCUMENT_FROM_EMAIL } from '@/lib/documents/emails'
+import { HOSTINGER_ACCOUNT } from '@/lib/mail/hostingerIngestion'
+import { deliverDraft, sendProblems, SENDER_DISPLAY_NAME, type DraftRow as MailDraftRow } from '@/lib/mail/outbound'
+import { FAMILIES } from '@/lib/mail/identity/families'
+import { prospectPolicy, type Basis } from '@/lib/leads/sendPolicy'
+import { recordedFacts, siteResearch } from '@/lib/leads/state'
 import { writeAudit } from '../audit'
 import { leadStage } from '../pipeline'
 import {
-  focus, leadLabel, logActivity, normalisePhone, resolveLead, stageText, touchLead, type LeadRow,
+  addDays, focus, leadLabel, logActivity, normalisePhone, resolveLead, stageText, type LeadRow,
 } from '../records'
-import { payloadHash } from '../signing'
-import { CapabilityRefusal, UncertainOutcome, type AnyCapability, type CapabilityDefinition, type CapabilityContext } from '../types'
+import { CapabilityRefusal, OWNER_ACTOR, type AnyCapability, type CapabilityDefinition, type CapabilityContext } from '../types'
 import { v } from '../validate'
 
 const LANGS = ['de', 'en', 'fr'] as const
@@ -51,6 +61,9 @@ interface DraftDetail {
   based_on: string | null
   instruction: string | null
   author: 'ai' | 'marcel'
+  /** The Email OS draft this version lives in (email channel). */
+  mail_draft_id?: string
+  follow_up?: boolean
 }
 
 interface DraftRow {
@@ -79,12 +92,16 @@ Rules — follow all of them:
 - Answer as a JSON object {"subject": string|null, "body": string}. subject is null for WhatsApp.`
 
 function promptFor(lead: LeadRow, history: string[], p: {
-  channel: 'email' | 'whatsapp'; language: Lang; instruction?: string; previous?: DraftDetail | null
+  channel: 'email' | 'whatsapp'; language: Lang; instruction?: string; previous?: DraftDetail | null; followUp?: boolean
 }): string {
-  const facts = Object.values(lead.research ?? {}) as { fact: string; source?: string }[]
+  /* Facts recorded by hand or by an agent ({fact, source}), and the verified website research:
+     only findings whose quote was found on the page reach the prompt (lib/leads/research.ts). */
+  const facts = recordedFacts(lead)
+  const site = siteResearch(lead)
+  const done = site && site.state === 'done' ? site : null
   const langName = { de: 'German (formal Sie)', en: 'English', fr: 'French (vous)' }[p.language]
   return [
-    `<task>Write a ${p.channel === 'email' ? 'short email' : 'short WhatsApp message (max ~600 characters)'} in ${langName}.</task>`,
+    `<task>Write a ${p.followUp ? 'short, friendly follow-up to the earlier email in <history> (they have not answered; no pressure, one useful thought)' : p.channel === 'email' ? 'short email' : 'short WhatsApp message (max ~600 characters)'} in ${langName}.</task>`,
     `<business_facts>`,
     `Business: ${lead.company ?? lead.name ?? 'unknown'}`,
     lead.name && lead.company ? `Contact person: ${lead.name}` : '',
@@ -94,6 +111,10 @@ function promptFor(lead: LeadRow, history: string[], p: {
     lead.service_interest ? `Possible fit: ${lead.service_interest}` : '',
     lead.summary ? `Summary: ${lead.summary}` : '',
     ...facts.map((f) => `- ${f.fact}${f.source ? ` (source: ${f.source})` : ''}`),
+    done?.summary ? `From their website: ${done.summary}` : '',
+    ...(done?.evidence ?? []).map((e) => `- ${e.text} (their website says: "${e.quote}")`),
+    done?.angle ? `Most relevant Maxpromo service: ${done.angle.solution.replace(/-/g, ' ')} — ${done.angle.why}` : '',
+    done?.contact.person ? `Named on their website: ${done.contact.person}${done.contact.role ? ` (${done.contact.role})` : ''}` : '',
     `</business_facts>`,
     `<history>${history.length ? history.join('\n') : 'No previous contact.'}</history>`,
     `<sender>Marcel Akwe, Maxpromo Digital, ${BUSINESS.website}</sender>`,
@@ -137,6 +158,8 @@ const draftInput = v.object({
   /** Marcel's own words. Stored as the draft; no model involved. */
   subject: v.optional(v.string({ max: 200 })),
   body: v.optional(v.string({ max: MAX_DRAFT })),
+  /** A follow-up to the first contact, in the same conversation. */
+  follow_up: v.optional(v.boolean()),
 })
 
 export const outreachDraft: CapabilityDefinition<ReturnType<typeof draftInput.parse>> = {
@@ -160,6 +183,8 @@ export const outreachDraft: CapabilityDefinition<ReturnType<typeof draftInput.pa
       lead = r.lead
     }
     const channel = input.channel ?? previous?.detail.channel ?? 'email'
+    const followUp = input.follow_up ?? previous?.detail.follow_up ?? false
+    if (followUp && channel !== 'email') throw new CapabilityRefusal('A follow-up draft is an email in the same conversation.')
     const language: Lang = input.language ?? previous?.detail.language ?? (lead.language as Lang | null) ?? 'de'
 
     let subject: string | null
@@ -175,7 +200,7 @@ export const outreachDraft: CapabilityDefinition<ReturnType<typeof draftInput.pa
         WHERE lead_id = ${lead.id} AND kind <> 'outreach_draft' ORDER BY created_at DESC LIMIT 8` as { kind: string; summary: string; created_at: Date }[]
       const ai = await callAIJson(
         [{ role: 'user', content: promptFor(lead, hist.map((h) => `${h.created_at.toISOString().slice(0, 10)} ${h.kind}: ${h.summary}`), {
-          channel, language, instruction: input.instruction, previous: previous?.detail ?? null,
+          channel, language, instruction: input.instruction, previous: previous?.detail ?? null, followUp,
         }) }],
         SYSTEM,
         DRAFT_SCHEMA,
@@ -199,7 +224,9 @@ export const outreachDraft: CapabilityDefinition<ReturnType<typeof draftInput.pa
       based_on: previous?.id ?? null,
       instruction: input.instruction ?? null,
       author,
+      ...(followUp ? { follow_up: true } : {}),
     }
+    if (channel === 'email') detail.mail_draft_id = await upsertMailDraft(ctx, lead, detail)
     const id = await logActivity(ctx.sql, {
       lead_id: lead.id, kind: 'outreach_draft', channel, actor: ctx.actor,
       summary: `Draft v${detail.version} (${channel}, ${language})`, detail: detail as unknown as Record<string, unknown>,
@@ -220,39 +247,99 @@ export const outreachDraft: CapabilityDefinition<ReturnType<typeof draftInput.pa
   },
 }
 
+/* ── the Email OS draft behind an email draft ─────────────────────────── */
+
+/**
+ * One open outreach draft per lead and kind: a revision updates it (new revision, any pending
+ * confirmation for the old text superseded), so two versions can never wait side by side. The
+ * draft belongs to Marcel (created_by = os:marcel) whoever wrote it, so he edits and sends it in
+ * the Inbox like any other. A follow-up continues the conversation of the first contact.
+ */
+async function upsertMailDraft(ctx: CapabilityContext, lead: LeadRow, d: DraftDetail): Promise<string> {
+  const family = d.follow_up ? 'follow_up' : 'outreach'
+  const subject = (d.subject ?? (d.language === 'de' ? 'Kurze Frage' : 'A short question')).slice(0, 300)
+  const to = JSON.stringify(lead.email ? [lead.email.trim().toLowerCase()] : [])
+  const language = d.language === 'en' ? 'en' : 'de'
+  const open = await ctx.sql`SELECT id FROM mail.drafts WHERE entity_kind = 'lead' AND entity_id = ${lead.id} AND family = ${family} AND status = 'draft' ORDER BY updated_at DESC LIMIT 1` as { id: string }[]
+  if (open[0]) {
+    await ctx.sql`UPDATE mail.drafts SET subject = ${subject}, body = ${d.body}, language = ${language}, to_addrs = ${to}::jsonb, revision = revision + 1, updated_at = now() WHERE id = ${open[0].id}::uuid`
+    await ctx.sql`UPDATE os_approvals SET status = 'superseded', decided_at = now(), decided_by = ${ctx.actor}
+      WHERE status = 'pending' AND dedupe_key IN (${`email.deliver:draft:${open[0].id}`}, ${`outreach.send:lead:${lead.id}`})`
+    return open[0].id
+  }
+  let thread: { thread_id: string; message_id: string } | undefined
+  if (d.follow_up) {
+    thread = (await ctx.sql`SELECT m.thread_id, m.id AS message_id FROM mail.messages m JOIN mail.business_links bl ON bl.thread_id = m.thread_id
+      WHERE bl.entity_kind = 'lead' AND bl.entity_id = ${lead.id} AND m.direction = 'outbound' ORDER BY m.received_at DESC LIMIT 1` as { thread_id: string; message_id: string }[])[0]
+  }
+  const rows = await ctx.sql`INSERT INTO mail.drafts(account_id, thread_id, mode, source_message_id, to_addrs, cc_addrs, bcc_addrs, subject, body, family, language, entity_kind, entity_id, created_by)
+    VALUES (${HOSTINGER_ACCOUNT}, ${thread?.thread_id ?? null}::uuid, ${thread ? 'reply' : 'new'}, ${thread?.message_id ?? null}::uuid, ${to}::jsonb, '[]'::jsonb, '[]'::jsonb,
+      ${subject}, ${d.body}, ${family}, ${language}, 'lead', ${lead.id}::uuid, ${OWNER_ACTOR}) RETURNING id` as { id: string }[]
+  return rows[0].id
+}
+
 /* ── outreach.send (email) ──────────────────────────────────────────────── */
 
-const sendInput = v.object({ draft_id: v.uuid(), to: v.optional(v.email()) })
+const BASIS_TEXT: Record<Basis | 'not_prospect', string> = {
+  enquiry: 'They contacted Maxpromo first', consent: 'Consent recorded by Marcel', customer: 'Existing customer (recorded by Marcel)',
+  test: 'Test recipient — evidence route, not a prospect', not_prospect: 'Not prospect mail',
+}
+
+const sendInput = v.object({ draft_id: v.optional(v.uuid()), mail_draft_id: v.optional(v.uuid()), to: v.optional(v.email()) })
 
 export const outreachSend: CapabilityDefinition<ReturnType<typeof sendInput.parse>> = {
   id: 'outreach.send',
   family: 'OUTREACH',
   title: 'Send outreach email',
-  description: 'Sends one stored email draft to one recipient after confirmation, and records it on the lead.',
+  description: 'Sends one outreach email draft (Email OS) to the lead after confirmation, only when a basis for writing to them is recorded, and sets an "if no reply" follow-up.',
   risk: 'AMBER',
   input: sendInput,
   async prepare(ctx, input) {
-    const draft = await getDraft(ctx, input.draft_id)
-    if (draft.detail.channel !== 'email') {
-      throw new CapabilityRefusal('This is a WhatsApp draft. I can open WhatsApp with it, but I cannot send WhatsApp messages.', 'unsupported')
+    let mailDraftId = input.mail_draft_id
+    if (!mailDraftId) {
+      if (!input.draft_id) throw new CapabilityRefusal('Which draft?')
+      const draft = await getDraft(ctx, input.draft_id)
+      if (draft.detail.channel !== 'email') {
+        throw new CapabilityRefusal('This is a WhatsApp draft. I can open WhatsApp with it, but I cannot send WhatsApp messages.', 'unsupported')
+      }
+      mailDraftId = draft.detail.mail_draft_id
+      if (!mailDraftId) {
+        /* A draft written before outreach moved onto the Email OS: carried over as it stands. */
+        const r = await resolveLead(ctx.sql, { lead_id: draft.lead_id })
+        if ('result' in r) return r.result
+        mailDraftId = await upsertMailDraft(ctx, r.lead, draft.detail)
+      }
     }
-    const r = await resolveLead(ctx.sql, { lead_id: draft.lead_id })
+    if (input.to) {
+      await ctx.sql`UPDATE mail.drafts SET to_addrs = ${JSON.stringify([input.to.toLowerCase()])}::jsonb, revision = revision + 1, updated_at = now() WHERE id = ${mailDraftId}::uuid AND status = 'draft'`
+    }
+    const d = (await ctx.sql`SELECT * FROM mail.drafts WHERE id = ${mailDraftId}::uuid AND status = 'draft'` as MailDraftRow[])[0]
+    if (!d || d.entity_kind !== 'lead' || !d.entity_id) throw new CapabilityRefusal('No unsent outreach draft with that id.', 'not_found')
+    const r = await resolveLead(ctx.sql, { lead_id: d.entity_id })
     if ('result' in r) return r.result
-    const to = input.to ?? r.lead.email
-    if (!to) throw new CapabilityRefusal(`${leadLabel(r.lead)} has no email address. Add one, or give it with the send.`)
-    const subject = draft.detail.subject ?? (draft.detail.language === 'de' ? 'Kurze Frage' : 'A short question')
-    /* Plain text in, escaped and paragraphed out. Nothing from the draft is
-       interpreted as markup. */
+    if (!d.to_addrs.length) throw new CapabilityRefusal(`${leadLabel(r.lead)} has no email address. Add one, or give it with the send.`)
+    const problems = sendProblems(d)
+    if (problems.length) throw new CapabilityRefusal(problems.join(' '))
+    const policy = await prospectPolicy(ctx.sql, d)
+    if (!policy.allowed) {
+      await writeAudit(ctx.sql, { actor: ctx.actor, channel: ctx.channel, operation: 'outreach.send', entityType: 'lead', entityId: r.lead.id, outcome: 'refused', error: `policy:${policy.code}` })
+      throw new CapabilityRefusal(policy.reason)
+    }
+    const days = d.follow_up_days ?? FAMILIES[d.family === 'follow_up' ? 'follow_up' : 'outreach'].followUpDays
+    const content = createHash('sha256').update([d.to_addrs.join(','), d.subject, d.body].join('\n')).digest('hex')
     return {
       summary: `Send email to ${leadLabel(r.lead)}`,
       preview: {
-        ACTION: 'Send email',
-        TO: to,
-        SUBJECT: subject,
-        MESSAGE: draft.detail.body,
+        ACTION: d.family === 'follow_up' ? 'Send follow-up email' : 'Send first-contact email',
+        FROM: `${SENDER_DISPLAY_NAME} <info@maxpromo.digital>`,
+        TO: d.to_addrs.join(', '),
+        SUBJECT: d.subject,
+        MESSAGE: d.body,
+        BASIS: BASIS_TEXT[policy.basis],
+        FOLLOW_UP: days === null ? 'None' : `In ${days} day(s) if no answer`,
         RECORD: `${leadLabel(r.lead)} · ${stageText(r.lead.status)}`,
       },
-      payload: { lead_id: r.lead.id, draft_id: draft.id, to, subject, body: draft.detail.body, language: draft.detail.language },
+      payload: { lead_id: r.lead.id, mail_draft_id: d.id, revision: d.revision, content, follow_up_days: days },
       /* Per lead, not per draft: preparing the send of a revised draft
          supersedes the pending send of the earlier one, so a lead can never
          receive two versions of the same message from two old buttons. */
@@ -261,52 +348,29 @@ export const outreachSend: CapabilityDefinition<ReturnType<typeof sendInput.pars
     }
   },
   async execute(ctx, payload, approvalId) {
-    const p = payload as { lead_id: string; draft_id: string; to: string; subject: string; body: string; language: string }
-    const html = p.body
-      .split(/\n{2,}/)
-      .map((para) => `<p style="margin:0 0 14px;line-height:1.6">${escapeHtml(para).replace(/\n/g, '<br>')}</p>`)
-      .join('')
-    const hash = payloadHash('outreach.send', payload)
-    let result: Awaited<ReturnType<typeof sendEmail>>
-    try {
-      result = await sendEmail({
-        to: p.to,
-        from: DOCUMENT_FROM_EMAIL,
-        replyTo: BUSINESS.email,
-        subject: p.subject,
-        html: `<div style="font-family:Arial,sans-serif;font-size:14px;max-width:620px">${html}</div>`,
-        idempotencyKey: `approval-${approvalId}`,
-      })
-    } catch (err) {
-      throw new UncertainOutcome(`The email to ${p.to} may or may not have been sent: the provider did not answer (${err instanceof Error ? err.message : 'network'}).`)
+    const p = payload as { lead_id: string; mail_draft_id: string; revision: number; follow_up_days: number | null }
+    const before = (await ctx.sql`SELECT status FROM os_leads WHERE id = ${p.lead_id}::uuid` as { status: string }[])[0]
+    /* deliverDraft claims this exact revision once, checks the policy again, sends through the
+       mailbox and records the message, the conversation, the business link and the timeline. */
+    const result = await deliverDraft(ctx.sql, { draftId: p.mail_draft_id, revision: p.revision, approvalId, actor: ctx.actor, today: ctx.today, committed: what => ctx.committed(what) })
+    const stage = before ? leadStage(before.status) : null
+    const moved = Boolean(stage && ['discovered', 'qualified', 'outreach_prepared'].includes(stage))
+    if (moved) await ctx.sql`UPDATE os_leads SET status = 'contacted', updated_at = now() WHERE id = ${p.lead_id}::uuid`
+    let due: string | null = null
+    if (p.follow_up_days !== null) {
+      due = addDays(ctx.today, p.follow_up_days)
+      await ctx.sql`INSERT INTO os_followups (due_on, reason, lead_id, unless_reply, actor) VALUES (${due}, 'No answer to the outreach email yet', ${p.lead_id}::uuid, true, ${ctx.actor}) ON CONFLICT DO NOTHING`
+      await ctx.sql`UPDATE os_leads SET next_action = 'Follow up if no answer', next_action_at = ${due} WHERE id = ${p.lead_id}::uuid`
     }
-    if (!result.success) {
-      await writeAudit(ctx.sql, { actor: ctx.actor, channel: ctx.channel, operation: 'outreach.send', entityType: 'lead', entityId: p.lead_id, approvalId, payloadHash: hash, outcome: 'failed', error: result.error })
-      throw new CapabilityRefusal(`The email was not sent: ${result.error ?? 'provider refused it'}. Nothing was recorded as sent.`)
-    }
-    ctx.committed(`Sent to ${p.to}`, result.id)
-    const lead = (await ctx.sql`SELECT * FROM os_leads WHERE id = ${p.lead_id}` as LeadRow[])[0]
-    await logActivity(ctx.sql, {
-      lead_id: p.lead_id, kind: 'email_sent', channel: 'email', actor: ctx.actor, external_ref: result.id ?? null,
-      summary: `Email sent to ${p.to}: ${p.subject}`, detail: { draft_id: p.draft_id, to: p.to, subject: p.subject, body: p.body, approval_id: approvalId },
-    })
-    const stage = leadStage(lead.status)
-    if (stage && ['discovered', 'qualified', 'outreach_prepared'].includes(stage)) {
-      await ctx.sql`UPDATE os_leads SET status = 'contacted' WHERE id = ${p.lead_id}`
-    }
-    await touchLead(ctx.sql, p.lead_id)
     await writeAudit(ctx.sql, {
       actor: ctx.actor, channel: ctx.channel, operation: 'outreach.send', entityType: 'lead', entityId: p.lead_id,
-      before: { status: lead.status }, after: { status: stage && ['discovered', 'qualified', 'outreach_prepared'].includes(stage) ? 'contacted' : lead.status },
-      approvalId, payloadHash: hash, outcome: 'succeeded', externalRef: result.id,
+      before: { status: before?.status }, after: { status: moved ? 'contacted' : before?.status, follow_up: due },
+      approvalId, outcome: 'succeeded', externalRef: result.messageId,
     })
-    const delivered = result.id === 'evidence-sink' || result.id === 'dev-mock'
-      ? ` (${result.id}: this environment does not deliver mail)` : ''
     return {
-      summary: `Sent to ${p.to}${delivered}. Recorded on ${leadLabel(lead)}.`,
-      focus: [focus('lead', lead.id, leadLabel(lead))],
-      next: ['Follow up in a week if no reply'],
-      data: { provider_id: result.id },
+      summary: `${result.transport === 'evidence' ? 'Evidence mode: recorded as sent; nothing left the system.' : 'Sent from info@maxpromo.digital.'}${due ? ` Follow-up on ${due} if they do not answer.` : ''}`,
+      focus: [focus('lead', p.lead_id, 'lead')],
+      data: { thread_id: result.threadId, message_id: result.messageId, follow_up_on: due, transport: result.transport },
     }
   },
 }
@@ -345,8 +409,5 @@ export const outreachWhatsappLink: CapabilityDefinition<ReturnType<typeof waInpu
   },
 }
 
-function escapeHtml(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-}
 
 export const OUTREACH_CAPABILITIES: AnyCapability[] = [outreachDraft, outreachSend, outreachWhatsappLink]

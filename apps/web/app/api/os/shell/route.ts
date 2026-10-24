@@ -5,6 +5,7 @@ import { OWNER_HEADERS, ownerReply } from '@/lib/owner-request'
 import { railIssues } from '@/lib/money/attention'
 import { berlinDate } from '@/lib/commercial/money'
 import { sweepScheduledMail } from '@/lib/mail/outbound'
+import { sweepLeads } from '@/lib/leads/workflow'
 
 /**
  * GET /api/os/shell — the three numbers the phone navigation shows as badges: conversations waiting
@@ -28,6 +29,8 @@ export const GET = withAuth(async (_request, { session }) => {
     ])
     // While the OS is open (this is polled every minute) due scheduled emails go out (0023).
     after(() => sweepScheduledMail(sql, berlinDate()).catch(() => undefined))
+    // …and the lead workflow takes its next step (ADR-0027 §3): replies always, the rest when switched on.
+    after(() => sweepLeads(sql, berlinDate()).catch(() => undefined))
     return NextResponse.json({ needsReply, approvals, money }, { headers: OWNER_HEADERS })
   } catch (err) {
     console.error('[os/shell]', err instanceof Error ? err.message : err)

@@ -15,7 +15,7 @@ const sha256Hex=globalThis.__mailEngineHash;
 const payloadHash=(id,payload)=>sha256Hex(id+JSON.stringify(payload));
 const berlinDate=()=> '2026-10-22';
 class CapabilityRefusal extends Error{}; class UncertainOutcome extends Error{};class InputError extends Error{};
-const isPrepared=p=>'payload' in p && 'preview' in p;
+const isPrepared=p=>'payload' in p && 'preview' in p;const OWNER_ACTOR='os:marcel';
 `
 const engine = await import(`data:text/javascript;base64,${Buffer.from(ports + emitted).toString('base64')}`)
 interface Approval { id: string; capability: string; payload: Record<string, unknown>; payload_hash: string; status: string; expires_at: string; result: unknown; requested_by: string }

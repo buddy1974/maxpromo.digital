@@ -29,7 +29,7 @@ import { payloadHash, sha256Hex, stableStringify } from './signing'
 import { berlinDate } from './money'
 import { CAPABILITIES } from './registry'
 import {
-  CapabilityRefusal, UncertainOutcome, isPrepared,
+  CapabilityRefusal, OWNER_ACTOR, UncertainOutcome, isPrepared,
   type CapabilityContext, type CapabilityResult, type Sql,
 } from './types'
 import { InputError } from './validate'
@@ -170,8 +170,8 @@ async function createApproval(
   }
 }
 
-/** The owner deciding in the OS itself (cookie session). */
-export const OWNER_ACTOR = 'os:marcel'
+/** The owner deciding in the OS itself (cookie session). Defined in types.ts so capabilities can name it. */
+export { OWNER_ACTOR }
 
 interface ApprovalRow {
   id: string

@@ -19,6 +19,7 @@ import {
 } from '../pipeline'
 import { addTo, daysBetween, formatPerCurrency, type PerCurrency } from '../money'
 import { CapabilityRefusal, type AnyCapability, type CapabilityDefinition, type CapabilityResult } from '../types'
+import { recordedFacts } from '@/lib/leads/state'
 import { v } from '../validate'
 
 const leadRef = {
@@ -358,7 +359,7 @@ export const leadHistory: CapabilityDefinition<ReturnType<typeof historyInput.pa
       { invoice_number: string; status: string; total: string; currency: string }[],
       { id: string; title: string; stage: string }[],
     ]
-    const facts = Object.values(lead.research ?? {}) as { fact: string }[]
+    const facts = recordedFacts(lead)
     const lines = [
       `Stage: ${stageText(lead.status)}${lead.value ? ` · value ${lead.value} ${lead.currency}` : ''}`,
       lead.next_action ? `Next: ${lead.next_action}${lead.next_action_at ? ` (${isoDate(lead.next_action_at)})` : ''}` : 'Next action: none set',

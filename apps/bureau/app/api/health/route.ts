@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { runHealth, healthStatus, type HealthCheck } from "@maxpromo/observability";
 import { resolveDomain, BUSINESS } from "@maxpromo/config";
+import { hasAIConfig } from "@/config/env";
 
 /**
  * app/api/health/route.ts — is Agent Bureau working?
@@ -61,7 +62,8 @@ const CHECKS: readonly HealthCheck[] = [
     name: "ai-provider",
     critical: false,
     probe: async () => {
-      const configured = Boolean(process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY);
+      // The gateway's own answer (ADR-0027): the route AI_PROVIDER names, with its credential.
+      const configured = hasAIConfig();
       return configured
         // `unvalidated`, not `ok` — see HealthState in @maxpromo/observability.
         // A credential being set is not the dependency working.

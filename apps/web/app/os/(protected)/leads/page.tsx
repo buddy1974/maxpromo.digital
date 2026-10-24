@@ -1,6 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import { LEADS_COPY } from '@/lib/os-i18n/leads'
+import { ownerApi } from '@/lib/commercial/ownerClient'
 import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
 import { LEAD_STAGES, leadStage } from '@/lib/commercial/pipeline'
 
@@ -30,13 +33,15 @@ function StatusBadge({ status, label }: { status: string; label: string }) {
   return <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: c.text, background: c.bg, padding: '3px 8px', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>{label}</span>
 }
 
-const LEAD_BLANK = { name: '', company: '', email: '', phone: '', source: 'manual', notes: '' }
+const LEAD_BLANK = { name: '', company: '', email: '', phone: '', website: '', city: '', source: 'manual', notes: '' }
+const leadsApi = ownerApi('/api/os/leads/actions')
 
 export default function LeadsPage() {
-  const { t, fmtDate } = useOsLocale()
+  const { t, fmtDate, locale } = useOsLocale()
+  const lc = LEADS_COPY[locale]
+  const router = useRouter()
   const [leads,     setLeads]     = useState<Lead[]>([])
   const [loading,   setLoading]   = useState(true)
-  const [selected,  setSelected]  = useState<Lead | null>(null)
   const [tab,       setTab]       = useState('all')
   const [search,    setSearch]    = useState('')
   const [showNew,   setShowNew]   = useState(false)
@@ -54,23 +59,24 @@ export default function LeadsPage() {
       .catch(() => setLoading(false))
   }, [])
 
+  /* Through lead.create (ADR-0027): it refuses a duplicate of an existing lead or client and says
+     which one, records who saved it, and starts the lead at Discovered. A website lets research run. */
   async function createLead() {
-    if (!newForm.name.trim() && !newForm.email.trim()) {
+    if (!newForm.company.trim() && !newForm.name.trim()) {
       setCreateErr(t.leads.nameOrEmailRequired); return
     }
     setCreating(true); setCreateErr('')
     try {
-      const res = await fetch('/api/os/leads', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newForm }),
+      const pick = (v: string) => (v.trim() ? v.trim() : undefined)
+      const r = await leadsApi.run('lead.create', {
+        company: newForm.company.trim() || newForm.name.trim(), name: pick(newForm.name), email: pick(newForm.email), phone: pick(newForm.phone),
+        website: pick(newForm.website), city: pick(newForm.city), source: newForm.source, summary: pick(newForm.notes),
       })
-      if (!res.ok) throw new Error(t.leads.createFailed)
-      const lead = await res.json() as Lead
-      setLeads(prev => [lead, ...prev])
-      setNewForm({ ...LEAD_BLANK })
-      setShowNew(false)
-    } catch (err) {
-      setCreateErr(err instanceof Error ? err.message : t.leads.createFailed)
+      const data = r.status === 'done' ? r.result?.data as { created?: boolean; lead_id?: string } | undefined : undefined
+      if (!data?.created || !data.lead_id) { setCreateErr(r.result?.summary ?? r.message ?? t.leads.createFailed); return }
+      router.push(`/os/leads/${data.lead_id}`)
+    } catch {
+      setCreateErr(t.leads.createFailed)
     } finally { setCreating(false) }
   }
 
@@ -79,7 +85,6 @@ export default function LeadsPage() {
     const res = await fetch(`/api/os/leads?id=${id}`, { method: 'DELETE' })
     if (res.ok) {
       setLeads(prev => prev.filter(l => l.id !== id))
-      if (selected?.id === id) setSelected(null)
     }
   }
 
@@ -89,7 +94,6 @@ export default function LeadsPage() {
       body: JSON.stringify({ id, status, converted: status === 'won' }),
     })
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status, converted: status === 'won' } : l))
-    if (selected?.id === id) setSelected(prev => prev ? { ...prev, status } : null)
   }
 
   const filtered = leads
@@ -121,6 +125,8 @@ export default function LeadsPage() {
                 { label: t.leads.fieldCompany, key: 'company', type: 'text' },
                 { label: t.leads.fieldEmail,   key: 'email',   type: 'email' },
                 { label: t.leads.fieldPhone,   key: 'phone',   type: 'text' },
+                { label: lc.website,           key: 'website', type: 'url' },
+                { label: lc.city,              key: 'city',    type: 'text' },
               ] as const).map(f => (
                 <div key={f.key}>
                   <label style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', display: 'block', marginBottom: '5px' }}>{f.label}</label>
@@ -193,7 +199,7 @@ export default function LeadsPage() {
               <tr><td colSpan={5} style={{ padding: 'var(--space-5) var(--space-4)', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-muted)' }}>{t.leads.empty}</td></tr>
             ) : (
               filtered.map(lead => (
-                <tr key={lead.id} style={{ borderBottom: '1px solid var(--brand-border)', cursor: 'pointer' }} onClick={() => setSelected(lead)}>
+                <tr key={lead.id} style={{ borderBottom: '1px solid var(--brand-border)', cursor: 'pointer' }} onClick={() => router.push(`/os/leads/${lead.id}`)}>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: '0 0 2px' }}>{lead.name || t.common.notAvailable}</p>
                     {lead.company && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.04em' }}>{lead.company}</p>}
@@ -231,61 +237,6 @@ export default function LeadsPage() {
         </table>
       </div>
 
-      {/* Detail panel */}
-      {selected && (
-        <div style={{ position: 'fixed', top: 0, right: 0, width: 'min(400px, 100vw)', height: '100vh', background: 'var(--brand-surface)', borderLeft: '1px solid var(--brand-border)', zIndex: 200, overflowY: 'auto' }}>
-          <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--brand-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.leads.leadDetails}</p>
-            <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
-          </div>
-          <div style={{ padding: 'var(--space-5)' }}>
-            <h2 style={{ fontFamily: sans, fontSize: '18px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', margin: '0 0 var(--space-1)' }}>{selected.name || t.leads.anonymous}</h2>
-            {selected.company && <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', margin: '0 0 var(--space-4)' }}>{selected.company}</p>}
-
-            <StatusBadge status={selected.status} label={statusLabel(selected.status)} />
-
-            <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-              {[
-                { label: t.leads.fieldEmail,    value: selected.email },
-                { label: t.leads.fieldPhone,    value: selected.phone },
-                { label: t.leads.fieldSource,   value: selected.source ? sourceLabel(selected.source) : '' },
-                { label: t.leads.fieldCategory, value: selected.category },
-                { label: t.leads.colDate,       value: fmtDate(selected.created_at) },
-              ].filter(f => f.value).map(f => (
-                <div key={f.label}>
-                  <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 3px' }}>{f.label}</p>
-                  <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', margin: 0 }}>{f.value}</p>
-                </div>
-              ))}
-            </div>
-
-            {selected.summary && (
-              <div style={{ marginTop: 'var(--space-4)', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderLeft: '2px solid var(--brand-primary)', padding: '14px 16px' }}>
-                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 var(--space-2)' }}>{t.leads.aiSummary}</p>
-                <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.6 }}>{selected.summary}</p>
-              </div>
-            )}
-
-            {selected.notes && (
-              <div style={{ marginTop: 'var(--space-4)' }}>
-                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 6px' }}>{t.leads.fieldNotes}</p>
-                <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.6 }}>{selected.notes}</p>
-              </div>
-            )}
-
-            <div style={{ marginTop: 'var(--space-5)', borderTop: '1px solid var(--brand-border)', paddingTop: '20px' }}>
-              <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.leads.updateStatus}</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {STATUSES.filter(s => s !== stageOf(selected.status)).map(s => (
-                  <button key={s} onClick={() => updateStatus(selected.id, s)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: TONE_VARS[statusTone(s)].text, background: TONE_VARS[statusTone(s)].bg, border: `1px solid ${TONE_VARS[statusTone(s)].border}`, padding: '6px 12px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', borderRadius: 'var(--radius-xs)' }}>
-                    {statusLabel(s)}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
