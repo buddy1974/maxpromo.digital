@@ -1,0 +1,11 @@
+{
+  "name": "@maxpromo/ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The model gateway (ADR-0027): one way to call a model for every application — tiers instead of model names, one route chosen by AI_GATEWAY, OpenRouter with no-training and zero-retention routing. Dependency-free; never executes anything.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  }
+}

@@ -359,7 +359,7 @@ console.log('The rest of the wiring')
 {
   const route = stripComments(read('apps', 'web', 'app', 'api', 'os', 'ai', 'enhance', 'route.ts'))
   check('the enhance route guards every document extraction against the pasted text',
-    /guardExtraction\(\s*toolBlock\.input/.test(route) && /hasText \? body\.text!\.trim\(\) : null/.test(route))
+    /guardExtraction\(\s*r\.data as DocResult/.test(route) && /hasText \? body\.text!\.trim\(\) : null/.test(route))
   const gen = stripComments(read('apps', 'web', 'app', 'api', 'os', 'ai', 'generate-invoice', 'route.ts'))
   const scan = stripComments(read('apps', 'web', 'app', 'api', 'os', 'ai', 'scan-invoice', 'route.ts'))
   check('the legacy text route is guarded against its own input, the legacy image route as unverified',

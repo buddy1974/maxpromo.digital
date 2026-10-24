@@ -309,7 +309,7 @@ console.log('The blocked list matches what the application can actually reach')
 
 /* The contract names every host. If the application grows another outbound
    host, this fails, because a host nobody classified is a host nobody blocked. */
-const SCAN = ['apps/web/lib', 'apps/web/app/api']
+const SCAN = ['apps/web/lib', 'apps/web/app/api', 'packages/ai']
 const walk = (d, out = []) => {
   for (const e of readdirSync(d)) {
     if (e === 'node_modules') continue
@@ -322,7 +322,9 @@ const hosts = new Set()
 for (const dir of SCAN) {
   if (!existsSync(join(ROOT, dir))) continue
   for (const f of walk(join(ROOT, dir))) {
-    for (const m of readFileSync(f, 'utf8').matchAll(/https:\/\/((?:api|graph)\.[a-z0-9.-]+)/g)) hosts.add(m[1])
+    /* openrouter.ai serves its API under a path, not an api. host: named here so the gateway's
+       route (ADR-0027) is classified like every other model host. */
+    for (const m of readFileSync(f, 'utf8').matchAll(/https:\/\/((?:api|graph)\.[a-z0-9.-]+|(?:[a-z]+\.)?openrouter\.ai)/g)) hosts.add(m[1])
   }
 }
 const classified = new Set([...BLOCKED_OUTBOUND_HOSTS, ...ALLOWED_OUTBOUND_HOSTS])

@@ -57,8 +57,10 @@
  *   graph.facebook.com  WhatsApp replies        BLOCKED in evidence mode (a loopback simulator only)
  *   api.anthropic.com   model inference         allowed
  *   api.openai.com      model inference         allowed
+ *   openrouter.ai       model inference         allowed (the gateway route, ADR-0027)
+ *   eu.openrouter.ai    model inference         allowed (the same, EU in-region)
  *
- * The two model hosts stay open because the extraction is the thing being
+ * The model hosts stay open because the extraction is the thing being
  * demonstrated; a screenshot of a disabled feature proves nothing. They carry
  * synthetic text to a model and return structure. They do not reach a customer,
  * which is the property this boundary is about.
@@ -106,7 +108,7 @@ export const BLOCKED_OUTBOUND_HOSTS = ['api.resend.com', 'api.mail.hostinger.com
  * there even with STRIPE_LIVE=1, ADR-0025). Test mode moves no money and sends no customer email,
  * and the evidence runtime is where the webhook and checkout are exercised against it.
  */
-export const ALLOWED_OUTBOUND_HOSTS = ['api.anthropic.com', 'api.openai.com', 'api.stripe.com'] as const
+export const ALLOWED_OUTBOUND_HOSTS = ['api.anthropic.com', 'api.openai.com', 'openrouter.ai', 'eu.openrouter.ai', 'api.stripe.com'] as const
 
 /**
  * True when the evidence environment is armed.

@@ -1,4 +1,4 @@
-import { classifyProviderError, logAiFailure } from '@/lib/ai-failure'
+import { completeJson, logAiFailure, resolveRoute, type Part } from '@maxpromo/ai'
 import { NextRequest, NextResponse } from 'next/server'
 import { ENHANCE_BASE, ENHANCE_CLIENT } from '@/lib/prompts'
 import { guardExtraction } from '@/lib/documents/extraction-guard'
@@ -199,7 +199,7 @@ function reconcile(doc: DocResult): DocResult {
 /* ── Handler ──────────────────────────────────────────────────────────── */
 
 export async function POST(request: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!resolveRoute()) {
     logAiFailure('/api/os/ai/enhance', {
       klass: 'CONFIGURATION', status: 503, logDetail: 'no provider credential configured',
     })
@@ -233,84 +233,33 @@ export async function POST(request: NextRequest) {
     ? (body.mediaType as MediaType)
     : 'image/jpeg'
 
-  type Block =
-    | { type: 'text'; text: string }
-    | { type: 'image'; source: { type: 'base64'; media_type: MediaType; data: string } }
-
-  const userContent: Block[] = []
-  if (hasImage) {
-    userContent.push({
-      type: 'image',
-      source: { type: 'base64', media_type: mime, data: body.image! },
-    })
-  }
-  if (hasText) {
-    userContent.push({ type: 'text', text: body.text!.trim() })
-  }
+  const userContent: Part[] = []
+  if (hasImage) userContent.push({ type: 'image', mediaType: mime, data: body.image! })
+  if (hasText) userContent.push({ type: 'text', text: body.text!.trim() })
   userContent.push({ type: 'text', text: cfg.userText })
 
-  let res: Response
-  try {
-    res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 2400,
-        system: cfg.system,
-        tools: [cfg.tool],
-        tool_choice: { type: 'tool', name: cfg.tool.name },
-        messages: [{ role: 'user', content: userContent }],
-      }),
-    })
-  } catch (err) {
-    /* The message only. An error object from fetch can carry the request,
-       and the request carries the key. */
-    logAiFailure('/api/os/ai/enhance', {
-      klass: 'PROVIDER', status: 502,
-      logDetail: `network: ${err instanceof Error ? err.message : 'unknown'}`,
-    })
-    return NextResponse.json({ error: 'Upstream AI request failed', klass: 'PROVIDER' }, { status: 502 })
-  }
-
-  if (!res.ok) {
-    const errText = await res.text().catch(() => '')
-    /*
-     * Classified rather than collapsed. A governed browser run hit this twice
-     * and saw 502 both times; the provider had actually answered 400 with
-     * "credit balance is too low", which is an operator billing problem and
-     * not a gateway fault. The class goes to the log and to the caller; the
-     * provider's own text goes only to the log.
-     */
-    const failure = classifyProviderError(res.status, errText)
-    logAiFailure('/api/os/ai/enhance', failure)
-    return NextResponse.json(
-      { error: 'AI extraction failed', klass: failure.klass },
-      { status: failure.status },
-    )
-  }
-
-  type ToolUseBlock = { type: 'tool_use'; name: string; input: unknown }
-  type AnthropicResp = { content: Array<ToolUseBlock | { type: 'text'; text: string }> }
-
-  const data = (await res.json()) as AnthropicResp
-  const toolBlock = data.content.find(
-    (b): b is ToolUseBlock => b.type === 'tool_use' && b.name === cfg.tool.name,
-  )
-
-  if (!toolBlock) {
-    logAiFailure('/api/os/ai/enhance', {
-      klass: 'RESPONSE', status: 502, logDetail: 'answered without a tool_use block',
-    })
-    return NextResponse.json({ error: 'AI returned no structured output', klass: 'RESPONSE' }, { status: 502 })
+  /*
+   * Through the gateway (ADR-0027): structured output is forced by the schema, not by string
+   * parsing, and a failure is classified rather than collapsed. A governed browser run once saw
+   * 502 twice where the provider had answered 400 "credit balance is too low" — an operator billing
+   * problem. The class goes to the log and to the caller; the provider's own text only to the log.
+   */
+  const r = await completeJson({
+    system: cfg.system,
+    messages: [{ role: 'user', content: userContent }],
+    schema: cfg.tool.input_schema,
+    schemaName: cfg.tool.name,
+    schemaDescription: cfg.tool.description,
+    maxTokens: 2400,
+  })
+  if (!r.ok) {
+    logAiFailure('/api/os/ai/enhance', r.failure)
+    const error = r.failure.klass === 'RESPONSE' ? 'AI returned no structured output' : 'AI extraction failed'
+    return NextResponse.json({ error, klass: r.failure.klass }, { status: r.failure.status })
   }
 
   if (kind === 'client') {
-    return NextResponse.json({ kind, extracted: toolBlock.input })
+    return NextResponse.json({ kind, extracted: r.data })
   }
 
   /*
@@ -320,7 +269,7 @@ export async function POST(request: NextRequest) {
    * Vorschrift 3" into a quotation whose source said neither.
    */
   const { doc: guarded, report } = guardExtraction(
-    toolBlock.input as DocResult,
+    r.data as DocResult,
     hasText ? body.text!.trim() : null,
   )
   const reconciled = reconcile(guarded)

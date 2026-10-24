@@ -1,7 +1,7 @@
 // AI provider layer types (Sprint 6A). Generation is DRAFT-ONLY: the AI prepares
 // proposals/recommendations for human review. It never executes anything.
 
-export type AIProvider = "openai" | "anthropic";
+export type AIProvider = "openai" | "anthropic" | "openrouter";
 
 export type AIGenerationTask =
   | "follow_up_draft"

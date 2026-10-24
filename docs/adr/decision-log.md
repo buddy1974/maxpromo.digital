@@ -1,5 +1,14 @@
 # Decision Log
 
+## 2026-10-24 — ADR-0027 proposed: model gateway, leads, workflow layer (agent proposal, awaiting Marcel)
+
+**Proposed.** Following Marcel's direction (OpenRouter + Leads + Agent Bureau + workflow engine, then one real prospect
+campaign), ADR-0027 records: one model gateway in `packages/ai`; leads as the existing capabilities plus research, scoring
+and approval, with the data provider chosen after the Lead Agent's data is defined; outreach moving onto the Email OS
+first; a small event → condition → action → approval layer on the OS database; and a legal gate — no cold-email channel
+until Marcel has a qualified answer on UWG §7. **Implemented in this change:** the gateway only, with production behaviour
+unchanged until the owner sets `AI_GATEWAY`. Acceptance of the ADR, and every later part, is Marcel's.
+
 ## 2026-10-16 — the public number is migrated (Marcel)
 
 **Decision.** +49 174 5910734 is the official public Maxpromo Digital business and WhatsApp number;

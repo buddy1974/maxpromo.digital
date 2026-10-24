@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.98.0",
+    "@maxpromo/ai": "*",
     "@maxpromo/config": "*",
     "@maxpromo/design-tokens": "*",
     "@maxpromo/observability": "*",

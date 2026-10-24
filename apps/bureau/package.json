@@ -16,6 +16,7 @@
     "check:tokens": "node ../../packages/tooling/check-design-tokens.mjs"
   },
   "dependencies": {
+    "@maxpromo/ai": "*",
     "@maxpromo/config": "*",
     "@maxpromo/design-tokens": "*",
     "@maxpromo/observability": "*",

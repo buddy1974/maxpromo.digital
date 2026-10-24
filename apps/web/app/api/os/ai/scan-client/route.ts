@@ -1,3 +1,4 @@
+import { complete, resolveRoute, type Part } from '@maxpromo/ai'
 import { NextRequest, NextResponse } from 'next/server'
 
 const SYSTEM = `You are a contact extraction assistant for MAXPROMO DIGITAL, a German AI agency.
@@ -45,7 +46,7 @@ export async function POST(request: NextRequest) {
     if (!body.image && !body.text) {
       return NextResponse.json({ error: 'image or text required' }, { status: 400 })
     }
-    if (!process.env.ANTHROPIC_API_KEY) {
+    if (!resolveRoute()) {
       return NextResponse.json({ error: 'AI not configured' }, { status: 503 })
     }
 
@@ -54,12 +55,9 @@ export async function POST(request: NextRequest) {
       ? (body.mediaType as MediaType)
       : 'image/jpeg'
 
-    const userContent = body.image
+    const userContent: string | Part[] = body.image
       ? [
-          {
-            type: 'image',
-            source: { type: 'base64', media_type: mime, data: body.image },
-          },
+          { type: 'image', mediaType: mime, data: body.image },
           {
             type: 'text',
             text: 'Extract all contact information from this business card or document and return as JSON.',
@@ -67,28 +65,15 @@ export async function POST(request: NextRequest) {
         ]
       : `Extract contact information from this text and return as JSON:\n\n${body.text}`
 
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: SYSTEM,
-        messages: [{ role: 'user', content: userContent }],
-      }),
+    /* Through the gateway (ADR-0027); a failure is logged by class, never with a credential. */
+    const r = await complete({
+      system: SYSTEM,
+      messages: [{ role: 'user', content: userContent }],
+      maxTokens: 1000,
     })
+    if (!r.ok) throw new Error(`AI ${r.failure.klass}: ${r.failure.logDetail}`)
 
-    if (!res.ok) {
-      const err = await res.text()
-      throw new Error(`Anthropic error ${res.status}: ${err}`)
-    }
-
-    const data  = await res.json()
-    const raw   = (data.content[0].text as string).trim()
+    const raw   = r.text.trim()
     const clean = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '')
     const parsed = JSON.parse(clean)
 

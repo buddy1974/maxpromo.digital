@@ -1,5 +1,16 @@
 # Change Log
 
+## 2026-10-24 — One model gateway (ADR-0027, proposed)
+
+- New package `@maxpromo/ai`: every model call in the web app and the Bureau goes through `complete()` / `completeJson()`
+  — tiers instead of model names, one route (`AI_GATEWAY`; Bureau `AI_PROVIDER`), OpenRouter as an opt-in route with
+  data collection denied, zero-retention endpoints and optional EU routing. Default behaviour unchanged (Anthropic, else
+  OpenAI; same models).
+- Moved onto it: `lib/ai.ts`, the four OS scan/extraction routes (previously calling Anthropic directly) and the Bureau
+  (its two duplicated provider files removed). Failure classification moved into the package.
+- Evidence mode classifies `openrouter.ai` / `eu.openrouter.ai` as model hosts; the host scan covers `packages/ai`.
+- Gate 32: `prove:ai-gateway`.
+
 ## 2026-10-24 — Phone-first OS, installable app, Stripe-run defects, email acceptance (ADR-0026)
 
 - Stripe-run defects: governed `invoice.cancel`; status-aware invoice actions (governed record payment,

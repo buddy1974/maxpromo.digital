@@ -28,6 +28,9 @@
       ],
       "@maxpromo/observability/*": [
         "../../packages/observability/*"
+      ],
+      "@maxpromo/ai": [
+        "../../packages/ai/index.ts"
       ]
     }
   },

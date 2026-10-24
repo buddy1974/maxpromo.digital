@@ -218,6 +218,8 @@ maxpromo-platform/
 │  ├─ design-tokens/   the design system. Zero dependencies.
 │  ├─ ui/              shared React components. Depends on tokens.
 │  ├─ config/          legal identity, shared constants
+│  ├─ observability/   logging, error and health contracts
+│  ├─ ai/              the model gateway — every model call (ADR-0027)
 │  └─ tooling/         the audit suite, shared eslint and tsconfig
 └─ docs/
    ├─ architecture/    this document

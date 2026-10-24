@@ -1,8 +1,9 @@
 // SERVER-ONLY. Do not import from client components. Reads secret AI config from
 // process.env. Never throws at app boot — only AI routes check `configured`.
 // Keys are never exposed to the client (no NEXT_PUBLIC_ prefix).
+import { modelsFor, resolveRoute, type RouteName } from "@maxpromo/ai";
 
-export type AIProviderName = "openai" | "anthropic";
+export type AIProviderName = RouteName;
 
 export interface AIConfig {
   provider: AIProviderName;
@@ -12,20 +13,22 @@ export interface AIConfig {
   configured: boolean;
 }
 
-// WHY Anthropic default: Agent Bureau runs on claude-sonnet-4-6. OpenAI kept as
-// opt-in fallback via AI_PROVIDER=openai env var.
+// WHY Anthropic default: Agent Bureau runs on Claude. OpenAI and OpenRouter are
+// opt-in via AI_PROVIDER. The call itself goes through the platform's one model
+// gateway (@maxpromo/ai, ADR-0027); AI_PROVIDER is the Bureau's name for the
+// gateway route, kept so existing deployments need no change.
 const DEFAULT_PROVIDER: AIProviderName = "anthropic";
-const DEFAULT_MODEL = "claude-sonnet-4-6";
 const DEFAULT_TEMPERATURE = 0.3;
+const PROVIDERS: readonly AIProviderName[] = ["anthropic", "openai", "openrouter"];
 
-/** True when ANTHROPIC_API_KEY is set and non-empty. */
-export function hasAnthropicConfig(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+function provider(): AIProviderName {
+  const named = process.env.AI_PROVIDER?.trim().toLowerCase() as AIProviderName | undefined;
+  return named && PROVIDERS.includes(named) ? named : DEFAULT_PROVIDER;
 }
 
-/** True when OPENAI_API_KEY is set and non-empty (optional fallback). */
-export function hasOpenAIConfig(): boolean {
-  return Boolean(process.env.OPENAI_API_KEY?.trim());
+/** The environment the gateway sees: the Bureau's AI_PROVIDER names the route. */
+export function gatewayEnv(): Record<string, string | undefined> {
+  return { ...process.env, AI_GATEWAY: provider() };
 }
 
 /**
@@ -34,12 +37,12 @@ export function hasOpenAIConfig(): boolean {
  * providers via AI_PROVIDER env var requires no code changes.
  */
 export function hasAIConfig(): boolean {
-  const provider = (process.env.AI_PROVIDER?.trim() as AIProviderName) || DEFAULT_PROVIDER;
-  return provider === "anthropic" ? hasAnthropicConfig() : hasOpenAIConfig();
+  return resolveRoute(gatewayEnv()) !== null;
 }
 
-export function getAIModel(): string {
-  return process.env.AI_MODEL?.trim() || DEFAULT_MODEL;
+/** An explicit AI_MODEL, or undefined to let the gateway's tier choose. */
+export function explicitAIModel(): string | undefined {
+  return process.env.AI_MODEL?.trim() || undefined;
 }
 
 function getTemperature(): number {
@@ -49,12 +52,11 @@ function getTemperature(): number {
 }
 
 export function getAIConfig(): AIConfig {
-  const provider = (process.env.AI_PROVIDER?.trim() as AIProviderName) || DEFAULT_PROVIDER;
-  const configured = provider === "anthropic" ? hasAnthropicConfig() : hasOpenAIConfig();
+  const active = provider();
   return {
-    provider,
-    model: getAIModel(),
+    provider: active,
+    model: modelsFor(active, "standard", explicitAIModel(), gatewayEnv())[0],
     temperature: getTemperature(),
-    configured,
+    configured: hasAIConfig(),
   };
 }

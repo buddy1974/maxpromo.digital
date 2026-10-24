@@ -1,3 +1,5 @@
+import { complete, completeJson, resolveRoute, type Tier } from '@maxpromo/ai'
+
 export interface AIMessage {
   role: 'user' | 'assistant' | 'system'
   content: string
@@ -9,150 +11,43 @@ export interface AIResponse {
 }
 
 /**
- * Unified AI caller. Prefers Anthropic Claude if ANTHROPIC_API_KEY is set,
- * falls back to OpenAI if OPENAI_API_KEY is set, then returns mock data.
+ * The web application's model calls, through the one gateway (@maxpromo/ai, ADR-0027). The route is
+ * chosen there — AI_GATEWAY, else Anthropic, else OpenAI — and the model by tier. What stays here is
+ * what only this application means: the public assistant's mock answers when no model is configured,
+ * and the throw-on-failure contract its callers were written against.
  */
 export async function callAI(
   messages: AIMessage[],
   systemPrompt?: string,
-  options?: { maxTokens?: number; model?: string }
+  options?: { maxTokens?: number; model?: string; tier?: Tier }
 ): Promise<AIResponse> {
-  if (process.env.ANTHROPIC_API_KEY) {
-    return callClaude(messages, systemPrompt, options?.maxTokens, options?.model)
-  }
-  if (process.env.OPENAI_API_KEY) {
-    return callOpenAI(messages, systemPrompt, options?.maxTokens)
-  }
-  return { content: getMockResponse(messages), model: 'mock' }
+  if (!resolveRoute()) return { content: getMockResponse(messages), model: 'mock' }
+  const r = await complete({ system: systemPrompt, messages: turns(messages), maxTokens: options?.maxTokens, model: options?.model, tier: options?.tier })
+  if (!r.ok) throw new Error(`AI ${r.failure.klass}: ${r.failure.logDetail}`)
+  return { content: r.text, model: r.model }
 }
 
 /**
- * The same provider choice as `callAI`, for an answer that must be a JSON
- * object. Claude is forced to answer through one tool whose input is the
- * object, so the API — not the model's punctuation — guarantees valid JSON
- * (a German „…" closed with an ASCII quote broke free-text JSON in
- * production, 2026-10-09). OpenAI uses JSON mode. The caller still validates
- * the shape: valid JSON is not a valid answer. `data` is null under mock.
+ * The same route as `callAI`, for an answer that must be a JSON object. The gateway forces it
+ * through the provider's structured output (Anthropic: one tool whose input is the object), so the
+ * API — not the model's punctuation — guarantees valid JSON. The caller still validates the shape:
+ * valid JSON is not a valid answer. `data` is null when no model is configured.
  */
 export async function callAIJson(
   messages: AIMessage[],
   systemPrompt: string,
   schema: Record<string, unknown>,
-  options?: { maxTokens?: number; model?: string; timeoutMs?: number }
+  options?: { maxTokens?: number; model?: string; timeoutMs?: number; tier?: Tier }
 ): Promise<{ data: unknown; model: string }> {
-  /* A caller answering a person in real time cannot wait for ever. */
-  const signal = options?.timeoutMs ? AbortSignal.timeout(options.timeoutMs) : undefined
-  if (process.env.ANTHROPIC_API_KEY) {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: options?.model ?? 'claude-sonnet-4-6',
-        max_tokens: options?.maxTokens ?? 1024,
-        system: systemPrompt,
-        messages: messages.filter((m) => m.role !== 'system').map((m) => ({ role: m.role, content: m.content })),
-        tools: [{ name: 'respond', description: 'Return the answer.', input_schema: schema }],
-        tool_choice: { type: 'tool', name: 'respond' },
-      }),
-      signal,
-    })
-    if (!res.ok) throw new Error(`Anthropic API error ${res.status}: ${await res.text()}`)
-    const data = await res.json()
-    const block = (data.content as { type: string; input?: unknown }[]).find((b) => b.type === 'tool_use')
-    return { data: block?.input ?? null, model: data.model as string }
-  }
-  if (process.env.OPENAI_API_KEY) {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        max_tokens: options?.maxTokens ?? 1024,
-        response_format: { type: 'json_object' },
-        messages: [{ role: 'system', content: systemPrompt }, ...messages.filter((m) => m.role !== 'system')],
-      }),
-      signal,
-    })
-    if (!res.ok) throw new Error(`OpenAI API error ${res.status}: ${await res.text()}`)
-    const data = await res.json()
-    return { data: JSON.parse(data.choices[0].message.content as string), model: data.model as string }
-  }
-  return { data: null, model: 'mock' }
+  if (!resolveRoute()) return { data: null, model: 'mock' }
+  const r = await completeJson({ system: systemPrompt, messages: turns(messages), schema, maxTokens: options?.maxTokens, model: options?.model, timeoutMs: options?.timeoutMs, tier: options?.tier })
+  if (!r.ok) throw new Error(`AI ${r.failure.klass}: ${r.failure.logDetail}`)
+  return { data: r.data, model: r.model }
 }
 
-async function callClaude(
-  messages: AIMessage[],
-  systemPrompt?: string,
-  maxTokens = 1024,
-  model = 'claude-sonnet-4-6'
-): Promise<AIResponse> {
-  const body: Record<string, unknown> = {
-    model,
-    max_tokens: maxTokens,
-    messages: messages
-      .filter((m) => m.role !== 'system')
-      .map((m) => ({ role: m.role, content: m.content })),
-  }
-  if (systemPrompt) body.system = systemPrompt
-
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': process.env.ANTHROPIC_API_KEY!,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  })
-
-  if (!res.ok) {
-    const error = await res.text()
-    throw new Error(`Anthropic API error ${res.status}: ${error}`)
-  }
-
-  const data = await res.json()
-  return {
-    content: data.content[0].text as string,
-    model: data.model as string,
-  }
-}
-
-async function callOpenAI(
-  messages: AIMessage[],
-  systemPrompt?: string,
-  maxTokens = 1024
-): Promise<AIResponse> {
-  const allMessages: AIMessage[] = systemPrompt
-    ? [{ role: 'system', content: systemPrompt }, ...messages]
-    : messages
-
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      max_tokens: maxTokens,
-      messages: allMessages,
-    }),
-  })
-
-  if (!res.ok) {
-    const error = await res.text()
-    throw new Error(`OpenAI API error ${res.status}: ${error}`)
-  }
-
-  const data = await res.json()
-  return {
-    content: data.choices[0].message.content as string,
-    model: data.model as string,
-  }
+/* A system turn in the list joins the system prompt's place: the gateway takes one system prompt. */
+function turns(messages: AIMessage[]) {
+  return messages.filter((m) => m.role !== 'system').map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }))
 }
 
 function getMockResponse(messages: AIMessage[]): string {
