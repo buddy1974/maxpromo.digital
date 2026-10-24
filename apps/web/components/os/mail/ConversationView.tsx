@@ -16,7 +16,7 @@ import { senderLabel } from './MailList'
 export interface MailMessage {
   id: string; sender: string; recipients: string[]; cc: string[]; subject: string; body_text: string; preview_text?: string; body_state?: string
   received_at: string; is_read: boolean; attachments: { id: string; filename: string; size: number; contentType?: string }[]
-  provider_state?: string; provider_folder?: string | null; risk_signals?: string[]; direction?: 'inbound' | 'outbound'; content_attempts?: number
+  provider_state?: string; provider_folder?: string | null; risk_signals?: string[]; direction?: 'inbound' | 'outbound'; content_attempts?: number; delivery_state?: 'bounced' | 'delayed' | null; delivery_detail?: string | null
 }
 export type ReplyMode = 'reply' | 'reply_all' | 'forward'
 export interface ConversationViewProps {
@@ -90,6 +90,7 @@ export function ConversationView({ thread, messages, copy, intlLocale, providerC
                 <time dateTime={message.received_at}>{fullDate(message.received_at, intlLocale)}</time>
               </div>
               <p className="mail-message-meta">{copy.to}: {message.recipients.join(', ')}{message.cc.length > 0 && <> · {copy.cc}: {message.cc.join(', ')}</>}</p>
+              {outbound && message.delivery_state && <p className="mail-note is-alert" role="status">{message.delivery_state === 'bounced' ? copy.bounced : copy.delayed}{message.delivery_detail ? ` — ${message.delivery_detail}` : ''}</p>}
               {preview && <p className="mail-note">{(message.content_attempts ?? 0) >= 3 || !located ? copy.previewUnavailable : copy.previewOnly}</p>}
               <div className="mail-body">{(preview ? message.preview_text : message.body_text) || copy.previewUnavailable}</div>
               {message.attachments.length > 0 && (

@@ -16,6 +16,7 @@ import { HostingerMailProvider, MailProviderError, type EmailProvider, type Mess
 import { HOSTINGER_ACCOUNT, HOSTINGER_MAILBOX } from './hostingerIngestion'
 import { FAMILIES, PLACEHOLDER, isFamily, type FamilyId, type Language } from './identity/families'
 import { renderEmail } from './identity/render'
+import { draftAttachmentPayload } from './draftAttachments'
 
 export const SENDER_DISPLAY_NAME = 'Maxpromo Digital'
 export const MAX_RECIPIENTS = 20
@@ -112,12 +113,15 @@ export async function deliverDraft(sql: Sql, req: DeliverRequest, choice: Transp
     }
   } catch (error) { await release(); throw error }
 
+  let files: Awaited<ReturnType<typeof draftAttachmentPayload>>
+  try { files = await draftAttachmentPayload(sql, d.id) } catch (error) { await release(); throw error }
   const { family, rendered, ref } = await renderDraft(sql, d)
   const payload: SendPayload = {
     to: d.to_addrs, ...(d.cc_addrs.length ? { cc: d.cc_addrs } : {}), ...(d.bcc_addrs.length ? { bcc: d.bcc_addrs } : {}),
     displayName: SENDER_DISPLAY_NAME, subject: d.subject.replace(/[\r\n]/g, ' ').trim(), text: rendered.text, html: rendered.html,
     ...(ref && (d.mode === 'reply' || d.mode === 'reply_all') ? { inReplyTo: ref } : {}),
     ...(ref && d.mode === 'forward' ? { forwardOf: ref } : {}),
+    ...(files.send.length ? { attachments: files.send } : {}),
   }
   try {
     await choice.transport.send(payload)
@@ -133,42 +137,87 @@ export async function deliverDraft(sql: Sql, req: DeliverRequest, choice: Transp
   req.committed('Email accepted by the mail server')
 
   /* Bookkeeping after the external effect: failures here are reported as "sent, recording incomplete". */
-  let threadId = d.thread_id
+  const classification = d.entity_kind === 'client' ? 'client' : d.entity_kind === 'lead' ? 'lead' : 'other'
+  const recorded = await recordOutbound(sql, {
+    accountId: d.account_id, threadId: d.thread_id, providerKey: `outbound:${d.id}`, to: d.to_addrs, cc: d.cc_addrs, bcc: d.bcc_addrs,
+    subject: payload.subject!, text: rendered.text, preview: d.body.slice(0, 200), attachments: files.meta, classification,
+    entity: d.entity_kind && d.entity_id ? { kind: d.entity_kind, id: d.entity_id } : null,
+    followUpDays: d.follow_up_days ?? FAMILIES[family].followUpDays, today: req.today, actor: req.actor, approvalId: req.approvalId,
+    audit: { draft_id: d.id, family }, threaded: Boolean(payload.inReplyTo || payload.forwardOf), choice, timeline: { draft_id: d.id },
+  })
+  await sql`UPDATE mail.drafts SET status='sent',sent_at=now(),sent_message_id=${recorded.messageId}::uuid,thread_id=${recorded.threadId}::uuid WHERE id=${d.id}::uuid`
+  // The Sent folder copy is the record of what left; the draft keeps only the files' metadata.
+  if (files.meta.length) await sql`UPDATE mail.draft_attachments SET content=NULL WHERE draft_id=${d.id}::uuid`
+  return { threadId: recorded.threadId, messageId: recorded.messageId, threaded: Boolean(payload.inReplyTo || payload.forwardOf), transport: choice.mode }
+}
+
+export interface OutboundRecord {
+  accountId: string
+  /** The conversation it belongs to; null starts one keyed by providerKey. */
+  threadId: string | null
+  /** provider_thread_id for a new conversation (default: providerKey). Lets an invoice and its
+   * reminders share one conversation. */
+  threadKey?: string
+  providerKey: string
+  to: string[]; cc: string[]; bcc: string[]
+  subject: string
+  text: string
+  preview: string
+  attachments: { filename: string; contentType: string; size: number }[]
+  classification: 'client' | 'lead' | 'other'
+  entity: { kind: 'lead' | 'client' | 'project'; id: string } | null
+  followUpDays: number | null
+  today: string
+  actor: string
+  approvalId: string | null
+  audit: Record<string, unknown>
+  threaded: boolean
+  choice: TransportChoice
+  timeline: Record<string, unknown>
+}
+
+/** What every email Maxpromo sent leaves behind, whichever door sent it (a draft, an invoice, a
+ * reminder): the message in its conversation, the conversation waiting for an answer with its
+ * follow-up date, the business link, the mail audit, the timeline line and the Message-ID read
+ * back so the customer's answer threads. One implementation. */
+export async function recordOutbound(sql: Sql, r: OutboundRecord): Promise<{ threadId: string; messageId: string }> {
+  let threadId = r.threadId
+  if (!threadId && r.threadKey) {
+    const existing = await sql`SELECT id FROM mail.threads WHERE account_id=${r.accountId} AND provider_thread_id=${r.threadKey}` as { id: string }[]
+    threadId = existing[0]?.id ?? null
+  }
   if (!threadId) {
-    const classification = d.entity_kind === 'client' ? 'client' : d.entity_kind === 'lead' ? 'lead' : 'other'
     const rows = await sql`INSERT INTO mail.threads(account_id,provider_thread_id,subject,classification,needs_reply,updated_at)
-      VALUES(${d.account_id},${`outbound:${d.id}`},${payload.subject!},${classification},false,now()) RETURNING id` as { id: string }[]
+      VALUES(${r.accountId},${r.threadKey ?? r.providerKey},${r.subject},${r.classification},false,now()) RETURNING id` as { id: string }[]
     threadId = rows[0].id
   }
   const [message] = await sql`INSERT INTO mail.messages(thread_id,account_id,provider_message_id,sender,recipients,cc,subject,body_text,received_at,is_read,attachments,
       body_state,preview_text,provider_state,provider_folder,direction)
-    VALUES(${threadId}::uuid,${d.account_id},${`outbound:${d.id}`},${HOSTINGER_MAILBOX},${JSON.stringify(d.to_addrs)}::jsonb,${JSON.stringify(d.cc_addrs)}::jsonb,
-      ${payload.subject!},${rendered.text},now(),true,'[]'::jsonb,'complete',${d.body.slice(0, 200)},'other','INBOX.Sent','outbound')
+    VALUES(${threadId}::uuid,${r.accountId},${r.providerKey},${HOSTINGER_MAILBOX},${JSON.stringify(r.to)}::jsonb,${JSON.stringify(r.cc)}::jsonb,
+      ${r.subject},${r.text},now(),true,${JSON.stringify(r.attachments)}::jsonb,'complete',${r.preview},'other','INBOX.Sent','outbound')
     RETURNING id` as { id: string }[]
-  const days = d.follow_up_days ?? FAMILIES[family].followUpDays
-  await sql`UPDATE mail.threads SET needs_reply=false,waiting=${days !== null},follow_up_on=${days !== null ? addDays(req.today, days) : null}::date,
+  await sql`UPDATE mail.threads SET needs_reply=false,waiting=${r.followUpDays !== null},follow_up_on=${r.followUpDays !== null ? addDays(r.today, r.followUpDays) : null}::date,
     archived=false,updated_at=now() WHERE id=${threadId}::uuid`
-  if (d.entity_kind && d.entity_id) {
-    await sql`INSERT INTO mail.business_links(thread_id,entity_kind,entity_id,match_status) VALUES(${threadId}::uuid,${d.entity_kind},${d.entity_id},'owner_confirmed')
+  if (r.entity) {
+    await sql`INSERT INTO mail.business_links(thread_id,entity_kind,entity_id,match_status) VALUES(${threadId}::uuid,${r.entity.kind},${r.entity.id},'owner_confirmed')
       ON CONFLICT(thread_id,entity_kind,entity_id) DO UPDATE SET match_status='owner_confirmed'`
   }
-  await sql`UPDATE mail.drafts SET status='sent',sent_at=now(),sent_message_id=${message.id}::uuid,thread_id=${threadId}::uuid WHERE id=${d.id}::uuid`
   await sql`INSERT INTO mail.action_audit(thread_id,action,status,payload,approval_id) VALUES(${threadId}::uuid,'send','done',
-    ${JSON.stringify({ actor: req.actor, draft_id: d.id, family, recipients: d.to_addrs.length + d.cc_addrs.length + d.bcc_addrs.length, threaded: Boolean(payload.inReplyTo || payload.forwardOf), transport: choice.mode })}::jsonb,${req.approvalId})`
-  await recordTimeline(sql, d, threadId!, payload.subject!, req.actor)
-  if (choice.mode === 'hostinger') await recordSentMessageId(sql, choice.transport, message.id, d.to_addrs[0], payload.subject!, req.today).catch(() => undefined)
-  return { threadId, messageId: message.id, threaded: Boolean(payload.inReplyTo || payload.forwardOf), transport: choice.mode }
+    ${JSON.stringify({ actor: r.actor, ...r.audit, recipients: r.to.length + r.cc.length + r.bcc.length, attachments: r.attachments.length, threaded: r.threaded, transport: r.choice.mode })}::jsonb,${r.approvalId})`
+  await recordTimeline(sql, r.entity, threadId!, r.subject, r.actor, r.timeline)
+  if (r.choice.mode === 'hostinger') await recordSentMessageId(sql, r.choice.transport, message.id, r.to[0], r.subject, r.today).catch(() => undefined)
+  return { threadId: threadId!, messageId: message.id }
 }
 
 /** The lead or client timeline shows the email next to calls, quotes and invoices. */
-async function recordTimeline(sql: Sql, d: DraftRow, threadId: string, subject: string, actor: string) {
-  const leadId = d.entity_kind === 'lead' ? d.entity_id : null
-  const clientId = d.entity_kind === 'client' ? d.entity_id : null
+async function recordTimeline(sql: Sql, entity: OutboundRecord['entity'], threadId: string, subject: string, actor: string, detail: Record<string, unknown>) {
+  const leadId = entity?.kind === 'lead' ? entity.id : null
+  const clientId = entity?.kind === 'client' ? entity.id : null
   const links = leadId || clientId ? [] : await sql`SELECT entity_kind,entity_id FROM mail.business_links WHERE thread_id=${threadId}::uuid AND match_status='owner_confirmed' AND entity_kind IN ('lead','client')` as { entity_kind: string; entity_id: string }[]
   const lead = leadId ?? links.find(l => l.entity_kind === 'lead')?.entity_id ?? null
   const client = clientId ?? links.find(l => l.entity_kind === 'client')?.entity_id ?? null
   if (!lead && !client) return
-  await sql`INSERT INTO os_activities(lead_id,client_id,kind,channel,summary,detail,actor) VALUES(${lead}::uuid,${client}::uuid,'email_sent','email',${`Email sent: ${subject}`.slice(0, 300)},${JSON.stringify({ thread_id: threadId, draft_id: d.id })}::jsonb,${actor})`
+  await sql`INSERT INTO os_activities(lead_id,client_id,kind,channel,summary,detail,actor) VALUES(${lead}::uuid,${client}::uuid,'email_sent','email',${`Email sent: ${subject}`.slice(0, 300)},${JSON.stringify({ thread_id: threadId, ...detail })}::jsonb,${actor})`
   if (lead) await sql`UPDATE os_leads SET last_interaction_at=now() WHERE id=${lead}::uuid`
 }
 
@@ -185,3 +234,44 @@ async function recordSentMessageId(sql: Sql, transport: OutboundTransport, messa
 }
 
 export { HOSTINGER_ACCOUNT }
+
+export interface DocumentSend {
+  to: string[]
+  mail: { subject: string; html: string; text: string; family: string; attachments: NonNullable<SendPayload['attachments']>; attachmentMeta: OutboundRecord['attachments'] }
+  /** e.g. `doc:invoice:<id>` — an invoice and its reminders form one conversation. */
+  threadKey: string
+  /** Unique per send, e.g. `doc:invoice:<id>:<approval id>`. */
+  sendKey: string
+  entity: OutboundRecord['entity']
+  actor: string
+  approvalId: string | null
+  today: string
+  audit: Record<string, unknown>
+  committed: (what: string) => void
+}
+
+/** A quotation, invoice or reminder leaves through the mailbox like every other Maxpromo email
+ * (ADR-0025): sent once, never retried, an unanswered send is uncertain, and the message is
+ * recorded in its conversation so the client's answer threads. */
+export async function sendDocumentMail(sql: Sql, d: DocumentSend, choice: TransportChoice | null = outboundTransport()) {
+  if (!choice) throw new CapabilityRefusal('Sending is not connected for this mailbox. Nothing was sent.', 'unsupported')
+  const to = normalizeRecipients(d.to)
+  if (!to.length || to.length > MAX_RECIPIENTS) throw new CapabilityRefusal('Give between one and twenty recipients.')
+  const subject = d.mail.subject.replace(/[\r\n]/g, ' ').trim()
+  try {
+    await choice.transport.send({ to, displayName: SENDER_DISPLAY_NAME, subject, text: d.mail.text, html: d.mail.html, attachments: d.mail.attachments })
+  } catch (error) {
+    if (error instanceof MailProviderError && error.outcome === 'uncertain') throw new UncertainOutcome('The mail server did not confirm the send. It may have been delivered.')
+    throw new CapabilityRefusal('The mail server refused the message. Nothing was sent.', 'unsupported')
+  }
+  d.committed('Email accepted by the mail server')
+  const recorded = await recordOutbound(sql, {
+    accountId: HOSTINGER_ACCOUNT, threadId: null, threadKey: `outbound:${d.threadKey}`, providerKey: `outbound:${d.sendKey}`, to, cc: [], bcc: [],
+    subject, text: d.mail.text, preview: d.mail.text.slice(0, 200), attachments: d.mail.attachmentMeta,
+    classification: d.entity?.kind === 'lead' ? 'lead' : d.entity ? 'client' : 'other', entity: d.entity,
+    // Payment checks and quote follow-ups live in os_followups; the conversation does not add a second reminder.
+    followUpDays: null, today: d.today, actor: d.actor, approvalId: d.approvalId, audit: { ...d.audit, family: d.mail.family }, threaded: false, choice,
+    timeline: d.audit,
+  })
+  return { ...recorded, transport: choice.mode, to }
+}

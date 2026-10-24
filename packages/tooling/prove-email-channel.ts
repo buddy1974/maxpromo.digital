@@ -12,7 +12,7 @@ try {
     execFileSync(process.execPath, ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON',join('apps/web/scripts/email',file)], { stdio: 'inherit' })
   }
   // The Email OS workspace proofs import the real modules and components (ADR-0023).
-  for (const file of ['prove-email-ui.ts','prove-email-outbound.ts','prove-owner-notices.ts']) {
+  for (const file of ['prove-email-ui.ts','prove-email-outbound.ts','prove-owner-notices.ts','prove-email-attachments.ts']) {
     execFileSync(process.execPath, ['--disable-warning=MODULE_TYPELESS_PACKAGE_JSON','--disable-warning=ExperimentalWarning','--experimental-transform-types',
       '--import','./apps/web/scripts/control-planes/alias-register.mjs',join('apps/web/scripts/email',file)], { stdio: 'inherit' })
   }

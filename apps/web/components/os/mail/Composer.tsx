@@ -50,11 +50,20 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
   const [suggestion, setSuggestion] = useState<{ text: string; note: string; translate: boolean } | null>(null)
   const [assisting, setAssisting] = useState<string | null>(null)
   const [working, setWorking] = useState(false)
+  const [files, setFiles] = useState<{ id: string; filename: string; size_bytes: number }[]>([])
+  const [attaching, setAttaching] = useState(false)
   const saving = useRef<Promise<string | null> | null>(null)
   const changed = useRef(false)
   /* The id of the server draft, read at call time: a save queued behind the one that created the
      draft must update it, not create a second draft from a stale closure. */
   const draftRef = useRef<string | null>(init.draftId ?? null)
+
+  // Files already on a reopened draft.
+  useEffect(() => {
+    if (!init.draftId) return
+    fetch(`/api/os/mail/attachments?draft=${encodeURIComponent(init.draftId)}`, { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : null)).then(d => { if (d) setFiles((d as { attachments: typeof files }).attachments) }).catch(() => undefined)
+  }, [init.draftId])
 
   const invalid = [to, cc, bcc].flatMap(splitAddresses).filter(a => !EMAIL.test(a))
   const days = followUp === 'default' ? FAMILIES[family].followUpDays : followUp
@@ -139,6 +148,32 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
     setApproval(null); setPreviewHtml(null); setStage('edit')
   }
 
+  /* A file goes onto the server draft (created first if needed); the server checks type and size
+     from the bytes and bumps the draft revision, so the confirmation always lists these files. */
+  async function attach(list: FileList | null) {
+    if (!list?.length) return
+    setAttaching(true); setError(null)
+    try {
+      const id = draftRef.current ?? await persist()
+      if (!id) return
+      for (const file of Array.from(list)) {
+        const form = new FormData()
+        form.set('draft_id', id); form.set('file', file)
+        const r = await fetch('/api/os/mail/attachments', { method: 'POST', body: form })
+        const data = await r.json().catch(() => ({})) as { attachment?: { id: string; filename: string; size_bytes: number }; error?: string }
+        if (!r.ok || !data.attachment) { setError(say(k.attachRefused, { name: file.name })); continue }
+        setFiles(prev => prev.some(f => f.id === data.attachment!.id) ? prev : [...prev, data.attachment!])
+        changed.current = true
+      }
+    } finally { setAttaching(false) }
+  }
+
+  async function removeFile(fileId: string) {
+    if (!draftRef.current) return
+    const r = await fetch(`/api/os/mail/attachments?draft=${encodeURIComponent(draftRef.current)}&id=${encodeURIComponent(fileId)}`, { method: 'DELETE' })
+    if (r.ok) setFiles(prev => prev.filter(f => f.id !== fileId))
+  }
+
   async function discard() {
     if (draftRef.current) await runMail('email.discard', { draft_id: draftRef.current })
     onClose(true)
@@ -203,6 +238,19 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
               <textarea className="textarea" value={body} rows={12} maxLength={20000} onChange={e => edit(setBody)(e.target.value)} />
             </label>
             <p className="mail-note">{k.greetingNote}</p>
+            <div className="mail-compose-files" role="group" aria-label={k.attachments}>
+              <label className="btn-secondary btn-sm mail-attach">
+                {attaching ? k.attaching : k.attach}
+                <input type="file" multiple hidden disabled={attaching} accept=".pdf,.png,.jpg,.jpeg,.gif,.webp,.txt,.csv,.docx,.xlsx,.pptx"
+                  onChange={e => { void attach(e.target.files); e.target.value = '' }} />
+              </label>
+              {files.map(f => (
+                <span key={f.id} className="mail-chip">{f.filename} · {Math.max(1, Math.round(f.size_bytes / 1024))} KB
+                  <button type="button" className="mail-link" aria-label={`${k.attachRemove} ${f.filename}`} onClick={() => void removeFile(f.id)}>{k.attachRemove}</button>
+                </span>
+              ))}
+              <p className="mail-note">{k.attachHint}</p>
+            </div>
             {gaps && <p className="mail-note is-alert" role="status">{k.gaps}</p>}
 
             <div className="mail-assist" role="group" aria-label={k.max}>
@@ -240,6 +288,7 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
               ))}
               <div><dt>{k.thread}</dt><dd>{init.mode === 'new' ? k.threadNew : /^Continues/.test(approval.preview.THREAD ?? '') ? k.threadContinues : k.threadUnknown}</dd></div>
               <div><dt>{k.followUp}</dt><dd>{days === null || days === undefined ? k.followUpNone : say(k.followUpDays, { days })}</dd></div>
+              {approval.preview.ATTACHMENTS && <div><dt>{k.attachments}</dt><dd>{approval.preview.ATTACHMENTS}</dd></div>}
             </dl>
             <p className="mail-label">{k.previewTitle}</p>
             {previewHtml

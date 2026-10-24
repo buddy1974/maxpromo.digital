@@ -30,7 +30,7 @@ export const GET = withAuth(async (req, { session }) => {
         FROM mail.threads t WHERE id=${thread}::uuid`
       if (!rows.length) return NextResponse.json({ error: 'Not found' }, { status: 404, headers })
       const messages = await sql`SELECT id,sender,recipients,cc,subject,body_text,preview_text,body_state,event_at,email_date,received_at,is_read,attachments,
-        provider_state,provider_folder,risk_signals,direction,content_attempts
+        provider_state,provider_folder,risk_signals,direction,content_attempts,delivery_state,delivery_detail
         FROM mail.messages WHERE thread_id=${thread}::uuid ORDER BY received_at LIMIT 200`
       const context = rows[0].quarantine ? null : await threadContext(sql, thread, today)
       const drafts = workspace ? await sql`SELECT id,mode,source_message_id,to_addrs,cc_addrs,bcc_addrs,subject,body,family,language,entity_kind,entity_id,follow_up_days,revision,updated_at

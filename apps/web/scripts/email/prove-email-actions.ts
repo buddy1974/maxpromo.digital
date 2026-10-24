@@ -4,7 +4,9 @@ import { readFileSync } from 'node:fs'
 import ts from 'typescript'
 const state = { owner: 'marcel', calls: [] as Record<string, unknown>[], approved: true }
 Object.assign(globalThis, { __mailRouteProof: state })
-const source = readFileSync('apps/web/app/api/os/mail/actions/route.ts', 'utf8').replace(/^import .*$/gm, '')
+// The route delegates to the shared owner-action guard; both are loaded for real, ports stubbed.
+const strip = (file: string) => readFileSync(file, 'utf8').replace(/^import [\s\S]*?from .*$/gm, '').replace(/^import .*$/gm, '')
+const source = [strip('apps/web/lib/owner-request.ts'), strip('apps/web/lib/commercial/ownerActions.ts'), strip('apps/web/app/api/os/mail/actions/route.ts')].join('\n')
 const ports = `const state=globalThis.__mailRouteProof;
 const NextResponse={json:(body,options={})=>new Response(JSON.stringify(body),{status:options.status??200,headers:options.headers})};
 const withAuth=fn=>req=>state.owner ? fn(req,{session:{sub:state.owner}}) : NextResponse.json({error:'Unauthorized'},{status:401});

@@ -74,9 +74,9 @@
 .mail-message-from { font-weight: 600; overflow-wrap: anywhere; }
 .mail-message-meta { margin: 2px 0 var(--space-3); font-size: 12px; color: var(--brand-text-muted); overflow-wrap: anywhere; }
 .mail-body { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.6; }
-.mail-attachments { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--brand-border); }
-.mail-attachments ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
-.mail-attachments li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: 13px; }
+.mail-compose-files { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--brand-border); }
+.mail-compose-files ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.mail-compose-files li { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: 13px; }
 .mail-attachment-name { overflow-wrap: anywhere; font-weight: 500; }
 .mail-download { margin-left: auto; }
 .mail-blocked { flex-basis: 100%; }
@@ -158,3 +158,9 @@
   .mail-toolbar .btn-sm, .mail-chip { min-height: 40px; }
   .mail-preview { min-height: 420px; }
 }
+
+/* Outgoing attachments (migration 0020) */
+.mail-compose-files { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.mail-compose-files .mail-chip { display: inline-flex; align-items: center; gap: 8px; cursor: default; max-width: 100%; overflow-wrap: anywhere; }
+.mail-compose-files .mail-note { flex-basis: 100%; margin: 0; }
+.mail-attach { cursor: pointer; min-height: 40px; display: inline-flex; align-items: center; }

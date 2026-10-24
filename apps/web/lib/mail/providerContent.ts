@@ -2,6 +2,7 @@ import type { Sql } from '@/lib/commercial/types'
 import type { EmailProvider } from './provider'
 import { HOSTINGER_ACCOUNT } from './hostingerIngestion'
 import { MAX_MAIL_BYTES, classifyMail } from './normalization'
+import { isBounceSender, recordBounce } from './bounces'
 
 /** Full message text (ADR-0023). The webhook carries a 200-character preview; the full text
  * comes from the provider's own API host by folder and UID, which the spam check records.
@@ -59,13 +60,13 @@ export interface ContentResult { checked: number; stored: number; failed: number
 export async function reconcileContent(sql: Sql, reader: ProviderContentReader | null, options: { threadId?: string; limit?: number } = {}): Promise<ContentResult> {
   if (!reader) return { checked: 0, stored: 0, failed: 0 }
   const limit = Math.min(Math.max(options.limit ?? 5, 1), 10)
-  const rows = await sql`SELECT m.id,m.subject,m.provider_folder,m.provider_uid,m.risk_signals FROM mail.messages m JOIN mail.threads t ON t.id=m.thread_id
+  const rows = await sql`SELECT m.id,m.subject,m.sender,m.received_at,m.provider_folder,m.provider_uid,m.risk_signals FROM mail.messages m JOIN mail.threads t ON t.id=m.thread_id
     WHERE m.account_id=${HOSTINGER_ACCOUNT} AND m.direction='inbound' AND m.body_state='preview' AND m.content_attempts < ${MAX_ATTEMPTS}
     AND m.provider_uid IS NOT NULL AND m.provider_folder IS NOT NULL AND m.provider_state IN ('inbox','other')
     AND t.quarantine IS NULL AND t.trashed=false
     AND (${options.threadId ?? null}::uuid IS NULL OR m.thread_id=${options.threadId ?? null}::uuid)
     AND (${options.threadId ?? null}::uuid IS NOT NULL OR m.received_at > now() - interval '30 days')
-    ORDER BY m.received_at DESC LIMIT ${limit}` as { id: string; subject: string; provider_folder: string; provider_uid: string | number; risk_signals: string[] | null }[]
+    ORDER BY m.received_at DESC LIMIT ${limit}` as { id: string; subject: string; sender: string; received_at: Date; provider_folder: string; provider_uid: string | number; risk_signals: string[] | null }[]
   let stored = 0, failed = 0
   for (const row of rows) {
     try {
@@ -76,6 +77,8 @@ export async function reconcileContent(sql: Sql, reader: ProviderContentReader |
       const raises = triage.needsReply && ['lead', 'billing'].includes(triage.classification) && !(row.risk_signals ?? []).includes('automated_sender')
       const [result] = await sql`SELECT mail.store_content(${row.id}::uuid,${body},${raises ? triage.classification : 'other'},${raises}) AS ok` as { ok: boolean }[]
       if (result?.ok) stored++
+      // A delivery failure report marks the outbound message it is about (lib/mail/bounces.ts).
+      if (result?.ok && isBounceSender(row.sender)) await recordBounce(sql, { messageId: row.id, sender: row.sender, text: body, receivedAt: new Date(row.received_at) }).catch(() => undefined)
     } catch {
       failed++
       await sql`UPDATE mail.messages SET content_attempts=content_attempts+1,content_checked_at=now() WHERE id=${row.id}::uuid AND body_state='preview'`

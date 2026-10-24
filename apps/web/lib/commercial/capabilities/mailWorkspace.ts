@@ -6,6 +6,7 @@
 import { createHash } from 'node:crypto'
 import { callAIJson } from '@/lib/ai'
 import { HOSTINGER_ACCOUNT } from '@/lib/mail/hostingerIngestion'
+import { listDraftAttachments } from '@/lib/mail/draftAttachments'
 import { deliverDraft, renderDraft, sendProblems, SENDER_DISPLAY_NAME, MAX_RECIPIENTS, type DraftRow } from '@/lib/mail/outbound'
 import { FAMILY_IDS, FAMILIES } from '@/lib/mail/identity/families'
 import { threadContext } from '@/lib/mail/context'
@@ -103,13 +104,15 @@ export const mailDeliver: CapabilityDefinition<ReturnType<typeof draftTarget.par
     if (d.thread_id) await openThread(ctx, d.thread_id)
     const { family, rendered, ref: threadRef } = await renderDraft(ctx.sql, d)
     const days = d.follow_up_days ?? FAMILIES[family].followUpDays
-    const content = createHash('sha256').update([d.to_addrs.join(','), d.cc_addrs.join(','), d.bcc_addrs.join(','), d.subject, rendered.html].join('\n')).digest('hex')
+    const files = await listDraftAttachments(ctx.sql, d.id)
+    const content = createHash('sha256').update([d.to_addrs.join(','), d.cc_addrs.join(','), d.bcc_addrs.join(','), d.subject, rendered.html, ...files.map(f => f.sha256)].join('\n')).digest('hex')
     return {
       summary: `Send “${d.subject}” to ${d.to_addrs.join(', ')}`,
       preview: {
         ACTION: 'Send email', FROM: `${SENDER_DISPLAY_NAME} <info@maxpromo.digital>`, TO: d.to_addrs.join(', '),
         ...(d.cc_addrs.length ? { CC: d.cc_addrs.join(', ') } : {}), ...(d.bcc_addrs.length ? { BCC: d.bcc_addrs.join(', ') } : {}),
         SUBJECT: d.subject, MESSAGE: d.body, STYLE: FAMILIES[family].label.en,
+        ...(files.length ? { ATTACHMENTS: files.map(f => `${f.filename} (${Math.max(1, Math.round(f.size_bytes / 1024))} KB)`).join(', ') } : {}),
         THREAD: d.mode === 'new' ? 'New conversation' : threadRef ? 'Continues the conversation' : 'Reply (original location unknown: sent without thread headers)',
         FOLLOW_UP: days === null ? 'None' : `In ${days} day(s) if no answer`,
       },
