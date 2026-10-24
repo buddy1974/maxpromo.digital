@@ -14,6 +14,7 @@ import { OPERATIONS_CAPABILITIES } from './capabilities/operations'
 import { OUTREACH_CAPABILITIES } from './capabilities/outreach'
 import { SALES_CAPABILITIES } from './capabilities/sales'
 import { MAIL_CAPABILITIES } from './capabilities/mail'
+import { MAIL_WORKSPACE_CAPABILITIES } from './capabilities/mailWorkspace'
 import { VIEW_CAPABILITIES } from './capabilities/views'
 import { INTAKE_CAPABILITIES } from './capabilities/intake'
 import type { AnyCapability } from './types'
@@ -25,6 +26,7 @@ const ALL: AnyCapability[] = [
   ...OPERATIONS_CAPABILITIES,
   ...VIEW_CAPABILITIES,
   ...MAIL_CAPABILITIES,
+  ...MAIL_WORKSPACE_CAPABILITIES,
   ...INTAKE_CAPABILITIES,
 ]
 

@@ -43,7 +43,7 @@ interface Item {
 
 /** One key per item kind plus its values, so /os can render the sentence in German or English
  * (risk 109). Values are record data (names, numbers, dates), never translated. */
-export type AttentionKey = 'enquiryNew' | 'leadReplied' | 'negotiationQuiet' | 'discoveryNoStep' | 'followUp' | 'angebotWaiting' | 'angebotExpired'
+export type AttentionKey = 'enquiryNew' | 'emailReplied' | 'emailFollowUp' | 'leadReplied' | 'negotiationQuiet' | 'discoveryNoStep' | 'followUp' | 'angebotWaiting' | 'angebotExpired'
   | 'angebotNotInvoiced' | 'projectNotInvoiced' | 'invoiceOverdue' | 'invoiceDraft' | 'renewal' | 'incident' | 'projectLate'
   | 'approvalsWaiting' | 'uncertainSend' | 'paymentsDisagree' | 'agentEvent'
 export interface AttentionMessage { key: AttentionKey; params: Record<string, string | number> }
@@ -81,9 +81,21 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
     /* Enquiries a channel handed to the OS (ADR-0021): the channel each lead last arrived through. */
     q<{ lead_id: string; source: string }>(ctx.sql`SELECT DISTINCT ON (lead_id) lead_id::text AS lead_id, source FROM os_intake_receipts ORDER BY lead_id, received_at DESC`),
   ])
-  const agentEvents = await agentAttention(ctx)
+  const [agentEvents, conversations] = await Promise.all([agentAttention(ctx), conversationAttention(ctx)])
 
   const items: Item[] = []
+  /* Email conversations Marcel wrote in (ADR-0023): the customer answered, or the follow-up he
+     planned is due. "Needs reply" on a first message stays in the email row below the items. */
+  for (const c of conversations) {
+    const who = c.label ?? c.counterpart ?? c.subject
+    const ref = focus('email_thread', c.id, c.subject.slice(0, 60))
+    const area = c.kind === 'client' ? 'CLIENT' : 'SALES'
+    if (c.replied) items.push({ area, text: `${who} replied to your email “${c.subject}” — answer them`, msg: m('emailReplied', { who, subject: c.subject }), amount: 0, currency: 'EUR', probability: 0.4, urgency: 3, action: `Open email thread ${c.id}`, ref, commercial: c.kind !== 'client' })
+    else if (c.follow_up_on && c.follow_up_on <= today) {
+      const days = daysBetween(c.follow_up_on, today)
+      items.push({ area, text: `Follow up with ${who} on “${c.subject}”${days > 0 ? ` (due ${days} day(s) ago)` : ' (due today)'}`, msg: m('emailFollowUp', { who, subject: c.subject, days }), amount: 0, currency: 'EUR', probability: 0.25, urgency: days > 0 ? 3 : 2, action: `Open email thread ${c.id}`, ref, commercial: c.kind !== 'client' })
+    }
+  }
   const leadValue = (l: { value: string | null }) => Number(l.value ?? 0)
   const intakeSource = new Map(intakes.map((r) => [r.lead_id, r.source]))
 
@@ -160,6 +172,29 @@ const AGENT_VERB: Record<string, string> = {
   completed: 'completed', blocked: 'is blocked', failed: 'failed', exception: 'found an exception', recommendation: 'recommends', waiting: 'is waiting',
 }
 
+interface ConversationRow { id: string; subject: string; follow_up_on: string | null; replied: boolean; counterpart: string | null; label: string | null; kind: string | null; last_inbound: Date | null }
+/** Conversations with Maxpromo's own message in them whose customer answered, or whose planned
+ * follow-up date has come. Quarantined, archived and trashed threads never appear. Optional
+ * until migration 0017 exists. */
+async function conversationAttention(ctx: CapabilityContext): Promise<ConversationRow[]> {
+  try {
+    return await ctx.sql`SELECT t.id::text,t.subject,t.follow_up_on::text AS follow_up_on,
+        (t.needs_reply AND last.inbound > last.outbound) AS replied, last.inbound AS last_inbound,
+        (SELECT CASE WHEN m.direction='outbound' THEN m.recipients->>0 ELSE m.sender END FROM mail.messages m WHERE m.thread_id=t.id ORDER BY m.received_at DESC LIMIT 1) AS counterpart,
+        (SELECT coalesce(l.company,l.name,c.company,c.name) FROM mail.business_links b LEFT JOIN os_leads l ON b.entity_kind='lead' AND l.id::text=b.entity_id
+           LEFT JOIN os_clients c ON b.entity_kind='client' AND c.id::text=b.entity_id WHERE b.thread_id=t.id AND b.match_status='owner_confirmed' LIMIT 1) AS label,
+        (SELECT entity_kind FROM mail.business_links b WHERE b.thread_id=t.id AND b.match_status='owner_confirmed' ORDER BY (entity_kind='client') DESC LIMIT 1) AS kind
+      FROM mail.threads t
+      CROSS JOIN LATERAL (SELECT max(received_at) FILTER (WHERE direction='inbound') AS inbound, max(received_at) FILTER (WHERE direction='outbound') AS outbound FROM mail.messages WHERE thread_id=t.id) last
+      WHERE t.archived=false AND t.trashed=false AND t.quarantine IS NULL AND last.outbound IS NOT NULL
+        AND ((t.needs_reply AND last.inbound > last.outbound) OR (t.waiting AND t.follow_up_on IS NOT NULL AND t.follow_up_on <= ${ctx.today}::date))
+      ORDER BY t.updated_at DESC LIMIT 20` as ConversationRow[]
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error && ['42P01', '3F000', '42703'].includes(String(error.code))) return []
+    throw error
+  }
+}
+
 /* Optional until migration 0015 exists, exactly like the mail and WhatsApp sections. */
 async function agentAttention(ctx: CapabilityContext): Promise<StoredAgentEvent[]> {
   try {
@@ -202,6 +237,83 @@ export async function attentionSnapshot(ctx: CapabilityContext) {
       approvalId: e.approval_id, occurredAt: e.occurred_at.toISOString(),
     })),
   }
+}
+
+/* ── Morning briefing ──────────────────────────────────────────────────── */
+
+/** One fact in the briefing: a message key with record values, optionally a record to open. */
+export interface BriefingLine { key: string; params: Record<string, string | number>; ref?: FocusRef | null }
+export interface BriefingSnapshot {
+  generatedAt: string
+  /** What changed in the last 24 hours. Omitted categories had nothing. */
+  overnight: BriefingLine[]
+  /** The three most valuable actions now, from the attention model. */
+  first: { msg: AttentionMessage; text: string; ref: FocusRef | null }[]
+  /** Standing state per area; each list empty when nothing needs saying. */
+  communications: BriefingLine[]
+  money: BriefingLine[]
+  agents: BriefingLine[]
+}
+
+/** Optional sections (mail 0013/0017, agents 0015) are skipped on a database without them. */
+async function optional<T>(query: PromiseLike<unknown>): Promise<T[]> {
+  try { return (await query) as T[] } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error && ['42P01', '3F000', '42703'].includes(String(error.code))) return []
+    throw error
+  }
+}
+
+/**
+ * The morning briefing: what happened since yesterday and what to do first. Facts only, from the
+ * records; nothing is estimated or invented, and an empty category says nothing at all.
+ */
+export async function briefingSnapshot(ctx: CapabilityContext): Promise<BriefingSnapshot> {
+  const [items, invoices, inbound, sent, leads, payments, agentDone, replies, followUps, approvals] = await Promise.all([
+    collect(ctx),
+    loadInvoicesForMoney(ctx),
+    optional<{ id: string; subject: string; sender: string | null }>(ctx.sql`SELECT t.id::text, t.subject, (SELECT sender FROM mail.messages m WHERE m.thread_id=t.id AND m.direction='inbound' ORDER BY received_at DESC LIMIT 1) AS sender
+      FROM mail.threads t WHERE t.quarantine IS NULL AND t.trashed=false
+      AND EXISTS(SELECT 1 FROM mail.messages m WHERE m.thread_id=t.id AND m.direction='inbound' AND m.received_at > now() - interval '24 hours')
+      ORDER BY t.updated_at DESC LIMIT 20`),
+    optional<{ n: number }>(ctx.sql`SELECT count(*)::int AS n FROM mail.messages WHERE direction='outbound' AND received_at > now() - interval '24 hours'`),
+    q<{ id: string; company: string | null; name: string | null; city: string | null; source: string }>(ctx.sql`SELECT id, company, name, city, source FROM os_leads WHERE created_at > now() - interval '24 hours' ORDER BY created_at DESC LIMIT 10`),
+    q<{ amount: string; currency: string }>(ctx.sql`SELECT amount, currency FROM os_payments WHERE created_at > now() - interval '24 hours'`),
+    optional<{ agent: string; kind: string; title: string }>(ctx.sql`SELECT agent, kind, title FROM os_agent_events WHERE occurred_at > now() - interval '24 hours' ORDER BY occurred_at DESC LIMIT 20`),
+    optional<{ n: number; oldest: Date | null }>(ctx.sql`SELECT count(*)::int AS n, min(t.updated_at) AS oldest FROM mail.threads t WHERE t.needs_reply AND t.quarantine IS NULL AND t.archived=false AND t.trashed=false`),
+    optional<{ n: number }>(ctx.sql`SELECT count(*)::int AS n FROM mail.threads t WHERE t.waiting AND t.follow_up_on <= ${ctx.today}::date AND t.quarantine IS NULL AND t.archived=false AND t.trashed=false`),
+    q<{ n: number }>(ctx.sql`SELECT count(*)::int AS n FROM os_approvals WHERE status = 'pending' AND expires_at > now()`),
+  ])
+  const overnight: BriefingLine[] = []
+  if (inbound.length) overnight.push({ key: 'newMail', params: { count: inbound.length, who: [...new Set(inbound.map(t => t.sender).filter(Boolean))].slice(0, 3).join(', ') } })
+  for (const l of leads.slice(0, 3)) overnight.push({ key: 'newLead', params: { lead: leadLabel(l), source: l.source }, ref: focus('lead', l.id, leadLabel(l)) })
+  if (leads.length > 3) overnight.push({ key: 'moreLeads', params: { count: leads.length - 3 } })
+  if (payments.length) {
+    const per: PerCurrency = {}
+    for (const p of payments) addTo(per, p.currency, Number(p.amount))
+    overnight.push({ key: 'paymentsIn', params: { amount: formatPerCurrency(per) } })
+  }
+  if (sent[0]?.n) overnight.push({ key: 'mailSent', params: { count: sent[0].n } })
+  const completed = agentDone.filter(e => e.kind === 'completed')
+  if (completed.length) overnight.push({ key: 'agentsCompleted', params: { count: completed.length, what: completed.slice(0, 2).map(e => e.title).join(' · ') } })
+
+  const communications: BriefingLine[] = []
+  if (replies[0]?.n) communications.push({ key: 'repliesOwed', params: { count: replies[0].n, days: replies[0].oldest ? daysBetween(isoDate(replies[0].oldest)!, ctx.today) : 0 } })
+  if (followUps[0]?.n) communications.push({ key: 'followUpsDue', params: { count: followUps[0].n } })
+  if (approvals[0]?.n) communications.push({ key: 'approvals', params: { count: approvals[0].n } })
+
+  const rec = receivables(invoices, ctx.today)
+  const money: BriefingLine[] = []
+  if (Object.keys(rec.outstanding).length) money.push({ key: 'outstanding', params: { amount: formatPerCurrency(rec.outstanding), overdue: Object.keys(rec.overdue).length ? formatPerCurrency(rec.overdue) : '' } })
+  for (const b of rec.overdueInvoices.slice(0, 2)) money.push({ key: 'overdueInvoice', params: { client: b.client, amount: eur(b.open, b.currency), number: b.number, days: b.daysOverdue }, ref: focus('invoice', b.id, b.number) })
+  if (rec.drafts.length) money.push({ key: 'draftInvoices', params: { count: rec.drafts.length } })
+
+  const agents: BriefingLine[] = agentDone.filter(e => ['failed', 'blocked', 'exception'].includes(e.kind)).slice(0, 3)
+    .map(e => ({ key: 'agentProblem', params: { agent: e.agent, kind: e.kind, title: e.title } }))
+
+  const first = items.filter(i => i.area !== 'AGENT' && i.msg.key !== 'approvalsWaiting')
+    .sort((a, b) => b.urgency - a.urgency || score(b) - score(a)).slice(0, 3)
+    .map(i => ({ msg: i.msg, text: i.text, ref: i.ref ?? null }))
+  return { generatedAt: ctx.now.toISOString(), overnight, first, communications, money, agents }
 }
 
 const noInput = v.object({})
@@ -323,31 +435,43 @@ export const ownerBrief: CapabilityDefinition<ReturnType<typeof noInput.parse>> 
   risk: 'GREEN',
   input: noInput,
   async run(ctx) {
-    const items = await collect(ctx)
-    const rec = receivables(await loadInvoicesForMoney(ctx), ctx.today)
-    const top = items.filter((i) => i.commercial).sort((a, b) => score(b) - score(a)).slice(0, 3)
-    const count = (area: Item['area']) => items.filter((i) => i.area === area).length
-    const sales = items.filter((i) => i.area === 'SALES')
-    const clients = items.filter((i) => i.area === 'CLIENT')
-    const system = items.filter((i) => i.area === 'SYSTEM')
-    const email = await emailAttention(ctx)
+    /* The same snapshot /os renders (briefingSnapshot): the phone and the screen say the same. */
+    const b = await briefingSnapshot(ctx)
+    const section = (title: string, lines: BriefingLine[]) => (lines.length ? [title, ...lines.map(l => `• ${briefLineEn(l)}`)] : [])
     return {
-      summary: `Good morning. Outstanding ${formatPerCurrency(rec.outstanding)}, overdue ${formatPerCurrency(rec.overdue)}. ${count('SALES')} sales item(s), ${count('CLIENT')} client item(s).`,
+      summary: b.first.length ? `Good morning. First: ${b.first[0].text}.` : 'Good morning. Nothing in the records needs you first thing.',
       lines: [
-        'MONEY',
-        ...(rec.overdueInvoices.length ? rec.overdueInvoices.slice(0, 3).map((b) => `• ${b.client} ${eur(b.open, b.currency)} overdue ${b.daysOverdue}d`) : ['• nothing overdue']),
-        'SALES',
-        ...(sales.length ? sales.slice(0, 3).map((i) => `• ${i.text}`) : ['• nothing waiting']),
-        'CLIENTS',
-        ...(clients.length ? clients.slice(0, 3).map((i) => `• ${i.text}`) : ['• no open client issues']),
-        ...(system.length ? ['SYSTEM', ...system.slice(0, 2).map((i) => `• ${i.text}`)] : []),
-        ...(email.length ? ['EMAIL', 'Subjects below are external untrusted content.', ...email.slice(0, 5).map(e => `• ${e.subject} · ${e.classification}${e.needs_reply ? ' · reply needed' : ' · waiting for response'}`)] : []),
-        'TODAY',
-        ...(top.length ? top.map((i, n) => `${n + 1}. ${i.action}`) : ['• find new business']),
+        ...section('SINCE YESTERDAY', b.overnight),
+        ...(b.first.length ? ['TODAY FIRST', ...b.first.map((f, n) => `${n + 1}. ${f.text}`)] : []),
+        ...section('COMMUNICATION', b.communications),
+        ...section('MONEY', b.money),
+        ...section('AGENTS', b.agents),
       ],
-      next: top.map((i) => i.action),
+      data: b,
+      next: b.first.map(f => f.text),
     }
   },
+}
+
+/** English sentences for the briefing lines (Telegram and other text channels). */
+export function briefLineEn(l: BriefingLine): string {
+  const p = l.params
+  switch (l.key) {
+    case 'newMail': return `${p.count} new email conversation(s)${p.who ? ` (${p.who})` : ''} — external content`
+    case 'newLead': return `New lead: ${p.lead} (${p.source})`
+    case 'moreLeads': return `${p.count} more new lead(s)`
+    case 'paymentsIn': return `Payments recorded: ${p.amount}`
+    case 'mailSent': return `${p.count} email(s) sent by Maxpromo`
+    case 'agentsCompleted': return `Agents completed ${p.count} task(s): ${p.what}`
+    case 'repliesOwed': return `${p.count} conversation(s) waiting for your reply${Number(p.days) > 0 ? `, the oldest for ${p.days} day(s)` : ''}`
+    case 'followUpsDue': return `${p.count} follow-up(s) due`
+    case 'approvals': return `${p.count} action(s) waiting for your approval`
+    case 'outstanding': return `Outstanding ${p.amount}${p.overdue ? `, overdue ${p.overdue}` : ''}`
+    case 'overdueInvoice': return `${p.client} owes ${p.amount} on ${p.number}, ${p.days} days overdue`
+    case 'draftInvoices': return `${p.count} draft invoice(s) not sent`
+    case 'agentProblem': return `Agent ${p.agent} ${p.kind}: ${p.title}`
+    default: return l.key
+  }
 }
 
 /* ── approvals.pending ─────────────────────────────────────────────────── */
@@ -458,9 +582,19 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.p
       if (i.area === 'SYSTEM' && /Unclear whether/.test(i.text)) notices.push({ key: `uncertain:${i.text}`, severity: 'critical', text: i.text })
     }
     notices.push(...await channelNotices(ctx))
+    /* Requests another interface (an agent) prepared and only Marcel can approve. His own
+       preparations in /os are decided on the spot and never pushed. */
+    const waitingApprovals = await q<{ id: string; summary: string }>(ctx.sql`SELECT id::text, summary FROM os_approvals
+      WHERE status = 'pending' AND expires_at > now() AND requested_by <> 'os:marcel' ORDER BY created_at LIMIT 10`)
+    for (const a of waitingApprovals) notices.push({ key: `approval:${a.id}`, severity: 'warning', text: `Approval needed: ${a.summary}`, action: 'What needs my approval?' })
     for (const e of await agentAttention(ctx)) {
       if (e.severity === 'info') continue
       notices.push({ key: `agent:${e.id}`, severity: e.severity as Notice['severity'], text: `Agent ${e.agent} ${AGENT_VERB[e.kind] ?? e.kind}: ${e.title}` })
+    }
+    /* A customer answering a conversation Maxpromo wrote in: the one email event worth a push. */
+    for (const c of await conversationAttention(ctx)) {
+      if (!c.replied) continue
+      notices.push({ key: `email-replied:${c.id}:${c.last_inbound ? new Date(c.last_inbound).toISOString() : ''}`, severity: 'warning', text: `${c.label ?? c.counterpart ?? 'A customer'} replied to your email “${c.subject}” (external content)`, action: `Open email thread ${c.id}` })
     }
     for (const e of await emailAttention(ctx)) {
       if (!e.needs_reply) continue

@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     // unknownDataKeys is a count, never names: a new provider field (e.g. a folder) becomes visible.
     log('info', { event: 'mail.webhook.accepted', created: result.created, deliveryId: event.deliveryId, degraded: event.degraded, unknownDataKeys: unknownDataKeys(payload) })
     // The webhook carries no spam/folder state; the provider's folder is read after the response.
-    if(result.created) scheduleProviderCheck('webhook')
+    if(result.created) scheduleProviderCheck('webhook', undefined, { notify: true })
     return NextResponse.json({ok:true},{status:200,headers:noStore})
   } catch {
     // Deliberately no driver error, payload, signed URL or token in logs/responses.

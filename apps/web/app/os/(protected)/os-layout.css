@@ -163,6 +163,27 @@ button.os-nav-item {
   color: var(--brand-primary-text);
 }
 
+/* Morning briefing (components/os/MorningBriefing.tsx) and the dashboard grid. */
+.os-briefing { border: 1px solid var(--brand-border); border-left: 3px solid var(--brand-primary); background: var(--brand-surface); padding: 18px 22px; margin-bottom: 20px; display: grid; gap: 14px; }
+.os-briefing-label { margin: 0; font-family: var(--brand-font-mono); font-size: var(--text-label-dense); letter-spacing: 0.2em; text-transform: uppercase; color: var(--brand-text-muted); }
+.os-briefing-quiet { margin: 0; font-size: 15px; color: var(--brand-text-secondary); }
+.os-briefing-first h2, .os-briefing-group h3 { margin: 0 0 6px; font-size: 13px; font-weight: 600; color: var(--brand-text); }
+.os-briefing-first ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 15px; }
+.os-briefing-first li { overflow-wrap: anywhere; }
+.os-briefing-first li a { margin-left: 10px; font-family: var(--brand-font-mono); font-size: var(--text-label-dense); color: var(--brand-text-secondary); }
+.os-briefing-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px 24px; }
+.os-briefing-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 14px; color: var(--brand-text-secondary); }
+.os-briefing-group li { overflow-wrap: anywhere; }
+.os-briefing-group a { color: var(--brand-text); }
+.os-briefing-note { margin: 0; font-family: var(--brand-font-mono); font-size: var(--text-label-dense); color: var(--brand-text-muted); }
+.os-dash { padding: 28px 36px 40px; max-width: 1200px; }
+.os-dash-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); margin-bottom: 24px; }
+.os-dash-activity { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); }
+@media (max-width: 768px) {
+  .os-dash { padding: 12px 16px 24px; }
+  .os-briefing { padding: 14px 16px; }
+}
+
 @media (max-width: 768px) {
   .os-hamburger { display: flex; }
   .os-sidebar {
@@ -172,7 +193,9 @@ button.os-nav-item {
   }
   .os-sidebar.open { transform: translateX(0); }
   .os-backdrop.open { display: block; }
-  .os-main { margin-left: 0 !important; }
+  /* Content starts below the fixed menu control and ends above the floating
+     Quick Scan / Ask Max controls, so neither ever covers a heading or a button. */
+  .os-main { margin-left: 0 !important; padding-top: 60px; padding-bottom: 88px; box-sizing: border-box; }
   .os-nav-item { padding: 14px 20px; }
   .os-nav-item.active { padding-left: 18px; }
   .os-nav-label { font-size: 15px; }

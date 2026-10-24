@@ -4,8 +4,10 @@ import { getDb } from '@/lib/db'
 import { executeApproval, rejectApproval, runCapability } from '@/lib/commercial/engine'
 
 export const dynamic = 'force-dynamic'
-const MAX_BYTES = 16 * 1024
-const MAIL = new Set(['email.search','email.read','email.attachments','email.draft','email.send','email.state','email.trash','email.link','email.save_lead','email.summary','email.triage','email.spam'])
+// A full draft (20,000 characters of text plus recipients) must fit; JSON escaping can double it.
+const MAX_BYTES = 64 * 1024
+const MAIL = new Set(['email.search','email.read','email.attachments','email.draft','email.send','email.state','email.trash','email.link','email.save_lead','email.summary','email.triage','email.spam',
+  'email.compose','email.deliver','email.discard','email.followup','email.assist'])
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const headers = { 'Cache-Control': 'private, no-store' }
 const reply = (error: string, status: number) => NextResponse.json({ error }, { status, headers })

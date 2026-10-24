@@ -35,7 +35,7 @@ function hrefFor(ref: Ref | null): string | null {
     case 'lead': return '/os/leads'
     case 'client': return '/os/clients'
     case 'job': return '/os/jobs'
-    case 'email_thread': return '/os/inbox'
+    case 'email_thread': return `/os/inbox?thread=${encodeURIComponent(ref.id)}`
     default: return null
   }
 }
@@ -100,7 +100,7 @@ export function AttentionPanel() {
             <Link href="/os/approvals" className="btn-primary btn-sm">{a.approvals(data.approvals.length)}</Link>
           )}
           {replies.length > 0 && (
-            <Link href="/os/inbox" className="btn-secondary btn-sm">{a.email(replies.length)}</Link>
+            <Link href="/os/inbox?view=needs_reply" className="btn-secondary btn-sm">{a.email(replies.length)}</Link>
           )}
         </div>
       )}

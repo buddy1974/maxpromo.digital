@@ -8,18 +8,20 @@ import { HOSTINGER_ACCOUNT } from './hostingerIngestion'
  * exposes no send, move or flag operation, so reconciliation cannot change the mailbox.
  */
 export type ProviderStateReader = Pick<EmailProvider, 'folders' | 'search'>
+/** Everything the OS reads from the mailbox: folders, Message-ID search, message text. */
+export type ProviderReader = Pick<EmailProvider, 'folders' | 'search' | 'text'>
 export type ProviderState = 'inbox' | 'junk' | 'trash' | 'other' | 'not_found'
 const MAX_CHECKS = 5
 const LOOKBACK_DAYS = 14
 
 /** Read-only REST port, or null when the owner has not connected the Hostinger API. */
-export function hostingerStateReader(env: Record<string, string | undefined> = process.env, transport: typeof fetch = fetch): ProviderStateReader | null {
+export function hostingerStateReader(env: Record<string, string | undefined> = process.env, transport: typeof fetch = fetch): ProviderReader | null {
   const token = env.HOSTINGER_MAIL_API_TOKEN, mailbox = env.HOSTINGER_MAILBOX_RESOURCE_ID
   if (!token || !mailbox || env.MAXPROMO_EVIDENCE_MODE === '1') return null
   const provider = new HostingerMailProvider({ token, mailboxResourceId: mailbox, transport, timeoutMs: 8_000,
     // Read-only use: the reader below never reaches send/move/flags.
     gate: { enabled: true, fixtureVerified: true, isEvidenceMode: () => env.MAXPROMO_EVIDENCE_MODE === '1' } })
-  return { folders: page => provider.folders(page), search: (folder, criteria, page) => provider.search(folder, criteria, page) }
+  return { folders: page => provider.folders(page), search: (folder, criteria, page) => provider.search(folder, criteria, page), text: ref => provider.text(ref) }
 }
 
 /** Special-use folders decide meaning; names are localized and never guessed. */

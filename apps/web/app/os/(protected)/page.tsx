@@ -5,6 +5,7 @@ import { useOsLocale } from '@/lib/os-i18n/context'
 import { TONE_VARS, toneMap } from '@maxpromo/ui'
 import { berlinDate, formatPerCurrency, receivables, type InvoiceForMoney } from '@/lib/commercial/money'
 import { AttentionPanel } from '@/components/os/AttentionPanel'
+import { MorningBriefing } from '@/components/os/MorningBriefing'
 
 const mono    = 'var(--brand-font-mono)'
 const sans    = 'var(--brand-font-body)'
@@ -110,9 +111,9 @@ export default function DashboardPage() {
     new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n)
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: '1200px' }}>
+    <div className="os-dash">
       {/* Header */}
-      <div style={{ marginBottom: '36px' }}>
+      <div style={{ marginBottom: '20px' }}>
         <h1 style={{ fontFamily: sans, fontSize: '28px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
           {greeting}, {t.dashboard.ownerName}
         </h1>
@@ -121,10 +122,12 @@ export default function DashboardPage() {
         </p>
       </div>
 
+      {/* Attention first, data second: what changed, what needs Marcel, then the figures. */}
+      <MorningBriefing compact />
       <AttentionPanel />
 
       {/* Metrics */}
-      <div style={{ display: 'flex', gap: 'var(--space-4)', marginBottom: '36px', flexWrap: 'wrap' }}>
+      <div className="os-dash-metrics">
         <MetricCard label={t.dashboard.metricClients}     value={loading ? '—' : clients.length}      sub={t.dashboard.metricClientsSub} />
         <MetricCard label={t.dashboard.metricActiveJobs}  value={loading ? '—' : activeJobs}          sub={t.dashboard.metricActiveJobsSub} />
         <MetricCard label={t.dashboard.metricOutstanding} value={loading ? '—' : outstanding} sub={t.dashboard.metricOutstandingSub} />
@@ -140,7 +143,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Activity feed */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-5)' }}>
+      <div className="os-dash-activity">
 
         {/* Recent invoices */}
         <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)' }}>

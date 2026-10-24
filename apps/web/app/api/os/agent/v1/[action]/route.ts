@@ -4,6 +4,7 @@ import { admitAgentRequest, clientMayUse, type AgentAction } from '@/lib/commerc
 import { executeApproval, rejectApproval, runCapability } from '@/lib/commercial/engine'
 import { census } from '@/lib/commercial/registry'
 import { recordAgentEvents } from '@/lib/commercial/agent-events'
+import { scheduleOwnerNotices } from '@/lib/owner/schedule'
 
 /**
  * The cross-plane door into the Business Control Plane (ADR-0018, ADR-0021).
@@ -57,7 +58,10 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ action
       return NextResponse.json({ status: 'done', capabilities: census().filter((c) => clientMayUse(client, c.id)) })
     }
     if (action === 'events') {
-      return NextResponse.json(await recordAgentEvents(db, { client: client.id, actor, events: body.events }))
+      const recorded = await recordAgentEvents(db, { client: client.id, actor, events: body.events })
+      // A failure, block or exception reaches Marcel's phone once (ADR-0024); completions do not.
+      scheduleOwnerNotices('agent')
+      return NextResponse.json(recorded)
     }
     if (action === 'run') {
       const requestId = typeof body.requestId === 'string' && /^[A-Za-z0-9:_.-]{8,120}$/.test(body.requestId) ? body.requestId : null
@@ -66,7 +70,10 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ action
       if (!clientMayUse(client, capability)) {
         return NextResponse.json({ status: 'refused', capability, code: 'not_permitted', message: 'This client may not use that capability.' })
       }
-      return NextResponse.json(await runCapability(db, { requestId, actor, channel, capability, input: body.input ?? {} }))
+      const response = await runCapability(db, { requestId, actor, channel, capability, input: body.input ?? {} })
+      // An agent asked for something only Marcel can approve: tell him once.
+      if (response.status === 'approval_required') scheduleOwnerNotices('agent')
+      return NextResponse.json(response)
     }
     const approvalId = typeof body.approvalId === 'string' && /^[0-9a-f-]{36}$/i.test(body.approvalId) ? body.approvalId : null
     if (!approvalId) return NextResponse.json({ error: 'approvalId is required' }, { status: 400 })

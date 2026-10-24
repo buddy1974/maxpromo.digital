@@ -22,11 +22,17 @@ export interface SendPayload {
   inReplyTo?: MessageRef; forwardOf?: MessageRef
 }
 export interface FlagChange { addFlags?: string[]; removeFlags?: string[] }
+/** Rendered parts of one message, from the provider's own API host. Untrusted data. */
+export interface ProviderText { text: string; html: string }
+/** Response bodies larger than this are refused, never truncated silently. */
+export const MAX_TEXT_RESPONSE_BYTES = 1024 * 1024
 export interface EmailProvider {
   list(folder: string, page?: PageOptions): Promise<ProviderPage<ProviderMessage>>
   get(ref: MessageRef): Promise<ProviderMessage>
   search(folder: string, criteria: SearchCriteria, page?: PageOptions): Promise<ProviderPage<ProviderMessage>>
   folders(page?: Pick<PageOptions, 'page' | 'perPage'>): Promise<ProviderPage<ProviderFolder>>
+  text(ref: MessageRef): Promise<ProviderText>
+  attachment(ref: MessageRef, attachmentId: string, maxBytes: number): Promise<ReadableStream<Uint8Array>>
   send(payload: SendPayload): Promise<void>
   move(ref: MessageRef, targetFolder: string): Promise<void>
   flags(ref: MessageRef, change: FlagChange): Promise<ProviderMessage>
@@ -94,18 +100,22 @@ function parseMessage(value: unknown): ProviderMessage {
 export class HostingerMailProvider implements EmailProvider {
   private readonly options: HostingerProviderOptions
   constructor(options: HostingerProviderOptions) { this.options = options }
-  private async request<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
+  /** The single network path: fixed API host, Bearer token, no redirects, bounded time. */
+  private async open(path: string, method = 'GET', body?: unknown): Promise<Response> {
     const { gate, token, mailboxResourceId, transport } = this.options
     if (!gate?.enabled || !gate.fixtureVerified || gate.isEvidenceMode() || !token || /[\r\n]/.test(token) || !/^AC[A-Za-z0-9]+$/.test(mailboxResourceId)) throw new MailProviderError('blocked')
     const sending = path === '/send'
-    let response: Response
     try {
-      response = await transport(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}${path}`, {
+      return await transport(`https://api.mail.hostinger.com/api/v1/mailboxes/${mailboxResourceId}${path}`, {
         method, headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
         signal: AbortSignal.timeout(this.options.timeoutMs ?? 15_000), redirect: 'error', cache: 'no-store',
       })
     } catch { throw new MailProviderError(sending ? 'uncertain' : 'failed') }
+  }
+  private async request<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
+    const sending = path === '/send'
+    const response = await this.open(path, method, body)
     // Never retry sends: timeouts/upstream failures may follow successful delivery.
     if (!response.ok) throw new MailProviderError(sending && response.status >= 500 ? 'uncertain' : 'failed', response.status)
     if (response.status === 204) return undefined as T
@@ -115,6 +125,32 @@ export class HostingerMailProvider implements EmailProvider {
   async get(ref: MessageRef) { return parseMessage(await this.request<unknown>(refPath(ref))) }
   async search(folder: string, criteria: SearchCriteria, page?: PageOptions) { return parsePage(await this.request<unknown>(`/folders/${segment(folder)}/messages/search${pageQuery(page)}`, 'POST', criteria), validMessage) }
   async folders(page?: Pick<PageOptions, 'page' | 'perPage'>) { return parsePage(await this.request<unknown>(`/folders${pageQuery(page)}`), validFolder) }
+  /** Plain and HTML parts; does not change \\Seen. The body is read with a byte bound. */
+  async text(ref: MessageRef): Promise<ProviderText> {
+    const response = await this.open(`${refPath(ref)}/text`)
+    if (!response.ok) throw new MailProviderError('failed', response.status)
+    const bytes = await readBounded(response, MAX_TEXT_RESPONSE_BYTES)
+    let value: unknown
+    try { value = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)) } catch { throw new MailProviderError('failed') }
+    if (!object(value) || !object(value.data) || typeof value.data.text !== 'string' || typeof value.data.html !== 'string') throw new MailProviderError('failed')
+    return { text: value.data.text, html: value.data.html }
+  }
+  /** Attachment bytes as a stream that errors past maxBytes. Nothing is stored. */
+  async attachment(ref: MessageRef, attachmentId: string, maxBytes: number): Promise<ReadableStream<Uint8Array>> {
+    if (!/^[A-Za-z0-9_=-]{1,512}$/.test(attachmentId) || !Number.isSafeInteger(maxBytes) || maxBytes < 1 || maxBytes > 30 * 1024 * 1024) throw new MailProviderError('failed')
+    const response = await this.open(`${refPath(ref)}/attachments/${encodeURIComponent(attachmentId)}`)
+    if (!response.ok || !response.body) throw new MailProviderError('failed', response.status)
+    const length = response.headers.get('content-length')
+    if (length !== null && (!/^\d+$/.test(length) || Number(length) > maxBytes)) { await response.body.cancel().catch(() => undefined); throw new MailProviderError('failed') }
+    let size = 0
+    return response.body.pipeThrough(new TransformStream<Uint8Array, Uint8Array>({
+      transform(chunk, controller) {
+        size += chunk.byteLength
+        if (size > maxBytes) { controller.error(new MailProviderError('failed')); return }
+        controller.enqueue(chunk)
+      },
+    }))
+  }
   async send(payload: SendPayload): Promise<void> {
     const recipients = [...(payload.to ?? []), ...(payload.cc ?? []), ...(payload.bcc ?? [])]
     if (!recipients.length || recipients.some(address => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) || (payload.inReplyTo && payload.forwardOf)) throw new MailProviderError('failed')
@@ -132,6 +168,25 @@ export class HostingerMailProvider implements EmailProvider {
     if (!flags.length || flags.some(flag => !flag.length || flag.length > 255 || /[\r\n\0]/.test(flag))) throw new MailProviderError('failed')
     return parseMessage(await this.request<unknown>(refPath(ref), 'PATCH', change))
   }
+}
+async function readBounded(response: Response, maxBytes: number): Promise<Uint8Array> {
+  const length = response.headers.get('content-length')
+  if (length !== null && (!/^\d+$/.test(length) || Number(length) > maxBytes)) throw new MailProviderError('failed')
+  const reader = response.body?.getReader()
+  if (!reader) throw new MailProviderError('failed')
+  const chunks: Uint8Array[] = []; let size = 0
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      size += value.byteLength
+      if (size > maxBytes) throw new MailProviderError('failed')
+      chunks.push(value)
+    }
+  } catch { await reader.cancel().catch(() => undefined); throw new MailProviderError('failed') }
+  const bytes = new Uint8Array(size); let offset = 0
+  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
+  return bytes
 }
 /** Hostinger documents a Bearer secret, not a payload signature. */
 export function verifyWebhookBearer(header: string | null, secret: string): boolean {

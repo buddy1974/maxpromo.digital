@@ -79,13 +79,21 @@ test('the REST reader is read-only, gated by configuration and refused in eviden
   let transported = 0
   const transport = (async (url: string, init: RequestInit) => {
     transported++
-    assert.ok(/\/folders(\/INBOX\.Junk\/messages\/search)?(\?|$)/.test(String(url)), String(url)); assert.ok(['GET', 'POST'].includes(String(init.method)))
+    const u = String(url)
+    if (u.endsWith('/text')) {
+      // Message text is a GET of one message's rendered parts; nothing else.
+      assert.ok(/\/folders\/INBOX\/messages\/7\/text$/.test(u), u); assert.equal(init.method, 'GET')
+      return Response.json({ data: { text: 'Hallo', html: '<p>Hallo</p>' } })
+    }
+    assert.ok(/\/folders(\/INBOX\.Junk\/messages\/search)?(\?|$)/.test(u), u); assert.ok(['GET', 'POST'].includes(String(init.method)))
     return Response.json({ data: [], pagination: { page: 1, perPage: 100, total: 0, totalPages: 0 } })
   }) as unknown as typeof fetch
   assert.equal(hostingerStateReader({}, transport), null)
   assert.equal(hostingerStateReader({ HOSTINGER_MAIL_API_TOKEN: 't', HOSTINGER_MAILBOX_RESOURCE_ID: 'AC1', MAXPROMO_EVIDENCE_MODE: '1' }, transport), null)
   const live = hostingerStateReader({ HOSTINGER_MAIL_API_TOKEN: 't', HOSTINGER_MAILBOX_RESOURCE_ID: 'AC1' }, transport)!
-  assert.deepEqual(Object.keys(live).sort(), ['folders', 'search'])
+  // Read operations only: no send, move, flag or delete is reachable from the reader.
+  assert.deepEqual(Object.keys(live).sort(), ['folders', 'search', 'text'])
   await live.folders({ perPage: 100 }); await live.search('INBOX.Junk', { header: `Message-ID:${ID}` })
-  assert.equal(transported, 2)
+  assert.deepEqual(await live.text({ folder: 'INBOX', uid: 7 }), { text: 'Hallo', html: '<p>Hallo</p>' })
+  assert.equal(transported, 3)
 })

@@ -29,9 +29,10 @@
 
 export type AiSurfaceClass = 'document' | 'contact' | 'assistant'
 
-/** Every route under app/api/os/ai. */
+/** Every route under app/api/os/ai. The ungrounded assistant chat (app/api/os/ai/route.ts) was
+ *  removed on 2026-10-24: Ask Max (app/api/os/ask) answers from the OS records, writes at most
+ *  email drafts, and produces no commercial document or contact (ADR-0023). */
 export const AI_ROUTES: Readonly<Record<string, AiSurfaceClass>> = {
-  'app/api/os/ai/route.ts':                  'assistant',
   'app/api/os/ai/enhance/route.ts':          'document',
   'app/api/os/ai/generate-invoice/route.ts': 'document',
   'app/api/os/ai/scan-invoice/route.ts':     'document',

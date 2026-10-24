@@ -26,7 +26,8 @@ interface ScannedContact {
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
 
-interface AIMsg { role: 'user' | 'assistant'; content: string }
+/** One turn of Ask Max. An answer carries the record facts it was built from and links to them. */
+interface AIMsg { role: 'user' | 'assistant'; content: string; facts?: string[]; links?: { label: string; href: string }[]; phrased?: boolean }
 
 /**
  * OsLocaleProvider must wrap the layout body so useOsLocale() is
@@ -42,7 +43,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
 }
 
 function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
-  const { t } = useOsLocale()
+  const { t, locale } = useOsLocale()
   const router   = useRouter()
   const pathname = usePathname()
 
@@ -105,13 +106,15 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
     setInput('')
     setAiLoading(true)
     try {
-      const res  = await fetch('/api/os/ai', {
+      // Ask Max answers from the OS records only (lib/commercial/ask.ts); every answer shows its facts.
+      const res  = await fetch('/api/os/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next }),
+        body: JSON.stringify({ question: content.trim().slice(0, 500), locale }),
       })
-      const data = await res.json() as { content: string }
-      setMsgs(prev => [...prev, { role: 'assistant', content: data.content }])
+      if (!res.ok) throw new Error(String(res.status))
+      const data = await res.json() as { answer: string; facts: string[]; links: { label: string; href: string }[]; phrased: boolean }
+      setMsgs(prev => [...prev, { role: 'assistant', content: data.answer || t.ai.noAnswer, facts: data.facts, links: data.links, phrased: data.phrased }])
     } catch {
       setMsgs(prev => [...prev, { role: 'assistant', content: t.ai.errorReply }])
     } finally {
@@ -342,6 +345,24 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
                 padding: '10px 14px', borderRadius: 'var(--radius-xs)',
               }}>
                 <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: 0, lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{msg.content}</p>
+                {msg.links && msg.links.length > 0 && (
+                  <ul style={{ listStyle: 'none', margin: '8px 0 0', padding: 0, display: 'grid', gap: '4px' }}>
+                    {msg.links.map(link => <li key={link.href}><Link href={link.href} onClick={() => setAiOpen(false)} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)', textDecoration: 'underline' }}>{link.label}</Link></li>)}
+                  </ul>
+                )}
+                {msg.phrased && msg.facts && msg.facts.length > 0 && (
+                  <details style={{ marginTop: '8px' }}>
+                    <summary style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', cursor: 'pointer' }}>{t.ai.facts}</summary>
+                    <ul style={{ margin: '6px 0 0', paddingLeft: '16px', display: 'grid', gap: '3px' }}>
+                      {msg.facts.map((fact, n) => <li key={n} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text-secondary)', overflowWrap: 'anywhere' }}>{fact}</li>)}
+                    </ul>
+                  </details>
+                )}
+                {msg.role === 'assistant' && !msg.phrased && msg.facts && msg.facts.length > 1 && (
+                  <ul style={{ margin: '6px 0 0', paddingLeft: '16px', display: 'grid', gap: '3px' }}>
+                    {msg.facts.slice(1).map((fact, n) => <li key={n} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text-secondary)', overflowWrap: 'anywhere' }}>{fact}</li>)}
+                  </ul>
+                )}
               </div>
             ))}
             {aiLoading && (

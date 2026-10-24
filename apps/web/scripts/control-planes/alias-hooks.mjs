@@ -3,7 +3,8 @@
  * `@/x` → apps/web/x, and extensionless relative/alias imports → .ts / .tsx /
  * index.ts, as the Next build resolves them. Proof tooling only; never shipped.
  */
-import { existsSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, statSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { join, resolve as resolvePath } from 'node:path'
 
@@ -26,5 +27,20 @@ export async function resolve(specifier, context, next) {
     const found = candidate(base)
     if (found) return { url: pathToFileURL(found).href, shortCircuit: true }
   }
+  // `next/link` and friends are CommonJS files without an exports map; the bundler adds `.js`.
+  if (/^next\/[a-z-]+$/.test(specifier)) return next(`${specifier}.js`, context)
   return next(specifier, context)
+}
+
+/** Node strips TypeScript types but not JSX: transpile .tsx components with the project's compiler. */
+export async function load(url, context, next) {
+  if (url.startsWith('file:') && url.endsWith('.tsx')) {
+    const ts = createRequire(import.meta.url)('typescript')
+    const source = ts.transpileModule(readFileSync(fileURLToPath(url), 'utf8'), {
+      compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022, verbatimModuleSyntax: false },
+      fileName: fileURLToPath(url),
+    }).outputText
+    return { format: 'module', source, shortCircuit: true }
+  }
+  return next(url, context)
 }
