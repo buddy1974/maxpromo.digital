@@ -225,6 +225,11 @@ try {
   check('Ask Max payment facts name the card payment and the Stripe fee the rail reported, in the asked language',
     de.facts.some(f => /per Karte über Stripe/.test(f)) && de.facts.some(f => /Stripe-Gebühr dafür: 2,43/.test(f)) && en.facts.some(f => /Stripe fee on it: €2.43|Stripe fee on it: 2[.,]43/.test(f)))
   check('…and the refund and chargeback against it, with a link to the invoice', de.facts.some(f => /^Erstattung /.test(f)) && de.facts.some(f => /^Rückbuchung /.test(f)) && de.links.some(l => l.href === `/os/invoices/${A}`))
+  const [{ client_name: clientA }] = await sql`SELECT client_name FROM os_invoices WHERE id = ${A}::uuid` as { client_name: string }[]
+  const byName = await paymentFacts(askCtx, null, clientA.slice(0, 12), 'de')
+  check('…a question by client name finds that client’s latest invoices (LIKE input escaped)', byName.links.length >= 1 && byName.links.every(l => created.some(id => l.href === `/os/invoices/${id}`)))
+  const wild = await paymentFacts(askCtx, null, '%', 'de')
+  check('…a bare % is a literal, not a wildcard that matches every invoice', wild.facts.length === 1 && /Nenne die Rechnungsnummer/.test(wild.facts[0]))
   const missing = await paymentFacts(askCtx, 'MP-1999-999', null, 'de')
   check('an unknown invoice is said to be unknown; nothing is invented', missing.facts.length === 1 && /Keine Rechnung MP-1999-999/.test(missing.facts[0]))
 

@@ -17,7 +17,7 @@ import { payUrl } from './links'
 
 const optional = async <T>(p: PromiseLike<unknown>, empty: T): Promise<T> => {
   try { return await p as T } catch (error) {
-    if (typeof error === 'object' && error !== null && 'code' in error && ['42P01', '3F000'].includes(String(error.code))) return empty
+    if (typeof error === 'object' && error !== null && 'code' in error && ['42P01', '3F000', '42703'].includes(String(error.code))) return empty
     throw error
   }
 }
