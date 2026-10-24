@@ -2011,3 +2011,13 @@ control planes working, Hostinger provider reconciliation live, the Junk message
 it. The Bureau EU database move and deleting the paused shadow project stay as infrastructure
 follow-ups and do not block the release. Next approved phase: **STRIPE ↔ MAXPROMO MONEY
 ARCHITECTURE**, not started.
+
+## 2026-10-24 — Overnight product run: what changed and what is not claimed
+
+Under the overnight-run authority: Email OS workspace and outbound identity (ADR-0023), Owner Control
+Plane notices (ADR-0024), grounded Ask Max replacing the ungrounded assistant chat, the Bureau's mock
+CRM removed in favour of links to Maxpromo OS. Telegram pushes ship **inactive**: the first activation
+delivers the pending backlog to Marcel's phone, so activation (`OWNER_TELEGRAM_NOTICES=1`) is his.
+Not claimed: Email OS product-complete (no live send observed, no outbound attachments, document
+emails not yet on the new identity), the whole product, mobile app, Stripe. Next phases unchanged:
+A Stripe ↔ Money, B phone-first PWA with Android/iOS testing, C integrated business simulation.

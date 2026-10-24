@@ -1,5 +1,20 @@
 # Change Log
 
+## 2026-10-24 — Overnight product run: Email OS, briefing, Ask Max, owner notices
+
+- Email OS workspace (ADR-0023): views, conversation timeline with Maxpromo's replies, business
+  context and next step, potential/possible/confirmed lead labels, follow-up states and one-tap
+  planning; full text and safe attachment downloads from the Hostinger API; compose, reply, reply all,
+  forward with Cc/Bcc, autosaved drafts (one draft model), confirmed single sends via Hostinger;
+  professional DE/EN outbound identity (15 families, no images, multipart); Max assist.
+- Command centre: morning briefing (screen + text channels, one snapshot), email follow-ups and
+  customer replies in attention, grounded Ask Max (`/api/os/ask`) replacing the ungrounded chat.
+- Owner Control Plane (ADR-0024): push policy, delivery ledger, dispatcher, daily cron route —
+  inactive until the owner sets `OWNER_TELEGRAM_NOTICES=1`.
+- Bureau: mock leads/contacts/projects/tasks/briefing removed (links to the OS); example data labelled.
+- Migrations 0017 and 0018 applied to production. Stripe ↔ Money groundwork (design, not live).
+- Production-found defect fixed: webhook attachment ids resolved to provider ids.
+
 ## 2026-10-23 — Hostinger provider reconciliation live; mega-run GREEN
 
 - Owner stored `HOSTINGER_MAIL_API_TOKEN`; web redeployed (`dpl_EYDDFZ4URsFToAm2U4rqubmeoDQU`).

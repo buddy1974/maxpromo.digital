@@ -173,3 +173,12 @@ Released 2026-10-23: web `dpl_4GGd98RRNvuA8pbxgKPaFUBJp9dW`, Bureau `maxpromo-ag
 Env-only redeploy (2026-10-23): the ignored-build step cancels a git redeploy when no app file
 changed, so a new Production variable is picked up with `vercel deploy --prod` from the clean repo
 root instead (`dpl_EYDDFZ4URsFToAm2U4rqubmeoDQU`, reports 19479aa).
+
+## Overnight product run — 2026-10-24
+
+- `maxpromo-digital` gains a daily cron (`vercel.json`): `/api/cron/owner-notices` at 05:15 UTC. It
+  refuses every call until `CRON_SECRET` is set on the project (owner action).
+- New optional variables (all owner-controlled, none required for the release):
+  `OWNER_TELEGRAM_NOTICES=1` activates owner pushes (ADR-0024); `MAIL_SEND_DISABLED=1` stops every
+  outbound email; `MAIL_ATTACHMENTS_DISABLED=1` turns attachment downloads off.
+- Production schema: migrations 0017 and 0018 applied 2026-10-24 before the release.

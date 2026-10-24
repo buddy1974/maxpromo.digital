@@ -688,3 +688,43 @@ recorded infrastructure follow-ups, not release blockers.
 Business Control Plane (quote → invoice → payment → webhook → ledger → reconciliation → fee →
 balance → payout → Revolut → `/os` attention and briefing). Maxpromo OS stays the source of truth.
 Approved as the next phase (2026-10-24); started only under separate instruction.
+
+## 23. Overnight product run — 2026-10-24
+
+Infrastructure was GREEN (§22); the product commitments were not. This run built the Email OS,
+the outbound identity, the briefing, grounded Ask Max and the Owner Control Plane contract, and
+cleaned cross-plane drift. Product state per commitment: [product completion ledger](../governance/product-completion-ledger.md).
+Decisions: ADR-0023 (Email OS), ADR-0024 (owner notices). Stripe groundwork:
+[stripe-money-groundwork.md](stripe-money-groundwork.md).
+
+**Production schema.** Migrations 0017 (email workspace: message direction, content attempts, thread
+follow-up, `mail.drafts`, `mail.store_content`, outbound-aware `mail.accept_hostinger`) and 0018
+(`os_owner_notices`) applied in one transaction (BEGIN, 5 ALTER, DO, 8 CREATE, COMMIT); read-only
+check: columns, tables and functions present; 3 inbound messages, 3 threads, leads 6, clients 2,
+invoices 2, approvals 5 — unchanged.
+
+**Releases.** e8b8a9b (Email OS, briefing, Ask Max, owner notices), f04aa04 (Bureau without mock CRM),
+a36c023 (attachment id fix, Max obligation rule, plain Ask Max answers), plus documentation. Web and
+Bureau production report the released commit from `/api/health`.
+
+**Production evidence (2026-10-24, owner browser, read-mostly).**
+- Inbox workspace in English and at 390/360 px; potential lead labelled; Spam view holds the Junk message.
+- Full text fetched from Hostinger: log `mail.content checked 2 stored 2 failed 0`; the quarantined
+  message was not fetched.
+- Attachment download: Marcel's own test PDF (1,548,450 bytes) through `/api/os/mail/attachment` — 200,
+  `application/pdf`, `attachment`, `nosniff`, sandbox CSP, valid PDF signature, read in memory only; the
+  Spam message's HTML attachment refused (409). A first attempt failed (400): the webhook's attachment id
+  is not the REST id — fixed in a36c023 by resolving through the message's provider metadata.
+- Composer opened prefilled (recipient, Re:, Enquiry response, English, follow-up 3 days); closed without
+  typing; no draft created. The read flag set by opening was restored to unread.
+- Briefing and attention match the records (overdue MP-2026-002 156 €, draft MP-2026-001, Bureau lead,
+  one reply owed). Ask Max answered two questions correctly from the records with the production model.
+- `email.assist improve` works with the production model; it moved an obligation once ("melden Sie
+  sich" → "wir melden uns in Kürze") — instruction tightened (risk 123).
+- 36/36 production HTTP checks (all new routes refuse anonymous callers; the ungrounded assistant route
+  is gone; the owner-notices cron fails closed without `CRON_SECRET`).
+- No email sent: Hostinger Sent unchanged (latest 2026-10-23 07:26Z, 25 messages). No 5xx since release.
+  Owner notices inactive (no `owner.notices` log).
+
+**Not observed live (owner actions):** a real send and a customer reply joining the conversation; a
+signed-in Bureau visual check; Telegram pushes (inactive by design).

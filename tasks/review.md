@@ -186,3 +186,8 @@ Hostinger token, Junk message, EU database (all owner-gated).
 **Hostinger activation:** token stored by the owner, redeployed, reconciler live (3 checked,
 1 quarantined); Junk message only under Spam; verify, mail tests, control planes and production
 probes pass. **MEGA-RUN GREEN.** Infrastructure follow-ups: Bureau EU database, shadow deletion.
+
+**Overnight product run 2026-10-24:** Email OS workspace, identity, full text, attachments, follow-up,
+briefing, grounded Ask Max released and verified in production (no email sent); owner notices built and
+inactive; Bureau mock CRM removed. Not product-complete: live send, outbound attachments, document
+emails on the new identity, Telegram activation, mobile app, Stripe.

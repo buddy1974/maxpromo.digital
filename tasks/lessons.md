@@ -67,3 +67,10 @@
   writes after the copy; matching checksums at copy time are not enough.
 - An ignored-build step that diffs against the previous deployment also cancels env-only
   redeploys; deploy the clean tree with `vercel deploy --prod` instead of adding a dummy change.
+- A webhook's attachment id is not the REST API's attachment id (Hostinger: `<hash>:<index>` vs
+  base64 `attachment:<folder>:<uid>:<part>`, sizes differ by a few bytes). Resolve through the provider's
+  message metadata; only a live test with a real attachment showed it.
+- An LLM "improve" can move obligations between parties; tell it explicitly that who does what must not
+  change, and keep its output a suggestion.
+- CodeMirror virtualises lines: verify pasted SQL from the editor state (walk `cmTile` to the view),
+  never from `innerText`.

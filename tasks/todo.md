@@ -82,3 +82,15 @@ Business Control Plane; Maxpromo OS remains the source of truth. To be instructe
 5. [ ] Agent Bureau UX/governance refinement
 6. [ ] Telegram Owner Control Plane integration
 7. [ ] Broader channel convergence and later productization
+
+## Overnight product run 2026-10-24
+- [x] Email OS workspace, outbound identity, full text, safe attachments, follow-up engine (ADR-0023) — released, verified.
+- [x] Morning briefing, attention integration, grounded Ask Max — released, verified with the production model.
+- [x] Owner Control Plane contract (ADR-0024) — built, proven offline, inactive.
+- [x] Bureau mock CRM removed; example data labelled.
+- [x] Stripe ↔ Money groundwork (design + proposed schema).
+- [ ] OWNER: one real reply from /os/inbox to your own address; confirm rendering in Gmail/Outlook/Apple Mail and that the answer joins the conversation.
+- [ ] OWNER: set OWNER_TELEGRAM_NOTICES=1 (and CRON_SECRET for the daily brief) when ready for pushes.
+- [ ] OWNER: DMARC p=none → p=quarantine after checking the reports.
+- [ ] OWNER: signed-in look at the Bureau (leads/contacts/projects/tasks link to the OS).
+- [ ] NEXT A: Stripe ↔ Money (items in the ledger). NEXT B: phone-first PWA, Android/iOS testing. NEXT C: integrated simulation.
