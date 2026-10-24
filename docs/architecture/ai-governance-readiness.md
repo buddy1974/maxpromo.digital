@@ -220,7 +220,7 @@ the first decision is made would be building.
 - Did not implement retrieval
 
 The one AI-adjacent change in v14.0 was to `lib/email.ts` and
-`lib/documents/emailHtml.ts` — CSS custom properties in email markup, unrelated
+the former `emailHtml.ts` (removed 2026-10-24, ADR-0025) — CSS custom properties in email markup, unrelated
 to the assistants.
 
 ---

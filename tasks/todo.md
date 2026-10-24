@@ -94,3 +94,10 @@ Business Control Plane; Maxpromo OS remains the source of truth. To be instructe
 - [ ] OWNER: DMARC p=none → p=quarantine after checking the reports.
 - [ ] OWNER: signed-in look at the Bureau (leads/contacts/projects/tasks link to the OS).
 - [ ] NEXT A: Stripe ↔ Money (items in the ledger). NEXT B: phone-first PWA, Android/iOS testing. NEXT C: integrated simulation.
+
+## Stripe ↔ Money + Email completion run 2026-10-24
+- [x] Money domain + Stripe rail (ADR-0025, migration 0019) — built, proven (offline, evidence DB, local HTTP, browser).
+- [x] Document emails through the mailbox with PDF; outgoing attachments; bounces (migration 0020).
+- [ ] OWNER: Stripe test key + webhook endpoint (API 2024-06-20) + signing secret; then one test payment and refund.
+- [ ] OWNER: live restricted key + live signing secret + STRIPE_LIVE=1; one low-value live payment, refunded.
+- [ ] OWNER: one real quote/invoice email to your own Gmail/Outlook/Apple Mail; check the PDF and the reply threading.

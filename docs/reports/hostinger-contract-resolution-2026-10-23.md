@@ -91,7 +91,7 @@ guaranteed. The prior grammar `^[A-Za-z0-9][A-Za-z0-9_.:-]{0,255}$` was invented
   no-identity ingestion, unknown-sender threading.
 - Isolated evidence SQL 43/43 (new: opaque ids round-trip/dedupe, unknown sender never links,
   >20 MB metadata retained; migration replay preserves rows).
-- Rendered Inbox 31 assertions. Full `npm run verify` exit 0 (all 29 gates incl. typecheck,
+- Rendered Inbox 31 assertions. Full `npm run verify` exit 0 (every gate (29 at the time) incl. typecheck,
   lint, both builds, release-model postbuild).
 
 ## 5. Production

@@ -8,7 +8,7 @@ States: **DONE** (implemented, verified, released) · **PARTIAL** (some of the c
 and verified; the rest is listed) · **OWNER** (blocked on an owner/account action) · **DEFERRED**
 (deliberately later) · **NEXT** (the next phase).
 
-Last updated: 2026-10-24 (overnight product run). Evidence: [reconciliation report §23](../architecture/control-plane-reconciliation.md),
+Last updated: 2026-10-24 (Stripe ↔ Money + Email completion run; ADR-0025). Previously: overnight product run. Evidence: [reconciliation report §23](../architecture/control-plane-reconciliation.md),
 ADR-0023, ADR-0024, change log.
 
 ## Baseline (infrastructure GREEN, 2026-10-23)
@@ -21,17 +21,17 @@ Declared GREEN 2026-10-23 for the platform release — not for the product commi
 
 | # | Commitment | State | Evidence / what remains |
 |---|---|---|---|
-| 1 | Senior Email OS (workspace, context, actions, follow-up) | **PARTIAL** (released, verified) | §Email — no outbound attachments; first live send is the owner's |
-| 2 | Professional outbound identity | **PARTIAL** (released for Email OS) | §Email — document emails (invoice/quote) still use the old Resend letterhead |
+| 1 | Senior Email OS (workspace, context, actions, follow-up) | **PARTIAL** (released, verified) | §Email — outbound attachments and bounce handling now built and proven; a first live send observed in real clients is still the owner's |
+| 2 | Professional outbound identity | **PARTIAL** (one identity for conversations AND documents) | §Email — quotes, invoices and reminders now leave through the mailbox in the new identity with the PDF attached; not yet observed in Gmail/Outlook/Apple Mail; outreach/contact/newsletter still on Resend (risk 127) |
 | 3 | Safe full body and attachments | **DONE** (released, verified live) | §Email — risk 119 (no malware scanner) stands |
-| 4 | Deliverability | **PARTIAL** | §Deliverability — DMARC `p=none`; owner DNS step |
+| 4 | Deliverability | **PARTIAL** | §Deliverability — structured bounces now recorded; DMARC `p=none` is the owner's DNS step |
 | 5 | Follow-up engine | **DONE** for email conversations (released) | §Email — lead `os_followups` and conversation follow-ups are two views of follow-up, both in attention |
 | 6 | Daily command centre | **DONE** (released, verified) | §Command centre |
 | 7 | Morning briefing | **DONE** on screen; **OWNER** for the phone push | §Command centre, §Planes |
 | 8 | Ask Max | **DONE** (released, verified live with the production model) | §Command centre |
 | 9 | Agent Bureau refinement | **PARTIAL** | §Planes — mock CRM removed; example data labelled; visual check is the owner's |
 | 10 | Telegram Owner Control Plane | **PARTIAL** → **OWNER** activation | §Planes |
-| 11 | Stripe ↔ Money | **NEXT** (Phase A) | Groundwork: [stripe-money-groundwork.md](../architecture/stripe-money-groundwork.md) |
+| 11 | Stripe ↔ Money | **PARTIAL** → **OWNER** (keys) | §Money — Money domain, payment requests, verified webhook, refunds, disputes, fees, payouts, reconciliation built and proven against a real Postgres with a fake rail (ADR-0025, migration 0019). No Stripe key, no live payment observed. |
 | 12 | Broader channel convergence (WhatsApp, voice, more connectors) | **DEFERRED** | WhatsApp gateway exists and is OFF (503); no voice channel |
 | 13 | Bureau database US → Frankfurt | **OWNER** | Runbook §21; Neon project creation is an owner action |
 | 14 | Delete the paused shadow Bureau | **OWNER** (authorisation) | Paused 2026-10-23, candidate for deletion |
@@ -59,10 +59,28 @@ Released 2026-10-24 (production `a36c023`+), ADR-0023, migration 0017 applied to
 | Archive / unarchive / trash (local, reversible), read/unread, spam / not spam / block | DONE | email gate proofs; production mark read/unread round trip |
 | Max assist: draft, improve, shorten, expand, friendlier, formal, translate, analyse (intent, questions, commitments both sides, next step) | DONE, live model | Production `email.assist improve` answered; meaning-shift found and instruction tightened (risk 123) |
 | Follow-up engine: needs reply, customer replied, waiting, follow-up due/overdue, no next step; one-tap planning; attention and briefing | DONE | Attention shows overdue follow-up (evidence); production briefing "1 conversation waiting for your reply" |
+| Delivery failures (bounces) | DONE in code and evidence; live not yet observed | `lib/mail/bounces.ts`: MAILER-DAEMON/postmaster reports parsed (DSN and human part), linked to Maxpromo's own sent message, shown in the conversation and in attention, pushed as an owner notice |
 | Scheduled send | DEFERRED | risk 120 — needs a minute-level scheduler |
-| Outbound attachments (attach a file to a reply) | NOT DONE | needs draft attachment storage |
-| Document emails (invoice/quote) through the new identity and Hostinger | NEXT (with Phase A) | they still use Resend + the dark letterhead; unify with the payment-link email |
+| Outbound attachments (attach a file, or an OS quote/invoice PDF, to any email) | DONE in code, evidence and local browser; live **OWNER** | migration 0020; type decided by the bytes, 4 MB/file, 10 MB/draft; part of the confirmed revision; 15 offline + 16 evidence-DB assertions; local browser: attach → confirm lists file → send (sink) → sent message carries the PDF |
+| Document emails (quote, invoice, reminder) through the new identity and Hostinger, PDF attached | DONE in code and evidence; live **OWNER** | ADR-0025; `lib/documents/pdf.ts` (27 assertions) + `lib/documents/mail.ts`; approval binds subject, HTML, text and PDF bytes; recorded in the client's conversation (invoice + reminders share one); commercial-agent end-to-end 85/85 against the evidence runtime |
 | Cross-client rendering (Gmail/Outlook/Apple Mail) | PARTIAL | Built for it (tables, inline styles, no images, light scheme); seen in Chrome only (risk 122) |
+
+## Money (ADR-0025, 2026-10-24)
+
+| Capability | State | Evidence |
+|---|---|---|
+| One ledger: `os_payments` with provider + reference; refunds and lost disputes as reversals; `money.invoice_paid()` the single net-received definition | DONE (evidence DB) | migration 0019; 43 assertions against the evidence Postgres |
+| Payment request: stable pay link per invoice (`/<lang>/pay/<token>`), current open balance, bank details always, card button only when connected; GET creates nothing | DONE (local HTTP + browser) | 20 HTTP assertions; browser desktop and 390 px frame |
+| Checkout attempt: session row before the call, same idempotency key on retry, reuse of a valid session, stale sessions closed | DONE (fake rail) | evidence proof |
+| Verified webhook `/api/channels/stripe`: signature, ±5 min, rotation, once per event, 409 while in flight | DONE (local HTTP) | offline + HTTP proofs |
+| Payment applied only when tied to an OS checkout, same currency and mode, no overpay; otherwise unapplied + critical attention | DONE (evidence DB) | evidence proof |
+| Fees/net per charge, payouts, payout → charges, Revolut confirmation by Marcel | DONE (fake rail) | evidence proof; `/os/money` |
+| Refund (AMBER): card through Stripe, bank as a recorded refund; invoice reopens | DONE (manual path proven; card path with fake rail) | evidence proof; browser prepare/cancel |
+| Disputes: critical attention + owner notice; lost → chargeback reversal | DONE (evidence DB) | evidence proof |
+| Invoice status follows real events (draft → sent by send → paid by payment; cancel only without money) | DONE | API guards; commercial-agent 85/85 |
+| `/os/money` screen and the invoice money panel | DONE (local browser) | evidence data |
+| Live Stripe payment, refund, dispute, payout | **OWNER** | needs keys, webhook endpoint, `STRIPE_LIVE=1` |
+| Revolut statement matching | DEFERRED | no Revolut API; Marcel confirms payouts |
 
 ## Deliverability
 
@@ -76,6 +94,8 @@ align); replies thread through Hostinger (`In-Reply-To`/`References` copied by t
 flagged `\Answered`); Message-ID generated by Hostinger and read back from Sent; multipart text + HTML
 with the same words; no images, tracking pixels or link shorteners; one action link only to Maxpromo's
 own domains; no bulk sending path.
+
+Bounces (2026-10-24): Hostinger delivers bounces to the mailbox from `MAILER-DAEMON`; the content check now parses them and marks the outbound message `bounced`/`delayed` (migration 0020), visible in the conversation and in attention.
 
 Open: DMARC is `p=none` (owner DNS step after checking the Cloudflare DMARC reports for alignment:
 move to `p=quarantine`); bounce handling (Hostinger delivers bounces to the mailbox as mail from
@@ -120,15 +140,16 @@ screen. Phase B builds it and tests it on Android and iOS.
 
 ## Stripe — owner items
 
-1. Stripe **test mode** secret key (`sk_test_…`), stored as `STRIPE_SECRET_KEY` on a preview or the
-   evidence environment — never pasted in chat.
-2. Stripe **live** key, preferably a **restricted key** limited to Checkout Sessions, Payment Links,
-   PaymentIntents (read), Charges/Balance transactions (read), Refunds (write, owner-approved), Payouts
-   (read), Disputes (read) — stored as `STRIPE_SECRET_KEY` on `maxpromo-digital` Production.
-3. After the endpoint `https://maxpromo.digital/api/channels/stripe` is deployed and created in the
-   Stripe dashboard (events listed in the groundwork doc): its **signing secret** (`whsec_…`) as
-   `STRIPE_WEBHOOK_SECRET` (test and live are different secrets).
-4. The **DNS record** Stripe gives for `pay.maxpromo.digital` (the name does not resolve today).
-5. Decisions: Checkout Sessions per invoice (recommended) or Payment Links; which invoices may be
-   paid by card (all EUR/GBP invoices, or opt-in per invoice); whether the card payment option appears
-   in the invoice email from day one.
+Nothing below is needed to keep using bank transfer. Card payment switches on when 1–3 exist.
+
+1. Stripe **test mode** secret key (`sk_test_…`, or a restricted `rk_test_…`) as `STRIPE_SECRET_KEY` — first on a Preview or the local evidence runtime. Never pasted in chat.
+2. In the Stripe dashboard (test mode): **Developers → Webhooks → Add endpoint** `https://www.maxpromo.digital/api/channels/stripe`, **API version 2024-06-20**, events:
+   `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `checkout.session.async_payment_failed`, `checkout.session.expired`,
+   `payment_intent.succeeded`, `payment_intent.payment_failed`, `charge.succeeded`, `charge.updated`, `charge.refunded`,
+   `refund.created`, `refund.updated`, `refund.failed`, `charge.dispute.created`, `charge.dispute.updated`, `charge.dispute.closed`,
+   `payout.created`, `payout.updated`, `payout.paid`, `payout.failed`, `payout.canceled`.
+   Its **signing secret** (`whsec_…`) as `STRIPE_WEBHOOK_SECRET` (test and live endpoints have different secrets; during a rotation both may be listed, comma-separated).
+3. **Live**: the live key (restricted key preferred: Checkout Sessions write; PaymentIntents, Charges, Balance transactions, Payouts, Disputes read; Refunds write) as `STRIPE_SECRET_KEY` on `maxpromo-digital` Production, the live endpoint's signing secret, and **`STRIPE_LIVE=1`** — the explicit go-live switch; without it a live key does nothing.
+4. Decisions: card payment for all EUR/GBP invoices (as built) or opt-in per invoice; whether invoice emails carry the pay link from day one (as built: yes, whenever the rail is connected).
+5. Not needed any more: `pay.maxpromo.digital` DNS. The pay page is `https://www.maxpromo.digital/<de|en>/pay/<token>`; Stripe's hosted checkout takes the card.
+6. Owner switch: `STRIPE_PAYMENTS_DISABLED=1` disconnects the rail at once.

@@ -1,7 +1,9 @@
-# Stripe ↔ Maxpromo Money — groundwork (design, not implemented)
+# Stripe ↔ Maxpromo Money — groundwork (design record)
 
-Status: **design ready for Phase A (2026-10-24). Nothing here is live: no Stripe key, webhook,
-schema or code is in production.** Next phase recorded in the decision log (2026-10-23/24).
+Status: **superseded by the implementation, 2026-10-24 — see [ADR-0025](../adr/0025-money-domain-and-stripe-rail.md)**.
+The proposed schema below became `apps/web/db/migrations/0019-money-domain.sql` with two changes the code
+review forced: payment requests are OS-owned stable links (Checkout Sessions expire within 24 h, so a link in an
+emailed invoice cannot be a session), and refunds are reversals against the one ledger. `pay.maxpromo.digital` is not needed.
 
 Stripe is a **payment rail inside the Money domain of the Business Control Plane**. Maxpromo OS
 remains the source of truth for clients, quotes, invoices, payments and attention. Stripe is not a
@@ -76,7 +78,7 @@ event needs reconciliation. Briefing "Since yesterday" gains received payments b
 
 ## 4. Proposed schema (not applied)
 
-The draft migration is [stripe/0019-stripe-money.proposed.sql](stripe/0019-stripe-money.proposed.sql):
+The draft migration (removed; the applied schema is `apps/web/db/migrations/0019-money-domain.sql`) was:
 `stripe_payment_requests`, `stripe_events`, `stripe_charges`, `stripe_refunds`, `stripe_disputes`,
 `stripe_payouts`, all keyed to `os_invoices`/`os_clients`, additive, with the uniqueness that makes
 replays harmless. It moves to `apps/web/db/migrations/` only in Phase A, after review.

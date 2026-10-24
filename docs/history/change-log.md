@@ -1,5 +1,26 @@
 # Change Log
 
+## 2026-10-24 — Stripe ↔ Money + Email completion run (ADR-0025)
+
+- Money domain (migration 0019, schema `money`): provider + reference on `os_payments`, refunds and lost
+  disputes as reversals, `money.invoice_paid()` as the one net-received definition; payment links,
+  checkout sessions, charges (fee/net), disputes, payouts (+ Revolut confirmation), provider events.
+- Stripe rail without an SDK: gated client (no key / bad key / kill switch / live only with `STRIPE_LIVE=1`,
+  evidence refuses live keys), verified webhook `/api/channels/stripe`, public pay page
+  `/<lang>/pay/<token>` + checkout POST, refunds (AMBER), payout reconciliation, money resolve.
+- `/os/money` and the invoice money panel; Money attention (disputes, unapplied money, failed or
+  unconfirmed payouts) and owner notices.
+- Invoice status follows real events: created as draft; `sent` only by a send; `paid` only by a payment;
+  cancel only without money; paid/cancelled keep their amounts.
+- Quotes, invoices and reminders now leave through the mailbox in the outbound identity with the PDF
+  attached (`lib/documents/pdf.ts`, pdf-lib) and are recorded in the client's conversation; Resend
+  letterhead builders removed.
+- Email: outgoing attachments (migration 0020), delivery reports (bounces) on sent messages, one
+  send-bookkeeping implementation, owner-action guard shared by Inbox and Money.
+- Proofs: `prove:money` (54 + 27 PDF) in the merge gate; `prove:money-evidence` (43) and
+  `prove:email-attachments-evidence` (16) against the evidence database; `prove-money-http` (20) and the
+  commercial-agent end to end (85) against a local evidence runtime.
+
 ## 2026-10-24 — Overnight product run: Email OS, briefing, Ask Max, owner notices
 
 - Email OS workspace (ADR-0023): views, conversation timeline with Maxpromo's replies, business

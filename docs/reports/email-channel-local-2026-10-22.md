@@ -47,7 +47,7 @@ VERIFICATION: merge verification passes; production and external runtime activat
     authentication in memory and are caught; unsafe HTML-rendering mutation also caught.
 11. **Test counts.** 114 offline email assertions; 17 real isolated SQL assertions; 85 dictated
     commercial-agent regression checks; 229 WhatsApp gateway properties; 46 evidence-isolation
-    checks. npm run verify passes all 29 gates, including typecheck, lint, both builds and
+    checks. npm run verify passes every gate (29 at the time), including typecheck, lint, both builds and
     budgets. Existing warnings remain. Full certification remains blocked by the pre-existing
     undeclared Neon import in tooling; documentation findings introduced here were fixed.
 12. **UI/mobile.** Actual component rendered with synthetic mail and the application's built

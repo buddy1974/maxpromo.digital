@@ -49,7 +49,7 @@ VERIFICATION: deterministic email and database proofs pass; production activatio
    Commercial dictated workflow: 85/85. Default model-backed workflow: 20 pass, 5 fail
    because the external model account has insufficient credit; cascading draft checks
    cannot pass without that service. No real mail was sent.
-10. **Regression/UI.** Final npm run verify passes all 29 gates, including the real
+10. **Regression/UI.** Final npm run verify passes every gate (29 at the time), including the real
     evidence numbering regression for quotations and invoices. Earlier transient evidence
     WebSocket failures were retried successfully. Workspace typecheck, lint (existing warnings only) and both app
     builds pass. Commercial boundary, WhatsApp gateway, extraction integrity, SEO evidence,

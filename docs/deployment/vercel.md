@@ -182,3 +182,15 @@ root instead (`dpl_EYDDFZ4URsFToAm2U4rqubmeoDQU`, reports 19479aa).
   `OWNER_TELEGRAM_NOTICES=1` activates owner pushes (ADR-0024); `MAIL_SEND_DISABLED=1` stops every
   outbound email; `MAIL_ATTACHMENTS_DISABLED=1` turns attachment downloads off.
 - Production schema: migrations 0017 and 0018 applied 2026-10-24 before the release.
+
+## Stripe ↔ Money + Email completion run — 2026-10-24
+
+- Production schema: migrations **0019** (money domain) and **0020** (draft attachments, delivery reports)
+  must be applied **before** the release — every balance query calls `money.invoice_paid()`.
+- New owner variables (none required for the release; card payment stays off without them):
+  `STRIPE_SECRET_KEY` (test or restricted key), `STRIPE_WEBHOOK_SECRET` (endpoint signing secret(s),
+  comma-separated during rotation), `STRIPE_LIVE=1` (go-live switch for a live key),
+  `STRIPE_PAYMENTS_DISABLED=1` (kill switch).
+- Document emails no longer need `RESEND_API_KEY`; they need the mailbox send path
+  (`HOSTINGER_MAIL_API_TOKEN`, `HOSTINGER_MAILBOX_RESOURCE_ID`, not `MAIL_SEND_DISABLED`).
+- Webhook endpoint for the Stripe dashboard: `https://www.maxpromo.digital/api/channels/stripe`, API version 2024-06-20.

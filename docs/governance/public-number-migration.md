@@ -37,7 +37,7 @@ The number is now written **once** in the codebase.
 | D2 | "Chat with us on WhatsApp" on every article (2 links) | `apps/web/app/[locale]/blog/[slug]/page.tsx` | `WHATSAPP_NUMBER` |
 | D3 | Organization JSON-LD `contactPoint.telephone` | `apps/web/lib/seo/schema.ts` | `BUSINESS.phone` |
 | D4 | Document identity (OS print screens via `/api/os/document-identity`) | `apps/web/lib/documents/identity.ts` | `BUSINESS.phone` |
-| D5 | Angebot and Rechnung emails — letterhead line and footer | `apps/web/lib/documents/emailHtml.ts`, `emails.ts` | document identity |
+| D5 | Angebot and Rechnung emails — letterhead line and footer | former `emailHtml.ts` (removed 2026-10-24; documents now render through `apps/web/lib/documents/mail.ts`), `emails.ts` | document identity |
 | D5b | Payment-reminder email footer (`reminder.send`) | `apps/web/lib/commercial/capabilities/documents.ts` → `buildEmailFooterHtml` | document identity |
 | D6 | Angebot and Rechnung share-by-WhatsApp text | `apps/web/lib/documents/whatsapp.ts` | document identity |
 

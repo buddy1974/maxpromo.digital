@@ -81,3 +81,15 @@ records each message's folder and UID.
   nothing to a real recipient).
 - Cross-client rendering is proven structurally (tables, inline styles, no images, light scheme)
   and visually in Chrome; Outlook desktop and Apple Mail rendering have not been observed.
+
+## Amendment — 2026-10-24 (Stripe ↔ Money + Email completion run)
+
+- **Outgoing attachments** (migration 0020): files on a draft, accepted by their bytes (PDF, images,
+  text/CSV, Office Open XML), 4 MB per file, 10 MB and 10 files per draft; adding or removing one
+  changes the draft revision, so the confirmation always lists the exact files; bytes cleared after the
+  confirmed send. An OS quote or invoice can be attached as its PDF.
+- **Document emails** use this identity and transport (ADR-0025): quotes, invoices and reminders leave
+  through the mailbox with the PDF attached and are recorded in the client's conversation.
+- **Delivery reports**: bounces from MAILER-DAEMON/postmaster mark Maxpromo's own sent message
+  `bounced`/`delayed`; the conversation shows it and attention raises it (owner notice).
+- One send-bookkeeping implementation (`recordOutbound`) for drafts and documents.

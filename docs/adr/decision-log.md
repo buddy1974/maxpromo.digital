@@ -1361,7 +1361,7 @@ found in its own registry on its first run.
 ## 2026-09-05 - A custom property that travels is as undefined as one that does not
 
 **Decision:** No `var()` in output read outside the browser. `lib/email.ts` and
-`lib/documents/emailHtml.ts` use the token package's TypeScript mirror; the rule
+the former `emailHtml.ts` (removed 2026-10-24, ADR-0025) use the token package's TypeScript mirror; the rule
 is in `check:token-inputs`.
 **Why:** Ninety-five custom properties were written into transactional email
 markup — seventy-one spacing values in `email.ts` and twenty-four colours in
@@ -2021,3 +2021,11 @@ delivers the pending backlog to Marcel's phone, so activation (`OWNER_TELEGRAM_N
 Not claimed: Email OS product-complete (no live send observed, no outbound attachments, document
 emails not yet on the new identity), the whole product, mobile app, Stripe. Next phases unchanged:
 A Stripe ↔ Money, B phone-first PWA with Android/iOS testing, C integrated business simulation.
+
+## 2026-10-24 — Stripe ↔ Money + Email completion run
+
+Under the mega-run authority: the Money domain and Stripe rail (ADR-0025) with Maxpromo OS as the source of
+truth; document emails moved to the mailbox with the PDF attached (ADR-0023 amendment); new dependency
+`pdf-lib` (MIT, pure JS) recorded in ADR-0025. Card payment stays **off** until Marcel provides keys and the
+webhook secret, and live stays off until he sets `STRIPE_LIVE=1`. Not claimed: a live payment, a live
+document email observed in real clients, Revolut matching.

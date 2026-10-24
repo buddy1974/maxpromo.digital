@@ -93,7 +93,7 @@ well.
 after it was written and both were found by printing the set and reading it,
 not by the check going red: the import pattern forbade newlines and so could
 not see a four-line import, and walking importers alone would have silently
-dropped `lib/documents/emailHtml.ts` while appearing to widen coverage. A
+dropped the former `emailHtml.ts` letterhead module (removed 2026-10-24, ADR-0025) while appearing to widen coverage. A
 derived set needs to be inspectable for exactly this reason.
 
 **It does not cover every outbound surface in principle.** It covers what
