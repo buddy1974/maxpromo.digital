@@ -31,7 +31,7 @@ Declared GREEN 2026-10-23 for the platform release — not for the product commi
 | 8 | Ask Max | **DONE** (released, verified live with the production model) | §Command centre |
 | 9 | Agent Bureau refinement | **PARTIAL** | §Planes — mock CRM removed; example data labelled; visual check is the owner's |
 | 10 | Telegram Owner Control Plane | **PARTIAL** → **OWNER** activation | §Planes |
-| 11 | Stripe ↔ Money | **PARTIAL** (sandbox connected) | §Money — built and proven against a real Postgres with a fake rail (ADR-0025, migration 0019); 2026-10-24 Stripe API upgraded to `2026-09-30.endive` and the **sandbox** connected to production: signed events verified, ingested once, unknown money held and resolved. Not yet: a sandbox Checkout paying an OS invoice + refund; any live payment. |
+| 11 | Stripe ↔ Money | **DONE in sandbox; live OWNER** | §Money — built and proven against a real Postgres with a fake rail (ADR-0025, migration 0019); 2026-10-24 Stripe API upgraded to `2026-09-30.endive` and the **sandbox** connected to production: signed events verified, ingested once, unknown money held and resolved. Full sandbox lifecycle in production 2026-10-24 (MP-2026-044): pay page → Stripe Checkout → signed webhooks → ledger → paid, fee €0.28 → refund through the OS → invoice reopened → cancelled. Not yet: any live payment. |
 | 12 | Broader channel convergence (WhatsApp, voice, more connectors) | **DEFERRED** | WhatsApp gateway exists and is OFF (503); no voice channel |
 | 13 | Bureau database US → Frankfurt | **OWNER** | Runbook §21; Neon project creation is an owner action |
 | 14 | Delete the paused shadow Bureau | **OWNER** (authorisation) | Paused 2026-10-23, candidate for deletion |
@@ -79,7 +79,8 @@ Released 2026-10-24 (production `a36c023`+), ADR-0023, migration 0017 applied to
 | Disputes: critical attention + owner notice; lost → chargeback reversal | DONE (evidence DB) | evidence proof |
 | Invoice status follows real events (draft → sent by send → paid by payment; cancel only without money) | DONE | API guards; commercial-agent 85/85 |
 | `/os/money` screen and the invoice money panel | DONE (local browser) | evidence data |
-| Live Stripe payment, refund, dispute, payout | **OWNER** | needs keys, webhook endpoint, `STRIPE_LIVE=1` |
+| Sandbox lifecycle in production: invoice → pay page → Checkout → webhooks → ledger → paid → refund → reopened → cancelled | DONE 2026-10-24 | MP-2026-044, €1.00; card entered by Marcel; see reconciliation §25 |
+| Live Stripe payment, refund, dispute, payout | **OWNER** | live restricted key, live destination + secret, `STRIPE_LIVE=1` |
 | Revolut statement matching | DEFERRED | no Revolut API; Marcel confirms payouts |
 
 ## Deliverability

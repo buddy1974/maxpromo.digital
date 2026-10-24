@@ -758,3 +758,34 @@ Hostinger Sent unchanged (25 messages, latest 2026-10-23 07:26Z). No pay link wa
 
 **Not observed live (owner):** a Stripe test or live payment (no key), a document email in real clients,
 a real bounce.
+
+## 25. Stripe sandbox ↔ production evidence — 2026-10-24
+
+Under Marcel's browser authority for the Stripe **sandbox** (no live configuration touched, no real money).
+
+- **Contract**: Stripe API `2026-09-30.endive` (ADR-0025 amendment). Destination `we_1UU0afKQCb9O3UXuOXWareak`:
+  Your account · Snapshot · endive · 20 events · `https://www.maxpromo.digital/api/channels/stripe`.
+- **Secrets**: restricted key `maxpromo-os-money-sandbox` (Checkout Sessions write, Charges and Refunds write,
+  Balance read) and the destination signing secret, installed on Production as sensitive variables via the
+  clipboard → Vercel CLI, never displayed. Commits `1e79e44`, `09f2693`.
+- **Signed delivery, verification, idempotency**: `stripe trigger payment_intent.succeeded` (Workbench shell) →
+  three deliveries 200; `payment_intent.succeeded` and `charge.succeeded` → `reconcile` (money not started by the
+  OS held as unapplied, ledger untouched); manual resend of `charge.updated` → logged `duplicate`. The held item was
+  resolved through `money.resolve` (owner confirmation); attention clean.
+- **Lifecycle (MP-2026-044, €1.00, client "Stripe Sandbox Test" = the Maxpromo mailbox)**:
+  1. Sent through the mailbox; delivered to info@maxpromo.digital with `Rechnung_MP-2026-044.pdf` (first real
+     document email observed). In test mode the email carried no card link and created none.
+  2. Pay link created (payment.link); pay page: open €1.00, "Testmodus" notice, card button, bank details.
+  3. Checkout Session created by production with the restricted key; Stripe Sandbox Checkout (de, email prefilled);
+     Marcel entered the 4242 test card (card entry stays the owner's).
+  4. `checkout.session.completed`, `payment_intent.succeeded`, `charge.succeeded`, `charge.updated` → all applied:
+     ledger €1.00 Card (Stripe), invoice PAID, fee €0.28 from the balance transaction (Balance read works).
+  5. Briefing "Payments recorded: 1,00 €"; attention no longer lists the invoice; Ask Max: paid by Stripe, 1.00 €
+     (risk 134).
+  6. Refund through the OS (payment.refund, owner confirmation) → `refund.created`, `charge.refunded`,
+     `refund.updated` → applied once; invoice back to SENT, open €1.00, net €0.00.
+  7. Cancelled via the owner API with the reason in the notes; pay page: "Diese Rechnung wurde storniert."
+- **Found and fixed in the run**: invoice detail showed "—" for due/paid dates (ISO timestamp + "T12:00:00");
+  Money tiles counted card money and "not yet paid out" before refunds (now net; risk 132).
+- **Side effects**: invoice number MP-2026-044 consumed (cancelled, documented); test client kept; the delivered
+  copy of the self-sent email archived in the OS (risk 135). No production errors in the window.

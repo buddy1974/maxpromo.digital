@@ -187,7 +187,13 @@ try {
   const im = await invoiceMoney(sql, A)
   check('the invoice ledger shows the payment, the refund and the chargeback; the link and attempts', im.ledger.filter(e => e.kind === 'payment').length === 1 && im.ledger.some(e => e.kind === 'refund') && im.ledger.some(e => e.kind === 'chargeback') && Boolean(im.link) && im.attempts.length >= 1)
   const snap = await moneySnapshot({ sql, actor, channel: 'os', now: new Date(), today, committed: () => {} })
-  check('the Money snapshot reads card gross and fees from the rail records', (snap.card.gross.EUR ?? 0) >= 156 && (snap.card.fees.EUR ?? 0) >= 2.43)
+  check('the Money snapshot reads card fees from the rail records', (snap.card.fees.EUR ?? 0) >= 2.43)
+  const month = `${today.slice(0, 7)}-01`
+  const [cardIn] = await sql`
+    SELECT (SELECT coalesce(sum(gross), 0) FROM money.charges WHERE state = 'applied' AND currency = 'EUR' AND created_at >= ${month}::date)
+         - (SELECT coalesce(sum(r.amount), 0) FROM money.reversals r WHERE r.provider = 'stripe' AND r.currency = 'EUR' AND r.status IN ('pending', 'succeeded') AND r.effective_on >= ${month}::date
+              AND EXISTS (SELECT 1 FROM money.charges c WHERE c.payment_id = r.payment_id AND c.state = 'applied')) AS net` as { net: string }[]
+  check('"by card" is card money net of card refunds and chargebacks (the reversed invoice counts less)', Math.abs((snap.card.gross.EUR ?? 0) - Number(cardIn.net)) < 0.005 && (snap.card.gross.EUR ?? 0) < 156)
 
   /* ── revocation ── */
   await revokePaymentLink(sql, A, actor)

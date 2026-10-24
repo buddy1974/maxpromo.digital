@@ -24,6 +24,8 @@ const statusTone = toneMap<string>({ draft: 'neutral', sent: 'info', paid: 'posi
 
 export default function InvoiceDetailPage() {
   const { t, fmtEur, fmtDate } = useOsLocale()
+  // DATE columns arrive as full ISO timestamps; take the calendar day and read it at noon so no zone shifts it.
+  const calendarDay = (v: string | null) => (v ? `${String(v).slice(0, 10)}T12:00:00` : null)
   const identity = useDocumentIdentity()
   const { id }   = useParams<{ id: string }>()
   const router   = useRouter()
@@ -170,8 +172,8 @@ export default function InvoiceDetailPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-4)', marginBottom: '28px' }}>
         {[
           { label: t.invoiceDetail.metaDate,    value: fmtDate(invoice.created_at) },
-          { label: t.invoiceDetail.metaDueDate, value: fmtDate(invoice.due_date ? invoice.due_date + 'T12:00:00' : null) },
-          { label: t.invoiceDetail.metaPaidOn,  value: fmtDate(invoice.paid_date ? invoice.paid_date + 'T12:00:00' : null) },
+          { label: t.invoiceDetail.metaDueDate, value: fmtDate(calendarDay(invoice.due_date)) },
+          { label: t.invoiceDetail.metaPaidOn,  value: fmtDate(calendarDay(invoice.paid_date)) },
         ].map(m => (
           <div key={m.label} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-sm)', padding: '16px 20px' }}>
             <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 var(--space-2)' }}>{m.label}</p>

@@ -48,12 +48,20 @@ async function ledger(sql: Sql, invoiceId: string | null, limit: number): Promis
 export async function moneySnapshot(ctx: CapabilityContext): Promise<MoneySnapshot> {
   const rec = receivables(await loadInvoicesForMoney(ctx), ctx.today)
   const month = `${ctx.today.slice(0, 7)}-01`
-  const [received, charges, payouts, issues, entries] = await Promise.all([
+  const [received, charges, cardRefunds, payouts, issues, entries] = await Promise.all([
     optional<{ amount: string; currency: string }[]>(ctx.sql`
       SELECT amount, currency FROM os_payments WHERE received_on >= ${month}::date
       UNION ALL SELECT -amount, currency FROM money.reversals WHERE status = 'succeeded' AND effective_on >= ${month}::date`, []),
     optional<{ gross: string; fee: string | null; net: string | null; currency: string; payout_id: string | null; created_at: Date }[]>(ctx.sql`
       SELECT gross, fee, net, currency, payout_id, created_at FROM money.charges WHERE state = 'applied'`, []),
+    /* Card refunds and chargebacks draw on the Stripe balance, and Stripe keeps its fee: a fully refunded
+       charge leaves the balance at minus the fee. Only reversals of charges not yet paid out count against
+       "not yet paid out" (risk 132). */
+    optional<{ amount: string; currency: string; effective_on: string | null; paid_out: boolean }[]>(ctx.sql`
+      SELECT r.amount, r.currency, r.effective_on::text AS effective_on, bool_or(c.payout_id IS NOT NULL) AS paid_out
+      FROM money.reversals r JOIN money.charges c ON c.payment_id = r.payment_id AND c.state = 'applied'
+      WHERE r.provider = 'stripe' AND r.status IN ('pending', 'succeeded')
+      GROUP BY r.id, r.amount, r.currency, r.effective_on`, []),
     optional<{ provider_payout: string; amount: string; currency: string; status: string; arrival_date: string | null; reconciled_at: Date | null; bank_reference: string | null }[]>(ctx.sql`
       SELECT provider_payout, amount, currency, status, arrival_date::text AS arrival_date, reconciled_at, bank_reference FROM money.payouts ORDER BY created_at DESC LIMIT 12`, []),
     railIssues(ctx.sql),
@@ -66,6 +74,10 @@ export async function moneySnapshot(ctx: CapabilityContext): Promise<MoneySnapsh
     const thisMonth = new Date(c.created_at).toISOString().slice(0, 10) >= month
     if (thisMonth) { addTo(gross, c.currency, Number(c.gross)); if (c.fee !== null) addTo(fees, c.currency, Number(c.fee)); if (c.net !== null) addTo(net, c.currency, Number(c.net)) }
     if (!c.payout_id) addTo(pendingPayout, c.currency, Number(c.net ?? c.gross))
+  }
+  for (const r of cardRefunds) {
+    if (r.effective_on && r.effective_on >= month) addTo(gross, r.currency, -Number(r.amount))
+    if (!r.paid_out) addTo(pendingPayout, r.currency, -Number(r.amount))
   }
   return {
     rail: railStatus(), outstanding: rec.outstanding, overdue: rec.overdue, receivedThisMonth,

@@ -5,6 +5,8 @@
 - Pinned Stripe API upgraded 2024-06-20 → `2026-09-30.endive` (ADR-0025 amendment); events in another version refused.
 - Test rail never reaches a customer: invoice emails carry the card link only on the live rail; pay page shows test mode.
 - Stripe sandbox connected to production: restricted key (three permissions) and Snapshot event destination; signed events verified, recorded once, unknown money held and resolved.
+- Full sandbox card lifecycle in production (MP-2026-044): paid, fee recorded, refunded, reopened, cancelled.
+- Fixes: invoice detail due/paid dates; Money "by card" and "not yet paid out" net of card refunds.
 
 ## 2026-10-24 — Stripe ↔ Money + Email completion run (ADR-0025)
 
