@@ -4,6 +4,7 @@ import { OWNER_ACTOR } from '@/lib/commercial/engine'
 import { DIRECT_CHANNEL } from '@/lib/commercial/direct'
 import { berlinDate } from '@/lib/commercial/money'
 import { markPaidDirect } from '@/lib/commercial/capabilities/documents'
+import { cancelInvoice } from '@/lib/commercial/capabilities/money'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 import { getDb } from '@/lib/db'
@@ -179,7 +180,7 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json() as {
       id: string; status?: string; paid_date?: string; sent_at?: string
       due_date?: string; notes?: string; line_items?: unknown[]; subtotal?: number; total?: number
-      payment_method?: string; currency?: string; language?: string
+      payment_method?: string; currency?: string; language?: string; reason?: string
     }
 
     if (!body.id || !UUID.test(body.id)) return NextResponse.json({ error: 'ID required' }, { status: 400 })
@@ -204,6 +205,14 @@ export async function PATCH(request: NextRequest) {
       if (body.status !== 'cancelled') return NextResponse.json({ error: `Status ${String(body.status)} is set by its own action (send or record payment), not by editing.`, code: 'transition' }, { status: 409 })
       if (Number(before.paid) > 0.009) return NextResponse.json({ error: 'Money is recorded against this invoice. Refund it before cancelling.', code: 'has_payments' }, { status: 409 })
       if (before.status === 'paid') return NextResponse.json({ error: 'A paid invoice is not cancelled.', code: 'transition' }, { status: 409 })
+      /* Cancelling has one implementation (invoice.cancel): a reason, the money guard, pay link off,
+         open checkouts closed, audit. The screens use the governed capability; this keeps the API equal. */
+      const reason = typeof body.reason === 'string' ? body.reason.trim() : ''
+      if (reason.length < 3) return NextResponse.json({ error: 'A reason is required to cancel an invoice.', code: 'reason_required' }, { status: 400 })
+      const done = await cancelInvoice(sql, { invoiceId: body.id, expectStatus: before.status, reason: reason.slice(0, 300), actor: OWNER_ACTOR, channel: DIRECT_CHANNEL, today: berlinDate() })
+      if (!done.ok) return NextResponse.json({ error: done.reason === 'has_money' ? 'Money is recorded against this invoice. Refund it before cancelling.' : 'The invoice changed; reload it.', code: done.reason }, { status: 409 })
+      const rows = await sql`SELECT * FROM os_invoices WHERE id = ${body.id}`
+      return NextResponse.json(rows[0])
     }
     if (['paid', 'cancelled'].includes(before.status) && Object.keys(body).some(k => !['id', 'notes', 'language', 'status'].includes(k))) {
       return NextResponse.json({ error: `A ${before.status} invoice keeps its amounts.`, code: 'locked' }, { status: 409 })

@@ -350,9 +350,14 @@ async function payoutEvent(sql: Sql, event: StripeEvent, o: Record<string, unkno
     ON CONFLICT (provider_payout) DO UPDATE SET status = EXCLUDED.status, arrival_date = coalesce(EXCLUDED.arrival_date, money.payouts.arrival_date),
       failure_code = EXCLUDED.failure_code, updated_at = now()`
   if (status === 'paid' && deps.rail) {
-    // Which charges this payout carried: the bridge from a card payment to the Revolut statement.
+    // Which charges — and which refunds and lost disputes — this payout carried: the bridge from a
+    // card payment to the Revolut statement, and what makes "not yet paid out" exact (0022).
     try {
       for (const t of await deps.rail.listPayoutTransactions(id)) {
+        if (t.source && /^(re|pyr|dp|du)_/.test(t.source)) {
+          await sql`UPDATE money.reversals SET payout_id = ${id}, updated_at = now() WHERE provider = 'stripe' AND provider_ref = ${t.source} AND payout_id IS NULL`
+          continue
+        }
         if (t.source) await sql`UPDATE money.charges SET payout_id = ${id}, fee = coalesce(fee, ${fromMinor(t.fee)}),
                                 net = coalesce(net, ${fromMinor(t.amount - t.fee)}), balance_txn = coalesce(balance_txn, ${t.id}), updated_at = now()
                                 WHERE provider_charge = ${t.source} AND (fee IS NOT NULL OR gross = ${fromMinor(t.amount)})`

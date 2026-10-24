@@ -4,7 +4,7 @@ import { ownerCapabilityAction } from '@/lib/commercial/ownerActions'
 export const dynamic = 'force-dynamic'
 /** What the Money screen may drive (ADR-0025). Refunds, payout confirmations and resolutions
  * prepare an approval Marcel confirms on screen; recording a received payment stays payment.record. */
-const MONEY = new Set(['payment.link', 'payment.refund', 'payment.record', 'money.overview', 'payout.reconcile', 'money.resolve', 'reminder.send'])
+const MONEY = new Set(['payment.link', 'payment.refund', 'payment.record', 'money.overview', 'payout.reconcile', 'money.resolve', 'reminder.send', 'invoice.cancel'])
 
 export const POST = withAuth(async (request, { session }) => ownerCapabilityAction(request, session, {
   capabilities: MONEY,

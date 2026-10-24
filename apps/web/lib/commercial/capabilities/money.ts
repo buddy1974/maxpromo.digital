@@ -10,13 +10,14 @@
  *   money.overview     GREEN   rail status, card money, fees, payouts, disputes, open issues
  *   payout.reconcile   AMBER   Marcel confirms a payout arrived on the Revolut statement
  *   money.resolve      AMBER   Marcel marks an unapplied payment / reconcile item as handled
+ *   invoice.cancel     AMBER   Storno with a reason; refused while money is recorded; pay link off
  *
  * Nothing here records a received payment: that happens only from a verified provider event or
  * from payment.record (one path, recordPaymentLocked).
  */
 import { writeAudit } from '../audit'
 import { formatPerCurrency, addTo, invoiceBalance, type PerCurrency } from '../money'
-import { eur, focus, q } from '../records'
+import { eur, focus, logActivity, q } from '../records'
 import { payloadHash } from '../signing'
 import { CapabilityRefusal, UncertainOutcome, type AnyCapability, type CapabilityContext, type CapabilityDefinition } from '../types'
 import { v } from '../validate'
@@ -275,4 +276,77 @@ export const moneyResolve: CapabilityDefinition<ReturnType<typeof resolveInput.p
   },
 }
 
-export const MONEY_CAPABILITIES: AnyCapability[] = [paymentLink, paymentRefund, moneyOverview, payoutReconcile, moneyResolve]
+/* ── invoice.cancel ─────────────────────────────────────────────────────── */
+
+/**
+ * Cancelling (Storno) keeps the invoice and its number on record. Allowed only while no net money is
+ * recorded against it — a paid or part-paid invoice is refunded first, so the ledger stays true.
+ * The pay link stops working and open card checkouts are closed. One implementation, used by the
+ * governed capability and by the owner API.
+ */
+export async function cancelInvoice(sql: CapabilityContext['sql'], p: { invoiceId: string; expectStatus: string; reason: string; actor: string; channel: string; approvalId?: string | null; today: string }):
+  Promise<{ ok: true; number: string; linkRevoked: boolean; sessionsClosed: number } | { ok: false; reason: 'changed' | 'has_money' }> {
+  const note = `Storniert ${p.today}: ${p.reason}`
+  const rows = await sql`
+    UPDATE os_invoices SET status = 'cancelled', notes = concat_ws(E'\n', nullif(notes, ''), ${note}::text)
+    WHERE id = ${p.invoiceId}::uuid AND status = ${p.expectStatus} AND status NOT IN ('paid', 'cancelled')
+      AND money.invoice_paid(id) <= 0.009
+    RETURNING invoice_number, client_id` as { invoice_number: string; client_id: string | null }[]
+  if (!rows.length) {
+    const now = await sql`SELECT status, money.invoice_paid(id)::numeric AS paid FROM os_invoices WHERE id = ${p.invoiceId}::uuid` as { status: string; paid: string }[]
+    return { ok: false, reason: now[0] && Number(now[0].paid) > 0.009 ? 'has_money' : 'changed' }
+  }
+  const linkRevoked = await revokePaymentLink(sql, p.invoiceId, p.actor)
+  const open = await sql`SELECT id, provider_session FROM money.checkout_sessions WHERE invoice_id = ${p.invoiceId}::uuid AND status IN ('open', 'creating', 'uncertain')` as { id: string; provider_session: string | null }[]
+  const rail = stripeRail()
+  for (const s of open) {
+    if (s.provider_session && rail) await rail.expireCheckoutSession(s.provider_session).catch(() => undefined)
+    await sql`UPDATE money.checkout_sessions SET status = 'expired', failure_code = coalesce(failure_code, 'invoice_cancelled'), updated_at = now() WHERE id = ${s.id}::uuid AND status IN ('open', 'creating', 'uncertain')`
+  }
+  await writeAudit(sql, { actor: p.actor, channel: p.channel, operation: 'invoice.cancel', entityType: 'invoice', entityId: p.invoiceId,
+    before: { status: p.expectStatus }, after: { status: 'cancelled', reason: p.reason, pay_link_revoked: linkRevoked, checkouts_closed: open.length }, approvalId: p.approvalId ?? undefined, outcome: 'succeeded' })
+  await logActivity(sql, { client_id: rows[0].client_id, invoice_id: p.invoiceId, kind: 'invoice_cancelled', channel: p.channel, actor: p.actor,
+    summary: `${rows[0].invoice_number} cancelled: ${p.reason}` }).catch(() => undefined)
+  return { ok: true, number: rows[0].invoice_number, linkRevoked, sessionsClosed: open.length }
+}
+
+const cancelInput = v.object({ ...invoiceRef, reason: v.string({ min: 3, max: 300 }) })
+
+export const invoiceCancelCap: CapabilityDefinition<ReturnType<typeof cancelInput.parse>> = {
+  id: 'invoice.cancel',
+  family: 'INVOICE',
+  title: 'Cancel an invoice',
+  description: 'Cancels (Storno) an issued or draft invoice with a reason. It stays on record with its number; the pay link stops working. Refused while money is recorded against it — refund first.',
+  risk: 'AMBER',
+  input: cancelInput,
+  async prepare(ctx, input) {
+    const inv = await findInvoice(ctx, input)
+    if (inv.status === 'cancelled') throw new CapabilityRefusal(`${inv.invoice_number} is already cancelled.`)
+    if (inv.status === 'paid' || Number(inv.paid_amount) > 0.009) {
+      throw new CapabilityRefusal(`${eur(inv.paid_amount, inv.currency)} is recorded against ${inv.invoice_number}. Refund it first; then it can be cancelled.`, 'precondition')
+    }
+    const link = await q<{ n: number }>(ctx.sql`SELECT count(*)::int AS n FROM money.payment_links WHERE invoice_id = ${inv.id}::uuid AND status = 'active'`)
+    return {
+      summary: `Cancel ${inv.invoice_number}`,
+      preview: {
+        ACTION: 'Cancel the invoice (Storno). It stays on record with its number.',
+        RECHNUNG: `${inv.invoice_number} · ${inv.client_name} · ${eur(inv.total, inv.currency)}`,
+        STATUS: `${inv.status} → cancelled`,
+        REASON: input.reason,
+        ...(link[0]?.n ? { 'PAY LINK': 'stops working' } : {}),
+      },
+      payload: { invoice_id: inv.id, status: inv.status, reason: input.reason },
+      dedupeKey: `cancel:${inv.id}`,
+      expiresInMinutes: 30,
+    }
+  },
+  async execute(ctx, payload, approvalId) {
+    const p = payload as { invoice_id: string; status: string; reason: string }
+    const done = await cancelInvoice(ctx.sql, { invoiceId: p.invoice_id, expectStatus: p.status, reason: p.reason, actor: ctx.actor, channel: ctx.channel, approvalId, today: ctx.today })
+    if (!done.ok) throw new CapabilityRefusal(done.reason === 'has_money' ? 'Money was recorded against the invoice in the meantime. Refund it first.' : 'The invoice changed in the meantime. Look at it again.', done.reason === 'has_money' ? 'precondition' : 'conflict')
+    ctx.committed('Invoice cancelled')
+    return { summary: `${done.number} is cancelled.${done.linkRevoked ? ' Its pay link no longer works.' : ''}`, focus: [focus('invoice', p.invoice_id, done.number)] }
+  },
+}
+
+export const MONEY_CAPABILITIES: AnyCapability[] = [paymentLink, paymentRefund, moneyOverview, payoutReconcile, moneyResolve, invoiceCancelCap]

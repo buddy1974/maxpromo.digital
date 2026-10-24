@@ -230,7 +230,10 @@ async function recordSentMessageId(sql: Sql, transport: OutboundTransport, messa
   if (!sent) return
   const page = await transport.search(sent, { to, subject: subject.slice(0, 200), since: today }, { perPage: 5, sort: '-date' })
   const hit = page.data.find(m => m.messageId && (m.subject ?? '') === subject)
-  if (hit?.messageId) await sql`UPDATE mail.messages SET rfc_message_id=${hit.messageId},provider_uid=${hit.uid},provider_folder=${hit.path} WHERE id=${messageId}::uuid`
+  if (!hit?.messageId) return
+  await sql`UPDATE mail.messages SET rfc_message_id=${hit.messageId},provider_uid=${hit.uid},provider_folder=${hit.path} WHERE id=${messageId}::uuid`
+  // A copy delivered to the mailbox itself before this readback is the same message (0021).
+  await sql`SELECT mail.merge_self_copy(account_id, id) FROM mail.messages WHERE id=${messageId}::uuid`.catch(() => undefined)
 }
 
 export { HOSTINGER_ACCOUNT }

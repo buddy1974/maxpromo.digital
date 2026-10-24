@@ -7,6 +7,7 @@ import { useOsLocale } from '@/lib/os-i18n/context'
 import { useDocumentIdentity, withTaxIdentity } from '@/components/documents/useDocumentIdentity'
 import { TONE_VARS, toneMap } from '@maxpromo/ui'
 import { InvoiceMoneyPanel } from '@/components/os/money/InvoiceMoneyPanel'
+import { InvoiceActions } from '@/components/os/money/InvoiceActions'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
@@ -18,9 +19,10 @@ interface Invoice {
   status: string; created_at: string; due_date: string; paid_date: string; notes: string
   anzahlung?: number; anzahlung_date?: string; anzahlung_method?: string; restbetrag?: number
   language?: DocumentLanguage | null
+  currency?: string | null
 }
 
-const statusTone = toneMap<string>({ draft: 'neutral', sent: 'info', paid: 'positive', overdue: 'critical' })
+const statusTone = toneMap<string>({ draft: 'neutral', sent: 'info', paid: 'positive', overdue: 'critical', cancelled: 'neutral' })
 
 export default function InvoiceDetailPage() {
   const { t, fmtEur, fmtDate } = useOsLocale()
@@ -32,8 +34,7 @@ export default function InvoiceDetailPage() {
   const [invoice, setInvoice] = useState<Invoice | null>(null)
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState('')
-  const [marking, setMarking] = useState(false)
-  const [deleting, setDeleting] = useState(false)
+  const [balance, setBalance] = useState<{ open: number; received: number } | null>(null)
   const [changingLanguage, setChangingLanguage] = useState(false)
 
   useEffect(() => {
@@ -42,17 +43,20 @@ export default function InvoiceDetailPage() {
       .then(r => { if (!r.ok) throw new Error('Not found'); return r.json() })
       .then(d => { setInvoice(d as Invoice); setLoading(false) })
       .catch(() => { setError('not-found'); setLoading(false) })
+    loadBalance(id)
   }, [id])
 
-  async function markPaid() {
+  function loadBalance(invoiceId: string) {
+    fetch(`/api/os/money?invoice=${invoiceId}`, { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : null))
+      .then((m: { open: number; received: number } | null) => setBalance(m ? { open: m.open, received: m.received } : null))
+      .catch(() => setBalance(null))
+  }
+
+  function reload() {
     if (!invoice) return
-    setMarking(true)
-    const res = await fetch('/api/os/invoices', {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: invoice.id, status: 'paid', paid_date: new Date().toISOString().split('T')[0] }),
-    })
-    if (res.ok) setInvoice(prev => prev ? { ...prev, status: 'paid', paid_date: new Date().toISOString().split('T')[0] } : prev)
-    setMarking(false)
+    fetch(`/api/os/invoices?id=${invoice.id}`).then(r => (r.ok ? r.json() : null)).then(d => { if (d) setInvoice(d as Invoice) }).catch(() => undefined)
+    loadBalance(invoice.id)
   }
 
   /**
@@ -69,17 +73,6 @@ export default function InvoiceDetailPage() {
     })
     if (res.ok) setInvoice(prev => prev ? { ...prev, language: lang } : prev)
     setChangingLanguage(false)
-  }
-
-  async function deleteInvoice() {
-    if (!invoice || !confirm(t.invoiceDetail.deleteConfirm(invoice.invoice_number))) return
-    setDeleting(true)
-    const res = await fetch(`/api/os/invoices?id=${invoice.id}`, { method: 'DELETE' })
-    if (res.ok) router.push('/os/invoices')
-    else {
-      setDeleting(false)
-      alert(((await res.json().catch(() => ({}))) as { error?: string }).error ?? t.common.actionFailed)
-    }
   }
 
   if (loading) return (
@@ -106,7 +99,7 @@ export default function InvoiceDetailPage() {
   ]
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: '860px' }}>
+    <div className="os-page invoice-detail">
 
       {/* Breadcrumb */}
       <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', marginBottom: 'var(--space-5)', letterSpacing: '0.1em' }}>
@@ -149,27 +142,13 @@ export default function InvoiceDetailPage() {
           >
             {t.invoiceDetail.pdf}
           </a>
-          {invoice.status !== 'paid' && (
-            <button
-              onClick={markPaid}
-              disabled={marking}
-              style={{ fontFamily: mono, fontSize: 'var(--text-label)', letterSpacing: '0.08em', color: 'var(--semantic-success)', background: 'color-mix(in srgb, var(--semantic-success) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-success) 30%, transparent)', borderRadius: 'var(--radius-sm)', padding: '9px 16px', cursor: marking ? 'wait' : 'pointer', opacity: marking ? 0.6 : 1 }}
-            >
-              {t.invoiceDetail.markPaid}
-            </button>
-          )}
-          <button
-            onClick={deleteInvoice}
-            disabled={deleting}
-            style={{ fontFamily: mono, fontSize: 'var(--text-label)', letterSpacing: '0.08em', color: 'var(--semantic-danger)', background: 'color-mix(in srgb, var(--semantic-danger) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 20%, transparent)', borderRadius: 'var(--radius-sm)', padding: '9px 16px', cursor: deleting ? 'wait' : 'pointer', opacity: deleting ? 0.5 : 1 }}
-          >
-            {t.invoiceDetail.delete}
-          </button>
         </div>
       </div>
 
+      {balance && <InvoiceActions invoice={{ id: invoice.id, status: invoice.status, currency: invoice.currency, open: balance.open, received: balance.received }} onChanged={reload} onDeleted={() => router.push('/os/invoices')} />}
+
       {/* Meta grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-4)', marginBottom: '28px' }}>
+      <div className="invoice-meta-grid" style={{ marginBottom: '28px' }}>
         {[
           { label: t.invoiceDetail.metaDate,    value: fmtDate(invoice.created_at) },
           { label: t.invoiceDetail.metaDueDate, value: fmtDate(calendarDay(invoice.due_date)) },
@@ -265,7 +244,7 @@ export default function InvoiceDetailPage() {
 
       {/* Money: pay link, payments and refunds, card attempts (ADR-0025). */}
       <InvoiceMoneyPanel invoiceId={invoice.id} invoiceNumber={invoice.invoice_number} status={invoice.status}
-        onChanged={() => { fetch(`/api/os/invoices?id=${invoice.id}`).then(r => (r.ok ? r.json() : null)).then(d => { if (d) setInvoice(d as Invoice) }).catch(() => undefined) }} />
+        onChanged={reload} />
 
       {/* §19 UStG — Kleinunternehmer status. Never charge VAT. */}
       <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', marginTop: 'var(--space-4)' }}>

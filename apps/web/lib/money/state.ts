@@ -55,13 +55,13 @@ export async function moneySnapshot(ctx: CapabilityContext): Promise<MoneySnapsh
     optional<{ gross: string; fee: string | null; net: string | null; currency: string; payout_id: string | null; created_at: Date }[]>(ctx.sql`
       SELECT gross, fee, net, currency, payout_id, created_at FROM money.charges WHERE state = 'applied'`, []),
     /* Card refunds and chargebacks draw on the Stripe balance, and Stripe keeps its fee: a fully refunded
-       charge leaves the balance at minus the fee. Only reversals of charges not yet paid out count against
-       "not yet paid out" (risk 132). */
+       charge leaves the balance at minus the fee. A reversal counts against "not yet paid out" until a
+       payout's balance transactions name it (money.reversals.payout_id, 0022) — exact, not estimated. */
     optional<{ amount: string; currency: string; effective_on: string | null; paid_out: boolean }[]>(ctx.sql`
-      SELECT r.amount, r.currency, r.effective_on::text AS effective_on, bool_or(c.payout_id IS NOT NULL) AS paid_out
-      FROM money.reversals r JOIN money.charges c ON c.payment_id = r.payment_id AND c.state = 'applied'
+      SELECT r.amount, r.currency, r.effective_on::text AS effective_on, (r.payout_id IS NOT NULL) AS paid_out
+      FROM money.reversals r
       WHERE r.provider = 'stripe' AND r.status IN ('pending', 'succeeded')
-      GROUP BY r.id, r.amount, r.currency, r.effective_on`, []),
+        AND EXISTS (SELECT 1 FROM money.charges c WHERE c.payment_id = r.payment_id AND c.state = 'applied')`, []),
     optional<{ provider_payout: string; amount: string; currency: string; status: string; arrival_date: string | null; reconciled_at: Date | null; bank_reference: string | null }[]>(ctx.sql`
       SELECT provider_payout, amount, currency, status, arrival_date::text AS arrival_date, reconciled_at, bank_reference FROM money.payouts ORDER BY created_at DESC LIMIT 12`, []),
     railIssues(ctx.sql),

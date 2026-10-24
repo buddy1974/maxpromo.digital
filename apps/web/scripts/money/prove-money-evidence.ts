@@ -17,6 +17,7 @@ import { invoiceMoney, moneySnapshot } from '../../lib/money/state.ts'
 import { StripeRailError, type StripeRail, type CheckoutSessionInput } from '../../lib/money/stripe/client.ts'
 import { runCapability, executeApproval } from '../../lib/commercial/engine.ts'
 import { invoiceBalance } from '../../lib/commercial/money.ts'
+import { paymentFacts } from '../../lib/commercial/ask.ts'
 
 const problem = evidenceDbProblem(process.env)
 if (problem || process.env.MAXPROMO_EVIDENCE_MODE !== '1') { console.error('prove-money-evidence: refusing to run —', problem ?? 'evidence mode off'); process.exit(1) }
@@ -44,7 +45,10 @@ const rail: StripeRail = {
   async retrieveBalanceTransaction(id) { railCalls.push({ op: `txn:${id}` }); return { id, amount: 15600, fee: 243, net: 15357, currency: 'EUR', available_on: 1_800_000_000, type: 'charge', source: null } },
   async createRefund(r, key) { railCalls.push({ op: 'refund', key }); return { id: `re_test${++seq}abcdef`, status: 'succeeded', amount: r.amountMinor, currency: 'EUR', charge: null, payment_intent: r.paymentIntent } },
   async listRefunds() { return [] },
-  async listPayoutTransactions(payoutId) { railCalls.push({ op: `payout:${payoutId}` }); return [{ id: 'txn_pay1abcdef', amount: 15600, fee: 243, net: 15357, currency: 'EUR', available_on: 0, type: 'charge', source: chargeId }] },
+  async listPayoutTransactions(payoutId) { railCalls.push({ op: `payout:${payoutId}` }); return [
+    { id: 'txn_pay1abcdef', amount: 15600, fee: 243, net: 15357, currency: 'EUR', available_on: 0, type: 'charge', source: chargeId },
+    { id: 'txn_ref1abcdef', amount: -5600, fee: 0, net: -5600, currency: 'EUR', available_on: 0, type: 'refund', source: `re_proof${tag}a` },
+  ] },
 }
 
 const created: string[] = []
@@ -159,6 +163,9 @@ try {
   /* ── payouts → Revolut ── */
   await receiveStripeEvent(sql, event('payout.paid', { id: `po_proof${tag}a`, amount: 15357, currency: 'eur', status: 'paid', arrival_date: Math.floor(Date.now() / 1000) - 86400 * 5 }), deps)
   check('a paid payout links the charges it carried', (await sql`SELECT payout_id FROM money.charges WHERE provider_charge = ${chargeId}` as { payout_id: string }[])[0].payout_id === `po_proof${tag}a`)
+  const rv = await sql`SELECT provider_ref, payout_id FROM money.reversals WHERE provider_ref IN (${`re_proof${tag}a`}, ${`dp_proof${tag}a`})` as { provider_ref: string; payout_id: string | null }[]
+  check('…and the refund it settled; the chargeback it did not carry stays unpaid-out (exact "not yet paid out")',
+    rv.find(r => r.provider_ref === `re_proof${tag}a`)?.payout_id === `po_proof${tag}a` && rv.find(r => r.provider_ref === `dp_proof${tag}a`)?.payout_id === null)
   check('a payout paid 3+ days ago and not confirmed asks Marcel to confirm it on Revolut', (await railIssues(sql)).some(i => i.kind === 'unreconciled' && i.id === `po_proof${tag}a`))
   await receiveStripeEvent(sql, event('payout.failed', { id: `po_proof${tag}b`, amount: 900, currency: 'eur', status: 'failed', failure_code: 'account_closed' }), deps)
   check('a failed payout is a critical issue', (await railIssues(sql)).some(i => i.kind === 'payoutFailed' && i.id === `po_proof${tag}b`))
@@ -183,6 +190,22 @@ try {
   if (rf.status === 'approval_required') await executeApproval(sql, { actor, channel: 'os', approvalId: rf.approval.id, payloadHash: rf.approval.payloadHash })
   check('the confirmed manual refund reopens the invoice for exactly that amount', (await balance(E)).open === 40 && (await balance(E)).status === 'sent')
 
+  /* ── invoice.cancel: governed, guarded, pay link off (risk 133) ── */
+  const cx1 = await runCapability(sql, { requestId: `proof-money-${tag}-c1`, actor, channel: 'os', capability: 'invoice.cancel', input: { invoice_id: E, reason: 'test cancel' } })
+  check('cancelling is refused while money is recorded (60 net on E) — refund first', cx1.status !== 'approval_required' && cx1.status !== 'done' && (await balance(E)).status === 'sent')
+  const F = await invoice('F', 80)
+  await ensurePaymentLink(sql, F, actor)
+  const cx2 = await runCapability(sql, { requestId: `proof-money-${tag}-c2`, actor, channel: 'os', capability: 'invoice.cancel', input: { invoice_id: F, reason: 'Auftrag storniert' } })
+  check('cancelling prepares an approval whose preview names the reason and the pay link; nothing changes yet',
+    cx2.status === 'approval_required' && cx2.approval.preview.REASON === 'Auftrag storniert' && cx2.approval.preview['PAY LINK'] === 'stops working' && (await balance(F)).status === 'sent')
+  if (cx2.status === 'approval_required') await executeApproval(sql, { actor, channel: 'os', approvalId: cx2.approval.id, payloadHash: cx2.approval.payloadHash })
+  const fRow = (await sql`SELECT status, notes FROM os_invoices WHERE id = ${F}::uuid` as { status: string; notes: string | null }[])[0]
+  const fLinks = await sql`SELECT count(*)::int AS n FROM money.payment_links WHERE invoice_id = ${F}::uuid AND status = 'active'` as { n: number }[]
+  const fAudit = await sql`SELECT count(*)::int AS n FROM os_audit WHERE operation = 'invoice.cancel' AND entity_id = ${F} AND outcome = 'succeeded'` as { n: number }[]
+  check('…confirmed: cancelled, the reason kept in the notes, the pay link off, audited', fRow.status === 'cancelled' && /Storniert .*: Auftrag storniert/.test(fRow.notes ?? '') && fLinks[0].n === 0 && fAudit[0].n === 1)
+  const cx3 = await runCapability(sql, { requestId: `proof-money-${tag}-c3`, actor, channel: 'os', capability: 'invoice.cancel', input: { invoice_id: F, reason: 'again' } })
+  check('a cancelled invoice is not cancelled twice', cx3.status !== 'approval_required' && cx3.status !== 'done')
+
   /* ── invoice ledger and Money snapshot ── */
   const im = await invoiceMoney(sql, A)
   check('the invoice ledger shows the payment, the refund and the chargeback; the link and attempts', im.ledger.filter(e => e.kind === 'payment').length === 1 && im.ledger.some(e => e.kind === 'refund') && im.ledger.some(e => e.kind === 'chargeback') && Boolean(im.link) && im.attempts.length >= 1)
@@ -194,6 +217,16 @@ try {
          - (SELECT coalesce(sum(r.amount), 0) FROM money.reversals r WHERE r.provider = 'stripe' AND r.currency = 'EUR' AND r.status IN ('pending', 'succeeded') AND r.effective_on >= ${month}::date
               AND EXISTS (SELECT 1 FROM money.charges c WHERE c.payment_id = r.payment_id AND c.state = 'applied')) AS net` as { net: string }[]
   check('"by card" is card money net of card refunds and chargebacks (the reversed invoice counts less)', Math.abs((snap.card.gross.EUR ?? 0) - Number(cardIn.net)) < 0.005 && (snap.card.gross.EUR ?? 0) < 156)
+
+  /* ── Ask Max reads the same money (risk 134) ── */
+  const num = (await sql`SELECT invoice_number FROM os_invoices WHERE id = ${A}::uuid` as { invoice_number: string }[])[0].invoice_number
+  const askCtx = { sql, actor, channel: 'os-ask', now: new Date(), today, committed: () => {} }
+  const de = await paymentFacts(askCtx, num, null, 'de'), en = await paymentFacts(askCtx, num, null, 'en')
+  check('Ask Max payment facts name the card payment and the Stripe fee the rail reported, in the asked language',
+    de.facts.some(f => /per Karte über Stripe/.test(f)) && de.facts.some(f => /Stripe-Gebühr dafür: 2,43/.test(f)) && en.facts.some(f => /Stripe fee on it: €2.43|Stripe fee on it: 2[.,]43/.test(f)))
+  check('…and the refund and chargeback against it, with a link to the invoice', de.facts.some(f => /^Erstattung /.test(f)) && de.facts.some(f => /^Rückbuchung /.test(f)) && de.links.some(l => l.href === `/os/invoices/${A}`))
+  const missing = await paymentFacts(askCtx, 'MP-1999-999', null, 'de')
+  check('an unknown invoice is said to be unknown; nothing is invented', missing.facts.length === 1 && /Keine Rechnung MP-1999-999/.test(missing.facts[0]))
 
   /* ── revocation ── */
   await revokePaymentLink(sql, A, actor)
