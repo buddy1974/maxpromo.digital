@@ -36,7 +36,13 @@ let refused = false
 try { renderEmail({ family: 'invoice', language: 'de', body: 'x', action: { label: 'x', url: 'https://evil.example' } }) } catch { refused = true }
 check('an unsafe action URL refuses to render', refused)
 check('light colour scheme declared so clients do not invert brand colours unpredictably', rel.html.includes('name="color-scheme" content="light"'))
-check('600px table layout with inline styles only', rel.html.includes('max-width:600px') && !rel.html.includes('<style'))
+const outsideMso = rel.html.replace(/<!--\[if mso\]>[\s\S]*?<!\[endif\]-->/g, '')
+check('600px table layout with inline styles only (a style block exists only inside the Outlook conditional)', rel.html.includes('max-width:600px') && !outsideMso.includes('<style'))
+check('Outlook desktop gets a real font instead of falling back to Times', /<!--\[if mso\]><style>[^<]*font-family:Arial/.test(rel.html))
+{
+  const tx = renderEmail({ family: 'invoice', language: 'de', body: 'Anbei die Rechnung.', reference: [['Rechnung', 'MP-2026-002'], ['Betrag', '156,00 €']] })
+  check('a notice carries a hidden preheader with its reference facts; a letter does not', /display:none;max-height:0;overflow:hidden;mso-hide:all[^>]*>Rechnung MP-2026-002 · Betrag 156,00 €<\/div>/.test(tx.html) && !/mso-hide:all/.test(rel.html))
+}
 
 /* ── families ── */
 check('every family has German and English subject, starter and label', FAMILY_IDS.every(f => FAMILIES[f].label.de && FAMILIES[f].label.en && typeof FAMILIES[f].subject.de === 'function' && typeof FAMILIES[f].starter.en === 'function'))

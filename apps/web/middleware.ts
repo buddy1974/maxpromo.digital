@@ -38,6 +38,15 @@ const PUBLIC_OS_API_PATHS = new Set([
   '/api/os/logout',
 ])
 
+/** The installable OS (PWA): its manifest, its service-worker script and the offline page. They carry
+ * no business data and must load without a session (the browser fetches a manifest without cookies, and
+ * the offline page is shown precisely when nothing else can load). Exact paths only. */
+const PUBLIC_OS_APP_PATHS = new Set([
+  '/os/manifest.webmanifest',
+  '/os/sw.js',
+  '/os/offline',
+])
+
 /** Machine callers only; verified in the route, never by the cookie. */
 const AGENT_API_PREFIX = '/api/os/agent/'
 
@@ -129,7 +138,7 @@ export async function middleware(req: NextRequest) {
       return traced(NextResponse.redirect(`${FALLBACK_DOMAIN.origin}${pathname}`, 308))
     }
 
-    if (PUBLIC_OS_API_PATHS.has(pathname) || pathname === '/os/login') {
+    if (PUBLIC_OS_API_PATHS.has(pathname) || PUBLIC_OS_APP_PATHS.has(pathname) || pathname === '/os/login') {
       return pass()
     }
 

@@ -1,526 +1,153 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Icon } from '@maxpromo/ui'
+import { resolveDomain } from '@maxpromo/config'
 import { OsLocaleProvider, useOsLocale } from '@/lib/os-i18n/context'
 import { LanguageSwitcher } from '@/components/os/LanguageSwitcher'
+import { AskMaxConversation, AskMaxProvider } from '@/components/os/shell/AskMax'
+import { QuickScanSheet } from '@/components/os/shell/QuickScan'
+import { PhoneNav, PhoneTopBar, ShellBanner, useOsAppRuntime, useShellStatus } from '@/components/os/shell/PhoneShell'
 
 /**
  * The back office's own chrome, owned by the routes that use it.
  *
- * These ten class names lived in `app/globals.css`, which the root layout
- * imports, so every visitor to every public page of maxpromo.digital
- * downloaded the styling for a sidebar behind a login. This is the narrowest
- * boundary that owns all of them — `/os/login` uses none and no longer
- * receives them.
+ * Two shells from one tree, switched by CSS at 900px:
+ *   desktop  the sidebar, the floating Ask Max and Quick Scan controls, Ask Max as a slide-over
+ *   phone    a top app bar, a bottom navigation (Today · Inbox · Money · Max · More) and sheets;
+ *            Max is a destination (/os/ask), Quick Scan lives in More — nothing floats over content
+ *
+ * The stylesheet lives with this boundary (not app/globals.css) so public pages never download it;
+ * `/os/login` uses none of it.
  */
 import './os-layout.css'
 
-interface ScannedContact {
-  name: string; company: string; email: string; phone: string
-  address: string; city: string; postcode: string; country: string
-  website: string; notes: string; confidence: 'high' | 'medium' | 'low'
-}
-
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
+const BUREAU_ORIGIN = resolveDomain('agents.maxpromo.digital').origin
 
-/** One turn of Ask Max. An answer carries the record facts it was built from and links to them. */
-interface AIMsg { role: 'user' | 'assistant'; content: string; facts?: string[]; links?: { label: string; href: string }[]; phrased?: boolean }
-
-/**
- * OsLocaleProvider must wrap the layout body so useOsLocale() is
- * available inside it — this thin outer component just establishes that
- * boundary; all real chrome lives in ProtectedLayoutInner below.
- */
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
     <OsLocaleProvider>
-      <ProtectedLayoutInner>{children}</ProtectedLayoutInner>
+      <AskMaxProvider>
+        <ProtectedLayoutInner>{children}</ProtectedLayoutInner>
+      </AskMaxProvider>
     </OsLocaleProvider>
   )
 }
 
 function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
-  const { t, locale } = useOsLocale()
-  const router   = useRouter()
+  const { t } = useOsLocale()
+  const router = useRouter()
   const pathname = usePathname()
+  const [aiOpen, setAiOpen] = useState(false)
+  const [qsOpen, setQsOpen] = useState(false)
+  const shell = useShellStatus()
+  useOsAppRuntime()
 
   const MAIN_NAV = [
     { icon: 'dashboard'  as const, label: t.sidebar.navDashboard,  href: '/os' },
-    { icon: 'clients'    as const, label: t.sidebar.navClients,    href: '/os/clients' },
+    { icon: 'inbox'      as const, label: t.sidebar.navInbox,      href: '/os/inbox' },
+    { icon: 'audit'      as const, label: t.sidebar.navMoney,      href: '/os/money' },
     { icon: 'invoice'    as const, label: t.sidebar.navInvoices,   href: '/os/invoices' },
     { icon: 'quote'      as const, label: t.sidebar.navAngebote,   href: '/os/angebote' },
-    { icon: 'audit'      as const, label: t.sidebar.navMoney,      href: '/os/money' },
-    { icon: 'jobs'       as const, label: t.sidebar.navJobs,       href: '/os/jobs' },
+    { icon: 'clients'    as const, label: t.sidebar.navClients,    href: '/os/clients' },
     { icon: 'leads'      as const, label: t.sidebar.navLeads,      href: '/os/leads' },
+    { icon: 'jobs'       as const, label: t.sidebar.navJobs,       href: '/os/jobs' },
     { icon: 'newsletter' as const, label: t.sidebar.navNewsletter, href: '/os/newsletter' },
-    { icon: 'inbox'      as const, label: t.sidebar.navInbox,      href: '/os/inbox' },
     { icon: 'approvals'  as const, label: t.sidebar.navApprovals,  href: '/os/approvals' },
   ]
-
-  const EXT_LINKS = [
-    { icon: 'external'   as const, label: t.sidebar.linkWebsite,          href: 'https://maxpromo.digital', external: true },
-  ]
-
-  const QUICK_PROMPTS = [t.ai.prompt1, t.ai.prompt2, t.ai.prompt3, t.ai.prompt4]
-  // Auth is now enforced by middleware.ts (signed httpOnly cookie). No
-  // client-side check needed — if we reach this layout, we're authed.
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [aiOpen, setAiOpen]       = useState(false)
-  const [msgs, setMsgs]           = useState<AIMsg[]>([])
-  const [input, setInput]         = useState('')
-  const [aiLoading, setAiLoading] = useState(false)
-  const endRef = useRef<HTMLDivElement>(null)
-
-  // Quick Scan state
-  const [qsOpen,      setQsOpen]      = useState(false)
-  const [qsTab,       setQsTab]       = useState<'scan' | 'paste'>('scan')
-  const [qsPaste,     setQsPaste]     = useState('')
-  const [qsPreview,   setQsPreview]   = useState('')
-  const [qsBase64,    setQsBase64]    = useState('')
-  const [qsMime,      setQsMime]      = useState('image/jpeg')
-  const [qsLoading,   setQsLoading]   = useState(false)
-  const [qsExtracted, setQsExtracted] = useState<ScannedContact | null>(null)
-  const [qsError,     setQsError]     = useState('')
-  const [qsSaving,    setQsSaving]    = useState(false)
-  const [qsSaved,     setQsSaved]     = useState(false)
-  const qsFileRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [msgs])
+  const isActive = (href: string) => (href === '/os' ? pathname === '/os' : pathname.startsWith(href))
+  const onAskPage = pathname === '/os/ask'
 
   async function logout() {
-    try {
-      await fetch('/api/os/logout', { method: 'POST' })
-    } finally {
-      router.replace('/os/login')
-    }
+    try { await fetch('/api/os/logout', { method: 'POST' }) } finally { router.replace('/os/login') }
   }
-
-  async function sendMsg(content: string) {
-    if (!content.trim()) return
-    const next: AIMsg[] = [...msgs, { role: 'user', content }]
-    setMsgs(next)
-    setInput('')
-    setAiLoading(true)
-    try {
-      // Ask Max answers from the OS records only (lib/commercial/ask.ts); every answer shows its facts.
-      const res  = await fetch('/api/os/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: content.trim().slice(0, 500), locale }),
-      })
-      if (!res.ok) throw new Error(String(res.status))
-      const data = await res.json() as { answer: string; facts: string[]; links: { label: string; href: string }[]; phrased: boolean }
-      setMsgs(prev => [...prev, { role: 'assistant', content: data.answer || t.ai.noAnswer, facts: data.facts, links: data.links, phrased: data.phrased }])
-    } catch {
-      setMsgs(prev => [...prev, { role: 'assistant', content: t.ai.errorReply }])
-    } finally {
-      setAiLoading(false)
-    }
-  }
-
-  function qsHandleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onload = ev => {
-      const dataUrl = ev.target?.result as string
-      const [header, b64] = dataUrl.split(',')
-      setQsPreview(dataUrl)
-      setQsBase64(b64)
-      setQsMime(header.match(/:(.*?);/)?.[1] ?? 'image/jpeg')
-    }
-    reader.readAsDataURL(file)
-    e.target.value = ''
-  }
-
-  async function qsExtract() {
-    setQsLoading(true); setQsError(''); setQsExtracted(null)
-    try {
-      const payload = qsTab === 'scan' && qsBase64
-        ? { kind: 'client', image: qsBase64, mediaType: qsMime }
-        : { kind: 'client', text: qsPaste }
-      const res = await fetch('/api/os/ai/enhance', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
-      })
-      if (!res.ok) throw new Error()
-      const json = await res.json() as { extracted: ScannedContact }
-      setQsExtracted(json.extracted)
-    } catch { setQsError(t.quickScan.errorGeneric) }
-    finally { setQsLoading(false) }
-  }
-
-  async function qsSaveClient() {
-    if (!qsExtracted?.name) return
-    setQsSaving(true)
-    try {
-      await fetch('/api/os/clients', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name:    qsExtracted.name,
-          company: qsExtracted.company || undefined,
-          email:   qsExtracted.email   || undefined,
-          phone:   qsExtracted.phone   || undefined,
-          address: qsExtracted.address || undefined,
-          city:    [qsExtracted.city, qsExtracted.postcode].filter(Boolean).join(' ') || undefined,
-          country: qsExtracted.country || 'Germany',
-          notes:   qsExtracted.notes   || undefined,
-        }),
-      })
-      setQsSaved(true)
-      setTimeout(() => {
-        setQsOpen(false); setQsExtracted(null); setQsSaved(false)
-        setQsPreview(''); setQsBase64(''); setQsPaste('')
-      }, 1500)
-    } finally { setQsSaving(false) }
-  }
-
-  function qsReset() {
-    setQsExtracted(null); setQsError(''); setQsPreview(''); setQsBase64(''); setQsPaste('')
-  }
-
-  const isActive = (href: string) =>
-    href === '/os' ? pathname === '/os' : pathname.startsWith(href)
 
   return (
-    <div>
-
-      {/* ── SIDEBAR ── */}
-      <nav className={`os-sidebar${mobileOpen ? ' open' : ''}`}>
-
-        {/* Header */}
+    <div className="os-shell">
+      {/* ── DESKTOP SIDEBAR ── */}
+      <nav className="os-sidebar" aria-label={t.shell.nav}>
         <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid var(--brand-border)', flexShrink: 0 }}>
-          <p style={{ fontFamily: mono, fontSize: 'var(--text-micro)', fontWeight: 700, color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>
-            {t.sidebar.brand}
-          </p>
-          <p style={{ fontFamily: sans, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', margin: '5px 0 0' }}>
-            {t.sidebar.tagline}
-          </p>
+          <p style={{ fontFamily: mono, fontSize: 'var(--text-micro)', fontWeight: 700, color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.1em' }}>{t.sidebar.brand}</p>
+          <p style={{ fontFamily: sans, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', margin: '5px 0 0' }}>{t.sidebar.tagline}</p>
         </div>
-
-        {/* Scrollable nav area */}
         <div style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-2)' }}>
-
           <span className="os-section-label">{t.sidebar.sectionMain}</span>
-          {MAIN_NAV.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`os-nav-item${isActive(item.href) ? ' active' : ''}`}
-              onClick={() => setMobileOpen(false)}
-            >
-              <span className="os-nav-icon"><Icon name={item.icon} size="md" /></span>
-              <span className="os-nav-label">{item.label}</span>
-            </Link>
-          ))}
-
+          {MAIN_NAV.map(item => {
+            const badge = item.href === '/os/inbox' ? shell.status?.needsReply : item.href === '/os/approvals' ? shell.status?.approvals : item.href === '/os/money' ? shell.status?.money : 0
+            return (
+              <Link key={item.href} href={item.href} className={`os-nav-item${isActive(item.href) ? ' active' : ''}`} aria-current={isActive(item.href) ? 'page' : undefined}>
+                <span className="os-nav-icon"><Icon name={item.icon} size="md" /></span>
+                <span className="os-nav-label">{item.label}</span>
+                {badge ? <span className="os-badge os-badge-inline">{badge}</span> : null}
+              </Link>
+            )
+          })}
           <span className="os-section-label" style={{ paddingTop: 'var(--space-3)' }}>{t.sidebar.sectionTools}</span>
-          <button
-            onClick={() => { setAiOpen(true); setMobileOpen(false) }}
-            className="os-nav-item"
-          >
-            <span className="os-nav-icon"><Icon name="lab" size="md" /></span>
+          <button type="button" onClick={() => setAiOpen(true)} className="os-nav-item">
+            <span className="os-nav-icon"><Icon name="message" size="md" /></span>
             <span className="os-nav-label">{t.sidebar.toolAiAssistant}</span>
           </button>
-
+          <button type="button" onClick={() => setQsOpen(true)} className="os-nav-item">
+            <span className="os-nav-icon"><Icon name="upload" size="md" /></span>
+            <span className="os-nav-label">{t.shell.quickScan}</span>
+          </button>
           <div style={{ margin: 'var(--space-3) var(--space-4)', height: '1px', background: 'var(--brand-border)' }} />
-
           <span className="os-section-label" style={{ paddingTop: 'var(--space-1)' }}>{t.sidebar.sectionLinks}</span>
-          {EXT_LINKS.map(link => (
-            <a
-              key={link.href}
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener noreferrer' : undefined}
-              className="os-nav-item"
-              onClick={() => setMobileOpen(false)}
-            >
-              <span className="os-nav-icon"><Icon name={link.icon} size="md" /></span>
-              <span className="os-nav-label">{link.label}</span>
-            </a>
-          ))}
+          <a href={BUREAU_ORIGIN} target="_blank" rel="noopener noreferrer" className="os-nav-item">
+            <span className="os-nav-icon"><Icon name="agents" size="md" /></span>
+            <span className="os-nav-label">{t.shell.agentBureau}</span>
+          </a>
+          <a href="https://maxpromo.digital" target="_blank" rel="noopener noreferrer" className="os-nav-item">
+            <span className="os-nav-icon"><Icon name="external" size="md" /></span>
+            <span className="os-nav-label">{t.sidebar.linkWebsite}</span>
+          </a>
         </div>
-
-        {/* Footer */}
         <div style={{ padding: '16px 20px', borderTop: '1px solid var(--brand-border)', flexShrink: 0 }}>
           <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: '0 0 3px' }}>Marcel Tabit Akwe</p>
           <p style={{ fontFamily: sans, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', margin: 0 }}>info@maxpromo.digital</p>
-          <button onClick={logout} className="os-logout-btn">{t.sidebar.signOut}</button>
+          <button type="button" onClick={logout} className="os-logout-btn">{t.sidebar.signOut}</button>
           <LanguageSwitcher />
         </div>
       </nav>
 
-      {/* ── MOBILE BACKDROP ── */}
-      <div
-        className={`os-backdrop${mobileOpen ? ' open' : ''}`}
-        onClick={() => setMobileOpen(false)}
-      />
+      {/* ── PHONE TOP BAR ── */}
+      <PhoneTopBar />
 
-      {/* ── HAMBURGER BUTTON ── */}
-      <button
-        className="os-hamburger"
-        onClick={() => setMobileOpen(o => !o)}
-        aria-label={t.sidebar.toggleMenu}
-      >
-        <span className="os-hamburger-line" />
-        <span className="os-hamburger-line" />
-        <span className="os-hamburger-line" />
-      </button>
-
-      {/* ── MAIN CONTENT ── */}
-      <main className="os-main">
+      {/* ── MAIN CONTENT: the one scroll owner ── */}
+      <main className={`os-main${onAskPage ? ' os-main-ask' : ''}`} id="os-main">
+        <ShellBanner expired={shell.expired} offline={shell.offline} />
         {children}
       </main>
 
-      {/* ── FLOATING BUTTONS ── */}
-      <div style={{ position: 'fixed', bottom: '24px', right: '24px', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', zIndex: 100, alignItems: 'flex-end' }}>
-        {!aiOpen && (
-          <button
-            onClick={() => { setQsOpen(true); qsReset() }}
-            style={{
-              background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)',
-              fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.12em',
-              padding: '10px 16px', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: '6px',
-              textTransform: 'uppercase', borderRadius: 'var(--radius-xs)',
-            }}
-          >
-            {t.quickScan.floatingButton}
-          </button>
-        )}
-        {!aiOpen && (
-          <button
-            onClick={() => setAiOpen(true)}
-            style={{
-              background: 'var(--brand-primary)', color: 'var(--brand-text)',
-              fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.12em',
-              border: 'none', padding: '12px 18px', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 'var(--space-2)',
-              textTransform: 'uppercase', borderRadius: 'var(--radius-xs)',
-            }}
-          >
-            {t.ai.askButton}
-          </button>
-        )}
-      </div>
+      {/* ── PHONE BOTTOM NAVIGATION ── */}
+      <PhoneNav status={shell.status} onQuickScan={() => setQsOpen(true)} onSignOut={logout} />
 
-      {/* ── AI SLIDE-OVER PANEL ── */}
+      {/* ── DESKTOP FLOATING CONTROLS (hidden on phones by architecture: Max is a tab there) ── */}
+      {!aiOpen && !onAskPage && (
+        <div className="os-fab">
+          <button type="button" className="os-fab-secondary" onClick={() => setQsOpen(true)}>{t.quickScan.floatingButton}</button>
+          <button type="button" className="os-fab-primary" onClick={() => setAiOpen(true)}>{t.ai.askButton}</button>
+        </div>
+      )}
+
+      {/* ── DESKTOP ASK MAX SLIDE-OVER ── */}
       {aiOpen && (
-        <div style={{
-          position: 'fixed', top: 0, right: 0, width: 'min(380px, 100vw)', height: '100vh',
-          background: 'var(--brand-surface)', borderLeft: '1px solid var(--brand-border)',
-          display: 'flex', flexDirection: 'column', zIndex: 200,
-        }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <aside className="os-askpanel" aria-label={t.ai.title}>
+          <div className="os-askpanel-head">
             <div>
               <p style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{t.ai.title}</p>
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', margin: '3px 0 0' }}>{t.ai.subtitle}</p>
             </div>
-            <button onClick={() => setAiOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', cursor: 'pointer', fontSize: '20px', lineHeight: 1 }}>×</button>
+            <button type="button" className="os-icon-button" onClick={() => setAiOpen(false)} aria-label={t.shell.close}><Icon name="close" size="md" /></button>
           </div>
-
-          {msgs.length === 0 && (
-            <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--brand-border)' }}>
-              <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', textTransform: 'uppercase', margin: '0 0 10px' }}>{t.ai.quickPrompts}</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {QUICK_PROMPTS.map(p => (
-                  <button key={p} onClick={() => sendMsg(p)} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text-secondary)', fontFamily: sans, fontSize: '12px', padding: '9px 12px', textAlign: 'left', cursor: 'pointer', borderRadius: 'var(--radius-xs)' }}>
-                    {p}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {msgs.map((msg, i) => (
-              <div key={i} style={{
-                alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                maxWidth: '88%',
-                background: msg.role === 'user' ? 'color-mix(in srgb, var(--brand-primary) 10%, transparent)' : 'var(--brand-surface-subtle)',
-                border: `1px solid ${msg.role === 'user' ? 'color-mix(in srgb, var(--brand-primary) 20%, transparent)' : 'var(--brand-border)'}`,
-                padding: '10px 14px', borderRadius: 'var(--radius-xs)',
-              }}>
-                <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: 0, lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{msg.content}</p>
-                {msg.links && msg.links.length > 0 && (
-                  <ul style={{ listStyle: 'none', margin: '8px 0 0', padding: 0, display: 'grid', gap: '4px' }}>
-                    {msg.links.map(link => <li key={link.href}><Link href={link.href} onClick={() => setAiOpen(false)} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)', textDecoration: 'underline' }}>{link.label}</Link></li>)}
-                  </ul>
-                )}
-                {msg.phrased && msg.facts && msg.facts.length > 0 && (
-                  <details style={{ marginTop: '8px' }}>
-                    <summary style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', cursor: 'pointer' }}>{t.ai.facts}</summary>
-                    <ul style={{ margin: '6px 0 0', paddingLeft: '16px', display: 'grid', gap: '3px' }}>
-                      {msg.facts.map((fact, n) => <li key={n} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text-secondary)', overflowWrap: 'anywhere' }}>{fact}</li>)}
-                    </ul>
-                  </details>
-                )}
-                {msg.role === 'assistant' && !msg.phrased && msg.facts && msg.facts.length > 1 && (
-                  <ul style={{ margin: '6px 0 0', paddingLeft: '16px', display: 'grid', gap: '3px' }}>
-                    {msg.facts.slice(1).map((fact, n) => <li key={n} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text-secondary)', overflowWrap: 'anywhere' }}>{fact}</li>)}
-                  </ul>
-                )}
-              </div>
-            ))}
-            {aiLoading && (
-              <div style={{ alignSelf: 'flex-start', background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', padding: '10px 14px', borderRadius: 'var(--radius-xs)' }}>
-                <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', margin: 0, letterSpacing: '0.2em' }}>{t.ai.thinking}</p>
-              </div>
-            )}
-            <div ref={endRef} />
-          </div>
-
-          <div style={{ padding: '14px 20px', borderTop: '1px solid var(--brand-border)', display: 'flex', gap: 'var(--space-2)' }}>
-            <input
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(input) } }}
-              placeholder={t.ai.inputPlaceholder}
-              style={{ flex: 1, background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 12px', outline: 'none', borderRadius: 'var(--radius-xs)' }}
-            />
-            <button
-              onClick={() => sendMsg(input)}
-              disabled={aiLoading || !input.trim()}
-              style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 'var(--weight-heading)', fontSize: '14px', padding: '10px 16px', cursor: 'pointer', opacity: (aiLoading || !input.trim()) ? 0.4 : 1 }}
-            >
-              <Icon name="send" size="md" label="Senden" />
-            </button>
-          </div>
-        </div>
+          <AskMaxConversation onNavigate={() => setAiOpen(false)} autoFocus />
+        </aside>
       )}
 
-      {/* ── QUICK SCAN MODAL ── */}
-      {qsOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' }}>
-          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '480px', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
-            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--brand-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <p style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', fontSize: 'var(--text-small)', color: 'var(--brand-text)', margin: 0 }}>{t.quickScan.title}</p>
-              <button onClick={() => setQsOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--brand-text-muted)', fontSize: '20px', cursor: 'pointer', lineHeight: 1 }}>×</button>
-            </div>
-
-            <div style={{ display: 'flex', borderBottom: '1px solid var(--brand-border)' }}>
-              {(['scan', 'paste'] as const).map(tabKey => (
-                <button key={tabKey} onClick={() => { setQsTab(tabKey); qsReset() }} style={{ flex: 1, padding: '10px', background: qsTab === tabKey ? 'color-mix(in srgb, var(--brand-primary) 8%, transparent)' : 'none', border: 'none', borderBottom: qsTab === tabKey ? '2px solid var(--brand-primary-edge)' : '2px solid transparent', color: qsTab === tabKey ? 'var(--brand-primary-text)' : 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.12em', textTransform: 'uppercase', cursor: 'pointer' }}>
-                  {tabKey === 'scan' ? t.quickScan.tabScan : t.quickScan.tabPaste}
-                </button>
-              ))}
-            </div>
-
-            <div style={{ padding: '20px' }}>
-              {!qsExtracted && (
-                <>
-                  {qsTab === 'scan' && (
-                    <div>
-                      {!qsPreview ? (
-                        <button
-                          onClick={() => qsFileRef.current?.click()}
-                          style={{ width: '100%', background: 'var(--brand-background)', border: '2px dashed color-mix(in srgb, var(--brand-primary) 30%, transparent)', color: 'var(--brand-primary-text)', fontFamily: mono, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: 'var(--space-6)', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)', textAlign: 'center' }}
-                        >
-                          {t.quickScan.dropZone}
-                          <br /><span style={{ fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', fontWeight: 400 }}>{t.quickScan.dropZoneFormats}</span>
-                        </button>
-                      ) : (
-                        <div style={{ textAlign: 'center', marginBottom: 'var(--space-3)' }}>
-                          {/* eslint-disable-next-line @next/next/no-img-element -- ephemeral client-side FileReader data: URL preview; next/image cannot optimize runtime data URLs */}
-                          <img src={qsPreview} alt="preview" style={{ maxWidth: '100%', maxHeight: '180px', objectFit: 'contain', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-xs)' }} />
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {qsTab === 'paste' && (
-                    <textarea
-                      value={qsPaste}
-                      onChange={e => setQsPaste(e.target.value)}
-                      rows={5}
-                      placeholder={t.quickScan.pastePlaceholder}
-                      style={{ width: '100%', background: 'var(--brand-background)', border: '1px solid var(--brand-border)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 12px', outline: 'none', resize: 'vertical', lineHeight: 1.6, boxSizing: 'border-box', marginBottom: 'var(--space-3)' }}
-                    />
-                  )}
-
-                  {qsError && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 10px', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {qsError}</p>}
-
-                  <div style={{ display: 'flex', gap: 'var(--space-2)', marginTop: 'var(--space-3)' }}>
-                    <button
-                      onClick={qsExtract}
-                      disabled={qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim())}
-                      aria-busy={qsLoading}
-                      style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)', opacity: qsLoading || (qsTab === 'scan' ? !qsBase64 : !qsPaste.trim()) ? 0.5 : 1 }}
-                    >
-                      {qsLoading && <Icon name="running" size="xs" />}
-                      {qsLoading ? t.quickScan.extractingButton : t.quickScan.extractButton}
-                    </button>
-                    {qsTab === 'scan' && qsPreview && (
-                      <button onClick={() => { setQsPreview(''); setQsBase64('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '10px 12px', cursor: 'pointer', borderRadius: 'var(--radius-xs)' }}>
-                        {t.quickScan.remove}
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {qsExtracted && !qsSaved && (
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                    <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: 0 }}>{t.quickScan.extractedHeading}</p>
-                    <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: qsExtracted.confidence === 'high' ? 'var(--semantic-success)' : qsExtracted.confidence === 'medium' ? 'var(--semantic-warning)' : 'var(--semantic-danger)', background: qsExtracted.confidence === 'high' ? 'color-mix(in srgb, var(--semantic-success) 13%, transparent)' : qsExtracted.confidence === 'medium' ? 'color-mix(in srgb, var(--semantic-warning) 13%, transparent)' : 'color-mix(in srgb, var(--semantic-danger) 13%, transparent)', padding: '2px 8px', letterSpacing: '0.1em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
-                      {qsExtracted.confidence === 'high' ? t.quickScan.confidenceHigh : qsExtracted.confidence === 'medium' ? t.quickScan.confidenceMedium : t.quickScan.confidenceLow}
-                    </span>
-                  </div>
-                  <div style={{ background: 'var(--brand-surface)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-xs)', padding: '14px', marginBottom: 'var(--space-3)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {[
-                      [t.quickScan.fieldName,    qsExtracted.name],
-                      [t.quickScan.fieldCompany, qsExtracted.company],
-                      [t.quickScan.fieldEmail,   qsExtracted.email],
-                      [t.quickScan.fieldPhone,   qsExtracted.phone],
-                      [t.quickScan.fieldAddress, qsExtracted.address],
-                      [t.quickScan.fieldCity,    [qsExtracted.city, qsExtracted.postcode].filter(Boolean).join(' ')],
-                      [t.quickScan.fieldCountry, qsExtracted.country],
-                    ].filter(([, v]) => v).map(([k, v]) => (
-                      <p key={k} style={{ fontFamily: sans, fontSize: '12px', color: 'var(--brand-text)', margin: 0 }}>
-                        <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', display: 'inline-block', width: '60px' }}>{k}</span>
-                        {v}
-                      </p>
-                    ))}
-                  </div>
-                  {qsExtracted.confidence === 'low' && (
-                    <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '0 0 var(--space-3)', letterSpacing: '0.06em' }}>{t.quickScan.lowConfidenceWarning}</p>
-                  )}
-                  <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-                    <button onClick={qsSaveClient} disabled={qsSaving} style={{ background: 'var(--brand-primary)', border: 'none', color: 'var(--brand-text)', fontFamily: mono, fontWeight: 700, fontSize: 'var(--text-label)', letterSpacing: '0.1em', padding: '10px 18px', cursor: 'pointer', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)', opacity: qsSaving ? 0.6 : 1 }}>
-                      {qsSaving ? t.quickScan.saving : t.quickScan.saveClient}
-                    </button>
-                    <button onClick={qsReset} style={{ background: 'none', border: '1px solid var(--brand-border)', color: 'var(--brand-text-muted)', fontFamily: mono, fontSize: 'var(--text-label-dense)', padding: '10px 12px', cursor: 'pointer', borderRadius: 'var(--radius-xs)' }}>
-                      {t.quickScan.rescan}
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {qsSaved && (
-                <div style={{ textAlign: 'center', padding: '20px 0' }}>
-                  <p style={{ fontFamily: mono, fontSize: '14px', color: 'var(--semantic-success)', margin: '0 0 6px' }}>{t.quickScan.savedHeading}</p>
-                  <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0 }}>{qsExtracted?.name}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Quick scan file input */}
-      <input
-        ref={qsFileRef}
-        type="file"
-        accept="image/*,.pdf"
-        capture="environment"
-        style={{ display: 'none' }}
-        onChange={qsHandleFile}
-      />
+      <QuickScanSheet open={qsOpen} onClose={() => setQsOpen(false)} />
     </div>
   )
-}/*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
+}

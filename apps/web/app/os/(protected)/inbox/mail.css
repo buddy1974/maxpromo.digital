@@ -164,3 +164,48 @@
 .mail-compose-files .mail-chip { display: inline-flex; align-items: center; gap: 8px; cursor: default; max-width: 100%; overflow-wrap: anywhere; }
 .mail-compose-files .mail-note { flex-basis: 100%; margin: 0; }
 .mail-attach { cursor: pointer; min-height: 40px; display: inline-flex; align-items: center; }
+
+/* ── Phone: Inbox as an app (ADR-0023 + phone shell) ─────────────────────────────
+   The shell's top bar names the place, so the page title steps back; the conversation's actions
+   sit in a bar at the bottom within thumb reach, above the navigation; the composer fills the
+   visible viewport (--os-vvh follows the keyboard) with its send actions always on screen. */
+@media (max-width: 899px) {
+  .mail-title { display: none; }
+  .mail-shell.has-selection .mail-top { display: none; }
+  .mail-views { scrollbar-width: none; }
+  .mail-back { align-self: flex-start; width: auto; min-height: 44px; }
+  .mail-detail-pane, .mail-detail { padding: 0; }
+  .mail-top-actions .btn-sm, .mail-search .btn-sm { min-height: 44px; }
+  .mail-search .input { font-size: 16px; min-height: 44px; }
+  .mail-conversation { display: flex; flex-direction: column; padding-bottom: 0; }
+  .mail-conv-head { display: contents; }
+  .mail-conv-people { border-bottom: 1px solid var(--brand-border); padding-bottom: var(--space-3); }
+  .mail-conv-foot { order: 9; }
+  .mail-conv-head > .mail-toolbar {
+    order: 10; position: sticky; z-index: 2;
+    bottom: calc(var(--os-bottomnav-h, 60px) + env(safe-area-inset-bottom));
+    margin: var(--space-4) calc(-1 * var(--space-4)) 0; padding: var(--space-2) var(--space-4);
+    background: var(--brand-surface); border-top: 1px solid var(--brand-border);
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+  }
+  .mail-conv-head > .mail-toolbar .btn-sm { min-height: 44px; flex-shrink: 0; }
+  .mail-context { padding-bottom: var(--space-5); }
+  .mail-composer-backdrop { top: var(--os-vv-top, 0px); bottom: auto; height: var(--os-vvh, 100dvh); }
+  .mail-composer { width: 100vw; height: 100%; border-left: 0; }
+  .mail-composer-head { padding-top: calc(var(--space-3) + env(safe-area-inset-top)); }
+  .mail-composer-head .btn-sm { min-height: 44px; }
+  .mail-field .input, .mail-field .textarea, .mail-field select { font-size: 16px; min-height: 44px; }
+  .mail-field-body .textarea { min-height: 180px; }
+  .mail-composer-actions {
+    position: sticky; bottom: calc(-1 * var(--space-4)); z-index: 1;
+    margin: 0 calc(-1 * var(--space-4)) calc(-1 * var(--space-4));
+    padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-bottom));
+    background: var(--brand-surface); border-top: 1px solid var(--brand-border);
+  }
+  .mail-composer-actions .btn-sm, .mail-chip, .mail-attach { min-height: 44px; }
+  .mail-composer-actions { flex-wrap: nowrap; order: 3; }
+  .mail-composer-actions > button { flex: 1 1 0; min-height: 48px; }
+  .mail-composer-options { order: 2; }
+}
+.mail-inline-link { color: var(--brand-text); text-decoration: underline; text-underline-offset: 2px; overflow-wrap: anywhere; }
+.mail-schedule { padding: var(--space-3) var(--space-4) 0; grid-column: 1 / -1; } .mail-schedule .mail-notice { margin: 0 0 var(--space-2); }

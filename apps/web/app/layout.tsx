@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter, Roboto_Mono } from 'next/font/google'
+import { cookies, headers } from 'next/headers'
 import { getLocale } from 'next-intl/server'
+import { DEFAULT_OS_LOCALE, OS_LOCALE_COOKIE } from '@/lib/os-i18n/dictionary'
 import { routing } from '@/i18n/routing'
 import { currentDomain, currentLocale, domainRootMetadata } from '@/lib/domains/server'
 import './globals.css'
@@ -131,6 +133,13 @@ export async function generateMetadata(): Promise<Metadata> {
  * catch is load-bearing rather than defensive.
  */
 async function resolveLocale(): Promise<string> {
+  // The signed-in OS has its own language (a cookie scoped to /os, lib/os-i18n); the middleware marks
+  // authenticated OS requests with x-os-user. Without this, <html lang> said "de" to an English OS.
+  const requestHeaders = await headers()
+  if (requestHeaders.get('x-os-user')) {
+    const os = (await cookies()).get(OS_LOCALE_COOKIE)?.value
+    return os === 'en' ? 'en' : DEFAULT_OS_LOCALE
+  }
   let locale: string = routing.defaultLocale
   try {
     locale = await getLocale()

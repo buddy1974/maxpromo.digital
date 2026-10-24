@@ -25,7 +25,7 @@
  * hydration with no manual effect needed.
  */
 
-import { createContext, useCallback, useContext, useMemo, useSyncExternalStore } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from 'react'
 import { DEFAULT_OS_LOCALE, INTL_LOCALE, OS_DICTIONARY, OS_LOCALE_COOKIE, type OsLocale } from './dictionary'
 
 type OsDict = typeof OS_DICTIONARY['de']
@@ -73,6 +73,9 @@ function getServerSnapshot(): OsLocale {
 
 export function OsLocaleProvider({ children }: { children: React.ReactNode }) {
   const locale = useSyncExternalStore(subscribe, readCookieLocale, getServerSnapshot)
+
+  // The page language follows the OS language for screen readers and hyphenation (the server sets it on load).
+  useEffect(() => { document.documentElement.lang = locale }, [locale])
 
   const setLocale = useCallback((l: OsLocale) => {
     writeCookieLocale(l)

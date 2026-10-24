@@ -190,12 +190,14 @@ export const BUDGETS: readonly Budget[] = [
     what: 'CSS delivered to the heaviest single route (shared + its own)',
     unit: 'KB',
     measured: 82,
-    limit: 88,
+    limit: 96,
     why:
-      'What the worst-served visitor downloads. Today that is the homepage, ' +
+      'What the worst-served visitor downloads. Until 2026-10-24 that was the homepage, ' +
       'whose own chunk carries the scenes, the capability bench and the ' +
-      'method transformation. A route-scoped stylesheet is not free, and this ' +
-      'is where its cost is charged.',
+      'method transformation. Since the phone-first OS (2026-10-24) it is the OS Inbox: ' +
+      'the shell, sheets, Ask Max, Money and the phone Inbox states, behind the login. ' +
+      'Limit raised 88 → 96 KB by that decision (change log); the homepage is unchanged. ' +
+      'A route-scoped stylesheet is not free, and this is where its cost is charged.',
   },
   {
     id: 'web.total-css',

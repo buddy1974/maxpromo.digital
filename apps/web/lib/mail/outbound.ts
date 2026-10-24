@@ -12,6 +12,7 @@
  *   - Evidence mode uses a sink: nothing leaves, everything else is identical.
  */
 import { CapabilityRefusal, UncertainOutcome, type Sql } from '@/lib/commercial/types'
+import { writeAudit } from '@/lib/commercial/audit'
 import { HostingerMailProvider, MailProviderError, type EmailProvider, type MessageRef, type SendPayload } from './provider'
 import { HOSTINGER_ACCOUNT, HOSTINGER_MAILBOX } from './hostingerIngestion'
 import { FAMILIES, PLACEHOLDER, isFamily, type FamilyId, type Language } from './identity/families'
@@ -96,14 +97,25 @@ export async function renderDraft(sql: Sql, d: DraftRow) {
 
 const addDays = (iso: string, days: number) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + days); return d.toISOString().slice(0, 10) }
 
-export interface DeliverRequest { draftId: string; revision: number; approvalId: string; actor: string; today: string; committed: (what: string) => void }
+export interface DeliverRequest {
+  draftId: string; revision: number; approvalId: string; actor: string; today: string; committed: (what: string) => void
+  /** Sent by the scheduler: claims a due `scheduled` draft instead of a `draft` (0023). */
+  scheduled?: boolean
+}
 
 export async function deliverDraft(sql: Sql, req: DeliverRequest, choice: TransportChoice | null = outboundTransport()) {
   if (!choice) throw new CapabilityRefusal('Sending is not connected for this mailbox. Nothing was sent.', 'unsupported')
-  const claimed = await sql`UPDATE mail.drafts SET status='sending',updated_at=now() WHERE id=${req.draftId}::uuid AND status='draft' AND revision=${req.revision} RETURNING *` as DraftRow[]
+  // One claim = one send: the row moves to 'sending' exactly once, whichever door (Marcel now, or the scheduler).
+  const claimed = (req.scheduled
+    ? await sql`UPDATE mail.drafts SET status='sending',updated_at=now() WHERE id=${req.draftId}::uuid AND status='scheduled' AND scheduled_for<=now() AND revision=${req.revision} RETURNING *`
+    : await sql`UPDATE mail.drafts SET status='sending',updated_at=now() WHERE id=${req.draftId}::uuid AND status='draft' AND revision=${req.revision} RETURNING *`) as DraftRow[]
   const d = claimed[0]
   if (!d) throw new CapabilityRefusal('This draft changed or was already sent. Review it again.', 'conflict')
-  const release = () => sql`UPDATE mail.drafts SET status='draft' WHERE id=${d.id}::uuid AND status='sending'`
+  // A refused scheduled send goes back to Marcel as a draft with the reason — visible, never retried silently.
+  const release = (reason = '') => (req.scheduled
+    ? sql`UPDATE mail.drafts SET status='draft',scheduled_for=NULL,scheduled_approval=NULL,schedule_error=${reason.slice(0, 300) || 'not sent'},updated_at=now() WHERE id=${d.id}::uuid AND status='sending'`
+    : sql`UPDATE mail.drafts SET status='draft' WHERE id=${d.id}::uuid AND status='sending'`)
+  const reasonOf = (error: unknown) => (error instanceof Error ? error.message : 'not sent')
   try {
     const problems = sendProblems(d)
     if (problems.length) throw new CapabilityRefusal(problems.join(' '))
@@ -111,10 +123,10 @@ export async function deliverDraft(sql: Sql, req: DeliverRequest, choice: Transp
       const t = await sql`SELECT quarantine FROM mail.threads WHERE id=${d.thread_id}::uuid` as { quarantine: string | null }[]
       if (t[0]?.quarantine) throw new CapabilityRefusal('This conversation is in Spam. Mark it as not spam before replying.')
     }
-  } catch (error) { await release(); throw error }
+  } catch (error) { await release(reasonOf(error)); throw error }
 
   let files: Awaited<ReturnType<typeof draftAttachmentPayload>>
-  try { files = await draftAttachmentPayload(sql, d.id) } catch (error) { await release(); throw error }
+  try { files = await draftAttachmentPayload(sql, d.id) } catch (error) { await release(reasonOf(error)); throw error }
   const { family, rendered, ref } = await renderDraft(sql, d)
   const payload: SendPayload = {
     to: d.to_addrs, ...(d.cc_addrs.length ? { cc: d.cc_addrs } : {}), ...(d.bcc_addrs.length ? { bcc: d.bcc_addrs } : {}),
@@ -131,7 +143,7 @@ export async function deliverDraft(sql: Sql, req: DeliverRequest, choice: Transp
       await sql`UPDATE mail.drafts SET status='uncertain',updated_at=now() WHERE id=${d.id}::uuid`
       throw new UncertainOutcome('The mail server did not confirm the send. It may have been delivered.')
     }
-    await release()
+    await release('The mail server refused the message. Nothing was sent.')
     throw new CapabilityRefusal('The mail server refused the message. Nothing was sent.', 'unsupported')
   }
   req.committed('Email accepted by the mail server')
@@ -145,10 +157,34 @@ export async function deliverDraft(sql: Sql, req: DeliverRequest, choice: Transp
     followUpDays: d.follow_up_days ?? FAMILIES[family].followUpDays, today: req.today, actor: req.actor, approvalId: req.approvalId,
     audit: { draft_id: d.id, family }, threaded: Boolean(payload.inReplyTo || payload.forwardOf), choice, timeline: { draft_id: d.id },
   })
-  await sql`UPDATE mail.drafts SET status='sent',sent_at=now(),sent_message_id=${recorded.messageId}::uuid,thread_id=${recorded.threadId}::uuid WHERE id=${d.id}::uuid`
+  await sql`UPDATE mail.drafts SET status='sent',sent_at=now(),sent_message_id=${recorded.messageId}::uuid,thread_id=${recorded.threadId}::uuid,schedule_error=NULL WHERE id=${d.id}::uuid`
   // The Sent folder copy is the record of what left; the draft keeps only the files' metadata.
   if (files.meta.length) await sql`UPDATE mail.draft_attachments SET content=NULL WHERE draft_id=${d.id}::uuid`
   return { threadId: recorded.threadId, messageId: recorded.messageId, threaded: Boolean(payload.inReplyTo || payload.forwardOf), transport: choice.mode }
+}
+
+/**
+ * Scheduled send (0023): deliver every confirmed draft whose time has come, each exactly once.
+ * Called by the cron route and opportunistically while the OS is open; concurrent sweeps are safe
+ * because the claim inside deliverDraft is a single conditional UPDATE. Each outcome is audited.
+ */
+export async function sweepScheduledMail(sql: Sql, today: string, choice: TransportChoice | null = outboundTransport()): Promise<{ sent: number; failed: number; uncertain: number }> {
+  const due = await sql`SELECT id, revision, scheduled_approval, created_by FROM mail.drafts WHERE status='scheduled' AND scheduled_for<=now() ORDER BY scheduled_for LIMIT 10` as { id: string; revision: number; scheduled_approval: string; created_by: string }[]
+  const out = { sent: 0, failed: 0, uncertain: 0 }
+  for (const d of due) {
+    let outcome: 'succeeded' | 'failed' | 'uncertain' = 'succeeded', error: string | undefined
+    try {
+      await deliverDraft(sql, { draftId: d.id, revision: d.revision, approvalId: d.scheduled_approval, actor: d.created_by, today, committed: () => undefined, scheduled: true }, choice)
+      out.sent++
+    } catch (e) {
+      if (e instanceof CapabilityRefusal && e.code === 'conflict') continue // another sweep took it
+      outcome = e instanceof UncertainOutcome ? 'uncertain' : 'failed'
+      error = e instanceof Error ? e.message.slice(0, 200) : 'failed'
+      if (outcome === 'uncertain') out.uncertain++; else out.failed++
+    }
+    await writeAudit(sql, { actor: 'scheduler', channel: 'os', operation: 'email.scheduled.send', entityType: 'mail_draft', entityId: d.id, approvalId: d.scheduled_approval, outcome, error }).catch(() => undefined)
+  }
+  return out
 }
 
 export interface OutboundRecord {

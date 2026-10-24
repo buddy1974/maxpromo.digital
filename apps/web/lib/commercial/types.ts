@@ -39,6 +39,9 @@ export interface CapabilityContext {
    * "failed, nothing done" because a bookkeeping write after it failed.
    */
   committed: (what: string, externalRef?: string) => void
+  /** The screen language of an owner action (OS): previews and summaries are written in it.
+   * Absent for channels that have their own phrasing (Telegram, agents): English. */
+  language?: 'de' | 'en'
 }
 
 /** What a capability returns to an interface. Text first, structure for buttons. */

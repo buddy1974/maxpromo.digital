@@ -82,7 +82,7 @@ export function AttentionPanel() {
   const areas = (Object.keys(data.counts) as Area[]).filter((k) => data.counts[k] > 0)
 
   return (
-    <section aria-label={a.title} style={{ ...box, marginBottom: '28px' }}>
+    <section aria-label={a.title} className="attn" style={{ ...box, marginBottom: '28px' }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px' }}>
         <h2 style={{ ...label, margin: 0 }}>{a.title}</h2>
         {areas.length > 0 && (
@@ -95,7 +95,7 @@ export function AttentionPanel() {
       {quiet && <p style={{ fontFamily: sans, color: 'var(--brand-text-secondary)', margin: '12px 0 0' }}>{a.nothing}</p>}
 
       {(data.approvals.length > 0 || replies.length > 0) && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '14px' }}>
+        <div className="attn-actions">
           {data.approvals.length > 0 && (
             <Link href="/os/approvals" className="btn-primary btn-sm">{a.approvals(data.approvals.length)}</Link>
           )}
@@ -106,15 +106,22 @@ export function AttentionPanel() {
       )}
 
       {items.length > 0 && (
-        <ul style={{ listStyle: 'none', padding: 0, margin: '16px 0 0', display: 'grid', gap: '8px' }}>
+        <ul className="attn-list">
           {items.map((i, n) => {
             const href = hrefFor(i.ref)
             const tone = TONE_VARS[URGENCY_TONE[(i.urgency as 1 | 2 | 3)] ?? 'neutral'].text
             return (
-              <li key={n} style={{ display: 'flex', gap: '10px', alignItems: 'baseline', minWidth: 0 }}>
-                <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: tone, minWidth: '64px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{a[`area${i.area}` as const]}</span>
-                <span style={{ fontFamily: sans, fontSize: '14px', color: 'var(--brand-text)', overflowWrap: 'anywhere', flex: 1 }}>{sentence(i)}</span>
-                {href && <Link href={href} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)' }}>{a.open}</Link>}
+              <li key={n} className="attn-item">
+                {/* The whole row opens the record: one target, thumb-sized on a phone. */}
+                {(() => {
+                  const inner = <>
+                    <span className="attn-area" style={{ color: tone }}>{a[`area${i.area}` as const]}</span>
+                    <span className="attn-text">{sentence(i)}</span>
+                  </>
+                  return href
+                    ? <Link href={href} className="attn-row" aria-label={`${sentence(i)} — ${a.open}`}>{inner}<span className="attn-open" aria-hidden="true"><span className="attn-open-text">{a.open} </span>›</span></Link>
+                    : <div className="attn-row">{inner}</div>
+                })()}
               </li>
             )
           })}

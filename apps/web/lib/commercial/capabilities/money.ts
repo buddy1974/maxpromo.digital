@@ -27,6 +27,9 @@ import { railIssues } from '@/lib/money/attention'
 import { railStatus, stripeRail, StripeRailError, toMinor } from '@/lib/money/stripe/client'
 
 const invoiceRef = { invoice_id: v.optional(v.uuid()), number: v.optional(v.string({ max: 30 })) }
+/** Preview text in the owner's screen language (ctx.language); English for other channels. */
+const say = (ctx: CapabilityContext) => (de: string, en: string) => (ctx.language === 'de' ? de : en)
+const STATUS_DE: Record<string, string> = { draft: 'Entwurf', sent: 'versendet', overdue: 'überfällig', paid: 'bezahlt', cancelled: 'storniert' }
 
 interface Inv { id: string; invoice_number: string; client_name: string; client_id: string | null; status: string; total: string; anzahlung: string | null; restbetrag: string | null; currency: string; due_date: string | null; language: string; paid_amount: string }
 
@@ -116,9 +119,17 @@ export const paymentRefund: CapabilityDefinition<ReturnType<typeof refundInput.p
     const card = p.provider === 'stripe'
     if (card && !stripeRail()) throw new CapabilityRefusal('Stripe is not connected, so a card refund cannot be made from the OS.', 'unsupported')
     const open = invoiceBalance({ ...inv, paid_amount: inv.paid_amount }, ctx.today).open
+    const L = say(ctx)
     return {
-      summary: `Refund ${eur(amount, p.currency)} on ${inv.invoice_number}`,
-      preview: {
+      summary: L(`${eur(amount, p.currency)} auf ${inv.invoice_number} erstatten`, `Refund ${eur(amount, p.currency)} on ${inv.invoice_number}`),
+      preview: ctx.language === 'de' ? {
+        AKTION: card ? 'Erstattung per Karte über Stripe — das Geld geht jetzt zurück' : 'Eine bereits per Überweisung geleistete Erstattung erfassen',
+        RECHNUNG: `${inv.invoice_number} · ${inv.client_name}`,
+        ZAHLUNG: `${eur(p.amount, p.currency)} erhalten am ${p.received_on} (${card ? 'Karte' : 'manuell'})`,
+        BETRAG: eur(amount, p.currency),
+        'OFFEN DANACH': eur(open + amount, p.currency),
+        ...(input.reason ? { GRUND: input.reason } : {}),
+      } : {
         ACTION: card ? 'Refund by card through Stripe — money leaves now' : 'Record a refund you already made by bank transfer',
         RECHNUNG: `${inv.invoice_number} · ${inv.client_name}`,
         PAYMENT: `${eur(p.amount, p.currency)} received ${p.received_on} (${card ? 'card' : 'manual'})`,
@@ -226,8 +237,10 @@ export const payoutReconcile: CapabilityDefinition<ReturnType<typeof reconcileIn
     if (p.reconciled_at) return { summary: 'That payout is already confirmed.' }
     if (p.status !== 'paid') throw new CapabilityRefusal(`That payout is ${p.status}, not paid.`)
     return {
-      summary: `Confirm payout ${eur(p.amount, p.currency)} on Revolut`,
-      preview: { ACTION: 'Confirm payout on the Revolut statement', AMOUNT: eur(p.amount, p.currency), ARRIVAL: p.arrival_date ?? '—', ...(input.bank_reference ? { REFERENCE: input.bank_reference } : {}) },
+      summary: say(ctx)(`Auszahlung ${eur(p.amount, p.currency)} auf Revolut bestätigen`, `Confirm payout ${eur(p.amount, p.currency)} on Revolut`),
+      preview: ctx.language === 'de'
+        ? { AKTION: 'Auszahlung auf dem Revolut-Kontoauszug bestätigen', BETRAG: eur(p.amount, p.currency), ANKUNFT: p.arrival_date ?? '—', ...(input.bank_reference ? { REFERENZ: input.bank_reference } : {}) }
+        : { ACTION: 'Confirm payout on the Revolut statement', AMOUNT: eur(p.amount, p.currency), ARRIVAL: p.arrival_date ?? '—', ...(input.bank_reference ? { REFERENCE: input.bank_reference } : {}) },
       payload: { payout_id: p.provider_payout, bank_reference: input.bank_reference ?? null },
       dedupeKey: `payout:${p.provider_payout}`,
     }
@@ -256,8 +269,10 @@ export const moneyResolve: CapabilityDefinition<ReturnType<typeof resolveInput.p
     const issue = (await railIssues(ctx.sql)).find(i => i.id === input.id && i.kind === 'unapplied')
     if (!issue) throw new CapabilityRefusal('No open money issue with that id.', 'not_found')
     return {
-      summary: `Mark ${eur(issue.amount, issue.currency)} as handled`,
-      preview: { ACTION: 'Mark money issue handled (no amount changes)', ISSUE: issue.detail, AMOUNT: eur(issue.amount, issue.currency), NOTE: input.note },
+      summary: say(ctx)(`${eur(issue.amount, issue.currency)} als erledigt markieren`, `Mark ${eur(issue.amount, issue.currency)} as handled`),
+      preview: ctx.language === 'de'
+        ? { AKTION: 'Als erledigt markieren (kein Betrag ändert sich)', VORGANG: issue.detail, BETRAG: eur(issue.amount, issue.currency), NOTIZ: input.note }
+        : { ACTION: 'Mark money issue handled (no amount changes)', ISSUE: issue.detail, AMOUNT: eur(issue.amount, issue.currency), NOTE: input.note },
       payload: { id: input.id, note: input.note },
       dedupeKey: `resolve:${input.id}`,
     }
@@ -327,8 +342,14 @@ export const invoiceCancelCap: CapabilityDefinition<ReturnType<typeof cancelInpu
     }
     const link = await q<{ n: number }>(ctx.sql`SELECT count(*)::int AS n FROM money.payment_links WHERE invoice_id = ${inv.id}::uuid AND status = 'active'`)
     return {
-      summary: `Cancel ${inv.invoice_number}`,
-      preview: {
+      summary: say(ctx)(`${inv.invoice_number} stornieren`, `Cancel ${inv.invoice_number}`),
+      preview: ctx.language === 'de' ? {
+        AKTION: 'Rechnung stornieren. Sie bleibt mit ihrer Nummer im Bestand.',
+        RECHNUNG: `${inv.invoice_number} · ${inv.client_name} · ${eur(inv.total, inv.currency)}`,
+        STATUS: `${STATUS_DE[inv.status] ?? inv.status} → storniert`,
+        GRUND: input.reason,
+        ...(link[0]?.n ? { ZAHLUNGSLINK: 'wird deaktiviert' } : {}),
+      } : {
         ACTION: 'Cancel the invoice (Storno). It stays on record with its number.',
         RECHNUNG: `${inv.invoice_number} · ${inv.client_name} · ${eur(inv.total, inv.currency)}`,
         STATUS: `${inv.status} → cancelled`,

@@ -13,6 +13,7 @@ import type { MailCopy } from '@/lib/os-i18n/mail'
 import { localizeFailure, say } from '@/lib/os-i18n/mail'
 import { FAMILIES, FAMILY_IDS, PLACEHOLDER, type FamilyId } from '@/lib/mail/identity/families'
 import { executeApproval, rejectApproval, resultData, runMail, type EngineResult } from '@/lib/mail/client'
+import { useOsLocale } from '@/lib/os-i18n/context'
 
 export interface ComposerInit {
   draftId?: string; revision?: number
@@ -32,6 +33,7 @@ const ASSIST = ['improve', 'shorten', 'expand', 'friendlier', 'formal', 'transla
 
 export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps) {
   const k = copy.composer
+  const { locale } = useOsLocale()
   const [to, setTo] = useState(init.to.join(', '))
   const [cc, setCc] = useState(init.cc.join(', '))
   const [bcc, setBcc] = useState(init.bcc.join(', '))
@@ -45,6 +47,10 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
   const [save, setSave] = useState<'idle' | 'saving' | 'saved' | 'error'>(init.draftId ? 'saved' : 'idle')
   const [error, setError] = useState<string | null>(null)
   const [stage, setStage] = useState<'edit' | 'confirm' | 'sent'>('edit')
+  /* "Send later": a local Berlin date-time; the server stores the instant and sends it once (0023). */
+  const [later, setLater] = useState(false)
+  const [sendAt, setSendAt] = useState('')
+  const sendAtIso = later && sendAt ? new Date(sendAt).toISOString() : undefined
   const [approval, setApproval] = useState<EngineResult['approval'] | null>(null)
   const [previewHtml, setPreviewHtml] = useState<string | null>(null)
   const [suggestion, setSuggestion] = useState<{ text: string; note: string; translate: boolean } | null>(null)
@@ -118,7 +124,7 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
     try {
       const id = dirty || !draftRef.current ? await persist() : draftRef.current
       if (!id) return
-      const r = await runMail('email.deliver', { draft_id: id })
+      const r = await runMail('email.deliver', { draft_id: id, ...(sendAtIso ? { send_at: sendAtIso } : {}) })
       if (r.status !== 'approval_required' || !r.approval) { setError(localizeFailure(r, copy)); return }
       setApproval(r.approval); setStage('confirm'); setPreviewHtml(null)
       const p = await fetch(`/api/os/mail/preview?draft=${encodeURIComponent(id)}`, { cache: 'no-store' })
@@ -133,8 +139,10 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
       const r = await executeApproval(approval.id, approval.payloadHash)
       if (r.status === 'done') {
         setStage('sent')
-        const data = r.result?.data as { transport?: string } | undefined
-        onSent(data?.transport === 'evidence' ? k.sentEvidence : k.sent)
+        const data = r.result?.data as { transport?: string; scheduled_for?: string } | undefined
+        onSent(data?.scheduled_for
+          ? say(k.scheduledFor, { when: new Date(data.scheduled_for).toLocaleString(locale === 'en' ? 'en-GB' : 'de-DE', { timeZone: 'Europe/Berlin', dateStyle: 'medium', timeStyle: 'short' }) })
+          : data?.transport === 'evidence' ? k.sentEvidence : k.sent)
         return
       }
       if (r.status === 'failed' && r.message && /confirm|bestätig|uncertain/i.test(r.message)) setError(k.uncertain)
@@ -233,6 +241,14 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
                   <option value="none">{k.followUpNone}</option>
                 </select>
               </label>
+              <div className="mail-field" role="group" aria-label={k.sendWhen}>
+                <span>{k.sendWhen}</span>
+                <div className="mail-chips">
+                  <button type="button" className="mail-chip" aria-pressed={!later} onClick={() => setLater(false)}>{k.sendNow}</button>
+                  <button type="button" className="mail-chip" aria-pressed={later} onClick={() => setLater(true)}>{k.sendLater}</button>
+                </div>
+                {later && <label className="mail-field"><span>{k.sendAt}</span><input className="input" type="datetime-local" value={sendAt} onChange={e => setSendAt(e.target.value)} required /></label>}
+              </div>
             </div>
             <label className="mail-field mail-field-body"><span>{k.body}</span>
               <textarea className="textarea" value={body} rows={12} maxLength={20000} onChange={e => edit(setBody)(e.target.value)} />
@@ -289,6 +305,7 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
               <div><dt>{k.thread}</dt><dd>{init.mode === 'new' ? k.threadNew : /^Continues/.test(approval.preview.THREAD ?? '') ? k.threadContinues : k.threadUnknown}</dd></div>
               <div><dt>{k.followUp}</dt><dd>{days === null || days === undefined ? k.followUpNone : say(k.followUpDays, { days })}</dd></div>
               {approval.preview.ATTACHMENTS && <div><dt>{k.attachments}</dt><dd>{approval.preview.ATTACHMENTS}</dd></div>}
+              <div><dt>{k.sendTimeRow}</dt><dd>{sendAtIso ? new Date(sendAtIso).toLocaleString(locale === 'en' ? 'en-GB' : 'de-DE', { timeZone: 'Europe/Berlin', dateStyle: 'medium', timeStyle: 'short' }) : k.sendTimeNow}</dd></div>
             </dl>
             <p className="mail-label">{k.previewTitle}</p>
             {previewHtml
@@ -296,7 +313,7 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
               : <div className="mail-body">{body}</div>}
             {error && <p className="mail-note is-alert" role="alert">{error}</p>}
             <div className="mail-composer-actions">
-              <button type="button" className="btn-primary" disabled={working} onClick={() => void send()}>{working ? copy.actions.working : k.send}</button>
+              <button type="button" className="btn-primary" disabled={working} onClick={() => void send()}>{working ? copy.actions.working : sendAtIso ? k.scheduleButton : k.send}</button>
               <button type="button" className="btn-secondary" disabled={working} onClick={() => void backToEdit()}>{k.back}</button>
             </div>
           </div>

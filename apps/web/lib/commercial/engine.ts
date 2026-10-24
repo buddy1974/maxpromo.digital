@@ -50,14 +50,15 @@ export interface EngineRequest {
   channel: string
   capability: string
   input: unknown
+  language?: 'de' | 'en'
 }
 
 interface Commitment { what: string; externalRef?: string }
 
-function context(sql: Sql, actor: string, channel: string, now = new Date()): CapabilityContext & { commitment: () => Commitment | null } {
+function context(sql: Sql, actor: string, channel: string, now = new Date(), language?: 'de' | 'en'): CapabilityContext & { commitment: () => Commitment | null } {
   let commitment: Commitment | null = null
   return {
-    sql, actor, channel, now, today: berlinDate(now),
+    sql, actor, channel, now, today: berlinDate(now), ...(language ? { language } : {}),
     committed: (what, externalRef) => { commitment = { what, ...(externalRef ? { externalRef } : {}) } },
     commitment: () => commitment,
   }
@@ -98,7 +99,7 @@ export async function runCapability(sql: Sql, req: EngineRequest): Promise<Engin
     return { status: 'failed', capability: cap.id, message: 'The same request is still being processed.', retrySafe: true }
   }
 
-  const ctx = context(sql, req.actor, req.channel)
+  const ctx = context(sql, req.actor, req.channel, new Date(), req.language)
   let response: EngineResponse
   try {
     const input = cap.input.parse(req.input ?? {}, '')

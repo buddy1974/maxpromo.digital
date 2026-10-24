@@ -100,6 +100,10 @@ export function renderEmail(input: RenderInput): RenderedEmail {
     ...(quoted ? ['', quoted.head, ...quoted.text.split('\n').map(l => `> ${l}`)] : []),
   ].join('\n')
 
+  /* The line a mail client shows next to the subject: for a notice, its reference facts ("Rechnung
+     MP-2026-002 · Betrag 156,00 €"), not the greeting. A letter keeps its natural opening. */
+  const preheader = transactional && input.reference?.length ? input.reference.slice(0, 3).map(([k, v]) => `${k} ${v}`).join(' · ') : ''
+
   /* ── html ── */
   const ink = BRAND_COLORS.ink, muted = BRAND_COLORS.muted, faint = BRAND_COLORS.faint, border = BRAND_COLORS.border
   const p = `margin:0 0 16px;font-family:${FONT};font-size:15px;line-height:1.6;color:${ink};`
@@ -148,9 +152,11 @@ export function renderEmail(input: RenderInput): RenderedEmail {
 <meta name="supported-color-schemes" content="light">
 <meta name="x-apple-disable-message-reformatting">
 <title>Maxpromo Digital</title>
+<!--[if mso]><style>table,td,p,a,span{font-family:Arial,Helvetica,sans-serif!important;mso-line-height-rule:exactly;}</style><![endif]-->
 </head>
 <body style="margin:0;padding:0;background:${BRAND_COLORS.surfaceSubtle};-webkit-text-size-adjust:100%;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND_COLORS.surfaceSubtle};">
+${preheader ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:${BRAND_COLORS.surfaceSubtle};opacity:0;">${esc(preheader)}</div>
+` : ''}<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND_COLORS.surfaceSubtle};">
 <tr><td align="center" style="padding:24px 12px;">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:${BRAND_COLORS.white};border:1px solid ${border};">
     ${header}

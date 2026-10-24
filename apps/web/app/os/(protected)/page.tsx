@@ -13,13 +13,13 @@ const sans    = 'var(--brand-font-body)'
 interface MetricCardProps { label: string; value: string | number; sub?: string }
 function MetricCard({ label, value, sub }: MetricCardProps) {
   return (
-    <div style={{
+    <div className="os-metric" style={{
       background: 'var(--brand-surface-subtle)', borderTop: '2px solid var(--brand-primary)',
-      border: '1px solid var(--brand-border)', padding: '20px 24px', flex: 1,
+      border: '1px solid var(--brand-border)', flex: 1,
     }}>
       <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 10px' }}>{label}</p>
-      <p style={{ fontFamily: sans, fontSize: '30px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', margin: '0 0 var(--space-1)', letterSpacing: '-0.03em' }}>{value}</p>
-      {sub && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0 }}>{sub}</p>}
+      <p className="os-metric-value" style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', margin: '0 0 var(--space-1)', letterSpacing: '-0.03em' }}>{value}</p>
+      {sub && <p className="os-metric-sub" style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0 }}>{sub}</p>}
     </div>
   )
 }
@@ -54,10 +54,10 @@ function Badge({ status, label }: { status: string; label: string }) {
 
 function QuickAction({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} style={{
+    <Link href={href} className="os-quick-action" style={{
       fontFamily: mono, fontSize: 'var(--text-label)', letterSpacing: '0.08em',
-      color: 'var(--brand-text)', background: 'var(--brand-primary)', padding: '10px 18px',
-      textDecoration: 'none', textTransform: 'uppercase', fontWeight: 700,
+      color: 'var(--brand-on-primary)', background: 'var(--brand-primary)',
+      textDecoration: 'none', textTransform: 'uppercase', fontWeight: 600,
     }}>
       {label}
     </Link>
@@ -113,8 +113,8 @@ export default function DashboardPage() {
   return (
     <div className="os-dash">
       {/* Header */}
-      <div style={{ marginBottom: '20px' }}>
-        <h1 style={{ fontFamily: sans, fontSize: '28px', fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
+      <div className="os-dash-head">
+        <h1 style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', color: 'var(--brand-text)', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
           {greeting}, {t.dashboard.ownerName}
         </h1>
         <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--brand-text-muted)', letterSpacing: '0.1em', margin: 0, textTransform: 'uppercase' }}>
@@ -122,9 +122,10 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Attention first, data second: what changed, what needs Marcel, then the figures. */}
-      <MorningBriefing compact />
+      {/* What needs Marcel first, then what changed, then the figures. On a phone the routine
+          lists below stay quiet (hidden); the decisions are the screen. */}
       <AttentionPanel />
+      <MorningBriefing compact />
 
       {/* Metrics */}
       <div className="os-dash-metrics">
@@ -135,7 +136,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick actions */}
-      <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: '40px', flexWrap: 'wrap' }}>
+      <div className="os-dash-actions">
         <QuickAction href="/os/invoices/new"  label={t.dashboard.actionNewInvoice} />
         <QuickAction href="/os/angebote/new"  label={t.dashboard.actionNewAngebot} />
         <QuickAction href="/os/clients"       label={t.dashboard.actionNewClient} />

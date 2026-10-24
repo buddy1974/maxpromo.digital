@@ -92,10 +92,23 @@ export const mailCompose: CapabilityDefinition<ReturnType<typeof composeInput.pa
 /* ── email.deliver ─────────────────────────────────────────────────────── */
 
 const draftTarget = v.object({ draft_id: v.uuid() })
-export const mailDeliver: CapabilityDefinition<ReturnType<typeof draftTarget.parse>> = {
-  id: 'email.deliver', family: 'EMAIL', title: 'Send email', risk: 'AMBER', input: draftTarget,
-  description: 'Shows the exact email — sender, recipients, Cc/Bcc, subject, text, follow-up — and sends that revision once after confirmation. A changed draft needs a new confirmation.',
+/** "Send later" (0023): an ISO instant at least 2 minutes and at most 60 days ahead. */
+const deliverInput = v.object({ draft_id: v.uuid(), send_at: v.optional(v.string({ max: 40 })) })
+export function scheduleInstant(sendAt: string | undefined, now: Date): Date | null {
+  if (!sendAt) return null
+  const at = new Date(sendAt)
+  if (Number.isNaN(at.getTime())) throw new CapabilityRefusal('That send time is not a valid date and time.')
+  if (at.getTime() < now.getTime() + 2 * 60_000) throw new CapabilityRefusal('A scheduled send must be at least 2 minutes from now. Send it now instead.')
+  if (at.getTime() > now.getTime() + 60 * 86_400_000) throw new CapabilityRefusal('A scheduled send can be at most 60 days ahead.')
+  return at
+}
+const berlin = (d: Date) => d.toLocaleString('de-DE', { timeZone: 'Europe/Berlin', dateStyle: 'medium', timeStyle: 'short' })
+
+export const mailDeliver: CapabilityDefinition<ReturnType<typeof deliverInput.parse>> = {
+  id: 'email.deliver', family: 'EMAIL', title: 'Send email', risk: 'AMBER', input: deliverInput,
+  description: 'Shows the exact email — sender, recipients, Cc/Bcc, subject, text, follow-up, and when it goes — and sends that revision once after confirmation, now or at the confirmed time. A changed draft needs a new confirmation.',
   async prepare(ctx, input) {
+    const at = scheduleInstant(input.send_at, ctx.now)
     const rows = await ctx.sql`SELECT * FROM mail.drafts WHERE id=${input.draft_id}::uuid AND status='draft' AND created_by=${ctx.actor}` as DraftRow[]
     const d = rows[0]
     if (!d) throw new CapabilityRefusal('No draft to send.', 'not_found')
@@ -115,15 +128,36 @@ export const mailDeliver: CapabilityDefinition<ReturnType<typeof draftTarget.par
         ...(files.length ? { ATTACHMENTS: files.map(f => `${f.filename} (${Math.max(1, Math.round(f.size_bytes / 1024))} KB)`).join(', ') } : {}),
         THREAD: d.mode === 'new' ? 'New conversation' : threadRef ? 'Continues the conversation' : 'Reply (original location unknown: sent without thread headers)',
         FOLLOW_UP: days === null ? 'None' : `In ${days} day(s) if no answer`,
+        SEND: at ? `Scheduled: ${berlin(at)} (Berlin)` : 'Now',
       },
-      payload: { draft_id: d.id, revision: d.revision, content },
+      payload: { draft_id: d.id, revision: d.revision, content, ...(at ? { send_at: at.toISOString() } : {}) },
       dedupeKey: `draft:${d.id}`, expiresInMinutes: 15,
     }
   },
   async execute(ctx, payload, approvalId) {
-    const p = payload as { draft_id: string; revision: number }
+    const p = payload as { draft_id: string; revision: number; send_at?: string }
+    if (p.send_at && new Date(p.send_at).getTime() > Date.now() + 30_000) {
+      // Confirmed for later: bound to this revision and approval; the scheduler sends it (sweepScheduledMail).
+      const rows = await ctx.sql`UPDATE mail.drafts SET status='scheduled',scheduled_for=${p.send_at}::timestamptz,scheduled_approval=${approvalId}::uuid,schedule_error=NULL,updated_at=now()
+        WHERE id=${p.draft_id}::uuid AND status='draft' AND revision=${p.revision} RETURNING id` as { id: string }[]
+      if (!rows.length) throw new CapabilityRefusal('This draft changed or was already sent. Review it again.', 'conflict')
+      return { summary: `Scheduled for ${berlin(new Date(p.send_at))} (Berlin). Nothing has been sent yet; you can cancel it until then.`, data: { scheduled_for: p.send_at } }
+    }
     const result = await deliverDraft(ctx.sql, { draftId: p.draft_id, revision: p.revision, approvalId, actor: ctx.actor, today: ctx.today, committed: what => ctx.committed(what) })
     return { summary: result.transport === 'evidence' ? 'Evidence mode: recorded as sent; nothing left the system.' : 'Sent. A copy is in Hostinger’s Sent folder.', data: result }
+  },
+}
+
+/* ── email.unschedule ──────────────────────────────────────────────────── */
+
+export const mailUnschedule: CapabilityDefinition<ReturnType<typeof draftTarget.parse>> = {
+  id: 'email.unschedule', family: 'EMAIL', title: 'Cancel a scheduled email', risk: 'GREEN', input: draftTarget,
+  description: 'Takes a scheduled email back to a draft before it goes. Its confirmation no longer applies; sending it needs a new one.',
+  async run(ctx, input) {
+    const rows = await ctx.sql`UPDATE mail.drafts SET status='draft',scheduled_for=NULL,scheduled_approval=NULL,revision=revision+1,updated_at=now()
+      WHERE id=${input.draft_id}::uuid AND status='scheduled' AND created_by=${ctx.actor} RETURNING id` as { id: string }[]
+    if (!rows.length) throw new CapabilityRefusal('Nothing scheduled to cancel — it may already have been sent.', 'not_found')
+    return { summary: 'The scheduled send is cancelled. The email is a draft again.' }
   },
 }
 
@@ -257,4 +291,4 @@ export const mailAssist: CapabilityDefinition<ReturnType<typeof assistInput.pars
   },
 }
 
-export const MAIL_WORKSPACE_CAPABILITIES: AnyCapability[] = [mailCompose, mailDeliver, mailDiscard, mailFollowUp, mailAssist]
+export const MAIL_WORKSPACE_CAPABILITIES: AnyCapability[] = [mailCompose, mailDeliver, mailDiscard, mailUnschedule, mailFollowUp, mailAssist]

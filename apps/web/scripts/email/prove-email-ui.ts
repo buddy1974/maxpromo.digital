@@ -105,7 +105,7 @@ check('engine refusals are localised where the cause is known', localizeFailure(
 /* ── mutation: an unsafe renderer must be caught by these checks ── */
 const viewPath = resolve('apps/web/components/os/mail/ConversationView.tsx')
 const source = readFileSync(viewPath, 'utf8')
-const unsafe = source.replace("<div className=\"mail-body\">{(preview ? message.preview_text : message.body_text) || copy.previewUnavailable}</div>", '<div className="mail-body" dangerouslySetInnerHTML={{ __html: message.body_text }} />')
+const unsafe = source.replace("<div className=\"mail-body\"><LinkifiedText text={(preview ? message.preview_text : message.body_text) || copy.previewUnavailable} /></div>", '<div className="mail-body" dangerouslySetInnerHTML={{ __html: message.body_text }} />')
   .replace(/from '\.\/(format|MailList)'/g, (_m, f) => `from '${pathToFileURL(resolve('apps/web/components/os/mail', `${f}.ts${f === 'MailList' ? 'x' : ''}`)).href}'`)
 assert.notEqual(unsafe, source, 'mutation must change the real renderer')
 // Inside the workspace so `react` resolves from node_modules; removed in `finally`.

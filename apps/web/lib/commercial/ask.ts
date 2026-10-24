@@ -14,7 +14,7 @@
  */
 import { callAIJson } from '@/lib/ai'
 import { runCapability } from './engine'
-import { briefingSnapshot, briefLineEn } from './capabilities/views'
+import { attentionSnapshot, briefingSnapshot, briefLineEn } from './capabilities/views'
 import { receivables, daysBetween, isoDate, formatMoney } from './money'
 import { loadInvoicesForMoney } from './capabilities/documents'
 import { leadStage, WAITING_ON_THEM } from './pipeline'
@@ -22,6 +22,7 @@ import { q, leadLabel } from './records'
 import type { CapabilityContext } from './types'
 import { BRIEFING_COPY } from '@/lib/os-i18n/briefing'
 import { moneySnapshot } from '@/lib/money/state'
+import { OS_DICTIONARY } from '@/lib/os-i18n/dictionary'
 
 export const ASK_INTENTS = [
   'overnight', 'attention', 'waiting_for_customer', 'waiting_for_me', 'replies_needed', 'follow_ups', 'leads_today',
@@ -44,12 +45,12 @@ const KEYWORDS: [AskIntent, RegExp][] = [
   ['follow_ups', /nachfass|follow.?up|wiedervorlage/i],
   ['leads_today', /lead|kontaktier|contact today|anrufen/i],
   ['approvals', /freigabe|approv/i],
-  ['agents_blocked', /agent.*(block|fehl|fail)|(block|fehl|fail).*agent/i],
+  ['agents_blocked', /agent.*(block|fehl|fail|wait|wart)|(block|fehl|fail|warten).*agent/i],
   ['agents_completed', /agent|bureau/i],
   ['projects_blocked', /projekt|project|blockiert|blocked/i],
   ['money', /geld|money|rechnung|invoice|schuld|owe|offen|outstanding|zahlung|payment/i],
   ['overview', /wie läuft|how is|überblick|overview|umsatz|revenue/i],
-  ['attention', /aufmerksamkeit|attention|heute|today|priorit/i],
+  ['attention', /aufmerksamkeit|attention|heute|today|priorit|als n(ä|ae)chstes|next|erledigen|handle/i],
 ]
 
 export function routeByKeywords(question: string): AskIntent {
@@ -119,9 +120,20 @@ async function gather(ctx: CapabilityContext, intent: AskIntent, subject: string
       for (const f of b.first) if (f.ref?.kind === 'email_thread') links.push(thread(f.ref.id, f.ref.label))
       break
     }
-    case 'attention': await cap('owner.attention'); break
+    case 'attention': {
+      // Attention in the asker's language, from the same model the screen and the brief use.
+      const snap = await attentionSnapshot(ctx)
+      const copy = OS_DICTIONARY[lang].attention
+      const items = copy.items as Record<string, (p: Record<string, string | number>) => string>
+      for (const i of snap.items.slice(0, 10)) facts.push(i.msg && items[i.msg.key] ? items[i.msg.key](i.msg.params) : i.text)
+      const replies = snap.email.filter(e => e.needsReply).length
+      if (replies) facts.push(copy.email(replies))
+      if (snap.approvals.length) { facts.push(copy.approvals(snap.approvals.length)); links.push({ label: L('Freigaben', 'Approvals'), href: '/os/approvals' }) }
+      if (!facts.length) facts.push(copy.nothing)
+      break
+    }
     case 'money': {
-      await cap('receivables.show')
+      facts.push(...await receivableFacts(ctx, lang, links))
       facts.push(...await cardFacts(ctx, lang))
       break
     }
@@ -231,7 +243,7 @@ async function gather(ctx: CapabilityContext, intent: AskIntent, subject: string
     case 'payment_status': {
       const number = invoiceNumberIn(question) ?? (subject ? invoiceNumberIn(subject) : null)
       // "What did Stripe pay out?" names no invoice: answer with the card money as a whole.
-      if (!number && !subject) { await cap('receivables.show'); facts.push(...await cardFacts(ctx, lang)); break }
+      if (!number && !subject) { facts.push(...await receivableFacts(ctx, lang, links)); facts.push(...await cardFacts(ctx, lang)); break }
       const g = await paymentFacts(ctx, number, number ? null : subject, lang)
       facts.push(...g.facts); links.push(...g.links)
       break
@@ -297,6 +309,23 @@ export async function paymentFacts(ctx: CapabilityContext, number: string | null
     }
   }
   return { facts, links }
+}
+
+/** Who owes what, in the asker's language: the one receivables definition (lib/commercial/money.ts). */
+async function receivableFacts(ctx: CapabilityContext, lang: 'de' | 'en', links: AskLink[]): Promise<string[]> {
+  const L = (de: string, en: string) => (lang === 'de' ? de : en)
+  const rec = receivables(await loadInvoicesForMoney(ctx), ctx.today)
+  const per = (m: Record<string, number>) => Object.entries(m).filter(([, v]) => v > 0.004).map(([c, v]) => formatMoney(v, c as 'EUR')).join(' + ')
+  if (!rec.invoices.length) return [L('Niemand schuldet dir gerade Geld: keine offene Rechnung.', 'Nobody owes you money right now: no open invoice.')]
+  const out = [L(`Offen: ${per(rec.outstanding) || formatMoney(0, 'EUR')} auf ${rec.invoices.length} Rechnung(en); davon überfällig: ${per(rec.overdue) || formatMoney(0, 'EUR')}.`,
+    `Outstanding: ${per(rec.outstanding) || formatMoney(0, 'EUR')} on ${rec.invoices.length} invoice(s); overdue: ${per(rec.overdue) || formatMoney(0, 'EUR')}.`)]
+  for (const b of rec.invoices.slice(0, 8)) {
+    out.push(b.daysOverdue > 0
+      ? L(`${b.client} schuldet ${formatMoney(b.open, b.currency)} aus ${b.number}, seit ${b.daysOverdue} Tagen überfällig`, `${b.client} owes ${formatMoney(b.open, b.currency)} on ${b.number}, ${b.daysOverdue} days overdue`)
+      : L(`${b.client}: ${formatMoney(b.open, b.currency)} offen aus ${b.number}${b.dueDate ? `, fällig am ${b.dueDate}` : ''}`, `${b.client}: ${formatMoney(b.open, b.currency)} open on ${b.number}${b.dueDate ? `, due ${b.dueDate}` : ''}`))
+    links.push({ label: b.number, href: `/os/invoices/${b.id}` })
+  }
+  return out
 }
 
 /** Card money this month, in business words: received, fees, what Stripe has not paid out yet. */

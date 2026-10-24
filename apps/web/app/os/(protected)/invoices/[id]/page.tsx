@@ -91,7 +91,11 @@ export default function InvoiceDetailPage() {
   const items    = Array.isArray(invoice.line_items) ? invoice.line_items : []
   const hasAnz   = Number(invoice.anzahlung) > 0
   const restbet  = hasAnz ? Number(invoice.restbetrag ?? (Number(invoice.total) - Number(invoice.anzahlung))) : Number(invoice.total)
-  const sc       = TONE_VARS[statusTone(invoice.status)]
+  /* Overdue is a state the money model computes (due date passed, something still open), not a stored status. */
+  const today    = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' })
+  const overdue  = ['sent', 'overdue'].includes(invoice.status) && Boolean(invoice.due_date) && String(invoice.due_date).slice(0, 10) < today && (balance?.open ?? 0) > 0.009
+  const shownStatus = overdue ? 'overdue' : invoice.status
+  const sc       = TONE_VARS[statusTone(shownStatus)]
 
   const columns = [
     t.invoiceDetail.colIndex, t.invoiceDetail.colDescription,
@@ -102,7 +106,7 @@ export default function InvoiceDetailPage() {
     <div className="os-page invoice-detail">
 
       {/* Breadcrumb */}
-      <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', marginBottom: 'var(--space-5)', letterSpacing: '0.1em' }}>
+      <p className="os-breadcrumb" style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', marginBottom: 'var(--space-5)', letterSpacing: '0.1em' }}>
         <Link href="/os/invoices" style={{ color: 'var(--brand-text-muted)', textDecoration: 'none' }}>{t.invoiceDetail.breadcrumb}</Link>
         {' / '}
         <span style={{ color: 'var(--brand-text)' }}>{invoice.invoice_number}</span>
@@ -116,7 +120,7 @@ export default function InvoiceDetailPage() {
               {invoice.invoice_number}
             </h1>
             <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: sc.text, background: sc.bg, border: `1px solid ${sc.border}`, padding: '3px 10px', letterSpacing: '0.12em', textTransform: 'uppercase', borderRadius: 'var(--radius-xs)' }}>
-              {t.status.invoice[invoice.status] ?? invoice.status}
+              {t.status.invoice[shownStatus] ?? shownStatus}
             </span>
           </div>
           <p style={{ fontFamily: sans, fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)', margin: 0 }}>{invoice.client_name}</p>
@@ -145,7 +149,7 @@ export default function InvoiceDetailPage() {
         </div>
       </div>
 
-      {balance && <InvoiceActions invoice={{ id: invoice.id, status: invoice.status, currency: invoice.currency, open: balance.open, received: balance.received }} onChanged={reload} onDeleted={() => router.push('/os/invoices')} />}
+      {balance && <InvoiceActions invoice={{ id: invoice.id, status: shownStatus, currency: invoice.currency, open: balance.open, received: balance.received }} onChanged={reload} onDeleted={() => router.push('/os/invoices')} />}
 
       {/* Meta grid */}
       <div className="invoice-meta-grid" style={{ marginBottom: '28px' }}>
@@ -154,7 +158,7 @@ export default function InvoiceDetailPage() {
           { label: t.invoiceDetail.metaDueDate, value: fmtDate(calendarDay(invoice.due_date)) },
           { label: t.invoiceDetail.metaPaidOn,  value: fmtDate(calendarDay(invoice.paid_date)) },
         ].map(m => (
-          <div key={m.label} style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-sm)', padding: '16px 20px' }}>
+          <div key={m.label} className="invoice-meta" style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-sm)' }}>
             <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.15em', textTransform: 'uppercase', margin: '0 0 var(--space-2)' }}>{m.label}</p>
             <p style={{ fontFamily: mono, fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{m.value}</p>
           </div>

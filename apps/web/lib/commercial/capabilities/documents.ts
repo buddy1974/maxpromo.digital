@@ -876,8 +876,16 @@ export const paymentRecord: CapabilityDefinition<ReturnType<typeof paymentInput.
     if (receivedOn > ctx.today) throw new CapabilityRefusal('A payment cannot be received in the future.')
     const after = Math.round((b.open - amount) * 100) / 100
     return {
-      summary: `Record ${eur(amount, b.currency)} received on ${i.invoice_number}`,
-      preview: {
+      summary: ctx.language === 'de' ? `Eingang ${eur(amount, b.currency)} auf ${i.invoice_number} erfassen` : `Record ${eur(amount, b.currency)} received on ${i.invoice_number}`,
+      preview: ctx.language === 'de' ? {
+        AKTION: after === 0 ? 'Zahlung erfassen und als BEZAHLT markieren' : 'Teilzahlung erfassen',
+        RECHNUNG: `${i.invoice_number} · ${i.client_name}`,
+        BETRAG: `${eur(amount, b.currency)}${input.amount === undefined ? ' (der gesamte offene Betrag)' : ''}`,
+        EINGANG: receivedOn,
+        'OFFEN VORHER': eur(b.open, b.currency),
+        'OFFEN DANACH': eur(after, b.currency),
+        ...(input.reference ? { REFERENZ: input.reference } : {}),
+      } : {
         ACTION: after === 0 ? 'Record payment and mark PAID' : 'Record part payment',
         RECHNUNG: `${i.invoice_number} · ${i.client_name}`,
         AMOUNT: `${eur(amount, b.currency)}${input.amount === undefined ? ' (the full open balance)' : ''}`,

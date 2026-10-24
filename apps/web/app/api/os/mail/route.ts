@@ -35,9 +35,12 @@ export const GET = withAuth(async (req, { session }) => {
       const context = rows[0].quarantine ? null : await threadContext(sql, thread, today)
       const drafts = workspace ? await sql`SELECT id,mode,source_message_id,to_addrs,cc_addrs,bcc_addrs,subject,body,family,language,entity_kind,entity_id,follow_up_days,revision,updated_at
         FROM mail.drafts WHERE thread_id=${thread}::uuid AND status='draft' AND created_by='os:marcel' ORDER BY updated_at DESC LIMIT 1` : []
+      // A confirmed "send later" on this conversation, and a scheduled send that did not go (0023).
+      const scheduled = workspace ? await sql`SELECT id,scheduled_for FROM mail.drafts WHERE thread_id=${thread}::uuid AND status='scheduled' AND created_by='os:marcel' ORDER BY scheduled_for LIMIT 1`.catch(() => []) as { id: string; scheduled_for: string }[] : []
+      const failedSchedule = workspace ? await sql`SELECT schedule_error FROM mail.drafts WHERE thread_id=${thread}::uuid AND status='draft' AND schedule_error IS NOT NULL AND created_by='os:marcel' ORDER BY updated_at DESC LIMIT 1`.catch(() => []) as { schedule_error: string }[] : []
       // Full text for this conversation's previews is fetched after this response.
       if (!rows[0].quarantine) scheduleProviderCheck('thread', thread)
-      return NextResponse.json({ thread: rows[0], messages, context, draft: drafts[0] ?? null, providerCheck: providerCheck(), sending }, { headers })
+      return NextResponse.json({ thread: rows[0], messages, context, draft: drafts[0] ?? null, scheduled: scheduled[0] ?? null, scheduleError: failedSchedule[0]?.schedule_error ?? null, providerCheck: providerCheck(), sending }, { headers })
     }
     const threads = await sql`SELECT t.id,t.subject,t.classification,t.needs_reply,t.waiting,t.archived,t.trashed,t.updated_at,t.quarantine,t.owner_verdict,
       t.follow_up_on::text AS follow_up_on,t.next_action,

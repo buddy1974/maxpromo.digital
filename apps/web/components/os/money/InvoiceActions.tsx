@@ -66,8 +66,8 @@ export function InvoiceActions({ invoice, onChanged, onDeleted }: {
 
       {open === 'record' && (
         <form className="invoice-actions-form" onSubmit={e => { e.preventDefault(); void action.run('payment.record', { invoice_id: invoice.id, amount: Number(amount), ...(method.trim() ? { method: method.trim() } : {}) }) }}>
-          <label><span>{c.recordAmount}</span><input type="number" inputMode="decimal" step="0.01" min="0.01" max={invoice.open} value={amount} onChange={e => setAmount(e.target.value)} required style={field} /></label>
-          <label><span>{c.recordMethod}</span><input type="text" maxLength={60} value={method} onChange={e => setMethod(e.target.value)} style={field} /></label>
+          <label><span>{c.recordAmount}</span><input className="input" type="number" inputMode="decimal" step="0.01" min="0.01" max={invoice.open} value={amount} onChange={e => setAmount(e.target.value)} required style={field} /></label>
+          <label><span>{c.recordMethod}</span><input className="input" type="text" maxLength={60} value={method} onChange={e => setMethod(e.target.value)} style={field} /></label>
           <div className="invoice-actions-row">
             <button type="submit" className="btn-primary btn-sm" disabled={action.busy}>{c.recordPayment}</button>
             <button type="button" className="btn-secondary btn-sm" onClick={() => setOpen(null)}>{c.cancel}</button>
@@ -78,7 +78,7 @@ export function InvoiceActions({ invoice, onChanged, onDeleted }: {
       {open === 'cancel' && (
         <form className="invoice-actions-form" onSubmit={e => { e.preventDefault(); void action.run('invoice.cancel', { invoice_id: invoice.id, reason: reason.trim() }) }}>
           <p style={{ margin: 0, fontSize: 'var(--text-small)', color: 'var(--brand-text-secondary)' }}>{c.cancelHint}</p>
-          <label><span>{c.cancelReason}</span><input type="text" minLength={3} maxLength={300} value={reason} onChange={e => setReason(e.target.value)} required style={field} /></label>
+          <label><span>{c.cancelReason}</span><input className="input" type="text" minLength={3} maxLength={300} value={reason} onChange={e => setReason(e.target.value)} required style={field} /></label>
           <div className="invoice-actions-row">
             <button type="submit" className="btn-primary btn-sm" disabled={action.busy || reason.trim().length < 3}>{c.cancelInvoice}</button>
             <button type="button" className="btn-secondary btn-sm" onClick={() => setOpen(null)}>{c.cancel}</button>

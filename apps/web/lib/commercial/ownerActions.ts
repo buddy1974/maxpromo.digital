@@ -29,10 +29,11 @@ export async function ownerCapabilityAction(request: NextRequest, session: Sessi
     const channel = 'os'
     const sql = getDb()
     if (body.action === 'run') {
-      if (Object.keys(body).some(k => !['action', 'requestId', 'capability', 'input'].includes(k))) return ownerReply('Unexpected field', 400)
+      if (Object.keys(body).some(k => !['action', 'requestId', 'capability', 'input', 'language'].includes(k))) return ownerReply('Unexpected field', 400)
       if (typeof body.capability !== 'string' || !scope.capabilities.has(body.capability)) return ownerReply(scope.messages.required, 400)
       if (typeof body.requestId !== 'string' || !/^[A-Za-z0-9:_.-]{8,120}$/.test(body.requestId)) return ownerReply('Invalid request ID', 400)
-      return NextResponse.json(await runCapability(sql, { actor, channel, requestId: `${actor}:${body.requestId}`, capability: body.capability, input: body.input ?? {} }), { headers: OWNER_HEADERS })
+      const language = body.language === 'de' || body.language === 'en' ? body.language : undefined
+      return NextResponse.json(await runCapability(sql, { actor, channel, requestId: `${actor}:${body.requestId}`, capability: body.capability, input: body.input ?? {}, language }), { headers: OWNER_HEADERS })
     }
     if (body.action !== 'execute' && body.action !== 'reject') return ownerReply('Invalid action', 400)
     if (Object.keys(body).some(k => !['action', 'approvalId', 'payloadHash'].includes(k))) return ownerReply('Unexpected field', 400)

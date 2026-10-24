@@ -37,6 +37,29 @@ const nextConfig: NextConfig = {
 
   pageExtensions: ['ts', 'tsx', 'mdx'],
 
+  /**
+   * The signed-in OS and the public payment page are never framed by another site. Both carry
+   * governed one-tap decisions (confirm a refund, approve a send, pay an invoice); inside a hostile
+   * frame those could be clicked through an overlay (clickjacking). frame-ancestors is the modern
+   * control, X-Frame-Options the fallback for older browsers. Public marketing pages are unchanged.
+   */
+  async headers() {
+    // `next dev` only: a local phone-width harness (localhost:3999) may frame the OS for QA.
+    const dev = process.env.NODE_ENV !== 'production'
+    const frames = dev
+      ? [{ key: 'Content-Security-Policy', value: "frame-ancestors 'self' http://localhost:3999" }]
+      : [{ key: 'Content-Security-Policy', value: "frame-ancestors 'none'" }, { key: 'X-Frame-Options', value: 'DENY' }]
+    const os = [...frames, { key: 'X-Content-Type-Options', value: 'nosniff' }, { key: 'Referrer-Policy', value: 'same-origin' }]
+    // The pay page states its own stricter no-referrer policy in its metadata.
+    const pay = [...frames, { key: 'X-Content-Type-Options', value: 'nosniff' }]
+    return [
+      { source: '/os', headers: os },
+      { source: '/os/:path*', headers: os },
+      { source: '/api/os/:path*', headers: os },
+      { source: '/:locale(de|en)/pay/:path*', headers: pay },
+    ]
+  },
+
   // 2026-07-25: six system pages moved from /products/<slug> to /systems/<slug>
   // (agent-bureau is new at /systems/agent-bureau and has no legacy path to
   // redirect from). localePrefix is 'always' (see i18n/routing.ts), so

@@ -217,7 +217,7 @@ async function bouncedMail(ctx: CapabilityContext): Promise<BouncedRow[]> {
   try {
     return await ctx.sql`SELECT m.id::text, m.thread_id::text, m.subject, split_part(m.delivery_detail, ':', 1) AS recipient, nullif(trim(substr(m.delivery_detail, strpos(m.delivery_detail, ':') + 1)), '') AS detail
       FROM mail.messages m JOIN mail.threads t ON t.id = m.thread_id
-      WHERE m.direction = 'outbound' AND m.delivery_state = 'bounced' AND m.delivery_at > now() - interval '7 days' AND t.trashed = false
+      WHERE m.direction = 'outbound' AND m.delivery_state = 'bounced' AND m.delivery_at > now() - interval '7 days' AND t.trashed = false AND t.quarantine IS NULL
       ORDER BY m.delivery_at DESC LIMIT 10` as BouncedRow[]
   } catch (error) {
     if (typeof error === 'object' && error !== null && 'code' in error && ['42P01', '3F000', '42703'].includes(String(error.code))) return []

@@ -9,7 +9,6 @@ import { failure, ownerApi, type EngineResult } from '@/lib/commercial/ownerClie
 import type { MoneyCopy } from '@/lib/os-i18n/money'
 
 const money = ownerApi('/api/os/money/actions')
-const mono = 'var(--brand-font-mono)'
 
 export function useMoneyAction(copy: MoneyCopy, onDone: () => void) {
   const [pending, setPending] = useState<NonNullable<EngineResult['approval']> | null>(null)
@@ -41,17 +40,17 @@ export function useMoneyAction(copy: MoneyCopy, onDone: () => void) {
       {pending && (
         <div role="dialog" aria-label={pending.summary} style={{ border: '1px solid var(--brand-border-strong)', background: 'var(--brand-surface)', padding: 'var(--space-4)', margin: 'var(--space-3) 0' }}>
           <p style={{ fontWeight: 700, margin: '0 0 var(--space-2)' }}>{pending.summary}</p>
-          <dl style={{ display: 'grid', gridTemplateColumns: 'minmax(90px, max-content) 1fr', gap: 'var(--space-1) var(--space-3)', margin: '0 0 var(--space-3)' }}>
+          <dl className="approval-preview">
             {Object.entries(pending.preview).map(([k, v]) => (
               <div key={k} style={{ display: 'contents' }}>
-                <dt style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.06em' }}>{k}</dt>
-                <dd style={{ margin: 0, overflowWrap: 'anywhere' }}>{v}</dd>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
               </div>
             ))}
           </dl>
           <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-            <button type="button" className="btn-primary btn-sm" disabled={busy} onClick={confirm} style={{ minHeight: '40px' }}>{copy.confirm}</button>
-            <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={cancel} style={{ minHeight: '40px' }}>{copy.cancel}</button>
+            <button type="button" className="btn-primary btn-sm" disabled={busy} onClick={confirm} style={{ minHeight: '44px' }}>{copy.confirm}</button>
+            <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={cancel} style={{ minHeight: '44px' }}>{copy.cancel}</button>
           </div>
         </div>
       )}

@@ -12,11 +12,15 @@ export interface EngineResult {
 export function ownerApi(endpoint: '/api/os/mail/actions' | '/api/os/money/actions') {
   async function post(body: Record<string, unknown>): Promise<EngineResult> {
     const response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store', body: JSON.stringify(body) })
+    // The shell's badges (replies, approvals, money issues) recount after any owner action.
+    if (typeof window !== 'undefined') window.dispatchEvent(new Event('os:changed'))
     if (!response.ok) return { status: 'failed', message: `HTTP ${response.status}` }
     return await response.json() as EngineResult
   }
   return {
-    run: (capability: string, input: Record<string, unknown>, requestId: string = crypto.randomUUID()) => post({ action: 'run', requestId, capability, input }),
+    // The confirmation is written in the language the owner is reading (document lang follows the OS locale).
+    run: (capability: string, input: Record<string, unknown>, requestId: string = crypto.randomUUID()) =>
+      post({ action: 'run', requestId, capability, input, language: typeof document !== 'undefined' && document.documentElement.lang === 'en' ? 'en' : 'de' }),
     execute: (approvalId: string, payloadHash: string) => post({ action: 'execute', approvalId, payloadHash }),
     reject: (approvalId: string) => post({ action: 'reject', approvalId }),
   }

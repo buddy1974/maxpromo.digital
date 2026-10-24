@@ -2,7 +2,11 @@
 /**
  * /os/money — the Money domain of the Business Control Plane (ADR-0025). Not a second money system:
  * every figure is read from the invoices, the one payment ledger and the rail records pointing at
- * them. Answers "what needs my attention in money today?" first, then the figures.
+ * them. Built to be understood in seconds on a phone:
+ *   1. what is owed, overdue and received (the hero)
+ *   2. what needs Marcel's look — shown only when something does
+ *   3. card money in business words ("€28.40 awaiting Stripe payout"); provider detail stays below
+ *   4. payouts and the ledger
  */
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -11,10 +15,6 @@ import { MONEY_COPY } from '@/lib/os-i18n/money'
 import type { MoneySnapshot } from '@/lib/money/types'
 import { formatMoney } from '@/components/os/money/InvoiceMoneyPanel'
 import { useMoneyAction } from '@/components/os/money/useMoneyAction'
-
-const mono = 'var(--brand-font-mono)'
-const card: React.CSSProperties = { border: '1px solid var(--brand-border)', background: 'var(--brand-surface)', padding: 'var(--space-4)' }
-const heading: React.CSSProperties = { fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--brand-text-secondary)', margin: '0 0 var(--space-3)' }
 
 export default function MoneyPage() {
   const { locale, fmtDate } = useOsLocale()
@@ -32,89 +32,105 @@ export default function MoneyPage() {
     ? (c.payoutStatus[detail.split(' ')[0]] ?? detail) + (detail.includes(' ') ? ` · ${detail.split(' ').slice(1).join(' ')}` : '')
     : c.reasons[detail] ?? (detail.startsWith('currency ') ? c.reasons.currency : kind === 'dispute' ? detail.replace(/_/g, ' ') : detail)
   const per = (amounts: Record<string, number>) => {
-    const parts = Object.entries(amounts).filter(([, v]) => v !== 0).map(([cur, v]) => formatMoney(v, cur, locale))
+    const parts = Object.entries(amounts).filter(([, v]) => Math.abs(v) > 0.004).map(([cur, v]) => formatMoney(v, cur, locale))
     return parts.length ? parts.join(' · ') : formatMoney(0, 'EUR', locale)
   }
+  const anyOverdue = data ? Object.values(data.overdue).some(v => v > 0.004) : false
+  const showCard = data ? data.rail.connected || Object.keys(data.card.gross).length > 0 : false
+  const pending = data ? Object.entries(data.card.pendingPayout).filter(([, v]) => Math.abs(v) > 0.004) : []
 
   return (
-    <div style={{ maxWidth: '1100px' }}>
-      <h1 style={{ marginBottom: 'var(--space-1)' }}>{c.title}</h1>
-      <p style={{ color: 'var(--brand-text-secondary)', margin: '0 0 var(--space-4)' }}>{c.hint}</p>
-      {failed && <p role="alert" style={{ color: 'var(--semantic-danger)' }}>{c.failed}</p>}
+    <div className="os-page money-page">
+      <header className="money-head">
+        <h1>{c.title}</h1>
+        <p>{c.hint}</p>
+      </header>
+      {failed && <p role="alert" className="money-alert">{c.failed}</p>}
+      {!data && !failed && <p role="status" className="money-quiet">…</p>}
       {data && (
         <>
-          <p style={{ ...card, margin: '0 0 var(--space-4)' }}>
-            {data.rail.connected ? c.railOn(data.rail.mode ?? 'test') : `${c.railOff} ${data.rail.reason ? c.railReason[data.rail.reason] ?? '' : ''}`}
-            {data.rail.connected && !data.rail.webhook && <><br /><strong style={{ color: 'var(--semantic-danger)' }}>{c.webhookMissing}</strong></>}
-          </p>
+          <section className="money-hero" aria-label={c.outstanding}>
+            <p className="money-label">{c.outstanding}</p>
+            <p className="money-big">{per(data.outstanding)}</p>
+            <dl className="money-pair">
+              <div className={anyOverdue ? 'is-alert' : ''}><dt>{c.overdue}</dt><dd>{per(data.overdue)}</dd></div>
+              <div><dt>{c.received}</dt><dd>{per(data.receivedThisMonth)}</dd></div>
+            </dl>
+            <Link href="/os/invoices" className="money-more">{c.openInvoices} ›</Link>
+          </section>
 
-          <section aria-label={c.issues} style={{ ...card, marginBottom: 'var(--space-4)' }}>
-            <h2 style={heading}>{c.issues}</h2>
-            {data.issues.length === 0 ? <p style={{ margin: 0 }}>{c.noIssues}</p> : (
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          {data.issues.length > 0 ? (
+            <section aria-label={c.issues} className="money-card money-issues">
+              <h2 className="money-label">{c.issues}</h2>
+              <ul className="money-list">
                 {data.issues.map(i => (
-                  <li key={`${i.kind}:${i.id}`} style={{ borderTop: '1px solid var(--brand-border)', padding: 'var(--space-3) 0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
-                      <span><strong>{c.issueKind[i.kind]}</strong> · {fmtDate(i.date)}{i.invoiceNumber && i.invoiceId ? <> · <Link href={`/os/invoices/${i.invoiceId}`}>{c.invoice} {i.invoiceNumber}</Link></> : null} · {detailOf(i.kind, i.detail)}</span>
-                      <span style={{ fontFamily: mono, fontWeight: 700 }}>{formatMoney(i.amount, i.currency, locale)}</span>
+                  <li key={`${i.kind}:${i.id}`}>
+                    <div className="money-row">
+                      <span><strong>{c.issueKind[i.kind]}</strong> · {fmtDate(i.date)}{i.invoiceNumber && i.invoiceId ? <> · <Link href={`/os/invoices/${i.invoiceId}`}>{c.invoice} {i.invoiceNumber}</Link></> : null}<span className="money-sub">{detailOf(i.kind, i.detail)}</span></span>
+                      <span className="money-amount">{formatMoney(i.amount, i.currency, locale)}</span>
                     </div>
                     {i.kind === 'unapplied' && (
-                      <form style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginTop: 'var(--space-2)' }}
-                        onSubmit={e => { e.preventDefault(); void action.run('money.resolve', { id: i.id, note: note[i.id] ?? '' }) }}>
-                        <input aria-label={c.resolveNote} placeholder={c.resolveNote} minLength={3} maxLength={300} required value={note[i.id] ?? ''}
-                          onChange={e => setNote(n => ({ ...n, [i.id]: e.target.value }))} style={{ flex: '1 1 240px', minHeight: '40px' }} />
-                        <button type="submit" className="btn-secondary btn-sm" style={{ minHeight: '40px' }} disabled={action.busy}>{c.resolve}</button>
+                      <form className="money-form" onSubmit={e => { e.preventDefault(); void action.run('money.resolve', { id: i.id, note: note[i.id] ?? '' }) }}>
+                        <input aria-label={c.resolveNote} placeholder={c.resolveNote} minLength={3} maxLength={300} required value={note[i.id] ?? ''} onChange={e => setNote(n => ({ ...n, [i.id]: e.target.value }))} />
+                        <button type="submit" className="btn-secondary btn-sm" disabled={action.busy}>{c.resolve}</button>
                       </form>
                     )}
                     {i.kind === 'unreconciled' && (
-                      <form style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap', marginTop: 'var(--space-2)' }}
-                        onSubmit={e => { e.preventDefault(); void action.run('payout.reconcile', { payout_id: i.id, ...(note[i.id]?.trim() ? { bank_reference: note[i.id].trim() } : {}) }) }}>
-                        <input aria-label={c.bankRef} placeholder={c.bankRef} maxLength={120} value={note[i.id] ?? ''}
-                          onChange={e => setNote(n => ({ ...n, [i.id]: e.target.value }))} style={{ flex: '1 1 240px', minHeight: '40px' }} />
-                        <button type="submit" className="btn-secondary btn-sm" style={{ minHeight: '40px' }} disabled={action.busy}>{c.reconcile}</button>
+                      <form className="money-form" onSubmit={e => { e.preventDefault(); void action.run('payout.reconcile', { payout_id: i.id, ...(note[i.id]?.trim() ? { bank_reference: note[i.id].trim() } : {}) }) }}>
+                        <input aria-label={c.bankRef} placeholder={c.bankRef} maxLength={120} value={note[i.id] ?? ''} onChange={e => setNote(n => ({ ...n, [i.id]: e.target.value }))} />
+                        <button type="submit" className="btn-secondary btn-sm" disabled={action.busy}>{c.reconcile}</button>
                       </form>
                     )}
                   </li>
                 ))}
               </ul>
-            )}
-            {action.panel}
-          </section>
+              {action.panel}
+            </section>
+          ) : <p className="money-quiet">{c.allClear}</p>}
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 'var(--space-3)', marginBottom: 'var(--space-4)' }}>
-            {[
-              [c.outstanding, per(data.outstanding)], [c.overdue, per(data.overdue)], [c.received, per(data.receivedThisMonth)],
-              ...(data.rail.connected || Object.keys(data.card.gross).length ? [[c.cardGross, per(data.card.gross)], [c.fees, per(data.card.fees)], [c.pendingPayout, per(data.card.pendingPayout)]] : []),
-            ].map(([label, value]) => (
-              <div key={label} style={card}>
-                <p style={{ ...heading, margin: '0 0 var(--space-1)' }}>{label}</p>
-                <p style={{ fontFamily: mono, fontWeight: 'var(--weight-heading)', fontSize: 'var(--text-h4)', margin: 0, overflowWrap: 'anywhere' }}>{value}</p>
-              </div>
-            ))}
-          </div>
+          {showCard && (
+            <section aria-label={c.cardSection} className="money-card">
+              <h2 className="money-label">{c.cardSection}</h2>
+              <p className="money-sentence">
+                {pending.length === 0 ? c.nothingPending : pending.map(([cur, v]) => (v > 0 ? c.awaitingPayout(formatMoney(v, cur, locale)) : c.stripeBalance(formatMoney(v, cur, locale)))).join(' · ')}
+              </p>
+              <dl className="money-pair">
+                <div><dt>{c.cardGross}</dt><dd>{per(data.card.gross)}</dd></div>
+                <div><dt>{c.fees}</dt><dd>{per(data.card.fees)}</dd></div>
+              </dl>
+              <p className="money-rail">
+                {data.rail.connected ? c.railOn(data.rail.mode ?? 'test') : `${c.railOff} ${data.rail.reason ? c.railReason[data.rail.reason] ?? '' : ''}`}
+                {data.rail.connected && !data.rail.webhook && <strong className="money-alert"> {c.webhookMissing}</strong>}
+              </p>
+            </section>
+          )}
+          {!showCard && <p className="money-rail">{c.railOff} {data.rail.reason ? c.railReason[data.rail.reason] ?? '' : ''}</p>}
 
-          <section aria-label={c.payouts} style={{ ...card, marginBottom: 'var(--space-4)' }}>
-            <h2 style={heading}>{c.payouts}</h2>
-            {data.payouts.length === 0 ? <p style={{ margin: 0 }}>{c.noPayouts}</p> : (
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-                {data.payouts.map(p => (
-                  <li key={p.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--space-3)', borderTop: '1px solid var(--brand-border)', padding: 'var(--space-2) 0', flexWrap: 'wrap' }}>
-                    <span>{p.arrivalDate ? fmtDate(p.arrivalDate) : c.dash} · {c.payoutStatus[p.status] ?? p.status}{p.reconciled ? ` · ${c.reconciled}` : ''}</span>
-                    <span style={{ fontFamily: mono, fontWeight: 700 }}>{formatMoney(p.amount, p.currency, locale)}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
+          {(data.payouts.length > 0 || showCard) && (
+            <section aria-label={c.payouts} className="money-card">
+              <h2 className="money-label">{c.payouts}</h2>
+              {data.payouts.length === 0 ? <p className="money-quiet">{c.noPayouts}</p> : (
+                <ul className="money-list">
+                  {data.payouts.map(p => (
+                    <li key={p.id} className="money-row">
+                      <span>{p.arrivalDate ? fmtDate(p.arrivalDate) : c.dash}<span className="money-sub">{c.payoutStatus[p.status] ?? p.status}{p.reconciled ? ` · ${c.reconciled}` : ''}</span></span>
+                      <span className="money-amount">{formatMoney(p.amount, p.currency, locale)}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
 
-          <section aria-label={c.ledger} style={card}>
-            <h2 style={heading}>{c.ledger}</h2>
-            {data.ledger.length === 0 ? <p style={{ margin: 0 }}>{c.noLedger}</p> : (
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          <section aria-label={c.ledger} className="money-card">
+            <h2 className="money-label">{c.ledger}</h2>
+            {data.ledger.length === 0 ? <p className="money-quiet">{c.noLedger}</p> : (
+              <ul className="money-list">
                 {data.ledger.map(e => (
-                  <li key={`${e.kind}:${e.id}`} style={{ display: 'flex', justifyContent: 'space-between', gap: 'var(--space-3)', borderTop: '1px solid var(--brand-border)', padding: 'var(--space-2) 0', flexWrap: 'wrap' }}>
-                    <span>{fmtDate(e.date)} · <Link href={`/os/invoices/${e.invoiceId}`}>{e.invoiceNumber}</Link> · {e.client} · {c.entryKind[e.kind]} · {c.provider[e.provider] ?? e.provider}{c.entryStatus[e.status] ? ` · ${c.entryStatus[e.status]}` : ''}</span>
-                    <span style={{ fontFamily: mono, fontWeight: 700 }}>{e.kind === 'payment' ? '' : '−'}{formatMoney(e.amount, e.currency, locale)}</span>
+                  <li key={`${e.kind}:${e.id}`} className="money-row">
+                    <span><Link href={`/os/invoices/${e.invoiceId}`}>{e.invoiceNumber}</Link> · {e.client}
+                      <span className="money-sub">{fmtDate(e.date)} · {c.entryKind[e.kind]} · {c.provider[e.provider] ?? e.provider}{c.entryStatus[e.status] ? ` · ${c.entryStatus[e.status]}` : ''}</span></span>
+                    <span className="money-amount">{e.kind === 'payment' ? '' : '−'}{formatMoney(e.amount, e.currency, locale)}</span>
                   </li>
                 ))}
               </ul>

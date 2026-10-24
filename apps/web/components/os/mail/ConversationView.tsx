@@ -7,6 +7,7 @@
  * interpreted as HTML, no remote image loads, no link is generated from mail content.
  */
 import { useState } from 'react'
+import { LinkifiedText } from '@/components/os/mail/LinkifiedText'
 import type { MailCopy } from '@/lib/os-i18n/mail'
 import { attachmentPolicy } from '@/lib/mail/attachments'
 import type { MailThread } from '@/lib/mail/views'
@@ -92,7 +93,7 @@ export function ConversationView({ thread, messages, copy, intlLocale, providerC
               <p className="mail-message-meta">{copy.to}: {message.recipients.join(', ')}{message.cc.length > 0 && <> · {copy.cc}: {message.cc.join(', ')}</>}</p>
               {outbound && message.delivery_state && <p className="mail-note is-alert" role="status">{message.delivery_state === 'bounced' ? copy.bounced : copy.delayed}{message.delivery_detail ? ` — ${message.delivery_detail}` : ''}</p>}
               {preview && <p className="mail-note">{(message.content_attempts ?? 0) >= 3 || !located ? copy.previewUnavailable : copy.previewOnly}</p>}
-              <div className="mail-body">{(preview ? message.preview_text : message.body_text) || copy.previewUnavailable}</div>
+              <div className="mail-body"><LinkifiedText text={(preview ? message.preview_text : message.body_text) || copy.previewUnavailable} /></div>
               {message.attachments.length > 0 && (
                 <div className="mail-attachments">
                   <p className="mail-panel-title">{copy.attachments}</p>

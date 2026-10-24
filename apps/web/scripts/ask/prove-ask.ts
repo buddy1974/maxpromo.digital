@@ -22,5 +22,7 @@ check('"did X pay" with a number routes to payment facts', routeByKeywords('Did 
 check('Stripe fees and payouts route to payment facts', routeByKeywords('Was haben wir an Stripe-Gebühren gezahlt?') === 'payment_status' && routeByKeywords('When is the next payout?') === 'payment_status')
 check('"who owes me money" stays the receivables question', routeByKeywords('Wer schuldet mir Geld?') === 'money' && routeByKeywords('Who owes me money?') === 'money')
 check('reply questions are not stolen by the money route', routeByKeywords('Wer braucht eine Antwort?') === 'replies_needed')
+check('the phone prompts route where they should', routeByKeywords('Was sollte ich als Nächstes erledigen?') === 'attention' && routeByKeywords('What should I handle next?') === 'attention'
+  && routeByKeywords('Worauf warten die Agenten?') === 'agents_blocked' && routeByKeywords('What are the agents waiting for?') === 'agents_blocked')
 
 console.log(`\nprove-ask: ${passed} passed`)

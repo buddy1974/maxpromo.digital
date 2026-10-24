@@ -9,7 +9,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useOsLocale } from '@/lib/os-i18n/context'
-import { MAIL_COPY, localizeFailure } from '@/lib/os-i18n/mail'
+import { MAIL_COPY, localizeFailure, say } from '@/lib/os-i18n/mail'
 import { VIEW_GROUPS, inView, isView, sortForView, viewCounts, type MailThread, type View } from '@/lib/mail/views'
 import { resultData, runMail } from '@/lib/mail/client'
 import type { ThreadContext } from '@/lib/mail/context'
@@ -21,7 +21,7 @@ import { Composer, type ComposerInit } from '@/components/os/mail/Composer'
 import './mail.css'
 
 interface DraftRow { id: string; mode: ComposerInit['mode']; source_message_id: string | null; to_addrs: string[]; cc_addrs: string[]; bcc_addrs: string[]; subject: string; body: string; family: FamilyId; language: 'de' | 'en'; entity_kind: ComposerInit['entityKind']; entity_id: string | null; follow_up_days: number | null; revision: number }
-interface Detail { thread: MailThread; messages: MailMessage[]; context: ThreadContext | null; draft: DraftRow | null; providerCheck: boolean; sending: boolean }
+interface Detail { thread: MailThread; messages: MailMessage[]; context: ThreadContext | null; draft: DraftRow | null; scheduled?: { id: string; scheduled_for: string } | null; scheduleError?: string | null; providerCheck: boolean; sending: boolean }
 const MAILBOX = 'info@maxpromo.digital'
 const GERMAN = /\b(und|nicht|bitte|vielen|danke|ich|wir|sie|ihre|ihnen|mit|für|eine?n?|sehr geehrte|grüße|hallo)\b/i
 
@@ -200,6 +200,13 @@ export default function InboxPage() {
           : detailError ? <p role="alert" className="mail-empty">{copy.error}</p>
             : !shown ? <p role="status" className="mail-empty">{copy.loading}</p>
               : <div className="mail-detail">
+                {(shown.scheduled || shown.scheduleError) && (
+                  <div className="mail-schedule">
+                    {shown.scheduled && <p role="status" className="mail-notice">{say(copy.composer.scheduledBanner, { when: new Date(shown.scheduled.scheduled_for).toLocaleString(intlLocale, { timeZone: 'Europe/Berlin', dateStyle: 'medium', timeStyle: 'short' }) })}
+                      {' '}<button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => void act('email.unschedule', { draft_id: shown.scheduled!.id })}>{copy.composer.unschedule}</button></p>}
+                    {shown.scheduleError && <p role="alert" className="mail-notice is-alert">{say(copy.composer.scheduleFailed, { reason: shown.scheduleError })}</p>}
+                  </div>
+                )}
                 <ConversationView thread={shown.thread} messages={shown.messages} copy={copy} intlLocale={intlLocale} providerCheck={shown.providerCheck} busy={busy}
                   onBack={() => setSelected(null)}
                   onReply={openReply}
