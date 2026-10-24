@@ -8,7 +8,7 @@ States: **DONE** (implemented, verified, released) · **PARTIAL** (some of the c
 and verified; the rest is listed) · **OWNER** (blocked on an owner/account action) · **DEFERRED**
 (deliberately later) · **NEXT** (the next phase).
 
-Last updated: 2026-10-24 (Stripe ↔ Money + Email completion run; ADR-0025). Previously: overnight product run. Evidence: [reconciliation report §23](../architecture/control-plane-reconciliation.md),
+Last updated: 2026-10-24 (product completion + email acceptance + phone-first OS run; ADR-0026). Previously: Stripe ↔ Money + Email completion run.
 ADR-0023, ADR-0024, change log.
 
 ## Baseline (infrastructure GREEN, 2026-10-23)
@@ -35,12 +35,12 @@ Declared GREEN 2026-10-23 for the platform release — not for the product commi
 | 12 | Broader channel convergence (WhatsApp, voice, more connectors) | **DEFERRED** | WhatsApp gateway exists and is OFF (503); no voice channel |
 | 13 | Bureau database US → Frankfurt | **OWNER** | Runbook §21; Neon project creation is an owner action |
 | 14 | Delete the paused shadow Bureau | **OWNER** (authorisation) | Paused 2026-10-23, candidate for deletion |
-| 15 | Document language follows the OS locale (risk 118) | **DEFERRED** | `<html lang>` stays `de` in English |
-| 16 | Installable mobile app (PWA), phone-first | **NEXT** (Phase B) | See §Mobile |
-| 17 | Android testing | **NEXT** (Phase B) | |
-| 18 | iOS testing | **NEXT** (Phase B) | |
+| 15 | Document language follows the OS locale (risk 118) | **DONE** (production) | ADR-0026; production `lang="en"` with the OS in English |
+| 16 | Installable mobile app (PWA), phone-first | **DONE in code, local phone-width QA and production desktop** | ADR-0026, §Mobile; physical-device acceptance **OWNER** (risk 137) |
+| 17 | Android testing | **PARTIAL** — browser at 360/390/412 px; no physical device | risk 137 |
+| 18 | iOS testing | **PARTIAL** — standards-based (dvh, safe areas, 16 px inputs, visualViewport); no iPhone | risk 137 |
 | 19 | Reusable client productisation | **DEFERRED** | First make Maxpromo excellent |
-| 20 | Integrated business simulation (lead → payment → agent → owner) | **NEXT** (Phase C) | |
+| 20 | Integrated business simulation (lead → payment → agent → owner) | **DONE (evidence runtime)** | commercial-agent 85/85 on the final code; Stripe sandbox lifecycle in production (MP-2026-044) |
 
 ## Email
 
@@ -60,7 +60,10 @@ Released 2026-10-24 (production `a36c023`+), ADR-0023, migration 0017 applied to
 | Max assist: draft, improve, shorten, expand, friendlier, formal, translate, analyse (intent, questions, commitments both sides, next step) | DONE, live model | Production `email.assist improve` answered; meaning-shift found and instruction tightened (risk 123) |
 | Follow-up engine: needs reply, customer replied, waiting, follow-up due/overdue, no next step; one-tap planning; attention and briefing | DONE | Attention shows overdue follow-up (evidence); production briefing "1 conversation waiting for your reply" |
 | Delivery failures (bounces) | DONE in code and evidence; live not yet observed | `lib/mail/bounces.ts`: MAILER-DAEMON/postmaster reports parsed (DSN and human part), linked to Maxpromo's own sent message, shown in the conversation and in attention, pushed as an owner notice |
-| Scheduled send | DEFERRED | risk 120 — needs a minute-level scheduler |
+| Scheduled send | DONE in code and evidence (11/11); production after 0023 | migration 0023; sweeps: OS while open, daily cron, `/api/cron/mail-schedule`; minute accuracy with the OS closed needs `CRON_SECRET` + frequent cron (risk 120) |
+| Links in inbound mail | DONE | https only, the visible text is the destination, noopener/noreferrer (`prove:os-app`) |
+| Mail sent to the mailbox itself | DONE in code and evidence (8/8); production after 0021 | migration 0021, risk 135 |
+| Phone Inbox | DONE (phone-width QA) | sticky action bar, full-screen composer with options below the message and pinned actions, 16 px fields, keyboard-aware height |
 | Outbound attachments (attach a file, or an OS quote/invoice PDF, to any email) | DONE in code, evidence and local browser; live **OWNER** | migration 0020; type decided by the bytes, 4 MB/file, 10 MB/draft; part of the confirmed revision; 15 offline + 16 evidence-DB assertions; local browser: attach → confirm lists file → send (sink) → sent message carries the PDF |
 | Document emails (quote, invoice, reminder) through the new identity and Hostinger, PDF attached | DONE in code and evidence; live **OWNER** | ADR-0025; `lib/documents/pdf.ts` (27 assertions) + `lib/documents/mail.ts`; approval binds subject, HTML, text and PDF bytes; recorded in the client's conversation (invoice + reminders share one); commercial-agent end-to-end 85/85 against the evidence runtime |
 | Cross-client rendering (Gmail/Outlook/Apple Mail) | PARTIAL | Built for it (tables, inline styles, no images, light scheme); seen in Chrome only (risk 122) |
@@ -132,12 +135,20 @@ move to `p=quarantine`); bounce handling (Hostinger delivers bounces to the mail
   removed; Bureau mock CRM removed. Remaining duplicates: two AI provider adapters (risk 112), two
   outbound transports (Resend for document email, Hostinger for conversations — to be unified in Phase A).
 
-## Mobile
+## Mobile (ADR-0026, 2026-10-24)
 
-The final mobile product is a phone-first Maxpromo experience — not desktop UI in a phone shell,
-not card soup, not a fake installable wrapper: fast, thumb-friendly, attention-first,
-communications-first, owner actions, OS plus the relevant Agent functions, one tap from the home
-screen. Phase B builds it and tests it on Android and iOS.
+| Capability | State | Evidence |
+|---|---|---|
+| Phone information architecture: Today · Inbox · Money · Max · More (Agent Bureau, approvals, all records) | DONE | `prove:os-app`; phone-width QA 360/390/412 |
+| Today as owner cockpit (attention first, whole-row targets, routine lists hidden) | DONE | phone-width QA; production desktop |
+| Phone Inbox, conversation, compose/reply with keyboard constraints | DONE (browser) | sticky actions, full-screen composer, 16 px inputs, `--os-vvh` |
+| Phone Money (hero, exceptions only when present, card money in business words) | DONE | production "Stripe balance −€0.28 …" |
+| Ask Max as a tab, language continuity, money grounding | DONE | production German answer with fee |
+| Approvals on phone (impact, proposer, what happens, consequence-named confirm) | DONE (browser) | evidence approval card at 390 px |
+| Floating control overlap | DONE by architecture | risk 124 closed |
+| PWA: manifest, conservative service worker, offline page; no business data cached | DONE | production manifest/sw/offline public, worker controlling `/os` |
+| Security headers (no framing of OS / pay page) | DONE | production headers |
+| Physical Android / iPhone / installed iOS app | **OWNER** | risk 137 |
 
 ## Stripe — owner items
 

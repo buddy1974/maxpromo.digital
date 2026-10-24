@@ -789,3 +789,22 @@ Under Marcel's browser authority for the Stripe **sandbox** (no live configurati
   Money tiles counted card money and "not yet paid out" before refunds (now net; risk 132).
 - **Side effects**: invoice number MP-2026-044 consumed (cancelled, documented); test client kept; the delivered
   copy of the self-sent email archived in the OS (risk 135). No production errors in the window.
+
+## 26. Phone-first OS + Stripe-run defects + email acceptance — 2026-10-24
+
+- **Releases**: `92aeb19` (defects 132–135), `31ad9ef` (phone-first OS, PWA, scheduled send, email hardening),
+  `d92adff`, `4350c27` (production fixes found in QA: Money with a pending column, Ask Max LIKE escape, no invented
+  causality, refunds never dropped before 0022).
+- **Verification**: `npm run verify` exit 0 (31 gates incl. `prove:os-app` 17, `prove:ask` 12, money 54 + PDF 27);
+  evidence DB: money 54, self-copy 8, scheduled send 11, attachments 16; local runtime: commercial workflow 85/85,
+  Money HTTP 20/20.
+- **Phone QA** (desktop Chrome, local runtime framed at 360/390/412 px): Today, Inbox list, conversation with
+  sticky actions, composer (options below the message, pinned actions), Money, invoice detail (overdue state,
+  governed cancel preview in German, rejected), Approvals card (impact, proposer, what happens), More sheet, Max
+  (German and English answers on a German screen).
+- **Production** (`4350c27`): PWA paths public, everything else gated; `/api/os/shell` 401 without a session;
+  `/api/cron/mail-schedule` 503 without CRON_SECRET; framing headers on /os, /api/os, pay page, none on public
+  pages; worker controlling /os; `lang="en"` with the OS in English; Today with attention first; MP-2026-044 shows
+  only "Cancelled — kept on record"; Money "Stripe balance −€0.28 …"; Ask Max German answer with the €0.28 fee.
+- **Owner**: run the loaded 0021–0023 bundle (SHA `f2723ff973d81cb0`); physical phone acceptance; CRON_SECRET.
+- **Evidence kept**: MP-2026-044, the Stripe Sandbox Test client, sandbox events, audit rows.

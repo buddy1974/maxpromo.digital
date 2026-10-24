@@ -103,3 +103,10 @@ Business Control Plane; Maxpromo OS remains the source of truth. To be instructe
 - [ ] OWNER: live restricted key + live destination + STRIPE_LIVE=1; one low-value live payment, refunded.
 - [ ] OWNER: live restricted key + live signing secret + STRIPE_LIVE=1; one low-value live payment, refunded.
 - [ ] OWNER: one real quote/invoice email to your own Gmail/Outlook/Apple Mail; check the PDF and the reply threading.
+
+## Phone-first OS run 2026-10-24
+- [x] Defects 132–135 fixed in code (0021, 0022), invoice cancel + status-aware actions, Ask Max language and fees.
+- [x] Phone shell, Today, Inbox, Money, Max, approvals, PWA, scheduled send (0023), framing protection.
+- [ ] OWNER: click Run on the loaded 0021–0023 bundle in the Neon SQL editor (SHA f2723ff973d81cb0).
+- [ ] OWNER: install the OS on an Android phone and an iPhone; check Today, Inbox reply, Money, Max, approvals.
+- [ ] OWNER: CRON_SECRET (+ a frequent cron where the plan allows) for minute-accurate scheduled send.

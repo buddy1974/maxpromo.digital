@@ -2029,3 +2029,10 @@ truth; document emails moved to the mailbox with the PDF attached (ADR-0023 amen
 `pdf-lib` (MIT, pure JS) recorded in ADR-0025. Card payment stays **off** until Marcel provides keys and the
 webhook secret, and live stays off until he sets `STRIPE_LIVE=1`. Not claimed: a live payment, a live
 document email observed in real clients, Revolut matching.
+
+## 2026-10-24 — Phone-first OS run
+
+Under the mega-run authority: ADR-0026 (phone-first OS, installable app, conservative service worker, framing
+protection, scheduled send). Route CSS budget raised 88 → 96 KB. Not claimed: physical-device tests, live
+Stripe, real mail-client rendering. Migrations 0021–0023 are verified and loaded in the Neon editor; running
+them is Marcel's click.

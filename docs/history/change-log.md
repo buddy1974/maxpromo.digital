@@ -1,5 +1,20 @@
 # Change Log
 
+## 2026-10-24 — Phone-first OS, installable app, Stripe-run defects, email acceptance (ADR-0026)
+
+- Stripe-run defects: governed `invoice.cancel`; status-aware invoice actions (governed record payment,
+  reminder when overdue, delete only drafts); Ask Max answers in the question's language and reads card
+  charges, fees, payouts and refunds; mail sent to the mailbox itself is recognised (0021); payouts attribute
+  refunds exactly (0022).
+- Phone shell: top bar, bottom navigation Today · Inbox · Money · Max · More, sheets, badges, offline and
+  session banners; Ask Max a destination with one shared conversation; Quick Scan a sheet.
+- Today, Money, invoice detail and Approvals rebuilt for phones; Money confirmations in the screen language.
+- PWA: OS-scoped manifest, conservative service worker (offline page only), offline page.
+- OS `<html lang>` follows the OS language; OS, OS API and pay page refuse framing.
+- Email: safe https links in inbound mail, Outlook font fix, preheader for notices, scheduled send (0023).
+- Gates: `prove:os-app` (gate 31). Budget: `web.route-css` 88 → 96 KB — the OS Inbox is now the heaviest route
+  (decision; homepage unchanged).
+
 ## 2026-10-24 — Stripe API 2026-09-30.endive; sandbox connected
 
 - Pinned Stripe API upgraded 2024-06-20 → `2026-09-30.endive` (ADR-0025 amendment); events in another version refused.

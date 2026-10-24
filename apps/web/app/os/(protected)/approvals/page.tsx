@@ -52,7 +52,8 @@ export default function ApprovalsPage() {
         body: JSON.stringify(action === 'execute' ? { action, approvalId: a.id, payloadHash: a.payload_hash } : { action, approvalId: a.id }),
       })
       const body = await r.json().catch(() => ({})) as { status?: string; message?: string; result?: { summary?: string }; error?: string }
-      const text = body.result?.summary ?? body.message ?? body.error ?? (r.ok ? p.done : t.common.actionFailed)
+      // A rejection is said in Marcel's language; an executed action keeps the capability's own summary.
+      const text = action === 'reject' && r.ok ? (p.status.rejected ?? p.done) : body.result?.summary ?? body.message ?? body.error ?? (r.ok ? p.done : t.common.actionFailed)
       setResult((m) => ({ ...m, [a.id]: text }))
       /* The card leaves the pending list once decided; the outcome stays visible here. */
       setLast({ summary: a.summary, text })
