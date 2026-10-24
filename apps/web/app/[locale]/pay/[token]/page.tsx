@@ -27,6 +27,7 @@ const COPY = {
   de: {
     eyebrow: 'Zahlung', invoice: 'Rechnung', open: 'Offener Betrag', due: 'Fällig am',
     card: 'Mit Karte bezahlen', cardNote: 'Sichere Zahlung über Stripe. Sie werden weitergeleitet.',
+    testMode: 'Testmodus: Kartenzahlungen laufen über die Stripe-Sandbox. Es wird kein Geld bewegt.',
     bank: 'Oder per Überweisung', bankOnly: 'Per Überweisung', holder: 'Kontoinhaber', reference: 'Verwendungszweck',
     unknown: 'Dieser Zahlungslink ist nicht gültig. Bitte prüfen Sie den Link aus Ihrer E-Mail oder antworten Sie auf die E-Mail.',
     revoked: 'Dieser Zahlungslink ist nicht mehr aktiv. Bitte antworten Sie auf die E-Mail mit der Rechnung.',
@@ -48,6 +49,7 @@ const COPY = {
   en: {
     eyebrow: 'Payment', invoice: 'Invoice', open: 'Amount open', due: 'Due date',
     card: 'Pay by card', cardNote: 'Secure payment through Stripe. You will be redirected.',
+    testMode: 'Test mode: card payments run in the Stripe sandbox. No money moves.',
     bank: 'Or by bank transfer', bankOnly: 'By bank transfer', holder: 'Account holder', reference: 'Payment reference',
     unknown: 'This payment link is not valid. Please check the link from your email or reply to the email.',
     revoked: 'This payment link is no longer active. Please reply to the email with the invoice.',
@@ -88,7 +90,8 @@ export default async function PayPage({ params, searchParams }: { params: Promis
   }
   const error = typeof query.e === 'string' ? t.errors[query.e] : undefined
   const thanks = query.paid === '1'
-  const cardOn = railStatus().connected
+  const rail = railStatus()
+  const cardOn = rail.connected
 
   return (
     <section className="section surface-plain">
@@ -107,6 +110,7 @@ export default async function PayPage({ params, searchParams }: { params: Promis
               <div style={row}><span style={label}>{t.open}</span><span style={{ ...value, fontSize: 'var(--text-h4)' }}>{fmtCurrency(state.open, state.currency as CurrencyCode)}</span></div>
               {state.dueDate && <div style={{ ...row, borderBottom: 'none' }}><span style={label}>{t.due}</span><span style={value}>{fmtDocDate(state.dueDate, state.language)}</span></div>}
             </div>
+            {cardOn && rail.mode === 'test' && <p style={notice('info')} role="note">{t.testMode}</p>}
             {cardOn && !thanks && !state.processing && (
               <form method="post" action="/api/pay/checkout" style={{ marginBottom: 'var(--space-5)' }}>
                 <input type="hidden" name="token" value={token} />

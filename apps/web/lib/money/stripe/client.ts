@@ -14,9 +14,11 @@
  * The key never appears in an error, a log line or a return value.
  */
 export const STRIPE_API = 'https://api.stripe.com/v1'
-/** Pinned so a dashboard default change cannot alter payloads under us. The webhook endpoint
- * must be created with the same version (owner action, see the ledger). */
-export const STRIPE_API_VERSION = '2024-06-20'
+/** Pinned so a dashboard default change cannot alter payloads under us. The event destination
+ * must be created with the same snapshot version: events rendered in any other version are refused
+ * (parseStripeEvent). Upgraded 2024-06-20 → 2026-09-30.endive after review of every breaking change
+ * in between (ADR-0025 amendment); none touches a field or parameter this rail uses. */
+export const STRIPE_API_VERSION = '2026-09-30.endive'
 const KEY = /^(sk|rk)_(test|live)_[A-Za-z0-9]{16,}$/
 
 export type StripeMode = 'test' | 'live'

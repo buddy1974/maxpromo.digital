@@ -22,7 +22,7 @@ function check(name: string, ok: boolean, detail = '') { assert.ok(ok, `${name} 
 const now = () => Math.floor(Date.now() / 1000)
 const tag = Date.now().toString(36)
 const post = (body: string, signature: string | null) => fetch(`${BASE}/api/channels/stripe`, { method: 'POST', headers: { 'content-type': 'application/json', ...(signature ? { 'stripe-signature': signature } : {}) }, body })
-const eventBody = JSON.stringify({ id: `evt_http${tag}`, object: 'event', type: 'checkout.session.completed', livemode: false, created: now(),
+const eventBody = JSON.stringify({ id: `evt_http${tag}`, object: 'event', api_version: '2026-09-30.endive', type: 'checkout.session.completed', livemode: false, created: now(),
   data: { object: { id: `cs_test_http${tag}`, payment_status: 'paid', payment_intent: `pi_http${tag}`, amount_total: 1000, currency: 'eur', metadata: {} } } })
 let invoiceId = ''
 try {

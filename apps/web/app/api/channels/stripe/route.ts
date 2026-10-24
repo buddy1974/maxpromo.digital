@@ -41,7 +41,11 @@ export async function POST(req: NextRequest) {
   let parsed: unknown
   try { parsed = JSON.parse(raw) } catch { return answer({ error: 'invalid_event' }, 400) }
   const event = parseStripeEvent(parsed)
-  if (!event) return answer({ error: 'invalid_event' }, 400)
+  if (!event) {
+    const version = (parsed as { api_version?: unknown } | null)?.api_version
+    log('warn', { event: 'stripe.webhook.invalid', api_version: typeof version === 'string' ? version.slice(0, 40) : null })
+    return answer({ error: 'invalid_event' }, 400)
+  }
   try {
     const sql = getDb()
     const result = await receiveStripeEvent(sql, event, { rail: stripeRail(), now: new Date() })

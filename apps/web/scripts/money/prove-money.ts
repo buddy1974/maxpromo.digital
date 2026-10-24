@@ -57,7 +57,7 @@ const rail = (respond: (url: string) => Response | Promise<Response>) => stripeR
 const session = { amountMinor: 15600, currency: 'EUR' as const, productName: 'Rechnung MP-1', invoiceId: '11111111-1111-1111-1111-111111111111', invoiceNumber: 'MP-1', sessionRowId: '22222222-2222-2222-2222-222222222222', locale: 'de' as const, successUrl: 'https://maxpromo.digital/de/pay/t?paid=1', cancelUrl: 'https://maxpromo.digital/de/pay/t', expiresAt: now + 3600 }
 const created = await rail(() => Response.json({ id: 'cs_test_abc123', url: 'https://checkout.stripe.com/c/pay/cs_test_abc123', status: 'open', expires_at: now + 3600, payment_intent: null, livemode: false })).createCheckoutSession(session, 'mp-checkout:row')
 const sent = calls.at(-1)!
-check('a checkout is created at the fixed Stripe endpoint with the idempotency key and pinned version', sent.url === 'https://api.stripe.com/v1/checkout/sessions' && (sent.init.headers as Record<string, string>)['Idempotency-Key'] === 'mp-checkout:row' && (sent.init.headers as Record<string, string>)['Stripe-Version'] === '2024-06-20' && sent.init.redirect === 'error')
+check('a checkout is created at the fixed Stripe endpoint with the idempotency key and pinned version', sent.url === 'https://api.stripe.com/v1/checkout/sessions' && (sent.init.headers as Record<string, string>)['Idempotency-Key'] === 'mp-checkout:row' && (sent.init.headers as Record<string, string>)['Stripe-Version'] === '2026-09-30.endive' && sent.init.redirect === 'error')
 check('the checkout names the invoice and session row in metadata, in session and payment intent', String(sent.init.body).includes('metadata%5Binvoice_id%5D=11111111') && String(sent.init.body).includes('payment_intent_data%5Bmetadata%5D%5Bsession_row%5D=22222222'))
 check('the amount is the minor-unit open balance in the invoice currency; no tax, no Stripe invoice', String(sent.init.body).includes('unit_amount%5D=15600') && String(sent.init.body).includes('currency%5D=eur') && !/tax|invoice_creation/.test(String(sent.init.body)))
 check('the created session is read back', created.id === 'cs_test_abc123' && created.livemode === false)
@@ -71,9 +71,9 @@ await rejects('amounts below 0.50 are refused before calling Stripe', () => rail
 check('no request ever carried the key in a URL or body', calls.every(c => !c.url.includes('a1B2') && !String(c.init.body ?? '').includes('a1B2')))
 
 /* ── events ── */
-const evt = (o: Record<string, unknown>) => ({ id: 'evt_1A2b3C4d5E', object: 'event', type: 'charge.succeeded', livemode: false, created: now, data: { object: { id: 'ch_123', ...o } } })
+const evt = (o: Record<string, unknown>) => ({ id: 'evt_1A2b3C4d5E', object: 'event', api_version: '2026-09-30.endive', type: 'charge.succeeded', livemode: false, created: now, data: { object: { id: 'ch_123', ...o } } })
 check('a well-formed event parses', parseStripeEvent(evt({}))?.type === 'charge.succeeded')
-check('anything that is not an event is refused', [null, [], {}, { ...evt({}), object: 'charge' }, { ...evt({}), id: 'x' }, { ...evt({}), livemode: 'no' }, { ...evt({}), type: 'X; DROP' }, { ...evt({}), data: {} }].every(v => parseStripeEvent(v) === null))
+check('anything that is not an event is refused', [null, [], {}, { ...evt({}), object: 'charge' }, { ...evt({}), id: 'x' }, { ...evt({}), livemode: 'no' }, { ...evt({}), type: 'X; DROP' }, { ...evt({}), data: {} }, { ...evt({}), api_version: '2024-06-20' }, { ...evt({}), api_version: undefined }].every(v => parseStripeEvent(v) === null))
 check('refund statuses map onto reversal states', reversalStatusFromStripe('succeeded') === 'succeeded' && reversalStatusFromStripe('requires_action') === 'pending' && reversalStatusFromStripe('canceled') === 'cancelled' && reversalStatusFromStripe('failed') === 'failed')
 
 /* ── pay links ── */

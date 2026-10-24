@@ -114,8 +114,11 @@ function invoiceData(i: InvoiceRow, today: string) {
  * link that can only repeat the bank details adds nothing. The link itself is an internal record,
  * created once per invoice; creating it changes nothing for the client.
  */
+/** Customer emails carry the card link only on the LIVE rail. A test key (sandbox run) never puts a
+ * test checkout in front of a real client; a sandbox link is made deliberately (payment.link). */
 async function invoicePayUrl(sql: CapabilityContext['sql'], i: InvoiceRow, actor: string): Promise<string | null> {
-  if (!railStatus().connected) return null
+  const rail = railStatus()
+  if (!rail.connected || rail.mode !== 'live') return null
   const link = await ensurePaymentLink(sql, i.id, actor)
   return payUrl(link.token, docLanguage(i.language))
 }

@@ -25,7 +25,7 @@ import { berlinDate } from '@/lib/commercial/money'
 import { eur, logActivity } from '@/lib/commercial/records'
 import type { Sql } from '@/lib/commercial/types'
 import { recordReversal, reversalStatusFromStripe } from '../ledger'
-import { fromMinor, type StripeRail } from './client'
+import { fromMinor, STRIPE_API_VERSION, type StripeRail } from './client'
 
 export const STRIPE_ACTOR = 'stripe:webhook'
 const CHANNEL = 'stripe'
@@ -42,12 +42,14 @@ const str = (v: unknown): string | null => (typeof v === 'string' && v.length <=
 const num = (v: unknown): number | null => (typeof v === 'number' && Number.isFinite(v) ? v : null)
 const obj = (v: unknown): Record<string, unknown> | null => (v && typeof v === 'object' && !Array.isArray(v) ? v as Record<string, unknown> : null)
 
-/** Shape check of a parsed event body. Anything else is refused before it touches the database. */
+/** Shape check of a parsed event body. Anything else is refused before it touches the database —
+ * including an event rendered in another API version than the rail is written against, which only a
+ * misconfigured destination sends (its payload shape is not the one this code reads). */
 export function parseStripeEvent(value: unknown): StripeEvent | null {
   const e = obj(value)
   if (!e || e.object !== 'event') return null
   const id = str(e.id), type = str(e.type), created = num(e.created), data = obj(e.data), object = obj(data?.object)
-  if (!id || !/^evt_[A-Za-z0-9]{8,}$/.test(id) || !type || !/^[a-z_.]{3,80}$/.test(type) || created === null || !object || typeof e.livemode !== 'boolean') return null
+  if (!id || !/^evt_[A-Za-z0-9]{8,}$/.test(id) || !type || !/^[a-z_.]{3,80}$/.test(type) || created === null || !object || typeof e.livemode !== 'boolean' || e.api_version !== STRIPE_API_VERSION) return null
   return { id, type, livemode: e.livemode, created, data: { object } }
 }
 
