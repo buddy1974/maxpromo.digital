@@ -91,6 +91,19 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
     return () => clearTimeout(timer)
   }, [dirty, stage, persist])
 
+  /* Keyboard: the dialog takes focus where writing starts (the message for a reply, the recipient
+     for a new email or a forward) and Escape closes it; a pending autosave still completes. */
+  const dialog = useRef<HTMLElement | null>(null)
+  useEffect(() => {
+    const target = dialog.current?.querySelector<HTMLElement>(init.mode === 'reply' || init.mode === 'reply_all' ? 'textarea' : 'input')
+    target?.focus()
+  }, [init.mode])
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && !working) onClose(changed.current) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose, working])
+
   async function review() {
     setWorking(true); setError(null)
     try {
@@ -151,7 +164,7 @@ export function Composer({ init, copy, sending, onClose, onSent }: ComposerProps
   const title = { new: k.newTitle, reply: k.replyTitle, reply_all: k.replyAllTitle, forward: k.forwardTitle }[init.mode]
   return (
     <div className="mail-composer-backdrop" role="presentation">
-      <section className="mail-composer" role="dialog" aria-modal="true" aria-label={title}>
+      <section ref={dialog} className="mail-composer" role="dialog" aria-modal="true" aria-label={title}>
         <header className="mail-composer-head">
           <h2>{stage === 'confirm' ? k.confirmTitle : title}</h2>
           <span className="mail-note" aria-live="polite">{save === 'saving' ? k.saving : save === 'saved' ? k.saved : save === 'error' ? k.unsaved : ''}</span>
