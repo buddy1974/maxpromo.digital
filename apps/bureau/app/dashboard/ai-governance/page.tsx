@@ -1,4 +1,5 @@
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { DemoDataNotice } from "@/components/dashboard/DemoDataNotice";
 import { AIToolRegister } from "@/components/dashboard/AIToolRegister";
 import { GovernanceRiskCard } from "@/components/dashboard/GovernanceRiskCard";
 import { PolicyChecklist } from "@/components/dashboard/PolicyChecklist";
@@ -21,6 +22,7 @@ export default async function AIGovernancePage() {
 
   return (
     <DashboardShell title={ts("aiGovernance")}>
+      <DemoDataNotice />
       <div className="space-y-8">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">

@@ -1267,5 +1267,21 @@
     "body": "Die Adresse führt ins Leere — möglicherweise ein alter Link oder ein Tippfehler. Ihr Zugang und Ihre Daten sind davon nicht berührt.",
     "toHome": "Zur Startseite",
     "toDashboard": "Zum Dashboard"
+  },
+  "livesInOs": {
+    "title": "Das liegt in Maxpromo OS.",
+    "body": {
+      "leads": "Leads und Anfragen führt Maxpromo OS. Das Bureau übergibt neue Anfragen dorthin und zeigt hier keine eigene Liste.",
+      "contacts": "Kunden und Kontakte führt Maxpromo OS — mit Angeboten, Rechnungen und E-Mail-Verlauf an einer Stelle.",
+      "projects": "Projekte und Aufträge führt Maxpromo OS (Aufträge / Kanban).",
+      "tasks": "Was heute zu tun ist, zeigt das Maxpromo-OS-Dashboard: Aufmerksamkeit, Nachfassen und Freigaben.",
+      "briefing": "Das Morgen-Briefing über Kommunikation, Leads, Geld und Agenten steht im Maxpromo-OS-Dashboard."
+    },
+    "open": "In Maxpromo OS öffnen",
+    "why": "Geschäftsdaten haben einen Ort: Maxpromo OS. Das Agent Bureau steuert die Agenten, Freigaben, das Warte-Zimmer und das Audit."
+  },
+  "demoNotice": {
+    "label": "Beispieldaten.",
+    "body": "Diese Ansicht zeigt Beispielinhalte; ihre echte Datenquelle ist noch nicht angebunden."
   }
 }

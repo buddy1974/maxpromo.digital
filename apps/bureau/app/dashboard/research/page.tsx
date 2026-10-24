@@ -1,4 +1,5 @@
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { DemoDataNotice } from "@/components/dashboard/DemoDataNotice";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { MOCK_MEMORY } from "@/lib/mock/memory";
 import { getTranslations } from "next-intl/server";
@@ -16,6 +17,7 @@ export default async function ResearchPage() {
 
   return (
     <DashboardShell title={ts("research")}>
+      <DemoDataNotice />
       <div className="space-y-4">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">

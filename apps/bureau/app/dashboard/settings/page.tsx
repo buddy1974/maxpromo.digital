@@ -1,4 +1,5 @@
 import { TONE_BADGE, toneMap } from "@maxpromo/ui";
+import { DemoDataNotice } from "@/components/dashboard/DemoDataNotice";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { MOCK_INTEGRATIONS } from "@/lib/mock/integrations";
 import type { IntegrationStatus } from "@/types/integration";
@@ -17,6 +18,7 @@ export default async function SettingsPage() {
   const ts = await getTranslations("sections");
   return (
     <DashboardShell title={ts("settings")}>
+      <DemoDataNotice />
       <div className="space-y-6">
         <section>
           <h2 className="mb-3 text-base font-semibold text-ink">

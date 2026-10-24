@@ -1,4 +1,5 @@
 import { TONE_TEXT, type Tone } from "@maxpromo/ui";
+import { DemoDataNotice } from "@/components/dashboard/DemoDataNotice";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 import { MOCK_CLIENT_IMPLEMENTATIONS } from "@/lib/mock/client-implementation";
 import { getTranslations } from "next-intl/server";
@@ -19,6 +20,7 @@ export default async function ClientImplementationPage() {
 
   return (
     <DashboardShell title={ts("clientImplementation")}>
+      <DemoDataNotice />
       <div className="space-y-6">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">

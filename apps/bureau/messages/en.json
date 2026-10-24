@@ -1267,5 +1267,21 @@
     "body": "The address leads nowhere — most likely an old link or a typo. Your access and your data are unaffected.",
     "toHome": "Go to the start page",
     "toDashboard": "Go to the dashboard"
+  },
+  "livesInOs": {
+    "title": "This lives in Maxpromo OS.",
+    "body": {
+      "leads": "Leads and enquiries are kept in Maxpromo OS. The Bureau hands new enquiries over to it and keeps no list of its own here.",
+      "contacts": "Clients and contacts are kept in Maxpromo OS — with proposals, invoices and email history in one place.",
+      "projects": "Projects and jobs are kept in Maxpromo OS (Jobs / Kanban).",
+      "tasks": "What needs doing today is on the Maxpromo OS dashboard: attention, follow-ups and approvals.",
+      "briefing": "The morning briefing across communication, leads, money and agents is on the Maxpromo OS dashboard."
+    },
+    "open": "Open in Maxpromo OS",
+    "why": "Business records have one home: Maxpromo OS. The Agent Bureau runs the agents, approvals, waiting room and audit."
+  },
+  "demoNotice": {
+    "label": "Example data.",
+    "body": "This view shows example content; its real data source is not connected yet."
   }
 }

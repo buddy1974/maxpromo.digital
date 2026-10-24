@@ -16,7 +16,8 @@ import type { IconName } from "@maxpromo/ui";
  * navigation and another at the top of the page it opens.
  *
  * Grouped: the backbone and operational-control items lead, then the
- * supporting workspace, then configuration.
+ * supporting workspace, then configuration. Leads, contacts, projects, tasks and the business
+ * briefing are not here: they belong to Maxpromo OS (ADR-0021) and their old routes link there.
  */
 export type NavItem = {
   href: string;
@@ -36,12 +37,7 @@ export const NAV: readonly NavItem[] = [
   { href: "/dashboard/playbooks", key: "playbooks", glyph: "playbooks" },
   { href: "/dashboard/client-implementation", key: "clientImplementation", glyph: "implementation" },
 
-  { href: "/dashboard/briefing", key: "briefing", glyph: "briefing", group: "groupWorkspace" },
-  { href: "/dashboard/tasks", key: "tasks", glyph: "tasks" },
-  { href: "/dashboard/projects", key: "projects", glyph: "projects" },
-  { href: "/dashboard/leads", key: "leads", glyph: "leads" },
-  { href: "/dashboard/contacts", key: "contacts", glyph: "clients" },
-  { href: "/dashboard/research", key: "research", glyph: "research" },
+  { href: "/dashboard/research", key: "research", glyph: "research", group: "groupWorkspace" },
   { href: "/dashboard/agents", key: "agents", glyph: "agents" },
   { href: "/dashboard/memory", key: "memory", glyph: "memory" },
   { href: "/dashboard/ai-lab", key: "aiLab", glyph: "lab" },

@@ -1,4 +1,5 @@
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { DemoDataNotice } from "@/components/dashboard/DemoDataNotice";
 import { MOCK_MEMORY } from "@/lib/mock/memory";
 import type { MemoryEntryType } from "@/types/memory";
 import { getTranslations } from "next-intl/server";
@@ -11,6 +12,7 @@ export default async function MemoryPage() {
   const locale = await resolveLocale();
   return (
     <DashboardShell title={ts("memory")}>
+      <DemoDataNotice />
       <div className="space-y-4">
         <div className="rounded-lg border border-hairline bg-surface p-5 shadow-sm">
           <p className="font-mono text-label uppercase tracking-[0.16em] text-ink-secondary">
