@@ -150,7 +150,6 @@ export default function NewInvoicePage() {
   const [language,      setLanguage]      = useState<DocumentLanguage>('de')
   const [saving,  setSaving]  = useState(false)
   const [sending, setSending] = useState(false)
-  const [sendCopy, setSendCopy] = useState(true)
   const [sent,     setSent]    = useState(false)
   const [sentData, setSentData] = useState<{ id: string; number: string; emails: string[]; name: string } | null>(null)
   const [sendError, setSendError] = useState('')
@@ -356,7 +355,7 @@ export default function NewInvoicePage() {
 
   /* Returns the saved invoice's id and the number the server allocated. The
      number on the form is a preview; the saved one is authoritative (risk 63). */
-  async function saveInvoice(sendNow = false): Promise<{ id: string; number: string } | null> {
+  async function saveInvoice(): Promise<{ id: string; number: string } | null> {
     if (!clientName.trim() || lineItems.every(i => !i.description) || heldCount > 0) return null
     const body = {
       client_id: clientId || undefined,
@@ -364,7 +363,7 @@ export default function NewInvoicePage() {
       client_address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join('\n'),
       line_items: lineItems.filter(i => i.description),
       subtotal, total: subtotal, notes, due_date: dueDate,
-      status: sendNow ? 'sent' : 'draft',
+      // Saved as a draft; the send route marks it sent once the mail server accepted it.
       anzahlung: hasAnzahlung ? Number(anzahlung) : 0,
       anzahlung_date: hasAnzahlung ? anzahlungDate : null,
       anzahlung_method: hasAnzahlung ? anzahlungMethod : null,
@@ -387,7 +386,7 @@ export default function NewInvoicePage() {
     if (heldCount > 0) return
     setSaving(true)
     try {
-      const saved = await saveInvoice(false)
+      const saved = await saveInvoice()
       if (saved) router.push('/os/invoices')
     } catch (err) {
       showToast(t.forms.saveFailedToast(err instanceof Error ? err.message : t.forms.saveFailed))
@@ -445,7 +444,7 @@ export default function NewInvoicePage() {
     }
     setSending(true); setSendError('')
     try {
-      const saved = await saveInvoice(false)
+      const saved = await saveInvoice()
       if (!saved) { setSendError(t.forms.saveInvoiceFailed); return }
       const { id, number } = saved
 
@@ -465,7 +464,6 @@ export default function NewInvoicePage() {
           anzahlung_method: hasAnzahlung ? anzahlungMethod : '',
           restbetrag: hasAnzahlung ? restbetrag : subtotal,
           address: [clientStreet, [clientPostcode, clientCity].filter(Boolean).join(' ')].filter(Boolean).join(', '),
-          sendCopyToMarcel: sendCopy,
           currency,
           language,
         }),
@@ -708,14 +706,9 @@ export default function NewInvoicePage() {
               {emailError && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: 'var(--space-1) 0 0', letterSpacing: '0.06em' }}><Icon name="warning" size="xs" /> {emailError}</p>}
             </Field>
 
-            {/* Send copy checkbox */}
-            <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', cursor: 'pointer' }}>
-              <input type="checkbox" checked={sendCopy} onChange={e => setSendCopy(e.target.checked)}
-                style={{ width: '14px', height: '14px', accentColor: 'var(--brand-primary)', cursor: 'pointer' }} />
-              <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.08em' }}>
-                {t.invoiceForm.sendCopyToMarcel}
-              </span>
-            </label>
+            <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.08em', margin: 0 }}>
+              {t.invoiceForm.sendCopyToMarcel}
+            </p>
             <Field label={t.invoiceForm.fieldStreet}>
               <StreetInput
                 value={clientStreet}

@@ -43,6 +43,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
         '/os', '/os/', '/api/', '/demo', '/demo/',
         '/portfolio', '/de/portfolio', '/en/portfolio',
         '/data-deletion', '/de/data-deletion', '/en/data-deletion',
+        '/pay/', '/de/pay/', '/en/pay/',
       ],
     },
     sitemap: domain.sitemap === 'none' ? undefined : `${domain.origin}/sitemap.xml`,

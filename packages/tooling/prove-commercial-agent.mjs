@@ -355,7 +355,9 @@ async function main() {
   r = await run('owner.overview')
   check('"How is Maxpromo doing?" separates received, invoiced, outstanding and pipeline', r?.status === 'done' && /received/.test(r.result.summary) && /Outstanding/.test(r.result.summary) && /weighted/.test(r.result.lines[0]), r?.result?.summary)
   r = await run('owner.brief')
-  check('the morning brief has MONEY, SALES, CLIENTS and TODAY', r?.status === 'done' && ['MONEY', 'SALES', 'CLIENTS', 'TODAY'].every((s) => r.result.lines.includes(s)))
+  // The brief is one snapshot with the /os screen (2026-10-24): sections appear only when they hold something.
+  check('the morning brief names what to do first and the money section', r?.status === 'done' && r.result.lines.includes('TODAY FIRST') && r.result.lines.includes('MONEY')
+    && /^Good morning\. First: /.test(r.result.summary) && r.result.lines.every((l) => !/^(SALES|CLIENTS)$/.test(l)), JSON.stringify(r?.result?.lines?.filter((l) => /^[A-Z ]+$/.test(l))))
   r = await run('pipeline.show', { view: 'all' })
   check('the pipeline view answers', r?.status === 'done', r?.result?.summary)
   r = await run('approvals.pending')

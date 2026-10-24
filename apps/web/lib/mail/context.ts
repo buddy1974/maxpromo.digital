@@ -76,7 +76,7 @@ export async function threadContext(sql: Sql, threadId: string, today: string): 
     q<{ id: string; angebot_number: string; status: string; total: string; currency: string; valid_until: string | null; sent_at: Date | null }>(sql`SELECT id::text,angebot_number,status,total,currency,valid_until::text AS valid_until,sent_at FROM os_angebote
       WHERE client_id::text=${clientId} OR lead_id::text=${leadId} OR (${sender}::text IS NOT NULL AND lower(client_email)=${sender}) ORDER BY created_at DESC LIMIT 5`),
     q<InvoiceForMoney>(sql`SELECT i.id::text AS id,i.invoice_number,i.client_name,i.client_id,i.status,i.total,i.anzahlung,i.restbetrag,i.currency,i.due_date::text AS due_date,i.sent_at,i.created_at,
-        coalesce((SELECT sum(amount) FROM os_payments p WHERE p.invoice_id=i.id),0)::text AS paid_amount
+        money.invoice_paid(i.id)::text AS paid_amount
       FROM os_invoices i WHERE i.status<>'cancelled' AND (i.client_id::text=${clientId} OR (${sender}::text IS NOT NULL AND lower(i.client_email)=${sender})) ORDER BY i.created_at DESC LIMIT 6`),
     q<{ id: string; due_on: string; reason: string }>(sql`SELECT id::text,due_on::text AS due_on,reason FROM os_followups WHERE status='open' AND (lead_id::text=${leadId} OR client_id::text=${clientId}) ORDER BY due_on LIMIT 5`),
     q<{ id: string; subject: string; updated_at: Date; needs_reply: boolean }>(sql`SELECT t.id::text,t.subject,t.updated_at,t.needs_reply FROM mail.threads t WHERE t.id<>${threadId}::uuid AND t.quarantine IS NULL AND t.trashed=false

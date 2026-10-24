@@ -99,8 +99,14 @@ export const EVIDENCE_DOC_PREFIX = `${EVIDENCE_MARKER}-2026-`
 /** Outbound hosts the evidence environment must never reach. */
 export const BLOCKED_OUTBOUND_HOSTS = ['api.resend.com', 'api.mail.hostinger.com', 'api.telegram.org', 'graph.facebook.com'] as const
 
-/** Outbound hosts that stay open, because they carry no customer contact. */
-export const ALLOWED_OUTBOUND_HOSTS = ['api.anthropic.com', 'api.openai.com'] as const
+/**
+ * Outbound hosts that stay open, because they carry no customer contact.
+ *
+ * api.stripe.com: in evidence mode the rail accepts only TEST keys (railStatus refuses a live key
+ * there even with STRIPE_LIVE=1, ADR-0025). Test mode moves no money and sends no customer email,
+ * and the evidence runtime is where the webhook and checkout are exercised against it.
+ */
+export const ALLOWED_OUTBOUND_HOSTS = ['api.anthropic.com', 'api.openai.com', 'api.stripe.com'] as const
 
 /**
  * True when the evidence environment is armed.

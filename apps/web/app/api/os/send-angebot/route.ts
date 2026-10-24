@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getDb, isDatabaseConfigured } from '@/lib/db'
 import { renderStoredAngebotEmail } from '@/lib/commercial/capabilities/documents'
 import { recipients, sendDocumentDirect } from '@/lib/commercial/direct'
+import { outboundTransport } from '@/lib/mail/outbound'
 import { CapabilityRefusal } from '@/lib/commercial/types'
 
 /**
@@ -13,11 +14,9 @@ import { CapabilityRefusal } from '@/lib/commercial/types'
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function POST(request: NextRequest) {
-  if (!process.env.RESEND_API_KEY) {
-    return NextResponse.json(
-      { error: 'Email not configured', detail: 'RESEND_API_KEY environment variable is missing' },
-      { status: 503 },
-    )
+  // Documents leave through the mailbox (ADR-0025); evidence mode uses the sink.
+  if (!outboundTransport()) {
+    return NextResponse.json({ error: 'Email not configured', detail: 'Sending is not connected for this mailbox' }, { status: 503 })
   }
 
   // One resolver, asked rather than re-derived. Under evidence mode this is
@@ -49,10 +48,12 @@ export async function POST(request: NextRequest) {
 
     const sent = await sendDocumentDirect(sql, {
       operation: 'proposal.send.direct', entityType: 'angebot', entityId: angebot.id, to,
-      subject: rendered.subject, html: rendered.html, copyToOwner: body.sendCopyToMarcel !== false, resend: body.resend === true,
+      mail: rendered.mail, entity: angebot.client_id ? { kind: 'client', id: angebot.client_id } : angebot.lead_id ? { kind: 'lead', id: angebot.lead_id } : null,
+      resend: body.resend === true,
     })
     if (!sent.ok) {
-      return NextResponse.json({ error: 'Email send failed', detail: sent.error }, { status: 502 })
+      return NextResponse.json({ error: sent.uncertain ? 'Delivery uncertain' : 'Email send failed', detail: sent.error, uncertain: !!sent.uncertain },
+        { status: sent.busy ? 409 : sent.uncertain ? 202 : 502 })
     }
 
     await sql`

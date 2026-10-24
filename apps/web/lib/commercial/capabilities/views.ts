@@ -20,6 +20,7 @@ import {
 import { OPEN_STAGES, STAGE_WEIGHT, leadStage, statusesFor } from '../pipeline'
 import { addTo, daysBetween, formatPerCurrency, monthlyEquivalent, receivables, type PerCurrency } from '../money'
 import { loadInvoicesForMoney } from './documents'
+import { railIssues } from '@/lib/money/attention'
 import { openAgentEvents, type StoredAgentEvent } from '../agent-events'
 import type { AnyCapability, CapabilityContext, CapabilityDefinition, CapabilityResult, FocusRef } from '../types'
 import { v } from '../validate'
@@ -45,7 +46,7 @@ interface Item {
  * (risk 109). Values are record data (names, numbers, dates), never translated. */
 export type AttentionKey = 'enquiryNew' | 'emailReplied' | 'emailFollowUp' | 'leadReplied' | 'negotiationQuiet' | 'discoveryNoStep' | 'followUp' | 'angebotWaiting' | 'angebotExpired'
   | 'angebotNotInvoiced' | 'projectNotInvoiced' | 'invoiceOverdue' | 'invoiceDraft' | 'renewal' | 'incident' | 'projectLate'
-  | 'approvalsWaiting' | 'uncertainSend' | 'paymentsDisagree' | 'agentEvent'
+  | 'approvalsWaiting' | 'uncertainSend' | 'paymentsDisagree' | 'agentEvent' | 'moneyDispute' | 'moneyUnapplied' | 'payoutFailed' | 'payoutUnreconciled' | 'emailBounced'
 export interface AttentionMessage { key: AttentionKey; params: Record<string, string | number> }
 const m = (key: AttentionKey, params: Record<string, string | number> = {}): AttentionMessage => ({ key, params })
 
@@ -81,7 +82,7 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
     /* Enquiries a channel handed to the OS (ADR-0021): the channel each lead last arrived through. */
     q<{ lead_id: string; source: string }>(ctx.sql`SELECT DISTINCT ON (lead_id) lead_id::text AS lead_id, source FROM os_intake_receipts ORDER BY lead_id, received_at DESC`),
   ])
-  const [agentEvents, conversations] = await Promise.all([agentAttention(ctx), conversationAttention(ctx)])
+  const [agentEvents, conversations, rail, bounced] = await Promise.all([agentAttention(ctx), conversationAttention(ctx), railIssues(ctx.sql), bouncedMail(ctx)])
 
   const items: Item[] = []
   /* Email conversations Marcel wrote in (ADR-0023): the customer answered, or the follow-up he
@@ -156,6 +157,20 @@ async function collect(ctx: CapabilityContext): Promise<Item[]> {
   if (rec.reconcile.length) {
     items.push({ area: 'MONEY', text: `${rec.reconcile.length} invoice(s) where status and recorded payments disagree`, msg: m('paymentsDisagree', { count: rec.reconcile.length }), amount: 0, currency: 'EUR', probability: 0, urgency: 1, action: 'Who owes me money?', commercial: false })
   }
+  /* An email Maxpromo sent that did not arrive: the address is wrong or the mailbox refused it. */
+  for (const b of bounced) {
+    const who = b.recipient ?? 'a recipient'
+    items.push({ area: 'SYSTEM', text: `Your email “${b.subject}” to ${who} did not arrive (${b.detail ?? 'delivery failed'})`, msg: m('emailBounced', { who, subject: b.subject, detail: b.detail ?? '' }), amount: 0, currency: 'EUR', probability: 0, urgency: 3, action: `Open email thread ${b.thread_id}`, ref: focus('email_thread', b.thread_id, b.subject.slice(0, 60)), commercial: false })
+  }
+  /* The card rail (ADR-0025): disputes, money that settles no invoice, payouts. */
+  for (const r of rail) {
+    const amount = eur(r.amount, r.currency)
+    const ref = r.invoiceId && r.invoiceNumber ? focus('invoice', r.invoiceId, r.invoiceNumber) : undefined
+    if (r.kind === 'dispute') items.push({ area: 'MONEY', text: `Card payment disputed: ${amount}${r.invoiceNumber ? ` on ${r.invoiceNumber}` : ''} (${r.detail}) — respond by ${r.date}`, msg: m('moneyDispute', { amount, number: r.invoiceNumber ?? '', status: r.detail, date: r.date }), amount: r.amount, currency: r.currency, probability: 0, urgency: 3, action: `Money issue ${r.id}`, ref, commercial: false })
+    else if (r.kind === 'unapplied') items.push({ area: 'MONEY', text: `Payment not applied: ${amount}${r.invoiceNumber ? ` (${r.invoiceNumber})` : ''} — ${r.detail}`, msg: m('moneyUnapplied', { amount, number: r.invoiceNumber ?? '', reason: r.detail }), amount: r.amount, currency: r.currency, probability: 0, urgency: 3, action: `Money issue ${r.id}`, ref, commercial: false })
+    else if (r.kind === 'payoutFailed') items.push({ area: 'MONEY', text: `Payout to Revolut failed: ${amount}`, msg: m('payoutFailed', { amount }), amount: r.amount, currency: r.currency, probability: 0, urgency: 3, action: `Money issue ${r.id}`, commercial: false })
+    else items.push({ area: 'MONEY', text: `Confirm payout ${amount} of ${r.date} on the Revolut statement`, msg: m('payoutUnreconciled', { amount, date: r.date }), amount: 0, currency: r.currency, probability: 0, urgency: 1, action: `Money issue ${r.id}`, commercial: false })
+  }
   /* What the Agent Control Plane reported and Marcel has not seen. Recommendations
      and completions inform; blocked, failed and exceptions need a look. */
   for (const e of agentEvents) {
@@ -189,6 +204,21 @@ async function conversationAttention(ctx: CapabilityContext): Promise<Conversati
       WHERE t.archived=false AND t.trashed=false AND t.quarantine IS NULL AND last.outbound IS NOT NULL
         AND ((t.needs_reply AND last.inbound > last.outbound) OR (t.waiting AND t.follow_up_on IS NOT NULL AND t.follow_up_on <= ${ctx.today}::date))
       ORDER BY t.updated_at DESC LIMIT 20` as ConversationRow[]
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'code' in error && ['42P01', '3F000', '42703'].includes(String(error.code))) return []
+    throw error
+  }
+}
+
+interface BouncedRow { id: string; thread_id: string; subject: string; recipient: string | null; detail: string | null }
+/** Outbound messages a delivery report marked as bounced in the last 7 days (lib/mail/bounces.ts).
+ * Optional until migration 0020 exists. */
+async function bouncedMail(ctx: CapabilityContext): Promise<BouncedRow[]> {
+  try {
+    return await ctx.sql`SELECT m.id::text, m.thread_id::text, m.subject, split_part(m.delivery_detail, ':', 1) AS recipient, nullif(trim(substr(m.delivery_detail, strpos(m.delivery_detail, ':') + 1)), '') AS detail
+      FROM mail.messages m JOIN mail.threads t ON t.id = m.thread_id
+      WHERE m.direction = 'outbound' AND m.delivery_state = 'bounced' AND m.delivery_at > now() - interval '7 days' AND t.trashed = false
+      ORDER BY m.delivery_at DESC LIMIT 10` as BouncedRow[]
   } catch (error) {
     if (typeof error === 'object' && error !== null && 'code' in error && ['42P01', '3F000', '42703'].includes(String(error.code))) return []
     throw error
@@ -580,6 +610,9 @@ export const ownerNotices: CapabilityDefinition<ReturnType<typeof noticesInput.p
       if (i.ref?.kind === 'incident' && i.urgency >= 3) notices.push({ key: `incident:${i.ref.id}`, severity: 'critical', text: i.text, action: i.action })
       if (/renews/.test(i.text) && i.urgency >= 3) notices.push({ key: `renewal:${i.text}:${ctx.today.slice(0, 7)}`, severity: 'info', text: i.text, action: i.action })
       if (i.area === 'SYSTEM' && /Unclear whether/.test(i.text)) notices.push({ key: `uncertain:${i.text}`, severity: 'critical', text: i.text })
+      if (i.msg.key === 'emailBounced' && i.ref) notices.push({ key: `bounce:${i.ref.id}:${i.text.slice(0, 120)}`, severity: 'warning', text: i.text, action: i.action })
+      // Disputes, unapplied money and failed payouts: money at risk, pushed once per issue.
+      if (i.area === 'MONEY' && i.urgency >= 3 && i.action.startsWith('Money issue ')) notices.push({ key: `money:${i.msg.key}:${i.action.slice(12)}`, severity: 'critical', text: i.text, action: i.action })
     }
     notices.push(...await channelNotices(ctx))
     /* Requests another interface (an agent) prepared and only Marcel can approve. His own

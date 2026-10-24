@@ -52,6 +52,7 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
     { icon: 'clients'    as const, label: t.sidebar.navClients,    href: '/os/clients' },
     { icon: 'invoice'    as const, label: t.sidebar.navInvoices,   href: '/os/invoices' },
     { icon: 'quote'      as const, label: t.sidebar.navAngebote,   href: '/os/angebote' },
+    { icon: 'audit'      as const, label: t.sidebar.navMoney,      href: '/os/money' },
     { icon: 'jobs'       as const, label: t.sidebar.navJobs,       href: '/os/jobs' },
     { icon: 'leads'      as const, label: t.sidebar.navLeads,      href: '/os/leads' },
     { icon: 'newsletter' as const, label: t.sidebar.navNewsletter, href: '/os/newsletter' },

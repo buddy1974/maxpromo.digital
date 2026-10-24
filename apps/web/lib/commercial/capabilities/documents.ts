@@ -24,14 +24,16 @@
  * Rechnung is edited in the OS afterwards, the old approval refuses to send it.
  */
 
-import { sendEmail } from '@/lib/email'
 import { matchExistingClient } from '@/lib/documents/client-match'
 import { nextAngebotNumber, nextInvoiceNumber } from '@/lib/documents/allocate'
 import { admitLineItems } from '@/lib/documents/extraction-guard'
-import { buildAngebotEmail, buildInvoiceEmail, DOCUMENT_FROM_EMAIL, type AngebotRow } from '@/lib/documents/emails'
-import { buildEmailBankBlockHtml, buildEmailFooterHtml, escHtml } from '@/lib/documents/emailHtml'
-import { getLabels } from '@/lib/documents/labels'
-import { fmtCurrency, fmtDocDate, splitClientName } from '@/lib/documents/format'
+import type { AngebotRow } from '@/lib/documents/emails'
+import { angebotMail, invoiceMail, reminderMail, type DocumentMail } from '@/lib/documents/mail'
+import { documentPdfFilename, renderAngebotPdf, renderInvoicePdf } from '@/lib/documents/pdf'
+import { sendDocumentMail } from '@/lib/mail/outbound'
+import { ensurePaymentLink, payUrl } from '@/lib/money/links'
+import { railStatus } from '@/lib/money/stripe/client'
+import { fmtCurrency, splitClientName } from '@/lib/documents/format'
 import type { CurrencyCode, DocumentLanguage } from '@/lib/documents/config'
 import { writeAudit } from '../audit'
 import { invoiceBalance, isoDate, receivables, formatPerCurrency, addPeriod, type InvoiceForMoney } from '../money'
@@ -39,9 +41,9 @@ import {
   addDays, documentClientName, eur, focus, getClient, leadLabel, logActivity, resolveLead, searchClients,
   type ClientRow, type LeadRow,
 } from '../records'
-import { payloadHash, sha256Hex, stableStringify } from '../signing'
+import { payloadHash } from '../signing'
 import {
-  CapabilityRefusal, UncertainOutcome,
+  CapabilityRefusal,
   type CapabilityContext, type AnyCapability, type CapabilityDefinition, type CapabilityResult,
 } from '../types'
 import { v } from '../validate'
@@ -87,57 +89,59 @@ interface InvoiceRow {
 }
 
 /**
- * What a send is bound to: the email exactly as the client would receive it.
- *
- * Hashing chosen columns missed fields the builders print (currency, validity,
- * payment terms, due date, remaining balance), so a change to one of them
- * after the preview would have reached the client unseen. The rendered
- * subject and HTML cover every printed field by construction; the builders are
- * deterministic for a given row.
+ * What a send is bound to: the email exactly as the client would receive it — subject, HTML,
+ * text and the attached PDF (lib/documents/mail.ts `version`). A change to any printed field after
+ * the preview changes the version, and the old approval refuses to send.
  */
-function emailVersion(email: { subject: string; html: string }): string {
-  return sha256Hex(`${email.subject}\n${email.html}`).slice(0, 32)
+function angebotEmail(a: AngebotFull): Promise<DocumentMail> {
+  return angebotMail(a)
 }
 
-function angebotEmail(a: AngebotFull): { subject: string; html: string } {
-  return { subject: getLabels(docLanguage(a.language)).emailSubjectQuote(a.angebot_number), html: buildAngebotEmail(a) }
-}
-
-function invoiceEmail(i: InvoiceRow, today: string): { subject: string; html: string } {
-  const lang = docLanguage(i.language)
+function invoiceData(i: InvoiceRow, today: string) {
   return {
-    subject: getLabels(lang).emailSubjectInvoice(i.invoice_number),
-    html: buildInvoiceEmail({
-      invoice_number: i.invoice_number, client_name: i.client_name, address: i.client_address ?? undefined,
-      date: isoDate(i.created_at) ?? today, due_date: isoDate(i.due_date) ?? today,
-      line_items: (i.line_items ?? []).map((l) => ({ description: l.description, qty: l.qty, unit_price: Number(l.unit_price ?? l.total), total: Number(l.total) })),
-      subtotal: Number(i.subtotal ?? i.total), total: Number(i.total),
-      anzahlung: Number(i.anzahlung ?? 0) || undefined, anzahlung_date: isoDate(i.anzahlung_date) ?? undefined,
-      anzahlung_method: i.anzahlung_method ?? undefined, restbetrag: i.restbetrag !== null ? Number(i.restbetrag) : undefined,
-      currency: i.currency as CurrencyCode, language: lang,
-    }),
+    invoice_number: i.invoice_number, client_name: i.client_name, address: i.client_address ?? undefined,
+    date: isoDate(i.created_at) ?? today, due_date: isoDate(i.due_date) ?? today,
+    line_items: (i.line_items ?? []).map((l) => ({ description: l.description, qty: l.qty, unit_price: Number(l.unit_price ?? l.total), total: Number(l.total) })),
+    subtotal: Number(i.subtotal ?? i.total), total: Number(i.total),
+    anzahlung: Number(i.anzahlung ?? 0) || undefined, anzahlung_date: isoDate(i.anzahlung_date) ?? undefined,
+    anzahlung_method: i.anzahlung_method ?? undefined, restbetrag: i.restbetrag !== null ? Number(i.restbetrag) : undefined,
+    currency: i.currency as CurrencyCode, language: docLanguage(i.language),
   }
 }
 
+/**
+ * The invoice's pay link goes into the email only when card payment is connected (ADR-0025): a
+ * link that can only repeat the bank details adds nothing. The link itself is an internal record,
+ * created once per invoice; creating it changes nothing for the client.
+ */
+async function invoicePayUrl(sql: CapabilityContext['sql'], i: InvoiceRow, actor: string): Promise<string | null> {
+  if (!railStatus().connected) return null
+  const link = await ensurePaymentLink(sql, i.id, actor)
+  return payUrl(link.token, docLanguage(i.language))
+}
+
+async function invoiceEmail(i: InvoiceRow, today: string, url: string | null): Promise<DocumentMail> {
+  return invoiceMail(invoiceData(i, today), { open: invoiceBalance(i, today).open || undefined, payUrl: url })
+}
+
 /** Acceptance is bound to the Angebot as it reads — the same rendering. */
-function documentVersion(a: AngebotFull): string {
-  return emailVersion(angebotEmail(a))
+async function documentVersion(a: AngebotFull): Promise<string> {
+  return (await angebotEmail(a)).version
 }
 
 /**
- * The stored document's email, rendered exactly as the governed capabilities
- * render it. The OS screens send through these too, so a browser send and an
- * agent-requested send of the same record are byte-identical (risk 80 closed:
- * nothing printed comes from the request).
+ * The stored document's email, rendered exactly as the governed capabilities render it. The OS
+ * screens send through these too, so a browser send and an agent-requested send of the same
+ * record are identical (risk 80 closed: nothing printed comes from the request).
  */
 export async function renderStoredAngebotEmail(sql: CapabilityContext['sql'], id: string) {
   const row = await getAngebot({ sql } as CapabilityContext, id)
-  return { row, ...angebotEmail(row) }
+  return { row, mail: await angebotEmail(row) }
 }
 
-export async function renderStoredInvoiceEmail(sql: CapabilityContext['sql'], id: string, today: string) {
+export async function renderStoredInvoiceEmail(sql: CapabilityContext['sql'], id: string, today: string, actor: string) {
   const row = await getInvoice({ sql } as CapabilityContext, id)
-  return { row, ...invoiceEmail(row, today) }
+  return { row, mail: await invoiceEmail(row, today, await invoicePayUrl(sql, row, actor)) }
 }
 
 const SENDABLE_ANGEBOT = ['draft', 'sent']
@@ -150,7 +154,7 @@ async function getAngebot(ctx: CapabilityContext, id: string): Promise<AngebotFu
 
 async function getInvoice(ctx: CapabilityContext, id: string): Promise<InvoiceRow> {
   const rows = await ctx.sql`
-    SELECT i.*, coalesce((SELECT sum(amount) FROM os_payments p WHERE p.invoice_id = i.id), 0)::text AS paid_amount
+    SELECT i.*, money.invoice_paid(i.id)::text AS paid_amount
     FROM os_invoices i WHERE i.id = ${id}` as InvoiceRow[]
   if (!rows.length) throw new CapabilityRefusal('No invoice with that id.', 'not_found')
   return rows[0]
@@ -198,20 +202,15 @@ function addressOf(c: ClientRow | null): string | null {
   return lines.length ? lines.join('\n') : null
 }
 
-async function sendDocumentEmail(ctx: CapabilityContext, p: { to: string[]; subject: string; html: string; approvalId: string; what: string }) {
-  let result: Awaited<ReturnType<typeof sendEmail>>
-  try {
-    result = await sendEmail({
-      to: p.to, from: DOCUMENT_FROM_EMAIL, replyTo: 'info@maxpromo.digital', subject: p.subject, html: p.html,
-      bcc: ['info@maxpromo.digital'], idempotencyKey: `approval-${p.approvalId}`,
-    })
-  } catch (err) {
-    throw new UncertainOutcome(`${p.what} may or may not have been sent: the mail provider did not answer (${err instanceof Error ? err.message : 'network'}).`)
-  }
-  if (!result.success) throw new CapabilityRefusal(`${p.what} was not sent: ${result.error ?? 'the provider refused it'}. Its status was not changed.`)
-  ctx.committed(`${p.what} sent to ${p.to.join(', ')}`, result.id)
-  return result
+async function sendDocument(ctx: CapabilityContext, p: { to: string[]; mail: DocumentMail; approvalId: string; what: string; threadKey: string; entity: { kind: 'lead' | 'client'; id: string } | null; audit: Record<string, unknown> }) {
+  const sent = await sendDocumentMail(ctx.sql, {
+    to: p.to, mail: p.mail, threadKey: p.threadKey, sendKey: `${p.threadKey}:${approvalKey(p.approvalId)}`, entity: p.entity,
+    actor: ctx.actor, approvalId: p.approvalId, today: ctx.today, audit: p.audit, committed: (what) => ctx.committed(`${p.what}: ${what}`),
+  })
+  return { id: sent.transport === 'evidence' ? 'evidence-sink' : sent.messageId, threadId: sent.threadId }
 }
+const approvalKey = (id: string) => id.replace(/[^A-Za-z0-9-]/g, '').slice(0, 40)
+const entityOf = (clientId: string | null, leadId: string | null = null) => clientId ? { kind: 'client' as const, id: clientId } : leadId ? { kind: 'lead' as const, id: leadId } : null
 
 function deliveryNote(id: string | undefined): string {
   return id === 'evidence-sink' || id === 'dev-mock' ? ` (${id}: this environment does not deliver mail)` : ''
@@ -422,9 +421,10 @@ export const proposalSend: CapabilityDefinition<ReturnType<typeof proposalSendIn
         TO: to.join(', '),
         TOTAL: eur(a.total, cur),
         'VALID UNTIL': isoDate(a.valid_until) ?? '—',
-        COPY: 'info@maxpromo.digital (bcc)',
+        ATTACHMENT: 'Angebot as PDF',
+        COPY: 'Hostinger Sent folder',
       },
-      payload: { angebot_id: a.id, to, version: documentVersion(a) },
+      payload: { angebot_id: a.id, to, version: await documentVersion(a) },
       dedupeKey: a.id,
       expiresInMinutes: 120,
     }
@@ -435,9 +435,10 @@ export const proposalSend: CapabilityDefinition<ReturnType<typeof proposalSendIn
     /* Re-checked here, not only at prepare: an Angebot accepted, rejected or
        expired since then is never sent again by an old button. */
     if (!SENDABLE_ANGEBOT.includes(a.status)) throw new CapabilityRefusal(`Angebot ${a.angebot_number} is now ${a.status}. Nothing was sent.`, 'conflict')
-    const email = angebotEmail(a)
-    if (emailVersion(email) !== p.version) throw new CapabilityRefusal(`Angebot ${a.angebot_number} was changed after this send was prepared. Nothing was sent; prepare it again.`, 'conflict')
-    const result = await sendDocumentEmail(ctx, { to: p.to, subject: email.subject, html: email.html, approvalId, what: `Angebot ${a.angebot_number}` })
+    const email = await angebotEmail(a)
+    if (email.version !== p.version) throw new CapabilityRefusal(`Angebot ${a.angebot_number} was changed after this send was prepared. Nothing was sent; prepare it again.`, 'conflict')
+    const result = await sendDocument(ctx, { to: p.to, mail: email, approvalId, what: `Angebot ${a.angebot_number}`, threadKey: `doc:angebot:${a.id}`,
+      entity: entityOf(a.client_id, a.lead_id), audit: { document: 'angebot', angebot_id: a.id } })
     await ctx.sql`UPDATE os_angebote SET status = 'sent', sent_at = now() WHERE id = ${a.id} AND status IN ('draft', 'sent')`
     await logActivity(ctx.sql, {
       lead_id: a.lead_id, client_id: a.client_id, angebot_id: a.id, kind: 'proposal_sent', channel: 'email', actor: ctx.actor,
@@ -544,7 +545,7 @@ export const proposalAccept: CapabilityDefinition<ReturnType<typeof acceptInput.
         ...(a.status === 'draft' ? { NOTE: 'This Angebot was never sent from the OS.' } : {}),
       },
       payload: {
-        angebot_id: a.id, version: documentVersion(a), lead_id: lead?.id ?? null, client_id: clientId, new_client: newClient,
+        angebot_id: a.id, version: await documentVersion(a), lead_id: lead?.id ?? null, client_id: clientId, new_client: newClient,
         job_id: crypto.randomUUID(), title, due_date: input.due_date ?? null, recurring,
       },
       dedupeKey: a.id,
@@ -559,7 +560,7 @@ export const proposalAccept: CapabilityDefinition<ReturnType<typeof acceptInput.
     }
     const a = await getAngebot(ctx, p.angebot_id)
     if (a.status === 'accepted') return { summary: `Angebot ${a.angebot_number} was already accepted.` }
-    if (documentVersion(a) !== p.version) throw new CapabilityRefusal(`Angebot ${a.angebot_number} changed after this was prepared. Prepare the acceptance again.`, 'conflict')
+    if (await documentVersion(a) !== p.version) throw new CapabilityRefusal(`Angebot ${a.angebot_number} changed after this was prepared. Prepare the acceptance again.`, 'conflict')
     const clientId = p.client_id ?? p.new_client!.id
     const cur = a.currency ?? 'EUR'
     const queries = []
@@ -672,7 +673,7 @@ export const invoiceCreate: CapabilityDefinition<ReturnType<typeof invoiceInput.
         lines = (a.line_items ?? []).map((l) => ({ ...l }))
         const deposits = await ctx.sql`
           SELECT i.id, i.invoice_number, i.status, i.total, i.currency, i.paid_date::text AS paid_date,
-                 coalesce((SELECT sum(amount) FROM os_payments p WHERE p.invoice_id = i.id), 0)::numeric AS paid,
+                 money.invoice_paid(i.id)::numeric AS paid,
                  (SELECT max(received_on)::text FROM os_payments p WHERE p.invoice_id = i.id) AS last_paid
           FROM os_invoices i WHERE i.angebot_id = ${a.id} AND i.kind = 'deposit' AND i.status <> 'cancelled'` as { id: string; invoice_number: string; status: string; total: string; currency: string; paid_date: string | null; paid: string; last_paid: string | null }[]
         /* A deposit invoice that is still a draft, or still owed, would be
@@ -794,6 +795,7 @@ export const invoiceSend: CapabilityDefinition<ReturnType<typeof invoiceSendInpu
     if (!to.length) throw new CapabilityRefusal(`Rechnung ${i.invoice_number} has no recipient email. Give one with the send.`)
     const due = isoDate(i.due_date)
     const b = invoiceBalance(i, ctx.today)
+    const url = await invoicePayUrl(ctx.sql, i, ctx.actor)
     return {
       summary: `Send Rechnung ${i.invoice_number} to ${i.client_name}`,
       preview: {
@@ -804,9 +806,11 @@ export const invoiceSend: CapabilityDefinition<ReturnType<typeof invoiceSendInpu
         AMOUNT: eur(b.open || i.restbetrag || i.total, i.currency),
         DUE: due ?? '—',
         ...(due && due < ctx.today ? { WARNING: `The due date ${due} is already past.` } : {}),
-        COPY: 'info@maxpromo.digital (bcc)',
+        ATTACHMENT: 'Rechnung as PDF',
+        ...(url ? { 'PAY LINK': url } : {}),
+        COPY: 'Hostinger Sent folder',
       },
-      payload: { invoice_id: i.id, to, version: emailVersion(invoiceEmail(i, ctx.today)) },
+      payload: { invoice_id: i.id, to, version: (await invoiceEmail(i, ctx.today, url)).version },
       dedupeKey: i.id,
       expiresInMinutes: 120,
     }
@@ -816,9 +820,10 @@ export const invoiceSend: CapabilityDefinition<ReturnType<typeof invoiceSendInpu
     const i = await getInvoice(ctx, p.invoice_id)
     /* Re-checked here: an invoice paid or cancelled since the preview is never sent. */
     if (['paid', 'cancelled'].includes(i.status)) throw new CapabilityRefusal(`Rechnung ${i.invoice_number} is now ${i.status}. Nothing was sent.`, 'conflict')
-    const email = invoiceEmail(i, ctx.today)
-    if (emailVersion(email) !== p.version) throw new CapabilityRefusal(`Rechnung ${i.invoice_number} was changed after this send was prepared. Nothing was sent.`, 'conflict')
-    const result = await sendDocumentEmail(ctx, { to: p.to, subject: email.subject, html: email.html, approvalId, what: `Rechnung ${i.invoice_number}` })
+    const email = await invoiceEmail(i, ctx.today, await invoicePayUrl(ctx.sql, i, ctx.actor))
+    if (email.version !== p.version) throw new CapabilityRefusal(`Rechnung ${i.invoice_number} was changed after this send was prepared. Nothing was sent.`, 'conflict')
+    const result = await sendDocument(ctx, { to: p.to, mail: email, approvalId, what: `Rechnung ${i.invoice_number}`, threadKey: `doc:invoice:${i.id}`,
+      entity: entityOf(i.client_id), audit: { document: 'invoice', invoice_id: i.id } })
     await ctx.sql`UPDATE os_invoices SET status = CASE WHEN status = 'draft' THEN 'sent' ELSE status END, sent_at = now() WHERE id = ${i.id}`
     const check = isoDate(i.due_date) && isoDate(i.due_date)! >= ctx.today ? addDays(isoDate(i.due_date)!, 1) : addDays(ctx.today, 7)
     await ctx.sql`INSERT INTO os_followups (due_on, reason, client_id, invoice_id, actor)
@@ -914,31 +919,36 @@ export const paymentRecord: CapabilityDefinition<ReturnType<typeof paymentInput.
  * invoice asks for is computed as money.ts computes it, and the open balance
  * is re-checked INSIDE the transaction after a row lock, so two payments
  * recorded at the same moment cannot both pass and overpay.
- * Returns false when the payment would overpay and nothing was recorded.
+ * Returns the new payment id, or null when the payment would overpay (or a
+ * provider receipt with that reference already exists) and nothing was recorded.
  */
-export async function recordPaymentLocked(sql: CapabilityContext['sql'], i: InvoiceRow, p: {
+export async function recordPaymentLocked(sql: CapabilityContext['sql'], i: Pick<InvoiceRow, 'id' | 'restbetrag' | 'total' | 'anzahlung'>, p: {
   amount: number; currency: string; receivedOn: string; method: string | null; reference: string | null; actor: string; approvalId: string | null
-}): Promise<boolean> {
+  /** The rail (ADR-0025). A provider receipt is recorded once per provider reference. */
+  provider?: 'manual' | 'stripe'; providerRef?: string | null
+}): Promise<string | null> {
   const asked = i.restbetrag !== null && i.restbetrag !== undefined
     ? Number(i.restbetrag)
     : Math.max(0, Number(i.total) - Number(i.anzahlung ?? 0))
   const results = await sql.transaction([
     sql`SELECT id FROM os_invoices WHERE id = ${i.id} FOR UPDATE`,
     sql`
-      INSERT INTO os_payments (invoice_id, amount, currency, received_on, method, reference, actor, approval_id)
-      SELECT ${i.id}::uuid, ${p.amount}, ${p.currency}, ${p.receivedOn}::date, ${p.method}, ${p.reference}, ${p.actor}, ${p.approvalId}::uuid
-      WHERE ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) >= ${p.amount}::numeric - 0.009
+      INSERT INTO os_payments (invoice_id, amount, currency, received_on, method, reference, actor, approval_id, provider, provider_ref)
+      SELECT ${i.id}::uuid, ${p.amount}, ${p.currency}, ${p.receivedOn}::date, ${p.method}, ${p.reference}, ${p.actor}, ${p.approvalId}::uuid,
+             ${p.provider ?? 'manual'}, ${p.providerRef ?? null}
+      WHERE ${asked}::numeric - money.invoice_paid(${i.id}::uuid) >= ${p.amount}::numeric - 0.009
+      ON CONFLICT (provider, provider_ref) WHERE provider_ref IS NOT NULL DO NOTHING
       RETURNING id`,
     sql`
       UPDATE os_invoices SET status = 'paid', paid_date = ${p.receivedOn}::date
       WHERE id = ${i.id} AND status <> 'cancelled'
-        AND ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) <= 0.009`,
+        AND ${asked}::numeric - money.invoice_paid(${i.id}::uuid) <= 0.009`,
     sql`
       UPDATE os_followups SET status = 'done', done_at = now()
       WHERE invoice_id = ${i.id} AND status = 'open'
-        AND ${asked}::numeric - coalesce((SELECT sum(amount) FROM os_payments WHERE invoice_id = ${i.id}), 0) <= 0.009`,
+        AND ${asked}::numeric - money.invoice_paid(${i.id}::uuid) <= 0.009`,
   ]) as unknown as [unknown, { id: string }[], unknown, unknown]
-  return results[1].length > 0
+  return results[1][0]?.id ?? null
 }
 
 /**
@@ -971,27 +981,8 @@ export async function markPaidDirect(sql: CapabilityContext['sql'], invoiceId: s
 
 const reminderInput = v.object({ ...invoiceRef, to: v.optional(v.array(v.email(), { min: 1, max: 3 })) })
 
-function buildReminderEmail(i: InvoiceRow, open: number, lang: DocumentLanguage): { subject: string; html: string } {
-  const cur = i.currency as CurrencyCode
-  const { name, company } = splitClientName(i.client_name)
-  const greeting = lang === 'de'
-    ? (company ? 'Sehr geehrte Damen und Herren,' : `Guten Tag ${escHtml(name)},`)
-    : (company ? 'Dear Sir or Madam,' : `Dear ${escHtml(name.split(' ')[0])},`)
-  const due = fmtDocDate(isoDate(i.due_date), lang)
-  const body = lang === 'de'
-    ? `sicher ist es Ihnen im Alltag entgangen: Zu unserer Rechnung Nr. <strong>${escHtml(i.invoice_number)}</strong>, fällig am ${due}, ist ein Betrag von <strong>${fmtCurrency(open, cur)}</strong> noch offen.<br><br>Wir bitten Sie, den Betrag in den nächsten Tagen auf das unten genannte Konto zu überweisen. Sollte sich Ihre Zahlung mit dieser Nachricht überschnitten haben, betrachten Sie sie bitte als gegenstandslos.`
-    : `this is a friendly reminder that <strong>${fmtCurrency(open, cur)}</strong> remains open on our invoice no. <strong>${escHtml(i.invoice_number)}</strong>, due on ${due}.<br><br>We would be grateful if you could transfer the amount to the account below in the next few days. If your payment has crossed with this message, please disregard it.`
-  const t = getLabels(lang)
-  const html = `<div style="font-family:Arial,sans-serif;max-width:640px;margin:0 auto;">
-    <div style="padding:24px 32px;">
-      <p style="font-size:14px;margin:0 0 16px;">${greeting}</p>
-      <p style="font-size:14px;line-height:1.7;margin:0 0 20px;">${body}</p>
-      ${buildEmailBankBlockHtml(i.invoice_number, lang)}
-      <p style="font-size:14px;line-height:1.7;">${escHtml(t.closing)}<br><strong>Marcel Akwe</strong><br>MAXPROMO DIGITAL</p>
-    </div>
-    ${buildEmailFooterHtml(lang)}
-  </div>`
-  return { subject: lang === 'de' ? `Zahlungserinnerung — Rechnung Nr. ${i.invoice_number}` : `Payment reminder — invoice no. ${i.invoice_number}`, html }
+async function buildReminderEmail(sql: CapabilityContext['sql'], i: InvoiceRow, open: number, today: string, actor: string): Promise<DocumentMail> {
+  return reminderMail(invoiceData(i, today), open, { payUrl: await invoicePayUrl(sql, i, actor) })
 }
 
 export const reminderSend: CapabilityDefinition<ReturnType<typeof reminderInput.parse>> = {
@@ -1009,8 +1000,7 @@ export const reminderSend: CapabilityDefinition<ReturnType<typeof reminderInput.
     if (b.open <= 0 || ['draft', 'cancelled', 'paid'].includes(b.state)) return { summary: `Rechnung ${i.invoice_number} has nothing to remind about (${b.state}).` }
     const to = input.to ?? (i.client_email ? [i.client_email] : [])
     if (!to.length) throw new CapabilityRefusal(`Rechnung ${i.invoice_number} has no email address on it.`)
-    const lang = docLanguage(i.language)
-    const email = buildReminderEmail(i, b.open, lang)
+    const email = await buildReminderEmail(ctx.sql, i, b.open, ctx.today, ctx.actor)
     return {
       summary: `Send payment reminder for ${i.invoice_number}`,
       preview: {
@@ -1020,8 +1010,9 @@ export const reminderSend: CapabilityDefinition<ReturnType<typeof reminderInput.
         RECHNUNG: `${i.invoice_number} · ${i.client_name}`,
         OPEN: eur(b.open, b.currency),
         DUE: `${b.dueDate ?? '—'}${b.daysOverdue ? ` (${b.daysOverdue} days overdue)` : ''}`,
+        ATTACHMENT: 'Rechnung as PDF',
       },
-      payload: { invoice_id: i.id, to, open: b.open, version: emailVersion(email) },
+      payload: { invoice_id: i.id, to, open: b.open, version: email.version },
       dedupeKey: `${i.id}:${ctx.today}`,
       expiresInMinutes: 240,
     }
@@ -1030,11 +1021,12 @@ export const reminderSend: CapabilityDefinition<ReturnType<typeof reminderInput.
     const p = payload as { invoice_id: string; to: string[]; open: number; version: string }
     const i = await getInvoice(ctx, p.invoice_id)
     const b = invoiceBalance(i, ctx.today)
-    if (emailVersion(buildReminderEmail(i, b.open, docLanguage(i.language))) !== p.version || Math.abs(b.open - p.open) > 0.009) {
+    const email = await buildReminderEmail(ctx.sql, i, b.open, ctx.today, ctx.actor)
+    if (email.version !== p.version || Math.abs(b.open - p.open) > 0.009) {
       throw new CapabilityRefusal(`Rechnung ${i.invoice_number} changed since the reminder was prepared (open now ${eur(b.open, b.currency)}). Nothing was sent.`, 'conflict')
     }
-    const email = buildReminderEmail(i, b.open, docLanguage(i.language))
-    const result = await sendDocumentEmail(ctx, { to: p.to, subject: email.subject, html: email.html, approvalId, what: `The reminder for ${i.invoice_number}` })
+    const result = await sendDocument(ctx, { to: p.to, mail: email, approvalId, what: `The reminder for ${i.invoice_number}`, threadKey: `doc:invoice:${i.id}`,
+      entity: entityOf(i.client_id), audit: { document: 'payment_reminder', invoice_id: i.id } })
     const next = addDays(ctx.today, 7)
     await ctx.sql`INSERT INTO os_followups (due_on, reason, client_id, invoice_id, actor)
                   VALUES (${next}, ${`Check payment after reminder for ${i.invoice_number}`}, ${i.client_id}, ${i.id}, ${ctx.actor}) ON CONFLICT DO NOTHING`
@@ -1055,7 +1047,7 @@ export async function loadInvoicesForMoney(ctx: CapabilityContext): Promise<Invo
   return await ctx.sql`
     SELECT i.id, i.invoice_number, i.client_name, i.client_id, i.status, i.total, i.anzahlung, i.restbetrag, i.currency,
            i.due_date::text AS due_date, i.sent_at, i.created_at,
-           coalesce((SELECT sum(amount) FROM os_payments p WHERE p.invoice_id = i.id), 0)::text AS paid_amount
+           money.invoice_paid(i.id)::text AS paid_amount
     FROM os_invoices i WHERE i.status <> 'cancelled'` as InvoiceForMoney[]
 }
 
@@ -1122,3 +1114,13 @@ export const DOCUMENT_CAPABILITIES: AnyCapability[] = [
   invoiceCreate, invoiceSend, paymentRecord, reminderSend, receivablesShow, paymentsList,
 ]
 
+
+/** The stored quotation or invoice as its PDF, for attaching to an email Marcel writes (migration 0020). */
+export async function renderStoredDocumentPdf(sql: CapabilityContext['sql'], kind: 'invoice' | 'angebot', id: string, today: string): Promise<{ filename: string; bytes: Uint8Array }> {
+  if (kind === 'invoice') {
+    const row = await getInvoice({ sql } as CapabilityContext, id)
+    return { filename: documentPdfFilename('invoice', row.invoice_number, docLanguage(row.language)), bytes: await renderInvoicePdf(invoiceData(row, today)) }
+  }
+  const row = await getAngebot({ sql } as CapabilityContext, id)
+  return { filename: documentPdfFilename('angebot', row.angebot_number, docLanguage(row.language)), bytes: await renderAngebotPdf(row) }
+}

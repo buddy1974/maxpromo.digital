@@ -4,7 +4,7 @@ import { dispatchOwnerNotices } from './notices'
 
 /** Push important owner notices after the response (ADR-0024). A missing ledger table (migration
  * 0018 not applied) or Telegram not configured means nothing is sent and nothing breaks. */
-export function scheduleOwnerNotices(source: 'webhook' | 'agent' | 'attention' | 'inbox') {
+export function scheduleOwnerNotices(source: 'webhook' | 'agent' | 'attention' | 'inbox' | 'stripe') {
   after(async () => {
     try {
       const r = await dispatchOwnerNotices(getDb())

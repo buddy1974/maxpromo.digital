@@ -17,6 +17,7 @@ import { MAIL_CAPABILITIES } from './capabilities/mail'
 import { MAIL_WORKSPACE_CAPABILITIES } from './capabilities/mailWorkspace'
 import { VIEW_CAPABILITIES } from './capabilities/views'
 import { INTAKE_CAPABILITIES } from './capabilities/intake'
+import { MONEY_CAPABILITIES } from './capabilities/money'
 import type { AnyCapability } from './types'
 
 const ALL: AnyCapability[] = [
@@ -28,6 +29,7 @@ const ALL: AnyCapability[] = [
   ...MAIL_CAPABILITIES,
   ...MAIL_WORKSPACE_CAPABILITIES,
   ...INTAKE_CAPABILITIES,
+  ...MONEY_CAPABILITIES,
 ]
 
 export const CAPABILITIES: ReadonlyMap<string, AnyCapability> = (() => {

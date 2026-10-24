@@ -37,7 +37,6 @@ export default function AngebotDetailPage() {
   // Send-modal state
   const [sendModalOpen, setSendModalOpen] = useState(false)
   const [emailInput, setEmailInput] = useState('')
-  const [bccMarcel, setBccMarcel] = useState(true)
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState('')
   const [sendSuccess, setSendSuccess] = useState('')
@@ -130,12 +129,11 @@ export default function AngebotDetailPage() {
         body: JSON.stringify({
           angebot_id: angebot.id,
           clientEmails: [email],            // explicit override beats the row
-          sendCopyToMarcel: bccMarcel,
         }),
       })
       if (!res.ok) throw new Error(t.angebotDetail.sendFailed)
 
-      setSendSuccess(t.angebotDetail.sentTo(email, bccMarcel))
+      setSendSuccess(t.angebotDetail.sentTo(email, false))
       setAngebot(prev => prev ? { ...prev, status: 'sent', client_email: email } : prev)
       setSendModalOpen(false)
     } catch (err) {
@@ -325,17 +323,9 @@ export default function AngebotDetailPage() {
                   : t.angebotDetail.sameAsSaved}
             </p>
 
-            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '20px' }}>
-              <input
-                type="checkbox"
-                checked={bccMarcel}
-                onChange={e => setBccMarcel(e.target.checked)}
-                style={{ accentColor: 'var(--brand-primary)', width: '14px', height: '14px' }}
-              />
-              <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.08em' }}>
-                {t.angebotDetail.bccMarcel}
-              </span>
-            </label>
+            <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', letterSpacing: '0.08em', margin: '0 0 20px' }}>
+              {t.angebotDetail.bccMarcel}
+            </p>
 
             {sendError && (
               <div style={{ background: 'color-mix(in srgb, var(--semantic-danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--semantic-danger) 30%, transparent)', padding: 'var(--space-2) var(--space-3)', marginBottom: '14px', borderRadius: 'var(--radius-xs)' }}>

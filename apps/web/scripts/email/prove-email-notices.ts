@@ -9,7 +9,7 @@ const ports = `import {v} from '${validator}';
 const q=async p=>await p, addDays=x=>x, OPEN_STAGES=[],statusesFor=()=>[],loadInvoicesForMoney=async()=>[],
 receivables=()=>({outstanding:{},overdue:{},overdueInvoices:[],drafts:[],reconcile:[]}), formatPerCurrency=()=> '0',daysBetween=()=>1,
 openAgentEvents=async()=>[], focus=(kind,id,label)=>({kind,id,label}), leadLabel=l=>l.company??l.name??'', eur=(a,c)=>a+' '+c,
-isoDate=x=>x?new Date(x).toISOString().slice(0,10):null, addTo=(acc,c,a)=>{acc[c]=(acc[c]??0)+a;return acc}, leadStage=()=>null, STAGE_WEIGHT={};
+isoDate=x=>x?new Date(x).toISOString().slice(0,10):null, addTo=(acc,c,a)=>{acc[c]=(acc[c]??0)+a;return acc}, leadStage=()=>null, STAGE_WEIGHT={}, railIssues=async()=>[];
 `
 const views = await import(`data:text/javascript;base64,${Buffer.from(ports + source).toString('base64')}`)
 let queried = ''

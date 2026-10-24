@@ -34,7 +34,7 @@ function escapeHtml(s: string) { return s.replace(/&/g, '&amp;').replace(/</g, '
 export function format(n: Notice): string {
   const threadId = n.action?.match(/Open email thread ([0-9a-f-]{36})/)?.[1]
   const link = threadId ? `${OS_URL}/inbox?thread=${threadId}` : n.key.startsWith('approval:') ? `${OS_URL}/approvals`
-    : n.key.startsWith('brief:') ? OS_URL : n.key.startsWith('overdue:') ? `${OS_URL}/invoices` : n.key.startsWith('agent:') ? OS_URL : null
+    : n.key.startsWith('brief:') ? OS_URL : n.key.startsWith('overdue:') ? `${OS_URL}/invoices` : n.key.startsWith('money:') ? `${OS_URL}/money` : n.key.startsWith('agent:') ? OS_URL : null
   const head = n.severity === 'critical' ? '<b>Maxpromo · urgent</b>' : n.key.startsWith('brief:') ? '<b>Maxpromo · morning brief</b>' : '<b>Maxpromo</b>'
   return [head, escapeHtml(n.text.slice(0, 3500)), link ? `\n<a href="${link}">Open in Maxpromo OS</a>` : null].filter(Boolean).join('\n')
 }

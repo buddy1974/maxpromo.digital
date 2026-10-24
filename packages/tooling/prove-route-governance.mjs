@@ -52,6 +52,7 @@ const SITEMAP_EXCLUDED = {
   '/[...rest]': 'the localised catch-all; it renders 404 and has no URL of its own',
   '/blog/[slug]': 'dynamic; the sitemap enumerates published slugs rather than the route',
   '/industries/[slug]': 'dynamic; the sitemap enumerates the six industry slugs',
+  '/pay/[token]': 'a private payment page per invoice (ADR-0025): noindex, disallowed in robots.txt, reachable only by its link',
 }
 
 /**
@@ -67,6 +68,7 @@ const A11Y_EXCLUDED = {
   '/industries/[slug]': 'dynamic; all six concrete slugs are audited directly',
   '/portfolio': 'disallowed in robots.txt and superseded by /work',
   '/data-deletion': 'audited in English only, which the sample already covers',
+  '/pay/[token]': 'needs a live invoice token; the page is a short form whose states are proven offline (prove-money)',
 }
 
 const results = []

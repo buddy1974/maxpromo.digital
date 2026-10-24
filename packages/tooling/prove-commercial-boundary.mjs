@@ -189,10 +189,12 @@ check('every AMBER capability defines prepare and execute', commercial.every(([,
    so a failure after it is never reported as "nothing done". */
 const executeBlocks = (s) => (s.match(/async execute\([\s\S]*?(?=\n  },\n\})/g) ?? [])
 const commitsEffects = (s) => {
-  const helperCommits = !/async function sendDocumentEmail/.test(s) || /async function sendDocumentEmail[\s\S]*?ctx\.committed\(/.test(s)
+  // A send helper counts as declaring the commitment only when it calls ctx.committed itself.
+  const helperCommits = [/async function sendDocumentEmail\(([\s\S]*?)\n\}/, /async function sendDocument\(([\s\S]*?)\n\}/]
+    .every((re) => { const m = re.exec(s); return !m || /ctx\.committed\(/.test(m[1]) })
   return helperCommits && executeBlocks(s).every((b) => {
-    const effect = /sendEmail\(|sendDocumentEmail\(|\.transaction\(|INSERT INTO/.test(b)
-    return !effect || /ctx\.committed\(|sendDocumentEmail\(ctx,/.test(b)
+    const effect = /sendEmail\(|sendDocumentEmail\(|sendDocument\(|\.transaction\(|INSERT INTO/.test(b)
+    return !effect || /ctx\.committed\(|sendDocumentEmail\(ctx,|sendDocument\(ctx,/.test(b)
   })
 }
 check('rule 7 fails on an execution that sends without declaring it', !commitsEffects("  async execute(ctx, payload) {\n    await sendEmail({ to })\n    await logActivity()\n  },\n}"))

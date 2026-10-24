@@ -6,6 +6,7 @@ import type { DocumentLanguage } from '@/lib/documents/config'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { useDocumentIdentity, withTaxIdentity } from '@/components/documents/useDocumentIdentity'
 import { TONE_VARS, toneMap } from '@maxpromo/ui'
+import { InvoiceMoneyPanel } from '@/components/os/money/InvoiceMoneyPanel'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
@@ -259,6 +260,10 @@ export default function InvoiceDetailPage() {
           <p style={{ fontFamily: sans, fontSize: '14px', color: 'var(--brand-text-secondary)', margin: 0, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{invoice.notes}</p>
         </div>
       )}
+
+      {/* Money: pay link, payments and refunds, card attempts (ADR-0025). */}
+      <InvoiceMoneyPanel invoiceId={invoice.id} invoiceNumber={invoice.invoice_number} status={invoice.status}
+        onChanged={() => { fetch(`/api/os/invoices?id=${invoice.id}`).then(r => (r.ok ? r.json() : null)).then(d => { if (d) setInvoice(d as Invoice) }).catch(() => undefined) }} />
 
       {/* §19 UStG — Kleinunternehmer status. Never charge VAT. */}
       <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', marginTop: 'var(--space-4)' }}>

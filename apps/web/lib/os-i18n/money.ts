@@ -1,0 +1,97 @@
+/**
+ * Money copy, German and English (ADR-0025). English is typed against German. Internal states
+ * (provider names, reversal kinds, payout statuses) reach the screen only through this module.
+ */
+type P = Record<string, string | number>
+
+const de = {
+  title: 'Geld',
+  hint: 'Offene Forderungen, eingegangenes Geld, Kartenzahlungen, Auszahlungen an Revolut — und was abgeglichen werden muss.',
+  railOn: (mode: string) => `Kartenzahlung aktiv (${mode === 'live' ? 'Live' : 'Testmodus'})`,
+  railOff: 'Kartenzahlung noch nicht verbunden — Überweisungen funktionieren wie bisher.',
+  railReason: {
+    no_key: 'Stripe-Schlüssel fehlt.', bad_key: 'Der Stripe-Schlüssel hat ein unerwartetes Format.', disabled: 'Kartenzahlung ist ausgeschaltet.',
+    live_not_enabled: 'Live-Schlüssel vorhanden, Live-Betrieb noch nicht freigegeben.', evidence_live_key: 'Die Testumgebung akzeptiert keine Live-Schlüssel.',
+  } as Record<string, string>,
+  webhookMissing: 'Der Stripe-Webhook ist noch nicht eingerichtet: Zahlungen würden nicht erfasst.',
+  outstanding: 'Offen', overdue: 'Überfällig', received: 'Eingegangen (Monat)', cardGross: 'Per Karte (Monat)', fees: 'Stripe-Gebühren', net: 'Netto',
+  pendingPayout: 'Noch nicht ausgezahlt',
+  issues: 'Braucht deinen Blick', noIssues: 'Nichts abzugleichen.',
+  issueKind: { dispute: 'Anfechtung', unapplied: 'Nicht zugeordnet', payoutFailed: 'Auszahlung fehlgeschlagen', unreconciled: 'Auszahlung bestätigen' } as Record<string, string>,
+  resolve: 'Als erledigt markieren', resolveNote: 'Was hast du getan? (z. B. erstattet, manuell zugeordnet)',
+  reconcile: 'Auf Revolut bestätigt', bankRef: 'Referenz auf dem Kontoauszug (optional)',
+  payouts: 'Auszahlungen an Revolut', noPayouts: 'Noch keine Auszahlungen.',
+  payoutStatus: { pending: 'ausstehend', in_transit: 'unterwegs', paid: 'ausgezahlt', failed: 'fehlgeschlagen', canceled: 'storniert' } as Record<string, string>,
+  reconciled: 'bestätigt',
+  ledger: 'Zahlungsbuch', openNow: 'Offen', receivedNet: 'Erhalten (netto)', noLedger: 'Noch keine Zahlungen erfasst.',
+  entryKind: { payment: 'Zahlung', refund: 'Erstattung', chargeback: 'Rückbuchung' } as Record<string, string>,
+  provider: { manual: 'Überweisung/manuell', stripe: 'Karte (Stripe)' } as Record<string, string>,
+  entryStatus: { succeeded: '', pending: 'in Bearbeitung', failed: 'fehlgeschlagen', cancelled: 'abgebrochen' } as Record<string, string>,
+  fee: (f: string) => `Gebühr ${f}`,
+  payLink: 'Zahlungslink', payLinkNone: 'Noch kein Zahlungslink.', createLink: 'Zahlungslink erstellen', copy: 'Kopieren', copied: 'Kopiert',
+  revoke: 'Link deaktivieren', opened: (p: P) => `${p.count}× geöffnet`,
+  linkCardOff: 'Kartenzahlung ist noch nicht verbunden: Der Link zeigt nur die Bankdaten.',
+  attempts: 'Zahlungsversuche',
+  attemptStatus: { creating: 'wird erstellt', open: 'offen', processing: 'in Bearbeitung', paid: 'bezahlt', failed: 'fehlgeschlagen', expired: 'abgelaufen', cancelled: 'ersetzt', uncertain: 'unklar' } as Record<string, string>,
+  refund: 'Erstatten', refundAmount: 'Betrag', refundReason: 'Grund (optional)',
+  confirm: 'Bestätigen', cancel: 'Abbrechen', done: 'Erledigt.', failed: 'Das hat nicht geklappt.',
+  invoice: 'Rechnung',
+  dash: '—',
+  reasons: {
+    'payment not tied to a Maxpromo checkout session': 'Zahlung gehört zu keinem Zahlungsvorgang aus dem OS',
+    'payment names a different invoice than its session': 'Zahlung nennt eine andere Rechnung als ihr Zahlungsvorgang',
+    'test/live mode mismatch': 'Test- und Live-Modus passen nicht zusammen',
+    'invoice no longer exists': 'Die Rechnung existiert nicht mehr',
+    'invoice is cancelled': 'Die Rechnung ist storniert',
+    'payment would overpay the invoice (already paid another way?)': 'Würde die Rechnung überzahlen (schon anders bezahlt?)',
+    currency: 'Andere Währung als die Rechnung',
+  } as Record<string, string>,
+}
+
+export type MoneyCopy = typeof de
+
+const en: MoneyCopy = {
+  title: 'Money',
+  hint: 'Receivables, money received, card payments, payouts to Revolut — and what needs reconciling.',
+  railOn: (mode: string) => `Card payment on (${mode === 'live' ? 'live' : 'test mode'})`,
+  railOff: 'Card payment not connected yet — bank transfers work as before.',
+  railReason: {
+    no_key: 'No Stripe key.', bad_key: 'The Stripe key has an unexpected format.', disabled: 'Card payment is switched off.',
+    live_not_enabled: 'A live key is set; live operation is not enabled yet.', evidence_live_key: 'The evidence environment refuses live keys.',
+  },
+  webhookMissing: 'The Stripe webhook is not configured yet: payments would not be recorded.',
+  outstanding: 'Outstanding', overdue: 'Overdue', received: 'Received (month)', cardGross: 'By card (month)', fees: 'Stripe fees', net: 'Net',
+  pendingPayout: 'Not yet paid out',
+  issues: 'Needs your look', noIssues: 'Nothing to reconcile.',
+  issueKind: { dispute: 'Dispute', unapplied: 'Not applied', payoutFailed: 'Payout failed', unreconciled: 'Confirm payout' },
+  resolve: 'Mark handled', resolveNote: 'What did you do? (e.g. refunded, applied by hand)',
+  reconcile: 'Confirmed on Revolut', bankRef: 'Reference on the statement (optional)',
+  payouts: 'Payouts to Revolut', noPayouts: 'No payouts yet.',
+  payoutStatus: { pending: 'pending', in_transit: 'in transit', paid: 'paid out', failed: 'failed', canceled: 'cancelled' },
+  reconciled: 'confirmed',
+  ledger: 'Payment ledger', openNow: 'Open', receivedNet: 'Received (net)', noLedger: 'No payments recorded yet.',
+  entryKind: { payment: 'Payment', refund: 'Refund', chargeback: 'Chargeback' },
+  provider: { manual: 'Transfer/manual', stripe: 'Card (Stripe)' },
+  entryStatus: { succeeded: '', pending: 'processing', failed: 'failed', cancelled: 'cancelled' },
+  fee: (f: string) => `fee ${f}`,
+  payLink: 'Payment link', payLinkNone: 'No payment link yet.', createLink: 'Create payment link', copy: 'Copy', copied: 'Copied',
+  revoke: 'Deactivate link', opened: (p: P) => `opened ${p.count}×`,
+  linkCardOff: 'Card payment is not connected yet: the link shows the bank details only.',
+  attempts: 'Payment attempts',
+  attemptStatus: { creating: 'creating', open: 'open', processing: 'processing', paid: 'paid', failed: 'failed', expired: 'expired', cancelled: 'replaced', uncertain: 'uncertain' },
+  refund: 'Refund', refundAmount: 'Amount', refundReason: 'Reason (optional)',
+  confirm: 'Confirm', cancel: 'Cancel', done: 'Done.', failed: 'That did not work.',
+  invoice: 'Invoice',
+  dash: '—',
+  reasons: {
+    'payment not tied to a Maxpromo checkout session': 'Payment belongs to no checkout started from the OS',
+    'payment names a different invoice than its session': 'Payment names a different invoice than its checkout',
+    'test/live mode mismatch': 'Test and live mode do not match',
+    'invoice no longer exists': 'The invoice no longer exists',
+    'invoice is cancelled': 'The invoice is cancelled',
+    'payment would overpay the invoice (already paid another way?)': 'Would overpay the invoice (already paid another way?)',
+    currency: 'Different currency from the invoice',
+  },
+}
+
+export const MONEY_COPY: Record<'de' | 'en', MoneyCopy> = { de, en }

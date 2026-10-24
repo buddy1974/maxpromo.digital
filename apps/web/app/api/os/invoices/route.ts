@@ -116,6 +116,10 @@ export async function POST(request: NextRequest) {
      */
     const invoice_number = await nextInvoiceNumber()
 
+    /* Always created as a draft (ADR-0025). An invoice becomes `sent` only when the send route has
+       actually handed it to the mail server, and `paid` only through the payment path — a form
+       field cannot create an issued or paid invoice with nothing behind it. */
+
     // Single-tenant: Marcel is the only owner (0003-multi-tenancy.sql).
     const OWNER_ID = '00000000-0000-0000-0000-000000000001'
 
@@ -129,7 +133,7 @@ export async function POST(request: NextRequest) {
         (${OWNER_ID}, ${invoice_number}, ${body.client_id || null}, ${body.client_name},
          ${body.client_email || null}, ${body.client_address || null},
          ${JSON.stringify(admitted.items)}::jsonb, ${body.subtotal}, ${body.total},
-         ${body.status || 'draft'}, ${body.due_date || null}, ${body.notes || null},
+         'draft', ${body.due_date || null}, ${body.notes || null},
          ${body.anzahlung ?? 0}, ${body.anzahlung_date || null},
          ${body.anzahlung_method || null}, ${body.restbetrag ?? body.total},
          ${body.payment_method || 'bank'}, ${body.currency || 'EUR'}, ${body.language || 'de'})
@@ -190,6 +194,24 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json(rows[0])
     }
 
+    /* Status moves only along real transitions (ADR-0025). `sent` is set by the send route,
+       `paid` by the payment path above; here only cancelling remains, and only while no money is
+       recorded against the invoice (refund it first, so the ledger stays true). */
+    const current = await sql`SELECT status, currency, money.invoice_paid(id)::numeric AS paid FROM os_invoices WHERE id = ${body.id}` as { status: string; currency: string; paid: string }[]
+    if (!current[0]) return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
+    const before = current[0]
+    if (body.status !== undefined && body.status !== before.status) {
+      if (body.status !== 'cancelled') return NextResponse.json({ error: `Status ${String(body.status)} is set by its own action (send or record payment), not by editing.`, code: 'transition' }, { status: 409 })
+      if (Number(before.paid) > 0.009) return NextResponse.json({ error: 'Money is recorded against this invoice. Refund it before cancelling.', code: 'has_payments' }, { status: 409 })
+      if (before.status === 'paid') return NextResponse.json({ error: 'A paid invoice is not cancelled.', code: 'transition' }, { status: 409 })
+    }
+    if (['paid', 'cancelled'].includes(before.status) && Object.keys(body).some(k => !['id', 'notes', 'language', 'status'].includes(k))) {
+      return NextResponse.json({ error: `A ${before.status} invoice keeps its amounts.`, code: 'locked' }, { status: 409 })
+    }
+    if (body.currency && body.currency !== before.currency && Number(before.paid) > 0.009) {
+      return NextResponse.json({ error: 'Payments are recorded in the current currency; it cannot change.', code: 'has_payments' }, { status: 409 })
+    }
+
     const admitted = body.line_items ? admitLineItems(body.line_items) : null
     if (admitted && admitted.held.length > 0) {
       /* Persistence boundary: a line the provenance guard held, and no person
@@ -210,6 +232,9 @@ export async function PATCH(request: NextRequest) {
         line_items     = COALESCE(${admitted ? JSON.stringify(admitted.items) : null}::jsonb, line_items),
         subtotal       = COALESCE(${body.subtotal ?? null}, subtotal),
         total          = COALESCE(${body.total ?? null}, total),
+        -- What the invoice asks for follows a corrected total (money.ts reads restbetrag first).
+        restbetrag     = CASE WHEN ${body.total ?? null}::numeric IS NULL THEN restbetrag
+                              ELSE greatest(${body.total ?? null}::numeric - coalesce(anzahlung, 0), 0) END,
         payment_method = COALESCE(${body.payment_method as string | null}, payment_method),
         currency       = COALESCE(${body.currency as string | null}, currency),
         language       = COALESCE(${body.language as string | null}, language)

@@ -31,15 +31,36 @@ export async function snapshotLab(sql) {
   for (const t of LAB_TABLES) rows[t] = new Set((await sql.query(`SELECT ${KEY[t] ?? 'id'}::text AS k FROM ${t}`)).map((r) => r.k))
   const sequences = await sql`SELECT sequencename, last_value::bigint AS last_value FROM pg_sequences WHERE schemaname = 'doc_seq'`
   const audit = (await sql`SELECT count(*)::int AS n FROM os_audit`)[0].n
-  return { rows, sequences, audit }
+  const threads = new Set((await sql`SELECT id::text AS k FROM mail.threads`.catch(() => [])).map((r) => r.k))
+  return { rows, sequences, audit, threads }
 }
 
 export async function restoreLab(sql, snap, log = console.log) {
+  /* Conversations a run created: document emails now leave through the mailbox and are recorded
+     in mail.threads (ADR-0025), so a run leaves Inbox conversations behind unless they go too. */
+  if (snap.threads) {
+    const threads = (await sql`SELECT id::text AS k FROM mail.threads`).map((r) => r.k).filter((x) => !snap.threads.has(x))
+    if (threads.length) {
+      await sql`DELETE FROM mail.action_audit WHERE thread_id = ANY(${threads}::uuid[])`
+      await sql`DELETE FROM mail.business_links WHERE thread_id = ANY(${threads}::uuid[])`
+      await sql`DELETE FROM mail.drafts WHERE thread_id = ANY(${threads}::uuid[])`
+      await sql`UPDATE mail.messages SET delivery_report = NULL WHERE thread_id = ANY(${threads}::uuid[])`
+      await sql`DELETE FROM mail.messages WHERE thread_id = ANY(${threads}::uuid[])`
+      await sql`DELETE FROM mail.threads WHERE id = ANY(${threads}::uuid[])`
+    }
+    log(`  mail.threads: ${threads.length} conversation(s) removed`)
+  }
   for (const t of LAB_TABLES) {
     const k = KEY[t] ?? 'id'
     const created = (await sql.query(`SELECT ${k}::text AS k FROM ${t}`)).map((r) => r.k).filter((x) => !snap.rows[t].has(x))
     if (created.length) {
-      if (t === 'os_invoices') await sql`DELETE FROM os_payments WHERE invoice_id = ANY(${created}::uuid[])`
+      if (t === 'os_invoices') {
+        // Rail records point at invoices with ON DELETE RESTRICT (migration 0019).
+        for (const table of ['money.provider_events', 'money.reversals', 'money.charges', 'money.disputes', 'money.checkout_sessions', 'money.payment_links']) {
+          await sql.query(`DELETE FROM ${table} WHERE invoice_id = ANY($1::uuid[])`, [created]).catch(() => undefined)
+        }
+        await sql`DELETE FROM os_payments WHERE invoice_id = ANY(${created}::uuid[])`
+      }
       await sql.query(`DELETE FROM ${t} WHERE ${k}::text = ANY($1)`, [created])
     }
     log(`  ${t}: ${created.length} row(s) removed`)

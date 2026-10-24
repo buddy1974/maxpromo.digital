@@ -29,7 +29,7 @@ export interface AuditEntry {
   error?: string
 }
 
-export const SECRETISH = /(sk-[A-Za-z0-9_-]{8,}|re_[A-Za-z0-9]{8,}|\b\d{8,10}:[A-Za-z0-9_-]{30,}\b|Bearer\s+[A-Za-z0-9._-]+|postgres(ql)?:\/\/\S+|password\s*[=:]\s*\S+)/gi
+export const SECRETISH = /(sk-[A-Za-z0-9_-]{8,}|\b(?:sk|rk|pk)_(?:live|test)_[A-Za-z0-9]{8,}|\bwhsec_[A-Za-z0-9+/=]{8,}|re_[A-Za-z0-9]{8,}|\b\d{8,10}:[A-Za-z0-9_-]{30,}\b|Bearer\s+[A-Za-z0-9._-]+|postgres(ql)?:\/\/\S+|password\s*[=:]\s*\S+)/gi
 
 export function redactForAudit(value: unknown): unknown {
   if (typeof value === 'string') return value.replace(SECRETISH, '[redacted]')

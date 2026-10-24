@@ -4,6 +4,8 @@ import { admitLineItems } from '@/lib/documents/extraction-guard'
 import { berlinDate } from '@/lib/commercial/money'
 import { renderStoredInvoiceEmail } from '@/lib/commercial/capabilities/documents'
 import { recipients, sendDocumentDirect } from '@/lib/commercial/direct'
+import { outboundTransport } from '@/lib/mail/outbound'
+import { OWNER_ACTOR } from '@/lib/commercial/engine'
 import { CapabilityRefusal } from '@/lib/commercial/types'
 
 /**
@@ -20,11 +22,9 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const SENDABLE = ['draft', 'sent', 'overdue']
 
 export async function POST(request: NextRequest) {
-  if (!process.env.RESEND_API_KEY) {
-    return NextResponse.json(
-      { error: 'Email not configured', detail: 'RESEND_API_KEY environment variable is missing' },
-      { status: 503 }
-    )
+  // Documents leave through the mailbox (ADR-0025); evidence mode uses the sink.
+  if (!outboundTransport()) {
+    return NextResponse.json({ error: 'Email not configured', detail: 'Sending is not connected for this mailbox' }, { status: 503 })
   }
 
   // Asks the one resolver rather than re-reading the environment. In evidence
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     const sql = getDb()
     let rendered: Awaited<ReturnType<typeof renderStoredInvoiceEmail>>
     try {
-      rendered = await renderStoredInvoiceEmail(sql, body.invoice_id, berlinDate())
+      rendered = await renderStoredInvoiceEmail(sql, body.invoice_id, berlinDate(), OWNER_ACTOR)
     } catch (err) {
       if (err instanceof CapabilityRefusal) return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
       throw err
@@ -67,11 +67,12 @@ export async function POST(request: NextRequest) {
 
     const sent = await sendDocumentDirect(sql, {
       operation: 'invoice.send.direct', entityType: 'invoice', entityId: invoice.id, to,
-      subject: rendered.subject, html: rendered.html, copyToOwner: body.sendCopyToMarcel !== false, resend: body.resend === true,
+      mail: rendered.mail, entity: invoice.client_id ? { kind: 'client', id: invoice.client_id } : null, resend: body.resend === true,
     })
     if (!sent.ok) {
-      console.error('[send-invoice] provider refused:', sent.error)
-      return NextResponse.json({ error: 'Email send failed', detail: sent.error }, { status: 502 })
+      console.error('[send-invoice] not sent', sent.uncertain ? 'uncertain' : sent.busy ? 'busy' : 'refused')
+      return NextResponse.json({ error: sent.uncertain ? 'Delivery uncertain' : 'Email send failed', detail: sent.error, uncertain: !!sent.uncertain },
+        { status: sent.busy ? 409 : sent.uncertain ? 202 : 502 })
     }
 
     await sql`
