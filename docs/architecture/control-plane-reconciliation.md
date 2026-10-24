@@ -728,3 +728,33 @@ Bureau production report the released commit from `/api/health`.
 
 **Not observed live (owner actions):** a real send and a customer reply joining the conversation; a
 signed-in Bureau visual check; Telegram pushes (inactive by design).
+
+## 24. Stripe ↔ Money + Email completion run — 2026-10-24
+
+Decision: [ADR-0025](../adr/0025-money-domain-and-stripe-rail.md). Product state: [ledger](../governance/product-completion-ledger.md) §Money, §Email.
+
+**Production schema.** Migrations 0019 (money domain) and 0020 (draft attachments, delivery reports)
+applied in one transaction from the Neon console (32 statements; editor content verified byte-equal to
+the committed files by SHA-256 before running). Read-only check afterwards: seven `money` tables,
+`money.invoice_paid()` present and returning 0 for both invoices, `os_payments.provider/provider_ref`,
+`os_invoices_status_check` NOT VALID, `mail.draft_attachments`, four delivery columns. Data unchanged:
+invoices 2 (sent 1, draft 1), payments 0, messages 3, clients 2, leads 6.
+
+**Release.** c5ab6ad (mail: attachments, bounces, shared send bookkeeping), 173b021 (Money domain,
+Stripe rail, documents through the mailbox with PDF), 23d6f7f (docs). Production `/api/health` reports 23d6f7f.
+
+**Verification before release.** `npm run verify` exit 0 (30 gates, incl. `prove:money` 54 + PDF 27,
+email suite with attachments 15); evidence database: money 43, attachments/bounces 16; local evidence
+runtime: commercial agent end to end 85/85 (quote, invoice and reminder through the mailbox sink with
+PDF), money HTTP 20; local browser: `/os/money`, invoice money panel, resolve and refund flows,
+composer attach → confirm → send (sink), pay page; 390 px frame without horizontal scroll.
+
+**Production evidence (read-only).** 16/16 HTTP probes: webhook locked (401 without secret, 405 on GET),
+checkout refuses GET and bad tokens, unknown pay token shows a neutral noindex/no-referrer page, every new
+owner route refuses anonymous callers, robots.txt disallows `/pay/`. Signed in: `/os/money` shows €156
+outstanding and overdue (MP-2026-002), card payment not connected; attention, briefing, Inbox list and
+thread view (with delivery columns) answer 200; no error or 5xx logs since the release. Nothing sent:
+Hostinger Sent unchanged (25 messages, latest 2026-10-23 07:26Z). No pay link was created for a real invoice.
+
+**Not observed live (owner):** a Stripe test or live payment (no key), a document email in real clients,
+a real bounce.
