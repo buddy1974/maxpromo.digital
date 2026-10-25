@@ -124,16 +124,26 @@ export async function understand(input: UnderstandInput, deps: { complete?: type
 export function shapeOf(x: unknown, depth = 0): unknown {
   if (Array.isArray(x)) return depth > 2 ? `array(${x.length})` : x.slice(0, 3).map(i => shapeOf(i, depth + 1))
   if (x && typeof x === 'object') return depth > 2 ? 'object' : Object.fromEntries(Object.entries(x).map(([k, v]) => [k, k === 'mode' || k === 'type' || k === 'language' ? v : shapeOf(v, depth + 1)]))
-  return typeof x === 'string' ? `string(${x.length})` : typeof x
+  return typeof x === 'string' ? `string(${x.length}:${x.trim().charAt(0).replace(/[A-Za-z0-9]/, 'a')})` : typeof x
 }
 
 const NUMERIC = new Set(['amount', 'percent', 'value'])
 
 /** Structured output sometimes carries a nested array as a JSON string; read it, then check it like any other. */
-function list(x: unknown): unknown[] {
+function list(x: unknown, depth = 0): unknown[] {
   if (Array.isArray(x)) return x
-  if (typeof x === 'string' && x.trim().startsWith('[')) { try { const v = JSON.parse(x); return Array.isArray(v) ? v : [] } catch { return [] } }
-  return []
+  if (typeof x !== 'string' || depth > 2) return []
+  const t = x.trim()
+  let v: unknown
+  try { v = JSON.parse(t) } catch {
+    /* Text around the JSON ("Here are the actions: [...]"): take the outermost list or object. */
+    const m = t.match(/\[[\s\S]*\]|\{[\s\S]*\}/)
+    if (!m) return []
+    try { v = JSON.parse(m[0]) } catch { return [] }
+  }
+  if (Array.isArray(v)) return v
+  if (typeof v === 'string') return list(v, depth + 1)
+  return v && typeof v === 'object' ? [v] : []
 }
 
 /** Re-check the model's answer field by field. Exported for the proof. */
