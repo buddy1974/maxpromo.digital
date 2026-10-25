@@ -16,7 +16,7 @@
  */
 import { createHash } from 'node:crypto'
 import { resolveRoute } from '@maxpromo/ai'
-import { ask, questionLanguage } from '@/lib/commercial/ask'
+import { ask } from '@/lib/commercial/ask'
 import { executeApproval, rejectApproval, runCapability } from '@/lib/commercial/engine'
 import { writeAudit } from '@/lib/commercial/audit'
 import { stableStringify } from '@/lib/commercial/signing'
@@ -97,7 +97,9 @@ export async function capture(sql: Sql, input: CaptureInput, deps: CaptureDeps =
   const requestId = crypto.randomUUID()
   const text = input.text.trim().slice(0, 4000)
   const context = await verifyContext(sql, input.envelope)
-  const lang: Lang = text ? questionLanguage(text, input.screenLanguage) : input.screenLanguage
+  /* Previews, warnings and results follow the screen language. Answers follow the language of the
+     question (Ask Max decides that), and drafts the language Marcel asks for (understanding). */
+  const lang: Lang = input.screenLanguage
   const copy = MAX_COPY[lang]
   const ctx = capContext(sql, input.actor, lang)
 
@@ -152,7 +154,8 @@ export async function capture(sql: Sql, input: CaptureInput, deps: CaptureDeps =
   }
 
   /* Deterministic limits on what a proposal may be, whatever the model said. */
-  const injected = u.instructionsFound || looksLikeInstructions(documentText)
+  /* Only an attached document can carry foreign instructions; Marcel's own words are the instruction. */
+  const injected = Boolean(document) && (u.instructionsFound || looksLikeInstructions(documentText))
   const restricted = !text || injected
   const notes: string[] = []
   let actions = u.actions

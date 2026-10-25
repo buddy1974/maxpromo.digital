@@ -102,6 +102,7 @@ check('the screens never name a capability when deciding', !/capability:\s*['"]/
 check('voice fills the text field; it never submits by itself', /onTranscript: tx => \{ setText/.test(read('components/os/max/MaxSurface.tsx')) && !/send\(/.test(read('components/os/max/useVoice.ts')))
 check('the transcription provider is off unless the owner turns it on', transcriptionProvider({}) === null && transcriptionProvider({ OPENAI_API_KEY: 'x' }) === null && transcriptionProvider({ OPENAI_API_KEY: 'x', AUDIO_TRANSCRIPTION_PROVIDER: 'openai' }) === 'openai')
 check('Quick Scan enters the Max pipeline (no second extraction screen)', /openMax\(\{ scan: true \}\)/.test(read('app/os/(protected)/layout.tsx')) && !/QuickScanSheet/.test(read('app/os/(protected)/layout.tsx')))
+check('the injection flag only counts with an attached document', /const injected = Boolean\(document\) && \(u\.instructionsFound/.test(maxLib))
 check('files are not stored by Max: only metadata is recorded', /file_meta/.test(maxLib) && !/INSERT INTO os_files/.test(maxLib))
 
 console.log(`\n${passed} Universal Max checks passed.`)
