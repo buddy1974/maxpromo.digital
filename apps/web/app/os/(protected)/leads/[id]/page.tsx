@@ -14,6 +14,7 @@ import { useParams } from 'next/navigation'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { LEADS_COPY } from '@/lib/os-i18n/leads'
 import { useOwnerAction } from '@/components/os/useOwnerAction'
+import { useMaxScreenContext } from '@/components/os/max/MaxProvider'
 import type { LeadWorkspace } from '@/lib/leads/workspace'
 
 export default function LeadPage() {
@@ -42,6 +43,8 @@ export default function LeadPage() {
     return () => window.clearInterval(timer)
   }, [running, load])
   const action = useOwnerAction('/api/os/leads/actions', c, () => load())
+  /* "Research this lead" in Max means the lead on screen. */
+  useMaxScreenContext(ws ? { lead_id: id, label: ws.lead.company || ws.lead.name || ws.lead.email || undefined } : null)
 
   if (missing) return <div className="os-page money-page"><p className="money-quiet">{c.notFound}</p><Link href="/os/leads" className="money-more">‹ {c.back}</Link></div>
   if (!ws) return <div className="os-page money-page"><p role="status" className="money-quiet">…</p></div>
