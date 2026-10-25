@@ -39,9 +39,14 @@ const sql = async (strings: TemplateStringsArray, ...values: unknown[]) => {
   return []
 }
 const ctx = { sql, actor: 'telegram:100000001', channel: 'telegram', now: new Date('2026-10-22T08:00:00Z'), today: '2026-10-22', committed() { throw new Error('No external effect allowed') } }
-check('send and trash require AMBER; draft/read/search are GREEN', () => {
-  assert.equal(mail.mailSend.risk, 'AMBER'); assert.equal(mail.mailTrash.risk, 'AMBER')
-  for (const name of ['mailDraft','mailRead','mailSearch','mailAttachments']) assert.equal(mail[name].risk, 'GREEN')
+check('send requires AMBER; reversible trash/restore/bulk and draft/read/search are GREEN', () => {
+  assert.equal(mail.mailSend.risk, 'AMBER')
+  for (const name of ['mailTrash','mailRestore','mailBulk','mailDraft','mailRead','mailSearch','mailAttachments']) assert.equal(mail[name].risk, 'GREEN')
+})
+check('bulk offers only local reversible actions — no spam, block, send or delete', () => {
+  assert.deepEqual([...mail.BULK_ACTIONS].sort(), ['archive','mark_read','mark_unread','restore','trash','unarchive'])
+  assert.throws(() => mail.mailBulk.input.parse({ thread_ids: [id], action: 'delete' }, 'input'))
+  assert.throws(() => mail.mailBulk.input.parse({ thread_ids: Array.from({ length: 101 }, () => id), action: 'trash' }, 'input'))
 })
 check('send rejects model supplied recipient overrides', () => assert.throws(() => mail.mailSend.input.parse({ draft_id: id, to: 'attacker@example.test' }, 'input')))
 check('trash rejects permanent deletion parameter', () => assert.throws(() => mail.mailTrash.input.parse({ thread_id: id, permanent: true }, 'input')))
@@ -68,9 +73,14 @@ check('execution delivers exactly the confirmed draft revision (a revised draft 
 })
 await assert.rejects(mail.mailSend.execute({ ...ctx, sql: async () => [] }, prepared.payload, id), /No email thread/)
 check('a withdrawn conversation cannot reach transport even with an old approval', () => assert.equal(effects.length, 1))
-const trash = await mail.mailTrash.prepare(ctx, { thread_id: id })
-check('trash preparation has no provider effect and expires', () => { assert.equal(effects.length, 1); assert.equal(trash.expiresInMinutes, 10) })
-check('protection mutation would be caught', () => assert.throws(() => assert.equal({ ...mail.mailTrash, risk: 'GREEN' }.risk, 'AMBER')))
+/* executeMailAction is a recording stub here: trash and restore reach it as plain local actions
+   with no approval, and nothing reaches transport. (The runtime itself is proven in prove-email-actions.) */
+await assert.rejects(mail.mailTrash.run(ctx, { thread_id: id }), /Provider disabled/)
+await assert.rejects(mail.mailRestore.run(ctx, { thread_id: id }), /Provider disabled/)
+check('trash and restore are local actions without an approval, never a send', () => {
+  const [t, r] = effects.splice(1, 2) as { action: string; approvalId?: string }[]
+  assert.equal(t.action, 'trash'); assert.equal(t.approvalId, undefined); assert.equal(r.action, 'restore'); assert.equal(effects.length, 1)
+})
 await mail.mailLink.run(ctx, { thread_id: id, entity_kind: 'client', entity_id: id })
 check('explicit business association checks existing record and records owner confirmation', () => {
   assert(statements.some(s => s.text.includes('SELECT id FROM os_clients')))

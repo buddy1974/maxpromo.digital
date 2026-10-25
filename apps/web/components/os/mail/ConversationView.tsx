@@ -31,13 +31,15 @@ export interface ConversationViewProps {
   onState: (action: 'archive' | 'unarchive' | 'mark_read' | 'mark_unread') => void
   onSpam: (verdict: 'spam' | 'not_spam', block?: boolean) => void
   onBack: () => void
+  /** Reversible, local Trash (0025). Optional so fixtures without it still render. */
+  onTrash?: (action: 'trash' | 'restore') => void
 }
 
 function bytes(size: number): string {
   return size >= 1024 * 1024 ? `${(size / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.ceil(size / 1024))} KB`
 }
 
-export function ConversationView({ thread, messages, copy, intlLocale, providerCheck, busy, onReply, onState, onSpam, onBack }: ConversationViewProps) {
+export function ConversationView({ thread, messages, copy, intlLocale, providerCheck, busy, onReply, onState, onSpam, onBack, onTrash }: ConversationViewProps) {
   const [armBlock, setArmBlock] = useState(false)
   const quarantined = Boolean(thread.quarantine)
   const latest = messages[messages.length - 1]
@@ -54,7 +56,13 @@ export function ConversationView({ thread, messages, copy, intlLocale, providerC
         <button type="button" className="btn-secondary btn-sm mail-back" onClick={onBack}>{copy.back}</button>
         <h2 className="mail-conv-subject">{thread.subject || copy.noSubject}</h2>
         <p className="mail-conv-people">{participants.map(p => senderLabel(p, copy)).join(', ')}</p>
-        {!quarantined && (
+        {thread.trashed && (
+          <div className="mail-toolbar" role="toolbar" aria-label={copy.actions.more}>
+            <p className="mail-note">{copy.actions.trashedNote}</p>
+            {onTrash && <button type="button" className="btn-primary btn-sm" disabled={busy} onClick={() => onTrash('restore')}>{copy.actions.restore}</button>}
+          </div>
+        )}
+        {!quarantined && !thread.trashed && (
           <div className="mail-toolbar" role="toolbar" aria-label={copy.actions.more}>
             <button type="button" className="btn-primary btn-sm" disabled={busy} onClick={() => onReply('reply')}>{copy.actions.reply}</button>
             {latest && (latest.recipients.length + latest.cc.length > 1) && <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => onReply('reply_all')}>{copy.actions.replyAll}</button>}
@@ -63,6 +71,7 @@ export function ConversationView({ thread, messages, copy, intlLocale, providerC
               ? <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => onState('unarchive')}>{copy.actions.unarchive}</button>
               : <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => onState('archive')}>{copy.actions.archive}</button>}
             <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => onState(thread.unread ? 'mark_read' : 'mark_unread')}>{thread.unread ? copy.actions.markRead : copy.actions.markUnread}</button>
+            {onTrash && <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => onTrash('trash')}>{copy.actions.trash}</button>}
           </div>
         )}
       </header>
@@ -117,7 +126,10 @@ export function ConversationView({ thread, messages, copy, intlLocale, providerC
         })}
       </ol>
 
-      {!quarantined && (
+      {quarantined && onTrash && !thread.trashed && (
+        <footer className="mail-conv-foot"><button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => onTrash('trash')}>{copy.actions.trash}</button></footer>
+      )}
+      {!quarantined && !thread.trashed && (
         <footer className="mail-conv-foot">
           <button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => onSpam('spam')}>{copy.actions.spam}</button>
           {armBlock

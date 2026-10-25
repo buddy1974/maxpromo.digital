@@ -33,7 +33,7 @@ const sql = async (parts: TemplateStringsArray, ...values: unknown[]) => {
 }
 let count = 0
 function check(label: string, test: () => void) { test(); count++; console.log(`PASS ${label}`) }
-for (const capability of ['email.send','email.trash']) {
+for (const capability of ['email.send','email.deliver']) {
   state.caps.set(capability, { risk: 'AMBER', execute: async () => { state.effects++; await Promise.resolve(); return { summary: 'Simulated only' } } })
   const req = { approvalId: '10000000-0000-0000-0000-000000000001', payloadHash: 'a'.repeat(64), actor: 'telegram:100000001', channel: 'telegram' }
   const fresh = () => ({ id: req.approvalId, capability, payload: { to: 'nobody@example.test' }, payload_hash: req.payloadHash, status: 'pending', expires_at: new Date(Date.now() + 60000).toISOString(), result: null, requested_by: req.actor })

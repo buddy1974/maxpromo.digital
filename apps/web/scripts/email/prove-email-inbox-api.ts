@@ -32,7 +32,7 @@ const getDb=()=>async(parts,...values)=>{
    const t=f.threads.find(x=>x.id===values[0]); return t?[{...t,unread:!s.read}]:[];
  }
  // The list query contains message subqueries; match it before the message query.
- if(query.includes('FROM mail.threads t WHERE t.trashed=false'))return f.threads.map(t=>({...t,unread:!s.read}));
+ if(query.includes('FROM mail.threads t WHERE (t.trashed=false OR t.trashed_at'))return f.threads.map(t=>({...t,unread:!s.read}));
  if(query.includes('FROM mail.messages WHERE thread_id=')){
    if(/bcc|body_html/i.test(query))throw new Error('Private/active fields requested');
    return f.messages.map(m=>({...m,is_read:s.read}));
@@ -79,6 +79,8 @@ await check('each listed conversation carries its derived state', () => {
   assert.equal(listing.threads[0].state,'needs_reply'); assert.equal(listing.threads[1].state,'quarantined')
 })
 await check('list business label prefers an owner-confirmed record over a possible match', () => assert(state.statements.some(q=>q.includes("ORDER BY (b.match_status='owner_confirmed') DESC"))))
+await check('the list carries recent Trash (for the Trash view) after every live conversation', () => assert(state.statements.some(q=>q.includes("t.trashed_at > now() - interval '180 days'") && q.includes('ORDER BY t.trashed, t.updated_at DESC'))))
+await check('new-email drafts (no conversation yet) are listed for reopening, only Marcel’s own', () => assert(state.statements.some(q=>q.includes('FROM mail.drafts WHERE thread_id IS NULL') && q.includes("status IN ('draft','scheduled')"))))
 await check('a possible match states which kind of record it is (client vs lead)', () => assert(state.statements.some(q=>q.includes('AS possible_kind'))))
 await check('search input stays parameterized literal text', () => assert(state.queryValues.some(values=>values.includes('100%_invoice'))))
 await check('provider disabled status remains explicit', () => assert.equal(listing.configured,false))
@@ -89,7 +91,7 @@ await check('provider spam state: connected reader is reported to the owner', as
   state.reader={}; const data=await (await api.GET(request())).json(); assert.equal(data.providerCheck,true); state.reader=null
 })
 await check('thread list and messages carry provider state and risk signals, never URLs', () => {
-  assert(state.statements.some(query=>query.includes('AS provider_state') && query.includes('FROM mail.threads t WHERE t.trashed=false')))
+  assert(state.statements.some(query=>query.includes('AS provider_state') && query.includes('FROM mail.threads t WHERE (t.trashed=false OR t.trashed_at')))
   assert(state.statements.some(query=>query.includes('provider_state,provider_folder,risk_signals') && query.includes('FROM mail.messages WHERE thread_id=')))
   assert(!state.statements.some(query=>/sealed_locator|body_url|file_url/i.test(query)))
 })

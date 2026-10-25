@@ -50,9 +50,19 @@ await runtime.executeMailAction({ accountId: 'proof', threadId: '10000000-0000-0
 assert(audit.some(values => values.some(value => typeof value === 'string' && value.includes('"actor":"os:marcel"')))); count++; console.log('PASS local state records owner actor in durable audit')
 await assert.rejects(runtime.executeMailAction({ accountId: 'proof', threadId: '10000000-0000-0000-0000-000000000001', action: 'send' }, fakeSql), /Sending requires a confirmed draft/)
 count++; console.log('PASS real mutation runtime has no send path (sending is the confirmed-draft path only)')
-await assert.rejects(runtime.executeMailAction({ accountId: 'proof', threadId: '10000000-0000-0000-0000-000000000001', action: 'trash' }, fakeSql), /Owner confirmation required/)
-count++; console.log('PASS real mutation runtime rejects unconfirmed trash')
-const trashed = await runtime.executeMailAction({ accountId: 'proof', threadId: '10000000-0000-0000-0000-000000000001', action: 'trash', approvalId: 'proof-approval' }, fakeSql)
-assert.match(trashed.summary, /nothing was deleted/); assert(audit.some(values => values.includes('proof-approval')))
-count++; console.log('PASS confirmed trash is local to the OS, audited with its approval, and deletes nothing')
+/* Trash is reversible and local (0025): no approval, state kept, a scheduled email parked as a draft. */
+const statements: string[] = []
+const recordingSql = async (parts: TemplateStringsArray, ...values: unknown[]) => { statements.push(parts.join('?')); return fakeSql(parts, ...values) }
+const trashed = await runtime.executeMailAction({ accountId: 'proof', threadId: '10000000-0000-0000-0000-000000000001', action: 'trash', actor: 'os:marcel' }, recordingSql)
+assert.match(trashed.summary, /nothing was deleted/)
+assert(statements.some(q => /SET trashed=true,trashed_at=/.test(q)) && !statements.some(q => /needs_reply=false|waiting=false/.test(q.split('SET trashed=true')[1] ?? '')))
+count++; console.log('PASS trash is local, keeps the reply / waiting state for an exact restore, and deletes nothing')
+assert(statements.some(q => /UPDATE mail\.drafts SET status='draft'[\s\S]*status='scheduled'/.test(q)) && statements.some(q => /UPDATE os_approvals SET status='superseded'/.test(q)))
+count++; console.log('PASS trashing a conversation turns its scheduled email back into a draft and cancels the waiting confirmation')
+statements.length = 0
+const restored = await runtime.executeMailAction({ accountId: 'proof', threadId: '10000000-0000-0000-0000-000000000001', action: 'restore', actor: 'os:marcel' }, recordingSql)
+assert.match(restored.summary, /Restored/); assert(statements.some(q => /SET trashed=false,trashed_at=NULL/.test(q)))
+count++; console.log('PASS restore returns the conversation from Trash')
+assert(!/DELETE\s+FROM/i.test(runtimeSource))
+count++; console.log('PASS the mail runtime has no delete statement (permanent deletion is not offered)')
 console.log(`${count} email action route checks passed; no network or real mail.`)

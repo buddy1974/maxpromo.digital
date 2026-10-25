@@ -2,7 +2,7 @@ import { withAuth } from '@/lib/auth'
 import { ownerCapabilityAction } from '@/lib/commercial/ownerActions'
 
 export const dynamic = 'force-dynamic'
-const MAIL = new Set(['email.search','email.read','email.attachments','email.draft','email.send','email.state','email.trash','email.link','email.save_lead','email.summary','email.triage','email.spam',
+const MAIL = new Set(['email.search','email.read','email.attachments','email.draft','email.send','email.state','email.trash','email.restore','email.bulk','email.link','email.save_lead','email.summary','email.triage','email.spam',
   'email.compose','email.deliver','email.unschedule','email.discard','email.followup','email.assist'])
 
 // The current OS has one owner; future staff sessions must not inherit mailbox authority.

@@ -15,7 +15,7 @@ const de = {
   views: {
     inbox: 'Posteingang', needs_reply: 'Antwort nötig', follow_up: 'Nachfassen', waiting: 'Wartet auf Antwort', unread: 'Ungelesen',
     leads: 'Leads', clients: 'Kunden', billing: 'Abrechnung', system: 'System',
-    drafts: 'Entwürfe', sent: 'Gesendet', archived: 'Archiv', spam: 'Spam',
+    drafts: 'Entwürfe', sent: 'Gesendet', archived: 'Archiv', spam: 'Spam', trash: 'Papierkorb',
   },
   groups: { work: 'Arbeit', business: 'Geschäft', mailbox: 'Postfach' },
   viewHint: {
@@ -32,6 +32,7 @@ const de = {
     sent: 'Konversationen, in denen Maxpromo geschrieben hat.',
     archived: 'Erledigt. Nichts wurde gelöscht.',
     spam: 'In Quarantäne: nicht im Posteingang, nicht im Briefing, nie an Agenten übergeben.',
+    trash: 'Aus allen Ansichten genommen, nichts gelöscht. Wiederherstellen bringt sie unverändert zurück; eine neue Antwort holt sie von selbst zurück.',
   },
   states: {
     needs_reply: 'Antwort nötig', customer_replied: 'Kunde hat geantwortet', follow_up_overdue: 'Nachfassen überfällig', follow_up_due: 'Heute nachfassen',
@@ -43,7 +44,7 @@ const de = {
   loading: 'E-Mails werden geladen …',
   error: 'E-Mails konnten nicht geladen werden. Bitte erneut versuchen.',
   empty: 'Hier ist gerade nichts.',
-  emptyHint: { needs_reply: 'Niemand wartet auf eine Antwort.', follow_up: 'Kein Nachfassen fällig.', spam: 'Kein Spam.' } as Record<string, string>,
+  emptyHint: { needs_reply: 'Niemand wartet auf eine Antwort.', follow_up: 'Kein Nachfassen fällig.', spam: 'Kein Spam.', trash: 'Der Papierkorb ist leer.' } as Record<string, string>,
   select: 'Konversation auswählen.',
   back: 'Zurück',
   unknownSender: 'Unbekannter Absender',
@@ -69,6 +70,12 @@ const de = {
     saveLead: 'Als Lead speichern', saveLeadCompany: 'Firma', saveLeadName: 'Ansprechpartner', save: 'Speichern', link: 'Zuordnen',
     linkLead: 'Mit diesem Lead verknüpfen', linkClient: 'Mit diesem Kunden verknüpfen',
     done: 'Erledigt', working: 'Wird ausgeführt …', failed: 'Aktion fehlgeschlagen.',
+    trash: 'In den Papierkorb', restore: 'Wiederherstellen', trashedNote: 'Im Papierkorb — aus allen Ansichten genommen, nichts gelöscht.',
+    select: 'Auswählen', selectDone: 'Fertig', selectAll: 'Alle auswählen', selected: (p: P) => `${p.n} ausgewählt`, selectRow: 'Auswählen',
+    continueDraft: 'Entwurf fortsetzen', draftSaved: 'Ein Entwurf zu dieser Konversation ist gespeichert.',
+    trashedDone: 'In den Papierkorb verschoben. Nichts wurde gelöscht.', restoredDone: 'Aus dem Papierkorb wiederhergestellt.',
+    bulkDone: (p: P) => `${p.n} Konversation(en) erledigt.`,
+    newDrafts: 'Neue E-Mails (nicht gesendet)', noSubjectDraft: '(ohne Betreff)', draftTo: 'An', scheduledAt: (p: P) => `Geplant: ${p.when}`,
   },
   failures: {
     maxUnavailable: 'Max ist gerade nicht erreichbar. Dein Text ist unverändert.',
@@ -149,7 +156,7 @@ const en: MailCopy = {
   views: {
     inbox: 'Inbox', needs_reply: 'Needs reply', follow_up: 'Follow up', waiting: 'Waiting for reply', unread: 'Unread',
     leads: 'Leads', clients: 'Clients', billing: 'Billing', system: 'System',
-    drafts: 'Drafts', sent: 'Sent', archived: 'Archive', spam: 'Spam',
+    drafts: 'Drafts', sent: 'Sent', archived: 'Archive', spam: 'Spam', trash: 'Trash',
   },
   groups: { work: 'Work', business: 'Business', mailbox: 'Mailbox' },
   viewHint: {
@@ -166,6 +173,7 @@ const en: MailCopy = {
     sent: 'Conversations Maxpromo has written in.',
     archived: 'Done. Nothing was deleted.',
     spam: 'Quarantined: not in the Inbox, not in the briefing, never passed to agents.',
+    trash: 'Taken out of every view, nothing deleted. Restore brings it back unchanged; a new reply brings it back by itself.',
   },
   states: {
     needs_reply: 'Needs reply', customer_replied: 'Customer replied', follow_up_overdue: 'Follow-up overdue', follow_up_due: 'Follow up today',
@@ -177,7 +185,7 @@ const en: MailCopy = {
   loading: 'Loading mail …',
   error: 'Mail could not be loaded. Try again.',
   empty: 'Nothing here right now.',
-  emptyHint: { needs_reply: 'Nobody is waiting for an answer.', follow_up: 'No follow-up due.', spam: 'No spam.' },
+  emptyHint: { needs_reply: 'Nobody is waiting for an answer.', follow_up: 'No follow-up due.', spam: 'No spam.', trash: 'Trash is empty.' },
   select: 'Select a conversation.',
   back: 'Back',
   unknownSender: 'Unknown sender',
@@ -203,6 +211,12 @@ const en: MailCopy = {
     saveLead: 'Save as lead', saveLeadCompany: 'Company', saveLeadName: 'Contact', save: 'Save', link: 'Link',
     linkLead: 'Link to this lead', linkClient: 'Link to this client',
     done: 'Done', working: 'Working …', failed: 'Action failed.',
+    trash: 'Move to Trash', restore: 'Restore', trashedNote: 'In Trash — taken out of every view, nothing deleted.',
+    select: 'Select', selectDone: 'Done', selectAll: 'Select all', selected: (p: P) => `${p.n} selected`, selectRow: 'Select',
+    continueDraft: 'Continue draft', draftSaved: 'A draft for this conversation is saved.',
+    trashedDone: 'Moved to Trash. Nothing was deleted.', restoredDone: 'Restored from Trash.',
+    bulkDone: (p: P) => `${p.n} conversation(s) done.`,
+    newDrafts: 'New emails (not sent)', noSubjectDraft: '(no subject)', draftTo: 'To', scheduledAt: (p: P) => `Scheduled: ${p.when}`,
   },
   failures: {
     maxUnavailable: 'Max is not reachable right now. Your text is unchanged.',

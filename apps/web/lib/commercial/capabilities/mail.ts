@@ -152,17 +152,51 @@ export const mailState: CapabilityDefinition<ReturnType<typeof stateInput.parse>
   },
 }
 
+/* Trash is reversible and local (0025): GREEN. It leaves every view and attention list with its
+   state kept, and Restore returns it unchanged. Hostinger is not changed; nothing is deleted. */
 export const mailTrash: CapabilityDefinition<ReturnType<typeof target.parse>> = {
-  id: 'email.trash', family: 'EMAIL', title: 'Move mail to trash', risk: 'AMBER', input: target,
-  description: 'Requires owner confirmation to move a thread to trash. Permanent deletion is not offered.',
-  async prepare(ctx, input) {
+  id: 'email.trash', family: 'EMAIL', title: 'Move mail to Trash', risk: 'GREEN', input: target,
+  description: 'Moves a conversation to Trash in Maxpromo OS. Reversible with email.restore; Hostinger keeps the message and nothing is deleted. A scheduled email in it becomes a draft again.',
+  async run(ctx, input) {
     const t = await thread(ctx, input.thread_id)
-    return { summary: `Move “${t.subject}” to Trash?`, preview: { ACTION: 'Move to Trash', SUBJECT: t.subject }, payload: { thread_id: t.id, account_id: t.account_id }, dedupeKey: `email-trash:${t.id}`, expiresInMinutes: 10 }
+    const result = await executeMailAction({ accountId: t.account_id, threadId: t.id, action: 'trash', actor: ctx.actor }, ctx.sql)
+    return { summary: result.summary, data: result, focus: [ref(t)] }
   },
-  async execute(ctx, payload, approvalId) {
-    const p = payload as { thread_id: string; account_id: string }
-    const result = await executeMailAction({ accountId: p.account_id, threadId: p.thread_id, action: 'trash', approvalId }, ctx.sql)
-    return { summary: 'Thread moved to Trash.', data: result }
+}
+
+export const mailRestore: CapabilityDefinition<ReturnType<typeof target.parse>> = {
+  id: 'email.restore', family: 'EMAIL', title: 'Restore mail from Trash', risk: 'GREEN', input: target,
+  description: 'Brings a conversation back from Trash, with the reply, waiting and follow-up state it had.',
+  async run(ctx, input) {
+    const t = await thread(ctx, input.thread_id)
+    const result = await executeMailAction({ accountId: t.account_id, threadId: t.id, action: 'restore', actor: ctx.actor }, ctx.sql)
+    return { summary: result.summary, data: result, focus: [ref(t)] }
+  },
+}
+
+/* Several conversations at once: the same local actions as one by one, nothing more (no spam,
+   no block, no send). At most 100; each is done separately and the result counts what happened. */
+export const BULK_ACTIONS = ['mark_read', 'mark_unread', 'archive', 'unarchive', 'trash', 'restore'] as const
+const bulkInput = v.object({ thread_ids: v.array(v.uuid(), { min: 1, max: 100 }), action: v.enumOf(BULK_ACTIONS) })
+export const mailBulk: CapabilityDefinition<ReturnType<typeof bulkInput.parse>> = {
+  id: 'email.bulk', family: 'EMAIL', title: 'Act on several conversations', risk: 'GREEN', input: bulkInput,
+  description: 'Mark read/unread, archive/unarchive, move to Trash or restore up to 100 conversations. Local to Maxpromo OS; reversible; nothing is sent or deleted.',
+  async run(ctx, input) {
+    const ids = [...new Set(input.thread_ids)]
+    const rows = await ctx.sql`SELECT id, account_id, quarantine FROM mail.threads WHERE id = ANY(${ids}::uuid[])` as { id: string; account_id: string; quarantine: string | null }[]
+    let done = 0
+    const skipped: string[] = []
+    for (const t of rows) {
+      /* Spam keeps its own verdict flow; archive or read state never "cleans" a quarantined thread. */
+      if (t.quarantine && input.action !== 'trash' && input.action !== 'restore') { skipped.push(t.id); continue }
+      await executeMailAction({ accountId: t.account_id, threadId: t.id, action: input.action, actor: ctx.actor }, ctx.sql)
+      done++
+    }
+    const missing = ids.length - rows.length
+    return {
+      summary: `${done} conversation(s): ${input.action.replace('_', ' ')}.${skipped.length ? ` ${skipped.length} in Spam left as they are.` : ''}${missing ? ` ${missing} not found.` : ''}`,
+      data: { action: input.action, done, skipped, missing },
+    }
   },
 }
 
@@ -276,4 +310,4 @@ export const mailSpam: CapabilityDefinition<ReturnType<typeof spamInput.parse>> 
   },
 }
 
-export const MAIL_CAPABILITIES: AnyCapability[] = [mailSearch, mailRead, mailAttachments, mailDraft, mailSend, mailState, mailTrash, mailLink, mailSaveLead, mailSummary, mailTriage, mailSpam]
+export const MAIL_CAPABILITIES: AnyCapability[] = [mailSearch, mailRead, mailAttachments, mailDraft, mailSend, mailState, mailTrash, mailRestore, mailBulk, mailLink, mailSaveLead, mailSummary, mailTriage, mailSpam]

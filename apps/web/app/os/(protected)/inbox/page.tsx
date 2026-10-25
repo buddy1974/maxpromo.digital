@@ -21,6 +21,7 @@ import { Composer, type ComposerInit } from '@/components/os/mail/Composer'
 import './mail.css'
 
 interface DraftRow { id: string; mode: ComposerInit['mode']; source_message_id: string | null; to_addrs: string[]; cc_addrs: string[]; bcc_addrs: string[]; subject: string; body: string; family: FamilyId; language: 'de' | 'en'; entity_kind: ComposerInit['entityKind']; entity_id: string | null; follow_up_days: number | null; revision: number }
+interface StandaloneDraft extends DraftRow { status: 'draft' | 'scheduled'; scheduled_for: string | null; updated_at: string }
 interface Detail { thread: MailThread; messages: MailMessage[]; context: ThreadContext | null; draft: DraftRow | null; scheduled?: { id: string; scheduled_for: string } | null; scheduleError?: string | null; providerCheck: boolean; sending: boolean }
 const MAILBOX = 'info@maxpromo.digital'
 const GERMAN = /\b(und|nicht|bitte|vielen|danke|ich|wir|sie|ihre|ihnen|mit|für|eine?n?|sehr geehrte|grüße|hallo)\b/i
@@ -48,6 +49,10 @@ export default function InboxPage() {
   const [composer, setComposer] = useState<ComposerInit | null>(null)
   const [analysis, setAnalysis] = useState<Record<string, Analysis>>({})
   const [analysisState, setAnalysisState] = useState<'idle' | 'working' | 'error'>('idle')
+  const [drafts, setDrafts] = useState<StandaloneDraft[]>([])
+  /* Bulk: selection mode with a checkbox per conversation (desktop and phone alike). */
+  const [selecting, setSelecting] = useState(false)
+  const [checked, setChecked] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search)
@@ -64,9 +69,10 @@ export default function InboxPage() {
       try {
         const r = await fetch(`/api/os/mail?q=${encodeURIComponent(search)}`, { signal: controller.signal, cache: 'no-store' })
         if (!r.ok) throw new Error('mail_unavailable')
-        const data = await r.json() as { threads: MailThread[]; configured: boolean; providerCheck?: boolean; sending?: boolean; today?: string }
+        const data = await r.json() as { threads: MailThread[]; drafts?: StandaloneDraft[]; configured: boolean; providerCheck?: boolean; sending?: boolean; today?: string }
         if (!Array.isArray(data.threads)) throw new Error('invalid')
         setThreads(data.threads)
+        setDrafts(Array.isArray(data.drafts) ? data.drafts : [])
         setMeta(m => ({ configured: data.configured, providerCheck: data.providerCheck === true, sending: data.sending === true, today: data.today ?? m.today }))
       } catch { if (!controller.signal.aborted) setError(true) }
       finally { if (!controller.signal.aborted) setLoading(false) }
@@ -103,12 +109,12 @@ export default function InboxPage() {
   const counts = useMemo(() => viewCounts(threads), [threads])
   const visible = useMemo(() => sortForView(threads.filter(t => inView(t, view)), view), [threads, view])
 
-  const act = useCallback(async (capability: string, input: Record<string, unknown>, after?: () => void) => {
+  const act = useCallback(async (capability: string, input: Record<string, unknown>, after?: () => void, doneText?: (data: unknown) => string) => {
     setBusy(true); setNotice(null)
     try {
       const r = await runMail(capability, input)
       if (r.status !== 'done') { setNotice({ text: localizeFailure(r, copy), error: true }); return false }
-      setNotice({ text: r.result?.summary ?? copy.actions.done, error: false })
+      setNotice({ text: doneText ? doneText(r.result?.data) : r.result?.summary ?? copy.actions.done, error: false })
       after?.()
       setRevision(n => n + 1)
       return true
@@ -150,6 +156,18 @@ export default function InboxPage() {
     if (data) { setAnalysis(a => ({ ...a, [id]: data })); setAnalysisState('idle') } else { setAnalysisState('error'); setNotice({ text: localizeFailure(r, copy, true), error: true }) }
   }
 
+  const visibleIds = visible.map(t => t.id)
+  const toggle = (id: string) => setChecked(set => { const next = new Set(set); if (next.has(id)) next.delete(id); else next.add(id); return next })
+  const stopSelecting = () => { setSelecting(false); setChecked(new Set()) }
+  async function bulk(action: 'mark_read' | 'archive' | 'unarchive' | 'trash' | 'restore') {
+    const ids = visibleIds.filter(id => checked.has(id))
+    if (!ids.length) return
+    const ok = await act('email.bulk', { thread_ids: ids, action }, undefined, data => say(copy.actions.bulkDone, { n: (data as { done?: number } | undefined)?.done ?? ids.length }))
+    if (ok) { stopSelecting(); if (selected && ids.includes(selected)) setSelected(null) }
+  }
+  const draftCount = counts.drafts + drafts.length
+  const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString(intlLocale, { timeZone: 'Europe/Berlin', dateStyle: 'medium', timeStyle: 'short' }) : '-')
+
   const select = (id: string) => { setNotice(null); setAnalysisState('idle'); setDetail(d => (d?.thread.id === id ? d : null)); setSelected(id) }
   const groups = Object.entries(VIEW_GROUPS) as [keyof typeof VIEW_GROUPS, readonly View[]][]
 
@@ -177,8 +195,8 @@ export default function InboxPage() {
           <div key={group} className="mail-view-group">
             <p className="mail-view-group-title">{copy.groups[group]}</p>
             {items.map(item => (
-              <button key={item} type="button" aria-pressed={view === item} className={`mail-view${view === item ? ' is-active' : ''}`} onClick={() => { setView(item); setSelected(null) }}>
-                <span>{copy.views[item]}</span>{counts[item] > 0 && <span className="mail-count">{counts[item]}</span>}
+              <button key={item} type="button" aria-pressed={view === item} className={`mail-view${view === item ? ' is-active' : ''}`} onClick={() => { setView(item); setSelected(null); stopSelecting() }}>
+                <span>{copy.views[item]}</span>{(item === 'drafts' ? draftCount : counts[item]) > 0 && <span className="mail-count">{item === 'drafts' ? draftCount : counts[item]}</span>}
               </button>
             ))}
           </div>
@@ -186,12 +204,51 @@ export default function InboxPage() {
       </nav>
 
       <section className="mail-list-pane" aria-label={copy.views[view]} aria-busy={loading}>
-        <p className="mail-list-head"><span className="mail-strong">{copy.views[view]}</span> <span className="mail-note">· {copy.count({ n: visible.length })}</span></p>
+        <div className="mail-list-head">
+          <p><span className="mail-strong">{copy.views[view]}</span> <span className="mail-note">· {copy.count({ n: visible.length })}</span></p>
+          {visible.length > 0 && <button type="button" className="btn-secondary btn-sm" onClick={() => (selecting ? stopSelecting() : setSelecting(true))}>{selecting ? copy.actions.selectDone : copy.actions.select}</button>}
+        </div>
+        {selecting && (
+          <div className="mail-bulk" role="toolbar" aria-label={copy.actions.select}>
+            <span className="mail-note">{say(copy.actions.selected, { n: visibleIds.filter(id => checked.has(id)).length })}</span>
+            <button type="button" className="btn-secondary btn-sm" onClick={() => setChecked(new Set(visibleIds))}>{copy.actions.selectAll}</button>
+            {view === 'trash'
+              ? <button type="button" className="btn-primary btn-sm" disabled={busy || !checked.size} onClick={() => void bulk('restore')}>{copy.actions.restore}</button>
+              : <>
+                <button type="button" className="btn-secondary btn-sm" disabled={busy || !checked.size} onClick={() => void bulk('mark_read')}>{copy.actions.markRead}</button>
+                {view === 'archived'
+                  ? <button type="button" className="btn-secondary btn-sm" disabled={busy || !checked.size} onClick={() => void bulk('unarchive')}>{copy.actions.unarchive}</button>
+                  : view !== 'spam' && <button type="button" className="btn-secondary btn-sm" disabled={busy || !checked.size} onClick={() => void bulk('archive')}>{copy.actions.archive}</button>}
+                <button type="button" className="btn-secondary btn-sm" disabled={busy || !checked.size} onClick={() => void bulk('trash')}>{copy.actions.trash}</button>
+              </>}
+          </div>
+        )}
         <p className="mail-note mail-list-hint">{copy.viewHint[view]}</p>
+        {view === 'drafts' && drafts.length > 0 && (
+          <div className="mail-new-drafts">
+            <p className="mail-panel-title">{copy.actions.newDrafts}</p>
+            <ul className="mail-list" role="list">
+              {drafts.map(d => (
+                <li key={d.id}>
+                  {d.status === 'scheduled'
+                    ? <div className="mail-row">
+                      <span className="mail-row-subject">{d.subject || copy.actions.noSubjectDraft}</span>
+                      <span className="mail-row-preview">{copy.actions.draftTo}: {d.to_addrs.join(', ') || '-'} · {say(copy.actions.scheduledAt, { when: when(d.scheduled_for) })}</span>
+                      <span><button type="button" className="btn-secondary btn-sm" disabled={busy} onClick={() => void act('email.unschedule', { draft_id: d.id })}>{copy.composer.unschedule}</button></span>
+                    </div>
+                    : <button type="button" className="mail-row" onClick={() => setComposer(fromDraft(d, null))}>
+                      <span className="mail-row-subject">{d.subject || copy.actions.noSubjectDraft}</span>
+                      <span className="mail-row-preview">{copy.actions.draftTo}: {d.to_addrs.join(', ') || '-'}{d.body ? ` · ${d.body.slice(0, 120)}` : null}</span>
+                    </button>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {loading && !threads.length ? <p role="status" className="mail-empty">{copy.loading}</p>
           : error ? <p role="alert" className="mail-empty">{copy.error}</p>
-            : visible.length === 0 ? <p className="mail-empty">{copy.emptyHint[view] ?? copy.empty}</p>
-              : <MailList threads={visible} selectedId={selected} copy={copy} intlLocale={intlLocale} today={meta.today} onSelect={select} />}
+            : visible.length === 0 ? (view === 'drafts' && drafts.length ? null : <p className="mail-empty">{copy.emptyHint[view] ?? copy.empty}</p>)
+              : <MailList threads={visible} selectedId={selected} copy={copy} intlLocale={intlLocale} today={meta.today} onSelect={select} selection={selecting ? { checked, onToggle: toggle } : null} />}
       </section>
 
       <section className="mail-detail-pane" aria-live="polite">
@@ -207,11 +264,16 @@ export default function InboxPage() {
                     {shown.scheduleError && <p role="alert" className="mail-notice is-alert">{say(copy.composer.scheduleFailed, { reason: shown.scheduleError })}</p>}
                   </div>
                 )}
+                {shown.draft && !composer && !shown.thread.trashed && (
+                  <p role="status" className="mail-notice">{copy.actions.draftSaved}{' '}
+                    <button type="button" className="btn-secondary btn-sm" onClick={() => setComposer(fromDraft(shown.draft!, shown.thread.id))}>{copy.actions.continueDraft}</button></p>
+                )}
                 <ConversationView thread={shown.thread} messages={shown.messages} copy={copy} intlLocale={intlLocale} providerCheck={shown.providerCheck} busy={busy}
                   onBack={() => setSelected(null)}
                   onReply={openReply}
                   onState={action => void act('email.state', { thread_id: shown.thread.id, action }, action === 'archive' ? () => setSelected(null) : undefined)}
-                  onSpam={(verdict, block) => void act('email.spam', { thread_id: shown.thread.id, verdict, ...(block ? { block_sender: true } : {}) }, () => setSelected(null))} />
+                  onSpam={(verdict, block) => void act('email.spam', { thread_id: shown.thread.id, verdict, ...(block ? { block_sender: true } : {}) }, () => setSelected(null))}
+                  onTrash={action => void act(action === 'trash' ? 'email.trash' : 'email.restore', { thread_id: shown.thread.id }, () => setSelected(null), () => (action === 'trash' ? copy.actions.trashedDone : copy.actions.restoredDone))} />
                 {shown.context && (
                   <ContextPanel key={shown.thread.id} context={shown.context} copy={copy} locale={locale} intlLocale={intlLocale} today={meta.today} busy={busy}
                     analysis={analysis[shown.thread.id] ?? null} analysisState={analysisState} onAnalyze={() => void analyze()}

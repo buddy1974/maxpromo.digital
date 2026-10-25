@@ -42,7 +42,7 @@ export const GET = withAuth(async (req, { session }) => {
       if (!rows[0].quarantine) scheduleProviderCheck('thread', thread)
       return NextResponse.json({ thread: rows[0], messages, context, draft: drafts[0] ?? null, scheduled: scheduled[0] ?? null, scheduleError: failedSchedule[0]?.schedule_error ?? null, providerCheck: providerCheck(), sending }, { headers })
     }
-    const threads = await sql`SELECT t.id,t.subject,t.classification,t.needs_reply,t.waiting,t.archived,t.trashed,t.updated_at,t.quarantine,t.owner_verdict,
+    const threads = await sql`SELECT t.id,t.subject,t.classification,t.needs_reply,t.waiting,t.archived,t.trashed,t.trashed_at,t.updated_at,t.quarantine,t.owner_verdict,
       t.follow_up_on::text AS follow_up_on,t.next_action,
       (SELECT entity_kind FROM mail.business_links WHERE thread_id=t.id AND match_status='owner_confirmed' ORDER BY entity_kind LIMIT 1) AS business_kind,
       (SELECT coalesce(l.company,l.name,c.company,c.name,j.title) FROM mail.business_links b
@@ -62,17 +62,22 @@ export const GET = withAuth(async (req, { session }) => {
       EXISTS(SELECT 1 FROM mail.messages WHERE thread_id=t.id AND jsonb_array_length(attachments)>0) AS has_attachments,
       ${workspace} AND EXISTS(SELECT 1 FROM mail.drafts d WHERE d.thread_id=t.id AND d.status='draft') AS has_draft,
       (SELECT provider_state FROM mail.messages WHERE thread_id=t.id ORDER BY received_at DESC LIMIT 1) AS provider_state
-      FROM mail.threads t WHERE t.trashed=false AND (${query}='' OR strpos(lower(t.subject),lower(${query}))>0 OR EXISTS(
+      FROM mail.threads t WHERE (t.trashed=false OR t.trashed_at > now() - interval '180 days') AND (${query}='' OR strpos(lower(t.subject),lower(${query}))>0 OR EXISTS(
         SELECT 1 FROM mail.messages m WHERE m.thread_id=t.id AND
         (strpos(lower(m.subject),lower(${query}))>0 OR strpos(lower(m.sender),lower(${query}))>0 OR strpos(lower(m.recipients::text),lower(${query}))>0
          OR strpos(lower(m.body_text),lower(${query}))>0 OR strpos(lower(m.preview_text),lower(${query}))>0)))
-      ORDER BY t.updated_at DESC LIMIT 200`
+      ORDER BY t.trashed, t.updated_at DESC LIMIT 300`
+    /* New emails Marcel started (no conversation yet): the Drafts view lists them so they can be
+       reopened, edited and sent; a scheduled one shows when it goes and can be taken back. */
+    const drafts = workspace ? await sql`SELECT id,mode,source_message_id,to_addrs,cc_addrs,bcc_addrs,subject,body,family,language,entity_kind,entity_id,follow_up_days,revision,updated_at,status,scheduled_for
+      FROM mail.drafts WHERE thread_id IS NULL AND status IN ('draft','scheduled') AND created_by=${`os:${session.sub}`}
+      ORDER BY updated_at DESC LIMIT 50`.catch(() => []) : []
     const accounts = await sql`SELECT id FROM mail.accounts WHERE enabled LIMIT 1`
     // Unverified provider state is checked after this response; the next load shows it.
     scheduleProviderCheck('inbox')
     const iso = (d: unknown) => (d ? new Date(d as string).toISOString() : null)
     return NextResponse.json({
-      configured: accounts.length > 0, providerCheck: providerCheck(), sending, today,
+      configured: accounts.length > 0, providerCheck: providerCheck(), sending, today, drafts,
       threads: threads.map(t => {
         const lastInbound = iso(t.last_inbound), lastOutbound = iso(t.last_outbound)
         return { ...t, last_inbound: lastInbound, last_outbound: lastOutbound, state: conversationState(t as never, lastInbound, lastOutbound, today) }

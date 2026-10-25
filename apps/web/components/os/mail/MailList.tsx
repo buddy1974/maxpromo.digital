@@ -15,6 +15,8 @@ export interface MailListProps {
   intlLocale: string
   today: string
   onSelect: (id: string) => void
+  /** Selection mode for bulk actions: a checkbox per row; tapping the row still opens it. */
+  selection?: { checked: ReadonlySet<string>; onToggle: (id: string) => void } | null
 }
 
 export function senderLabel(sender: string | null | undefined, copy: MailCopy): string {
@@ -22,7 +24,7 @@ export function senderLabel(sender: string | null | undefined, copy: MailCopy): 
   return sender
 }
 
-export function MailList({ threads, selectedId, copy, intlLocale, today, onSelect }: MailListProps) {
+export function MailList({ threads, selectedId, copy, intlLocale, today, onSelect, selection }: MailListProps) {
   return (
     <ul className="mail-list" role="list">
       {threads.map(thread => {
@@ -31,7 +33,12 @@ export function MailList({ threads, selectedId, copy, intlLocale, today, onSelec
         const actionable = ACTIONABLE.has(thread.state)
         const outbound = thread.last_direction === 'outbound'
         return (
-          <li key={thread.id}>
+          <li key={thread.id} className={selection ? 'mail-li-select' : undefined}>
+            {selection && (
+              <label className="mail-check">
+                <input type="checkbox" checked={selection.checked.has(thread.id)} onChange={() => selection.onToggle(thread.id)} aria-label={`${copy.actions.selectRow}: ${thread.subject || copy.noSubject}`} />
+              </label>
+            )}
             <button type="button" aria-current={selectedId === thread.id ? 'true' : undefined} onClick={() => onSelect(thread.id)}
               className={`mail-row${selectedId === thread.id ? ' is-selected' : ''}${thread.unread ? ' is-unread' : ''}`}>
               <span className="mail-row-top">

@@ -3,11 +3,12 @@
  * itself is computed on the server (lib/mail/context.ts conversationState).
  *
  * Quarantined mail appears only under Spam: never in the Inbox, a work view or a business view.
+ * Trashed mail appears only under Trash (0025) — reversible, nothing is deleted.
  */
 export type ConversationState = 'needs_reply' | 'customer_replied' | 'follow_up_overdue' | 'follow_up_due' | 'waiting' | 'no_next_step' | 'quarantined' | 'archived'
 export type Quarantine = 'provider_junk' | 'suspected_phishing' | 'owner_spam' | 'blocked_sender'
 export interface MailThread {
-  id: string; subject: string; classification: string; needs_reply: boolean; waiting: boolean; archived: boolean; trashed: boolean
+  id: string; subject: string; classification: string; needs_reply: boolean; waiting: boolean; archived: boolean; trashed: boolean; trashed_at?: string | null
   updated_at: string; sender: string | null; preview?: string | null; unread: boolean
   business_label?: string | null; business_kind?: 'client' | 'lead' | 'project' | null
   /** A record whose email equals the sender, not yet confirmed by the owner. */
@@ -21,7 +22,7 @@ export interface MailThread {
 export const VIEW_GROUPS = {
   work: ['inbox', 'needs_reply', 'follow_up', 'waiting', 'unread'],
   business: ['leads', 'clients', 'billing', 'system'],
-  mailbox: ['drafts', 'sent', 'archived', 'spam'],
+  mailbox: ['drafts', 'sent', 'archived', 'spam', 'trash'],
 } as const
 export type View = typeof VIEW_GROUPS[keyof typeof VIEW_GROUPS][number]
 export const VIEWS: View[] = [...VIEW_GROUPS.work, ...VIEW_GROUPS.business, ...VIEW_GROUPS.mailbox]
@@ -43,6 +44,7 @@ export function clientKind(t: MailThread): 'confirmed' | 'possibleMatch' | null 
 }
 
 export function inView(t: MailThread, view: View): boolean {
+  if (view === 'trash') return t.trashed
   if (t.trashed) return false
   if (view === 'spam') return Boolean(t.quarantine)
   if (t.quarantine) return false
@@ -75,6 +77,7 @@ const URGENCY: Record<ConversationState, number> = { customer_replied: 0, needs_
 export function sortForView(threads: MailThread[], view: View): MailThread[] {
   const byDate = (a: MailThread, b: MailThread) => Date.parse(b.updated_at) - Date.parse(a.updated_at)
   if (view === 'inbox' || view === 'needs_reply' || view === 'follow_up') return [...threads].sort((a, b) => URGENCY[a.state] - URGENCY[b.state] || byDate(a, b))
+  if (view === 'trash') return [...threads].sort((a, b) => Date.parse(b.trashed_at ?? b.updated_at) - Date.parse(a.trashed_at ?? a.updated_at))
   if (view === 'waiting') return [...threads].sort((a, b) => (a.follow_up_on ?? '9999').localeCompare(b.follow_up_on ?? '9999') || byDate(a, b))
   return [...threads].sort(byDate)
 }
