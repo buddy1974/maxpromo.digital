@@ -55,6 +55,13 @@ const stringified = normaliseUnderstanding({ mode: 'action', language: 'de', act
 check('a nested list the provider sent as a JSON string is read, then checked like any other', stringified.actions.length === 1 && stringified.actions[0].company === 'Muster GmbH' && stringified.actions[0].items?.[0].amount === 5)
 check('a single action sent as a JSON object string, or wrapped in words, is read too', normaliseUnderstanding({ mode: 'action', language: 'de', actions: JSON.stringify({ type: 'CLIENT_ARCHIVE', summary: 'x' }), instructions_found: false }, 'de').actions.length === 1 && normaliseUnderstanding({ mode: 'action', language: 'de', actions: 'Actions: [{"type":"CLIENT_RESTORE","summary":"y"}]', instructions_found: false }, 'de').actions[0]?.type === 'CLIENT_RESTORE')
 check('escaped quotes inside a stringified list are repaired', normaliseUnderstanding({ mode: 'action', language: 'de', actions: '[{\\"type\\":\\"CLIENT_ARCHIVE\\",\\"summary\\":\\"x\\"}]', instructions_found: false }, 'de').actions.length === 1)
+check('unescaped quotes inside a pretty-printed text value are repaired', normaliseUnderstanding({ mode: 'action', language: 'de', actions: `[
+  {
+    "type": "CLIENT_CREATE",
+    "summary": "Neuen Kunden "TEST Nordlicht" anlegen",
+    "company": "TEST Nordlicht GmbH"
+  }
+]`, instructions_found: false }, 'de').actions[0]?.company === 'TEST Nordlicht GmbH')
 check('garbage from the model is unclear with no actions', normaliseUnderstanding('nonsense', 'de').mode === 'unclear' && normaliseUnderstanding(null, 'de').actions.length === 0)
 
 /* ── the understanding call: a PDF goes as a document, an image as an image, text as quoted data ── */

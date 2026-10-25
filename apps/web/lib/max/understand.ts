@@ -80,7 +80,9 @@ Fields:
 - summary: one short line saying what this action will do, in Marcel's language.
 - Do not invent invoice numbers, prices, tax, bank details or payment status. Tax is never your concern.
 
-language: the language Marcel wrote in (de or en; French input → the screen language).`
+language: the language Marcel wrote in (de or en; French input → the screen language).
+
+Output: "actions" is a JSON array of objects — never a string. Inside text values never use straight double quotes; use „…“ or '…'.`
 
 function contextLines(c: MaxContext): string {
   const lines = [`Screen: ${c.route}`]
@@ -129,6 +131,12 @@ export function shapeOf(x: unknown, depth = 0): unknown {
 
 const NUMERIC = new Set(['amount', 'percent', 'value'])
 
+/** One `"key": "value",` per line (pretty-printed JSON): quotes inside the value are escaped —
+ *  "summary": "Kunde "Nordlicht" anlegen" becomes valid. Only for repair; the result is re-checked. */
+function escapeInnerQuotes(text: string): string {
+  return text.split('\n').map(l => l.replace(/^(\s*"[^"]+"\s*:\s*")(.*)("\s*,?\s*)$/, (_m, a: string, v: string, c: string) => a + v.replace(/(?<!\\)"/g, '\\"') + c)).join('\n')
+}
+
 /** Structured output sometimes carries a nested array as a JSON string; read it, then check it like any other. */
 function list(x: unknown, depth = 0): unknown[] {
   if (Array.isArray(x)) return x
@@ -137,7 +145,7 @@ function list(x: unknown, depth = 0): unknown[] {
   /* Text around the JSON ("Here are the actions: [...]"): the outermost list or object. Escaped
      quotes (\") and single-quoted keys are repaired. Whatever parses is still checked field by field. */
   const core = t.match(/\[[\s\S]*\]|\{[\s\S]*\}/)?.[0] ?? t
-  const attempts = [t, core, core.replace(/\\"/g, '"'), core.replace(/'/g, '"')]
+  const attempts = [t, core, core.replace(/\\"/g, '"'), escapeInnerQuotes(core), core.replace(/'/g, '"')]
   let v: unknown, parsed = false, error = ''
   for (const a of attempts) { try { v = JSON.parse(a); parsed = true; break } catch (e) { error = e instanceof Error ? e.message.replace(/"[^"]*"/g, '…').slice(0, 120) : 'parse' } }
   if (!parsed) { console.info(`[max] unreadable list ${JSON.stringify({ length: t.length, error })}`); return [] }
