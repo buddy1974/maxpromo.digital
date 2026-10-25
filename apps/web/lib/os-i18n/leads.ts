@@ -55,6 +55,9 @@ const de = {
   lostReason: 'Grund (optional)',
   listClose: 'Kein Interesse', listCloseConfirm: 'Wirklich schließen?', listClosed: 'Vom Leads-Überblick geschlossen',
   listFailed: 'Das hat nicht geklappt — öffne den Lead.',
+  dupIntro: 'Schon in Maxpromo — nichts Neues gespeichert:', dupKind: { lead: 'Lead', client: 'Kunde' } as Record<string, string>,
+  dupBasis: { email: 'gleiche E-Mail', website: 'gleiche Website', phone: 'gleiche Telefonnummer', company: 'gleicher Firmenname', city: 'gleicher Ort' } as Record<string, string>,
+  dupSaveAnyway: 'Anderes Unternehmen — trotzdem speichern',
   replied: 'Sie haben geantwortet — antworte im Gespräch im Posteingang.',
   openConversation: 'Gespräch öffnen',
 }
@@ -113,6 +116,9 @@ const en: LeadsCopy = {
   lostReason: 'Reason (optional)',
   listClose: 'Not interested', listCloseConfirm: 'Really close?', listClosed: 'Closed from the leads overview',
   listFailed: 'That did not work — open the lead.',
+  dupIntro: 'Already in Maxpromo — nothing new was saved:', dupKind: { lead: 'Lead', client: 'Client' },
+  dupBasis: { email: 'same email', website: 'same website', phone: 'same phone', company: 'same company name', city: 'same city' },
+  dupSaveAnyway: 'A different business — save anyway',
   replied: 'They replied — answer in the conversation in the Inbox.',
   openConversation: 'Open conversation',
 }

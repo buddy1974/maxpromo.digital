@@ -48,6 +48,7 @@ export default function LeadsPage() {
   const [newForm,   setNewForm]   = useState({ ...LEAD_BLANK })
   const [creating,  setCreating]  = useState(false)
   const [createErr, setCreateErr] = useState('')
+  const [matches,   setMatches]   = useState<{ id: string; kind: string; label: string; basis: string }[]>([])
   const [closing,   setClosing]   = useState<string | null>(null)
   const [rowErr,    setRowErr]    = useState<{ id: string; text: string } | null>(null)
 
@@ -63,18 +64,21 @@ export default function LeadsPage() {
 
   /* Through lead.create (ADR-0027): it refuses a duplicate of an existing lead or client and says
      which one, records who saved it, and starts the lead at Discovered. A website lets research run. */
-  async function createLead() {
+  async function createLead(distinct: string[] = []) {
     if (!newForm.company.trim() && !newForm.name.trim()) {
       setCreateErr(t.leads.nameOrEmailRequired); return
     }
-    setCreating(true); setCreateErr('')
+    setCreating(true); setCreateErr(''); setMatches([])
     try {
       const pick = (v: string) => (v.trim() ? v.trim() : undefined)
       const r = await leadsApi.run('lead.create', {
         company: newForm.company.trim() || newForm.name.trim(), name: pick(newForm.name), email: pick(newForm.email), phone: pick(newForm.phone),
         website: pick(newForm.website), city: pick(newForm.city), source: newForm.source, summary: pick(newForm.notes),
+        ...(distinct.length ? { confirmed_distinct_from: distinct } : {}),
       })
-      const data = r.status === 'done' ? r.result?.data as { created?: boolean; lead_id?: string } | undefined : undefined
+      const data = r.status === 'done' ? r.result?.data as { created?: boolean; lead_id?: string; matches?: { id: string; kind: string; label: string; basis: string }[] } | undefined : undefined
+      /* A duplicate names what it matched and lets Marcel open it, or say it is a different business. */
+      if (data && !data.created && data.matches?.length) { setMatches(data.matches); return }
       if (!data?.created || !data.lead_id) { setCreateErr(r.result?.summary ?? r.message ?? t.leads.createFailed); return }
       router.push(`/os/leads/${data.lead_id}`)
     } catch {
@@ -144,12 +148,26 @@ export default function LeadsPage() {
                 <textarea value={newForm.notes} onChange={e => setNewForm(p => ({ ...p, notes: e.target.value }))} rows={3} style={{ ...inpStyle, resize: 'vertical' }} />
               </div>
             </div>
+            {matches.length > 0 && (
+              <div role="alert" style={{ marginTop: '12px', fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)' }}>
+                <p style={{ margin: '0 0 6px', color: 'var(--semantic-danger)' }}>{lc.dupIntro}</p>
+                <ul style={{ margin: '0 0 8px', paddingLeft: '18px' }}>
+                  {matches.map(m => (
+                    <li key={m.id} style={{ marginBottom: '4px' }}>
+                      {m.kind === 'lead' ? <a href={`/os/leads/${m.id}`} style={{ color: 'var(--brand-text)' }}>{m.label}</a> : m.label}
+                      <span style={{ color: 'var(--brand-text-muted)' }}> · {lc.dupKind[m.kind] ?? m.kind} · {m.basis.split(/[ ,+]+/).map(b => lc.dupBasis[b] ?? b).join(', ')}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button type="button" className="btn-secondary btn-sm" disabled={creating} onClick={() => createLead(matches.map(m => m.id))}>{lc.dupSaveAnyway}</button>
+              </div>
+            )}
             {createErr && <p style={{ fontFamily: mono, fontSize: 'var(--text-label)', color: 'var(--semantic-danger)', margin: '10px 0 0' }}><Icon name="warning" size="xs" /> {createErr}</p>}
             <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-              <button type="button" onClick={createLead} disabled={creating} style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 20px', cursor: creating ? 'wait' : 'pointer', opacity: creating ? 0.6 : 1 }}>
+              <button type="button" onClick={() => createLead()} disabled={creating} style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 20px', cursor: creating ? 'wait' : 'pointer', opacity: creating ? 0.6 : 1 }}>
                 {creating ? t.common.saving : t.leads.saveLead}
               </button>
-              <button type="button" onClick={() => { setShowNew(false); setCreateErr('') }} style={{ background: 'none', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 16px', cursor: 'pointer' }}>
+              <button type="button" onClick={() => { setShowNew(false); setCreateErr(''); setMatches([]) }} style={{ background: 'none', border: '1px solid var(--brand-border)', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontSize: 'var(--text-micro)', padding: '10px 16px', cursor: 'pointer' }}>
                 {t.common.cancel}
               </button>
             </div>

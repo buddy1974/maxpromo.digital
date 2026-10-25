@@ -84,6 +84,11 @@ check('a website address must be a plain public web origin', siteOrigin('elektro
 }
 check('robots.txt groups: our agent and * apply, other agents do not', JSON.stringify(robotsDisallows('User-agent: Googlebot\nDisallow: /g\n\nUser-agent: *\nDisallow: /private\n')) === '["/private"]')
 {
+  const w = site({ 'https://elektro-muster.de/': { body: HOME.replace('<a href="/leistungen">', '<a href="/impressum?ref=nav">Impressum</a> <a href="/impressum/">I</a> <a href="/leistungen">') } })
+  const r = await fetchSite('elektro-muster.de', w)
+  check('one page is one path: a query string or trailing slash does not read the same page twice', r.ok && r.pages.filter(p => p.url.includes('impressum')).length === 1 && w.fetched.filter(u => u.includes('impressum')).length === 1)
+}
+{
   const r = await fetchSite('elektro-muster.de', site({ 'https://elektro-muster.de/': { type: 'application/pdf', body: '%PDF' } }))
   check('a home page that is not HTML is refused', !r.ok && r.reason === 'not_html')
 }

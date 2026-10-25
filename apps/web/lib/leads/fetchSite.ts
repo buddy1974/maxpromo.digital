@@ -216,11 +216,13 @@ export async function fetchSite(website: string | null | undefined, depsIn: Site
     .map(l => { try { return new URL(l) } catch { return null } })
     .filter((u): u is URL => !!u && ['http:', 'https:'].includes(u.protocol) && sameSite(u) && WANTED.test(u.pathname) && !/\.(pdf|jpe?g|png|gif|zip|docx?)$/i.test(u.pathname))
     .map(u => { u.hash = ''; return u })
-  const seen = new Set([home.url])
+  /* One page is one path: "/kontakt?source=home" is the contact page already read, not another. */
+  const pageKey = (u: URL) => u.pathname.replace(/\/+$/, '') || '/'
+  const seen = new Set([pageKey(new URL(home.url))])
   for (const u of candidates) {
     if (pages.length > MAX_EXTRA_PAGES) break
-    if (seen.has(u.toString())) continue
-    seen.add(u.toString())
+    if (seen.has(pageKey(u))) continue
+    seen.add(pageKey(u))
     if (!allowed(u)) { skipped.push(`${u.pathname} (robots.txt)`); continue }
     const got = await get(u.toString(), deps, 'text/html')
     if (!got || 'refused' in got || got.status >= 400 || !isHtml(got.type)) { skipped.push(u.pathname); continue }
