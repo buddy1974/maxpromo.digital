@@ -134,13 +134,13 @@ function list(x: unknown, depth = 0): unknown[] {
   if (Array.isArray(x)) return x
   if (typeof x !== 'string' || depth > 2) return []
   const t = x.trim()
-  let v: unknown
-  try { v = JSON.parse(t) } catch {
-    /* Text around the JSON ("Here are the actions: [...]"): take the outermost list or object. */
-    const m = t.match(/\[[\s\S]*\]|\{[\s\S]*\}/)
-    if (!m) return []
-    try { v = JSON.parse(m[0]) } catch { return [] }
-  }
+  /* Text around the JSON ("Here are the actions: [...]"): the outermost list or object. Escaped
+     quotes (\") and single-quoted keys are repaired. Whatever parses is still checked field by field. */
+  const core = t.match(/\[[\s\S]*\]|\{[\s\S]*\}/)?.[0] ?? t
+  const attempts = [t, core, core.replace(/\\"/g, '"'), core.replace(/'/g, '"')]
+  let v: unknown, parsed = false, error = ''
+  for (const a of attempts) { try { v = JSON.parse(a); parsed = true; break } catch (e) { error = e instanceof Error ? e.message.replace(/"[^"]*"/g, '…').slice(0, 120) : 'parse' } }
+  if (!parsed) { console.info(`[max] unreadable list ${JSON.stringify({ length: t.length, error })}`); return [] }
   if (Array.isArray(v)) return v
   if (typeof v === 'string') return list(v, depth + 1)
   return v && typeof v === 'object' ? [v] : []
