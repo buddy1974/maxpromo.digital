@@ -232,11 +232,13 @@ export const outreachDraft: CapabilityDefinition<ReturnType<typeof draftInput.pa
     if (channel === 'email') detail.mail_draft_id = await upsertMailDraft(ctx, lead, detail)
     const id = await logActivity(ctx.sql, {
       lead_id: lead.id, kind: 'outreach_draft', channel, actor: ctx.actor,
-      summary: `Draft v${detail.version} (${channel}, ${language})`, detail: detail as unknown as Record<string, unknown>,
+      summary: `${followUp ? 'Follow-up draft' : 'Draft'} v${detail.version} written (${channel}, ${language.toUpperCase()})${input.instruction ? ` — revised: ${input.instruction.slice(0, 120)}` : ''}. Nothing sent.`, detail: detail as unknown as Record<string, unknown>,
     })
     const stage = leadStage(lead.status)
     if (stage === 'discovered' || stage === 'qualified') {
       await ctx.sql`UPDATE os_leads SET status = 'outreach_prepared', updated_at = now() WHERE id = ${lead.id}`
+      await logActivity(ctx.sql, { lead_id: lead.id, kind: 'stage_change', channel, actor: ctx.actor,
+        summary: `stage ${stageText(lead.status)} → ${stageText('outreach_prepared')}`, detail: { from: lead.status, to: 'outreach_prepared' } })
     }
     return {
       summary: `Draft for ${leadLabel(lead)} (${channel}, ${language.toUpperCase()}, v${detail.version}). Nothing has been sent.`,

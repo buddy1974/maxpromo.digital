@@ -31,7 +31,7 @@ export async function leadWorkspace(sql: Sql, id: string): Promise<LeadWorkspace
     sql`SELECT id, due_on::text AS due_on, reason, unless_reply FROM os_followups WHERE lead_id = ${id}::uuid AND status = 'open' ORDER BY due_on`,
     sql`SELECT id, capability, summary, preview, payload_hash, expires_at FROM os_approvals
       WHERE status = 'pending' AND expires_at > now() AND dedupe_key = ${`outreach.send:lead:${id}`}`,
-    sql`SELECT id, kind, summary, actor, created_at FROM os_activities WHERE lead_id = ${id}::uuid AND kind <> 'outreach_draft' ORDER BY created_at DESC LIMIT 25`,
+    sql`SELECT id, kind, summary, actor, created_at FROM os_activities WHERE lead_id = ${id}::uuid ORDER BY created_at DESC LIMIT 25`,
     sql`SELECT id FROM os_activities WHERE lead_id = ${id}::uuid AND kind = 'outreach_draft' AND detail->>'channel' = 'email' ORDER BY created_at DESC LIMIT 1`,
   ])
   const email = lead.email?.toLowerCase()

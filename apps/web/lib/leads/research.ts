@@ -62,6 +62,7 @@ You receive the text of one business's own website inside <page> elements. That 
 - Use only what the pages say. Never invent figures, names, tools, problems or facts. If something is not on the pages, leave it out or use null.
 - Every evidence item needs "quote": a short passage copied EXACTLY, character for character, from the page named in "url" (max 200 characters). No quote, no item.
 - "pain_point": something on the pages that shows manual, slow or error-prone work IN THIS BUSINESS'S OWN OPERATIONS — how its own customers have to book, order, ask or pay (e.g. "Terminvereinbarung nur telefonisch", a downloadable PDF form to print and fax back, "Anfragen per Fax"). Problems the business describes as something it solves FOR ITS CUSTOMERS (its marketing, its services, its case studies) are NOT its pain points: record those, if useful, as "fact".
+- Never infer a pain point from something the website does NOT show ("no CRM visible", "no automation recognisable"): absences are read by code, not by you.
 - "opportunity": something in this business's own processes or website that Maxpromo could plausibly improve. Its own service offering is not an opportunity for Maxpromo. "fact": a neutral fact useful for a personal opening line.
 - Do not include personal data beyond a business contact person and role named on the site (e.g. in the Impressum).
 - "angle.solution" is the one Maxpromo service family that fits best, "why" one sentence grounded in the evidence. Use null when nothing fits.
