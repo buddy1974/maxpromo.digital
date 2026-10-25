@@ -1,5 +1,14 @@
 # Decision Log
 
+## 2026-10-25 — Leads foundation: controlled production acceptance (Marcel approved the deploy)
+
+Marcel approved `30ac5b5` for production and a controlled acceptance with automation off. Status after acceptance:
+LEAD RESEARCH, QUALIFICATION, OUTREACH DRAFTING and OUTREACH SEND GOVERNANCE — production verified.
+AUTOMATIC LEAD WORKFLOW — OFF / not yet accepted. DISCOVERY — not connected. REAL COLD OUTREACH — not authorised.
+Agent decisions inside the run (for Marcel's inspection): the test recipient is Maxpromo's own mailbox only; a lead is
+closed, never deleted, from the list; a reply waits up to 15 minutes for its spam verdict; closing a lead ends both
+follow-up records. Recommendation: `LEAD_WORKFLOW=1` is ready for a controlled scope (ADR-0027 §8).
+
 ## 2026-10-25 — ADR-0027 accepted with modifications (Marcel)
 
 **Accepted.** Maxpromo OS is the owner control plane, Agent Bureau the governed workforce behind it, the model gateway

@@ -1,7 +1,7 @@
 # ADR-0027 — The model gateway, the lead workflow and a small workflow layer
 
-Date: 2026-10-24 · Status: **accepted with modifications** (Marcel, 2026-10-25) · Parts 1–4 implemented;
-production behaviour of the new lead automation is off until the owner switches it on · Relates to: ADR-0018
+Date: 2026-10-24 · Status: **accepted with modifications** (Marcel, 2026-10-25) · Parts 1–4 implemented and
+**accepted in production 2026-10-25** (manual, controlled); the automatic rules stay off until the owner switches them on · Relates to: ADR-0018
 (OS is the commercial system of record), ADR-0020/0023 (Email OS), ADR-0021 (control planes), ADR-0026
 (phone-first OS)
 
@@ -155,6 +155,24 @@ ENGAGEMENT → LEAD/OPPORTUNITY.` Video generation sits behind a Maxpromo provid
 (`video.generate()`), never hard-wired to one vendor; social publishing likewise, starting with the one or two
 channels Marcel actually uses. Publishing is AMBER (outbound, public). Starts after the first controlled
 prospect campaign has shown what the lead workflow needs.
+
+## 8. Production acceptance (2026-10-25)
+
+| Area | Status | Evidence |
+|---|---|---|
+| Lead research | **production verified** | Maxpromo's own site: 4 pages, 8 verified quotes with source URLs, 2 unsupported claims dropped; after the prompt fix the business is scored on its own operations only (58 → 39, not qualified) |
+| Qualification | **production verified** | Score, reasons with points, confidence and caveats on the lead screen |
+| Outreach drafting | **production verified** | Email OS draft linked to the lead, recipient from the site's own domain, one open draft per lead and kind, revision v1 → v2 in place, nothing sent by drafting |
+| Outreach send governance | **production verified** | No basis: refused at `outreach.send`, Inbox `email.deliver` now and scheduled; test basis: one send to info@maxpromo.digital via Hostinger, two simultaneous confirmations → one send |
+| Reply / follow-up | evidence verified (44) | Not exercised live (risk 152) |
+| Prompt injection | evidence verified | Pattern screening + verbatim quotes + no tools; not perfect (risk 143) |
+| Automatic lead workflow | **OFF / not yet accepted** | `LEAD_WORKFLOW` unset |
+| Discovery | **not connected** | risk 147 |
+| Real cold outreach | **not authorised** | no setting enables it |
+
+**Recommendation on `LEAD_WORKFLOW=1`: ready for a controlled scope.** The automatic rules only research and draft
+(nothing sends without Marcel's confirmation and a recorded basis), at most one research per sweep. Suggested first
+scope: switch on while only a handful of hand-picked leads with websites exist, read a week of drafts, then widen.
 
 ## Order
 

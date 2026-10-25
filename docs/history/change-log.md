@@ -1,5 +1,22 @@
 # Change Log
 
+## 2026-10-25 — Leads foundation accepted in production (controlled; automation off)
+
+- Pushed `30ac5b5`; production now `247a694` (web and Bureau). Migrations 0021–0023 confirmed present in production.
+- Production acceptance with Maxpromo's own website and mailbox: research (8 verified quotes, 2 unsupported claims
+  dropped), code score with reasons, Email OS draft + revision, send blocked without a basis on all three doors
+  (lead confirmation, Inbox send, Inbox scheduled send), one controlled test send to info@maxpromo.digital through the
+  mailbox (double confirmation sent once), lead Contacted with an "if no reply" follow-up, self-copy filed against the
+  sent message (no new conversation).
+- Fixes from production use: list actions through `lead.update`, no hard delete (risk 145); a reply waits for the spam
+  verdict (risk 146); research counts only the business's own pains, never an absence; one page per path; outreach copy
+  opens with something from their site (70–130 words); the duplicate dialog names the matches, offers "save anyway" and
+  scrolls; the leads list is one card per lead on a phone; the timeline shows drafts and the move to Outreach prepared;
+  closing a lead ends its conversation's waiting state (risk 144).
+- Production env: `OUTREACH_TEST_RECIPIENTS=info@maxpromo.digital`. `LEAD_WORKFLOW` unset. Stripe sandbox, WhatsApp off,
+  OpenRouter not selected, Anthropic unchanged.
+- Proofs: `prove:lead-research` 35, `prove:lead-workflow-evidence` 44, `npm run verify` green (33 gates).
+
 ## 2026-10-25 — Gateway in production; first lead workflow (ADR-0027 accepted with modifications)
 
 - Model gateway `4b5b05c` pushed and deployed (web + Bureau); production Ask Max and Quick Scan extraction verified.

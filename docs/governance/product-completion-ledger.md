@@ -22,7 +22,7 @@ Declared GREEN 2026-10-23 for the platform release — not for the product commi
 | # | Commitment | State | Evidence / what remains |
 |---|---|---|---|
 | 1 | Senior Email OS (workspace, context, actions, follow-up) | **PARTIAL** (released, verified) | §Email — outbound attachments and bounce handling now built and proven; a first live send observed in real clients is still the owner's |
-| 2 | Professional outbound identity | **PARTIAL** (one identity for conversations AND documents) | §Email — quotes, invoices and reminders now leave through the mailbox in the new identity with the PDF attached; not yet observed in Gmail/Outlook/Apple Mail; outreach/contact/newsletter still on Resend (risk 127) |
+| 2 | Professional outbound identity | **PARTIAL** (one identity for conversations AND documents) | §Email — quotes, invoices and reminders now leave through the mailbox in the new identity with the PDF attached; not yet observed in Gmail/Outlook/Apple Mail; outreach now leaves through the mailbox (2026-10-25); contact form and newsletter still on Resend (risk 127) |
 | 3 | Safe full body and attachments | **DONE** (released, verified live) | §Email — risk 119 (no malware scanner) stands |
 | 4 | Deliverability | **PARTIAL** | §Deliverability — structured bounces now recorded; DMARC `p=none` is the owner's DNS step |
 | 5 | Follow-up engine | **DONE** for email conversations (released) | §Email — lead `os_followups` and conversation follow-ups are two views of follow-up, both in attention |
@@ -41,6 +41,7 @@ Declared GREEN 2026-10-23 for the platform release — not for the product commi
 | 18 | iOS testing | **PARTIAL** — standards-based (dvh, safe areas, 16 px inputs, visualViewport); no iPhone | risk 137 |
 | 19 | Reusable client productisation | **DEFERRED** | First make Maxpromo excellent |
 | 20 | Integrated business simulation (lead → payment → agent → owner) | **DONE (evidence runtime)** | commercial-agent 85/85 on the final code; Stripe sandbox lifecycle in production (MP-2026-044) |
+| 21 | Leads + outreach (ADR-0027) | **DONE manual, production verified 2026-10-25; automation OWNER switch** | research, code qualification, Email OS drafts, prospect send policy (all doors), one controlled test send; reply path evidence-only (risk 152); discovery not connected |
 
 ## Email
 
