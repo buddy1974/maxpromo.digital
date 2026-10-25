@@ -121,11 +121,14 @@ export const BUDGETS: readonly Budget[] = [
     what: 'total client JavaScript emitted by the build',
     unit: 'KB',
     measured: 1155,
-    limit: 1450,
+    limit: 1500,
     why:
       'No single visitor downloads all of this, but it bounds what any of them ' +
       'could. It is the number that moves when a heavy dependency arrives, ' +
-      'whichever route imports it.',
+      'whichever route imports it. Limit raised 1450 → 1500 KB on 2026-10-25 for ' +
+      'Universal Max (ADR-0029): its surface is a lazily loaded chunk behind the ' +
+      'login, opened only with Max, so no page any visitor loads became heavier ' +
+      '(change log).',
   },
   {
     id: 'bureau.total-js',

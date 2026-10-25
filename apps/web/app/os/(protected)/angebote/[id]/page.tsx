@@ -6,6 +6,7 @@ import type { DocumentLanguage } from '@/lib/documents/config'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { useDocumentIdentity, withTaxIdentity } from '@/components/documents/useDocumentIdentity'
 import { Icon, TONE_VARS, toneMap } from '@maxpromo/ui'
+import { useMaxScreenContext } from '@/components/os/max/MaxProvider'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
@@ -31,6 +32,7 @@ export default function AngebotDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
   const [angebot, setAngebot] = useState<Angebot | null>(null)
+  useMaxScreenContext(angebot ? { angebot_id: angebot.id, label: `${angebot.angebot_number} · ${angebot.client_name}` } : null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 

@@ -482,7 +482,7 @@ export const followupCreate: CapabilityDefinition<ReturnType<typeof followupInpu
     if (leadId) {
       await ctx.sql`UPDATE os_leads SET next_action = ${input.reason}, next_action_at = ${input.due_on}, updated_at = now() WHERE id = ${leadId}`
     }
-    if (!rows.length) return { summary: `A follow-up${label ? ` for ${label}` : ''} on ${input.due_on} already exists.` }
+    if (!rows.length) return { summary: `A follow-up${label ? ` for ${label}` : ''} on ${input.due_on} already exists.`, data: { created: false } }
     return {
       summary: `Follow-up set${label ? ` for ${label}` : ''}: ${input.due_on} — ${input.reason}${input.unless_reply ? ' (cleared if they reply first)' : ''}.`,
       data: { followup_id: rows[0].id },

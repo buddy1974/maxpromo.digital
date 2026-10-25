@@ -19,6 +19,7 @@ import { ConversationView, type MailMessage, type ReplyMode } from '@/components
 import { ContextPanel, type Analysis } from '@/components/os/mail/ContextPanel'
 import { Composer, type ComposerInit } from '@/components/os/mail/Composer'
 import './mail.css'
+import { useMaxScreenContext } from '@/components/os/max/MaxProvider'
 
 interface DraftRow { id: string; mode: ComposerInit['mode']; source_message_id: string | null; to_addrs: string[]; cc_addrs: string[]; bcc_addrs: string[]; subject: string; body: string; family: FamilyId; language: 'de' | 'en'; entity_kind: ComposerInit['entityKind']; entity_id: string | null; follow_up_days: number | null; revision: number }
 interface StandaloneDraft extends DraftRow { status: 'draft' | 'scheduled'; scheduled_for: string | null; updated_at: string }
@@ -157,6 +158,9 @@ export default function InboxPage() {
   }
 
   const visibleIds = visible.map(t => t.id)
+  /* Max sees the open conversation, or the conversations ticked in selection mode. */
+  const ticked = selecting ? visibleIds.filter(id => checked.has(id)) : []
+  useMaxScreenContext(ticked.length ? { selected_thread_ids: ticked, label: say(copy.actions.selected, { n: ticked.length }) } : shown ? { thread_id: shown.thread.id, label: shown.thread.subject } : null)
   const toggle = (id: string) => setChecked(set => { const next = new Set(set); if (next.has(id)) next.delete(id); else next.add(id); return next })
   const stopSelecting = () => { setSelecting(false); setChecked(new Set()) }
   async function bulk(action: 'mark_read' | 'archive' | 'unarchive' | 'trash' | 'restore') {

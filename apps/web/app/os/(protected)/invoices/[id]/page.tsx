@@ -8,6 +8,7 @@ import { useDocumentIdentity, withTaxIdentity } from '@/components/documents/use
 import { TONE_VARS, toneMap } from '@maxpromo/ui'
 import { InvoiceMoneyPanel } from '@/components/os/money/InvoiceMoneyPanel'
 import { InvoiceActions } from '@/components/os/money/InvoiceActions'
+import { useMaxScreenContext } from '@/components/os/max/MaxProvider'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
@@ -32,6 +33,7 @@ export default function InvoiceDetailPage() {
   const { id }   = useParams<{ id: string }>()
   const router   = useRouter()
   const [invoice, setInvoice] = useState<Invoice | null>(null)
+  useMaxScreenContext(invoice ? { invoice_id: invoice.id, label: `${invoice.invoice_number} · ${invoice.client_name}` } : null)
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState('')
   const [balance, setBalance] = useState<{ open: number; received: number } | null>(null)

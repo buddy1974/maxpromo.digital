@@ -182,9 +182,9 @@ export async function searchLeads(sql: Sql, query: string, limit = 6): Promise<L
   if (!words.length) return []
   const rows = await sql`
     SELECT * FROM os_leads
-    WHERE lower(coalesce(company,'') || ' ' || coalesce(name,'') || ' ' || coalesce(city,'') || ' ' ||
+    WHERE replace(replace(replace(replace(lower(coalesce(company,'') || ' ' || coalesce(name,'') || ' ' || coalesce(city,'') || ' ' ||
                 coalesce(business_type,'') || ' ' || coalesce(email,'') || ' ' || coalesce(website,'') || ' ' ||
-                coalesce(service_interest,''))
+                coalesce(service_interest,'')), 'ä', 'ae'), 'ö', 'oe'), 'ü', 'ue'), 'ß', 'ss')
           LIKE ${'%' + words[0] + '%'}
     ORDER BY coalesce(last_interaction_at, created_at) DESC
     LIMIT 200` as LeadRow[]
@@ -192,12 +192,14 @@ export async function searchLeads(sql: Sql, query: string, limit = 6): Promise<L
   return rows.filter((l) => words.every((w) => hay(l).includes(w))).slice(0, limit)
 }
 
+/* The database prefilter folds umlauts the way normaliseIdentity folds the query ("Müller" = "mueller"). */
 export async function searchClients(sql: Sql, query: string, limit = 6): Promise<ClientRow[]> {
   const words = normaliseIdentity(query).split(' ').filter((w) => w.length > 1).slice(0, 5)
   if (!words.length) return []
   const rows = await sql`
     SELECT * FROM os_clients
-    WHERE lower(coalesce(company,'') || ' ' || name || ' ' || coalesce(city,'') || ' ' || coalesce(email,''))
+    WHERE replace(replace(replace(replace(lower(coalesce(company,'') || ' ' || name || ' ' || coalesce(city,'') || ' ' || coalesce(email,'')),
+            'ä', 'ae'), 'ö', 'oe'), 'ü', 'ue'), 'ß', 'ss')
           LIKE ${'%' + words[0] + '%'}
     ORDER BY created_at DESC LIMIT 200` as ClientRow[]
   const hay = (c: ClientRow) => normaliseIdentity([c.company, c.name, c.city, c.email].join(' '))

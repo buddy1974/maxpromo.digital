@@ -4,3 +4,4 @@ export {
   type CompletionRequest, type JsonRequest, type TextResult, type JsonResult, type Failure, type GatewayDeps,
 } from './gateway.ts'
 export { classifyProviderError, logAiFailure, type AiFailure, type AiFailureClass } from './failure.ts'
+export { resolveAudioRoute, transcribeAudio, type AudioRouteName, type TranscriptionResult } from './audio.ts'

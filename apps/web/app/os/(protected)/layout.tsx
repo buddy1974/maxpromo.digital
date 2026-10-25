@@ -1,22 +1,25 @@
 'use client'
-import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Icon } from '@maxpromo/ui'
 import { resolveDomain } from '@maxpromo/config'
 import { OsLocaleProvider, useOsLocale } from '@/lib/os-i18n/context'
 import { LanguageSwitcher } from '@/components/os/LanguageSwitcher'
-import { AskMaxConversation, AskMaxProvider } from '@/components/os/shell/AskMax'
-import { QuickScanSheet } from '@/components/os/shell/QuickScan'
+import { MaxProvider, useMax } from '@/components/os/max/MaxProvider'
 import { PhoneNav, PhoneTopBar, ShellBanner, useOsAppRuntime, useShellStatus } from '@/components/os/shell/PhoneShell'
 
 /**
  * The back office's own chrome, owned by the routes that use it.
  *
  * Two shells from one tree, switched by CSS at 900px:
- *   desktop  the sidebar, the floating Ask Max and Quick Scan controls, Ask Max as a slide-over
+ *   desktop  the sidebar, the floating Max and Quick Scan controls, Max as a slide-over
  *   phone    a top app bar, a bottom navigation (Today · Inbox · Money · Max · More) and sheets;
  *            Max is a destination (/os/ask), Quick Scan lives in More — nothing floats over content
+ *
+ * Universal Max (ADR-0029) is one surface in both: the conversation, the composer and the proposal
+ * cards (components/os/max), loaded only when opened. Quick Scan opens Max in capture mode — one
+ * pipeline for documents, not a second extraction screen.
  *
  * The stylesheet lives with this boundary (not app/globals.css) so public pages never download it;
  * `/os/login` uses none of it.
@@ -26,13 +29,14 @@ import './os-layout.css'
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
 const BUREAU_ORIGIN = resolveDomain('agents.maxpromo.digital').origin
+const MaxSurface = dynamic(() => import('@/components/os/max/MaxSurface'), { ssr: false })
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
     <OsLocaleProvider>
-      <AskMaxProvider>
+      <MaxProvider>
         <ProtectedLayoutInner>{children}</ProtectedLayoutInner>
-      </AskMaxProvider>
+      </MaxProvider>
     </OsLocaleProvider>
   )
 }
@@ -41,8 +45,8 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
   const { t } = useOsLocale()
   const router = useRouter()
   const pathname = usePathname()
-  const [aiOpen, setAiOpen] = useState(false)
-  const [qsOpen, setQsOpen] = useState(false)
+  const max = useMax()
+  const aiOpen = max.panelOpen
   const shell = useShellStatus()
   useOsAppRuntime()
 
@@ -86,11 +90,11 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
             )
           })}
           <span className="os-section-label" style={{ paddingTop: 'var(--space-3)' }}>{t.sidebar.sectionTools}</span>
-          <button type="button" onClick={() => setAiOpen(true)} className="os-nav-item">
+          <button type="button" onClick={() => max.openMax()} className="os-nav-item">
             <span className="os-nav-icon"><Icon name="message" size="md" /></span>
             <span className="os-nav-label">{t.sidebar.toolAiAssistant}</span>
           </button>
-          <button type="button" onClick={() => setQsOpen(true)} className="os-nav-item">
+          <button type="button" onClick={() => max.openMax({ scan: true })} className="os-nav-item">
             <span className="os-nav-icon"><Icon name="upload" size="md" /></span>
             <span className="os-nav-label">{t.shell.quickScan}</span>
           </button>
@@ -123,13 +127,13 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
       </main>
 
       {/* ── PHONE BOTTOM NAVIGATION ── */}
-      <PhoneNav status={shell.status} onQuickScan={() => setQsOpen(true)} onSignOut={logout} />
+      <PhoneNav status={shell.status} onQuickScan={() => max.openMax({ scan: true })} onSignOut={logout} />
 
       {/* ── DESKTOP FLOATING CONTROLS (hidden on phones by architecture: Max is a tab there) ── */}
       {!aiOpen && !onAskPage && (
         <div className="os-fab">
-          <button type="button" className="os-fab-secondary" onClick={() => setQsOpen(true)}>{t.quickScan.floatingButton}</button>
-          <button type="button" className="os-fab-primary" onClick={() => setAiOpen(true)}>{t.ai.askButton}</button>
+          <button type="button" className="os-fab-secondary" onClick={() => max.openMax({ scan: true })}>{t.quickScan.floatingButton}</button>
+          <button type="button" className="os-fab-primary" onClick={() => max.openMax()}>{t.ai.askButton}</button>
         </div>
       )}
 
@@ -141,13 +145,12 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
               <p style={{ fontFamily: sans, fontWeight: 'var(--weight-heading)', fontSize: '14px', color: 'var(--brand-text)', margin: 0 }}>{t.ai.title}</p>
               <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', letterSpacing: '0.18em', margin: '3px 0 0' }}>{t.ai.subtitle}</p>
             </div>
-            <button type="button" className="os-icon-button" onClick={() => setAiOpen(false)} aria-label={t.shell.close}><Icon name="close" size="md" /></button>
+            <button type="button" className="os-icon-button" onClick={max.closePanel} aria-label={t.shell.close}><Icon name="close" size="md" /></button>
           </div>
-          <AskMaxConversation onNavigate={() => setAiOpen(false)} autoFocus />
+          <MaxSurface onNavigate={max.closePanel} autoFocus />
         </aside>
       )}
 
-      <QuickScanSheet open={qsOpen} onClose={() => setQsOpen(false)} />
     </div>
   )
 }

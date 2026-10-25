@@ -20,6 +20,7 @@ import { useOsLocale } from '@/lib/os-i18n/context'
 import { CLIENTS_COPY } from '@/lib/os-i18n/clients'
 import { ownerApi, failure, type EngineResult } from '@/lib/commercial/ownerClient'
 import { Sheet } from '@/components/os/shell/Sheet'
+import { shrinkImage } from '@/components/os/shared/shrinkImage'
 import './clients.css'
 
 export interface ClientRecord {
@@ -46,19 +47,6 @@ function fieldsOf(c: ClientRecord): Fields {
     city: legacy ? (c.city ?? '').trim().replace(/^\d{4,5}\s+/, '') : c.city ?? '', country: c.country || 'Deutschland',
     language: c.language ?? '', notes: c.notes ?? '',
   }
-}
-
-/** Phone photos are often 5–10 MB; the platform takes 4. Re-encode large images in the browser. */
-export async function shrinkImage(file: File, maxBytes = 3_500_000, maxSide = 2200): Promise<File> {
-  if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size <= maxBytes) return file
-  const bitmap = await createImageBitmap(file).catch(() => null)
-  if (!bitmap) return file
-  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height))
-  const canvas = document.createElement('canvas')
-  canvas.width = Math.round(bitmap.width * scale); canvas.height = Math.round(bitmap.height * scale)
-  canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
-  const blob = await new Promise<Blob | null>(r => canvas.toBlob(r, 'image/jpeg', 0.85))
-  return blob ? new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file
 }
 
 export function MatchList({ candidates, onCreateAnyway, busy }: { candidates: MatchCandidate[]; onCreateAnyway?: () => void; busy?: boolean }) {

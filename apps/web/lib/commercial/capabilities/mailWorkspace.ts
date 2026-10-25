@@ -217,7 +217,7 @@ export const mailFollowUp: CapabilityDefinition<ReturnType<typeof followInput.pa
 
 const TRANSFORMS = ['improve', 'shorten', 'expand', 'friendlier', 'formal', 'translate'] as const
 const assistInput = v.object({
-  mode: v.enumOf(['draft_reply', 'analyze', ...TRANSFORMS] as const),
+  mode: v.enumOf(['draft_reply', 'compose', 'analyze', ...TRANSFORMS] as const),
   thread_id: v.optional(v.uuid()),
   text: v.optional(v.string({ max: 20000 })),
   instruction: v.optional(v.string({ max: 600 })),
@@ -266,7 +266,7 @@ const strs = (x: unknown) => (Array.isArray(x) ? x.filter((s): s is string => ty
 
 export const mailAssist: CapabilityDefinition<ReturnType<typeof assistInput.parse>> = {
   id: 'email.assist', family: 'EMAIL', title: 'Ask Max about an email', risk: 'GREEN', input: assistInput,
-  description: 'Drafts a reply from the conversation and records, improves/shortens/expands/softens/formalises/translates a text, or analyses a conversation (summary, intent, open questions, commitments on both sides, next step). Returns text only; never sends.',
+  description: 'Drafts a reply from the conversation and records, writes a new email from a brief, improves/shortens/expands/softens/formalises/translates a text, or analyses a conversation (summary, intent, open questions, commitments on both sides, next step). Returns text only; never sends.',
   async run(ctx, input) {
     const language = input.language ?? 'de'
     if ((TRANSFORMS as readonly string[]).includes(input.mode)) {
@@ -276,6 +276,16 @@ export const mailAssist: CapabilityDefinition<ReturnType<typeof assistInput.pars
       const text = str(data?.text, 20000)
       if (!text) throw new CapabilityRefusal('Max returned nothing usable. Your text is unchanged.')
       return { summary: 'Suggestion ready. Your draft is unchanged until you apply it.', data: { text } }
+    }
+    if (input.mode === 'compose') {
+      /* A new email from Marcel's brief (Universal Max): text only, nothing saved or sent here. */
+      if (!input.instruction) throw new CapabilityRefusal('Say what the email should say.')
+      const data = await ai({ task: 'Write a new email from Marcel. Use only the brief and the facts; mark anything missing as [[…]]. Also write a short subject line.', target_language: language, owner_instruction: input.instruction, facts: input.text ?? null },
+        RULES.replace('no subject — ', '— '),
+        { type: 'object', properties: { subject: { type: 'string' }, text: { type: 'string' } }, required: ['subject', 'text'], additionalProperties: false })
+      const text = str(data?.text, 20000)
+      if (!text) throw new CapabilityRefusal('Max returned nothing usable.')
+      return { summary: 'Draft text ready. Nothing saved or sent.', data: { text, subject: str(data?.subject, 300) } }
     }
     if (!input.thread_id) throw new CapabilityRefusal('Open a conversation first.')
     const conv = await conversation(ctx, input.thread_id)

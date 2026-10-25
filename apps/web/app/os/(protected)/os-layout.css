@@ -199,27 +199,6 @@ button.os-nav-item {
 .os-askpanel-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 12px 12px 20px; border-bottom: 1px solid var(--brand-border); }
 
 /* ── Ask Max conversation (panel and /os/ask) ──────────────────────────────────── */
-.askmax { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.askmax-log { flex: 1; min-height: 0; overflow-y: auto; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
-.askmax-prompts { display: grid; gap: var(--space-2); }
-.askmax-label { margin: 0 0 var(--space-1); font-family: var(--brand-font-mono); font-size: var(--text-label-dense); letter-spacing: 0.18em; text-transform: uppercase; color: var(--brand-text-muted); }
-.askmax-prompt { text-align: left; min-height: 44px; padding: 10px 14px; background: var(--brand-surface-subtle); border: 1px solid var(--brand-border); border-radius: var(--radius-sm); color: var(--brand-text); font-family: var(--brand-font-body); font-size: 15px; cursor: pointer; }
-.askmax-prompt:hover, .askmax-prompt:focus-visible { border-color: var(--brand-border-strong); }
-.askmax-msg { max-width: 92%; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--brand-border); background: var(--brand-surface-subtle); }
-.askmax-msg-user { align-self: flex-end; background: color-mix(in srgb, var(--brand-primary) 12%, transparent); border-color: color-mix(in srgb, var(--brand-primary) 30%, transparent); }
-.askmax-msg-assistant { align-self: flex-start; }
-.askmax-msg-failed { border-color: var(--semantic-danger); }
-.askmax-text { margin: 0; font-size: 15px; line-height: 1.55; color: var(--brand-text); white-space: pre-wrap; overflow-wrap: anywhere; }
-.askmax-links { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: var(--space-1); }
-.askmax-links a { display: inline-block; padding: 4px 0; color: var(--brand-text); text-decoration: underline; font-size: 14px; }
-.askmax-facts { margin-top: var(--space-2); }
-.askmax-facts summary { cursor: pointer; font-family: var(--brand-font-mono); font-size: var(--text-label-dense); color: var(--brand-text-muted); min-height: 32px; display: flex; align-items: center; }
-.askmax-facts ul, .askmax-factlist { margin: var(--space-1) 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: 13px; color: var(--brand-text-secondary); overflow-wrap: anywhere; }
-.askmax-thinking { margin: 0; font-family: var(--brand-font-mono); font-size: var(--text-label-dense); letter-spacing: 0.2em; color: var(--brand-primary-text); }
-.askmax-compose { display: flex; gap: var(--space-2); align-items: flex-end; padding: var(--space-3) var(--space-4); border-top: 1px solid var(--brand-border); background: var(--brand-surface); }
-.askmax-compose textarea { flex: 1; min-height: 44px; max-height: 140px; resize: none; padding: 10px 12px; font-family: var(--brand-font-body); font-size: 16px; line-height: 1.4; color: var(--brand-text); background: var(--brand-surface-subtle); border: 1px solid var(--brand-border); border-radius: var(--radius-sm); field-sizing: content; }
-.askmax-send { min-width: 48px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; background: var(--brand-primary); color: var(--brand-on-primary); border: none; border-radius: var(--radius-sm); cursor: pointer; }
-.askmax-send:disabled { opacity: 0.4; cursor: default; }
 .askmax-page { height: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; }
 .askmax-page-head { padding: var(--space-5) var(--space-4) var(--space-2); }
 .askmax-page-head h1 { margin: 0; font-size: 22px; font-weight: var(--weight-heading); color: var(--brand-text); }
@@ -305,7 +284,6 @@ button.os-nav-item {
   .os-sheet-layer { align-items: flex-end; padding: 0; }
   .os-sheet { max-width: none; max-height: 88dvh; border-radius: var(--radius-sm) var(--radius-sm) 0 0; border-bottom: none; }
   .askmax-page-head { display: none; }
-  .askmax-compose { padding-bottom: var(--space-3); }
 }
 
 @media (prefers-reduced-motion: reduce) {

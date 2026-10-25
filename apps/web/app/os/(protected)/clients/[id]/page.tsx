@@ -13,8 +13,10 @@ import { Icon } from '@maxpromo/ui'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { CLIENTS_COPY } from '@/lib/os-i18n/clients'
 import { ownerApi, failure } from '@/lib/commercial/ownerClient'
-import { ClientForm, shrinkImage, type ClientRecord } from '@/components/os/clients/ClientForm'
+import { ClientForm, type ClientRecord } from '@/components/os/clients/ClientForm'
+import { shrinkImage } from '@/components/os/shared/shrinkImage'
 import '@/components/os/clients/clients.css'
+import { useMaxScreenContext } from '@/components/os/max/MaxProvider'
 
 const api = ownerApi('/api/os/clients/actions')
 
@@ -47,6 +49,7 @@ export default function ClientPage() {
   const [message, setMessage] = useState('')
   const [uploading, setUploading] = useState(false)
   const file = useRef<HTMLInputElement>(null)
+  useMaxScreenContext(data ? { client_id: id, label: data.client.company || data.client.name } : null)
 
   const load = useCallback(() => api.run('client.show', { client_id: id }).then(r => {
     if (r.status === 'done' && r.result?.data) { setData(r.result.data as Show); setState('ready') }
