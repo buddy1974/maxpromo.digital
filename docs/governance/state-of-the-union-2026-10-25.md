@@ -23,7 +23,7 @@ those documents.
 | Production UI | Desktop screenshots: Today, Inbox (+ one conversation), Clients, Jobs, Newsletter; Bureau `/dashboard` → login redirect |
 | Production DB | OS: table inventory, invoices, leads, clients, approvals by capability/status, `os_agent_results` by capability, Stripe charges/reversals/provider events, intake receipts. Bureau: table inventory, businesses, agent_runs, agent_proposals |
 | Phone widths | Production refuses framing (`frame-ancestors 'none'`) and the Chrome window cannot be resized, so 360/390/412 were checked in the local runtime on the same commit against the evidence database (12 screens) |
-| Tests | `npm run verify` — **exit 0**, 33 gates |
+| Tests | `npm run verify` — **exit 0**, every merge gate of that day (a later run added `prove:clients`) |
 | Not inspectable | Bureau UI behind login (Claude may not enter passwords); n8n (Cloudflare Access blocks the API); physical phones |
 
 Opening one Inbox conversation in production may have marked it read; nothing else was changed in production.
@@ -535,7 +535,7 @@ Nothing was deleted.
 | Document / claim | Verdict |
 |---|---|
 | `CLAUDE.md` → read `docs/openclaw/core-memory.md` (2026-08-27, OpenClaw-centric) | STALE |
-| `CLAUDE.md` docs tree / "verify = 4 steps" | STALE (33 gates) |
+| `CLAUDE.md` docs tree / "verify = 4 steps" | STALE (the gate has many more steps; see standards.md) |
 | `docs/README.md`, `PLATFORM-CONSTITUTION.md` OpenClaw as memory/governor | STALE |
 | `docs/README.md` refers to "the roadmap" | MISSING (no roadmap/PROGRESS doc exists) |
 | `platform.md` project names `maxpromo-web`/`maxpromo-bureau` | FALSE (`maxpromo-digital`/`maxpromo-agents`) |
