@@ -120,8 +120,8 @@ export default function LeadsPage() {
     <div className="leads-page" style={{ padding: '32px 40px' }}>
       {/* New Lead Modal */}
       {showNew && (
-        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' }}>
-          <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '440px', borderRadius: 'var(--radius-sm)', padding: '28px' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 300, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 'var(--space-5) var(--space-4)', overflowY: 'auto', overscrollBehavior: 'contain' }}>
+          <div role="dialog" aria-modal="true" style={{ background: 'var(--brand-surface-subtle)', border: '1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent)', width: '100%', maxWidth: '440px', borderRadius: 'var(--radius-sm)', padding: '28px', margin: 'auto 0' }}>
             <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-primary-text)', letterSpacing: '0.2em', textTransform: 'uppercase', margin: '0 0 20px' }}>{t.leads.newLeadModal}</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
               {([
