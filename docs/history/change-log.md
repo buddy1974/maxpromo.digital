@@ -1,5 +1,26 @@
 # Change Log
 
+## 2026-10-25 — Universal Max V1 (ADR-0029)
+
+- `lib/max`: proposal contract, understanding (one gateway call, registered types only), context envelope, grounding,
+  registry of 17 proposal types mapped to existing capabilities, capture / act / history. Migration 0026
+  (`os_max_interactions`, `os_max_proposals`) applied to the evidence database and production (13 / 15 columns read back).
+- Screens: one composer (type, paste, voice, photo, file) in the Max tab and desktop slide-over, proposal cards (edit,
+  choose, multi-select, approval, results), screen context from client / Inbox / invoice / quote pages; Quick Scan opens
+  Max in capture mode. Ask Max and Quick Scan components replaced (`components/os/max`).
+- Voice: `audio.transcribe()` — gateway audio route (`@maxpromo/ai transcribeAudio`), off unless the owner enables it;
+  browser speech recognition fallback; transcript only, no audio stored.
+- Fixed on the way: umlaut folding in the shared client/lead search; `followup.create` reports an existing follow-up as
+  `created: false`; `email.assist` `compose` mode; shared `shrinkImage`; icons mic / camera / attach / stop.
+- Found in production and fixed: the model's action list arrived as a JSON string with unescaped quotes (repair + shape
+  log); previews follow the screen language; the injection flag counts only with a document; plain questions skip the
+  interpretation step (question latency 9.2 s → 3.8 s); IBAN-like strings masked in Max history.
+- Budget: `web.total-js` limit 1450 → 1500 KB (the Max surface is a lazily loaded chunk behind the login).
+- Proofs: `prove:max` (46, gate 35), `prove:max-evidence` (46, evidence database, scenarios 1–12); regression green
+  (verify 35 gates; foundation 41, money 54, lead workflow 44, attachments 16, schedule 11, self-copy 8, control planes 33,
+  AI gateway 26).
+- Production acceptance 2026-10-25: scenarios 1–12 (see `docs/architecture/universal-max.md` → Evidence). Test data: risk 161.
+
 ## 2026-10-25 — Foundation repair: scheduled work, clients, Inbox hygiene (ADR-0028)
 
 - `CRON_SECRET` generated and installed on `maxpromo-digital` (never displayed). Daily run proven in production: no or a

@@ -1,5 +1,15 @@
 # Decision Log
 
+## 2026-10-25 — Universal Max V1 decisions (ADR-0029; for Marcel's inspection)
+
+Under the Universal Max brief: Max owns no business data and runs only registered capabilities; confirmation follows the
+capability's existing risk (GREEN one tap, AMBER second approval); drafts only, no send/delete/refund reachable; documents
+are data and cannot instruct; amounts and recipients only from Marcel's words, a record or the conversation; no
+`TASK_CREATE` (no task primitive); voice through the browser until the owner enables a transcription provider; files
+ephemeral, history 180 days, executions in `os_audit`; `web.total-js` budget raised to 1500 KB; in production the money
+scenario stopped at the strong confirmation so no test payment enters the books; the test invoice was marked issued by one
+documented SQL statement (no email) and cancelled through `invoice.cancel`. Gate count 35.
+
 ## 2026-10-25 — Foundation repair decisions (ADR-0028; for Marcel's inspection)
 
 Under the Foundation repair brief: Trash became GREEN because it is now reversible (Restore) and local; bulk actions

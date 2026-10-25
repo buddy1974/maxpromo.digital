@@ -25,7 +25,7 @@ and Ask Max as a slide-over. Below 900 px the OS is an app:
 
 - The Bureau stays its own control plane (agents.maxpromo.digital); the OS links to it from More and
   the sidebar and shows agent results and approvals in Today and Approvals — no duplication.
-- **Ask Max** is one conversation in a provider above the routes (`components/os/shell/AskMax.tsx`), so
+- **Ask Max** is one conversation in a provider above the routes (since ADR-0029 Universal Max: `components/os/max/MaxProvider.tsx`), so
   moving between tabs keeps it; the panel and the page render the same component.
 - **Shell primitives** live in `components/os/shell/`: `Sheet` (dialog semantics, focus in and back,
   Escape, dynamic-viewport height), `PhoneShell` (top bar, bottom nav, badges, banners, app runtime),

@@ -45,6 +45,7 @@ Declared GREEN 2026-10-23 for the platform release — not for the product commi
 | 22 | Clients foundation (ADR-0028) | **DONE, production verified 2026-10-25** | capabilities only; three-state update (website, country, clearing proven); archive/restore; governed delete of empty clients, database refuses cascades; deterministic matching with candidates before create; client page (360); documents; image + PDF extraction (candidate only) |
 | 23 | Inbox hygiene (ADR-0028) | **DONE, production verified 2026-10-25** | reversible Trash (state kept, out of every count), Restore, bulk (read/archive/trash/restore), new-email drafts reopenable; OS-level only — Hostinger unchanged (risk 153) |
 | 24 | Scheduled work | **DONE** (daily) | `CRON_SECRET` set; daily run proven (401 without / with a wrong bearer, idempotent); register `docs/deployment/scheduled-work.md`; owner push still OWNER (risk 121) |
+| 25 | Universal Max V1 (ADR-0029) | **DONE, production verified 2026-10-25** (voice: browser speech recognition; server transcription OWNER, risk 158) | one composer (type, paste, voice, photo, file) in the Max tab and the desktop slide-over; questions → Ask Max; actions → 17 registered proposal types over existing capabilities; hash-bound single-use confirmation; AMBER payment keeps its own approval; drafts only; screen context; Quick Scan in the same pipeline; twelve acceptance scenarios in production (scenario 6 stopped at the strong confirmation by design, risk 162) |
 
 ## Email
 
