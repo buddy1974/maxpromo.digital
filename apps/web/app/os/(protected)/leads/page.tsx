@@ -117,7 +117,7 @@ export default function LeadsPage() {
   ]
 
   return (
-    <div style={{ padding: '32px 40px' }}>
+    <div className="leads-page" style={{ padding: '32px 40px' }}>
       {/* New Lead Modal */}
       {showNew && (
         <div style={{ position: 'fixed', inset: 0, background: 'color-mix(in srgb, var(--brand-text) 45%, transparent)', zIndex: 300, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' }}>
@@ -190,8 +190,8 @@ export default function LeadsPage() {
       </div>
 
       {/* Filters */}
-      <div style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', gap: 'var(--space-1)' }}>
+      <div className="leads-filters" style={{ display: 'flex', gap: 'var(--space-3)', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="leads-tabs" style={{ display: 'flex', gap: 'var(--space-1)' }}>
           {['all', ...STATUSES].map(key => (
             <button key={key} onClick={() => setTab(key)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '7px 12px', border: 'none', cursor: 'pointer', background: tab === key ? 'var(--brand-primary)' : 'transparent', color: tab === key ? 'var(--brand-text)' : 'var(--brand-text-muted)' }}>
               {key === 'all' ? t.status.filterAll : statusLabel(key)}
@@ -202,7 +202,22 @@ export default function LeadsPage() {
       </div>
 
       <div style={{ background: 'var(--brand-surface-subtle)', border: '1px solid var(--brand-border)', borderTop: '2px solid var(--brand-primary)', overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <ul className="leads-cards">
+          {loading ? <li className="leads-card-meta" style={{ padding: 'var(--space-4)' }}>{t.common.loading}</li>
+            : filtered.length === 0 ? <li className="leads-card-meta" style={{ padding: 'var(--space-4)' }}>{t.leads.empty}</li>
+            : filtered.map(lead => (
+              <li key={lead.id}>
+                <button type="button" className="leads-card" onClick={() => router.push(`/os/leads/${lead.id}`)}>
+                  <span className="leads-card-main">
+                    <p className="leads-card-title">{lead.company || lead.name || t.common.notAvailable}</p>
+                    <p className="leads-card-meta">{[lead.company && lead.name ? lead.name : '', lead.source ? sourceLabel(lead.source) : '', fmtDate(lead.created_at)].filter(Boolean).join(' · ')}</p>
+                  </span>
+                  <StatusBadge status={lead.status} label={statusLabel(lead.status)} />
+                </button>
+              </li>
+            ))}
+        </ul>
+        <table className="leads-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--brand-border)' }}>
               {columns.map(h => (
@@ -219,8 +234,8 @@ export default function LeadsPage() {
               filtered.map(lead => (
                 <tr key={lead.id} style={{ borderBottom: '1px solid var(--brand-border)', cursor: 'pointer' }} onClick={() => router.push(`/os/leads/${lead.id}`)}>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                    <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: '0 0 2px' }}>{lead.name || t.common.notAvailable}</p>
-                    {lead.company && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.04em' }}>{lead.company}</p>}
+                    <p style={{ fontFamily: sans, fontSize: 'var(--text-micro)', color: 'var(--brand-text)', margin: '0 0 2px' }}>{lead.name || lead.company || t.common.notAvailable}</p>
+                    {lead.company && lead.name && <p style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', margin: 0, letterSpacing: '0.04em' }}>{lead.company}</p>}
                   </td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <span style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'var(--brand-border)', padding: '3px 8px' }}>
