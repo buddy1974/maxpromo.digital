@@ -20,6 +20,7 @@
  * (os_activities); a permanent delete is recorded in the append-only os_audit with the full record.
  */
 import { writeAudit } from '../audit'
+import { invoiceBalance } from '../money'
 import { focus, logActivity, type ClientRow } from '../records'
 import { CapabilityRefusal, type AnyCapability, type CapabilityContext, type CapabilityDefinition } from '../types'
 import { v, InputError, type Validator } from '../validate'
@@ -333,7 +334,7 @@ export const clientShow: CapabilityDefinition<ReturnType<typeof idInput.parse>> 
           AND NOT EXISTS (SELECT 1 FROM mail.business_links l WHERE l.thread_id = t.id AND l.entity_kind = 'client' AND l.entity_id = ${c.id}::text)
         ORDER BY last_at DESC NULLS LAST LIMIT 20`,
       ctx.sql`SELECT id, angebot_number AS number, status, total::float8 AS total, currency, created_at, valid_until::text AS valid_until FROM os_angebote WHERE client_id = ${c.id} ORDER BY created_at DESC LIMIT 30`,
-      ctx.sql`SELECT id, invoice_number AS number, status, total::float8 AS total, currency, due_date::text AS due_date, created_at, money.invoice_paid(id)::float8 AS paid FROM os_invoices WHERE client_id = ${c.id} ORDER BY created_at DESC LIMIT 30`,
+      ctx.sql`SELECT id, invoice_number, invoice_number AS number, client_name, client_id, status, total, anzahlung, restbetrag, currency, due_date::text AS due_date, created_at, money.invoice_paid(id) AS paid_amount FROM os_invoices WHERE client_id = ${c.id} ORDER BY created_at DESC LIMIT 30`,
       ctx.sql`SELECT p.id, p.amount::float8 AS amount, p.currency, p.received_on::text AS received_on, p.method, i.invoice_number, p.invoice_id FROM os_payments p JOIN os_invoices i ON i.id = p.invoice_id WHERE i.client_id = ${c.id} ORDER BY p.received_on DESC LIMIT 30`,
       ctx.sql`SELECT id, title, stage, value::float8 AS value, due_date::text AS due_date FROM os_jobs WHERE client_id = ${c.id} ORDER BY created_at DESC LIMIT 30`,
       ctx.sql`SELECT id, coalesce(company, name) AS label, status, created_at FROM os_leads WHERE client_id = ${c.id} OR (${email} <> '' AND lower(email) = ${email}) ORDER BY created_at DESC LIMIT 10`,
@@ -344,22 +345,27 @@ export const clientShow: CapabilityDefinition<ReturnType<typeof idInput.parse>> 
     ]) as [
       { id: string; subject: string; needs_reply: boolean; waiting: boolean; follow_up_on: string | null; archived: boolean; last_at: string | null; confirmed: boolean }[],
       { id: string; number: string; status: string; total: number; currency: string; valid_until: string | null }[],
-      { id: string; number: string; status: string; total: number; currency: string; due_date: string | null; paid: number }[],
+      (Parameters<typeof invoiceBalance>[0] & { number: string; status: string; due_date: string | null })[],
       unknown[], { id: string; title: string; stage: string }[], unknown[], { id: string; due_on: string; reason: string }[], unknown[], unknown[], Record<string, number>,
     ]
     const today = ctx.today
     const attention: { kind: string; label: string; ref: string; amount?: number; currency?: string }[] = []
     for (const t of threads) if (t.needs_reply && !t.archived) attention.push({ kind: 'reply', label: t.subject, ref: t.id })
-    for (const i of invoices) {
-      const open = Number(i.total) - Number(i.paid)
-      if (!['draft', 'cancelled', 'paid'].includes(i.status) && open > 0.004) attention.push({ kind: i.due_date && i.due_date < today ? 'overdue' : 'unpaid', label: i.number, amount: Math.round(open * 100) / 100, currency: i.currency || 'EUR', ref: i.id })
+    /* What is owed comes from the Money rules (lib/commercial/money invoiceBalance): total less a deposit
+       the invoice acknowledges (or the printed remainder), less payments net of refunds. */
+    const invoiceRows = invoices.map(i => {
+      const b = invoiceBalance(i, today)
+      return { id: i.id, number: i.number, status: i.status, total: Number(i.total), currency: b.currency, due_date: i.due_date, paid: Number(i.paid_amount ?? 0), open: b.open, state: b.state }
+    })
+    for (const i of invoiceRows) {
+      if (i.state !== 'draft' && i.state !== 'cancelled' && i.open > 0.004) attention.push({ kind: i.state === 'overdue' ? 'overdue' : 'unpaid', label: i.number, amount: i.open, currency: i.currency, ref: i.id })
     }
     for (const q of quotes) if (q.status === 'sent') attention.push({ kind: 'quote', label: q.number, ref: q.id })
     for (const f of followups) attention.push({ kind: f.due_on <= today ? 'followup_due' : 'followup', label: `${f.due_on} · ${f.reason}`, ref: f.id })
     for (const j of jobs) if (!['completed', 'invoiced'].includes(j.stage)) attention.push({ kind: 'job', label: j.title, ref: j.id })
     return {
       summary: `${clientDisplayLabel(c)}${c.archived_at ? ' (archived)' : ''}: ${attention.length ? `${attention.length} open item(s)` : 'nothing open'}.`,
-      data: { client: c, attention, threads, quotes, invoices, payments, jobs, leads, followups, documents, activity, dependencies: deps, deletable: Object.keys(deps).length === 0 },
+      data: { client: c, attention, threads, quotes, invoices: invoiceRows, payments, jobs, leads, followups, documents, activity, dependencies: deps, deletable: Object.keys(deps).length === 0 },
       focus: [focus('client', c.id, clientDisplayLabel(c))],
     }
   },

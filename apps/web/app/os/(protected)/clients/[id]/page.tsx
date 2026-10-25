@@ -23,7 +23,7 @@ interface Show {
   attention: { kind: string; label: string; ref: string; amount?: number; currency?: string }[]
   threads: { id: string; subject: string; needs_reply: boolean; last_at: string | null; confirmed: boolean }[]
   quotes: { id: string; number: string; status: string; total: number; currency: string }[]
-  invoices: { id: string; number: string; status: string; total: number; paid: number; currency: string; due_date: string | null }[]
+  invoices: { id: string; number: string; status: string; total: number; paid: number; open: number; currency: string; due_date: string | null }[]
   payments: { id: string; amount: number; currency: string; received_on: string; method: string | null; invoice_number: string; invoice_id: string }[]
   jobs: { id: string; title: string; stage: string }[]
   leads: { id: string; label: string; status: string }[]
@@ -197,7 +197,7 @@ export default function ClientPage() {
             <li key={q.id}><Link href={`/os/angebote/${q.id}`}>{q.number}</Link><span>{c.status[q.status] ?? q.status} · {money(q.total, q.currency)}</span></li>
           ))}</ul></>)}
           {data.invoices.length > 0 && (<><h2>{c.invoices}</h2><ul className="client-list">{data.invoices.map(i => (
-            <li key={i.id}><Link href={`/os/invoices/${i.id}`}>{i.number}</Link><span>{c.status[i.status] ?? i.status} · {money(i.total, i.currency)}{i.paid > 0 && ` · ${money(i.paid, i.currency)} ${c.paid}`}{i.due_date && i.status !== 'paid' && i.status !== 'cancelled' && ` · ${c.due} ${formatDate(i.due_date)}`}</span></li>
+            <li key={i.id}><Link href={`/os/invoices/${i.id}`}>{i.number}</Link><span>{c.status[i.status] ?? i.status} · {money(i.total, i.currency)}{i.paid > 0 && ` · ${money(i.paid, i.currency)} ${c.paid}`}{i.open > 0 && i.status !== 'draft' && i.status !== 'cancelled' && ` · ${money(i.open, i.currency)} ${c.open}`}{i.due_date && i.status !== 'paid' && i.status !== 'cancelled' && ` · ${c.due} ${formatDate(i.due_date)}`}</span></li>
           ))}</ul></>)}
           {data.payments.length > 0 && (<><h2>{c.payments}</h2><ul className="client-list">{data.payments.map(p => (
             <li key={p.id}><Link href={`/os/invoices/${p.invoice_id}`}>{p.invoice_number}</Link><span>{formatDate(p.received_on)} · {money(p.amount, p.currency)}{p.method ? ` · ${p.method}` : ''}</span></li>
