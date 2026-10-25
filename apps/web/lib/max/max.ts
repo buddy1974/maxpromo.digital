@@ -138,6 +138,13 @@ export async function capture(sql: Sql, input: CaptureInput, deps: CaptureDeps =
     return record(sql, input, context, lang, { outcome: 'failed', reply: { text: unavailable(lang) } }, fileMeta, started, requestId)
   }
 
+  /* A plain question ("Wer schuldet mir Geld?", "What should I handle next?") goes straight to Ask Max:
+     reading only, so no interpretation step is needed — it saves a model call. */
+  if (!input.file && looksLikeQuestion(text)) {
+    const a = await ask(ctx, text, lang)
+    return record(sql, input, context, lang, { outcome: 'answer', reply: { text: a.answer, facts: a.facts, links: a.links, phrased: a.phrased } }, fileMeta, started, requestId, 'ask')
+  }
+
   let u
   try {
     u = await understandFn({ text, screenLanguage: lang, today: ctx.today, context, document })
@@ -192,6 +199,14 @@ async function groundSafely(def: NonNullable<ReturnType<typeof proposalType>>, g
   }
 }
 
+const QUESTION_WORD = /^(wer|wem|wen|wessen|was|wie|wann|welche[rsmn]?|wo|wohin|woher|warum|wieso|weshalb|who|whom|whose|what|how|when|which|where|why)\b/i
+/** A question by its form: a question word first and a question mark last. "Can you…?" is a request, not this. */
+export const looksLikeQuestion = (text: string) => QUESTION_WORD.test(text.trim()) && /\?\s*$/.test(text)
+
+/** IBAN-like strings are not kept in Max's history, even when Marcel typed one. */
+const IBANISH = /\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){3,7}(?:\s?[A-Z0-9]{1,3})?\b/g
+const mask = (s: string) => s.replace(IBANISH, '[IBAN]')
+
 function notReadable(lang: Lang) {
   return lang === 'de' ? 'Diese Datei kann Max nicht lesen. Möglich sind PDF, JPEG, PNG, WebP, GIF und Text bis 4 MB.' : 'Max cannot read this file. PDF, JPEG, PNG, WebP, GIF and text up to 4 MB are supported.'
 }
@@ -205,8 +220,8 @@ async function record(sql: Sql, input: CaptureInput, context: MaxContext, lang: 
   file: { name: string; type: string; size: number; sha256: string } | null, started: number, requestId: string, model?: string, proposals: Pending[] = []): Promise<InteractionView> {
   const latency = Date.now() - started
   const [row] = await sql`INSERT INTO os_max_interactions (actor, input_kind, input_text, file_meta, context, outcome, reply, language, model, latency_ms, request_id)
-    VALUES (${input.actor}, ${input.inputKind}, ${input.text.trim().slice(0, 4000)}, ${file ? JSON.stringify(file) : null}::jsonb, ${JSON.stringify(contextSummary(context))}::jsonb,
-            ${r.outcome}, ${JSON.stringify(r.reply)}::jsonb, ${lang}, ${model ?? null}, ${latency}, ${requestId})
+    VALUES (${input.actor}, ${input.inputKind}, ${mask(input.text.trim().slice(0, 4000))}, ${file ? JSON.stringify(file) : null}::jsonb, ${JSON.stringify(contextSummary(context))}::jsonb,
+            ${r.outcome}, ${mask(JSON.stringify(r.reply))}::jsonb, ${lang}, ${model ?? null}, ${latency}, ${requestId})
     RETURNING id::text, created_at` as { id: string; created_at: Date }[]
   const views: ProposalView[] = []
   for (const p of proposals) {
@@ -218,7 +233,7 @@ async function record(sql: Sql, input: CaptureInput, context: MaxContext, lang: 
     views.push(viewOf({ id: pr.id, type: p.def.type, capability: p.grounded.capability, confirmation: p.def.confirmation, fields: p.fields, grounded: p.grounded, payload_hash: hash, status: pr.status, result: null, created_at: pr.created_at }))
   }
   log('capture', { request_id: requestId, outcome: r.outcome, kind: input.inputKind, file: file?.type ?? null, types: proposals.map(p => `${p.def.type}:${p.grounded.state}`), latency_ms: latency, model: model ?? null })
-  return { id: row.id, createdAt: new Date(row.created_at).toISOString(), input: input.text.trim().slice(0, 4000), inputKind: input.inputKind, file: file ? { name: file.name, type: file.type, size: file.size } : null, context: contextSummary(context), outcome: r.outcome, reply: r.reply, proposals: views }
+  return { id: row.id, createdAt: new Date(row.created_at).toISOString(), input: mask(input.text.trim().slice(0, 4000)), inputKind: input.inputKind, file: file ? { name: file.name, type: file.type, size: file.size } : null, context: contextSummary(context), outcome: r.outcome, reply: JSON.parse(mask(JSON.stringify(r.reply))) as InteractionView['reply'], proposals: views }
 }
 
 interface ProposalRow {
@@ -284,6 +299,8 @@ function applyEdits(p: ProposalRow, edits: Record<string, unknown>): Fields {
   const editable = new Set([...def.editable, ...def.editable.map(k => `set.${k}`)])
   const kinds = new Map(p.grounded.editable.map(e => [e.key, e.kind]))
   for (const [key, raw] of Object.entries(edits)) {
+    /* Max's one-line summary described the proposal before Marcel changed it. */
+    if (key !== 'recipient_confirmed') delete f._summary
     if (key === 'recipient_confirmed' && p.grounded.tick?.key === key) { f.recipient_confirmed = raw === true; continue }
     if (!kinds.has(key) || !(editable.has(key) || editable.has(key.replace(/^set\./, '')))) throw new MaxRefusal('not_editable', `Field ${key.slice(0, 40)} cannot be edited.`)
     const kind = kinds.get(key)
@@ -355,7 +372,9 @@ export async function act(sql: Sql, actor: string, a: MaxAction, screenLanguage?
       const refusedLike = (response.result.data as { created?: boolean } | undefined)?.created === false || Boolean(response.result.choices?.length)
       status = refusedLike ? 'refused' : 'done'
       /* Max says what happened in the screen language; the capability's own words stay in the audit. */
-      result = { summary: refusedLike ? response.result.summary : `${MAX_COPY[p.language ?? screenLanguage ?? 'de'].done[def.type]} ${detail(response.result)}`.trim(), links: linksOf(response.result), ...(refusedLike ? { error: true } : {}) }
+      /* A reply draft lives in its conversation: link there rather than to the drafts list. */
+      const links = p.type === 'EMAIL_REPLY_DRAFT' && fresh.grounded.links?.length ? fresh.grounded.links : linksOf(response.result)
+      result = { summary: refusedLike ? response.result.summary : `${MAX_COPY[p.language ?? screenLanguage ?? 'de'].done[def.type]}${p.type === 'EMAIL_REPLY_DRAFT' ? '' : ` ${detail(response.result)}`}`.trim(), links, ...(refusedLike ? { error: true } : {}) }
     } else if (response.status === 'approval_required') {
       status = 'awaiting_approval'
       approvalId = response.approval.id

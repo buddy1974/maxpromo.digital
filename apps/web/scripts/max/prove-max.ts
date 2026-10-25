@@ -16,7 +16,7 @@ import { CAPABILITIES } from '@/lib/commercial/registry'
 import { normaliseUnderstanding, understand, UNDERSTAND_SCHEMA, UNDERSTAND_SYSTEM } from '@/lib/max/understand'
 import { amountsIn, amountInText, refersToScreen, sameName, validDate, emailsIn } from '@/lib/max/ground'
 import { parseEnvelope } from '@/lib/max/context'
-import { hashOf } from '@/lib/max/max'
+import { hashOf, looksLikeQuestion } from '@/lib/max/max'
 import { transcriptionProvider } from '@/lib/audio/transcribe'
 import { MAX_COPY } from '@/lib/max/copy'
 import { MAX_SCREEN_COPY } from '@/lib/os-i18n/max'
@@ -86,6 +86,8 @@ check('emails are found as written', emailsIn('Write to Info@Example.org and x@y
 const env = parseEnvelope({ route: '/os/clients/123', client_id: 'not-a-uuid', thread_id: '6a1f0000-0000-4000-8000-000000000001', selected_thread_ids: ['bad', '6a1f0000-0000-4000-8000-000000000002'], sql: 'DROP TABLE', capability: 'client.delete' })
 check('the envelope keeps only well-formed ids and known keys', !('client_id' in env) && env.thread_id === '6a1f0000-0000-4000-8000-000000000001' && env.selected_thread_ids?.length === 1 && !('sql' in env) && !('capability' in env))
 check('a route outside /os is not trusted', parseEnvelope({ route: 'https://evil.example/' }).route === '/os/ask')
+
+check('questions by form go straight to Ask Max; requests do not', looksLikeQuestion('Wer schuldet mir Geld?') && looksLikeQuestion('What should I handle next?') && !looksLikeQuestion('Can you create an invoice for Esosa?') && !looksLikeQuestion('Esosa paid €500 today') && !looksLikeQuestion('Who owes me money'))
 
 /* ── binding ── */
 check('the payload hash changes with any input change, type or capability', hashOf('X', 'a.b', { amount: 1 }) !== hashOf('X', 'a.b', { amount: 2 }) && hashOf('X', 'a.b', { amount: 1 }) !== hashOf('Y', 'a.b', { amount: 1 }) && hashOf('X', 'a.b', { a: 1, b: 2 }) === hashOf('X', 'a.b', { b: 2, a: 1 }))
