@@ -11,6 +11,11 @@ import { Icon } from '@maxpromo/ui'
 export function Sheet({ open, onClose, title, closeLabel, children }: { open: boolean; onClose: () => void; title: string; closeLabel: string; children: React.ReactNode }) {
   const panel = useRef<HTMLDivElement>(null)
   const opener = useRef<Element | null>(null)
+  /* The latest close handler, read when needed: a parent that re-renders while the sheet is open (a
+     form being typed into) must not re-run the open effect — that moved focus to the close button,
+     so the next space typed closed the sheet. */
+  const close = useRef(onClose)
+  useEffect(() => { close.current = onClose }, [onClose])
 
   useEffect(() => {
     if (!open) return
@@ -18,7 +23,7 @@ export function Sheet({ open, onClose, title, closeLabel, children }: { open: bo
     const first = panel.current?.querySelector<HTMLElement>('button, a[href], input, textarea, select, [tabindex]:not([tabindex="-1"])')
     first?.focus()
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { e.preventDefault(); onClose() }
+      if (e.key === 'Escape') { e.preventDefault(); close.current() }
       if (e.key !== 'Tab' || !panel.current) return
       const items = [...panel.current.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]), textarea, select, [tabindex]:not([tabindex="-1"])')]
       if (!items.length) return
@@ -31,7 +36,7 @@ export function Sheet({ open, onClose, title, closeLabel, children }: { open: bo
       document.removeEventListener('keydown', onKey)
       if (opener.current instanceof HTMLElement) opener.current.focus()
     }
-  }, [open, onClose])
+  }, [open])
 
   if (!open) return null
   return (

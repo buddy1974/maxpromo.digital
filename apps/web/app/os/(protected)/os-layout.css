@@ -467,3 +467,4 @@ a.attn-row:hover .attn-text, a.attn-row:focus-visible .attn-text { text-decorati
   .approval-actions { grid-template-columns: minmax(0, 1fr); }
   .os-dash-actions { grid-template-columns: minmax(0, 1fr); }
 }
+

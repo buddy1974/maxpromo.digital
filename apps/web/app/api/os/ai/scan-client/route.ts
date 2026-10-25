@@ -1,85 +1,61 @@
-import { complete, resolveRoute, type Part } from '@maxpromo/ai'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
+import { resolveRoute, logAiFailure } from '@maxpromo/ai'
+import { withAuth } from '@/lib/auth'
+import { getDb } from '@/lib/db'
+import { enforceRateLimit } from '@/lib/rate-limit'
+import { safeFilename } from '@/lib/mail/draftAttachments'
+import { ExtractRefusal, MAX_EXTRACT_BYTES, extractClientCandidate } from '@/lib/clients/extract'
+import { findClientMatches } from '@/lib/clients/match'
 
-const SYSTEM = `You are a contact extraction assistant for MAXPROMO DIGITAL, a German AI agency.
+/**
+ * POST /api/os/ai/scan-client — a client CANDIDATE from a document, photo, screenshot, business
+ * card, PDF or pasted text (lib/clients/extract), plus the existing clients it could be
+ * (lib/clients/match). Saves nothing: the screen shows the candidate in the client form and
+ * Marcel saves through client.create.
+ *
+ *   multipart/form-data  file=<PDF|JPEG|PNG|WebP|GIF ≤ 4 MB>
+ *   application/json     { text: "…" }
+ */
+export const dynamic = 'force-dynamic'
+export const maxDuration = 90
 
-Extract contact and business information from the provided image or text.
-This could be a business card, handwritten note, email signature, WhatsApp message, or any text containing contact details.
+const NO_STORE = { 'Cache-Control': 'no-store' }
+const sameOrigin = (r: NextRequest) => r.headers.get('origin') === new URL(r.url).origin && r.headers.get('sec-fetch-site') !== 'cross-site'
 
-Return ONLY valid JSON — no explanation, no markdown, no code blocks, just raw JSON:
-{
-  "name": "full name",
-  "company": "company name or empty string",
-  "email": "email address or empty string",
-  "phone": "phone number or empty string",
-  "address": "street and house number or empty string",
-  "city": "city name or empty string",
-  "postcode": "postcode or empty string",
-  "country": "country name, default Germany if unclear",
-  "website": "website URL or empty string",
-  "notes": "any other relevant info found on the card, like role/title/notes, or empty string",
-  "confidence": "high"
-}
-
-Rules:
-- confidence is "high" if name + at least 2 other fields are clear
-- confidence is "medium" if name is clear but other fields are uncertain
-- confidence is "low" if even the name is unclear or image is blurry/unreadable
-- For German addresses: separate street from city correctly (e.g. "Körnerstr. 8" is address, "Essen" is city)
-- Phone numbers: keep as found, preserve country code if visible
-- If multiple people on one document, extract the primary/most prominent person
-- Remove any trailing dots or formatting artifacts from extracted values
-- Return ONLY the JSON object. No other text whatsoever.`
-
-type MediaType = 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp'
-
-interface ScanClientBody {
-  image?: string
-  mediaType?: string
-  text?: string
-}
-
-export async function POST(request: NextRequest) {
+export const POST = withAuth(async (request: NextRequest, { session }) => {
+  if (session.sub !== 'marcel') return NextResponse.json({ error: 'Owner access required' }, { status: 403 })
+  if (!sameOrigin(request)) return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
+  const limited = enforceRateLimit(request, { scope: 'client-extract', limit: 30, windowMs: 10 * 60_000 })
+  if (limited) return limited
+  if (!resolveRoute()) return NextResponse.json({ error: 'AI not configured', code: 'ai_unavailable' }, { status: 503, headers: NO_STORE })
+  const declared = Number(request.headers.get('content-length') ?? 0)
+  if (declared > MAX_EXTRACT_BYTES + 64 * 1024) return NextResponse.json({ error: 'The file is larger than 4 MB.', code: 'too_large' }, { status: 413, headers: NO_STORE })
   try {
-    const body = await request.json() as ScanClientBody
-
-    if (!body.image && !body.text) {
-      return NextResponse.json({ error: 'image or text required' }, { status: 400 })
+    let candidate
+    if ((request.headers.get('content-type') ?? '').startsWith('multipart/form-data')) {
+      const form = await request.formData()
+      const file = form.get('file')
+      if (!(file instanceof File)) return NextResponse.json({ error: 'file required', code: 'empty' }, { status: 400, headers: NO_STORE })
+      const filename = safeFilename(file.name || 'upload.jpg') ?? 'upload.jpg'
+      if (file.size > MAX_EXTRACT_BYTES) return NextResponse.json({ error: 'The file is larger than 4 MB.', code: 'too_large' }, { status: 413, headers: NO_STORE })
+      candidate = await extractClientCandidate({ filename, bytes: new Uint8Array(await file.arrayBuffer()) })
+    } else {
+      const body = await request.json().catch(() => null) as { text?: unknown } | null
+      if (!body || typeof body.text !== 'string') return NextResponse.json({ error: 'text or file required', code: 'empty' }, { status: 400, headers: NO_STORE })
+      candidate = await extractClientCandidate({ text: body.text })
     }
-    if (!resolveRoute()) {
-      return NextResponse.json({ error: 'AI not configured' }, { status: 503 })
-    }
-
-    const allowed: MediaType[] = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
-    const mime: MediaType = allowed.includes(body.mediaType as MediaType)
-      ? (body.mediaType as MediaType)
-      : 'image/jpeg'
-
-    const userContent: string | Part[] = body.image
-      ? [
-          { type: 'image', mediaType: mime, data: body.image },
-          {
-            type: 'text',
-            text: 'Extract all contact information from this business card or document and return as JSON.',
-          },
-        ]
-      : `Extract contact information from this text and return as JSON:\n\n${body.text}`
-
-    /* Through the gateway (ADR-0027); a failure is logged by class, never with a credential. */
-    const r = await complete({
-      system: SYSTEM,
-      messages: [{ role: 'user', content: userContent }],
-      maxTokens: 1000,
-    })
-    if (!r.ok) throw new Error(`AI ${r.failure.klass}: ${r.failure.logDetail}`)
-
-    const raw   = r.text.trim()
-    const clean = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '')
-    const parsed = JSON.parse(clean)
-
-    return NextResponse.json(parsed)
+    const f = candidate.fields
+    const matches = await findClientMatches(getDb(), { name: f.name, company: f.company, email: f.email, phone: f.phone, website: f.website, city: f.city, postcode: f.postcode })
+    return NextResponse.json({ candidate, matches }, { headers: NO_STORE })
   } catch (error) {
-    console.error('[/api/os/ai/scan-client]', error)
-    return NextResponse.json({ error: 'Extraction failed' }, { status: 500 })
+    if (error instanceof ExtractRefusal) {
+      if (error.code === 'ai_failed' || error.code === 'ai_unavailable') {
+        logAiFailure('/api/os/ai/scan-client', { klass: error.code === 'ai_unavailable' ? 'CONFIGURATION' : 'PROVIDER', status: 502, logDetail: error.message })
+        return NextResponse.json({ error: 'Extraction failed', code: error.code }, { status: 502, headers: NO_STORE })
+      }
+      return NextResponse.json({ error: error.message, code: error.code }, { status: error.code === 'too_large' ? 413 : 415, headers: NO_STORE })
+    }
+    console.error('[/api/os/ai/scan-client]', error instanceof Error ? error.message : 'unknown')
+    return NextResponse.json({ error: 'Extraction failed', code: 'ai_failed' }, { status: 500, headers: NO_STORE })
   }
-}
+})

@@ -103,6 +103,15 @@ export const v = {
     return make<T | undefined>(`${inner.describe}?`, (x, f) =>
       x === undefined || x === null || x === '' ? undefined : inner.parse(x, f))
   },
+  /**
+   * A field an update may leave, set or clear — three different requests, never inferred from
+   * truthiness: absent → unchanged (undefined, dropped from the object), null or "" → clear (null),
+   * anything else → the inner validator's value.
+   */
+  clearable<T>(inner: Validator<T>) {
+    return make<T | null | undefined>(`${inner.describe}|null?`, (x, f) =>
+      x === undefined ? undefined : x === null || (typeof x === 'string' && x.trim() === '') ? null : inner.parse(x, f))
+  },
   object<S extends Record<string, Validator<unknown>>>(shape: S) {
     return make<{ [K in keyof S]: Infer<S[K]> }>(
       `{${Object.entries(shape).map(([k, s]) => `${k}: ${s.describe}`).join(', ')}}`,

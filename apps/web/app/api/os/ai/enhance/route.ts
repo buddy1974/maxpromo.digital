@@ -1,6 +1,6 @@
 import { completeJson, logAiFailure, resolveRoute, type Part } from '@maxpromo/ai'
 import { NextRequest, NextResponse } from 'next/server'
-import { ENHANCE_BASE, ENHANCE_CLIENT } from '@/lib/prompts'
+import { ENHANCE_BASE } from '@/lib/prompts'
 import { guardExtraction } from '@/lib/documents/extraction-guard'
 
 /* ──────────────────────────────────────────────────────────────────────
@@ -13,17 +13,19 @@ import { guardExtraction } from '@/lib/documents/extraction-guard'
 
    POST body:
      {
-       kind: 'angebot' | 'rechnung' | 'client'
+       kind: 'angebot' | 'rechnung'
        text?: string                 // raw paste
-       image?: string                // base64
-       mediaType?: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
+       image?: string                // base64 of an image OR a PDF
+       mediaType?: 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif' | 'application/pdf'
      }
 
-   text and image are mutually exclusive. At least one is required.
+   At least one of text and image is required. A PDF is read as a document; any other type is
+   refused (it used to be relabelled image/jpeg, which no model can read). Contacts are extracted
+   by /api/os/ai/scan-client (lib/clients/extract), one shape for every client input.
    ────────────────────────────────────────────────────────────────────── */
 
-type Kind = 'angebot' | 'rechnung' | 'client'
-type MediaType = 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif'
+type Kind = 'angebot' | 'rechnung'
+type MediaType = 'image/jpeg' | 'image/png' | 'image/webp' | 'image/gif' | 'application/pdf'
 
 interface EnhanceBody {
   kind?: string
@@ -32,8 +34,8 @@ interface EnhanceBody {
   mediaType?: string
 }
 
-const ALLOWED_KINDS: ReadonlyArray<Kind> = ['angebot', 'rechnung', 'client']
-const ALLOWED_MIME: ReadonlyArray<MediaType> = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+const ALLOWED_KINDS: ReadonlyArray<Kind> = ['angebot', 'rechnung']
+const ALLOWED_MIME: ReadonlyArray<MediaType> = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'application/pdf']
 
 /* ── Tool schemas ─────────────────────────────────────────────────────── */
 
@@ -94,24 +96,6 @@ const BUSINESS_DOC_SCHEMA = {
   required: ['type', 'lineItems', 'overallConfidence'],
 }
 
-const CLIENT_SCHEMA = {
-  type: 'object',
-  properties: {
-    name:       { type: 'string' },
-    company:    { type: 'string' },
-    email:      { type: 'string' },
-    phone:      { type: 'string' },
-    address:    { type: 'string' },
-    city:       { type: 'string' },
-    postcode:   { type: 'string' },
-    country:    { type: 'string' },
-    website:    { type: 'string' },
-    notes:      { type: 'string', description: 'Role/title or anything else useful' },
-    confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
-  },
-  required: ['name', 'confidence'],
-}
-
 /* ── Per-kind config ──────────────────────────────────────────────────── */
 
 function configFor(kind: Kind) {
@@ -128,16 +112,6 @@ function configFor(kind: Kind) {
         userText: kind === 'rechnung'
           ? 'Extract this as a Rechnung (invoice). Return the structured document.'
           : 'Extract this as an Angebot (quote). Return the structured document.',
-      }
-    case 'client':
-      return {
-        system: ENHANCE_CLIENT,
-        tool: {
-          name: 'extract_contact',
-          description: 'Extract contact information from raw input',
-          input_schema: CLIENT_SCHEMA,
-        },
-        userText: 'Extract the contact information.',
       }
   }
 }
@@ -229,12 +203,15 @@ export async function POST(request: NextRequest) {
 
   const cfg = configFor(kind)
 
-  const mime: MediaType = ALLOWED_MIME.includes(body.mediaType as MediaType)
-    ? (body.mediaType as MediaType)
-    : 'image/jpeg'
+  if (hasImage && !ALLOWED_MIME.includes(body.mediaType as MediaType)) {
+    return NextResponse.json({ error: 'Only PDF, JPEG, PNG, WebP or GIF can be read.' }, { status: 415 })
+  }
+  const mime = body.mediaType as MediaType
 
   const userContent: Part[] = []
-  if (hasImage) userContent.push({ type: 'image', mediaType: mime, data: body.image! })
+  if (hasImage) userContent.push(mime === 'application/pdf'
+    ? { type: 'document', mediaType: 'application/pdf', data: body.image! }
+    : { type: 'image', mediaType: mime, data: body.image! })
   if (hasText) userContent.push({ type: 'text', text: body.text!.trim() })
   userContent.push({ type: 'text', text: cfg.userText })
 
@@ -256,10 +233,6 @@ export async function POST(request: NextRequest) {
     logAiFailure('/api/os/ai/enhance', r.failure)
     const error = r.failure.klass === 'RESPONSE' ? 'AI returned no structured output' : 'AI extraction failed'
     return NextResponse.json({ error, klass: r.failure.klass }, { status: r.failure.status })
-  }
-
-  if (kind === 'client') {
-    return NextResponse.json({ kind, extracted: r.data })
   }
 
   /*

@@ -71,21 +71,3 @@ Overall confidence:
 
 ALWAYS call the extract_business_document tool. Never reply in plain text.`
 
-export const ENHANCE_CLIENT = `You extract contact information from raw text or images for
-MAXPROMO DIGITAL's CRM. Sources: business cards, email signatures, WhatsApp
-contacts, handwritten notes, vCard exports.
-
-Rules:
-  • Separate German address parts: "Körnerstr. 8" is street+number,
-    "45143 Essen" splits to postcode + city.
-  • Phone numbers: keep country code if visible.
-  • If multiple people on one document, extract the most prominent.
-  • Default country to Germany when unclear.
-  • Strip noise (dots, formatting artefacts, decorative chars).
-
-Confidence:
-  high   = name + at least 2 other fields clear
-  medium = name clear, other fields uncertain
-  low    = even the name is unclear
-
-ALWAYS call the extract_contact tool.`

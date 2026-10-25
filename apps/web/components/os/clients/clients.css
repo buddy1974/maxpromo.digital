@@ -1,0 +1,99 @@
+/* Client screens and the client form (foundation repair, 2026-10-25). Loaded only with them — the
+   client pages import it, and Quick Scan loads the form on demand — so the Inbox and every other OS
+   route do not carry it (route CSS budget). Tokens only. */
+/* ── Clients (foundation repair, 2026-10-25): one list on every width, a client page, one form ── */
+.clients-page, .client-page { padding: 32px 40px; max-width: 1000px; }
+.clients-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-5); }
+.clients-head h1, .client-head h1 { margin: 0; font-size: 28px; font-weight: var(--weight-heading); letter-spacing: -0.02em; overflow-wrap: anywhere; }
+.clients-count { margin: 4px 0 0; font-family: var(--brand-font-mono); font-size: var(--text-label-dense); color: var(--brand-text-muted); }
+.clients-head .btn-primary { min-height: 44px; flex: none; }
+.clients-tools { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-bottom: var(--space-4); }
+.clients-tools input { flex: 1 1 260px; min-height: 44px; min-width: 0; box-sizing: border-box; padding: 0 var(--space-3); font-size: 16px; font-family: var(--brand-font-body); background: var(--brand-surface); border: 1px solid var(--brand-border); border-radius: var(--radius-sm); color: var(--brand-text); }
+.clients-tabs { display: flex; border: 1px solid var(--brand-border); border-radius: var(--radius-sm); overflow: hidden; }
+.clients-tabs button { min-height: 44px; padding: 0 var(--space-4); background: var(--brand-surface); border: none; color: var(--brand-text-secondary); font: inherit; cursor: pointer; }
+.clients-tabs button[aria-selected="true"] { background: var(--brand-primary); color: var(--brand-text); font-weight: 600; }
+.clients-empty { color: var(--brand-text-muted); }
+.clients-list, .client-list { list-style: none; margin: 0; padding: 0; }
+.clients-list { border: 1px solid var(--brand-border); border-top: 2px solid var(--brand-primary-edge); border-radius: var(--radius-sm); background: var(--brand-surface); }
+.clients-row { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); min-height: 56px; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--brand-border); color: var(--brand-text); text-decoration: none; }
+.clients-list li:last-child .clients-row { border-bottom: none; }
+.clients-row:hover, .clients-row:focus-visible { background: var(--brand-surface-subtle); }
+.clients-row-main { min-width: 0; overflow-wrap: anywhere; }
+.clients-row-title { margin: 0 0 2px; font-weight: 600; }
+.clients-row-meta { margin: 0; font-size: var(--text-label); color: var(--brand-text-muted); }
+.clients-row-side { display: grid; justify-items: end; gap: 2px; flex: none; max-width: 45%; text-align: right; font-size: var(--text-label); color: var(--brand-text-secondary); }
+.clients-flag { font-family: var(--brand-font-mono); font-size: var(--text-label-dense); color: var(--semantic-warning); }
+
+.client-back { display: inline-block; margin-bottom: var(--space-3); color: var(--brand-text-secondary); text-decoration: none; }
+.client-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--space-3); margin-bottom: var(--space-4); }
+.client-head-main { min-width: 0; }
+.client-sub { margin: 4px 0; color: var(--brand-text-secondary); }
+.client-status { display: inline-block; margin-top: var(--space-1); padding: 2px 8px; border-radius: var(--radius-xs); font-family: var(--brand-font-mono); font-size: var(--text-label-dense); letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid var(--brand-border); }
+.client-status.is-active { color: var(--semantic-success); border-color: color-mix(in srgb, var(--semantic-success) 30%, transparent); }
+.client-status.is-archived { color: var(--brand-text-secondary); }
+.client-head-actions, .client-row-actions, .client-form-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.client-head-actions button, .client-row-actions button, .client-row-actions a, .client-form-actions button, .client-card-head button { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; }
+.client-danger { color: var(--semantic-danger) !important; }
+.client-note { margin: 0 0 var(--space-3); padding: var(--space-3); border-left: 3px solid var(--brand-border-strong); background: var(--brand-surface-subtle); }
+.client-confirm { margin: 0 0 var(--space-4); padding: var(--space-4); border: 1px solid var(--brand-border); border-left: 3px solid var(--semantic-warning); background: var(--brand-surface); }
+.client-confirm p { margin: 0 0 var(--space-3); }
+.client-card { margin: 0 0 var(--space-4); padding: var(--space-4) var(--space-5); border: 1px solid var(--brand-border); border-radius: var(--radius-sm); background: var(--brand-surface); }
+.client-card h2 { margin: 0 0 var(--space-3); font-family: var(--brand-font-mono); font-size: var(--text-label-dense); font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--brand-text-muted); }
+.client-card h2:not(:first-child) { margin-top: var(--space-4); }
+.client-card-head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+.client-card-head h2 { margin: 0; }
+.client-muted { color: var(--brand-text-muted); font-size: var(--text-label); }
+.client-list li { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px var(--space-3); min-height: 44px; padding: var(--space-2) 0; border-top: 1px solid var(--brand-border); overflow-wrap: anywhere; }
+.client-list li:first-child { border-top: none; }
+.client-list a { color: var(--brand-text); }
+.client-tag { display: inline-block; padding: 1px 6px; margin-right: 4px; border-radius: var(--radius-xs); font-family: var(--brand-font-mono); font-size: var(--text-label-dense); background: var(--brand-surface-subtle); border: 1px solid var(--brand-border); }
+.client-tag.tag-overdue, .client-tag.tag-reply, .client-tag.tag-followup_due { color: var(--semantic-danger); border-color: color-mix(in srgb, var(--semantic-danger) 30%, transparent); }
+.client-facts { margin: 0; display: grid; grid-template-columns: minmax(90px, max-content) minmax(0, 1fr); gap: var(--space-2) var(--space-4); }
+.client-facts div { display: contents; }
+.client-facts dt { font-family: var(--brand-font-mono); font-size: var(--text-label-dense); color: var(--brand-text-muted); padding-top: 2px; }
+.client-facts dd { margin: 0; overflow-wrap: anywhere; }
+.client-pre { white-space: pre-wrap; }
+.client-doc-side { display: inline-flex; align-items: center; gap: var(--space-3); color: var(--brand-text-muted); font-size: var(--text-label); }
+.client-link-button { min-height: 44px; padding: 0 var(--space-2); background: none; border: none; color: var(--brand-text-secondary); text-decoration: underline; font: inherit; cursor: pointer; }
+
+.client-form { display: grid; gap: var(--space-3); }
+.client-doc { display: grid; gap: var(--space-2); padding: var(--space-3); border: 1px dashed color-mix(in srgb, var(--brand-primary) 45%, transparent); border-radius: var(--radius-sm); background: var(--brand-background); }
+.client-doc-title, .client-section { margin: 0; font-family: var(--brand-font-mono); font-size: var(--text-label-dense); letter-spacing: 0.15em; text-transform: uppercase; color: var(--brand-text-secondary); }
+.client-section { margin-top: var(--space-2); padding-bottom: var(--space-1); border-bottom: 1px solid var(--brand-border); }
+.client-hint { margin: 0; font-size: var(--text-label); color: var(--brand-text-muted); }
+.client-paste { display: grid; gap: var(--space-2); }
+.client-paste textarea, .client-field input, .client-field select, .client-field textarea { width: 100%; box-sizing: border-box; min-height: 44px; padding: 10px 12px; font-size: 16px; font-family: var(--brand-font-body); background: var(--brand-surface); border: 1px solid var(--brand-border); border-radius: var(--radius-sm); color: var(--brand-text); }
+.client-field { display: grid; gap: 4px; }
+.client-field > span { font-family: var(--brand-font-mono); font-size: var(--text-label-dense); letter-spacing: 0.1em; text-transform: uppercase; color: var(--brand-text-secondary); }
+.client-pair { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(0, 2fr); gap: var(--space-3); }
+.client-candidate { padding: var(--space-3); border-left: 3px solid var(--semantic-success); background: var(--brand-surface); font-size: 14px; }
+.client-candidate p { margin: var(--space-1) 0 0; }
+.client-candidate-medium { border-left-color: var(--semantic-warning); }
+.client-candidate-low { border-left-color: var(--semantic-danger); }
+.client-check { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; margin-top: var(--space-1); }
+.client-check input { width: 20px; height: 20px; }
+.client-error { margin: 0; color: var(--semantic-danger); font-size: var(--text-small); }
+.client-dups { display: grid; gap: var(--space-2); }
+.client-dups ul { list-style: none; margin: 0; padding: 0; border: 1px solid var(--brand-border); border-radius: var(--radius-sm); background: var(--brand-surface); }
+.client-dups li { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-3); border-top: 1px solid var(--brand-border); }
+.client-dups li:first-child { border-top: none; }
+.client-dups-main { display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; font-size: 14px; }
+.client-dups-main span { color: var(--brand-text-muted); font-size: var(--text-label); }
+.client-dups a, .client-dups button { min-height: 44px; display: inline-flex; align-items: center; flex: none; }
+.client-form-actions { position: sticky; bottom: calc(-1 * var(--space-4)); padding: var(--space-3) 0; background: var(--brand-surface); border-top: 1px solid var(--brand-border); }
+.client-form-actions button { flex: 1 1 0; }
+@media (max-width: 899px) {
+  .clients-page, .client-page { padding: var(--space-4); }
+  .clients-head h1, .client-head h1 { font-size: 22px; }
+  .clients-tabs { width: 100%; }
+  .clients-tabs button { flex: 1 1 0; }
+  .client-card { padding: var(--space-3) var(--space-4); }
+  .client-head-actions { width: 100%; }
+  .client-head-actions button { flex: 1 1 auto; justify-content: center; }
+  .client-facts { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .client-facts dd { margin-bottom: var(--space-2); }
+  .client-back { display: none; }
+}
+@media (max-width: 360px) {
+  .client-pair { grid-template-columns: minmax(0, 1fr); }
+}

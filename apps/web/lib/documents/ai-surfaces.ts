@@ -44,9 +44,9 @@ export const AI_SCREENS: Readonly<Record<string, AiSurfaceClass>> = {
   'app/os/(protected)/angebote/new/page.tsx':       'document',
   'app/os/(protected)/angebote/[id]/edit/page.tsx': 'document',
   'app/os/(protected)/invoices/new/page.tsx':       'document',
-  /* Quick contact scan (kind: client), extracted from the shell into its own sheet. */
-  'components/os/shell/QuickScan.tsx':              'contact',
-  'app/os/(protected)/clients/page.tsx':            'contact',
+  /* The client form (client list, client page, Quick Scan): one contact extraction contract,
+     /api/os/ai/scan-client → lib/clients/extract. Never a commercial document. */
+  'components/os/clients/ClientForm.tsx':           'contact',
 }
 
 /**

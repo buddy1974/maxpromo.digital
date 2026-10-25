@@ -31,6 +31,8 @@ export type ImageMediaType = 'image/jpeg' | 'image/png' | 'image/webp' | 'image/
 export type Part =
   | { type: 'text'; text: string }
   | { type: 'image'; mediaType: ImageMediaType; data: string /* base64 */ }
+  /** A PDF the model reads natively (text and page images) — never relabelled as an image. */
+  | { type: 'document'; mediaType: 'application/pdf'; data: string /* base64 */; filename?: string }
 
 export interface Message {
   role: 'user' | 'assistant'
@@ -124,7 +126,9 @@ function anthropicMessages(messages: Message[]) {
     role: m.role,
     content: typeof m.content === 'string' ? m.content : m.content.map(p => p.type === 'text'
       ? { type: 'text', text: p.text }
-      : { type: 'image', source: { type: 'base64', media_type: p.mediaType, data: p.data } }),
+      : p.type === 'document'
+        ? { type: 'document', source: { type: 'base64', media_type: p.mediaType, data: p.data } }
+        : { type: 'image', source: { type: 'base64', media_type: p.mediaType, data: p.data } }),
   }))
 }
 
@@ -135,7 +139,10 @@ function chatMessages(system: string | undefined, messages: Message[]) {
       role: m.role,
       content: typeof m.content === 'string' ? m.content : parts(m.content).map(p => p.type === 'text'
         ? { type: 'text', text: p.text }
-        : { type: 'image_url', image_url: { url: `data:${p.mediaType};base64,${p.data}` } }),
+        : p.type === 'document'
+          /* Chat Completions file input (OpenAI and OpenRouter): the PDF as a data URL. */
+          ? { type: 'file', file: { filename: p.filename ?? 'document.pdf', file_data: `data:${p.mediaType};base64,${p.data}` } }
+          : { type: 'image_url', image_url: { url: `data:${p.mediaType};base64,${p.data}` } }),
     })
   }
   return out
