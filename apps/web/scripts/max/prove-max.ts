@@ -51,6 +51,8 @@ check('unknown fields (ids, capability names) are stripped from a model action',
 check('invalid amounts and impossible dates are dropped', u.actions[0].amount === undefined && u.actions[0].date === undefined)
 check('a question never carries actions', normaliseUnderstanding({ mode: 'question', language: 'en', actions: [{ type: 'CLIENT_ARCHIVE', summary: 'x' }], instructions_found: false }, 'en').actions.length === 0)
 check('an action with nothing usable becomes unclear, not a guess', normaliseUnderstanding({ mode: 'action', language: 'en', actions: [], instructions_found: false }, 'en').mode === 'unclear')
+const stringified = normaliseUnderstanding({ mode: 'action', language: 'de', actions: JSON.stringify([{ type: 'CLIENT_CREATE', summary: 'x', company: 'Muster GmbH', items: '[{"description":"a","amount":5}]' }]), instructions_found: false }, 'de')
+check('a nested list the provider sent as a JSON string is read, then checked like any other', stringified.actions.length === 1 && stringified.actions[0].company === 'Muster GmbH' && stringified.actions[0].items?.[0].amount === 5)
 check('garbage from the model is unclear with no actions', normaliseUnderstanding('nonsense', 'de').mode === 'unclear' && normaliseUnderstanding(null, 'de').actions.length === 0)
 
 /* ── the understanding call: a PDF goes as a document, an image as an image, text as quoted data ── */

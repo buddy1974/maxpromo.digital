@@ -121,21 +121,29 @@ export async function understand(input: UnderstandInput, deps: { complete?: type
 
 const NUMERIC = new Set(['amount', 'percent', 'value'])
 
+/** Structured output sometimes carries a nested array as a JSON string; read it, then check it like any other. */
+function list(x: unknown): unknown[] {
+  if (Array.isArray(x)) return x
+  if (typeof x === 'string' && x.trim().startsWith('[')) { try { const v = JSON.parse(x); return Array.isArray(v) ? v : [] } catch { return [] } }
+  return []
+}
+
 /** Re-check the model's answer field by field. Exported for the proof. */
 export function normaliseUnderstanding(raw: unknown, fallback: Lang, model = 'test'): Understanding {
   const d = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>
   const mode = d.mode === 'question' || d.mode === 'action' ? d.mode : 'unclear'
   const actions: ModelAction[] = []
-  const unsupported: string[] = (Array.isArray(d.unsupported) ? d.unsupported : []).map(x => str(x, 160)).filter((x): x is string => Boolean(x)).slice(0, 5)
-  for (const a of Array.isArray(d.actions) ? d.actions.slice(0, 6) : []) {
+  const unsupported: string[] = list(d.unsupported).map(x => str(x, 160)).filter((x): x is string => Boolean(x)).slice(0, 5)
+  for (const raw of list(d.actions).slice(0, 6)) {
+    const a = typeof raw === 'string' && raw.trim().startsWith('{') ? (() => { try { return JSON.parse(raw) } catch { return null } })() : raw
     if (!a || typeof a !== 'object') continue
     const o = a as Record<string, unknown>
     if (!isProposalType(o.type)) { unsupported.push(str(o.summary, 160) ?? String(o.type).slice(0, 40)); continue }
     const clean: Record<string, unknown> = { type: o.type, summary: str(o.summary, 200) ?? '' }
     for (const [k, val] of Object.entries(o)) {
       if (k === 'type' || k === 'summary' || !(k in ACTION_SCHEMA.properties)) continue
-      if (k === 'items') clean.items = Array.isArray(val) ? val.slice(0, 20).filter(i => i && typeof i === 'object').map(i => ({ description: str((i as Record<string, unknown>).description, 300) ?? '', amount: typeof (i as Record<string, unknown>).amount === 'number' ? (i as Record<string, unknown>).amount : undefined })) : undefined
-      else if (k === 'clear') clean.clear = Array.isArray(val) ? val.filter((x): x is string => typeof x === 'string').slice(0, 12) : undefined
+      if (k === 'items') clean.items = list(val).length ? list(val).slice(0, 20).filter(i => i && typeof i === 'object').map(i => ({ description: str((i as Record<string, unknown>).description, 300) ?? '', amount: typeof (i as Record<string, unknown>).amount === 'number' ? (i as Record<string, unknown>).amount : undefined })) : undefined
+      else if (k === 'clear') clean.clear = list(val).length ? list(val).filter((x): x is string => typeof x === 'string').slice(0, 12) : undefined
       else if (k === 'date') clean.date = validDate(val) ?? undefined
       else if (k === 'use_selection') clean.use_selection = val === true
       else if (NUMERIC.has(k)) clean[k] = typeof val === 'number' && Number.isFinite(val) ? val : undefined

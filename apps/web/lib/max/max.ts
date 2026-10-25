@@ -144,6 +144,8 @@ export async function capture(sql: Sql, input: CaptureInput, deps: CaptureDeps =
     return record(sql, input, context, lang, { outcome: 'failed', reply: { text: unavailable(lang) } }, fileMeta, started, requestId)
   }
 
+  log('understood', { request_id: requestId, mode: u.mode, actions: u.actions.length, unsupported: u.unsupported.length, instructions: u.instructionsFound })
+
   if (u.mode === 'question' && text) {
     const a = await ask(ctx, text, lang)
     return record(sql, input, context, lang, { outcome: 'answer', reply: { text: a.answer, facts: a.facts, links: a.links, phrased: a.phrased } }, fileMeta, started, requestId, u.model)
