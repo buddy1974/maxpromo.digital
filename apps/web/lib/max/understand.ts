@@ -116,7 +116,15 @@ export async function understand(input: UnderstandInput, deps: { complete?: type
   ].join('\n') })
   const r = await complete({ system: UNDERSTAND_SYSTEM, messages: [{ role: 'user', content }], schema: UNDERSTAND_SCHEMA, schemaName: 'understand', schemaDescription: 'What Marcel means', maxTokens: 1800, temperature: 0, timeoutMs: 45_000 })
   if (!r.ok) throw new UnderstandingUnavailable(r.failure.logDetail)
+  console.info(`[max] shape ${JSON.stringify(shapeOf(r.data))}`)
   return normaliseUnderstanding(r.data, input.screenLanguage, r.model)
+}
+
+/** The structure of a model answer without its content — types, keys and lengths — for diagnosis. */
+export function shapeOf(x: unknown, depth = 0): unknown {
+  if (Array.isArray(x)) return depth > 2 ? `array(${x.length})` : x.slice(0, 3).map(i => shapeOf(i, depth + 1))
+  if (x && typeof x === 'object') return depth > 2 ? 'object' : Object.fromEntries(Object.entries(x).map(([k, v]) => [k, k === 'mode' || k === 'type' || k === 'language' ? v : shapeOf(v, depth + 1)]))
+  return typeof x === 'string' ? `string(${x.length})` : typeof x
 }
 
 const NUMERIC = new Set(['amount', 'percent', 'value'])
