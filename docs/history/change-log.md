@@ -1,5 +1,11 @@
 # Change Log
 
+## 2026-10-25 — State of the Union forensic audit (no code changed)
+
+- [docs/governance/state-of-the-union-2026-10-25.md](../governance/state-of-the-union-2026-10-25.md): repo, production,
+  database, environment and documentation reconciled. Correction to the entry below: Bureau production reports
+  `30ac5b5` (its build is skipped when `apps/bureau` and `packages` are unchanged), not `247a694`.
+
 ## 2026-10-25 — Leads foundation accepted in production (controlled; automation off)
 
 - Pushed `30ac5b5`; production now `247a694` (web and Bureau). Migrations 0021–0023 confirmed present in production.
