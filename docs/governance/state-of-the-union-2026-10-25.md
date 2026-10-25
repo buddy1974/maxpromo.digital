@@ -12,6 +12,24 @@ This document replaces assumptions accumulated across sessions. Where it disagre
 document records the evidence; the older document is listed in §34/§36 as stale or false. It does **not** rewrite
 those documents.
 
+## Status update — foundation repair (same day, later)
+
+Evidence-based changes to this baseline after the Foundation repair run (ADR-0028, commits after `33b6661`):
+
+| Item in this audit | Now |
+|---|---|
+| Web `CRON_SECRET` missing; daily cron dead | **Fixed** — set and proven (401 / 200 / idempotent); register `docs/deployment/scheduled-work.md` |
+| Clients: lost website, uncleared fields, ignored country | **Fixed, production verified** |
+| Client hard delete cascading history / orphaning invoices | **Fixed** — archive/restore; delete only empty clients via approval; DB refuses cascades (0024) |
+| No client detail page | **Built, production verified** (client page with linked records and attention) |
+| Client duplicate check | **Built** (deterministic EXACT/LIKELY/POSSIBLE; candidates before create) |
+| PDF extraction broken | **Fixed, production verified** (PDF read as a document) |
+| Inbox Trash / Restore / bulk | **Built, production verified** (OS-level; Hostinger unchanged, risk 153) |
+| New-email drafts unreachable | **Fixed, production verified** |
+| Clients maturity 1 / Inbox 3 | Clients **3**, Inbox **3** (lifecycle complete) |
+
+Everything else in this report stands.
+
 ## Method and evidence base
 
 | Source | What was done |

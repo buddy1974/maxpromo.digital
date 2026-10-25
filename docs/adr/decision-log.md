@@ -1,5 +1,14 @@
 # Decision Log
 
+## 2026-10-25 — Foundation repair decisions (ADR-0028; for Marcel's inspection)
+
+Under the Foundation repair brief: Trash became GREEN because it is now reversible (Restore) and local; bulk actions
+exclude spam/block/send/delete; permanent mail deletion is not offered; Trash does not move Hostinger folders (risk 153);
+client delete is AMBER and only for empty clients, and the database refuses cascades (0024); client matching is
+deterministic and never merges; extraction produces a candidate only; client documents live in Postgres; `CRON_SECRET`
+was generated and installed by the agent through the authenticated Vercel CLI (authorised by the brief); no frequent
+cron schedule was added (plan not confirmed). The gate count rises to 34 (`prove:clients`).
+
 ## 2026-10-25 — Leads foundation: controlled production acceptance (Marcel approved the deploy)
 
 Marcel approved `30ac5b5` for production and a controlled acceptance with automation off. Status after acceptance:

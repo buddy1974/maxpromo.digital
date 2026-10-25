@@ -1,5 +1,26 @@
 # Change Log
 
+## 2026-10-25 — Foundation repair: scheduled work, clients, Inbox hygiene (ADR-0028)
+
+- `CRON_SECRET` generated and installed on `maxpromo-digital` (never displayed). Daily run proven in production: no or a
+  wrong bearer → 401, authorised → 200 twice with the same result, nothing sent. Register: `docs/deployment/scheduled-work.md`.
+- Migrations 0024 (client foundation) and 0025 (Trash lifecycle) applied to the evidence database and to production
+  (read-back: four new client columns, every foreign key onto `os_clients` NO ACTION, archive/language/content checks,
+  `mail.threads.trashed_at`, the untrash trigger; 3 clients intact).
+- Clients: every write through `client.*` capabilities; three-state updates; archive/restore; delete only for an empty
+  client through an approval; `lib/clients/match` (EXACT/LIKELY/POSSIBLE); client page; documents; one extraction contract
+  with PDFs read as documents through the gateway (new `document` part). Phone-first list, form and page.
+- Inbox: reversible GREEN Trash, Restore, bulk actions, Trash view, scheduled mail parked on trash, a new reply brings a
+  trashed conversation back, new-email drafts listed and reopened.
+- Fixed on the way: the shared Sheet re-ran its open effect on every parent render (focus jumped to the close button, so a
+  typed space closed the sheet); client open amounts now come from the Money rules (deposits respected).
+- Proofs: `prove:clients` (45, new gate — 34 gates), `prove:foundation-evidence` (41, evidence database), email channel
+  proofs updated; regression: money-evidence 54, attachments 16, lead workflow 44, lead research 35, AI gateway 26,
+  control planes 33, `npm run verify` green.
+- Production acceptance (2026-10-25, see ADR-0028): create / website / country / clear / duplicate / archive / restore /
+  document / PDF + image extraction / prompt-injection warning / delete refused with history; Trash keeps state and leaves
+  the reply count, Restore, bulk, draft reopen. Test data: risk 156.
+
 ## 2026-10-25 — State of the Union forensic audit (no code changed)
 
 - [docs/governance/state-of-the-union-2026-10-25.md](../governance/state-of-the-union-2026-10-25.md): repo, production,

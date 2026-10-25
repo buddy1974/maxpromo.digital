@@ -42,6 +42,9 @@ Declared GREEN 2026-10-23 for the platform release — not for the product commi
 | 19 | Reusable client productisation | **DEFERRED** | First make Maxpromo excellent |
 | 20 | Integrated business simulation (lead → payment → agent → owner) | **DONE (evidence runtime)** | commercial-agent 85/85 on the final code; Stripe sandbox lifecycle in production (MP-2026-044) |
 | 21 | Leads + outreach (ADR-0027) | **DONE manual, production verified 2026-10-25; automation OWNER switch** | research, code qualification, Email OS drafts, prospect send policy (all doors), one controlled test send; reply path evidence-only (risk 152); discovery not connected |
+| 22 | Clients foundation (ADR-0028) | **DONE, production verified 2026-10-25** | capabilities only; three-state update (website, country, clearing proven); archive/restore; governed delete of empty clients, database refuses cascades; deterministic matching with candidates before create; client page (360); documents; image + PDF extraction (candidate only) |
+| 23 | Inbox hygiene (ADR-0028) | **DONE, production verified 2026-10-25** | reversible Trash (state kept, out of every count), Restore, bulk (read/archive/trash/restore), new-email drafts reopenable; OS-level only — Hostinger unchanged (risk 153) |
+| 24 | Scheduled work | **DONE** (daily) | `CRON_SECRET` set; daily run proven (401 without / with a wrong bearer, idempotent); register `docs/deployment/scheduled-work.md`; owner push still OWNER (risk 121) |
 
 ## Email
 

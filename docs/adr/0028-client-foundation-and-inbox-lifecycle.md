@@ -1,6 +1,6 @@
 # ADR-0028 — Client foundation and Inbox lifecycle
 
-**Status:** implemented 2026-10-25 under Marcel's "Foundation repair" brief (authority to implement,
+**Status:** implemented and production verified 2026-10-25 under Marcel's "Foundation repair" brief (authority to implement,
 migrate and deploy); the agent-made decisions below are for Marcel's inspection.
 **Context:** the 2026-10-25 State of the Union audit (`docs/governance/state-of-the-union-2026-10-25.md`)
 found Clients the weakest daily module (lost website, uncleared fields, ignored country, hard delete
