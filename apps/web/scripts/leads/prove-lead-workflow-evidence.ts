@@ -247,6 +247,9 @@ try {
   check('closing a lead from the list is lead.update: kept, Lost with a reason, on its timeline', closed.status === 'done' && (await lead(C)).status === 'lost' && (await kinds(C)).includes('stage_change'))
   const legacy = readFileSync(new URL('../../app/api/os/leads/route.ts', import.meta.url), 'utf8')
   check('the old unaudited lead write routes (POST, PATCH, hard DELETE) are gone; the list is read only', !/export async function (POST|PATCH|DELETE)/.test(legacy) && !/DELETE FROM os_leads/.test(legacy))
+  done(await run('lead.update', { lead_id: A, stage: 'lost', lost_reason: 'evidence' }))
+  const waitingAfter = (await sql`SELECT follow_up_on, waiting FROM mail.threads WHERE id=${thread}::uuid` as { follow_up_on: string | null; waiting: boolean }[])[0]
+  check('closing a lead ends both follow-up records: its follow-ups and its conversation’s waiting state', !waitingAfter.follow_up_on && !waitingAfter.waiting && (await sql`SELECT 1 FROM os_followups WHERE lead_id=${A}::uuid AND status='open'`).length === 0)
   const timeline = await kinds(A)
   check('the lead\'s timeline tells the whole story in order', ['lead_created', 'research_completed', 'stage_change', 'outreach_draft', 'email_sent', 'reply_received'].every(k => timeline.includes(k)) && timeline.indexOf('research_completed') < timeline.indexOf('email_sent') && timeline.indexOf('email_sent') < timeline.indexOf('reply_received'))
 } finally {

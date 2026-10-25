@@ -196,6 +196,13 @@ export const leadUpdate: CapabilityDefinition<ReturnType<typeof updateInput.pars
       WHERE id = ${before.id}
       RETURNING *` as LeadRow[]
     const after = rows[0]
+    /* A closed lead is no longer waited on: its open follow-ups end, and so does the "waiting / follow up
+       on" of its own conversations in the Inbox — the two follow-up records (risk 144) close together. */
+    if (input.stage === 'lost') {
+      await ctx.sql`UPDATE os_followups SET status = 'cancelled' WHERE lead_id = ${after.id} AND status = 'open'`
+      await ctx.sql`UPDATE mail.threads SET follow_up_on = NULL, waiting = false WHERE id IN (
+        SELECT thread_id FROM mail.business_links WHERE entity_kind = 'lead' AND entity_id = ${after.id}::text AND match_status = 'owner_confirmed')`
+    }
     const changes: string[] = []
     if (input.stage && input.stage !== leadStage(before.status)) changes.push(`stage ${stageText(before.status)} → ${stageText(after.status)}`)
     if (input.value !== undefined) changes.push(`value ${input.value}`)
