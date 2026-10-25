@@ -10,6 +10,7 @@
  *   opportunity → basis authorization → audit trail
  */
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { evidenceDbProblem } from '../../../../packages/config/evidence.ts'
 
 const problem = evidenceDbProblem(process.env)
@@ -209,6 +210,18 @@ try {
   await executeApproval(sql, { actor: marcel, channel: 'os', approvalId: sched.approval.id, payloadHash: sched.approval.payloadHash })
   check('the follow-up is scheduled, not sent', (await sql`SELECT status FROM mail.drafts WHERE id=${fu.id}::uuid` as { status: string }[])[0].status === 'scheduled' && await sentTo(TEST_TO) === 1)
 
+  /* spam must not move a lead (risk 146) */
+  const fakeInbound = async (id: string, state: string) => await sql`INSERT INTO mail.messages(thread_id, account_id, provider_message_id, sender, recipients, cc, subject, body_text, received_at, is_read, attachments, body_state, preview_text, provider_state, direction)
+    SELECT ${thread}::uuid, account_id, ${id}, ${TEST_TO}, '["info@maxpromo.digital"]'::jsonb, '[]'::jsonb, 'Re: Termine', 'Gewinnspiel!', now() + interval '1 second', false, '[]'::jsonb, 'complete', 'Gewinnspiel', ${state}, 'inbound'
+    FROM mail.threads WHERE id=${thread}::uuid RETURNING id` as { id: string }[]
+  const [junk] = await fakeInbound(`evidence-junk-${tag}`, 'junk')
+  const junkApplied = await applyLeadReply(sql, junk.id)
+  check('a message the provider filed as Junk, threaded into the lead’s conversation, is not a reply', junkApplied.applied === 0 && (await lead(A)).status === 'contacted')
+  const [pending] = await fakeInbound(`evidence-unverified-${tag}`, 'unverified')
+  const waits = await applyLeadReply(sql, pending.id, { HOSTINGER_MAIL_API_TOKEN: 'set', HOSTINGER_MAILBOX_RESOURCE_ID: 'set' })
+  check('while spam checking is on, a reply whose folder is not yet known waits for the verdict', waits.applied === 0 && (await lead(A)).status === 'contacted')
+  await sql`DELETE FROM mail.messages WHERE id IN (${junk.id}::uuid, ${pending.id}::uuid)`
+
   /* the reply */
   const [inbound] = await sql`INSERT INTO mail.messages(thread_id, account_id, provider_message_id, sender, recipients, cc, subject, body_text, received_at, is_read, attachments, body_state, preview_text, provider_state, provider_folder, direction)
     SELECT ${thread}::uuid, account_id, ${`evidence-reply-${tag}`}, ${TEST_TO}, '["info@maxpromo.digital"]'::jsonb, '[]'::jsonb, 'Re: Termine', 'Ja, gerne nächste Woche.', now() + interval '1 second', false, '[]'::jsonb, 'complete', 'Ja, gerne', 'inbox', 'INBOX', 'inbound'
@@ -229,6 +242,11 @@ try {
   check('a positive reply becomes an opportunity (Discovery)', (await lead(A)).status === 'discovery')
   const audit = await sql`SELECT operation, outcome FROM os_audit WHERE entity_id IN (${A}, ${F}) ORDER BY created_at` as { operation: string; outcome: string }[]
   check('the audit trail holds the refused and the succeeded send and the basis records', audit.some(a => a.operation === 'outreach.send' && a.outcome === 'succeeded') && audit.some(a => a.operation === 'outreach.send' && a.outcome === 'refused') && audit.filter(a => a.operation === 'lead.basis').length === 2)
+  /* the lead list closes, never deletes (risk 145) */
+  const closed = await run('lead.update', { lead_id: C, stage: 'lost', lost_reason: 'Closed from the leads overview' })
+  check('closing a lead from the list is lead.update: kept, Lost with a reason, on its timeline', closed.status === 'done' && (await lead(C)).status === 'lost' && (await kinds(C)).includes('stage_change'))
+  const legacy = readFileSync(new URL('../../app/api/os/leads/route.ts', import.meta.url), 'utf8')
+  check('the old unaudited lead write routes (POST, PATCH, hard DELETE) are gone; the list is read only', !/export async function (POST|PATCH|DELETE)/.test(legacy) && !/DELETE FROM os_leads/.test(legacy))
   const timeline = await kinds(A)
   check('the lead\'s timeline tells the whole story in order', ['lead_created', 'research_completed', 'stage_change', 'outreach_draft', 'email_sent', 'reply_received'].every(k => timeline.includes(k)) && timeline.indexOf('research_completed') < timeline.indexOf('email_sent') && timeline.indexOf('email_sent') < timeline.indexOf('reply_received'))
 } finally {

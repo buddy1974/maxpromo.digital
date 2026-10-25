@@ -32,13 +32,26 @@ import { researchLead, STALE_MINUTES } from './run'
 
 export const WORKFLOW_ACTOR = 'os:workflow'
 
-/** Rule 5 — an inbound email in a conversation that is the lead's and where Maxpromo wrote first. */
-export async function applyLeadReply(sql: Sql, messageId: string): Promise<{ applied: number }> {
+/** Whether the provider's spam folder is read for inbound mail (the Hostinger REST API is connected). */
+export const spamCheckOn = (env: Record<string, string | undefined> = process.env) =>
+  !!env.HOSTINGER_MAIL_API_TOKEN && !!env.HOSTINGER_MAILBOX_RESOURCE_ID && env.MAXPROMO_EVIDENCE_MODE !== '1'
+
+/** Minutes a reply waits for its spam verdict before it counts anyway (the check failed or is slow). */
+export const SPAM_WAIT_MINUTES = 15
+
+/** Rule 5 — an inbound email in a conversation that is the lead's and where Maxpromo wrote first.
+ * Spam must not move a lead (risk 146): a message the provider filed as Junk, or in a quarantined
+ * conversation, never counts; while spam checking is on, an unverified message waits for its verdict
+ * (at most SPAM_WAIT_MINUTES — the sweep catches it up). */
+export async function applyLeadReply(sql: Sql, messageId: string, env: Record<string, string | undefined> = process.env): Promise<{ applied: number }> {
+  const verify = spamCheckOn(env)
   const rows = await sql`
     SELECT m.id, m.subject, m.sender, bl.entity_id AS lead_id FROM mail.messages m
     JOIN mail.threads t ON t.id = m.thread_id AND t.quarantine IS NULL
     JOIN mail.business_links bl ON bl.thread_id = m.thread_id AND bl.entity_kind = 'lead' AND bl.match_status = 'owner_confirmed'
     WHERE m.id = ${messageId}::uuid AND m.direction = 'inbound'
+      AND m.provider_state IS DISTINCT FROM 'junk'
+      AND (NOT ${verify} OR m.provider_state IS DISTINCT FROM 'unverified' OR m.received_at < now() - make_interval(mins => ${SPAM_WAIT_MINUTES}))
       AND EXISTS (SELECT 1 FROM mail.messages o WHERE o.thread_id = m.thread_id AND o.direction = 'outbound' AND o.received_at <= m.received_at)` as { id: string; subject: string; sender: string; lead_id: string }[]
   let applied = 0
   for (const r of rows) {
@@ -71,7 +84,7 @@ export async function sweepLeads(sql: Sql, today: string, deps: ResearchDeps & {
   /* Rule 5, catching up on anything the inbound hook missed (deterministic request ids make it a no-op otherwise). */
   const recent = await sql`SELECT m.id FROM mail.messages m JOIN mail.business_links bl ON bl.thread_id = m.thread_id AND bl.entity_kind = 'lead' AND bl.match_status = 'owner_confirmed'
     WHERE m.direction = 'inbound' AND m.received_at > now() - interval '3 days' ORDER BY m.received_at DESC LIMIT 20` as { id: string }[]
-  for (const m of recent) out.replies += (await applyLeadReply(sql, m.id)).applied
+  for (const m of recent) out.replies += (await applyLeadReply(sql, m.id, deps.env ?? process.env)).applied
 
   if (!automaticRulesOn(deps.env)) return out
 

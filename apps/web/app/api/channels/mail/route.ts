@@ -1,4 +1,4 @@
-import { NextResponse, after, type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { enforceRateLimit } from '@/lib/rate-limit'
 import { MAX_MAIL_BYTES } from '@/lib/mail/normalization'
 import { readBoundedPayload, verifyWebhookBearer } from '@/lib/mail/provider'
@@ -68,9 +68,11 @@ export async function POST(req: NextRequest) {
     // unknownDataKeys is a count, never names: a new provider field (e.g. a folder) becomes visible.
     log('info', { event: 'mail.webhook.accepted', created: result.created, deliveryId: event.deliveryId, degraded: event.degraded, unknownDataKeys: unknownDataKeys(payload) })
     // The webhook carries no spam/folder state; the provider's folder is read after the response.
-    if(result.created) scheduleProviderCheck('webhook', undefined, { notify: true })
-    // A reply from a lead stops what was waiting to go to them (ADR-0027 §3, rule 5).
-    if(result.created && result.messageId) after(() => applyLeadReply(sql, result.messageId).then(() => undefined).catch(() => undefined))
+    // A reply from a lead stops what was waiting to go to them (ADR-0027 §3, rule 5) — applied after
+    // the spam check, so a Junk message threading into a lead's conversation changes nothing (risk 146).
+    const messageId = result.messageId
+    if(result.created) scheduleProviderCheck('webhook', undefined, { notify: true,
+      ...(messageId ? { afterSpamCheck: () => applyLeadReply(sql, messageId) } : {}) })
     return NextResponse.json({ok:true},{status:200,headers:noStore})
   } catch {
     // Deliberately no driver error, payload, signed URL or token in logs/responses.

@@ -48,6 +48,8 @@ export default function LeadsPage() {
   const [newForm,   setNewForm]   = useState({ ...LEAD_BLANK })
   const [creating,  setCreating]  = useState(false)
   const [createErr, setCreateErr] = useState('')
+  const [closing,   setClosing]   = useState<string | null>(null)
+  const [rowErr,    setRowErr]    = useState<{ id: string; text: string } | null>(null)
 
   const statusLabel = (s: string) => t.status.lead[stageOf(s)] ?? s
   const sourceLabel = (s: string) => t.status.leadSource[s] ?? s
@@ -80,20 +82,18 @@ export default function LeadsPage() {
     } finally { setCreating(false) }
   }
 
-  async function deleteLead(id: string) {
-    if (!confirm(t.leads.deleteConfirm)) return
-    const res = await fetch(`/api/os/leads?id=${id}`, { method: 'DELETE' })
-    if (res.ok) {
-      setLeads(prev => prev.filter(l => l.id !== id))
-    }
-  }
-
-  async function updateStatus(id: string, status: string) {
-    await fetch('/api/os/leads', {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status, converted: status === 'won' }),
-    })
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status, converted: status === 'won' } : l))
+  /* Quick stage changes go through lead.update like the lead screen (risk 145): audited, on the
+     lead's timeline. A lead is never deleted from here — "not interested" closes it as lost and keeps
+     its history; won comes only from an accepted Angebot. */
+  async function setStage(id: string, stage: 'contacted' | 'lost') {
+    setRowErr(null)
+    try {
+      const r = await leadsApi.run('lead.update', { lead_id: id, stage, ...(stage === 'lost' ? { lost_reason: lc.listClosed } : {}) })
+      if (r.status !== 'done') { setRowErr({ id, text: r.result?.summary ?? r.message ?? lc.listFailed }); return }
+      setLeads(prev => prev.map(l => l.id === id ? { ...l, status: stage } : l))
+    } catch {
+      setRowErr({ id, text: lc.listFailed })
+    } finally { setClosing(null) }
   }
 
   const filtered = leads
@@ -215,20 +215,18 @@ export default function LeadsPage() {
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}><StatusBadge status={lead.status} label={statusLabel(lead.status)} /></td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }} onClick={e => e.stopPropagation()}>
-                      {stageOf(lead.status) !== 'contacted' && (
-                        <button onClick={() => updateStatus(lead.id, 'contacted')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-info)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
+                      {!['contacted', 'won', 'lost'].includes(stageOf(lead.status)) && (
+                        <button onClick={() => setStage(lead.id, 'contacted')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-info)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
                           {t.leads.actionContacted}
                         </button>
                       )}
-                      {stageOf(lead.status) !== 'won' && (
-                        <button onClick={() => updateStatus(lead.id, 'won')} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-success)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
-                          {t.leads.actionConvert}
+                      {!['won', 'lost'].includes(stageOf(lead.status)) && (
+                        <button onClick={() => closing === lead.id ? setStage(lead.id, 'lost') : setClosing(lead.id)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: closing === lead.id ? 'var(--semantic-danger)' : 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
+                          {closing === lead.id ? lc.listCloseConfirm : lc.listClose}
                         </button>
                       )}
-                      <button onClick={() => deleteLead(lead.id)} style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--brand-text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '6px 2px', margin: '-6px -2px', letterSpacing: '0.04em' }}>
-                        {t.leads.actionDelete}
-                      </button>
                     </div>
+                    {rowErr?.id === lead.id && <p role="alert" style={{ fontFamily: mono, fontSize: 'var(--text-label-dense)', color: 'var(--semantic-danger)', margin: '6px 0 0' }}>{rowErr.text}</p>}
                   </td>
                 </tr>
               ))

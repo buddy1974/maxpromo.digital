@@ -53,6 +53,8 @@ const de = {
   progress: 'Verlauf', noTimeline: 'Noch nichts passiert.',
   stage: 'Phase', opportunity: 'Als Chance übernehmen', notInterested: 'Kein Interesse',
   lostReason: 'Grund (optional)',
+  listClose: 'Kein Interesse', listCloseConfirm: 'Wirklich schließen?', listClosed: 'Vom Leads-Überblick geschlossen',
+  listFailed: 'Das hat nicht geklappt — öffne den Lead.',
   replied: 'Sie haben geantwortet — antworte im Gespräch im Posteingang.',
   openConversation: 'Gespräch öffnen',
 }
@@ -109,6 +111,8 @@ const en: LeadsCopy = {
   progress: 'Timeline', noTimeline: 'Nothing has happened yet.',
   stage: 'Stage', opportunity: 'Take on as opportunity', notInterested: 'Not interested',
   lostReason: 'Reason (optional)',
+  listClose: 'Not interested', listCloseConfirm: 'Really close?', listClosed: 'Closed from the leads overview',
+  listFailed: 'That did not work — open the lead.',
   replied: 'They replied — answer in the conversation in the Inbox.',
   openConversation: 'Open conversation',
 }

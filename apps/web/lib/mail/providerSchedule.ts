@@ -11,10 +11,16 @@ import { scheduleOwnerNotices } from '@/lib/owner/schedule'
  *
  * notify: push owner notices (ADR-0024) only after the spam check, so a reply Hostinger filed as
  * Junk never reaches Marcel's phone.
+ *
+ * afterSpamCheck: business steps that must not be driven by spam (a lead reply, ADR-0027 rule 5) run
+ * here, after the folder is known, so a Junk message threading into a lead's conversation is skipped.
  */
-export function scheduleProviderCheck(source: 'webhook' | 'inbox' | 'attention' | 'thread', threadId?: string, options: { notify?: boolean } = {}) {
+export function scheduleProviderCheck(source: 'webhook' | 'inbox' | 'attention' | 'thread', threadId?: string,
+  options: { notify?: boolean; afterSpamCheck?: () => Promise<unknown> } = {}) {
   const reader = hostingerStateReader()
+  const then = async () => { try { await options.afterSpamCheck?.() } catch { /* a catch-up sweep repeats it */ } }
   if (!reader) {
+    if (options.afterSpamCheck) after(then)
     if (options.notify) scheduleOwnerNotices('webhook')
     return
   }
@@ -28,6 +34,7 @@ export function scheduleProviderCheck(source: 'webhook' | 'inbox' | 'attention' 
     } catch {
       console.warn(JSON.stringify({ event: 'mail.provider_state', source, failed: true }))
     }
+    await then()
     if (options.notify) {
       try {
         const r = await dispatchOwnerNotices(getDb())
