@@ -27,7 +27,7 @@
  */
 import { runCapability } from '@/lib/commercial/engine'
 import type { Sql } from '@/lib/commercial/types'
-import type { ResearchDeps } from './research'
+import type { ResearchDeps } from '@maxpromo/research'
 import { researchLead, STALE_MINUTES } from './run'
 
 export const WORKFLOW_ACTOR = 'os:workflow'

@@ -5,6 +5,7 @@ import { executeApproval, rejectApproval, runCapability } from '@/lib/commercial
 import { census } from '@/lib/commercial/registry'
 import { recordAgentEvents } from '@/lib/commercial/agent-events'
 import { scheduleOwnerNotices } from '@/lib/owner/schedule'
+import { runModelTask } from '@/lib/agents/modelTasks'
 
 /**
  * The cross-plane door into the Business Control Plane (ADR-0018, ADR-0021).
@@ -22,15 +23,17 @@ import { scheduleOwnerNotices } from '@/lib/owner/schedule'
  *   POST /api/os/agent/v1/execute        { approvalId, payloadHash, actor, channel }   (not the Bureau)
  *   POST /api/os/agent/v1/reject         { approvalId, actor, channel }                (not the Bureau)
  *   POST /api/os/agent/v1/events         { actor, channel, events: AgentEvent[] }      (Bureau only)
+ *   POST /api/os/agent/v1/model          { actor, channel, task, content }             (Bureau only, ADR-0030)
  *
  * Every answer is JSON with a `status` the caller must read: done,
  * approval_required, refused or failed. A 200 is never a claim that something
  * consequential happened unless `status` is `done`.
  */
 
-export const maxDuration = 60
+/* A Bureau agent's model step (research) can take most of a minute on its own. */
+export const maxDuration = 120
 
-const ACTIONS = new Set<AgentAction>(['capabilities', 'run', 'execute', 'reject', 'events'])
+const ACTIONS = new Set<AgentAction>(['capabilities', 'run', 'execute', 'reject', 'events', 'model'])
 
 export async function POST(request: NextRequest, ctx: { params: Promise<{ action: string }> }) {
   const { action } = await ctx.params
@@ -62,6 +65,9 @@ export async function POST(request: NextRequest, ctx: { params: Promise<{ action
       // A failure, block or exception reaches Marcel's phone once (ADR-0024); completions do not.
       scheduleOwnerNotices('agent')
       return NextResponse.json(recorded)
+    }
+    if (action === 'model') {
+      return NextResponse.json(await runModelTask(actor, body))
     }
     if (action === 'run') {
       const requestId = typeof body.requestId === 'string' && /^[A-Za-z0-9:_.-]{8,120}$/.test(body.requestId) ? body.requestId : null

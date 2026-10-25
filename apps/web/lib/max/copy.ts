@@ -8,7 +8,7 @@ import type { Lang, ProposalTypeName } from './contract'
 const de = {
   type: {
     CLIENT_CREATE: 'Neuer Kunde', CLIENT_UPDATE: 'Kunde ändern', CLIENT_ARCHIVE: 'Kunde archivieren', CLIENT_RESTORE: 'Kunde wiederherstellen',
-    CLIENT_NOTE: 'Notiz', LEAD_CREATE: 'Neuer Lead', LEAD_UPDATE: 'Lead ändern', LEAD_RESEARCH: 'Lead recherchieren',
+    CLIENT_NOTE: 'Notiz', LEAD_CREATE: 'Neuer Lead', LEAD_UPDATE: 'Lead ändern', AGENT_WORK: 'An den Research Agent',
     LEAD_OUTREACH_DRAFT: 'Erstkontakt als Entwurf', EMAIL_DRAFT: 'E-Mail-Entwurf', EMAIL_REPLY_DRAFT: 'Antwort-Entwurf',
     EMAIL_TRASH: 'In den Papierkorb', EMAIL_RESTORE: 'Aus dem Papierkorb', INVOICE_DRAFT: 'Rechnungsentwurf',
     QUOTE_DRAFT: 'Angebotsentwurf', FOLLOW_UP_CREATE: 'Wiedervorlage', MONEY_RECORD_PAYMENT: 'Zahlungseingang',
@@ -74,19 +74,41 @@ const de = {
   tick: { recipient: 'Ich habe die Adresse geprüft und will diesen Empfänger.' },
   done: {
     CLIENT_CREATE: 'Kunde angelegt.', CLIENT_UPDATE: 'Kunde geändert.', CLIENT_ARCHIVE: 'Kunde archiviert.', CLIENT_RESTORE: 'Kunde wiederhergestellt.',
-    CLIENT_NOTE: 'Notiz gespeichert.', LEAD_CREATE: 'Lead gespeichert.', LEAD_UPDATE: 'Lead geändert.', LEAD_RESEARCH: 'Recherche abgeschlossen.',
+    CLIENT_NOTE: 'Notiz gespeichert.', LEAD_CREATE: 'Lead gespeichert.', LEAD_UPDATE: 'Lead geändert.', AGENT_WORK: 'Der Research Agent ist beauftragt.',
     LEAD_OUTREACH_DRAFT: 'Entwurf liegt beim Lead bereit. Nichts wurde gesendet.', EMAIL_DRAFT: 'Entwurf liegt im Posteingang. Nichts wurde gesendet.',
     EMAIL_REPLY_DRAFT: 'Antwort-Entwurf liegt in der Konversation. Nichts wurde gesendet.', EMAIL_TRASH: 'In den Papierkorb verschoben. Nichts wurde gelöscht.',
     EMAIL_RESTORE: 'Aus dem Papierkorb wiederhergestellt.', INVOICE_DRAFT: 'Rechnungsentwurf angelegt. Nicht versendet.', QUOTE_DRAFT: 'Angebotsentwurf angelegt. Nicht versendet.',
     FOLLOW_UP_CREATE: 'Wiedervorlage gesetzt.', MONEY_RECORD_PAYMENT: 'Zahlung erfasst.',
   } as Record<ProposalTypeName, string>,
+  agent: {
+    agent: 'Agent', research: 'Research Agent', goal: 'Ziel', using: 'Quelle', result: 'Ergebnis', sends: 'Sendet',
+    goalResearch: 'Leistungen, wahrscheinliche Handarbeit und Belege von der Website', resultResearch: 'Recherche + Qualifizierung an diesem Lead',
+    usingWebsite: (w: string) => `öffentliche Website ${w}`, sendsNothing: 'nichts — liest nur',
+    state: { queued: 'Wartet auf den Research Agent', running: 'Research Agent arbeitet', completed: 'Recherche fertig', failed: 'Recherche fehlgeschlagen', cancelled: 'Abgebrochen' } as Record<string, string>,
+    score: 'Bewertung', confidence: 'Sicherheit', qualified: 'qualifiziert', notQualified: 'nicht qualifiziert', evidence: 'Belege von der Website',
+    conf: { high: 'hoch', medium: 'mittel', low: 'niedrig' } as Record<string, string>,
+    next: {
+      outreach_draft: 'Empfehlung: einen persönlichen Erstkontakt als Entwurf vorbereiten.',
+      find_contact: 'Empfehlung: erst eine Kontaktadresse finden — die Website nennt keine eigene.',
+      review: 'Empfehlung: selbst prüfen — die Belege reichen nicht für eine sichere Einschätzung.',
+      not_a_fit: 'Empfehlung: im Moment nicht ansprechen.',
+    } as Record<string, string>,
+    draftOffer: 'Erstkontakt als Entwurf vorschlagen',
+    injection: 'Die Website enthält Text, der sich an eine KI richtet. Er wurde ignoriert; die Sicherheit ist niedrig.',
+    failure: {
+      site: 'Die Website ließ sich nicht lesen.', model: 'Das Sprachmodell hat nicht brauchbar geantwortet.', timeout: 'Die Arbeit wurde nicht rechtzeitig fertig.',
+      delivery: 'Der Agent Bureau war nicht erreichbar; die Arbeit hat nicht begonnen.', invalid: 'Das Ergebnis des Agenten war nicht verwendbar.', internal: 'Der Research Agent ist auf einen internen Fehler gestoßen.', cancelled: 'Die Arbeit wurde abgebrochen.',
+    } as Record<string, string>,
+    again: 'Kann erneut beauftragt werden.',
+    retry: 'Erneut beauftragen', openLead: 'Lead öffnen', nothingSent: 'Nichts wurde gesendet.',
+  },
   open: 'Öffnen',
 }
 
 const en: typeof de = {
   type: {
     CLIENT_CREATE: 'New client', CLIENT_UPDATE: 'Update client', CLIENT_ARCHIVE: 'Archive client', CLIENT_RESTORE: 'Restore client',
-    CLIENT_NOTE: 'Note', LEAD_CREATE: 'New lead', LEAD_UPDATE: 'Update lead', LEAD_RESEARCH: 'Research lead',
+    CLIENT_NOTE: 'Note', LEAD_CREATE: 'New lead', LEAD_UPDATE: 'Update lead', AGENT_WORK: 'Ask the Research Agent',
     LEAD_OUTREACH_DRAFT: 'Introduction draft', EMAIL_DRAFT: 'Email draft', EMAIL_REPLY_DRAFT: 'Reply draft',
     EMAIL_TRASH: 'Move to Trash', EMAIL_RESTORE: 'Restore from Trash', INVOICE_DRAFT: 'Invoice draft',
     QUOTE_DRAFT: 'Quote draft', FOLLOW_UP_CREATE: 'Follow-up', MONEY_RECORD_PAYMENT: 'Payment received',
@@ -152,11 +174,33 @@ const en: typeof de = {
   tick: { recipient: 'I checked this address and want this recipient.' },
   done: {
     CLIENT_CREATE: 'Client created.', CLIENT_UPDATE: 'Client updated.', CLIENT_ARCHIVE: 'Client archived.', CLIENT_RESTORE: 'Client restored.',
-    CLIENT_NOTE: 'Note saved.', LEAD_CREATE: 'Lead saved.', LEAD_UPDATE: 'Lead updated.', LEAD_RESEARCH: 'Research finished.',
+    CLIENT_NOTE: 'Note saved.', LEAD_CREATE: 'Lead saved.', LEAD_UPDATE: 'Lead updated.', AGENT_WORK: 'The Research Agent has the work.',
     LEAD_OUTREACH_DRAFT: 'Draft is ready on the lead. Nothing was sent.', EMAIL_DRAFT: 'Draft is in the Inbox. Nothing was sent.',
     EMAIL_REPLY_DRAFT: 'Reply draft is in the conversation. Nothing was sent.', EMAIL_TRASH: 'Moved to Trash. Nothing was deleted.',
     EMAIL_RESTORE: 'Restored from Trash.', INVOICE_DRAFT: 'Invoice draft created. Not sent.', QUOTE_DRAFT: 'Quote draft created. Not sent.',
     FOLLOW_UP_CREATE: 'Follow-up set.', MONEY_RECORD_PAYMENT: 'Payment recorded.',
+  },
+  agent: {
+    agent: 'Agent', research: 'Research Agent', goal: 'Goal', using: 'Using', result: 'Result', sends: 'Sends',
+    goalResearch: 'Services, likely manual work and evidence from the website', resultResearch: 'Research + qualification on this lead',
+    usingWebsite: (w: string) => `public website ${w}`, sendsNothing: 'nothing — reads only',
+    state: { queued: 'Waiting for the Research Agent', running: 'Research Agent working', completed: 'Research finished', failed: 'Research failed', cancelled: 'Cancelled' },
+    score: 'Score', confidence: 'Confidence', qualified: 'qualified', notQualified: 'not qualified', evidence: 'Evidence from the website',
+    conf: { high: 'high', medium: 'medium', low: 'low' },
+    next: {
+      outreach_draft: 'Recommended: prepare a personal introduction as a draft.',
+      find_contact: 'Recommended: find a contact address first — the website shows none of its own.',
+      review: 'Recommended: check it yourself — the evidence is not enough for a confident view.',
+      not_a_fit: 'Recommended: do not contact them for now.',
+    },
+    draftOffer: 'Propose an introduction draft',
+    injection: 'The website contains text aimed at an AI. It was ignored; confidence is low.',
+    failure: {
+      site: 'The website could not be read.', model: 'The language model did not answer usably.', timeout: 'The work did not finish in time.',
+      delivery: 'The Agent Bureau could not be reached; the work did not start.', invalid: 'The result the agent returned could not be used.', internal: 'The Research Agent hit an internal error.', cancelled: 'The work was cancelled.',
+    },
+    again: 'It can be started again.',
+    retry: 'Ask again', openLead: 'Open lead', nothingSent: 'Nothing was sent.',
   },
   open: 'Open',
 }

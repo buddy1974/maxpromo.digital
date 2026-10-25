@@ -1,6 +1,6 @@
 /**
  * Lead screen copy, German and English (ADR-0027). English is typed against German. Rule codes from
- * qualification (lib/leads/qualify.ts) and policy reach the screen only through this module.
+ * qualification (@maxpromo/research qualify.ts) and policy reach the screen only through this module.
  */
 const de = {
   back: 'Leads',
@@ -9,7 +9,8 @@ const de = {
   city: 'Ort',
   website: 'Website', noWebsite: 'Keine Website hinterlegt — Recherche liest nur die eigene Website des Unternehmens.',
   addWebsite: 'Website eintragen', save: 'Speichern',
-  research: 'Recherche', researchNow: 'Website recherchieren', researchAgain: 'Erneut recherchieren', researching: 'Liest die Website … (bis zu einer Minute)',
+  research: 'Recherche', researchNow: 'Research Agent beauftragen', researchAgain: 'Research Agent erneut beauftragen', researching: 'Liest die Website … (bis zu einer Minute)',
+  agentWorking: 'Der Research Agent liest die Website … (meist unter einer Minute). Das Ergebnis erscheint hier.', agentBy: 'Recherchiert vom Research Agent', agentFailed: (d: string) => `Research Agent: ${d}`,
   researchNone: 'Noch nicht recherchiert.',
   researchFailed: (d: string) => `Recherche fehlgeschlagen: ${d}`,
   researchedAt: (d: string) => `Recherchiert am ${d}`,
@@ -70,7 +71,8 @@ const en: LeadsCopy = {
   city: 'City',
   website: 'Website', noWebsite: 'No website on record — research reads only the business\'s own website.',
   addWebsite: 'Add website', save: 'Save',
-  research: 'Research', researchNow: 'Research the website', researchAgain: 'Research again', researching: 'Reading the website … (up to a minute)',
+  research: 'Research', researchNow: 'Ask the Research Agent', researchAgain: 'Ask the Research Agent again', researching: 'Reading the website … (up to a minute)',
+  agentWorking: 'The Research Agent is reading the website … (usually under a minute). The result appears here.', agentBy: 'Researched by the Research Agent', agentFailed: (d: string) => `Research Agent: ${d}`,
   researchNone: 'Not researched yet.',
   researchFailed: (d: string) => `Research failed: ${d}`,
   researchedAt: (d: string) => `Researched on ${d}`,

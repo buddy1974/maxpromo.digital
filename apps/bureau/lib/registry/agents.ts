@@ -48,14 +48,21 @@ export interface AgentRecord {
    * real activity is its agent_runs rows, read where it is shown.
    */
   lastActivity: string | null;
-  /** live = has a runtime that acts (Intake); designed = defined, no runtime yet. */
-  runtime: "live" | "designed";
+  /** Every registered agent has a runtime (ADR-0030). */
+  runtime: "live";
 }
 
+/**
+ * Only agents with a runtime are registered (ADR-0030). The eight "designed"
+ * agents that used to stand here (Chief of Staff, Lead, CRM, Calendar,
+ * Content, Operations, Document, Follow-Up) had a name, a prompt-less card and
+ * no code; they were removed rather than shown as a workforce. A new agent is
+ * added here when it runs — with its trigger, its tools and its result path.
+ */
 export const AGENTS: AgentRecord[] = [
   {
-    // The first agent with a runtime (ADR-0021): hands enquiries captured on this
-    // site to Maxpromo OS through lead.intake. Deterministic, no model.
+    // Hands enquiries captured on this site to Maxpromo OS through lead.intake
+    // (ADR-0021). Deterministic, no model.
     id: "intake-agent",
     name: "Intake",
     status: "active",
@@ -71,139 +78,24 @@ export const AGENTS: AgentRecord[] = [
     runtime: "live",
   },
   {
-    id: "chief-of-staff",
-    name: "Chief of Staff",
-    status: "offline",
-    riskLevel: "low",
-    requiresApproval: true,
-    capabilityIds: ["prioritize", "brief", "coordinate"],
-    allowedCount: 3,
-    blockedCount: 3,
-    connectedSections: ["tasks", "projects", "approvals"],
-    supportedOperatingStages: ["audit", "diagnose", "design", "manual_delivery", "install", "maintain"],
-    playbooks: ["pb-daily-briefing", "pb-missed-inquiry", "pb-shadow-ai-policy"],
-    lastActivity: null,
-    runtime: "designed",
-  },
-  {
-    id: "lead-agent",
-    name: "Lead Agent",
-    status: "offline",
-    riskLevel: "medium",
-    requiresApproval: true,
-    capabilityIds: ["research", "enrich", "qualify"],
-    allowedCount: 3,
-    blockedCount: 2,
-    connectedSections: ["leads", "contacts"],
-    supportedOperatingStages: ["audit", "manual_delivery"],
-    playbooks: ["pb-missed-inquiry"],
-    lastActivity: null,
-    runtime: "designed",
-  },
-  {
+    // Work delegated by Maxpromo OS (ADR-0030): reads a lead's own public
+    // website, keeps only quotes that are on the page, qualifies by code and
+    // hands the result back to the lead in the OS. Model step through the OS
+    // gateway. Sends nothing; changes no business record itself.
     id: "research-agent",
     name: "Research Agent",
-    status: "offline",
+    status: "active",
     riskLevel: "low",
+    // Marcel confirms each delegation in Maxpromo OS; nothing it returns acts.
     requiresApproval: true,
-    capabilityIds: ["scan", "summarize"],
-    allowedCount: 2,
-    blockedCount: 1,
-    connectedSections: ["research"],
-    supportedOperatingStages: ["audit", "diagnose"],
+    capabilityIds: ["read", "verify", "qualify", "handback"],
+    allowedCount: 3,
+    blockedCount: 4,
+    connectedSections: ["work"],
+    supportedOperatingStages: ["audit"],
     playbooks: [],
     lastActivity: null,
-    runtime: "designed",
-  },
-  {
-    id: "crm-agent",
-    name: "CRM Agent",
-    status: "offline",
-    riskLevel: "medium",
-    requiresApproval: true,
-    capabilityIds: ["followup", "hygiene"],
-    allowedCount: 2,
-    blockedCount: 2,
-    connectedSections: ["contacts", "projects"],
-    supportedOperatingStages: ["manual_delivery", "systemize"],
-    playbooks: ["pb-missed-inquiry"],
-    lastActivity: null,
-    runtime: "designed",
-  },
-  {
-    id: "calendar-agent",
-    name: "Calendar Agent",
-    status: "offline",
-    riskLevel: "medium",
-    requiresApproval: true,
-    capabilityIds: ["schedule", "remind"],
-    allowedCount: 2,
-    blockedCount: 2,
-    connectedSections: ["briefing", "tasks"],
-    supportedOperatingStages: ["manual_delivery"],
-    playbooks: [],
-    lastActivity: null,
-    runtime: "designed",
-  },
-  {
-    id: "content-agent",
-    name: "Content Agent",
-    status: "offline",
-    riskLevel: "medium",
-    requiresApproval: true,
-    capabilityIds: ["plan", "draft"],
-    allowedCount: 2,
-    blockedCount: 2,
-    connectedSections: ["playbooks"],
-    supportedOperatingStages: ["systemize"],
-    playbooks: [],
-    lastActivity: null,
-    runtime: "designed",
-  },
-  {
-    id: "operations-agent",
-    name: "Operations Agent",
-    status: "offline",
-    riskLevel: "low",
-    requiresApproval: true,
-    capabilityIds: ["track", "flag"],
-    allowedCount: 2,
-    blockedCount: 1,
-    connectedSections: ["projects", "tasks"],
-    supportedOperatingStages: ["audit", "diagnose", "systemize", "maintain"],
-    playbooks: [],
-    lastActivity: null,
-    runtime: "designed",
-  },
-  {
-    id: "document-agent",
-    name: "Document Agent",
-    status: "offline",
-    riskLevel: "medium",
-    requiresApproval: true,
-    capabilityIds: ["compose", "extract"],
-    allowedCount: 2,
-    blockedCount: 2,
-    connectedSections: ["documents"],
-    supportedOperatingStages: ["systemize", "manual_delivery"],
-    playbooks: [],
-    lastActivity: null,
-    runtime: "designed",
-  },
-  {
-    id: "follow-up-agent",
-    name: "Follow-Up Agent",
-    status: "offline",
-    riskLevel: "medium",
-    requiresApproval: true,
-    capabilityIds: ["detect", "prepare"],
-    allowedCount: 2,
-    blockedCount: 2,
-    connectedSections: ["waitingRoom", "contacts"],
-    supportedOperatingStages: ["manual_delivery", "maintain"],
-    playbooks: ["pb-missed-inquiry"],
-    lastActivity: null,
-    runtime: "designed",
+    runtime: "live",
   },
 ];
 

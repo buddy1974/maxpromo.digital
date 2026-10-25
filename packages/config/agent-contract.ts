@@ -43,6 +43,85 @@ export const MIN_SECRET_LENGTH = 32
 export const AGENT_CLIENTS = ['legacy', 'bureau'] as const
 export type AgentClientId = typeof AGENT_CLIENTS[number]
 
+/* ── The work door: OS → Agent Bureau (ADR-0030) ─────────────────────────────
+ *
+ * The other direction of the same contract. The OS delegates specialist work
+ * to a Bureau agent; the Bureau executes it and hands the result back through
+ * the OS door above (`run` agentwork.result), where the OS applies it.
+ *
+ *   POST {bureau}/api/work/v1/request   WorkRequest          → WorkView (202 queued, or the existing item)
+ *   POST {bureau}/api/work/v1/status    { workId }           → WorkView
+ *   POST {bureau}/api/work/v1/cancel    { workId }           → WorkView
+ *
+ * Signed exactly like the OS door, with its own key (workDoorSecret below) and
+ * client id `os`. The OS credential is bound to one Bureau tenant (the business
+ * linked by BUREAU_OS_BUSINESS_ID): the body never chooses the tenant. The work
+ * id is chosen by the OS and is the idempotency key — a repeated request returns
+ * the item that exists and never starts it twice.
+ */
+export const WORK_CONTRACT_VERSION = 'v1'
+export const WORK_CLIENT = 'os' as const
+
+/**
+ * The work door's signing key. BUREAU_WORK_SECRET when it is set; otherwise a key DERIVED from the
+ * Bureau credential both planes already hold (OS_BUREAU_AGENT_SECRET) with a fixed purpose label:
+ * HMAC-SHA256(credential, "maxpromo/work-door/v1"). One stored secret, two keys — a signature made
+ * for one door can never verify at the other, and rotating the credential rotates both. Both sides
+ * call this function; neither derives its own.
+ */
+export function workDoorSecret(env: Record<string, string | undefined>): string | undefined {
+  const explicit = env.BUREAU_WORK_SECRET
+  if (explicit && explicit.length >= MIN_SECRET_LENGTH) return explicit
+  const credential = env.OS_BUREAU_AGENT_SECRET
+  if (!credential || credential.length < MIN_SECRET_LENGTH) return undefined
+  return createHmac('sha256', credential).update('maxpromo/work-door/v1').digest('base64url')
+}
+
+/** Agents that accept delegated work, and what each one does. Nothing else is accepted. */
+export const WORK_AGENTS = {
+  research: { capability: 'lead.research', title: 'Research Agent' },
+} as const
+export type WorkAgent = keyof typeof WORK_AGENTS
+
+export const WORK_STATES = ['queued', 'running', 'completed', 'failed', 'cancelled'] as const
+export type WorkState = typeof WORK_STATES[number]
+export const isTerminalWork = (s: WorkState) => s === 'completed' || s === 'failed' || s === 'cancelled'
+
+/** Why work failed. A category Marcel can act on; details stay in the logs. */
+export const WORK_FAILURES = ['site', 'model', 'timeout', 'delivery', 'invalid', 'internal', 'cancelled'] as const
+export type WorkFailureCategory = typeof WORK_FAILURES[number]
+
+export interface WorkRequest {
+  workId: string
+  agent: WorkAgent
+  /** Who asked in the OS (os:marcel) and through what (max, lead-screen). */
+  requestedBy: string
+  source: string
+  /** The OS record the work is about. The Bureau keeps the reference, never the record. */
+  subject: { kind: 'lead'; id: string; label: string }
+  /** A bounded snapshot: exactly what the agent needs, nothing more. */
+  input: { website: string; language?: 'de' | 'en' }
+  objective: string
+  /** Policy the agent runs under. Research reads one public site and acts on nothing. */
+  constraints: { publicWebsiteOnly: true; sendsNothing: true }
+}
+
+export interface WorkFailure { category: WorkFailureCategory; reason: string; detail: string; retryable: boolean }
+
+export interface WorkView {
+  workId: string
+  agent: WorkAgent
+  state: WorkState
+  createdAt: string
+  startedAt: string | null
+  finishedAt: string | null
+  /** Present when completed: the agent's structured result (see the agent's own result type). */
+  result?: unknown
+  failure?: WorkFailure
+  /** Runtime metadata: model, latency. No reasoning, no prompts. */
+  runtime?: { model?: string | null; latencyMs?: number | null; attempt: number }
+}
+
 /** Kinds of agent outcome the Agent Control Plane reports into the OS. */
 export const AGENT_EVENT_KINDS = ['completed', 'blocked', 'failed', 'exception', 'recommendation', 'waiting'] as const
 export type AgentEventKind = typeof AGENT_EVENT_KINDS[number]
@@ -117,7 +196,7 @@ export function verifySignature(p: {
 }
 
 /** Headers a client sends. The body must be sent byte-for-byte as signed. */
-export function signedHeaders(p: { client: AgentClientId; secret: string; method: string; path: string; body: string; nowSeconds?: number }): Record<string, string> {
+export function signedHeaders(p: { client: AgentClientId | typeof WORK_CLIENT; secret: string; method: string; path: string; body: string; nowSeconds?: number }): Record<string, string> {
   const timestamp = String(p.nowSeconds ?? Math.floor(Date.now() / 1000))
   const nonce = randomBytes(24).toString('base64url')
   return {

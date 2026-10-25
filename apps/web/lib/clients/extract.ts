@@ -17,7 +17,7 @@
 import { completeJson, type Part } from '@maxpromo/ai'
 import { attachableType } from '@/lib/mail/draftAttachments'
 import { websiteValidator } from '@/lib/commercial/capabilities/clients'
-import { INJECTION } from '@/lib/leads/research'
+import { INJECTION } from '@maxpromo/research'
 
 export const MAX_EXTRACT_BYTES = 4 * 1024 * 1024
 export const MAX_EXTRACT_TEXT = 20_000

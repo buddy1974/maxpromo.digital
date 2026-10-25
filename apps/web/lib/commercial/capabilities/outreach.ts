@@ -98,7 +98,7 @@ function promptFor(lead: LeadRow, history: string[], p: {
   channel: 'email' | 'whatsapp'; language: Lang; instruction?: string; previous?: DraftDetail | null; followUp?: boolean
 }): string {
   /* Facts recorded by hand or by an agent ({fact, source}), and the verified website research:
-     only findings whose quote was found on the page reach the prompt (lib/leads/research.ts). */
+     only findings whose quote was found on the page reach the prompt (@maxpromo/research). */
   const facts = recordedFacts(lead)
   const site = siteResearch(lead)
   const done = site && site.state === 'done' ? site : null

@@ -1,6 +1,7 @@
 /**
  * Resolve hooks for proofs that import the real application modules:
- * `@/x` → apps/web/x, and extensionless relative/alias imports → .ts / .tsx /
+ * `@/x` → apps/<app>/x for the app the importing file lives in (apps/web by default; apps/bureau
+ * for a Bureau module, ADR-0030), and extensionless relative/alias imports → .ts / .tsx /
  * index.ts, as the Next build resolves them. Proof tooling only; never shipped.
  */
 import { existsSync, readFileSync, statSync } from 'node:fs'
@@ -9,6 +10,16 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { join, resolve as resolvePath } from 'node:path'
 
 const WEB = resolvePath(fileURLToPath(new URL('.', import.meta.url)), '..', '..')
+const APPS = resolvePath(WEB, '..')
+
+/** The app root of the importing file, so `@/` means what it means in that app's tsconfig. */
+function appRoot(parentURL) {
+  if (!parentURL?.startsWith('file:')) return WEB
+  const file = fileURLToPath(parentURL)
+  if (!file.startsWith(APPS)) return WEB
+  const app = file.slice(APPS.length + 1).split(/[\\/]/)[0]
+  return app && existsSync(join(APPS, app, 'tsconfig.json')) ? join(APPS, app) : WEB
+}
 
 function candidate(path) {
   for (const p of [path, `${path}.ts`, `${path}.tsx`, join(path, 'index.ts')]) {
@@ -19,7 +30,7 @@ function candidate(path) {
 
 export async function resolve(specifier, context, next) {
   let base = null
-  if (specifier.startsWith('@/')) base = join(WEB, specifier.slice(2))
+  if (specifier.startsWith('@/')) base = join(appRoot(context.parentURL), specifier.slice(2))
   else if ((specifier.startsWith('./') || specifier.startsWith('../')) && context.parentURL?.startsWith('file:')) {
     base = resolvePath(fileURLToPath(new URL('.', context.parentURL)), specifier)
   }

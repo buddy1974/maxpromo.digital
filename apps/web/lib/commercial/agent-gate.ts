@@ -21,7 +21,7 @@ import { AGENT_HEADERS, AGENT_CLIENTS, type AgentClientId } from '@maxpromo/conf
 import { verifySignature } from './signing'
 import type { Sql } from './types'
 
-export type AgentAction = 'capabilities' | 'run' | 'execute' | 'reject' | 'events'
+export type AgentAction = 'capabilities' | 'run' | 'execute' | 'reject' | 'events' | 'model'
 
 export interface ClientPolicy {
   id: AgentClientId
@@ -44,6 +44,8 @@ export const BUREAU_CAPABILITIES: ReadonlySet<string> = new Set([
   'lead.intake', 'lead.check', 'lead.find', 'lead.history', 'pipeline.show', 'followup.due',
   'outreach.draft', 'outreach.send', 'proposal.show', 'proposal.list', 'receivables.show',
   'commercial.search', 'approvals.requested',
+  /* ADR-0030: the Research Agent hands delegated work back. agentwork.request is not here: no agent delegates. */
+  'agentwork.result',
 ])
 
 export const CLIENT_POLICIES: Readonly<Record<AgentClientId, ClientPolicy>> = {
@@ -58,7 +60,8 @@ export const CLIENT_POLICIES: Readonly<Record<AgentClientId, ClientPolicy>> = {
   bureau: {
     id: 'bureau', secretEnv: 'OS_BUREAU_AGENT_SECRET', allowListEnv: 'OS_BUREAU_ALLOWED_AGENTS',
     actor: /^bureau:[a-z0-9][a-z0-9-]{1,40}$/,
-    actions: new Set<AgentAction>(['capabilities', 'run', 'events']),
+    /* model (ADR-0030): a registered model task through the OS gateway; the Bureau holds no model key. */
+    actions: new Set<AgentAction>(['capabilities', 'run', 'events', 'model']),
     capabilities: BUREAU_CAPABILITIES,
   },
 }

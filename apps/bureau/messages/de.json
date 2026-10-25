@@ -232,7 +232,8 @@
     "agents": "Agenten",
     "memory": "Memory",
     "aiLab": "KI-Labor",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "work": "Aufträge"
   },
   "login": {
     "title": "Anmelden",
@@ -318,8 +319,8 @@
     "trailPrepared": "Aktion vorbereitet (nicht ausgeführt)",
     "trailAwaiting": "Wartet auf menschliche Freigabe",
     "trailAgent": "Agent: {agent}",
-    "liveTitle": "Im Betrieb",
-    "liveHint": "Was die Agenten mit Laufzeit tatsächlich tun. Alles unterhalb dieses Abschnitts sind Beispieldaten.",
+    "liveTitle": "Laufzeit",
+    "liveHint": "Was die Agenten mit Laufzeit tun. In diesem Produkt gibt es keine Beispieldaten.",
     "intakeAgent": "Intake-Agent",
     "intakeClear": "Jede Anfrage ist in Maxpromo OS angekommen.",
     "intakeWaiting": "{count, plural, one {# Anfrage wartet} other {# Anfragen warten}} darauf, Maxpromo OS zu erreichen.",
@@ -333,7 +334,19 @@
     "requestedCount": "{count, plural, =0 {Nichts wartet auf Marcel} one {# wartet auf Marcel} other {# warten auf Marcel}}",
     "openInOs": "In Maxpromo OS öffnen",
     "previewTitle": "Produktvorschau — Beispieldaten",
-    "previewBanner": "Die folgenden Abschnitte zeigen das Produkt Agent Bureau mit Beispieldaten. Sie sind nicht der Betrieb von Maxpromo, und nichts darin wird ausgeführt."
+    "previewBanner": "Die folgenden Abschnitte zeigen das Produkt Agent Bureau mit Beispieldaten. Sie sind nicht der Betrieb von Maxpromo, und nichts darin wird ausgeführt.",
+    "workTitle": "Beauftragte Arbeit",
+    "workHint": "Arbeit, die Maxpromo OS an einen Agenten gegeben hat, neueste zuerst. Ergebnisse gehen an den Lead im OS zurück.",
+    "workNone": "Noch keine Arbeit beauftragt.",
+    "workAll": "Alle Aufträge",
+    "healthTitle": "Verbindungen",
+    "healthOs": "Maxpromo OS (Ergebnisse und Modell-Gateway)",
+    "healthDoor": "Auftragstür (OS → Bureau)",
+    "connected": "eingerichtet",
+    "notConnected": "nicht eingerichtet",
+    "failuresTitle": "Fehlschläge der letzten 7 Tage",
+    "failuresNone": "Keine.",
+    "undelivered": "{count, plural, one {# Ergebnis hat} other {# Ergebnisse haben}} Maxpromo OS noch nicht erreicht; es wird erneut versucht."
   },
   "approvals": {
     "supervisedNote": "Eine Freigabe protokolliert nur die Entscheidung und den Audit-Trail. In dieser Vorschau wird keine externe Nachricht, E-Mail, Kalender-Aktion oder CRM-Aktualisierung ausgeführt.",
@@ -545,273 +558,39 @@
       ],
       "next": "Den Ausgang leer halten."
     },
-    "chief-of-staff": {
-      "role": "Zentrale Intelligenz & Koordination",
-      "description": "Priorisiert die Arbeit, erstellt das tägliche Briefing, koordiniert die übrigen Agenten und legt Entscheidungen zur Freigabe vor.",
-      "caps": [
-        "Priorisierung",
-        "Tägliches Briefing",
-        "Koordination"
-      ],
-      "capDescs": [
-        "Bewertet, was heute Aufmerksamkeit braucht.",
-        "Fasst Lage, Risiken und nächste Schritte zusammen.",
-        "Verteilt Aufgaben an die passenden Agenten."
-      ],
-      "allowed": [
-        "Briefing erstellen",
-        "Prioritäten vorschlagen",
-        "Aufgaben zur Freigabe vorlegen"
-      ],
-      "blocked": [
-        "E-Mails senden",
-        "Zahlungen auslösen",
-        "Daten löschen"
-      ],
-      "pains": [
-        "Unklare Prioritäten",
-        "Fehlende Übersicht"
-      ],
-      "outcomes": [
-        "Klarheit",
-        "Bessere Entscheidungen",
-        "Weniger Chaos"
-      ],
-      "next": "Tagesbriefing um 08:00 zur Durchsicht bereitstellen."
-    },
-    "lead-agent": {
-      "role": "Lead-Recherche & Qualifizierung",
-      "description": "Recherchiert Firmen, findet Kontakte, reichert Datensätze an und qualifiziert eingehende Anfragen.",
-      "caps": [
-        "Firmen-Recherche",
-        "Anreicherung",
-        "Qualifizierung"
-      ],
-      "capDescs": [
-        "Sammelt öffentliche Informationen zu Interessenten.",
-        "Ergänzt fehlende Felder in Kontaktdatensätzen.",
-        "Bewertet Eignung und Dringlichkeit."
-      ],
-      "allowed": [
-        "Lead recherchieren",
-        "Datensatz anreichern",
-        "Qualifizierungs-Score vorschlagen"
-      ],
-      "blocked": [
-        "Kontakt direkt anschreiben",
-        "Daten an Dritte exportieren"
-      ],
-      "pains": [
-        "Lead-Leckage",
-        "Schwaches Lead-Tracking"
-      ],
-      "outcomes": [
-        "Mehr qualifizierte Chancen",
-        "Weniger verlorene Leads"
-      ],
-      "next": "Neue Audit-Anfrage aus Essen qualifizieren."
-    },
     "research-agent": {
-      "role": "Markt- & Wettbewerbsbeobachtung",
-      "description": "Beobachtet Markt, Wettbewerb und Branchensignale und meldet relevante Gelegenheiten.",
+      "role": "Lead-Recherche und Qualifizierung",
+      "description": "Übernimmt Recherchen, die Maxpromo OS für einen Lead beauftragt: liest die eigene öffentliche Website des Unternehmens, behält nur Befunde, die wörtlich auf der Seite stehen, bewertet sie mit den Regeln des OS und gibt das Ergebnis an den Lead zurück. Marcel startet jede Recherche im OS.",
       "caps": [
-        "Markt-Scan",
-        "Zusammenfassung"
+        "Website lesen",
+        "Zitate prüfen",
+        "Qualifizieren",
+        "Zurückgeben"
       ],
       "capDescs": [
-        "Verfolgt Entwicklungen in definierten Themenfeldern.",
-        "Verdichtet Funde zu kurzen Briefs."
+        "Startseite und bis zu drei Seiten (Impressum, Kontakt, Leistungen) einer öffentlichen Website — private Adressen abgelehnt, robots.txt beachtet, Größe und Zeit begrenzt.",
+        "Behält einen Befund nur, wenn sein Zitat auf der genannten Seite steht; Text, der sich an eine KI richtet, wird verworfen und senkt die Sicherheit.",
+        "Bewertung, Gründe und Sicherheit per Code (dieselben Regeln wie im OS); das Modell bewertet nie.",
+        "Gibt das Ergebnis an den Lead in Maxpromo OS zurück, das es neu bewertet und speichert."
       ],
       "allowed": [
-        "Markt-Scan durchführen",
-        "Brief zusammenfassen"
+        "Die öffentliche Website eines Unternehmens lesen",
+        "Das Maxpromo-OS-Gateway um den Recherche-Modellschritt bitten",
+        "Befunde an Maxpromo OS zurückgeben"
       ],
       "blocked": [
-        "Externe Inhalte veröffentlichen"
+        "E-Mails oder andere Nachrichten senden",
+        "Einen Lead oder andere Geschäftsdaten selbst ändern",
+        "Private oder interne Adressen lesen",
+        "Eine eigene Lead-Datenbank führen"
       ],
       "pains": [
-        "Fehlende Marktübersicht"
+        "Stunden mit dem Lesen von Interessenten-Websites"
       ],
       "outcomes": [
-        "Frühe Chancen-Erkennung",
-        "Informierte Entscheidungen"
+        "Belegte Qualifizierung am Lead"
       ],
-      "next": "Wöchentlichen Wettbewerbs-Brief vorbereiten."
-    },
-    "crm-agent": {
-      "role": "Beziehungspflege & Follow-up",
-      "description": "Verfolgt Deals, erinnert an Follow-ups und hält Kontaktdaten aktuell.",
-      "caps": [
-        "Follow-up-Tracking",
-        "Datenpflege"
-      ],
-      "capDescs": [
-        "Erkennt fällige Nachfassaktionen.",
-        "Markiert veraltete oder doppelte Datensätze."
-      ],
-      "allowed": [
-        "Follow-up vorbereiten",
-        "Datensatz-Korrektur vorschlagen"
-      ],
-      "blocked": [
-        "Nachricht an Kunden senden",
-        "Deal-Status final ändern"
-      ],
-      "pains": [
-        "Verpasste Follow-ups",
-        "Schwaches Lead-Tracking"
-      ],
-      "outcomes": [
-        "Verlässliches Follow-through",
-        "Gepflegte Beziehungen"
-      ],
-      "next": "3 überfällige Follow-ups zur Freigabe vorlegen."
-    },
-    "calendar-agent": {
-      "role": "Termine & Erinnerungen",
-      "description": "Schlägt Termine vor, erinnert an Meetings und hält den Kalender aufgeräumt.",
-      "caps": [
-        "Terminvorschlag",
-        "Erinnerung"
-      ],
-      "capDescs": [
-        "Findet passende Zeitfenster.",
-        "Weist auf anstehende Meetings hin."
-      ],
-      "allowed": [
-        "Terminvorschlag erstellen",
-        "Erinnerung vorbereiten"
-      ],
-      "blocked": [
-        "Einladung versenden",
-        "Termin im Kalender Dritter buchen"
-      ],
-      "pains": [
-        "Langsame Antworten",
-        "Unklare Prioritäten"
-      ],
-      "outcomes": [
-        "Aufgeräumter Kalender",
-        "Vorbereitete Termine"
-      ],
-      "next": "Slot für Audit-Gespräch vorschlagen."
-    },
-    "content-agent": {
-      "role": "Content-Planung & Entwürfe",
-      "description": "Plant Content, erstellt Entwürfe und bereitet Kampagnen vor — zur Prüfung, nicht zur Veröffentlichung.",
-      "caps": [
-        "Planung",
-        "Entwurf"
-      ],
-      "capDescs": [
-        "Skizziert Themen und Zeitplan.",
-        "Erstellt Roh-Entwürfe zur Prüfung."
-      ],
-      "allowed": [
-        "Content-Plan erstellen",
-        "Entwurf vorbereiten"
-      ],
-      "blocked": [
-        "Beitrag veröffentlichen",
-        "Newsletter versenden"
-      ],
-      "pains": [
-        "Manuelle Verwaltung",
-        "Content nur einmal genutzt"
-      ],
-      "outcomes": [
-        "Mehr Reichweite",
-        "Konsistente Kommunikation"
-      ],
-      "next": "Entwurf für Fallstudien-Post zur Prüfung vorlegen."
-    },
-    "operations-agent": {
-      "role": "Projekt- & Aufgabenkoordination",
-      "description": "Verfolgt Projekte, Aufgaben und Deadlines und meldet Blockaden frühzeitig.",
-      "caps": [
-        "Tracking",
-        "Eskalation"
-      ],
-      "capDescs": [
-        "Behält Fortschritt und Deadlines im Blick.",
-        "Markiert Risiken und Blockaden."
-      ],
-      "allowed": [
-        "Projektstatus berichten",
-        "Risiko markieren"
-      ],
-      "blocked": [
-        "Aufgaben Dritter umverteilen ohne Freigabe"
-      ],
-      "pains": [
-        "Verstreute Aufgaben",
-        "Fehlende Übersicht",
-        "Reporting-Verzug"
-      ],
-      "outcomes": [
-        "Prozess-Sichtbarkeit",
-        "Eingehaltene Deadlines"
-      ],
-      "next": "Blockiertes Projekt 'Website-Migration' eskalieren."
-    },
-    "document-agent": {
-      "role": "Dokumente & Aufbereitung",
-      "description": "Erstellt und strukturiert Dokumente wie Angebote, Berichte und Zusammenfassungen — zur Freigabe.",
-      "caps": [
-        "Erstellung",
-        "Extraktion"
-      ],
-      "capDescs": [
-        "Entwirft strukturierte Dokumente.",
-        "Fasst Inhalte aus Quelldokumenten zusammen."
-      ],
-      "allowed": [
-        "Angebot entwerfen",
-        "Bericht zusammenfassen"
-      ],
-      "blocked": [
-        "Dokument extern verschicken",
-        "Rechnung final ausstellen"
-      ],
-      "pains": [
-        "Dokumenten-Chaos",
-        "Manuelle Verwaltung"
-      ],
-      "outcomes": [
-        "Klare nächste Aktion pro Dokument",
-        "Weniger übersehene Fristen"
-      ],
-      "next": "Angebotsentwurf für neue Anfrage vorbereiten."
-    },
-    "follow-up-agent": {
-      "role": "Nachverfolgung & Wiedervorlage",
-      "description": "Stellt sicher, dass keine Chance und kein Versprechen untergeht — bereitet Wiedervorlagen vor.",
-      "caps": [
-        "Erkennung",
-        "Vorbereitung"
-      ],
-      "capDescs": [
-        "Findet offene Zusagen und stille Threads.",
-        "Entwirft die nächste Nachfassaktion."
-      ],
-      "allowed": [
-        "Wiedervorlage erkennen",
-        "Nachfass-Entwurf vorbereiten"
-      ],
-      "blocked": [
-        "Nachricht eigenständig senden",
-        "Mehrfach-Versand ohne Freigabe"
-      ],
-      "pains": [
-        "Verpasste Follow-ups",
-        "Langsame Antworten",
-        "Lead-Leckage"
-      ],
-      "outcomes": [
-        "Keine verlorene Chance",
-        "Verlässliches Follow-through"
-      ],
-      "next": "5 stille Threads zur Wiedervorlage vorlegen."
+      "next": "Den nächsten Lead recherchieren, den Marcel beauftragt."
     }
   },
   "agentCard": {
@@ -824,10 +603,10 @@
     "nextAction": "Nächste empfohlene Aktion"
   },
   "agentsPage": {
-    "count": "Agent Bureau · {count} Agenten",
-    "lede": "Ein Chief of Staff koordiniert ein überwachtes Team. Jeder Agent beobachtet einen Bereich, bereitet vor und legt Aktionen zur Freigabe vor — keine unkontrollierte Ausführung.",
+    "count": "Agent Bureau · {count, plural, one {# Agent} other {# Agenten}} mit Laufzeit",
+    "lede": "Hier stehen nur Agenten, die wirklich laufen. Jeder hat einen Auslöser, eine begrenzte Aufgabe und einen Rückweg in Maxpromo OS. Agenten bereiten vor und berichten; Marcel entscheidet im OS.",
     "coordination": "Koordination",
-    "specialists": "Spezialisten"
+    "specialists": "Agenten"
   },
   "approvalActions": {
     "doneApproved": "Freigegeben (Vorschau) — keine ausgehende Aktion ausgeführt.",
@@ -1283,5 +1062,21 @@
   "demoNotice": {
     "label": "Beispieldaten.",
     "body": "Diese Ansicht zeigt Beispielinhalte; ihre echte Datenquelle ist noch nicht angebunden."
+  },
+  "workPage": {
+    "lede": "Jede Arbeit, die Maxpromo OS beauftragt hat, mit Zustand, Laufzeit und Ergebnis. Der Geschäftsdatensatz liegt im OS; hier ist die Seite des Agenten.",
+    "by": "von {who} über {source}",
+    "score": "Bewertung {score} · Sicherheit {confidence} · {verdict}",
+    "delivered": "an das OS zurückgegeben",
+    "notDelivered": "noch nicht an das OS zurückgegeben ({error})",
+    "none": "Noch keine Arbeit beauftragt.",
+    "evidence": "{count, plural, =0 {keine geprüften Befunde} one {# geprüfter Befund} other {# geprüfte Befunde}}",
+    "verdictYes": "qualifiziert",
+    "verdictNo": "nicht qualifiziert",
+    "stateQueued": "wartet",
+    "stateRunning": "läuft",
+    "stateCompleted": "fertig",
+    "stateFailed": "fehlgeschlagen",
+    "stateCancelled": "abgebrochen"
   }
 }

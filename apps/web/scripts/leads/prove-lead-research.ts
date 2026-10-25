@@ -12,9 +12,9 @@
  */
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { fetchSite, isPrivateAddress, robotsDisallows, siteOrigin } from '../../lib/leads/fetchSite.ts'
-import { INJECTION, researchSite, verifyEvidence } from '../../lib/leads/research.ts'
-import { qualify, QUALIFY_THRESHOLD } from '../../lib/leads/qualify.ts'
+import { fetchSite, isPrivateAddress, robotsDisallows, siteOrigin } from '../../../../packages/research/fetchSite.ts'
+import { INJECTION, researchSite, verifyEvidence } from '../../../../packages/research/research.ts'
+import { qualify, QUALIFY_THRESHOLD } from '../../../../packages/research/qualify.ts'
 import { isProspectMail, testRecipients } from '../../lib/leads/sendPolicy.ts'
 
 let passed = 0

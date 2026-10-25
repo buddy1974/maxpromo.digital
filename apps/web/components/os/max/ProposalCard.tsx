@@ -5,11 +5,14 @@
  * own approval preview and needs a second, explicit confirmation. The result says what happened,
  * with links to the records, and a failure is shown as a failure.
  */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { MAX_SCREEN_COPY } from '@/lib/os-i18n/max'
-import type { ProposalDecision, ProposalView } from './MaxProvider'
+import { useMax, type ProposalDecision, type ProposalView } from './MaxProvider'
+
+/** How often a card with open delegated work asks for its state. The server rate-limits the Bureau. */
+const WORK_POLL_MS = 4000
 
 const OPEN = new Set(['proposed'])
 
@@ -27,6 +30,15 @@ export function ProposalCard({ p, decide, selectable, selected, onSelect }: {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const open = OPEN.has(p.status)
+  const { refresh } = useMax()
+  const workOpen = Boolean(p.work?.open)
+
+  /* Delegated work runs in the Agent Bureau: follow it until it is finished or has failed. */
+  useEffect(() => {
+    if (!workOpen) return
+    const timer = window.setInterval(() => { void refresh(p.id) }, WORK_POLL_MS)
+    return () => window.clearInterval(timer)
+  }, [workOpen, p.id, refresh])
 
   async function run(d: ProposalDecision) {
     setBusy(true); setError(null)
@@ -144,15 +156,61 @@ export function ProposalCard({ p, decide, selectable, selected, onSelect }: {
         </div>
       )}
 
+      {p.work && (
+        <section className={`max-work max-work-${p.work.state}`} aria-live="polite" aria-label={p.work.stateLabel}>
+          <p className="max-work-state">
+            {p.work.open && <span className="max-work-pulse" aria-hidden="true" />}
+            <strong>{p.work.stateLabel}</strong>
+            {p.work.lead.label && <span> · {p.work.lead.label}</span>}
+          </p>
+          {p.work.outcome && (
+            <p className="max-work-outcome">
+              <span className="max-work-score">{p.work.outcome.score}</span>
+              <span className={p.work.outcome.qualified ? 'max-work-yes' : 'max-work-no'}>{p.work.outcome.qualifiedLabel}</span>
+              <span className="max-work-conf">{p.work.outcome.confidence}</span>
+            </p>
+          )}
+          {p.work.recommendation?.text && <p className="max-work-next">{p.work.recommendation.text}</p>}
+          {p.work.warning && <p className="max-work-warn">{p.work.warning}</p>}
+          {p.work.evidence.length > 0 && (
+            <div className="max-work-evidence">
+              <p className="max-body-label">{p.work.evidenceLabel}</p>
+              <ul>
+                {p.work.evidence.map((e, i) => (
+                  <li key={i}>
+                    <span>{e.text}</span>
+                    <q>{e.quote}</q>
+                    <a href={e.url} target="_blank" rel="noopener noreferrer nofollow">{hostPath(e.url)}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {p.work.failure && <p className="max-work-fail">{p.work.failure.text}</p>}
+          {!p.work.open && <p className="max-work-foot">{p.work.footnote}</p>}
+          <div className="max-actions">
+            {p.work.offer && !p.work.offer.done && (
+              <button type="button" className="btn-primary btn-sm" disabled={busy} onClick={() => void run({ action: 'follow' })}>{p.work.offer.label}</button>
+            )}
+            <Link href={p.work.lead.href} className="btn-secondary btn-sm">{c.openLead}</Link>
+          </div>
+        </section>
+      )}
+
       {error && <p className="max-error" role="alert">{error}</p>}
 
       {open && !editing && (
         <div className="max-actions">
-          {g.state === 'ready' && <button type="button" className="btn-primary" disabled={busy} onClick={() => void run({ action: 'confirm', payload_hash: p.payloadHash })}>{c.confirm}</button>}
+          {g.state === 'ready' && <button type="button" className="btn-primary" disabled={busy} onClick={() => void run({ action: 'confirm', payload_hash: p.payloadHash })}>{p.type === 'AGENT_WORK' ? c.startWork : c.confirm}</button>}
           {g.editable.length > 0 && <button type="button" className="btn-secondary" disabled={busy} onClick={() => setEditing(true)}>{c.edit}</button>}
           <button type="button" className="btn-ghost" disabled={busy} onClick={() => void run({ action: 'reject' })}>{c.reject}</button>
         </div>
       )}
     </article>
   )
+}
+
+/** An evidence link shows where the quote is — host and path, never a long URL. */
+function hostPath(url: string): string {
+  try { const u = new URL(url); return `${u.hostname.replace(/^www\./, '')}${u.pathname === '/' ? '' : u.pathname}`.slice(0, 60) } catch { return url.slice(0, 60) }
 }

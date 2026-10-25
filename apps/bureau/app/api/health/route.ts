@@ -1,15 +1,14 @@
 import { NextResponse } from "next/server";
 import { runHealth, healthStatus, type HealthCheck } from "@maxpromo/observability";
 import { resolveDomain, BUSINESS } from "@maxpromo/config";
-import { hasAIConfig } from "@/config/env";
+import { workDoorSecret } from "@maxpromo/config/agent-contract";
 
 /**
  * app/api/health/route.ts — is Agent Bureau working?
  *
- * This application already had three status endpoints — `/api/ai/status`,
- * `/api/auth-status`, `/api/demo/status` — with three shapes, none of them a
- * health check and none of them answerable by a monitor. They stay; this is
- * the one that answers "is the surface up" in the platform's shared shape.
+ * The one that answers "is the surface up" in the platform's shared shape.
+ * (`/api/auth-status` remains for login diagnostics; the AI and demo status
+ * endpoints were removed with the AI Lab and the sample data, ADR-0030.)
  *
  * Unauthenticated, so it reports whether each subsystem answers and nothing
  * about what it said. Never cached.
@@ -57,19 +56,23 @@ const CHECKS: readonly HealthCheck[] = [
     },
   },
   {
-    // Not called: an agent run costs money and takes seconds, and a health
-    // check that does either is a health check that gets switched off.
-    name: "ai-provider",
+    // ADR-0030: the Bureau holds no model key. A model step is a registered task
+    // the OS gateway runs on an agent's request, so the dependency is the signed
+    // OS connection. Not called here: a health check that spends model money gets
+    // switched off.
+    name: "model-gateway",
     critical: false,
-    probe: async () => {
-      // The gateway's own answer (ADR-0027): the route AI_PROVIDER names, with its credential.
-      const configured = hasAIConfig();
-      return configured
-        // `unvalidated`, not `ok` — see HealthState in @maxpromo/observability.
-        // A credential being set is not the dependency working.
-        ? { state: "unvalidated", note: "credential present; validity not checked here" }
-        : { state: "degraded", note: "no provider key — model-based agents cannot run; the deterministic Intake agent is unaffected" };
-    },
+    probe: async () => ((process.env.OS_BUREAU_AGENT_SECRET?.length ?? 0) >= 32
+      // `unvalidated`, not `ok` — a configured credential is not the dependency working.
+      ? { state: "unvalidated", note: "model steps run through the Maxpromo OS gateway; not called here" }
+      : { state: "degraded", note: "not connected to Maxpromo OS — the Research Agent cannot run" }),
+  },
+  {
+    name: "work-door",
+    critical: false,
+    probe: async () => (workDoorSecret(process.env) && Boolean(process.env.BUREAU_OS_BUSINESS_ID)
+      ? { state: "unvalidated", note: "Maxpromo OS can delegate work; not called here" }
+      : { state: "degraded", note: "the work door is not configured — Maxpromo OS cannot delegate work" }),
   },
 ];
 

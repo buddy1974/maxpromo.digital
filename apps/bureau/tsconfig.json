@@ -31,6 +31,9 @@
       ],
       "@maxpromo/ai": [
         "../../packages/ai/index.ts"
+      ],
+      "@maxpromo/research": [
+        "../../packages/research/index.ts"
       ]
     }
   },

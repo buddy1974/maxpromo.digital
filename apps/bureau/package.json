@@ -11,7 +11,6 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs generate",
     "db:push": "node --env-file=.env.local node_modules/drizzle-kit/bin.cjs push",
-    "db:seed:demo": "node --env-file=.env.local lib/seed/run-demo-seed.mjs",
     "auth:provision-operator": "node --env-file-if-exists=.env.local scripts/provision-operator-user.mjs",
     "check:tokens": "node ../../packages/tooling/check-design-tokens.mjs"
   },
@@ -20,6 +19,7 @@
     "@maxpromo/config": "*",
     "@maxpromo/design-tokens": "*",
     "@maxpromo/observability": "*",
+    "@maxpromo/research": "*",
     "@maxpromo/ui": "*",
     "@neondatabase/serverless": "^1.0.2",
     "argon2": "^0.44.0",

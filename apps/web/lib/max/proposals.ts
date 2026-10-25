@@ -21,7 +21,7 @@ import { invoiceBalance } from '@/lib/commercial/money'
 import { loadInvoicesForMoney } from '@/lib/commercial/capabilities/documents'
 import { websiteValidator } from '@/lib/commercial/capabilities/clients'
 import { findClientMatches } from '@/lib/clients/match'
-import { INJECTION } from '@/lib/leads/research'
+import { INJECTION } from '@maxpromo/research'
 import {
   isProposalType, type EditableField, type Fields, type GroundCtx, type Grounded, type ModelAction, type ProposalTypeDef, type ProposalTypeName,
 } from './contract'
@@ -299,17 +299,31 @@ const leadUpdate: ProposalTypeDef = {
   },
 }
 
-const leadResearch: ProposalTypeDef = {
-  type: 'LEAD_RESEARCH', capabilities: ['lead.research'], confirmation: 'confirm', editable: [],
-  fromModel(a, g) { return { lead: str(a.lead, 200) ?? str(a.company, 200) ?? str(a.client, 200), ...(g.context.lead && !str(a.lead) ? { lead_id: g.context.lead.id } : {}) } },
+/**
+ * Specialist work delegated to an Agent Bureau agent (ADR-0030). One type for every agent: the
+ * `agent` field picks a registered Bureau agent, the capability is always agentwork.request. Today the
+ * only agent is research. Confirming starts the work; the result returns to the lead and to this card,
+ * and any next step it recommends is a separate proposal.
+ */
+const agentWork: ProposalTypeDef = {
+  type: 'AGENT_WORK', capabilities: ['agentwork.request'], confirmation: 'confirm', editable: [],
+  fromModel(a, g) { return { agent: 'research', lead: str(a.lead, 200) ?? str(a.company, 200) ?? str(a.client, 200), ...(g.context.lead && !str(a.lead) ? { lead_id: g.context.lead.id } : {}) } },
   async ground(g, f) {
-    const out = skeleton(g, 'LEAD_RESEARCH', 'lead.research', f)
+    const out = skeleton(g, 'AGENT_WORK', 'agentwork.request', f)
     const c = T(g)
+    if (f.agent !== 'research') { out.state = 'blocked'; return settle(out, null) }
     const lead = apply(out, await resolveLead(g, f))
     if (!lead) return settle(out, null)
-    out.rows.push({ label: c.row.lead, value: lead.label }, { label: c.row.website, value: lead.website ?? c.value.none }, { label: c.row.channel, value: c.value.website, tone: 'muted' })
+    out.rows.push(
+      { label: c.agent.agent, value: c.agent.research },
+      { label: c.row.lead, value: lead.label },
+      { label: c.agent.using, value: lead.website ? c.agent.usingWebsite(lead.website) : c.value.none },
+      { label: c.agent.goal, value: c.agent.goalResearch },
+      { label: c.agent.result, value: c.agent.resultResearch },
+      { label: c.agent.sends, value: c.agent.sendsNothing, tone: 'muted' },
+    )
     if (!lead.website) { out.state = 'blocked'; out.warnings.push(c.warn.no_lead_website) }
-    return settle(out, { lead_id: lead.id })
+    return settle(out, { agent: 'research', lead_id: lead.id, source: 'max', language: g.lang })
   },
 }
 
@@ -661,7 +675,7 @@ const payment: ProposalTypeDef = {
 
 const ALL: ProposalTypeDef[] = [
   clientCreate, clientUpdate, lifecycle('CLIENT_ARCHIVE'), lifecycle('CLIENT_RESTORE'), clientNote,
-  leadCreate, leadUpdate, leadResearch, leadOutreach,
+  leadCreate, leadUpdate, agentWork, leadOutreach,
   emailDraft, emailReply, trashType('EMAIL_TRASH'), trashType('EMAIL_RESTORE'),
   invoiceDraft, quoteDraft, followUp, payment,
 ]

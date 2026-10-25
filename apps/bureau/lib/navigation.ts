@@ -15,9 +15,12 @@ import type { IconName } from "@maxpromo/ui";
  * `sections` namespace, so a section cannot be called one thing in the
  * navigation and another at the top of the page it opens.
  *
- * Grouped: the backbone and operational-control items lead, then the
- * supporting workspace, then configuration. Leads, contacts, projects, tasks and the business
- * briefing are not here: they belong to Maxpromo OS (ADR-0021) and their old routes link there.
+ * Four sections, all real (ADR-0030): the runtime overview, the delegated work,
+ * the agents that run, and the approvals the agents requested (owned by the OS).
+ * The sample sections (operating model, audit console, waiting room, documents,
+ * AI governance, playbooks, client implementation, memory, AI lab, settings) were
+ * removed with their mock data. Leads, contacts, projects, tasks and the business
+ * briefing belong to Maxpromo OS (ADR-0021) and their old routes link there.
  */
 export type NavItem = {
   href: string;
@@ -28,21 +31,9 @@ export type NavItem = {
 
 export const NAV: readonly NavItem[] = [
   { href: "/dashboard", key: "overview", glyph: "dashboard", group: "groupControl" },
-  { href: "/dashboard/operating-model", key: "operatingModel", glyph: "operatingModel" },
-  { href: "/dashboard/audit", key: "audit", glyph: "audit" },
-  { href: "/dashboard/waiting-room", key: "waitingRoom", glyph: "waiting" },
-  { href: "/dashboard/documents", key: "documents", glyph: "documents" },
-  { href: "/dashboard/approvals", key: "approvals", glyph: "approvals" },
-  { href: "/dashboard/ai-governance", key: "aiGovernance", glyph: "governance" },
-  { href: "/dashboard/playbooks", key: "playbooks", glyph: "playbooks" },
-  { href: "/dashboard/client-implementation", key: "clientImplementation", glyph: "implementation" },
-
-  { href: "/dashboard/research", key: "research", glyph: "research", group: "groupWorkspace" },
+  { href: "/dashboard/work", key: "work", glyph: "research" },
   { href: "/dashboard/agents", key: "agents", glyph: "agents" },
-  { href: "/dashboard/memory", key: "memory", glyph: "memory" },
-  { href: "/dashboard/ai-lab", key: "aiLab", glyph: "lab" },
-
-  { href: "/dashboard/settings", key: "settings", glyph: "settings", group: "groupSystem" },
+  { href: "/dashboard/approvals", key: "approvals", glyph: "approvals" },
 ];
 
 /**
@@ -50,7 +41,7 @@ export const NAV: readonly NavItem[] = [
  *
  * `/dashboard` is an exact match and everything else is a prefix, because
  * `startsWith("/dashboard")` is true of every route in the product and would
- * mark the overview as current on all nineteen pages. Both navigations ask
+ * mark the overview as current on every page. Both navigations ask
  * this question, so both ask it here.
  */
 export function isCurrent(href: string, pathname: string): boolean {

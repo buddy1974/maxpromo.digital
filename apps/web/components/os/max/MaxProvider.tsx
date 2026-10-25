@@ -32,6 +32,17 @@ export interface ProposalView {
   }
   approval?: { summary: string; preview: [string, string][]; payloadHash: string; expiresAt: string }
   result?: { summary: string; links: { label: string; href: string }[]; error?: boolean }
+  /** Delegated agent work (ADR-0030). Every word is made by the server in the screen language. */
+  work?: {
+    id: string; state: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled'; stateLabel: string; open: boolean
+    lead: { label: string; href: string }
+    outcome?: { score: string; confidence: string; qualified: boolean; qualifiedLabel: string }
+    evidence: { kind: string; text: string; quote: string; url: string }[]; evidenceLabel: string
+    recommendation?: { code: string; text: string }; warning?: string
+    failure?: { text: string; retryable: boolean }
+    offer?: { label: string; done: boolean }
+    footnote: string
+  }
   createdAt: string
 }
 export interface InteractionView {
@@ -44,7 +55,7 @@ export interface InteractionView {
 }
 export type ProposalDecision =
   | { action: 'edit'; edits: Record<string, unknown> } | { action: 'choose'; choice: string } | { action: 'reject' }
-  | { action: 'confirm'; payload_hash: string } | { action: 'approve'; payload_hash: string }
+  | { action: 'confirm'; payload_hash: string } | { action: 'approve'; payload_hash: string } | { action: 'follow' }
 
 interface MaxValue {
   entries: InteractionView[]; loading: boolean; historyLoaded: boolean; voice: 'server' | 'browser' | null
@@ -52,6 +63,8 @@ interface MaxValue {
   setScreenContext: (c: MaxScreenContext | null) => void
   send: (input: { text: string; file?: File | null; inputKind?: 'text' | 'voice' | 'file' }) => Promise<void>
   decide: (proposalId: string, d: ProposalDecision) => Promise<{ ok: boolean; error?: string }>
+  /** Re-read one proposal from the server (a card following its delegated work). */
+  refresh: (proposalId: string) => Promise<void>
   loadHistory: () => void
   panelOpen: boolean; scanRequested: boolean
   openMax: (opts?: { scan?: boolean }) => void; closePanel: () => void; consumeScan: () => void
@@ -128,6 +141,14 @@ export function MaxProvider({ children }: { children: React.ReactNode }) {
     try {
       const res = await fetch('/api/os/max/proposals', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ proposal_id: proposalId, locale, ...d }) })
       const body = await res.json().catch(() => null) as { proposal?: ProposalView; error?: string; code?: string } | null
+      if (body?.proposal && d.action === 'follow') {
+        /* A follow-up is a NEW card under the research card; the research card shows it was offered. */
+        const added = body.proposal
+        setEntries(prev => prev.map(e => (e.proposals.some(p => p.id === proposalId) && !e.proposals.some(p => p.id === added.id)
+          ? { ...e, proposals: [...e.proposals.map(p => (p.id === proposalId && p.work?.offer ? { ...p, work: { ...p.work, offer: { ...p.work.offer, done: true } } } : p)), added] }
+          : e)))
+        return { ok: true }
+      }
       if (body?.proposal) {
         const updated = body.proposal
         setEntries(prev => prev.map(e => ({ ...e, proposals: e.proposals.map(p => (p.id === updated.id ? updated : p)) })))
@@ -149,6 +170,17 @@ export function MaxProvider({ children }: { children: React.ReactNode }) {
     } catch { return { ok: false, error: 'unavailable' } }
   }, [locale])
 
+  const refresh = useCallback(async (proposalId: string) => {
+    try {
+      const res = await fetch(`/api/os/max/proposals?id=${encodeURIComponent(proposalId)}&locale=${locale}`, { cache: 'no-store' })
+      if (!res.ok) return
+      const { proposal } = await res.json() as { proposal?: ProposalView }
+      if (!proposal) return
+      setEntries(prev => prev.map(e => ({ ...e, proposals: e.proposals.map(p => (p.id === proposal.id ? proposal : p)) })))
+      if (proposal.work && !proposal.work.open) window.dispatchEvent(new Event('os:changed'))
+    } catch { /* the next poll tries again */ }
+  }, [locale])
+
   const openMax = useCallback((opts?: { scan?: boolean }) => {
     if (opts?.scan) setScanRequested(true)
     if (window.matchMedia('(max-width: 899px)').matches) router.push('/os/ask')
@@ -158,9 +190,9 @@ export function MaxProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => { if (pathname === '/os/ask') setPanelOpen(false) }, [pathname])
 
   const value = useMemo<MaxValue>(() => ({
-    entries, loading, historyLoaded, voice, envelope, clearEnvelope: () => setEnvelope(null), setScreenContext, send, decide, loadHistory,
+    entries, loading, historyLoaded, voice, envelope, clearEnvelope: () => setEnvelope(null), setScreenContext, send, decide, refresh, loadHistory,
     panelOpen, scanRequested, openMax, closePanel: () => setPanelOpen(false), consumeScan: () => setScanRequested(false),
-  }), [entries, loading, historyLoaded, voice, envelope, setScreenContext, send, decide, loadHistory, panelOpen, scanRequested, openMax])
+  }), [entries, loading, historyLoaded, voice, envelope, setScreenContext, send, decide, refresh, loadHistory, panelOpen, scanRequested, openMax])
   return <MaxContext.Provider value={value}>{children}</MaxContext.Provider>
 }
 

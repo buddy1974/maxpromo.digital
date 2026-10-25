@@ -34,6 +34,13 @@ export default function LeadPage() {
       .catch(() => setMissing(true))
   }, [id])
   useEffect(() => { load() }, [load])
+  /* While the Research Agent works, look again every few seconds; the server asks the Bureau. */
+  const running = ws?.site?.state === 'running'
+  useEffect(() => {
+    if (!running) return
+    const timer = window.setInterval(load, 4000)
+    return () => window.clearInterval(timer)
+  }, [running, load])
   const action = useOwnerAction('/api/os/leads/actions', c, () => load())
 
   if (missing) return <div className="os-page money-page"><p className="money-quiet">{c.notFound}</p><Link href="/os/leads" className="money-more">‹ {c.back}</Link></div>
@@ -45,7 +52,10 @@ export default function LeadPage() {
   const openDraft = ws.drafts.find(d => d.status === 'draft')
   const answered = ['responded', 'discovery', 'proposal', 'negotiation', 'won'].includes(lead.status)
   const stageLabel = t.status.lead[lead.status] ?? lead.status
-  const research = () => action.run('lead.research', { lead_id: lead.id })
+  /* Research is delegated to the Agent Bureau's Research Agent (ADR-0030); the result comes back here. */
+  const research = () => action.run('agentwork.request', { agent: 'research', lead_id: lead.id, source: 'lead-screen', language: locale })
+  const agentRunning = site?.state === 'running' && site.by === 'bureau:research'
+  const lastWork = ws.agentWork[0]
 
   return (
     <div className="os-page money-page lead-page">
@@ -80,7 +90,8 @@ export default function LeadPage() {
           </form>
         )}
         {lead.website && !site && <p className="money-quiet">{c.researchNone}</p>}
-        {site?.state === 'running' && <p role="status" className="money-quiet">{c.researching}</p>}
+        {site?.state === 'running' && <p role="status" className="money-quiet">{agentRunning ? c.agentWorking : c.researching}</p>}
+        {!agentRunning && lastWork?.state === 'failed' && lastWork.failure && site?.state !== 'done' && site?.state !== 'failed' && <p className="money-alert">{c.agentFailed(lastWork.failure)}</p>}
         {site?.state === 'failed' && <p className="money-alert">{c.researchFailed(site.detail)}</p>}
         {done && (
           <>
@@ -88,7 +99,7 @@ export default function LeadPage() {
               <span className="money-big">{done.qualification.score}</span>
               <span>
                 <strong>{done.qualification.qualified ? c.qualified : c.notQualified}</strong>
-                <span className="money-sub">{c.score} · {c.confidence[done.qualification.confidence]} · {c.researchedAt(fmtDate(done.researched_at))}</span>
+                <span className="money-sub">{c.score} · {c.confidence[done.qualification.confidence]} · {c.researchedAt(fmtDate(done.researched_at))}{lastWork?.state === 'completed' ? ` · ${c.agentBy}` : ''}</span>
               </span>
             </div>
             {done.summary && <p className="lead-summary">{done.summary}</p>}

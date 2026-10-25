@@ -30,6 +30,7 @@ import { MAX_COPY } from './copy'
 import { UUID, validDate, num, str, EMAIL } from './ground'
 import { looksLikeInstructions, proposalType } from './proposals'
 import { understand, UnderstandingUnavailable } from './understand'
+import { loadWork, reconcileWork, type WorkRow } from '@/lib/agents/work'
 
 export const MAX_FILE_BYTES = 4 * 1024 * 1024
 const READABLE = new Set(['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'])
@@ -60,7 +61,27 @@ export interface ProposalView {
   grounded: Omit<Grounded, 'input'>
   approval?: { summary: string; preview: [string, string][]; payloadHash: string; expiresAt: string }
   result?: { summary: string; links: { label: string; href: string }[]; error?: boolean }
+  /** Delegated agent work this proposal started (AGENT_WORK, ADR-0030), as the OS knows it now. */
+  work?: MaxWorkView
   createdAt: string
+}
+
+/** What the card shows of delegated work: words in the screen language, made here from the record. */
+export interface MaxWorkView {
+  id: string
+  state: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled'
+  stateLabel: string
+  open: boolean
+  lead: { label: string; href: string }
+  outcome?: { score: string; confidence: string; qualified: boolean; qualifiedLabel: string }
+  evidence: { kind: string; text: string; quote: string; url: string }[]
+  evidenceLabel: string
+  recommendation?: { code: string; text: string }
+  warning?: string
+  failure?: { text: string; retryable: boolean }
+  /** A separate governed next step Marcel may ask for — never started by the result itself. */
+  offer?: { label: string; done: boolean }
+  footnote: string
 }
 
 export interface InteractionView {
@@ -201,7 +222,9 @@ async function groundSafely(def: NonNullable<ReturnType<typeof proposalType>>, g
 
 const QUESTION_WORD = /^(wer|wem|wen|wessen|was|wie|wann|welche[rsmn]?|wo|wohin|woher|warum|wieso|weshalb|who|whom|whose|what|how|when|which|where|why)\b/i
 /** A question by its form: a question word first and a question mark last. "Can you…?" is a request, not this. */
-export const looksLikeQuestion = (text: string) => QUESTION_WORD.test(text.trim()) && /\?\s*$/.test(text)
+/** "Is X worth contacting?" asks for work (research), not for what the records already say. */
+const WORK_WORDS = /(recherch|research|worth contacting|lohnt sich|qualifizier|qualify)/i
+export const looksLikeQuestion = (text: string) => QUESTION_WORD.test(text.trim()) && /\?\s*$/.test(text) && !WORK_WORDS.test(text)
 
 /** IBAN-like strings are not kept in Max's history, even when Marcel typed one. */
 const IBANISH = /\b[A-Z]{2}\d{2}(?:\s?[A-Z0-9]{4}){3,7}(?:\s?[A-Z0-9]{1,3})?\b/g
@@ -255,6 +278,49 @@ function viewOf(p: ProposalRow): ProposalView {
   }
 }
 
+/* ── delegated work ──────────────────────────────────────────────────────── */
+
+function workViewOf(w: WorkRow, lang: Lang, followed: boolean): MaxWorkView {
+  const c = MAX_COPY[lang].agent
+  const s = w.summary
+  const open = w.state === 'queued' || w.state === 'running'
+  return {
+    id: w.id, state: w.state, stateLabel: c.state[w.state] ?? w.state, open,
+    lead: { label: s?.lead ?? '', href: `/os/leads?lead=${w.subject_id}` },
+    ...(s ? {
+      outcome: { score: `${s.score}/100`, confidence: `${c.confidence} ${c.conf[s.confidence] ?? s.confidence}`, qualified: s.qualified, qualifiedLabel: s.qualified ? c.qualified : c.notQualified },
+      recommendation: { code: s.recommendation, text: c.next[s.recommendation] ?? '' },
+      ...(s.injectionSuspected ? { warning: c.injection } : {}),
+    } : {}),
+    evidence: s?.evidence ?? [], evidenceLabel: c.evidence,
+    /* The category in the screen language; the agent's own reason (technical, English) follows it. */
+    ...(w.state === 'failed' || w.state === 'cancelled' ? { failure: { text: [c.failure[w.failure?.category ?? 'internal'] ?? c.state[w.state], w.failure?.detail ? `(${w.failure.detail})` : '', w.failure?.retryable ? c.again : ''].filter(Boolean).join(' '), retryable: w.failure?.retryable ?? false } } : {}),
+    ...(s?.recommendation === 'outreach_draft' ? { offer: { label: c.draftOffer, done: followed } } : {}),
+    footnote: c.nothingSent,
+  }
+}
+
+/** Attach the work each AGENT_WORK proposal started; open work is reconciled with the Bureau first. */
+async function withWork(sql: Sql, views: ProposalView[], rows: ProposalRow[], lang: Lang, reconcile: boolean): Promise<ProposalView[]> {
+  const ids = views.filter(v => v.type === 'AGENT_WORK' && v.status === 'done').map(v => v.id)
+  if (!ids.length) return views
+  const found = await sql`SELECT id::text, max_proposal::text FROM os_agent_work WHERE max_proposal = ANY(${ids}::uuid[]) ORDER BY created_at DESC` as { id: string; max_proposal: string }[]
+  const out: ProposalView[] = []
+  for (const v of views) {
+    const link = found.find(f => f.max_proposal === v.id)
+    const w = link ? (reconcile ? await reconcileWork(sql, link.id) : await loadWork(sql, link.id)) : null
+    const row = rows.find(r => r.id === v.id)
+    out.push(w ? { ...v, work: workViewOf(w, row?.language ?? lang, typeof row?.fields?.followed === 'string') } : v)
+  }
+  return out
+}
+
+/** One proposal as the card shows it now, with its work reconciled. For the card's status poll. */
+export async function proposalNow(sql: Sql, actor: string, id: string, screenLanguage?: Lang): Promise<ProposalView> {
+  const p = await load(sql, actor, id)
+  return (await withWork(sql, [viewOf(p)], [p], p.language ?? screenLanguage ?? 'de', true))[0]
+}
+
 /* ── act ─────────────────────────────────────────────────────────────────── */
 
 export type MaxAction =
@@ -263,6 +329,8 @@ export type MaxAction =
   | { action: 'reject'; proposal_id: string }
   | { action: 'confirm'; proposal_id: string; payload_hash: string }
   | { action: 'approve'; proposal_id: string; payload_hash: string }
+  /** A completed research recommends an introduction: propose it as its own card (runs nothing). */
+  | { action: 'follow'; proposal_id: string }
 
 export class MaxRefusal extends Error { constructor(public readonly code: string, message: string) { super(message) } }
 
@@ -324,6 +392,8 @@ export async function act(sql: Sql, actor: string, a: MaxAction, screenLanguage?
   const def = proposalType(p.type)
   if (!def) throw new MaxRefusal('unknown_type', 'This proposal type is not registered.')
   const expired = Date.now() - new Date(p.created_at).getTime() > PROPOSAL_HOURS * 3_600_000
+
+  if (a.action === 'follow') return follow(sql, actor, p, screenLanguage)
 
   if (a.action === 'reject') {
     if (p.status === 'awaiting_approval' && p.approval_id) await rejectApproval(sql, { approvalId: p.approval_id, actor, channel: 'os-max' })
@@ -387,7 +457,11 @@ export async function act(sql: Sql, actor: string, a: MaxAction, screenLanguage?
       executed_at = CASE WHEN ${status} = 'done' THEN now() ELSE executed_at END, updated_at = now() WHERE id = ${p.id}::uuid`
     await audit(sql, actor, p, fresh.grounded.capability, status, response.status === 'done' ? response.result.focus?.[0] : undefined, result.summary)
     log('execute', { proposal_id: p.id, type: p.type, capability: fresh.grounded.capability, status, latency_ms: Date.now() - started })
-    return viewOf(await load(sql, actor, p.id))
+    /* Delegated work belongs to this card: link it, so the card follows the work to its result. */
+    const workId = response.status === 'done' ? (response.result.data as { work_id?: string } | undefined)?.work_id : undefined
+    if (workId && UUID.test(workId)) await sql`UPDATE os_agent_work SET max_proposal = ${p.id}::uuid WHERE id = ${workId}::uuid AND max_proposal IS NULL`
+    const after = await load(sql, actor, p.id)
+    return (await withWork(sql, [viewOf(after)], [after], p.language ?? screenLanguage ?? 'de', false))[0]
   }
 
   /* approve: the AMBER capability's own preview, confirmed with the hash it was shown with. */
@@ -401,6 +475,35 @@ export async function act(sql: Sql, actor: string, a: MaxAction, screenLanguage?
   await audit(sql, actor, p, p.capability, status, done ? response.result.focus?.[0] : undefined, result.summary)
   log('approve', { proposal_id: p.id, type: p.type, capability: p.capability, status })
   return viewOf(await load(sql, actor, p.id))
+}
+
+/**
+ * The research recommends an introduction. Max proposes LEAD_OUTREACH_DRAFT as a NEW card in the same
+ * interaction, grounded like any other — Marcel confirms it or not. The recommendation itself never
+ * runs anything, and sending stays outside Max entirely (drafts only; the send policy decides later).
+ */
+async function follow(sql: Sql, actor: string, p: ProposalRow, screenLanguage?: Lang): Promise<ProposalView> {
+  if (p.type !== 'AGENT_WORK' || p.status !== 'done') throw new MaxRefusal('not_open', 'There is no finished agent work on this card.')
+  if (typeof p.fields.followed === 'string') return viewOf(await load(sql, actor, p.fields.followed))
+  const works = await sql`SELECT id::text FROM os_agent_work WHERE max_proposal = ${p.id}::uuid ORDER BY created_at DESC LIMIT 1` as { id: string }[]
+  const w = works[0] ? await loadWork(sql, works[0].id) : null
+  if (!w || w.state !== 'completed' || w.summary?.recommendation !== 'outreach_draft') throw new MaxRefusal('not_recommended', 'The research does not recommend an introduction.')
+  const def = proposalType('LEAD_OUTREACH_DRAFT')!
+  const lang: Lang = p.language ?? screenLanguage ?? 'de'
+  const fields: Fields = { lead_id: w.subject_id, language: lang }
+  const g: GroundCtx = { ctx: capContext(sql, actor, lang), lang, context: { route: '/os/ask' }, ownerText: '', documentText: null, extraction: null }
+  const grounded = await groundSafely(def, g, fields)
+  const hash = hashOf(def.type, grounded.capability, grounded.input)
+  /* Claim the follow-up on the card first: two taps make one proposal. */
+  const marked = await sql`UPDATE os_max_proposals SET fields = fields || jsonb_build_object('followed', 'pending') WHERE id = ${p.id}::uuid AND NOT (fields ? 'followed') RETURNING id` as { id: string }[]
+  if (!marked.length) throw new MaxRefusal('in_progress', 'The introduction was already proposed.')
+  const [pr] = await sql`INSERT INTO os_max_proposals (interaction_id, position, type, capability, confirmation, fields, grounded, payload_hash, status)
+    VALUES (${p.interaction_id}::uuid, (SELECT coalesce(max(position), 0) + 1 FROM os_max_proposals WHERE interaction_id = ${p.interaction_id}::uuid), ${def.type}, ${grounded.capability},
+            ${def.confirmation}, ${JSON.stringify(fields)}::jsonb, ${JSON.stringify(grounded)}::jsonb, ${hash}, ${grounded.state === 'blocked' ? 'refused' : 'proposed'})
+    RETURNING id::text` as { id: string }[]
+  await sql`UPDATE os_max_proposals SET fields = fields || jsonb_build_object('followed', ${pr.id}::text) WHERE id = ${p.id}::uuid`
+  log('follow', { proposal_id: p.id, work_id: w.id, new_proposal: pr.id })
+  return viewOf(await load(sql, actor, pr.id))
 }
 
 /** The one thing worth repeating from a capability result: the record it is about. */
@@ -425,9 +528,9 @@ async function audit(sql: Sql, actor: string, p: ProposalRow, capability: string
 /* ── history ─────────────────────────────────────────────────────────────── */
 
 export async function history(sql: Sql, actor: string, limit = 20): Promise<InteractionView[]> {
-  const rows = await sql`SELECT id::text, created_at, input_text, input_kind, file_meta, context, outcome, reply FROM os_max_interactions
+  const rows = await sql`SELECT id::text, created_at, input_text, input_kind, file_meta, context, outcome, reply, language FROM os_max_interactions
     WHERE actor = ${actor} ORDER BY created_at DESC LIMIT ${Math.min(Math.max(limit, 1), 50)}` as
-    { id: string; created_at: Date; input_text: string; input_kind: string; file_meta: { name: string; type: string; size: number } | null; context: Record<string, unknown>; outcome: InteractionView['outcome']; reply: InteractionView['reply'] }[]
+    { id: string; created_at: Date; input_text: string; input_kind: string; file_meta: { name: string; type: string; size: number } | null; context: Record<string, unknown>; outcome: InteractionView['outcome']; reply: InteractionView['reply']; language: Lang | null }[]
   if (!rows.length) return []
   const props = await sql`SELECT id::text, interaction_id::text, type, capability, confirmation, fields, grounded, payload_hash, status, result, created_at FROM os_max_proposals
     WHERE interaction_id = ANY(${rows.map(r => r.id)}::uuid[]) ORDER BY position` as (ProposalRow & { interaction_id: string })[]
@@ -436,11 +539,18 @@ export async function history(sql: Sql, actor: string, limit = 20): Promise<Inte
     await sql`DELETE FROM os_max_proposals WHERE interaction_id IN (SELECT id FROM os_max_interactions WHERE created_at < now() - interval '180 days')`
     await sql`DELETE FROM os_max_interactions WHERE created_at < now() - interval '180 days'`
   }
-  return rows.reverse().map(r => ({
-    id: r.id, createdAt: new Date(r.created_at).toISOString(), input: r.input_text, inputKind: r.input_kind,
-    file: r.file_meta ? { name: r.file_meta.name, type: r.file_meta.type, size: r.file_meta.size } : null,
-    context: r.context, outcome: r.outcome, reply: r.reply, proposals: props.filter(p => p.interaction_id === r.id).map(viewOf),
-  }))
+  const out: InteractionView[] = []
+  for (const r of rows.reverse()) {
+    const own = props.filter(p => p.interaction_id === r.id).map(p => ({ ...p, language: r.language ?? undefined }))
+    out.push({
+      id: r.id, createdAt: new Date(r.created_at).toISOString(), input: r.input_text, inputKind: r.input_kind,
+      file: r.file_meta ? { name: r.file_meta.name, type: r.file_meta.type, size: r.file_meta.size } : null,
+      context: r.context, outcome: r.outcome, reply: r.reply,
+      /* Open delegated work is asked about once here; the card polls while it stays open. */
+      proposals: await withWork(sql, own.map(viewOf), own, r.language ?? 'de', true),
+    })
+  }
+  return out
 }
 
 export type { ModelAction }

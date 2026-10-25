@@ -37,6 +37,7 @@ const ACTION_SCHEMA = {
     amount: N, currency: S, percent: N, date: S,
     items: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['description'], properties: { description: S, amount: N } } },
     recipient_email: S, stage: S, value: N, next_action: S, invoice_number: S, use_selection: { type: 'boolean' },
+    agent: { type: 'string', enum: ['research'] },
   },
 }
 export const UNDERSTAND_SCHEMA = {
@@ -64,7 +65,7 @@ mode:
 
 Action types (use only these):
 CLIENT_CREATE (new client; identity fields) · CLIENT_UPDATE (client + fields to set; "clear" lists fields to empty) · CLIENT_ARCHIVE · CLIENT_RESTORE · CLIENT_NOTE (note about a meeting/call for a client or lead) ·
-LEAD_CREATE (company, contact, description = service interest, note = summary) · LEAD_UPDATE (stage, value, next_action, date) · LEAD_RESEARCH (read the lead's website) · LEAD_OUTREACH_DRAFT (introduction draft to a lead; instruction) ·
+LEAD_CREATE (company, contact, description = service interest, note = summary) · LEAD_UPDATE (stage, value, next_action, date) · AGENT_WORK (delegate longer specialist work to an agent; agent = "research": the Research Agent reads the lead's own website and qualifies it — for "research this lead", "is X worth contacting", "check their website") · LEAD_OUTREACH_DRAFT (introduction draft to a lead; instruction) ·
 EMAIL_REPLY_DRAFT (reply in the conversation Marcel has open, or with the named person; instruction = what to say) · EMAIL_DRAFT (new email to a client/lead or an address Marcel typed; instruction; subject if given) ·
 EMAIL_TRASH / EMAIL_RESTORE (the open or selected conversations; use_selection) ·
 INVOICE_DRAFT (client, amount or items, description, percent for "50 % upfront", date = due date) · QUOTE_DRAFT (client or lead, amount or items, description, currency) ·

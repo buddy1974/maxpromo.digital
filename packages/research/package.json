@@ -1,0 +1,14 @@
+{
+  "name": "@maxpromo/research",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Known-lead research and qualification (ADR-0027 §2, ADR-0030): read a business's own public website with SSRF and robots protections, keep only model findings quoted verbatim from the page, and score by code. One implementation, used by Maxpromo OS (lead.research) and the Agent Bureau's Research Agent.",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "dependencies": {
+    "@maxpromo/ai": "*"
+  }
+}

@@ -4,3 +4,4 @@ export * from "./leads";
 export * from "./platform";
 // Additive Sprint 3 operating-model + strategic-module schema (review before push).
 export * from "./operating";
+export * from "./work";

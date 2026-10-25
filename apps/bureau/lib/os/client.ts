@@ -13,6 +13,8 @@ import { AGENT_CONTRACT_VERSION, signedHeaders, type AgentEvent } from "@maxprom
 
 const DEFAULT_OS_ORIGIN = "https://www.maxpromo.digital";
 const TIMEOUT_MS = 15_000;
+/** A model step through the OS gateway may take most of a minute (ADR-0030). */
+const MODEL_TIMEOUT_MS = 90_000;
 
 export type OsResponse =
   | { status: "done"; capability?: string; result?: { summary: string; data?: unknown }; accepted?: number; duplicates?: number }
@@ -20,8 +22,14 @@ export type OsResponse =
   | { status: "refused"; capability?: string; code: string; message: string }
   | { status: "failed"; capability?: string; message: string; retrySafe: boolean };
 
-export type OsCall =
-  | { ok: true; response: OsResponse }
+/** The model door's answer (ADR-0030). */
+export type OsModelResponse =
+  | { status: "done"; task: string; data: unknown; model: string; latencyMs: number }
+  | { status: "refused"; code: string; message: string }
+  | { status: "failed"; task: string; klass: string; latencyMs: number };
+
+export type OsCall<R = OsResponse> =
+  | { ok: true; response: R }
   /** The request did not get an OS answer: not configured, rejected at the door, or unreachable. */
   | { ok: false; reason: "not_configured" | "unauthorized" | "unreachable" | "http_error"; status?: number };
 
@@ -37,7 +45,7 @@ function origin(): string {
   return url.origin;
 }
 
-async function post(action: "run" | "events" | "capabilities", payload: Record<string, unknown>): Promise<OsCall> {
+async function post(action: "run" | "events" | "capabilities" | "model", payload: Record<string, unknown>): Promise<OsCall<never>> {
   const secret = process.env.OS_BUREAU_AGENT_SECRET;
   if (!secret || secret.length < 32) return { ok: false, reason: "not_configured" };
   const path = `/api/os/agent/${AGENT_CONTRACT_VERSION}/${action}`;
@@ -48,12 +56,12 @@ async function post(action: "run" | "events" | "capabilities", payload: Record<s
       headers: signedHeaders({ client: "bureau", secret, method: "POST", path, body }),
       body,
       cache: "no-store",
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: AbortSignal.timeout(action === "model" ? MODEL_TIMEOUT_MS : TIMEOUT_MS),
       redirect: "error",
     });
     if (res.status === 401 || res.status === 403) return { ok: false, reason: "unauthorized", status: res.status };
     if (!res.ok && res.status !== 500) return { ok: false, reason: "http_error", status: res.status };
-    return { ok: true, response: (await res.json()) as OsResponse };
+    return { ok: true, response: (await res.json()) as never };
   } catch {
     return { ok: false, reason: "unreachable" };
   }
@@ -62,6 +70,14 @@ async function post(action: "run" | "events" | "capabilities", payload: Record<s
 /** Run an OS capability as one of this Bureau's agents. requestId makes a retry safe. */
 export function runOsCapability(agent: string, requestId: string, capability: string, input: Record<string, unknown>): Promise<OsCall> {
   return post("run", { requestId, actor: `bureau:${agent}`, channel: "bureau", capability, input });
+}
+
+/**
+ * Run a registered model task through the OS gateway (ADR-0030). The Bureau holds no model key and
+ * sends only the task name and its user content; the OS owns the prompt, the schema and the key.
+ */
+export function runOsModelTask(agent: string, task: string, content: string): Promise<OsCall<OsModelResponse>> {
+  return post("model", { actor: `bureau:${agent}`, channel: "bureau", task, content });
 }
 
 /** Report agent outcomes the owner may need to see in /os. Idempotent by event id. */

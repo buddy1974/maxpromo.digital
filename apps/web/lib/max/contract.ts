@@ -22,7 +22,7 @@ import type { ClientCandidate as ExtractedClient } from '@/lib/clients/extract'
 
 export const PROPOSAL_TYPES = [
   'CLIENT_CREATE', 'CLIENT_UPDATE', 'CLIENT_ARCHIVE', 'CLIENT_RESTORE', 'CLIENT_NOTE',
-  'LEAD_CREATE', 'LEAD_UPDATE', 'LEAD_RESEARCH', 'LEAD_OUTREACH_DRAFT',
+  'LEAD_CREATE', 'LEAD_UPDATE', 'AGENT_WORK', 'LEAD_OUTREACH_DRAFT',
   'EMAIL_DRAFT', 'EMAIL_REPLY_DRAFT', 'EMAIL_TRASH', 'EMAIL_RESTORE',
   'INVOICE_DRAFT', 'QUOTE_DRAFT', 'FOLLOW_UP_CREATE', 'MONEY_RECORD_PAYMENT',
 ] as const
@@ -71,6 +71,8 @@ export interface ModelAction {
   recipient_email?: string
   stage?: string; value?: number; next_action?: string; invoice_number?: string
   use_selection?: boolean
+  /** AGENT_WORK: which Bureau agent (ADR-0030). */
+  agent?: string
 }
 
 /** The loose, stored fields of a proposal. Ids appear only from context, choices or lookups. */

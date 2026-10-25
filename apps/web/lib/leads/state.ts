@@ -4,12 +4,11 @@
  * capabilities can read it without importing the workflow (which imports the engine).
  */
 import type { LeadRow } from '@/lib/commercial/records'
-import type { Qualification } from './qualify'
-import type { ResearchFindings } from './research'
+import type { Qualification, ResearchFindings } from '@maxpromo/research'
 
 export type SiteState =
   | { state: 'requested'; at: string; by: string }
-  | { state: 'running'; at: string; by: string }
+  | { state: 'running'; at: string; by: string; work?: string }
   | { state: 'failed'; at: string; stage: 'site' | 'model'; reason: string; detail: string }
   | (ResearchFindings & { qualification: Qualification })
 
