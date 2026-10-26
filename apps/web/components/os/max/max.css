@@ -137,6 +137,8 @@
 .max-work-evidence q { color: var(--brand-text-secondary); font-style: italic; overflow-wrap: anywhere; }
 .max-work-evidence a { font-size: 13px; color: var(--brand-text-secondary); overflow-wrap: anywhere; }
 .max-work .max-actions { margin-top: 0; }
+/* A record name is as long as it is: link buttons in a card wrap instead of widening the panel. */
+.max-links .btn-sm, .max-work .btn-sm { white-space: normal; max-width: 100%; text-align: left; overflow-wrap: anywhere; height: auto; min-height: 36px; }
 
 @media (max-width: 899px) {
   .max-log { padding: var(--space-3); }

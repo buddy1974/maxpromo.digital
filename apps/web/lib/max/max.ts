@@ -286,7 +286,7 @@ function workViewOf(w: WorkRow, lang: Lang, followed: boolean): MaxWorkView {
   const open = w.state === 'queued' || w.state === 'running'
   return {
     id: w.id, state: w.state, stateLabel: c.state[w.state] ?? w.state, open,
-    lead: { label: s?.lead ?? '', href: `/os/leads?lead=${w.subject_id}` },
+    lead: { label: s?.lead ?? '', href: `/os/leads/${w.subject_id}` },
     ...(s ? {
       outcome: { score: `${s.score}/100`, confidence: `${c.confidence} ${c.conf[s.confidence] ?? s.confidence}`, qualified: s.qualified, qualifiedLabel: s.qualified ? c.qualified : c.notQualified },
       recommendation: { code: s.recommendation, text: c.next[s.recommendation] ?? '' },
@@ -510,7 +510,7 @@ async function follow(sql: Sql, actor: string, p: ProposalRow, screenLanguage?: 
 const detail = (r: CapabilityResult) => (r.focus?.[0]?.label ? `— ${r.focus[0].label}` : '')
 
 const HREF: Partial<Record<FocusRef['kind'], (id: string) => string>> = {
-  client: id => `/os/clients/${id}`, invoice: id => `/os/invoices/${id}`, angebot: id => `/os/angebote/${id}`, lead: () => '/os/leads',
+  client: id => `/os/clients/${id}`, invoice: id => `/os/invoices/${id}`, angebot: id => `/os/angebote/${id}`, lead: id => `/os/leads/${id}`,
   email_thread: id => `/os/inbox?thread=${id}`, email_draft: () => '/os/inbox?view=drafts', job: () => '/os/jobs',
 }
 function linksOf(r: CapabilityResult): { label: string; href: string }[] {
