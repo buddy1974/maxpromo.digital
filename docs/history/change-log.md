@@ -1,5 +1,20 @@
 # Change Log
 
+## 2026-10-26 — Research Agent real-lead repair (ADR-0031)
+
+- `@maxpromo/research` reader: same-site frames of a frameset home page; declared and undeclared legacy
+  charsets; unquoted, image-button and image-map links; pages chosen by use; copyright behind markup;
+  one HTTPS check; coverage; 30 s and 40 000-character bounds. All host, robots, size and type checks kept.
+- Research shape version 2: facts (ids, topics, merged per statement, paraphrase restates the quote),
+  code-read signal facts, grounded inferences and opportunities, unknowns, rejections with reasons.
+- Qualification: opportunity score vs research confidence; absence scores only where it was looked
+  for; off-domain published address is a check; verdicts qualified / review / not_qualified;
+  investigation plan.
+- Lead screen and Max card show the parts separately; earlier research kept on the lead
+  (`research.site_history`); Bureau work list shows "review".
+- Production: Mediza 28 → 67 (qualified, confidence high), two runs; nothing sent. Commits `25590cd`,
+  `78ad9d7`. Evidence: `docs/architecture/agent-bureau.md` §10.
+
 ## 2026-10-26 — Agent Bureau workforce: the Research Agent (ADR-0030)
 
 - `packages/research` (`@maxpromo/research`): lead research and qualification moved out of `apps/web/lib/leads`;

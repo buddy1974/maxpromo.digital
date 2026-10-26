@@ -1,5 +1,17 @@
 # Decision Log
 
+## 2026-10-26 — Research Agent real-lead repair decisions (ADR-0031; for Marcel's inspection)
+
+Under the "Research Agent real-lead forensic repair" brief: root cause traced to the fetch (frameset
+not followed, windows-1252 decoded as UTF-8); fixed in the shared reader for every site, no rule for
+this prospect, its trade, its city or HTTP sites, no threshold changed. Research shape version 2
+(fact / inference / opportunity / unknown, grounded by id). Score = opportunity, confidence = research;
+absence only where looked for; an off-domain published address is a check (±0) instead of −10 — the
+one scoring change, a general principle; three verdicts, low confidence → review. Earlier research is
+kept as history on the lead. Production data: two research runs on the real Mediza lead (now 67,
+qualified, stage Qualified by the existing rule) and one on the TEST lead (now 0, not qualified);
+nothing sent, no basis recorded.
+
 ## 2026-10-26 — Agent Bureau workforce decisions (ADR-0030; for Marcel's inspection)
 
 Under the "Agent Bureau reality + first workforce activation" brief: the live Bureau is `apps/bureau` (the

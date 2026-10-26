@@ -1,8 +1,8 @@
 # ADR-0031 — Research Agent on messy real sites: facts, inferences, opportunities; two dimensions; three verdicts
 
 Date: 2026-10-26
-Status: **Accepted (owner brief "Research Agent real-lead forensic repair"); implemented; production
-acceptance in `docs/architecture/agent-bureau.md` §10.** Amends ADR-0027 §2 (research and
+Status: **Accepted (owner brief "Research Agent real-lead forensic repair"); implemented and production
+verified 2026-10-26 (`25590cd`, `78ad9d7`); acceptance in `docs/architecture/agent-bureau.md` §10.** Amends ADR-0027 §2 (research and
 qualification) and ADR-0030 (the Research Agent's result contract).
 
 ## Context — the first real prospect
@@ -86,8 +86,9 @@ screen; and confidence and verdict were one dimension shown twice.
 ## Rejected
 
 - Rules tuned to this prospect (old website +n, HTTP sites, surgeries, Essen). No threshold changed.
-  The full read scores 57 under the rules as they were before this ADR (fit, telephone-only pain,
-  the angle, no booking, not mobile, no HTTPS, stale, and −10 for the off-domain address).
+  The production after-run scores 67; under the rules as they were before this ADR the same reading
+  scores 57 (identical except −10 instead of ±0 for the off-domain address). Of the 39 points between
+  28 and 67, 29 come from reading the site (pain +12, two grounded opportunities +12, © 2009 +5).
 - Following every link (a crawler). Four frames and three chosen pages.
 - A headless browser for legacy sites. HTML frames need no JavaScript; a JavaScript-only site is still
   reported as unreadable.
@@ -95,6 +96,8 @@ screen; and confidence and verdict were one dimension shown twice.
 ## Consequences
 
 - Research findings version 2; version 1 records parse and display as they were decided.
-- Proofs: lead research 69 (was 35), agent work 47 (was 44), end-to-end evidence 59 (was 57), lead
+- A fact's text restates its quote: words of interpretation the quote lacks ("seitdem", "erkennbar",
+  "veraltet", "apparently", …) give way to the quote itself (found in the first production after-run).
+- Proofs: lead research 70 (was 35), agent work 47 (was 44), end-to-end evidence 59 (was 57), lead
   workflow evidence 44; the stand-in model answers in the new shape.
-- Risks 172–175 (`docs/governance/known-risks.md`).
+- Risks 172–176 opened, 168 closed (`docs/governance/known-risks.md`).
