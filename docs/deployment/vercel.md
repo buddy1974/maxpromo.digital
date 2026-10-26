@@ -114,14 +114,16 @@ separate is what keeps the two databases separate.
 | Variable | web | bureau |
 |---|---|---|
 | `DATABASE_URL` / `NEON_DATABASE_URL` | `NEON_DATABASE_URL`, eu-central-1 | `DATABASE_URL`, us-east-1 until the EU cutover |
-| `ANTHROPIC_API_KEY` | ✓ | — (no AI key in production; the AI Lab cannot run) |
+| `ANTHROPIC_API_KEY` | ✓ (also runs the Bureau's model step, ADR-0030) | — (none, by design: the Research Agent asks the OS gateway) |
 | `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` | ✓ (the only Telegram sender) | — (removed 2026-10-23) |
 | `RESEND_API_KEY` / `RESEND_FROM_EMAIL` | ✓ | — |
 | `OS_PASSWORD` / `OS_SESSION_SECRET` | ✓ | — |
 | `HOSTINGER_WEBHOOK_SECRET` / `EMAIL_PROVIDER` | ✓ | — |
 | `HOSTINGER_MAIL_API_TOKEN` / `HOSTINGER_MAILBOX_RESOURCE_ID` (read-only provider spam state, ADR-0022; **not set yet**) | owner to set | — |
 | `OS_BUREAU_AGENT_SECRET` | ✓ (verifies) | ✓ (signs) — one fresh value, 2026-10-23 |
-| `OS_BUREAU_ALLOWED_AGENTS` | `bureau:intake,bureau:console` | — |
+| `OS_BUREAU_ALLOWED_AGENTS` | `bureau:intake,bureau:console,bureau:research` (2026-10-26) | — |
+| `BUREAU_WORK_SECRET` (optional, ADR-0030) | not set — the work-door key is derived from `OS_BUREAU_AGENT_SECRET` | not set (same derivation) |
+| `BUREAU_API_ORIGIN` (optional) | default `https://agents.maxpromo.digital` | — |
 | `OS_AGENT_SECRET` / `OS_AGENT_ALLOWED_ACTORS` | — (removed 2026-10-23; legacy door closed) | — |
 | `BUREAU_OS_BUSINESS_ID` | — | the Bureau tenant that is Maxpromo |
 | `CRON_SECRET` | — | ✓ (daily intake-outbox flush) |

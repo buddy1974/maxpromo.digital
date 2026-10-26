@@ -128,23 +128,23 @@ app/api/leads/route.ts
 
 ## 7. Demo Business Context References (must be replaced in Auth-5)
 
-All query files use `getDemoBusinessId()` from `lib/db/queries/_shared.ts`.
-This is a name-based lookup using `DEMO_BUSINESS_NAME = "Maxpromo Demo Operations"` from `config/demo.ts`.
+All query files use `getDemoBusinessId()` from `lib/db/queries/_shared.ts`. (removed 2026-10-26, ADR-0030)
+This is a name-based lookup using `DEMO_BUSINESS_NAME = "Maxpromo Demo Operations"` from `config/demo.ts`. (removed 2026-10-26, ADR-0030)
 
 Files that call `getDemoBusinessId()`:
 
 | File | Line |
 |------|------|
-| `lib/db/queries/_shared.ts` | 26 (definition) |
-| `lib/db/queries/activity.ts` | 9 |
-| `lib/db/queries/agents.ts` | 9 |
-| `lib/db/queries/approvals.ts` | 11 |
-| `lib/db/queries/audit.ts` | 10 |
-| `lib/db/queries/documents.ts` | 13 |
-| `lib/db/queries/governance.ts` | 20 |
-| `lib/db/queries/playbooks.ts` | 13 |
-| `lib/db/queries/waiting-room.ts` | 9 |
-| `app/api/demo/status/route.ts` | 21 |
+| `lib/db/queries/_shared.ts` | 26 (definition) (removed 2026-10-26, ADR-0030) |
+| `lib/db/queries/activity.ts` | 9 (removed 2026-10-26, ADR-0030) |
+| `lib/db/queries/agents.ts` | 9 (removed 2026-10-26, ADR-0030) |
+| `lib/db/queries/approvals.ts` | 11 (removed 2026-10-26, ADR-0030) |
+| `lib/db/queries/audit.ts` | 10 (removed 2026-10-26, ADR-0030) |
+| `lib/db/queries/documents.ts` | 13 (removed 2026-10-26, ADR-0030) |
+| `lib/db/queries/governance.ts` | 20 (removed 2026-10-26, ADR-0030) |
+| `lib/db/queries/playbooks.ts` | 13 (removed 2026-10-26, ADR-0030) |
+| `lib/db/queries/waiting-room.ts` | 9 (removed 2026-10-26, ADR-0030) |
+| `app/api/demo/status/route.ts` | 21 (removed 2026-10-26, ADR-0030) |
 
 **Auth-5 action:** Replace all `getDemoBusinessId()` calls with session-derived `businessId`. The `config/demo.ts` constants and `getDemoBusinessId()` helper must be retired from the application runtime.
 
@@ -165,7 +165,7 @@ Files that call `getDemoBusinessId()`:
   - Optionally: Vercel deployment protection (password-protect preview deployments)
 
 ### OpenAI key exposure
-- `OPENAI_API_KEY` referenced in: `config/env.ts`, `lib/ai/openai-provider.ts`
+- `OPENAI_API_KEY` referenced in: `config/env.ts`, `lib/ai/openai-provider.ts` (removed 2026-10-26, ADR-0030)
 - Not hardcoded; read from environment ✓
 - `.env.example` has placeholder `OPENAI_API_KEY=""` ✓
 - No cost logging or per-request attribution currently

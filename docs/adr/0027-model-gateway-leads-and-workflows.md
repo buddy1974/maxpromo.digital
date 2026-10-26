@@ -66,13 +66,13 @@ What the Lead Agent needs, and nothing more (collected only where it improves qu
 | Commercial assessment | verified pain points / opportunities / facts (each with verbatim quote + URL), suggested Maxpromo service family, score with reasons, confidence, caveats, research date, model | model + verification; **code** scores |
 | Outreach | basis for email, draft (Email OS), follow-up state, reply state | OS records |
 
-- **Research** (`lead.research`, GREEN, `lib/leads/fetchSite.ts`, `research.ts`): reads the business's own
+- **Research** (`lead.research`, GREEN, `lib/leads/fetchSite.ts`, `research.ts`): reads the business's own (moved to `packages/research` 2026-10-26; the old path was removed, ADR-0030)
   public site — home page plus up to three same-site pages (Impressum, contact, services, about); refuses
   private/link-local addresses (also after redirects), honours robots.txt, 1.5 MB / 8 s per page, HTML only.
 - **Verification:** every finding must carry a verbatim quote found on the page it cites; otherwise it is
   dropped and counted. Model prose is stripped of links and addresses; the contact address is taken only from
   the site's own domain; a person only if the site names them.
-- **Qualification** (`lib/leads/qualify.ts`) is code: fit (+15), each verified pain (+12, max 3), opportunity
+- **Qualification** (`lib/leads/qualify.ts`) is code: fit (+15), each verified pain (+12, max 3), opportunity (moved to `packages/research` 2026-10-26; the old path was removed, ADR-0030)
   (+6, max 2), no booking tool where one is expected (+10), not mobile (+8), no HTTPS (+5), stale (+5),
   reachable business email (+10 / −10 without), no angle (−10). Qualified at ≥ 50 unless confidence is low.
   Every point is a reason shown to Marcel.

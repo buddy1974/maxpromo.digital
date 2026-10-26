@@ -1,5 +1,26 @@
 # Change Log
 
+## 2026-10-26 — Agent Bureau workforce: the Research Agent (ADR-0030)
+
+- `packages/research` (`@maxpromo/research`): lead research and qualification moved out of `apps/web/lib/leads`;
+  the model step is a named task; result contract `parseFindings` / `recommendNext`. The OS and the Bureau share it.
+- Work door `agents.maxpromo.digital/api/work/v1/{request,status,cancel}` (signed, client `os`, nonce, tenant from
+  the credential, work id = idempotency key); OS model door `POST /api/os/agent/v1/model` (registered tasks only).
+- Bureau Research Agent (`agent_work`, migration 0003; `agent_runs`), hand-back via `agentwork.result`, stale work
+  failed as timeout, undelivered results retried (cron, dashboard).
+- OS `os_agent_work` (migration 0027), `agentwork.request` (owner only) / `agentwork.result` (Research Agent only),
+  pull reconciliation, failures as attention items; `lib/leads/run.ts` split into claim and apply.
+- Universal Max: `AGENT_WORK` replaces `LEAD_RESEARCH`; the card follows the work; a recommended introduction is a
+  separate `LEAD_OUTREACH_DRAFT` proposal; result links wrap; a lead link opens that lead. Lead screen delegates and
+  tells Max which lead is open.
+- One login: `/api/os/bureau/handoff` → one-time ticket → `agents.maxpromo.digital/sso` (`os-handoff` provider).
+- Bureau truthfulness: sample sections, mock APIs, demo seed, AI Lab, provider config and eight placeholder agents
+  removed; overview = runtime, delegated work, connections, failures; header "Live system".
+- Production env: `OS_BUREAU_ALLOWED_AGENTS` += `bureau:research`; no new secret (derived keys, risk 165).
+- Proofs: `prove:agent-work` (44, gate 36), `prove:agent-work-evidence` (57). Regression: verify 36/36; Max 46,
+  Max evidence 46, lead research 35, lead workflow 44, control planes 33.
+- Production acceptance: see `docs/architecture/agent-bureau.md` §9.
+
 ## 2026-10-25 — Universal Max V1 (ADR-0029)
 
 - `lib/max`: proposal contract, understanding (one gateway call, registered types only), context envelope, grounding,

@@ -43,7 +43,7 @@ CAPTURE → UNDERSTAND → GROUND → PROPOSE → PREVIEW → MARCEL CONFIRMS �
 | `CLIENT_NOTE` | `note.add` (GREEN) | `client_id` or `lead_id`, text | tap | note on timeline | `max.CLIENT_NOTE` + timeline |
 | `LEAD_CREATE` | `lead.create` (GREEN) | company + contact; duplicates (`findExisting`) shown first | tap | lead | `max.LEAD_CREATE` + lead history |
 | `LEAD_UPDATE` | `lead.update` (GREEN) | `lead_id` + stage (never `won`), value, next action, contact | tap | lead | `max.LEAD_UPDATE` + lead history |
-| `LEAD_RESEARCH` | `lead.research` (GREEN) | `lead_id`; refused without a website on record | tap | score + findings | `max.LEAD_RESEARCH` + lead history |
+| `AGENT_WORK` (ADR-0030; replaced `LEAD_RESEARCH`) | `agentwork.request` (GREEN, owner only) | `agent: research`, `lead_id`; refused without a website on record | tap ("Start research") | the Research Agent's result on the card (score, verdict, evidence, recommendation); an introduction is offered as a separate proposal | `max.AGENT_WORK`, `agentwork.request`, `agentwork.result` + lead timeline |
 | `LEAD_OUTREACH_DRAFT` | `outreach.draft` (GREEN) | `lead_id`, `channel:'email'`, instruction | tap | draft on the lead; **nothing sent** | `max.*` + lead history |
 | `EMAIL_REPLY_DRAFT` | `email.assist` (text) → `email.compose` (GREEN) | thread from screen or the person's conversations; recipient = latest inbound sender; text written at proposal time, editable | tap | Email OS draft; **not sent** | `max.*` (+ draft revision) |
 | `EMAIL_DRAFT` | `email.assist` mode `compose` → `email.compose` (GREEN) | recipient from client/lead record, Marcel's words, or (marked, ticked) a document | tap (+ tick for a document recipient) | Email OS draft; **not sent** | `max.*` |

@@ -668,7 +668,7 @@ measured.
 
 Found 2026-09-07 while designing the authenticated drizzle-orm verification.
 
-`lib/db/queries/_shared.ts` wraps reads in `safeRead(fn, fallback)`, which
+`lib/db/queries/_shared.ts` wraps reads in `safeRead(fn, fallback)`, which (removed 2026-10-26, ADR-0030)
 catches, writes `[db/queries] read failed:` to `console.error`, and returns the
 fallback. Every query module uses it. `dashboard.ts` does not — it composes the
 others, and says so in a comment: *"Each underlying query is already resilient
@@ -1325,7 +1325,7 @@ Drive24 go to market under? **Owner:** Marcel.
 ## OPEN — There are two AI stacks and only one has a safety layer
 
 `apps/web` and `apps/bureau` each have their own provider abstraction, prompt
-file and types. `apps/bureau/lib/ai/safety.ts` bounds input length and raises a
+file and types. `apps/bureau/lib/ai/safety.ts` bounds input length and raises a (removed 2026-10-26, ADR-0030)
 risk floor for tax, finance, invoicing, legal and contract topics. `apps/web`,
 which serves the public chat on ten domains, has no equivalent.
 
@@ -1840,3 +1840,11 @@ Risks 11–15 are acceptable during concierge phase and tracked for later sprint
 | 161 | **Production test records from the Universal Max acceptance** | Client "TEST Max-Abnahme Nordlicht GmbH" (archived, source max) with one note, quote draft ANG-2026-011, two cancelled follow-ups; invoice MP-2026-045 (€100, marked issued by one documented SQL statement for the money scenario — never emailed — then cancelled through invoice.cancel with reason); one rejected payment approval (no payment recorded); one reply draft on the MXP-INBOUND-PROOF thread (discarded); Max history rows. Invoice number MP-2026-045 is used by a cancelled test invoice. Delete only with Marcel's go-ahead. |
 | 162 | **The production ledger write of a Max payment was not exercised** | Scenario 6 ran in production up to the strong confirmation (real client, invoice, amount, balance before/after, the capability's own approval) and was then cancelled, so no test money enters Marcel's Money figures. The full path — approval → `payment.record` → ledger → balance → audit — is proven in the evidence database (`prove:max-evidence`) and locally through the screen. ACCEPTED. |
 | 163 | **Max phone screens verified at 360/390/412 locally, not on a phone** | Production cannot be framed and the Chrome window cannot be resized; the same build was exercised in a 360/390/412 harness (composer, cards, edit, choice, approval, multi-select, voice denied/transcript). The on-screen keyboard over the composer and camera capture on a real phone are not tested. OWNER (physical phone check). |
+| 164 | **The Bureau's model step depends on the OS gateway** | ADR-0030: the Research Agent holds no key; `POST /api/os/agent/v1/model` runs the registered task. An OS outage or an exhausted provider makes research fail as `model` (honest, retryable), and the OS route's 120 s limit bounds a slow model. ACCEPTED (one key custodian is the point). |
+| 165 | **Work-door and handoff keys derive from one stored credential** | `workDoorSecret()` and the owner handoff derive purpose-labelled keys from `OS_BUREAU_AGENT_SECRET` because writing new secrets to the Vercel store was refused in-session. Separate keys per purpose; rotating the credential rotates all three. An explicit `BUREAU_WORK_SECRET` overrides the derivation if the owner wants independent rotation. ACCEPTED. |
+| 166 | **The Bureau tenant that is Maxpromo is named "Maxpromo Demo Operations"** | `businesses.066f65b5…` is tenant 1 (`BUREAU_OS_BUSINESS_ID`); its name dates from the demo seed. Not shown on any screen now. Renaming is a one-row production data change. OWNER (rename, or leave). |
+| 167 | **Seeded demo rows remain in the Bureau database** | `agents` (fake statuses), `agent_proposals` (7), `approval_events`, `activity_logs`, `waiting_room_items` (5 fictional people), `document_intake_items`, `audit_findings`, governance and playbook tables — kept as forensic record; no code reads them since ADR-0030. Dropping them (and the empty CRM-duplicate tables `contacts`, `companies`, `projects`, `tasks`, `notes`) is a production data decision. OWNER. |
+| 168 | **No real public business lead was researched in production** | The pipeline holds only form spam and test leads; production acceptance used Maxpromo's own site (test lead) and an unreachable test domain. Quality on a real prospect site, and the introduction recommendation in production, are unverified. OWNER (pick one real lead; research only). |
+| 169 | **Website prompt injection proven in evidence, not in production** | No hostile test site exists on a public host; the defences (no tools, verbatim quotes, pattern screening, low confidence, no action) are proven with a fixture site through the shared code and the real OS door. ACCEPTED. |
+| 170 | **`after()` runs the work in the request's function** | Vercel ends it at the route's `maxDuration` (300 s); a deploy or platform stop mid-run leaves the item `running` until the 10-minute deadline fails it as `timeout`. No queue. ACCEPTED for one agent; a queue is the answer if work grows. |
+| 171 | **The allow-list value is stored encrypted and cannot be read back** | `OS_BUREAU_ALLOWED_AGENTS` was set to `bureau:intake,bureau:console,bureau:research` (docs/deployment/vercel.md); console and research verified by behaviour in production 2026-10-26, intake on its next enquiry. ACCEPTED. |

@@ -1,5 +1,18 @@
 # Decision Log
 
+## 2026-10-26 — Agent Bureau workforce decisions (ADR-0030; for Marcel's inspection)
+
+Under the "Agent Bureau reality + first workforce activation" brief: the live Bureau is `apps/bureau` (the
+standalone repository named in the brief was merged by ADR-0001 and is archived); first capability Lead Research +
+Qualification as one package by the Research Agent; one engine in `packages/research`; execution in the Bureau,
+scoring and the lead record in the OS; model step through the OS gateway by task name (no key in the Bureau);
+work-door and handoff keys derived from the existing Bureau credential after the secret-store write was refused;
+no automatic retry, no waiting state, no memory, no playbooks; `AGENT_WORK` owner-confirmed only; sample
+screens, mock APIs, demo seed, AI Lab and placeholder agents removed from code, their database rows kept;
+human one-login via a one-time OS ticket. Production test data: research on the existing test lead "TEST
+Lead-Abnahme Maxpromo" (score now 45 by the Research Agent) and a new test lead "TEST Agent-Fehler Maxpromo"
+(closed as Lost with reason). Gate count 36.
+
 ## 2026-10-25 — Universal Max V1 decisions (ADR-0029; for Marcel's inspection)
 
 Under the Universal Max brief: Max owns no business data and runs only registered capabilities; confirmation follows the
@@ -572,7 +585,7 @@ fixtures is translated.
 **Why.** No product translates its data. An English-speaking operator of a
 German business reads German customer records, and a fixture that pretended
 otherwise would be teaching the wrong expectation about the real thing. The
-line is drawn in `lib/mock/ai-governance.ts` and repeated in
+line is drawn in `lib/mock/ai-governance.ts` and repeated in (removed 2026-10-26, ADR-0030)
 `architecture/localisation.md`, because it is the one judgement in this pass
 that somebody could reasonably disagree with.
 

@@ -112,7 +112,7 @@ company's own business.
 audit, waiting room, playbooks, documents, operating model, governance, memory,
 research, tasks, projects, contacts, leads.
 
-**Safe data (CONFIRMED).** `apps/bureau/lib/seed/run-demo-seed.mjs` with nine
+**Safe data (CONFIRMED).** `apps/bureau/lib/seed/run-demo-seed.mjs` with nine (removed 2026-10-26, ADR-0030)
 data modules. Its own header states it is idempotent, touches only the demo
 business and its child rows, never touches lead tables, performs no schema
 change and sends nothing outbound. The synthetic tenant is

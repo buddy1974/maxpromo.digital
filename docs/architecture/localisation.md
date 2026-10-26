@@ -130,7 +130,7 @@ Two, and both have to be written down where the code is:
 
 - **`i18n-exempt`** in a comment exempts from that line to the end of the
   declaration it introduces. It is for text that instructs a model rather than
-  a person (`lib/ai/prompts.ts`), and for product vocabulary no surface renders
+  a person (`lib/ai/prompts.ts`), and for product vocabulary no surface renders (removed 2026-10-26, ADR-0030)
   yet. The marker sits next to the thing it excuses so the reason is read by
   whoever next reads the code.
 - **`SAME_IN_BOTH`** in `check-i18n.mjs` lists, by full key path, the values

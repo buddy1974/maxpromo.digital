@@ -140,7 +140,7 @@ reachable. No emergency containment was needed, but the drift is real.
 - **Approvals:**
   - Proposals come from the seed only.
   - Approving writes `approval_events` with actor "user" and executes nothing.
-  - The status update is not atomic (`lib/db/queries/approvals.ts`), there is no idempotency
+  - The status update is not atomic (`lib/db/queries/approvals.ts`), there is no idempotency (removed 2026-10-26, ADR-0030)
     key, and `approvals.decided_by` is unused.
 - **Auth:**
   - NextAuth credentials, JWT for 8 hours, argon2id.

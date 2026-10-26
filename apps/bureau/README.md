@@ -7,25 +7,15 @@ to Neon and (optionally) ping Telegram.
 
 > Architecture, roadmap and decisions live in [`PLAN.md`](./PLAN.md).
 
-## Demo workspace (Sprint 4)
-A single demo business — **"Maxpromo Demo Operations"** — backs the dashboard with
-real Neon data. Seed it (idempotent, safe, never touches lead tables):
-```bash
-npm run db:seed:demo     # node --env-file=.env.local lib/seed/run-demo-seed.mjs
-```
-DB-backed pages (`/dashboard`, `/dashboard/audit`, `/waiting-room`, `/approvals`,
-`/documents`) read live from Neon via `lib/db/queries/*` (read-only, demo-scoped,
-resilient — they show empty states with a "run demo seed" prompt when unseeded).
-Remaining dashboard pages still render from registry/mock. No outbound actions,
-no execution, no OCR, no scanning — supervised preview only.
-
-## AI provider layer (Sprint 6A)
-OpenAI-first, **draft-only** AI generation behind `lib/ai/*`. No execution, no
-outbound action, no DB writes from generation. Set `OPENAI_API_KEY` (server-only;
-never `NEXT_PUBLIC_`) plus optional `AI_PROVIDER`/`AI_MODEL`/`AI_TEMPERATURE` to
-enable it — the app builds and runs fine **without** a key (AI routes return
-`ai_not_configured`). Test it at **`/dashboard/ai-lab`** (internal). Endpoints:
-`POST /api/ai/generate`, `GET /api/ai/status`. Anthropic is a placeholder for later.
+## What runs here (ADR-0021, ADR-0030)
+- **Intake agent** — site enquiries → Maxpromo OS `lead.intake` (outbox, retried).
+- **Research Agent** — work delegated by Maxpromo OS through the work door
+  `/api/work/v1/{request,status,cancel}`: reads a lead's public website, model step through the OS gateway
+  (`/api/os/agent/v1/model`), verifies quotes, qualifies with `@maxpromo/research`, hands the result back.
+- **Dashboard** — runtime, delegated work, the two agents, the OS approvals projection. No sample data; the
+  demo seed and mock layer were removed (their old database rows remain, unread).
+- **One login** — `/sso` accepts the one-time ticket Maxpromo OS issues to its owner.
+- No model key here, by design. See `docs/architecture/agent-bureau.md`.
 
 ## Stack
 - **Next.js 15** (App Router, RSC)

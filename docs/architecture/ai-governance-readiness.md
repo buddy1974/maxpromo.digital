@@ -69,10 +69,10 @@ than from discovery.
 
 | | `apps/web` | `apps/bureau` |
 |---|---|---|
-| Provider abstraction | `lib/ai.ts` | `lib/ai/provider.ts` + two provider files |
-| Prompts | `lib/prompts.ts` (136 lines) | `lib/ai/prompts.ts` (49 lines) |
-| Safety | none | `lib/ai/safety.ts` — input bounds, a sensitive-domain risk floor |
-| Types | `lib/chat/types.ts` | `lib/ai/types.ts` |
+| Provider abstraction | `lib/ai.ts` | `lib/ai/provider.ts` + two provider files (removed 2026-10-26, ADR-0030) |
+| Prompts | `lib/prompts.ts` (136 lines) | `lib/ai/prompts.ts` (49 lines) (removed 2026-10-26, ADR-0030) |
+| Safety | none | `lib/ai/safety.ts` — input bounds, a sensitive-domain risk floor (removed 2026-10-26, ADR-0030) |
+| Types | `lib/chat/types.ts` | `lib/ai/types.ts` (removed 2026-10-26, ADR-0030) |
 | Memory | `lib/chat/memory.ts` — Neon, `chat` schema | `memory_entries` table |
 | Model named in | 8 files | 2 files |
 
@@ -92,7 +92,7 @@ one AI layer or two.
 
 ### Prompts
 
-**Today:** `apps/web/lib/prompts.ts` and `apps/bureau/lib/ai/prompts.ts`. Both
+**Today:** `apps/web/lib/prompts.ts` and `apps/bureau/lib/ai/prompts.ts`. Both (removed 2026-10-26, ADR-0030)
 are TypeScript modules of template literals, versioned only by git.
 
 **Belongs:** `packages/ai/prompts/`, one file per assistant task, with the same
@@ -145,7 +145,7 @@ region. Two live constraints:
 
 ### Assistant policies
 
-**Today:** `apps/bureau/lib/ai/safety.ts` only — input bounds and a
+**Today:** `apps/bureau/lib/ai/safety.ts` only — input bounds and a (removed 2026-10-26, ADR-0030)
 sensitive-domain risk floor covering tax, finance, invoicing, legal and
 contracts. `apps/web`'s chat has no equivalent.
 
