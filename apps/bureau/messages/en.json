@@ -207,11 +207,11 @@
     "groupWorkspace": "Workspace",
     "groupSystem": "System",
     "supervisedMode": "Supervised mode",
-    "systemPreview": "System preview",
     "sidebarLabel": "Sections",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "menuLabel": "Sections"
+    "menuLabel": "Sections",
+    "systemLive": "Live system"
   },
   "sections": {
     "overview": "Overview",

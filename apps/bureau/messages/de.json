@@ -207,11 +207,11 @@
     "groupWorkspace": "Arbeitsbereich",
     "groupSystem": "System",
     "supervisedMode": "Überwachter Betrieb",
-    "systemPreview": "Systemvorschau",
     "sidebarLabel": "Bereiche",
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
-    "menuLabel": "Bereiche"
+    "menuLabel": "Bereiche",
+    "systemLive": "Live-System"
   },
   "sections": {
     "overview": "Übersicht",

@@ -35,7 +35,7 @@ export async function Topbar({ title }: { title: string }) {
 
       <div className="flex items-center gap-3">
         <span className="hidden whitespace-nowrap rounded-full border border-accent/30 bg-accent-soft px-3 py-1 font-mono text-label uppercase tracking-[0.14em] text-ink-secondary sm:inline">
-          {s("systemPreview")}
+          {s("systemLive")}
         </span>
         <span className="hidden whitespace-nowrap font-mono text-label uppercase tracking-[0.14em] text-ink-muted lg:inline">
           {s("supervisedMode")}
