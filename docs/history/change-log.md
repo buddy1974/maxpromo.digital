@@ -1,5 +1,18 @@
 # Change Log
 
+## 2026-10-26 — Research Agent field calibration (ADR-0032)
+
+- Lead screen: under a Research Agent result, "Was this research useful?" — Agree / Partly / Disagree,
+  then optional issue tags and a short note. Stored per research run (`os_agent_work_review`,
+  migration 0028, append-only) by `agentwork.review` (owner only, GREEN); audited; changes nothing else.
+- Each finished run keeps its calibration record in its summary (business type, pages, facts,
+  opportunities, unknowns, limitations).
+- `/os/leads/calibration` (linked from Leads): every run with Marcel's judgement; summary over real
+  judged prospects only; patterns from five judged runs.
+- Research, scoring, prompts, extraction, qualification and recommendations unchanged.
+- Proofs: `prove:agent-work` 53, new `prove:research-calibration-evidence` 23; `npm run verify` green
+  (web JS 1498 of 1500 KB — calibration copy kept out of the shared leads copy). Commit `407a676`.
+
 ## 2026-10-26 — Research Agent real-lead repair (ADR-0031)
 
 - `@maxpromo/research` reader: same-site frames of a frameset home page; declared and undeclared legacy

@@ -19,6 +19,9 @@ db/
                                            OS links, takeover, window, lease, outbound ledger (ADR-0019)
     ├── 0013-email-channel.sql          ← governed mail metadata, associations and audit
     └── 0014-hostinger-contract.sql     ← independent delivery/RFC IDs, previews, sealed jobs/assets
+    … 0015–0027 (see the files)
+    └── 0028-research-calibration.sql   ← Marcel's judgement per research run (ADR-0032); applied to
+                                           the evidence database and production 2026-10-26
 ```
 
 **0012 is applied to the evidence lab only** (2026-10-16). ADR-0019 is accepted, but applying 0012 to

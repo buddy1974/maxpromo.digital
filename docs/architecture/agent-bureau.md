@@ -166,3 +166,18 @@ the second run had none.
 
 Proofs: lead research 70, agent work 47, agent work evidence 59, lead workflow evidence 44, Max 46 and
 46, control planes 33; `npm run verify` 36/36.
+
+## 11. Field calibration (ADR-0032, 2026-10-26)
+
+Marcel judges finished Research Agent runs on the lead screen (agree / partly / disagree, optional issue
+tags and note). One judgement per run, append-only (`os_agent_work_review`, migration 0028); the
+newest row is current. `agentwork.review` is owner-only, GREEN, on the lead screen's action route and
+not a Max proposal; it writes the review and `os_audit` and nothing else. Each finished run keeps its
+calibration record in `os_agent_work.summary.record`. The summary at `/os/leads/calibration` counts real
+prospects only and shows patterns from five judged runs. The Research Agent itself is unchanged.
+
+Evidence: `prove:research-calibration-evidence` (23, evidence database) — a review attaches to its run;
+earlier runs and results unchanged; two runs, independent reviews; the three verdicts, tags and note
+persist, invalid input refused; no score or result field accepted; lead score, research and stage
+unchanged; no draft, outbound message, approval or basis; only the owner, only completed runs; the
+summary counts real judged runs only; the lead screen links its result to the right run.

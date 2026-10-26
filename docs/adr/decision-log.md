@@ -1,5 +1,14 @@
 # Decision Log
 
+## 2026-10-26 — Research Agent field calibration (ADR-0032; for Marcel's inspection)
+
+Under the "Research Agent field calibration" brief: Marcel's judgement of a research run is recorded as
+evidence beside the run (one new append-only table, migration 0028, applied to the OS production
+database in one bounded transaction, SHA-checked editor content). Nothing reads it to change the agent.
+"Real prospect" for the summary excludes our own domain, test recipients and TEST/EVD leads. Patterns
+need five judged real runs. No prospect was added, researched or contacted by Claude: Marcel chooses
+the batch.
+
 ## 2026-10-26 — Research Agent real-lead repair decisions (ADR-0031; for Marcel's inspection)
 
 Under the "Research Agent real-lead forensic repair" brief: root cause traced to the fetch (frameset
