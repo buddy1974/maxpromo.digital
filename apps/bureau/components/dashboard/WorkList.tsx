@@ -17,7 +17,7 @@ export async function WorkList({ items }: { items: WorkItem[] }) {
     <ul className="divide-y divide-hairline rounded-lg border border-hairline bg-surface shadow-sm">
       {items.map((w) => {
         const agent = AGENTS.find((a) => a.id === `${w.agentKey}-agent`)?.name ?? w.agentKey;
-        const result = w.result as { qualification?: { score: number; confidence: string; qualified: boolean }; findings?: { evidence?: unknown[] } } | null;
+        const result = w.result as { qualification?: { score: number; confidence: string; qualified: boolean; verdict?: "qualified" | "review" | "not_qualified" }; findings?: { evidence?: unknown[] } } | null;
         const failure = w.failure as { category: string; detail: string } | null;
         const took = w.startedAt && w.finishedAt ? Math.max(0, Math.round((w.finishedAt.getTime() - w.startedAt.getTime()) / 1000)) : null;
         const stateKey = ({ queued: "stateQueued", running: "stateRunning", completed: "stateCompleted", failed: "stateFailed", cancelled: "stateCancelled" } as const)[w.state as "queued"] ?? "stateFailed";
@@ -33,7 +33,7 @@ export async function WorkList({ items }: { items: WorkItem[] }) {
             </p>
             {result?.qualification && (
               <p className="text-xs text-ink-secondary">
-                {t("score", { score: result.qualification.score, confidence: result.qualification.confidence, verdict: result.qualification.qualified ? t("verdictYes") : t("verdictNo") })}
+                {t("score", { score: result.qualification.score, confidence: result.qualification.confidence, verdict: result.qualification.verdict === "review" ? t("verdictReview") : result.qualification.qualified ? t("verdictYes") : t("verdictNo") })}
                 {" · "}{t("evidence", { count: result.findings?.evidence?.length ?? 0 })}
               </p>
             )}

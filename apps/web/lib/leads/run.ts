@@ -23,7 +23,23 @@ const setSite = (sql: Sql, id: string, site: SiteState) =>
  */
 export async function claimResearch(sql: Sql, leadId: string, by: string, work?: string): Promise<LeadRow | null> {
   const running: SiteState = { state: 'running', at: new Date().toISOString(), by, ...(work ? { work } : {}) }
-  const claimed = await sql`UPDATE os_leads SET research = jsonb_set(coalesce(research,'{}'::jsonb), '{site}', ${JSON.stringify(running)}::jsonb), updated_at = now()
+  /* A finished research about to be replaced is kept as one line of history (ADR-0031): a rerun
+     never makes the earlier result disappear from the lead. The full earlier findings stay in the
+     Agent Bureau's work record and the timeline. */
+  const claimed = await sql`UPDATE os_leads SET research = jsonb_set(jsonb_set(coalesce(research,'{}'::jsonb), '{site_history}',
+      CASE WHEN research->'site'->>'state' = 'done' THEN (
+        SELECT coalesce(jsonb_agg(e), '[]'::jsonb) FROM (
+          SELECT e FROM jsonb_array_elements(jsonb_build_array(jsonb_build_object(
+            'at', research->'site'->'researched_at',
+            'score', research->'site'->'qualification'->'score',
+            'confidence', research->'site'->'qualification'->'confidence',
+            'verdict', coalesce(research->'site'->'qualification'->'verdict', CASE WHEN (research->'site'->'qualification'->>'qualified')::boolean THEN '"qualified"'::jsonb ELSE '"not_qualified"'::jsonb END),
+            'facts', jsonb_array_length(coalesce(research->'site'->'evidence', '[]'::jsonb)),
+            'pages', jsonb_array_length(coalesce(research->'site'->'pages', '[]'::jsonb)),
+            'model', research->'site'->'model'))
+            || coalesce(research->'site_history', '[]'::jsonb)) e LIMIT 5) h)
+      ELSE coalesce(research->'site_history', '[]'::jsonb) END),
+      '{site}', ${JSON.stringify(running)}::jsonb), updated_at = now()
     WHERE id = ${leadId}::uuid AND (coalesce(research->'site'->>'state','') <> 'running' OR (research->'site'->>'at')::timestamptz < now() - make_interval(mins => ${STALE_MINUTES}))
     RETURNING *` as LeadRow[]
   return claimed[0] ?? null

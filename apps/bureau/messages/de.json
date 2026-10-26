@@ -1076,6 +1076,7 @@
     "evidence": "{count, plural, =0 {keine geprüften Befunde} one {# geprüfter Befund} other {# geprüfte Befunde}}",
     "verdictYes": "qualifiziert",
     "verdictNo": "nicht qualifiziert",
+    "verdictReview": "prüfen",
     "stateQueued": "wartet",
     "stateRunning": "läuft",
     "stateCompleted": "fertig",

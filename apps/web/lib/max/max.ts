@@ -27,10 +27,13 @@ import { extractClientCandidate, type ClientCandidate } from '@/lib/clients/extr
 import type { Fields, GroundCtx, Grounded, Lang, MaxContext, MaxEnvelope, ModelAction } from './contract'
 import { contextSummary, verifyContext } from './context'
 import { MAX_COPY } from './copy'
+import { LEADS_COPY } from '@/lib/os-i18n/leads'
 import { UUID, validDate, num, str, EMAIL } from './ground'
 import { looksLikeInstructions, proposalType } from './proposals'
 import { understand, UnderstandingUnavailable } from './understand'
 import { loadWork, reconcileWork, type WorkRow } from '@/lib/agents/work'
+import type { MaxWorkView } from './workView'
+export type { MaxWorkView } from './workView'
 
 export const MAX_FILE_BYTES = 4 * 1024 * 1024
 const READABLE = new Set(['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/gif'])
@@ -66,23 +69,6 @@ export interface ProposalView {
   createdAt: string
 }
 
-/** What the card shows of delegated work: words in the screen language, made here from the record. */
-export interface MaxWorkView {
-  id: string
-  state: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled'
-  stateLabel: string
-  open: boolean
-  lead: { label: string; href: string }
-  outcome?: { score: string; confidence: string; qualified: boolean; qualifiedLabel: string }
-  evidence: { kind: string; text: string; quote: string; url: string }[]
-  evidenceLabel: string
-  recommendation?: { code: string; text: string }
-  warning?: string
-  failure?: { text: string; retryable: boolean }
-  /** A separate governed next step Marcel may ask for — never started by the result itself. */
-  offer?: { label: string; done: boolean }
-  footnote: string
-}
 
 export interface InteractionView {
   id: string
@@ -282,17 +268,21 @@ function viewOf(p: ProposalRow): ProposalView {
 
 function workViewOf(w: WorkRow, lang: Lang, followed: boolean): MaxWorkView {
   const c = MAX_COPY[lang].agent
+  const l = LEADS_COPY[lang]
   const s = w.summary
   const open = w.state === 'queued' || w.state === 'running'
   return {
     id: w.id, state: w.state, stateLabel: c.state[w.state] ?? w.state, open,
     lead: { label: s?.lead ?? '', href: `/os/leads/${w.subject_id}` },
     ...(s ? {
-      outcome: { score: `${s.score}/100`, confidence: `${c.confidence} ${c.conf[s.confidence] ?? s.confidence}`, qualified: s.qualified, qualifiedLabel: s.qualified ? c.qualified : c.notQualified },
+      outcome: { score: `${s.score}/100`, confidence: `${c.confidence} ${c.conf[s.confidence] ?? s.confidence}`, qualified: s.qualified, qualifiedLabel: s.verdict ? l.verdict[s.verdict] : s.qualified ? c.qualified : c.notQualified },
       recommendation: { code: s.recommendation, text: c.next[s.recommendation] ?? '' },
+      ...(s.inferences?.length ? { reading: { label: l.inferencesLabel, note: l.inferencesNote, items: s.inferences } } : {}),
+      ...(s.opportunities?.length ? { opportunities: { label: l.opportunitiesLabel, note: l.opportunitiesNote, items: s.opportunities.map(o => `${l.solution[o.solution] ?? o.solution}: ${o.hypothesis}`) } } : {}),
+      ...(s.checks?.length ? { checks: { label: l.checksLabel, items: s.checks.map(x => 'question' in x ? x.question : (l.unknown[x.code] ?? (() => x.code))(x.value)) } } : {}),
       ...(s.injectionSuspected ? { warning: c.injection } : {}),
     } : {}),
-    evidence: s?.evidence ?? [], evidenceLabel: c.evidence,
+    evidence: s?.evidence ?? [], evidenceLabel: s?.verdict ? l.factsLabel : c.evidence,
     /* The category in the screen language; the agent's own reason (technical, English) follows it. */
     ...(w.state === 'failed' || w.state === 'cancelled' ? { failure: { text: [c.failure[w.failure?.category ?? 'internal'] ?? c.state[w.state], w.failure?.detail ? `(${w.failure.detail})` : '', w.failure?.retryable ? c.again : ''].filter(Boolean).join(' '), retryable: w.failure?.retryable ?? false } } : {}),
     ...(s?.recommendation === 'outreach_draft' ? { offer: { label: c.draftOffer, done: followed } } : {}),

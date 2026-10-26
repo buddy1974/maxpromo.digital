@@ -90,7 +90,7 @@ const de = {
     next: {
       outreach_draft: 'Empfehlung: einen persönlichen Erstkontakt als Entwurf vorbereiten.',
       find_contact: 'Empfehlung: erst eine Kontaktadresse finden — die Website nennt keine eigene.',
-      review: 'Empfehlung: selbst prüfen — die Belege reichen nicht für eine sichere Einschätzung.',
+      review: 'Empfehlung: selbst prüfen, bevor entschieden wird — die Recherche reicht nicht für ein sicheres Urteil.',
       not_a_fit: 'Empfehlung: im Moment nicht ansprechen.',
     } as Record<string, string>,
     draftOffer: 'Erstkontakt als Entwurf vorschlagen',
@@ -190,7 +190,7 @@ const en: typeof de = {
     next: {
       outreach_draft: 'Recommended: prepare a personal introduction as a draft.',
       find_contact: 'Recommended: find a contact address first — the website shows none of its own.',
-      review: 'Recommended: check it yourself — the evidence is not enough for a confident view.',
+      review: 'Recommended: check before deciding — the research is not enough for a confident verdict.',
       not_a_fit: 'Recommended: do not contact them for now.',
     },
     draftOffer: 'Propose an introduction draft',

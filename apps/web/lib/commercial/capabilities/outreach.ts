@@ -116,7 +116,8 @@ function promptFor(lead: LeadRow, history: string[], p: {
     ...facts.map((f) => `- ${f.fact}${f.source ? ` (source: ${f.source})` : ''}`),
     done?.summary ? `From their website: ${done.summary}` : '',
     ...(done?.evidence ?? []).map((e) => `- ${e.text} (their website says: "${e.quote}")`),
-    done?.angle ? `Most relevant Maxpromo service: ${done.angle.solution.replace(/-/g, ' ')} — ${done.angle.why}` : '',
+    /* Facts above; this is OUR hypothesis (ADR-0031) and must never be written as something they said. */
+    done?.angle ? `Possible Maxpromo angle (our hypothesis, not something they said): ${done.angle.solution.replace(/-/g, ' ')} — ${done.angle.why}` : '',
     done?.contact.person ? `Named on their website: ${done.contact.person}${done.contact.role ? ` (${done.contact.role})` : ''}` : '',
     `</business_facts>`,
     `<history>${history.length ? history.join('\n') : 'No previous contact.'}</history>`,

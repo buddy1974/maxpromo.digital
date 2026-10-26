@@ -7,12 +7,17 @@
 import type { Sql } from '@/lib/commercial/types'
 import type { LeadRow } from '@/lib/commercial/records'
 import { recordedBasis, testRecipients, type Basis } from './sendPolicy'
-import { recordedFacts, siteResearch, type SiteState } from './state'
+import { recordedFacts, siteHistory, siteResearch, type SiteHistoryEntry, type SiteState } from './state'
 import { workForLead } from '@/lib/agents/work'
+import { investigationPlan, recommendNext, type Check, type ResearchRecommendation } from '@maxpromo/research'
 
 export interface LeadWorkspace {
   lead: Omit<LeadRow, 'research'>
   site: SiteState | null
+  /** Earlier finished research, one line each, newest first (ADR-0031). */
+  siteHistory: SiteHistoryEntry[]
+  /** For research with a verdict (ADR-0031): what to do next and what to check first. Computed here, server side. */
+  next: { recommendation: ResearchRecommendation; checks: Check[] } | null
   facts: { fact: string; source?: string }[]
   basis: Basis | null
   drafts: { id: string; family: string; status: string; subject: string; body: string; to_addrs: string[]; revision: number; schedule_error: string | null; updated_at: string; thread_id: string | null }[]
@@ -41,10 +46,12 @@ export async function leadWorkspace(sql: Sql, id: string): Promise<LeadWorkspace
   const email = lead.email?.toLowerCase()
   const basis: Basis | null = email && testRecipients().has(email) ? 'test' : await recordedBasis(sql, id, email ? [email] : [])
   const work = await workForLead(sql, id)
+  const site = siteResearch(lead)
+  const next = site?.state === 'done' && site.qualification.verdict ? { recommendation: recommendNext(site, site.qualification), checks: investigationPlan(site, site.qualification) } : null
   const { research, ...rest } = lead
   void research
   return {
-    lead: rest, site: siteResearch(lead), facts: recordedFacts(lead), basis,
+    lead: rest, site, next, siteHistory: siteHistory(lead), facts: recordedFacts(lead), basis,
     drafts: drafts as LeadWorkspace['drafts'], followups: followups as LeadWorkspace['followups'],
     approvals: approvals as LeadWorkspace['approvals'], timeline: timeline as LeadWorkspace['timeline'],
     latestDraftVersion: (latest as { id: string }[])[0]?.id ?? null,

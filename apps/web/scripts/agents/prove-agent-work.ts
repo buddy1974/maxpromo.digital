@@ -114,8 +114,10 @@ const outcome = await researchSite('https://malerei-test.de', {
   lookup: async () => ['93.184.216.34'],
   fetch: (async (u: string) => new URL(u).pathname === '/robots.txt' ? new Response('', { status: 404 }) : new Response(html, { status: 200, headers: { 'content-type': 'text/html' } })) as unknown as typeof fetch,
   complete: async () => ({ ok: true, model: 'fixed', route: 'anthropic', data: { summary: 'Malerbetrieb.', business_type: 'Maler (Handwerk)', city: 'Essen', services: [], language: 'de', contact_person: null, contact_role: null,
-    angle: { solution: 'workflow-automation', why: 'Telefonische Termine.' },
-    evidence: [{ kind: 'pain_point', text: 'Termine nur telefonisch', quote: 'Terminanfragen bitte nur telefonisch unter 0201 999 zwischen 8 und 10 Uhr.', url: 'https://malerei-test.de/' }] } }),
+    facts: [{ id: 'F1', topic: 'appointments', manual: true, text: 'Termine nur telefonisch', quote: 'Terminanfragen bitte nur telefonisch unter 0201 999 zwischen 8 und 10 Uhr.', url: 'https://malerei-test.de/' }],
+    inferences: [{ text: 'Terminanfragen hängen am Telefon.', based_on: ['F1'] }],
+    opportunities: [{ solution: 'workflow-automation', hypothesis: 'Eine Online-Terminanfrage könnte Telefonzeit sparen.', based_on: ['F1'] }],
+    unknowns: ['Gibt es eine Online-Buchung an anderer Stelle?'] } }),
 })
 assert.ok(outcome.ok)
 const result = researchWorkResult(outcome.findings)
@@ -124,14 +126,17 @@ check('C a well-formed result passes the OS check unchanged', roundTrip !== null
 check('C the OS score is the shared rule set (qualify) on the findings', qualify(roundTrip!).score === result.qualification.score)
 const tamper = (f: (x: Record<string, unknown>) => void) => { const x = JSON.parse(JSON.stringify(result.findings)); f(x); return parseFindings(x) }
 check('C evidence citing a page that was not read is refused', tamper(x => { (x.evidence as { url: string }[])[0].url = 'https://elsewhere.example/' }) === null)
-check('C oversized or wrongly typed fields are refused', tamper(x => { x.summary = 'x'.repeat(401) }) === null && tamper(x => { x.rejected = -1 }) === null && tamper(x => { x.version = 2 }) === null)
+check('C oversized or wrongly typed fields are refused', tamper(x => { x.summary = 'x'.repeat(401) }) === null && tamper(x => { x.rejected = -1 }) === null && tamper(x => { x.version = 3 }) === null)
 check('C an angle outside Maxpromo\'s service families is refused', tamper(x => { x.angle = { solution: 'restaurant-os', why: 'x' } }) === null)
 const f = result.findings, q = result.qualification
-check('C the recommendation is code: injection or low confidence → review', recommendNext({ ...f, injection_suspected: true }, q) === 'review' && recommendNext(f, { ...q, confidence: 'low' }) === 'review')
-check('C qualified with an own-domain address → introduction draft; without → find a contact; else not a fit',
-  recommendNext(f, { ...q, qualified: true, confidence: 'medium' }) === 'outreach_draft'
-  && recommendNext({ ...f, contact: { ...f.contact, email: null } }, { ...q, qualified: true, confidence: 'medium' }) === 'find_contact'
-  && recommendNext(f, { ...q, qualified: false, confidence: 'medium' }) === 'not_a_fit')
+check('C the recommendation is code: injection or a "review" verdict → review', recommendNext({ ...f, injection_suspected: true }, q) === 'review' && recommendNext(f, { ...q, verdict: 'review', qualified: false }) === 'review')
+check('C qualified with an own-domain address → introduction draft; without → find a contact; not qualified → not a fit',
+  recommendNext(f, { ...q, verdict: 'qualified', qualified: true }) === 'outreach_draft'
+  && recommendNext({ ...f, contact: { ...f.contact, email: null } }, { ...q, verdict: 'qualified', qualified: true }) === 'find_contact'
+  && recommendNext(f, { ...q, verdict: 'not_qualified', qualified: false }) === 'not_a_fit')
+check('C the result carries facts, grounded reading and opportunities, and the OS keeps them', roundTrip!.version === 2 && roundTrip!.inferences?.length === 1 && roundTrip!.opportunities?.length === 1 && roundTrip!.unknowns?.length === 1 && roundTrip!.evidence[0].id === 'F1')
+check('C an inference citing a fact the result does not hold is dropped by the OS check', tamper(x => { (x.inferences as { based_on: string[] }[])[0].based_on = ['F9'] })?.inferences?.length === 0)
+check('C research recorded before ADR-0031 (version 1) is still accepted', (() => { const x = JSON.parse(JSON.stringify(result.findings)); x.version = 1; for (const k of ['coverage', 'signal_facts', 'inferences', 'opportunities', 'unknowns', 'rejections', 'merged']) delete x[k]; for (const e of x.evidence) { delete e.id; delete e.topic }; return parseFindings(x) !== null })())
 
 /* ── D Max ───────────────────────────────────────────────────────────────── */
 const def = proposalType('AGENT_WORK')

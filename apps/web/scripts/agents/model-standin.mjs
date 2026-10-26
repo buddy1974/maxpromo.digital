@@ -22,17 +22,20 @@ const calls = { model: 0, forwarded: 0 }
 /** A research answer built only from the pages it was given. `invented` adds a claim that is on no page. */
 function answer(content) {
   const pages = [...content.matchAll(/<page n="\d+" url="([^"]+)" title="[^"]*">\n([\s\S]*?)\n<\/page>/g)].map(m => ({ url: m[1], text: m[2] }))
-  const evidence = []
+  const facts = []
   for (const p of pages) {
     for (const line of p.text.split('\n').map(l => l.trim()).filter(l => l.length >= 30 && l.length <= 180)) {
-      if (evidence.length >= 3) break
-      evidence.push({ kind: 'fact', text: `The site says: ${line.slice(0, 120)}`, quote: line, url: p.url })
+      if (facts.length >= 3) break
+      facts.push({ id: `F${facts.length + 1}`, topic: 'other', manual: false, text: `The site says: ${line.slice(0, 120)}`, quote: line, url: p.url })
     }
   }
-  if (mode === 'invented') evidence.push({ kind: 'pain_point', text: 'Bookings only by fax', quote: 'Termine nur per Fax und Telefon, kein Online-Formular', url: pages[0]?.url ?? '' })
+  if (mode === 'invented') facts.push({ id: 'F9', topic: 'appointments', manual: true, text: 'Bookings only by fax', quote: 'Termine nur per Fax und Telefon, kein Online-Formular', url: pages[0]?.url ?? '' })
   return {
     summary: 'A business described by its own website (evidence stand-in).', business_type: 'Beratung', city: null,
-    services: ['Beratung'], evidence, angle: { solution: 'workflow-automation', why: 'Stand-in angle grounded in the quoted pages.' },
+    services: ['Beratung'], facts,
+    inferences: facts.length ? [{ text: 'Stand-in reading of the first quoted fact.', based_on: ['F1'] }] : [],
+    opportunities: facts.length ? [{ solution: 'workflow-automation', hypothesis: 'Stand-in hypothesis grounded in the quoted pages.', based_on: ['F1'] }] : [],
+    unknowns: [],
     contact_person: null, contact_role: null, language: 'de',
   }
 }

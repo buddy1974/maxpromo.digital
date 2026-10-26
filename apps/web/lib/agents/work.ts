@@ -22,7 +22,7 @@ import {
   isTerminalWork, signedHeaders, WORK_AGENTS, WORK_CLIENT, WORK_CONTRACT_VERSION, workDoorSecret,
   type WorkFailure, type WorkRequest, type WorkState, type WorkView,
 } from '@maxpromo/config/agent-contract'
-import { parseFindings, qualify, recommendNext, type ResearchRecommendation } from '@maxpromo/research'
+import { investigationPlan, parseFindings, qualify, recommendNext, type Check, type ResearchFindings, type ResearchRecommendation, type Verdict } from '@maxpromo/research'
 import { isEvidenceMode } from '@maxpromo/config'
 import { recordAgentEvents } from '@/lib/commercial/agent-events'
 import { writeAudit } from '@/lib/commercial/audit'
@@ -67,10 +67,25 @@ export interface WorkSummary {
   confidence: 'high' | 'medium' | 'low'
   qualified: boolean
   recommendation: ResearchRecommendation
+  /** The top verified facts (what pages say, with quotes), manual-work facts first. */
   evidence: { kind: string; text: string; quote: string; url: string }[]
   evidenceCount: number
   injectionSuspected: boolean
   email: string | null
+  /* ADR-0031 — absent on work finished before it. */
+  verdict?: Verdict
+  /** Interpretations of the facts, never shown as what the site said. */
+  inferences?: string[]
+  /** Hypotheses about what Maxpromo might improve. */
+  opportunities?: { solution: string; hypothesis: string }[]
+  /** What to check: code unknowns and the open questions the pages raised. */
+  checks?: Check[]
+}
+
+/** The facts worth showing first: manual work, then the rest; never an old-style quoted "opportunity". */
+export function topFacts(findings: ResearchFindings, n = 3): WorkSummary['evidence'] {
+  const facts = findings.evidence.filter(e => e.kind !== 'opportunity')
+  return [...facts.filter(e => e.kind === 'pain_point'), ...facts.filter(e => e.kind !== 'pain_point')].slice(0, n).map(e => ({ kind: e.kind, text: e.text, quote: e.quote, url: e.url }))
 }
 
 /* ── the signed client to the Bureau ───────────────────────────────────── */
@@ -210,9 +225,13 @@ export async function applyWorkView(sql: Sql, view: WorkView): Promise<ApplyOutc
       lead: leadLabel(lead), origin: findings.origin,
       score: q.score, confidence: q.confidence, qualified: q.qualified,
       recommendation: recommendNext(findings, q),
-      evidence: findings.evidence.filter(e => e.kind !== 'fact').concat(findings.evidence.filter(e => e.kind === 'fact')).slice(0, 3),
+      evidence: topFacts(findings),
       evidenceCount: findings.evidence.length, injectionSuspected: findings.injection_suspected,
       email: lead.email ?? findings.contact.email ?? null,
+      verdict: q.verdict,
+      inferences: (findings.inferences ?? []).slice(0, 2).map(i => i.text),
+      opportunities: (findings.opportunities ?? []).slice(0, 2).map(o => ({ solution: o.solution, hypothesis: o.hypothesis })),
+      checks: investigationPlan(findings, q, 3),
     }
     /* Claim first: two arrivals of the same result apply it once. */
     if (!await finish(sql, row.id, 'completed', { summary, runtime: view.runtime })) return { applied: false, state: 'completed', reason: 'already_terminal' }

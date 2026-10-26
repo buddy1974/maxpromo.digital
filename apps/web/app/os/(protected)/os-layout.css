@@ -392,6 +392,13 @@ a.attn-row:hover .attn-text, a.attn-row:focus-visible .attn-text { text-decorati
 }
 .lead-summary { margin: 0 0 var(--space-3); }
 .lead-quote { margin: var(--space-1) 0; padding-left: var(--space-3); border-left: 2px solid var(--brand-border-strong); color: var(--brand-text-secondary); font-style: italic; overflow-wrap: anywhere; }
+/* Research intelligence (ADR-0031): fact ids are cited by "based on F1, S2"; the next step stands out. */
+.lead-id { display: inline-block; min-width: 2.2em; margin-right: var(--space-2); color: var(--brand-text-secondary); font-size: 0.75em; font-variant-numeric: tabular-nums; }
+.lead-next { margin: var(--space-3) 0; padding: var(--space-3); border-left: 3px solid var(--brand-surface-accent); background: var(--brand-surface-subtle); overflow-wrap: anywhere; }
+.lead-next p { margin: 0 0 var(--space-1); }
+.lead-checks, .lead-signals { margin: var(--space-1) 0 0; padding-left: var(--space-4); list-style: disc; }
+.lead-checks li, .lead-signals li { overflow-wrap: anywhere; }
+.lead-signals { list-style: none; padding-left: 0; }
 .lead-draft { border-top: 1px solid var(--brand-border); padding: var(--space-3) 0; }
 .lead-draft:first-of-type { border-top: none; padding-top: 0; }
 .lead-subject { margin: var(--space-1) 0; font-weight: 700; overflow-wrap: anywhere; }

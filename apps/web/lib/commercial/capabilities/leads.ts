@@ -37,9 +37,12 @@ export const leadResearch: CapabilityDefinition<ReturnType<typeof researchInput.
     if (site.state !== 'done') return { summary: 'Research did not finish.' }
     const q = site.qualification
     return {
-      summary: `${leadLabel(done.lead)}: score ${q.score}/100, confidence ${q.confidence}${q.qualified ? ' — qualified' : ''}. ${site.evidence.length} finding(s) quoted from their website.`,
-      lines: q.reasons.map(x => `${x.points > 0 ? '+' : ''}${x.points} ${x.code}${x.value ? `: ${x.value}` : ''}`),
-      data: { state: 'done', score: q.score, confidence: q.confidence, qualified: q.qualified },
+      summary: `${leadLabel(done.lead)}: opportunity ${q.score}/100, research confidence ${q.confidence} — ${q.verdict.replace('_', ' ')}. ${site.evidence.length} fact(s) quoted from their website.`,
+      lines: [
+        ...q.reasons.map(x => `${x.points > 0 ? '+' : ''}${x.points} ${x.code}${x.value ? `: ${x.value}` : ''}`),
+        ...q.unknowns.map(x => `? ${x.code}${x.value ? `: ${x.value}` : ''}`),
+      ],
+      data: { state: 'done', score: q.score, confidence: q.confidence, qualified: q.qualified, verdict: q.verdict },
       focus: [focus('lead', done.lead.id, leadLabel(done.lead))],
       next: q.qualified ? ['Write them'] : [],
     }

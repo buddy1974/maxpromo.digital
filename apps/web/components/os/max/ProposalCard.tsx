@@ -186,6 +186,19 @@ export function ProposalCard({ p, decide, selectable, selected, onSelect }: {
               </ul>
             </div>
           )}
+          {[p.work.reading, p.work.opportunities].map(part => part && (
+            <div key={part.label} className="max-work-part">
+              <p className="max-body-label">{part.label}</p>
+              <p className="max-work-note">{part.note}</p>
+              <ul>{part.items.map((t, i) => <li key={i}>{t}</li>)}</ul>
+            </div>
+          ))}
+          {p.work.checks && (
+            <div className="max-work-part">
+              <p className="max-body-label">{p.work.checks.label}</p>
+              <ul>{p.work.checks.items.map((t, i) => <li key={i}>{t}</li>)}</ul>
+            </div>
+          )}
           {p.work.failure && <p className="max-work-fail">{p.work.failure.text}</p>}
           {!p.work.open && <p className="max-work-foot">{p.work.footnote}</p>}
           <div className="max-actions">

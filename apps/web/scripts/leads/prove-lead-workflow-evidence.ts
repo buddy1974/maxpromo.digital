@@ -32,12 +32,14 @@ const HOME = (host: string) => `<html><head><title>Elektro ${tag}</title><meta n
 const IMPRESSUM = `<html><head><title>Impressum</title></head><body><p>Elektro ${tag} GmbH, Inhaber: Max Muster, 56564 Neuwied</p></body></html>`
 const research = (host: string) => ({
   summary: 'Elektrobetrieb in Neuwied.', business_type: 'Elektroinstallation', city: 'Neuwied', services: ['Elektroinstallation'],
-  evidence: [
-    { kind: 'pain_point', text: 'Termine nur telefonisch', quote: 'Terminvereinbarung nur telefonisch von 8 bis 12 Uhr.', url: `https://${host}/` },
-    { kind: 'pain_point', text: 'Anfragen per Fax', quote: 'Anfragen bitte per Fax oder mit dem Formular zum Ausdrucken.', url: `https://${host}/` },
-    { kind: 'pain_point', text: 'Invented', quote: 'Wir suchen dringend Automatisierung', url: `https://${host}/` },
+  facts: [
+    { id: 'F1', topic: 'appointments', manual: true, text: 'Termine nur telefonisch', quote: 'Terminvereinbarung nur telefonisch von 8 bis 12 Uhr.', url: `https://${host}/` },
+    { id: 'F2', topic: 'contact', manual: true, text: 'Anfragen per Fax', quote: 'Anfragen bitte per Fax oder mit dem Formular zum Ausdrucken.', url: `https://${host}/` },
+    { id: 'F3', topic: 'other', manual: true, text: 'Invented', quote: 'Wir suchen dringend Automatisierung', url: `https://${host}/` },
   ],
-  angle: { solution: 'workflow-automation', why: 'Online-Termine statt Telefon und Fax.' },
+  inferences: [{ text: 'Anfragen laufen über Telefon und Fax.', based_on: ['F1', 'F2'] }],
+  opportunities: [{ solution: 'workflow-automation', hypothesis: 'Online-Termine könnten Telefon und Fax ersetzen.', based_on: ['F1', 'F2'] }],
+  unknowns: [],
   contact_person: 'Max Muster', contact_role: 'Inhaber', language: 'de',
 })
 globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
@@ -81,7 +83,7 @@ const sql = getDb()
 const marcel = 'os:marcel'
 const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' })
 let passed = 0
-function check(name: string, ok: boolean) { assert.ok(ok, name); passed++; console.log(`PASS ${name}`) }
+function check(name: string, ok: boolean, detail = '') { assert.ok(ok, detail ? `${name} ${detail}` : name); passed++; console.log(`PASS ${name}`) }
 const leads: string[] = []
 let n = 0
 const run = (capability: string, input: Record<string, unknown>, actor = marcel) => runCapability(sql, { requestId: `lw-${tag}-${++n}`, actor, channel: 'os', capability, input })
@@ -111,7 +113,7 @@ try {
   const la = await lead(A)
   const site = la.research.site!
   check('research is stored with every finding\'s exact quote and source URL; the invented one is gone', site.state === 'done' && site.evidence!.length === 2 && site.evidence!.every(e => e.url === `https://${HOST}/` && e.quote.length > 10))
-  check('qualified by code with reasons; the lead moves Discovered → Qualified', site.qualification!.qualified && site.qualification!.score >= 50 && site.qualification!.reasons.some(x => x.code === 'pain') && la.status === 'qualified')
+  check('qualified by code with reasons; the lead moves Discovered → Qualified', site.qualification!.qualified && site.qualification!.score >= 50 && site.qualification!.reasons.some(x => x.code === 'pain') && la.status === 'qualified', JSON.stringify({ q: site.qualification, cov: (site as { coverage?: unknown }).coverage, status: la.status }))
   check('the timeline records research and the stage change', (await kinds(A)).includes('research_completed') && (await kinds(A)).includes('stage_change'))
 
   const C = await create(`Maler ${tag}`, { website: HOST_INJECTED, city: 'Koblenz', source: 'evidence' })

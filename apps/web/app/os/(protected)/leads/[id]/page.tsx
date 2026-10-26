@@ -96,43 +96,101 @@ export default function LeadPage() {
         {site?.state === 'running' && <p role="status" className="money-quiet">{agentRunning ? c.agentWorking : c.researching}</p>}
         {!agentRunning && lastWork?.state === 'failed' && lastWork.failure && site?.state !== 'done' && site?.state !== 'failed' && <p className="money-alert">{c.agentFailed(lastWork.failure)}</p>}
         {site?.state === 'failed' && <p className="money-alert">{c.researchFailed(site.detail)}</p>}
-        {done && (
-          <>
-            <div className="lead-score">
-              <span className="money-big">{done.qualification.score}</span>
-              <span>
-                <strong>{done.qualification.qualified ? c.qualified : c.notQualified}</strong>
-                <span className="money-sub">{c.score} · {c.confidence[done.qualification.confidence]} · {c.researchedAt(fmtDate(done.researched_at))}{lastWork?.state === 'completed' ? ` · ${c.agentBy}` : ''}</span>
-              </span>
-            </div>
-            {done.summary && <p className="lead-summary">{done.summary}</p>}
-            {done.angle && <p><strong>{c.angle}:</strong> {c.solution[done.angle.solution] ?? done.angle.solution} — {done.angle.why}</p>}
-            <h3 className="money-label">{c.why}</h3>
-            <ul className="money-list lead-reasons">
-              {done.qualification.reasons.map((r, i) => (
-                <li key={i} className="money-row"><span>{(c.reason[r.code] ?? (() => r.code))(r.value)}</span><span className="money-amount">{r.points > 0 ? '+' : ''}{r.points}</span></li>
-              ))}
-            </ul>
-            <h3 className="money-label">{c.evidence}</h3>
-            {done.evidence.length === 0 ? <p className="money-quiet">{c.noEvidence}</p> : (
-              <ul className="money-list">
-                {done.evidence.map((e, i) => (
-                  <li key={i}>
-                    <strong>{c.evidenceKind[e.kind]}</strong> · {e.text}
-                    <blockquote className="lead-quote">„{e.quote}“</blockquote>
-                    <a className="money-sub" href={e.url} target="_blank" rel="noopener noreferrer nofollow">{c.source}: {e.url.replace(/^https?:\/\//, '')}</a>
-                  </li>
+        {done && (() => {
+          const q = done.qualification
+          /* Research recorded before ADR-0031 has no verdict and is shown as it was decided then. */
+          const verdict = q.verdict ?? (q.qualified ? 'qualified' : 'not_qualified')
+          const short = (u: string) => u.replace(/^https?:\/\/[^/]+\/?/, '/') || '/'
+          return (
+            <>
+              <div className="lead-score">
+                <span className="money-big">{q.score}</span>
+                <span>
+                  <strong>{c.verdict[verdict]}</strong>
+                  <span className="money-sub">{c.opportunityScore} · {c.researchConfidence}: {c.confidence[q.confidence]}</span>
+                  <span className="money-sub">{c.researchedAt(fmtDate(done.researched_at))}{lastWork?.state === 'completed' ? ` · ${c.agentBy}` : ''}</span>
+                </span>
+              </div>
+              {q.verdict && <p className="money-quiet">{c.verdictWhy[verdict]}</p>}
+              {done.summary && <p className="lead-summary">{done.summary}</p>}
+              {ws.next && (
+                <div className="lead-next">
+                  <h3 className="money-label">{c.nextLabel}</h3>
+                  <p>{c.next[ws.next.recommendation]}</p>
+                  {ws.next.checks.length > 0 && (
+                    <>
+                      {ws.next.recommendation !== 'review' && <p className="money-sub">{c.checksLabel}:</p>}
+                      <ul className="money-list lead-checks">
+                        {ws.next.checks.map((x, i) => <li key={i}>{'question' in x ? x.question : (c.unknown[x.code] ?? (() => x.code))(x.value)}</li>)}
+                      </ul>
+                    </>
+                  )}
+                </div>
+              )}
+
+              <h3 className="money-label">{done.version === 2 ? c.factsLabel : c.evidence}</h3>
+              {done.evidence.length === 0 ? <p className="money-quiet">{c.noEvidence}</p> : (
+                <ul className="money-list">
+                  {done.evidence.map((e, i) => (
+                    <li key={i}>
+                      {e.id && <span className="lead-id">{e.id}</span>}
+                      {done.version !== 2 && <><strong>{c.evidenceKind[e.kind]}</strong> · </>}{e.text}
+                      <blockquote className="lead-quote">„{e.quote}“</blockquote>
+                      <a className="money-sub" href={e.url} target="_blank" rel="noopener noreferrer nofollow">{c.source}: {e.url.replace(/^https?:\/\//, '')}</a>
+                      {e.also && e.also.length > 0 && <span className="money-sub"> · {c.alsoOn(e.also.length)} ({e.also.map(short).join(', ')})</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {(done.signal_facts?.length ?? 0) > 0 && (
+                <>
+                  <p className="money-sub">{c.signalsLabel}</p>
+                  <ul className="money-list lead-signals">
+                    {done.signal_facts!.map(x => <li key={x.id}><span className="lead-id">{x.id}</span>{(c.signal[x.code] ?? (() => x.code))(x.value)}</li>)}
+                  </ul>
+                </>
+              )}
+
+              {(done.inferences?.length ?? 0) > 0 && (
+                <>
+                  <h3 className="money-label">{c.inferencesLabel}</h3>
+                  <p className="money-sub">{c.inferencesNote}</p>
+                  <ul className="money-list">
+                    {done.inferences!.map((x, i) => <li key={i}>{x.text} <span className="money-sub">({c.basedOn} {x.based_on.join(', ')})</span></li>)}
+                  </ul>
+                </>
+              )}
+              {(done.opportunities?.length ?? 0) > 0 ? (
+                <>
+                  <h3 className="money-label">{c.opportunitiesLabel}</h3>
+                  <p className="money-sub">{c.opportunitiesNote}</p>
+                  <ul className="money-list">
+                    {done.opportunities!.map((x, i) => <li key={i}><strong>{c.solution[x.solution] ?? x.solution}</strong> — {x.hypothesis} <span className="money-sub">({c.basedOn} {x.based_on.join(', ')})</span></li>)}
+                  </ul>
+                </>
+              ) : done.version !== 2 && done.angle && <p><strong>{c.angle}:</strong> {c.solution[done.angle.solution] ?? done.angle.solution} — {done.angle.why}</p>}
+
+              <h3 className="money-label">{q.verdict ? c.scoreWhy : c.why}</h3>
+              <ul className="money-list lead-reasons">
+                {q.reasons.map((r, i) => (
+                  <li key={i} className="money-row"><span>{(c.reason[r.code] ?? (() => r.code))(r.value)}</span><span className="money-amount">{r.points > 0 ? '+' : ''}{r.points}</span></li>
+                ))}
+                {(q.unknowns ?? []).map((u, i) => (
+                  <li key={`u${i}`} className="money-row money-quiet"><span>{c.notEstablished}: {(c.unknown[u.code] ?? (() => u.code))(u.value)}</span><span className="money-amount">±0</span></li>
                 ))}
               </ul>
-            )}
-            {done.qualification.caveats.length > 0 && (
-              <p className="money-rail"><strong>{c.caveats}:</strong> {done.qualification.caveats.map(x => (c.caveat[x.code] ?? (() => x.code))(x.value)).join(' · ')}</p>
-            )}
-            {done.contact.person && <p className="money-rail">{c.contactPerson}: {done.contact.person}{done.contact.role ? ` (${done.contact.role})` : ''}</p>}
-            {done.contact.email_off_domain && <p className="money-rail">{c.offDomain(done.contact.email_off_domain)}</p>}
-            <p className="money-rail">{c.pagesRead}: {done.pages.map(p => p.url.replace(/^https?:\/\//, '')).join(' · ')}</p>
-          </>
-        )}
+              {q.caveats.length > 0 && (
+                <p className="money-rail"><strong>{c.caveats}:</strong> {q.caveats.map(x => (c.caveat[x.code] ?? (() => x.code))(x.value)).join(' · ')}</p>
+              )}
+              {done.contact.person && <p className="money-rail">{c.contactPerson}: {done.contact.person}{done.contact.role ? ` (${done.contact.role})` : ''}</p>}
+              {done.contact.email_off_domain && !q.verdict && <p className="money-rail">{c.offDomain(done.contact.email_off_domain)}</p>}
+              <p className="money-rail">{c.pagesRead}: {done.pages.map(p => p.url.replace(/^https?:\/\//, '')).join(' · ')}</p>
+              {ws.siteHistory.length > 0 && (
+                <p className="money-rail"><strong>{c.earlier}:</strong> {ws.siteHistory.map(h => c.historyLine(fmtDate(h.at), h.score, c.verdict[h.verdict] ?? h.verdict, c.confidence[h.confidence] ?? h.confidence, h.facts, h.pages)).join(' — ')}</p>
+              )}
+            </>
+          )
+        })()}
         {lead.website && site?.state !== 'running' && (
           <button type="button" className="btn-secondary btn-sm lead-button" disabled={action.busy} onClick={research}>{action.busy ? c.researching : done ? c.researchAgain : c.researchNow}</button>
         )}

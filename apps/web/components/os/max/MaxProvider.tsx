@@ -12,6 +12,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useOsLocale } from '@/lib/os-i18n/context'
+import type { MaxWorkView } from '@/lib/max/workView'
 
 export interface MaxScreenContext {
   client_id?: string; lead_id?: string; invoice_id?: string; angebot_id?: string; thread_id?: string; selected_thread_ids?: string[]
@@ -33,16 +34,7 @@ export interface ProposalView {
   approval?: { summary: string; preview: [string, string][]; payloadHash: string; expiresAt: string }
   result?: { summary: string; links: { label: string; href: string }[]; error?: boolean }
   /** Delegated agent work (ADR-0030). Every word is made by the server in the screen language. */
-  work?: {
-    id: string; state: 'queued' | 'running' | 'completed' | 'failed' | 'cancelled'; stateLabel: string; open: boolean
-    lead: { label: string; href: string }
-    outcome?: { score: string; confidence: string; qualified: boolean; qualifiedLabel: string }
-    evidence: { kind: string; text: string; quote: string; url: string }[]; evidenceLabel: string
-    recommendation?: { code: string; text: string }; warning?: string
-    failure?: { text: string; retryable: boolean }
-    offer?: { label: string; done: boolean }
-    footnote: string
-  }
+  work?: MaxWorkView
   createdAt: string
 }
 export interface InteractionView {
