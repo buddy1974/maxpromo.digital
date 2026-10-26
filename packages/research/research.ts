@@ -59,7 +59,8 @@ export const SIGNAL_CODES = ['http_only', 'no_viewport', 'generator', 'copyright
 export type SignalCode = typeof SIGNAL_CODES[number]
 /** A fact read by code from the markup, citable by id like a quoted fact. */
 export interface SignalFact { id: string; code: SignalCode; value: string }
-export const REJECT_REASONS = ['page_not_read', 'quote_not_on_page', 'quote_length', 'kind', 'injection', 'no_text', 'ungrounded'] as const
+/** `interpretation`: the fact was kept, but its paraphrase interpreted the quote and was replaced by the quote. */
+export const REJECT_REASONS = ['page_not_read', 'quote_not_on_page', 'quote_length', 'kind', 'injection', 'no_text', 'ungrounded', 'interpretation'] as const
 export type RejectReason = typeof REJECT_REASONS[number]
 /** Why something the model proposed was not kept. Kept with the research so a result can be traced. */
 export interface Rejection { kind: 'fact' | 'inference' | 'opportunity' | 'unknown'; reason: RejectReason; url?: string; quote?: string }
@@ -108,7 +109,7 @@ You receive the text of one business's own website inside <page> elements, and f
 - Use only what the pages and signals say. Never invent figures, names, tools, problems or facts. If something is not there, leave it out.
 
 Answer in four separate parts. Never mix them.
-1. "facts": what a page explicitly states. Each fact has an "id" (F1, F2, …), a "topic", a short neutral "text", a "quote" copied EXACTLY, character for character, from the page named in "url" (max 200 characters), and "manual". No quote, no fact. If several pages say the same thing, give ONE fact. Set "manual": true only when the fact itself shows manual, slow or offline handling in THIS business's own customer operations — how its customers have to book, order, ask or pay (e.g. "Terminvereinbarung nur telefonisch", a PDF form to print and fax back). What the business does FOR its customers (its services, its marketing) is never "manual".
+1. "facts": what a page explicitly states. Each fact has an "id" (F1, F2, …), a "topic", a short neutral "text", a "quote" copied EXACTLY, character for character, from the page named in "url" (max 200 characters), and "manual". No quote, no fact. The text restates only what the quote says — never "since then", "apparently", "outdated" or any other reading of it; that belongs in "inferences". If several pages say the same thing, give ONE fact. Set "manual": true only when the fact itself shows manual, slow or offline handling in THIS business's own customer operations — how its customers have to book, order, ask or pay (e.g. "Terminvereinbarung nur telefonisch", a PDF form to print and fax back). What the business does FOR its customers (its services, its marketing) is never "manual".
 2. "inferences": your interpretation of facts, e.g. "Patient intake appears to depend on the telephone." Each cites the ids it rests on in "based_on" (fact ids F… or signal ids S…). An inference is never phrased as something the website says.
 3. "opportunities": hypotheses about what Maxpromo might improve in this business's own operations or website, phrased as possibilities ("could", "may"), each with one Maxpromo service family in "solution" and the ids it rests on in "based_on". The business's own service offering is not an opportunity.
 4. "unknowns": short questions that matter for deciding whether to contact this business and that the pages do not answer (e.g. whether online booking exists elsewhere). Only questions the evidence actually raises.
@@ -156,6 +157,8 @@ const prose = (s: unknown, max: number) => typeof s === 'string'
 /** Text written to steer a model rather than to inform a reader. */
 export const INJECTION = /(ignore|disregard|forget)\s+(all\s+|any\s+)?(previous|prior|above|earlier|your)\s+(instructions|prompts?|rules)|ignoriere\s+(alle\s+)?(vorherigen\s+)?(anweisungen|instruktionen)|system\s*prompt|\byou are (an? )?(ai|assistant|language model|chatgpt|claude)\b|\bas an ai\b|(send|forward|write)\s+(an?\s+)?e-?mail\s+to|new instructions|<\/?(system|assistant|instructions?)>/i
 const domainOf = (host: string) => host.replace(/^www\./, '').toLowerCase()
+/** Words that interpret rather than restate (German and English). In a fact's text only when the quote has them too. */
+const INTERPRETS = /\b(seitdem|seither|offenbar|offensichtlich|anscheinend|scheint|scheinen|vermutlich|wahrscheinlich|erkennbar|veraltet\w*|apparently|seemingly|seems?|likely|probably|outdated|since then|no longer)\b/giu
 
 /**
  * The research model step as a named task. The OS runs it in-process (lead.research); the Agent
@@ -249,8 +252,12 @@ export function verifyFacts(raw: unknown, pages: FetchedPage[]): { kept: Evidenc
     if (!fold(page.text).includes(fold(quote))) { reject('quote_not_on_page', e.url, quote); continue }
     if (kind !== 'pain_point' && kind !== 'fact') { reject('kind', e.url, quote); continue }
     if (INJECTION.test(quote) || INJECTION.test(String(e.text ?? ''))) { reject('injection', e.url); continue }
-    const text = prose(e.text, 300)
+    let text = prose(e.text, 300)
     if (!text) { reject('no_text', e.url, quote); continue }
+    /* A fact's text restates its quote. Words of interpretation the quote does not contain ("seitdem
+       nicht erkennbar aktualisiert" over "© 2009") make it an inference: the verified words stand instead. */
+    const interpreting = [...text.matchAll(INTERPRETS)].map(m => m[0].toLowerCase()).filter(w => !fold(quote).includes(w))
+    if (interpreting.length) { reject('interpretation', e.url, quote); text = prose(quote, 300) }
     const topic = (TOPICS as readonly string[]).includes(e.topic as string) ? e.topic as FactTopic : 'other'
     verified.push({ e: { kind, text, quote, url: page.url, topic }, modelId: typeof e.id === 'string' && e.id.trim() ? e.id.trim().slice(0, 8) : `#${i}` })
   }

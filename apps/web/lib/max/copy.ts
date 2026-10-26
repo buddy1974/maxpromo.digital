@@ -89,7 +89,7 @@ const de = {
     conf: { high: 'hoch', medium: 'mittel', low: 'niedrig' } as Record<string, string>,
     next: {
       outreach_draft: 'Empfehlung: einen persönlichen Erstkontakt als Entwurf vorbereiten.',
-      find_contact: 'Empfehlung: erst eine Kontaktadresse finden — die Website nennt keine eigene.',
+      find_contact: 'Empfehlung: erst eine eigene Kontaktadresse bestätigen, dann Erstkontakt — siehe „Vorher prüfen“.',
       review: 'Empfehlung: selbst prüfen, bevor entschieden wird — die Recherche reicht nicht für ein sicheres Urteil.',
       not_a_fit: 'Empfehlung: im Moment nicht ansprechen.',
     } as Record<string, string>,
@@ -189,7 +189,7 @@ const en: typeof de = {
     conf: { high: 'high', medium: 'medium', low: 'low' },
     next: {
       outreach_draft: 'Recommended: prepare a personal introduction as a draft.',
-      find_contact: 'Recommended: find a contact address first — the website shows none of its own.',
+      find_contact: 'Recommended: confirm a contact address of their own first, then introduce — see “Check first”.',
       review: 'Recommended: check before deciding — the research is not enough for a confident verdict.',
       not_a_fit: 'Recommended: do not contact them for now.',
     },

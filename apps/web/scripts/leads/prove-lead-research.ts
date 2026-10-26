@@ -253,6 +253,7 @@ const legacyAnswer = {
     { id: 'F2', topic: 'appointments', manual: true, text: 'Auch auf der Sprechzeiten-Seite: nur telefonisch', quote: 'Richten Sie bitte Terminwünsche und Kontaktanfragen ausschließlich telefonisch an unsere Mitarbeiterinnen, die Ihnen gern helfen!', url: `${L}seite-a.htm` },
     { id: 'F3', topic: 'services', manual: false, text: 'Röntgen und Sonographie', quote: 'Digitales Röntgen, Sonographie, ambulante Operationen.', url: `${L}seite-b.htm` },
     { id: 'F4', topic: 'appointments', manual: true, text: 'Termine per Fax', quote: 'Terminanfragen per Fax an 0201-111', url: `${L}haupt.htm` },
+    { id: 'F5', topic: 'website', manual: false, text: 'Die Website wurde 2009 erstellt und seitdem nicht erkennbar aktualisiert.', quote: '© 2009 Agentur Beispiel', url: `${L}unten.htm` },
   ],
   inferences: [
     { text: 'Die Patientenaufnahme scheint stark vom Telefon abzuhängen.', based_on: ['F2'] },
@@ -273,6 +274,8 @@ if (!legacy.ok) { console.error(legacy); process.exit(1) }
   check('an inference resting on an invented fact, or on nothing, is dropped and recorded', f.inferences!.length === 2 && f.rejections!.filter(x => x.kind === 'inference' && x.reason === 'ungrounded').length === 2 && f.rejections!.some(x => x.kind === 'fact' && x.reason === 'quote_not_on_page'))
   check('code-read signals are facts the model may cite: http only, no phone layout, the CMS, the copyright year', f.signal_facts!.map(x => x.code).join() === 'http_only,no_viewport,generator,copyright,mailto')
   check('open questions are kept once', f.unknowns!.length === 1)
+  check('a "fact" whose text interprets its quote ("not updated since" over "© 2009") keeps only the verified words, and the correction is recorded',
+    f.evidence.some(e => e.text === '© 2009 Agentur Beispiel' && e.topic === 'website') && !f.evidence.some(e => /seitdem/.test(e.text)) && f.rejections!.some(x => x.reason === 'interpretation'))
   const q = qualify(f, 2026)
   check('a pain repeated on two pages scores once', q.reasons.filter(x => x.code === 'pain').length === 1)
   check('an address the site publishes on another domain is a thing to check (±0), not "no email" (−10)', !q.reasons.some(x => x.code === 'no_email') && q.unknowns.some(u => u.code === 'email_domain' && u.value === 'praxis@legacy-zentrum.de'))
