@@ -73,6 +73,7 @@ const de = {
   basedOn: 'gestützt auf',
   scoreWhy: 'Wie die Bewertung zustande kommt', notEstablished: 'Nicht festgestellt (zählt nicht)',
   earlier: 'Frühere Recherche',
+  calibrationLink: 'Kalibrierung des Research Agents',
   historyLine: (d: string, score: number, verdict: string, conf: string, facts: number, pages: number) => `${d}: ${score}/100 · ${verdict} · Sicherheit ${conf} · ${facts} Belege · ${pages} Seiten`,
   angle: 'Empfohlener Ansatz',
   solution: {
@@ -177,6 +178,7 @@ const en: LeadsCopy = {
   basedOn: 'based on',
   scoreWhy: 'How the score is made', notEstablished: 'Not established (scores nothing)',
   earlier: 'Earlier research',
+  calibrationLink: 'Research Agent calibration',
   historyLine: (d: string, score: number, verdict: string, conf: string, facts: number, pages: number) => `${d}: ${score}/100 · ${verdict} · confidence ${conf} · ${facts} facts · ${pages} pages`,
   angle: 'Suggested angle',
   solution: {

@@ -9,9 +9,13 @@
  * agentwork.result (GREEN, the Research Agent only) is how the Bureau hands a result back. The OS checks
  * it, scores it with its own rules and writes the lead (lib/agents/work.ts). The result is evidence; it
  * authorises nothing — a recommended introduction is a separate proposal Marcel confirms.
+ *
+ * agentwork.review (GREEN, owner only) records Marcel's judgement of one finished research run for the
+ * field calibration (lib/agents/calibration.ts). It writes the review and the audit, nothing else.
  */
 import { WORK_STATES, WORK_FAILURES, type WorkView } from '@maxpromo/config/agent-contract'
 import { applyWorkView, requestResearch, RESEARCH_AGENT_ACTOR } from '@/lib/agents/work'
+import { recordReview, REVIEW_ISSUES, REVIEW_VERDICTS } from '@/lib/agents/calibration'
 import { writeAudit } from '../audit'
 import { focus, leadLabel, resolveLead } from '../records'
 import { CapabilityRefusal, OWNER_ACTOR, type AnyCapability, type CapabilityDefinition } from '../types'
@@ -98,4 +102,27 @@ export const agentWorkResult: CapabilityDefinition<ReturnType<typeof resultInput
   },
 }
 
-export const AGENT_WORK_CAPABILITIES: AnyCapability[] = [agentWorkRequest, agentWorkResult]
+const reviewInput = v.object({
+  work_id: v.uuid(),
+  verdict: v.enumOf(REVIEW_VERDICTS),
+  issues: v.optional(v.array(v.enumOf(REVIEW_ISSUES), { max: REVIEW_ISSUES.length })),
+  note: v.optional(v.string({ max: 500 })),
+})
+
+export const agentWorkReview: CapabilityDefinition<ReturnType<typeof reviewInput.parse>> = {
+  id: 'agentwork.review',
+  family: 'RESEARCH',
+  title: 'Judge a research result',
+  description: 'Records Marcel\'s judgement of one finished Research Agent run — agree, partly or disagree, what was wrong, why — as calibration evidence. Owner only. Changes nothing else: not the result, the score, the lead or its stage.',
+  risk: 'GREEN',
+  input: reviewInput,
+  async run(ctx, input) {
+    if (ctx.actor !== OWNER_ACTOR) throw new CapabilityRefusal('Only Marcel judges research results.', 'unsupported')
+    const out = await recordReview(ctx.sql, { workId: input.work_id, verdict: input.verdict, issues: input.issues ?? [], note: input.note ?? null, by: ctx.actor })
+    if (!out.ok) throw new CapabilityRefusal(out.code === 'not_finished' ? 'Only a finished research result can be judged.' : 'That is not a research result.')
+    await writeAudit(ctx.sql, { actor: ctx.actor, channel: ctx.channel, operation: 'agentwork.review', entityType: 'lead', entityId: out.lead, after: { work: input.work_id, review: out.review.id, verdict: out.review.verdict, issues: out.review.issues }, outcome: 'succeeded' })
+    return { summary: `Recorded your judgement (${out.review.verdict}). The research result is unchanged.`, data: { review_id: out.review.id, work_id: input.work_id, verdict: out.review.verdict, issues: out.review.issues } }
+  },
+}
+
+export const AGENT_WORK_CAPABILITIES: AnyCapability[] = [agentWorkRequest, agentWorkResult, agentWorkReview]

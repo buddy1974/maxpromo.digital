@@ -399,6 +399,17 @@ a.attn-row:hover .attn-text, a.attn-row:focus-visible .attn-text { text-decorati
 .lead-checks, .lead-signals { margin: var(--space-1) 0 0; padding-left: var(--space-4); list-style: disc; }
 .lead-checks li, .lead-signals li { overflow-wrap: anywhere; }
 .lead-signals { list-style: none; padding-left: 0; }
+/* Field calibration: one small question under a Research Agent result. */
+.lead-judgement { margin: var(--space-3) 0; padding-top: var(--space-3); border-top: 1px solid var(--brand-surface-subtle); display: flex; flex-direction: column; gap: var(--space-2); overflow-wrap: anywhere; }
+.lead-judgement p { margin: 0; }
+.lead-issues { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.lead-issues label { display: flex; gap: var(--space-2); align-items: flex-start; }
+.calib-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-3); margin: 0; }
+.calib-stats div { margin: 0; }
+.calib-stats dt { font-size: var(--text-label-dense); text-transform: uppercase; letter-spacing: 0.08em; }
+.calib-stats dd { margin: 0; font-size: 22px; font-weight: var(--weight-heading); }
+.calib-run { padding: var(--space-2) 0; border-top: 1px solid var(--brand-surface-subtle); overflow-wrap: anywhere; }
+.calib-run summary { cursor: pointer; }
 .lead-draft { border-top: 1px solid var(--brand-border); padding: var(--space-3) 0; }
 .lead-draft:first-of-type { border-top: none; padding-top: 0; }
 .lead-subject { margin: var(--space-1) 0; font-weight: 700; overflow-wrap: anywhere; }

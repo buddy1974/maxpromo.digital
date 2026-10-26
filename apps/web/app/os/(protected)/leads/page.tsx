@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { LEADS_COPY } from '@/lib/os-i18n/leads'
 import { ownerApi } from '@/lib/commercial/ownerClient'
@@ -183,6 +184,7 @@ export default function LeadsPage() {
             <span style={{ color: 'var(--brand-primary-text)' }}>{stats.new} {t.leads.statNew}</span> &nbsp;·&nbsp;
             <span style={{ color: 'var(--semantic-success)' }}>{stats.converted} {t.leads.statConverted}</span>
           </p>
+          <Link href="/os/leads/calibration" className="money-more">{lc.calibrationLink} ›</Link>
         </div>
         <button onClick={() => { setShowNew(true); setCreateErr('') }} style={{ background: 'var(--brand-primary)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--brand-text)', fontFamily: sans, fontWeight: 700, fontSize: 'var(--text-micro)', padding: '10px 18px', cursor: 'pointer' }}>
           {t.leads.newLead}

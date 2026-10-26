@@ -162,4 +162,25 @@ check('E every navigation entry is a real page', NAV.every(n => existsSync(join(
 const workSchema = read(join(BUREAU, 'lib/db/schema/work.ts'))
 check('E Bureau work keeps a reference and a bounded snapshot — no business record copy', /subjectId: uuid\("subject_id"\)/.test(workSchema) && !/email|phone|company|amount/i.test(workSchema.replace(/\/\/.*|\/\*[\s\S]*?\*\//g, '')))
 
+/* ── field calibration: Marcel's judgement is evidence, never a lever ── */
+const { summarize, isTestProspect, PATTERN_MINIMUM, REVIEW_ISSUES } = await import('../../lib/agents/calibration.ts')
+const { agentWorkReview } = await import('../../lib/commercial/capabilities/agents.ts')
+const calRun = (i: number, verdict: 'agree' | 'partly' | 'disagree' | null, test = false) => ({
+  workId: `w${i}`, leadId: `l${i}`, business: `B${i}`, website: null, category: i % 2 ? 'Praxis' : 'Handwerk', state: 'completed' as const, at: new Date().toISOString(), durationMs: 40_000, test,
+  summary: { lead: `B${i}`, origin: '', score: 60, confidence: 'high' as const, qualified: true, verdict: 'qualified' as const, recommendation: 'outreach_draft' as const, evidence: [], evidenceCount: 3, injectionSuspected: false, email: null },
+  failure: null, review: verdict ? { id: `r${i}`, work_id: `w${i}`, verdict, issues: verdict === 'agree' ? [] : ['score_too_high' as const], note: null, reviewed_by: 'os:marcel', created_at: '', revisions: 1 } : null,
+})
+const four = summarize([1, 2, 3, 4].map(i => calRun(i, 'agree')).concat([calRun(9, 'disagree', true)]))
+check('C below the minimum reviewed real runs there are counts and no patterns; a test run is not counted', four.reviewed === 4 && four.patterns === null && four.agreement.disagree === 0 && PATTERN_MINIMUM === 5)
+const five = summarize([calRun(1, 'agree'), calRun(2, 'partly'), calRun(3, 'disagree'), calRun(4, 'agree'), calRun(5, 'agree'), calRun(6, null)])
+check('C from five reviewed real runs, agreement is broken down; unreviewed runs count as researched only', five.reviewed === 5 && five.researched === 6 && (five.patterns?.length ?? 0) > 0 && five.issues.score_too_high === 2 && five.averageDurationMs === 40_000)
+check('C our own site, test recipients and TEST/EVD leads are test prospects; a real business is not',
+  isTestProspect({ company: 'TEST Lead', name: null, email: null, website: null }) && isTestProspect({ company: 'X', name: null, email: null, website: 'https://www.maxpromo.digital' })
+  && isTestProspect({ company: 'X', name: null, email: 't@example.org', website: null }, { OUTREACH_TEST_RECIPIENTS: 't@example.org' }) && !isTestProspect({ company: 'Chirurgie im mediza', name: null, email: null, website: 'http://www.mediza-chirurgie.de/' }, {}))
+check('C the review is an owner-only GREEN capability on the lead screen, not offered by Max', agentWorkReview.risk === 'GREEN' && CAPABILITIES.get('agentwork.review') === agentWorkReview
+  && read(join(WEB, 'app/api/os/leads/actions/route.ts')).includes("'agentwork.review'") && !MAX_CAPABILITIES.has('agentwork.review'))
+const calSrc = code(join(WEB, 'lib/agents/calibration.ts'))
+check('C the calibration writes only its own table — never the run, the lead, a draft or a message', /INSERT INTO os_agent_work_review/.test(calSrc) && !/UPDATE |DELETE |INSERT INTO (?!os_agent_work_review)/.test(calSrc))
+check('C the issue list in code is the database constraint', REVIEW_ISSUES.every(i => read(join(WEB, 'db/migrations/0028-research-calibration.sql')).includes(`'${i}'`)))
+
 console.log(`\nAGENT WORK: ${passed} checks passed`)

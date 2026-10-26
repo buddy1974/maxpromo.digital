@@ -6,6 +6,7 @@
  *   3. the basis for emailing them (UWG §7) — without one, email is not offered as the channel
  *   4. the outreach draft: revise, put up for approval, or edit it in the Inbox
  *   5. follow-ups, stage decisions and the timeline
+ * Under a Research Agent result, one small question for the field calibration: was it useful?
  * Every button is a capability through /api/os/leads/actions; a send is always a confirmation.
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -16,6 +17,57 @@ import { LEADS_COPY } from '@/lib/os-i18n/leads'
 import { useOwnerAction } from '@/components/os/useOwnerAction'
 import { useMaxScreenContext } from '@/components/os/max/MaxProvider'
 import type { LeadWorkspace } from '@/lib/leads/workspace'
+import { JUDGEMENT_COPY } from '@/lib/os-i18n/calibration'
+
+const ISSUES = ['missed_signal', 'overstated', 'misunderstood', 'score_too_high', 'score_too_low', 'wrong_next_step'] as const
+
+/** Field calibration: Marcel's judgement of the result on screen. Stored beside the run; changes nothing else. */
+function Judgement({ calibration, busy, fmtDate, j, cancel, onSave }: {
+  calibration: NonNullable<LeadWorkspace['calibration']>; busy: boolean; fmtDate: (d: string) => string; j: (typeof JUDGEMENT_COPY)['en']; cancel: string
+  onSave: (input: { verdict: string; issues: string[]; note?: string }) => Promise<unknown>
+}) {
+  const r = calibration.review
+  const [editing, setEditing] = useState(!r)
+  const [verdict, setVerdict] = useState<string | null>(null)
+  const [issues, setIssues] = useState<string[]>([])
+  const [note, setNote] = useState('')
+  if (r && !editing) return (
+    <div className="lead-judgement">
+      <p>{j.current(j.verdict[r.verdict], fmtDate(r.created_at))}{r.issues.length > 0 ? ` · ${r.issues.map(i => j.issue[i]).join(', ')}` : ''}</p>
+      {r.note && <p className="money-sub">„{r.note}“</p>}
+      {r.revisions > 1 && <p className="money-sub">{j.revisions(r.revisions)}</p>}
+      <button type="button" className="btn-secondary btn-sm" onClick={() => setEditing(true)}>{j.change}</button>
+    </div>
+  )
+  return (
+    <form className="lead-judgement" onSubmit={e => { e.preventDefault(); if (verdict) void onSave({ verdict, issues: verdict === 'agree' ? [] : issues, ...(note.trim() ? { note: note.trim() } : {}) }) }}>
+      <p><strong>{j.ask}</strong></p>
+      <div className="lead-actions" role="group" aria-label={j.ask}>
+        {(['agree', 'partly', 'disagree'] as const).map(v => (
+          <button key={v} type="button" aria-pressed={verdict === v} className={`btn-sm ${verdict === v ? 'btn-primary' : 'btn-secondary'}`} onClick={() => setVerdict(v)}>{j.verdict[v]}</button>
+        ))}
+      </div>
+      {verdict && (
+        <>
+          {verdict !== 'agree' && (
+            <fieldset className="lead-issues">
+              <legend className="money-sub">{j.what}</legend>
+              {ISSUES.map(i => (
+                <label key={i}><input type="checkbox" checked={issues.includes(i)} onChange={e => setIssues(x => e.target.checked ? [...x, i] : x.filter(y => y !== i))} /> {j.issue[i]}</label>
+              ))}
+            </fieldset>
+          )}
+          <input aria-label={j.note} placeholder={j.note} value={note} onChange={e => setNote(e.target.value)} maxLength={500} />
+          <div className="lead-actions">
+            <button type="submit" className="btn-primary btn-sm" disabled={busy}>{j.save}</button>
+            {r && <button type="button" className="btn-secondary btn-sm" onClick={() => setEditing(false)}>{cancel}</button>}
+          </div>
+          <p className="money-sub">{j.unchanged}</p>
+        </>
+      )}
+    </form>
+  )
+}
 
 export default function LeadPage() {
   const { id } = useParams<{ id: string }>()
@@ -185,6 +237,8 @@ export default function LeadPage() {
               {done.contact.person && <p className="money-rail">{c.contactPerson}: {done.contact.person}{done.contact.role ? ` (${done.contact.role})` : ''}</p>}
               {done.contact.email_off_domain && !q.verdict && <p className="money-rail">{c.offDomain(done.contact.email_off_domain)}</p>}
               <p className="money-rail">{c.pagesRead}: {done.pages.map(p => p.url.replace(/^https?:\/\//, '')).join(' · ')}</p>
+              {ws.calibration && <Judgement key={`${ws.calibration.workId}:${ws.calibration.review?.id ?? ''}`} calibration={ws.calibration} busy={action.busy} fmtDate={fmtDate} j={JUDGEMENT_COPY[locale]} cancel={c.cancel}
+                onSave={input => action.run('agentwork.review', { work_id: ws.calibration!.workId, ...input })} />}
               {ws.siteHistory.length > 0 && (
                 <p className="money-rail"><strong>{c.earlier}:</strong> {ws.siteHistory.map(h => c.historyLine(fmtDate(h.at), h.score, c.verdict[h.verdict] ?? h.verdict, c.confidence[h.confidence] ?? h.confidence, h.facts, h.pages)).join(' — ')}</p>
               )}

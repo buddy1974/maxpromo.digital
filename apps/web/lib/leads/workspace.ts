@@ -9,6 +9,7 @@ import type { LeadRow } from '@/lib/commercial/records'
 import { recordedBasis, testRecipients, type Basis } from './sendPolicy'
 import { recordedFacts, siteHistory, siteResearch, type SiteHistoryEntry, type SiteState } from './state'
 import { workForLead } from '@/lib/agents/work'
+import { currentReviews, type Review } from '@/lib/agents/calibration'
 import { investigationPlan, recommendNext, type Check, type ResearchRecommendation } from '@maxpromo/research'
 
 export interface LeadWorkspace {
@@ -26,6 +27,8 @@ export interface LeadWorkspace {
   timeline: { id: string; kind: string; summary: string; actor: string; created_at: string }[]
   /** Work delegated to Agent Bureau agents about this lead, newest first, open items reconciled (ADR-0030). */
   agentWork: { id: string; agent: string; state: string; source: string; created_at: string; finished_at: string | null; failure: string | null }[]
+  /** Field calibration: the research run whose result is shown, and Marcel's current judgement of it. */
+  calibration: { workId: string; review: (Review & { revisions: number }) | null } | null
   /** The newest outreach draft version (os_activities), so a revision builds on it. */
   latestDraftVersion: string | null
 }
@@ -47,6 +50,7 @@ export async function leadWorkspace(sql: Sql, id: string): Promise<LeadWorkspace
   const basis: Basis | null = email && testRecipients().has(email) ? 'test' : await recordedBasis(sql, id, email ? [email] : [])
   const work = await workForLead(sql, id)
   const site = siteResearch(lead)
+  const calibration = await shownRun(sql, site, work)
   const next = site?.state === 'done' && site.qualification.verdict ? { recommendation: recommendNext(site, site.qualification), checks: investigationPlan(site, site.qualification) } : null
   const { research, ...rest } = lead
   void research
@@ -54,7 +58,18 @@ export async function leadWorkspace(sql: Sql, id: string): Promise<LeadWorkspace
     lead: rest, site, next, siteHistory: siteHistory(lead), facts: recordedFacts(lead), basis,
     drafts: drafts as LeadWorkspace['drafts'], followups: followups as LeadWorkspace['followups'],
     approvals: approvals as LeadWorkspace['approvals'], timeline: timeline as LeadWorkspace['timeline'],
+    calibration,
     latestDraftVersion: (latest as { id: string }[])[0]?.id ?? null,
     agentWork: work.map(w => ({ id: w.id, agent: w.agent, state: w.state, source: w.source, created_at: new Date(w.created_at).toISOString(), finished_at: w.finished_at ? new Date(w.finished_at).toISOString() : null, failure: w.failure?.detail ?? null })),
   }
+}
+
+/** The completed Research Agent run that produced the result on screen — none when the result came from
+ *  elsewhere (research in the OS before ADR-0030) or from a later run that is not finished. */
+async function shownRun(sql: Sql, site: SiteState | null, work: Awaited<ReturnType<typeof workForLead>>): Promise<LeadWorkspace['calibration']> {
+  if (site?.state !== 'done') return null
+  const at = new Date(site.researched_at).getTime()
+  const run = work.find(w => w.state === 'completed' && w.finished_at && new Date(w.created_at).getTime() - 60_000 <= at && at <= new Date(w.finished_at).getTime() + 60_000)
+  if (!run) return null
+  return { workId: run.id, review: (await currentReviews(sql, [run.id])).get(run.id) ?? null }
 }

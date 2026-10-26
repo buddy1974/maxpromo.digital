@@ -22,7 +22,7 @@ import {
   isTerminalWork, signedHeaders, WORK_AGENTS, WORK_CLIENT, WORK_CONTRACT_VERSION, workDoorSecret,
   type WorkFailure, type WorkRequest, type WorkState, type WorkView,
 } from '@maxpromo/config/agent-contract'
-import { investigationPlan, parseFindings, qualify, recommendNext, type Check, type ResearchFindings, type ResearchRecommendation, type Verdict } from '@maxpromo/research'
+import { investigationPlan, parseFindings, qualify, recommendNext, type Check, type Qualification, type ResearchFindings, type ResearchRecommendation, type Verdict } from '@maxpromo/research'
 import { isEvidenceMode } from '@maxpromo/config'
 import { recordAgentEvents } from '@/lib/commercial/agent-events'
 import { writeAudit } from '@/lib/commercial/audit'
@@ -80,6 +80,18 @@ export interface WorkSummary {
   opportunities?: { solution: string; hypothesis: string }[]
   /** What to check: code unknowns and the open questions the pages raised. */
   checks?: Check[]
+  /** Field calibration — the whole result as it was decided, kept with the run because a later run
+   *  replaces the lead's research. Absent on work finished before it. */
+  record?: CalibrationRecord
+}
+
+export interface CalibrationRecord {
+  businessType: string | null
+  pages: string[]
+  facts: { text: string; quote: string; url: string }[]
+  opportunities: { solution: string; hypothesis: string }[]
+  unknowns: Check[]
+  limitations: Qualification['caveats']
 }
 
 /** The facts worth showing first: manual work, then the rest; never an old-style quoted "opportunity". */
@@ -232,6 +244,14 @@ export async function applyWorkView(sql: Sql, view: WorkView): Promise<ApplyOutc
       inferences: (findings.inferences ?? []).slice(0, 2).map(i => i.text),
       opportunities: (findings.opportunities ?? []).slice(0, 2).map(o => ({ solution: o.solution, hypothesis: o.hypothesis })),
       checks: investigationPlan(findings, q, 3),
+      record: {
+        businessType: findings.business_type,
+        pages: findings.pages.map(p => p.url).slice(0, 12),
+        facts: findings.evidence.filter(e => e.kind !== 'opportunity').slice(0, 15).map(e => ({ text: e.text, quote: e.quote, url: e.url })),
+        opportunities: (findings.opportunities ?? []).slice(0, 6).map(o => ({ solution: o.solution, hypothesis: o.hypothesis })),
+        unknowns: investigationPlan(findings, q, 10),
+        limitations: q.caveats,
+      },
     }
     /* Claim first: two arrivals of the same result apply it once. */
     if (!await finish(sql, row.id, 'completed', { summary, runtime: view.runtime })) return { applied: false, state: 'completed', reason: 'already_terminal' }
