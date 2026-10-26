@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Icon } from '@maxpromo/ui'
-import { resolveDomain } from '@maxpromo/config'
 import { OsLocaleProvider, useOsLocale } from '@/lib/os-i18n/context'
 import { LanguageSwitcher } from '@/components/os/LanguageSwitcher'
 import { MaxProvider, useMax } from '@/components/os/max/MaxProvider'
@@ -28,7 +27,6 @@ import './os-layout.css'
 
 const mono = 'var(--brand-font-mono)'
 const sans = 'var(--brand-font-body)'
-const BUREAU_ORIGIN = resolveDomain('agents.maxpromo.digital').origin
 const MaxSurface = dynamic(() => import('@/components/os/max/MaxSurface'), { ssr: false })
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
@@ -100,7 +98,8 @@ function ProtectedLayoutInner({ children }: { children: React.ReactNode }) {
           </button>
           <div style={{ margin: 'var(--space-3) var(--space-4)', height: '1px', background: 'var(--brand-border)' }} />
           <span className="os-section-label" style={{ paddingTop: 'var(--space-1)' }}>{t.sidebar.sectionLinks}</span>
-          <a href={BUREAU_ORIGIN} target="_blank" rel="noopener noreferrer" className="os-nav-item">
+          {/* One login (ADR-0030): the OS hands the owner over with a one-time ticket. */}
+          <a href="/api/os/bureau/handoff" target="_blank" rel="noopener" className="os-nav-item">
             <span className="os-nav-icon"><Icon name="agents" size="md" /></span>
             <span className="os-nav-label">{t.shell.agentBureau}</span>
           </a>

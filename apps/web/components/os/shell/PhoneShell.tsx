@@ -13,11 +13,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Icon } from '@maxpromo/ui'
-import { FALLBACK_DOMAIN, resolveDomain } from '@maxpromo/config'
+import { FALLBACK_DOMAIN } from '@maxpromo/config'
 import { useOsLocale } from '@/lib/os-i18n/context'
 import { Sheet } from './Sheet'
 
-const BUREAU_ORIGIN = resolveDomain('agents.maxpromo.digital').origin
 const WEBSITE_ORIGIN = FALLBACK_DOMAIN.origin
 
 export interface ShellStatus { needsReply: number; approvals: number; money: number }
@@ -157,7 +156,7 @@ export function PhoneNav({ status, onQuickScan, onSignOut }: { status: ShellStat
         </ul>
         <p className="os-more-group">{s.groupAgents}</p>
         <ul className="os-more-list">
-          <li><a href={BUREAU_ORIGIN} className="os-more-item" target="_blank" rel="noopener noreferrer"><Icon name="agents" size="md" /><span>{s.agentBureau}<small>{s.agentBureauHint}</small></span><Icon name="external" size="xs" /></a></li>
+          <li><a href="/api/os/bureau/handoff" className="os-more-item" target="_blank" rel="noopener"><Icon name="agents" size="md" /><span>{s.agentBureau}<small>{s.agentBureauHint}</small></span><Icon name="external" size="xs" /></a></li>
         </ul>
         <p className="os-more-group">{s.groupTools}</p>
         <ul className="os-more-list">

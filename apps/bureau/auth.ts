@@ -5,7 +5,8 @@
  * role so every server component / route handler gets tenant context from
  * getServerSession() without a DB round-trip.
  *
- * Provider: Credentials only — email + argon2id-hashed password.
+ * Providers: credentials (email + argon2id-hashed password) and the one-time
+ * Maxpromo OS owner handoff (ADR-0030) — Marcel does not log in twice.
  * WHY no public signup: accounts are provisioned by Maxpromo during client
  * onboarding. This keeps costs controlled and tenant boundaries auditable.
  *
@@ -16,7 +17,9 @@
  */
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
+import { verifyHandoff } from "@maxpromo/config/agent-contract";
+import { osLinkedBusinessId } from "@/lib/os/client";
 import { getDb, schema } from "@/lib/db";
 import { verifyPassword } from "@/lib/auth/password";
 import { checkRateLimit, LOGIN_LIMIT } from "@/lib/security/rate-limit";
@@ -96,6 +99,36 @@ export const authOptions: NextAuthOptions = {
           businessId: user.businessId,
           role: user.role,
         };
+      },
+    }),
+    /**
+     * One login (ADR-0030): Marcel is signed in to Maxpromo OS, which hands him
+     * over with a one-time ticket (@maxpromo/config/agent-contract). Accepted
+     * only for the OS owner, only once (the nonce is recorded), only within
+     * 60 seconds, and it signs in the owner user of the OS-linked tenant —
+     * never anyone the ticket names. No password involved, none created.
+     */
+    CredentialsProvider({
+      id: "os-handoff",
+      name: "Maxpromo OS",
+      credentials: { ticket: { label: "Ticket", type: "text" } },
+      async authorize(credentials) {
+        const ticket = credentials?.ticket ?? "";
+        const verdict = verifyHandoff(process.env, ticket);
+        if (!verdict.ok) { console.warn("[sso] refused:", verdict.reason); return null; }
+        if (verdict.ticket.sub !== "os:marcel") { console.warn("[sso] refused: not the OS owner"); return null; }
+        const businessId = osLinkedBusinessId();
+        if (!businessId) return null;
+        const db = getDb();
+        const fresh = await db.insert(schema.workNonces).values({ nonce: `sso:${verdict.ticket.nonce}` }).onConflictDoNothing().returning({ nonce: schema.workNonces.nonce });
+        if (!fresh.length) { console.warn("[sso] refused: ticket already used"); return null; }
+        const rows = await db.select().from(schema.appUsers)
+          .where(and(eq(schema.appUsers.businessId, businessId), eq(schema.appUsers.role, "owner")))
+          .orderBy(asc(schema.appUsers.createdAt)).limit(1);
+        const user = rows[0];
+        if (!user) return null;
+        db.update(schema.appUsers).set({ lastLoginAt: new Date() }).where(eq(schema.appUsers.id, user.id)).catch(() => {});
+        return { id: user.id, email: user.email, name: user.name ?? user.email, businessId: user.businessId, role: user.role };
       },
     }),
   ],

@@ -252,7 +252,10 @@
     "passwordLabel": "Passwort",
     "signingIn": "Anmelden…",
     "noAccount": "Kein Konto? Zugang wird von Maxpromo bereitgestellt.",
-    "errCredentials": "E-Mail-Adresse oder Passwort ungültig."
+    "errCredentials": "E-Mail-Adresse oder Passwort ungültig.",
+    "ssoWorking": "Anmeldung über Maxpromo OS …",
+    "ssoFailed": "Der Link aus Maxpromo OS ist abgelaufen oder wurde schon benutzt. Öffne das Agent Bureau erneut aus Maxpromo OS oder melde dich hier an.",
+    "ssoLogin": "Zur Anmeldung"
   },
   "status": {
     "active": "Aktiv",

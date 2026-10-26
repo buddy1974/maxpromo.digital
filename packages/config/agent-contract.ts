@@ -83,7 +83,57 @@ export const WORK_AGENTS = {
 } as const
 export type WorkAgent = keyof typeof WORK_AGENTS
 
-export const WORK_STATES = ['queued', 'running', 'completed', 'failed', 'cancelled'] as const
+/* ── Owner handoff: one login (ADR-0030) ─────────────────────────────────────
+ *
+ * Marcel is signed in to Maxpromo OS; opening the Bureau admin from the OS must
+ * not ask for a second password. The OS issues a one-time ticket for the OWNER
+ * only, the Bureau checks it once and starts its own session for its owner user
+ * in the OS-linked tenant. Not a shared cookie: each application keeps its own
+ * session; the ticket is the bridge.
+ *
+ *   ticket = base64url(payload JSON) "." base64url(HMAC-SHA256(key, payload part))
+ *   key    = HMAC-SHA256(OS_BUREAU_AGENT_SECRET, "maxpromo/owner-handoff/v1")
+ *   payload = { v: 1, aud: "bureau", sub: "os:marcel", iat, exp (≤ 60 s later), nonce }
+ *
+ * Its own derived key: a work-door signature or an agent credential is never a
+ * login. The nonce is recorded by the Bureau, so a ticket works once.
+ */
+export const HANDOFF_TTL_SECONDS = 60
+export interface HandoffTicket { v: 1; aud: 'bureau'; sub: string; iat: number; exp: number; nonce: string }
+
+function handoffKey(env: Record<string, string | undefined>): string | undefined {
+  const credential = env.OS_BUREAU_AGENT_SECRET
+  if (!credential || credential.length < MIN_SECRET_LENGTH) return undefined
+  return createHmac('sha256', credential).update('maxpromo/owner-handoff/v1').digest('base64url')
+}
+
+export function signHandoff(env: Record<string, string | undefined>, sub: string, nowSeconds = Math.floor(Date.now() / 1000)): string | null {
+  const key = handoffKey(env)
+  if (!key) return null
+  const payload: HandoffTicket = { v: 1, aud: 'bureau', sub, iat: nowSeconds, exp: nowSeconds + HANDOFF_TTL_SECONDS, nonce: randomBytes(18).toString('base64url') }
+  const part = Buffer.from(JSON.stringify(payload)).toString('base64url')
+  return `${part}.${createHmac('sha256', key).update(part).digest('base64url')}`
+}
+
+export type HandoffVerdict = { ok: true; ticket: HandoffTicket } | { ok: false; reason: 'not_configured' | 'malformed' | 'bad_signature' | 'expired' | 'wrong_audience' }
+
+export function verifyHandoff(env: Record<string, string | undefined>, token: string, nowSeconds = Math.floor(Date.now() / 1000)): HandoffVerdict {
+  const key = handoffKey(env)
+  if (!key) return { ok: false, reason: 'not_configured' }
+  const m = /^([A-Za-z0-9_-]{20,600})\.([A-Za-z0-9_-]{43})$/.exec(token)
+  if (!m) return { ok: false, reason: 'malformed' }
+  const expected = Buffer.from(createHmac('sha256', key).update(m[1]).digest('base64url'))
+  const given = Buffer.from(m[2])
+  if (expected.length !== given.length || !timingSafeEqual(expected, given)) return { ok: false, reason: 'bad_signature' }
+  let t: HandoffTicket
+  try { t = JSON.parse(Buffer.from(m[1], 'base64url').toString('utf8')) as HandoffTicket } catch { return { ok: false, reason: 'malformed' } }
+  if (t.v !== 1 || typeof t.sub !== 'string' || typeof t.nonce !== 'string' || !/^[A-Za-z0-9_-]{20,64}$/.test(t.nonce)) return { ok: false, reason: 'malformed' }
+  if (t.aud !== 'bureau') return { ok: false, reason: 'wrong_audience' }
+  if (typeof t.exp !== 'number' || typeof t.iat !== 'number' || t.exp - t.iat > HANDOFF_TTL_SECONDS || nowSeconds > t.exp || t.iat > nowSeconds + 30) return { ok: false, reason: 'expired' }
+  return { ok: true, ticket: t }
+}
+
+export const WORK_STATES =['queued', 'running', 'completed', 'failed', 'cancelled'] as const
 export type WorkState = typeof WORK_STATES[number]
 export const isTerminalWork = (s: WorkState) => s === 'completed' || s === 'failed' || s === 'cancelled'
 

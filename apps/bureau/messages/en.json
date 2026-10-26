@@ -252,7 +252,10 @@
     "passwordLabel": "Password",
     "signingIn": "Signing in…",
     "noAccount": "No account? Access is provisioned by Maxpromo.",
-    "errCredentials": "That email address or password is not valid."
+    "errCredentials": "That email address or password is not valid.",
+    "ssoWorking": "Signing you in from Maxpromo OS …",
+    "ssoFailed": "The link from Maxpromo OS has expired or was already used. Open the Agent Bureau from Maxpromo OS again, or sign in here.",
+    "ssoLogin": "Go to sign-in"
   },
   "status": {
     "active": "Active",

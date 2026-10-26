@@ -14,7 +14,7 @@
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { signedHeaders, WORK_AGENTS, workDoorSecret } from '../../../../packages/config/agent-contract.ts'
+import { signedHeaders, signHandoff, verifyHandoff, WORK_AGENTS, workDoorSecret } from '../../../../packages/config/agent-contract.ts'
 
 const ROOT = resolve(import.meta.dirname, '../../../..')
 const WEB = join(ROOT, 'apps/web'), BUREAU = join(ROOT, 'apps/bureau')
@@ -68,6 +68,21 @@ check('A a request signed with the derived key is admitted; one signed with the 
 const doorSource = readFileSync(join(BUREAU, 'app/api/work/v1/[action]/route.ts'), 'utf8')
 check('A every work lookup is scoped to the credential\'s tenant', (doorSource.match(/eq\(agentWork\.businessId, businessId\)/g) ?? []).length >= 3)
 check('A only registered agents are accepted at the work door', /b\.agent !== "research"/.test(doorSource) && Object.keys(WORK_AGENTS).join() === 'research')
+
+/* ── A' one login: the owner handoff ticket ──────────────────────────────── */
+const now = Math.floor(Date.now() / 1000)
+const ticket = signHandoff(sharedOnly, 'os:marcel', now)!
+check('A\' a handoff ticket signed by the OS verifies at the Bureau for the owner', verifyHandoff(sharedOnly, ticket, now + 5).ok === true)
+check('A\' it expires after 60 seconds', !verifyHandoff(sharedOnly, ticket, now + 61).ok)
+check('A\' another credential, a changed payload or a work-door key cannot make one',
+  !verifyHandoff({ OS_BUREAU_AGENT_SECRET: 'z'.repeat(40) }, ticket, now).ok
+  && !verifyHandoff(sharedOnly, ticket.replace(/^./, c => (c === 'A' ? 'B' : 'A')), now).ok
+  && !verifyHandoff(sharedOnly, `${ticket.split('.')[0]}.${signHandoff({ OS_BUREAU_AGENT_SECRET: derived }, 'os:marcel', now)!.split('.')[1]}`, now).ok)
+check('A\' without the shared credential no ticket is issued', signHandoff({}, 'os:marcel') === null)
+const authSource = readFileSync(join(BUREAU, 'auth.ts'), 'utf8'), handoffRoute = readFileSync(join(WEB, 'app/api/os/bureau/handoff/route.ts'), 'utf8')
+check('A\' the Bureau accepts a ticket once, only for the OS owner, as the owner user of the OS-linked tenant',
+  /sso:\$\{verdict\.ticket\.nonce\}/.test(authSource) && /onConflictDoNothing/.test(authSource) && /sub !== "os:marcel"/.test(authSource) && /osLinkedBusinessId\(\)/.test(authSource) && /eq\(schema\.appUsers\.role, "owner"\)/.test(authSource))
+check('A\' the OS issues tickets for the owner session only, in the URL fragment (never a request line)', /actor !== OWNER_ACTOR/.test(handoffRoute) && /\/sso#t=/.test(handoffRoute))
 
 /* ── B the OS door for the Bureau ────────────────────────────────────────── */
 const bureau = CLIENT_POLICIES.bureau
