@@ -60,7 +60,7 @@ and Ask Max as a slide-over. Below 900 px the OS is an app:
 - The OS, the OS API and the pay page refuse to be framed (`frame-ancestors 'none'`,
   `X-Frame-Options: DENY`): governed one-tap decisions must not be clickable through a hostile overlay.
 - Scheduled send (migration 0023): a confirmed send time is bound to the revision; sweeps (OS while
-  open, the daily cron, `/api/cron/mail-schedule`) claim due drafts once; take-back and refused sends
+  open, the daily cron; `/api/cron/mail-schedule` is callable but on no schedule — ADR-0033 A5) claim due drafts once; take-back and refused sends
   return the draft. Minute accuracy whatever the OS is doing needs `CRON_SECRET` and a frequent cron.
 
 ## Consequences

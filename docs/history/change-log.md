@@ -1,5 +1,22 @@
 # Change Log
 
+## 2026-10-31 — Operational Foundation V2 hardening gate (ADR-0033)
+
+- Research reader: the address is checked when connecting (DNS rebinding), IPv6 parsed in full with IPv4
+  inside IPv6 judged by the IPv4, the remaining non-public ranges refused, bodies capped while reading
+  (`packages/research/net.ts`). Mediza reads unchanged.
+- Engine: a stored retry-safe failure or a dead attempt no longer blocks its request id for ever; a retry
+  takes it over once. Bureau result hand-backs and intake deliveries can now be redelivered.
+- Agent results: a late result never overwrites newer research on the lead; a crash between finishing the
+  work and writing the lead is repaired by the next arrival.
+- One research path: the in-process `lead.research` capability and `researchLead` are retired; the workflow
+  sweep delegates to the Research Agent like the lead screen and Max.
+- Agent evidence records the model route that actually answered (no assumed "anthropic").
+- Inbox and composer say when a scheduled email really goes.
+- Proofs: `prove:lead-research` 79, `prove:agent-work` 60, new `prove:agent-result-delivery-evidence` 13;
+  `npm run verify` green (web JS 1,499 of 1,500 KB).
+- Blueprint (proposed, not started): `docs/architecture/operational-foundation-v2.md`.
+
 ## 2026-10-26 — Research Agent field calibration (ADR-0032)
 
 - Lead screen: under a Research Agent result, "Was this research useful?" — Agree / Partly / Disagree,

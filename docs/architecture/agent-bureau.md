@@ -181,3 +181,13 @@ earlier runs and results unchanged; two runs, independent reviews; the three ver
 persist, invalid input refused; no score or result field accepted; lead score, research and stage
 unchanged; no draft, outbound message, approval or basis; only the owner, only completed runs; the
 summary counts real judged runs only; the lead screen links its result to the right run.
+
+## 12. Hardening (ADR-0033, 2026-10-31)
+
+- **One research path.** Every research — lead screen, Max, the workflow sweep — is delegated work for the
+  Research Agent through `requestResearch`. The OS never reads a prospect's site itself (proof check E).
+- **Hand-back.** A result or intake whose first delivery failed is redelivered under the same request id and
+  applied once; a completed result writes the lead only while its work holds the lead's claim; a crash between
+  finishing and writing is repaired by the next arrival (`prove:agent-result-delivery-evidence`, 13).
+- **Evidence.** `runtime.route` and `findings.route` name the gateway route that answered; none is assumed.
+- **Reader.** The address is checked at connect time (`packages/research/net.ts`).

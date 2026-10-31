@@ -1,5 +1,14 @@
 # Decision Log
 
+## 2026-10-31 — Operational Foundation V2: hardening A1–A5 done, blueprint proposed (ADR-0033; for Marcel's inspection)
+
+Under the "Operational Foundation V2 — architecture reconciliation + foundation hardening gate" brief, five
+assessment findings were traced in code; all five were confirmed and repaired (no schema change, no new
+dependency). The previous assessment was challenged where the code required it: Document Intelligence
+moves to Phase 2 as a consumer, an execution adapter foundation takes its Phase 1 place; Scrapling was
+compared with a plain Playwright service and is not adopted (second language and extractor, stealth outside
+policy); Gmail is "not required now", not "never". The blueprint is PROPOSED; no programme is started.
+
 ## 2026-10-26 — Research Agent field calibration (ADR-0032; for Marcel's inspection)
 
 Under the "Research Agent field calibration" brief: Marcel's judgement of a research run is recorded as
