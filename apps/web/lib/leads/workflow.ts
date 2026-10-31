@@ -5,7 +5,9 @@
  * action an existing capability through the engine (so it is idempotent, audited and approval-gated
  * exactly like Marcel's own clicks), every transition a line on the lead's timeline:
  *
- *   1. lead has a website, no research yet, new           → lead.research          (GREEN: reads the site)
+ *   1. lead has a website, no research yet, new           → the Research Agent      (reads the site; the ONE
+ *                                                             research path, ADR-0033 A3: requestResearch,
+ *                                                             exactly what the lead screen and Max use)
  *   2. research done, qualified, email, no open draft      → outreach.draft         (GREEN: writes a draft)
  *   3. draft confirmed by Marcel                            → outreach.send          (AMBER: Marcel confirms; policy)
  *                                                             → follow-up "if no reply" (in outreach.send)
@@ -25,10 +27,11 @@
  * step goes through runCapability with a deterministic request id, so a repeat returns the first
  * answer instead of acting twice.
  */
+import { requestResearch } from '@/lib/agents/work'
 import { runCapability } from '@/lib/commercial/engine'
+import type { LeadRow } from '@/lib/commercial/records'
 import type { Sql } from '@/lib/commercial/types'
-import type { ResearchDeps } from '@maxpromo/research'
-import { researchLead, STALE_MINUTES } from './run'
+import { STALE_MINUTES } from './run'
 
 export const WORKFLOW_ACTOR = 'os:workflow'
 
@@ -78,7 +81,18 @@ export interface SweepResult { researched: number; drafted: number; followUps: n
 export const automaticRulesOn = (env: Record<string, string | undefined> = process.env) => env.LEAD_WORKFLOW === '1'
 
 /** One pass over the rules. Cheap unless it researches (at most one lead). */
-export async function sweepLeads(sql: Sql, today: string, deps: ResearchDeps & { env?: Record<string, string | undefined> } = {}): Promise<SweepResult> {
+export interface SweepDeps {
+  env?: Record<string, string | undefined>
+  /** Starts research of one lead; true when it started. Default: delegate to the Research Agent. */
+  research?: (sql: Sql, lead: LeadRow) => Promise<boolean>
+}
+
+const delegateResearch = async (sql: Sql, lead: LeadRow) => {
+  const r = await requestResearch(sql, { lead, requestedBy: WORKFLOW_ACTOR, source: 'workflow' })
+  return r.ok
+}
+
+export async function sweepLeads(sql: Sql, today: string, deps: SweepDeps = {}): Promise<SweepResult> {
   const out: SweepResult = { researched: 0, drafted: 0, followUps: 0, replies: 0 }
 
   /* Rule 5, catching up on anything the inbound hook missed (deterministic request ids make it a no-op otherwise). */
@@ -96,8 +110,8 @@ export async function sweepLeads(sql: Sql, today: string, deps: ResearchDeps & {
            OR (research->'site'->>'state' = 'running' AND (research->'site'->>'at')::timestamptz < now() - make_interval(mins => ${STALE_MINUTES})))
     ORDER BY (research->'site'->>'state' = 'requested') DESC NULLS LAST, created_at DESC LIMIT 1` as { id: string }[]
   if (candidate[0]) {
-    const r = await researchLead(sql, candidate[0].id, WORKFLOW_ACTOR, deps)
-    if (r.claimed) out.researched++
+    const lead = (await sql`SELECT * FROM os_leads WHERE id = ${candidate[0].id}::uuid` as LeadRow[])[0]
+    if (lead && await (deps.research ?? delegateResearch)(sql, lead)) out.researched++
   }
 
   /* Rule 2: a qualified lead with an email and no outreach draft yet gets one (a draft; nothing is sent). */

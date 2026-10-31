@@ -8,7 +8,7 @@ export const maxDuration = 120
  * on screen; everything else is GREEN and stays inside the OS. agentwork.request (ADR-0030) asks the
  * Research Agent; it reads the lead's website and the result comes back to this lead. agentwork.review
  * records Marcel's judgement of a finished result (field calibration). */
-const LEADS = new Set(['lead.create', 'lead.update', 'lead.research', 'agentwork.request', 'agentwork.review', 'lead.basis', 'outreach.draft', 'outreach.send', 'outreach.whatsapp_link', 'activity.log', 'followup.done', 'email.discard'])
+const LEADS = new Set(['lead.create', 'lead.update', 'agentwork.request', 'agentwork.review', 'lead.basis', 'outreach.draft', 'outreach.send', 'outreach.whatsapp_link', 'activity.log', 'followup.done', 'email.discard'])
 
 export const POST = withAuth(async (request, { session }) => ownerCapabilityAction(request, session, {
   capabilities: LEADS,

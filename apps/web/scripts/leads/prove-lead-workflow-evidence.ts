@@ -74,8 +74,9 @@ const deps = { fetch: siteFetch, lookup }
 
 const { getDb } = await import('../../lib/db.ts')
 const { runCapability, executeApproval, rejectApproval } = await import('../../lib/commercial/engine.ts')
-const { researchLead } = await import('../../lib/leads/run.ts')
-const { sweepLeads, applyLeadReply } = await import('../../lib/leads/workflow.ts')
+const { claimResearch, applyResearchOutcome } = await import('../../lib/leads/run.ts')
+const { researchSite } = await import('../../../../packages/research/index.ts')
+const { sweepLeads, applyLeadReply, WORKFLOW_ACTOR } = await import('../../lib/leads/workflow.ts')
 const { prospectPolicy } = await import('../../lib/leads/sendPolicy.ts')
 const { sweepScheduledMail } = await import('../../lib/mail/outbound.ts')
 
@@ -92,6 +93,15 @@ async function create(company: string, extra: Record<string, unknown>) {
   const d = done<{ created: boolean; lead_id: string }>(await run('lead.create', { company, ...extra }))
   assert.ok(d.created); leads.push(d.lead_id); return d.lead_id
 }
+/* Research has one path (ADR-0033 A3): the Research Agent reads the site and the OS claims the lead,
+   scores the findings and writes the record. Here the site is read in this process with the same
+   package and fixture web, and the OS side is the real claim and record. The sweep is given the same. */
+async function researchLead(sqlc: typeof sql, leadId: string, actor: string, d: typeof deps) {
+  const claimed = await claimResearch(sqlc, leadId, actor)
+  if (!claimed) return { claimed: false as const }
+  return { claimed: true as const, ...await applyResearchOutcome(sqlc, claimed, await researchSite(claimed.website, d), actor) }
+}
+const sweepResearch = async (sqlc: typeof sql, l: { id: string }) => (await researchLead(sqlc, l.id, WORKFLOW_ACTOR, deps)).claimed
 const lead = async (id: string) => (await sql`SELECT * FROM os_leads WHERE id=${id}::uuid` as { status: string; email: string | null; research: { site?: { state: string; evidence?: { quote: string; url: string }[]; qualification?: { score: number; qualified: boolean; confidence: string; reasons: { code: string }[] } } } }[])[0]
 const kinds = async (id: string) => (await sql`SELECT kind FROM os_activities WHERE lead_id=${id}::uuid ORDER BY created_at` as { kind: string }[]).map(r => r.kind)
 const sentTo = async (to: string) => Number((await sql`SELECT count(*)::int AS n FROM mail.messages WHERE direction='outbound' AND recipients ? ${to}` as { n: number }[])[0].n)
@@ -132,21 +142,21 @@ try {
   modelMode = 'ok'
   check('a model failure is a recorded failure at the model stage', (await lead(E)).research.site!.state === 'failed' && (await sql`SELECT research->'site'->>'stage' AS s FROM os_leads WHERE id=${E}::uuid` as { s: string }[])[0].s === 'model')
 
-  const noWebsite = await run('lead.research', { lead_id: D.replace(/.$/, D.endsWith('0') ? '1' : '0') })
-  check('lead.research on an unknown lead is refused, not guessed', noWebsite.status === 'refused' || noWebsite.status === 'failed')
+  const noWebsite = await run('agentwork.request', { agent: 'research', lead_id: D.replace(/.$/, D.endsWith('0') ? '1' : '0') })
+  check('research of an unknown lead is refused, not guessed; the retired in-process capability is gone', (noWebsite.status === 'refused' || noWebsite.status === 'failed') && (await run('lead.research', { lead_id: D })).status === 'refused')
 
   /* the workflow gate, then rule 2 */
   const calls = modelCalls
-  const off = await sweepLeads(sql, today, { ...deps, env: {} })
+  const off = await sweepLeads(sql, today, { research: sweepResearch, env: {} })
   check('with LEAD_WORKFLOW unset the sweep researches and drafts nothing', off.researched === 0 && off.drafted === 0 && modelCalls === calls)
   for (let i = 0; i < 3; i++) {
-    await sweepLeads(sql, today, { ...deps, env: { LEAD_WORKFLOW: '1' } })
+    await sweepLeads(sql, today, { research: sweepResearch, env: { LEAD_WORKFLOW: '1' } })
     if ((await sql`SELECT 1 FROM mail.drafts WHERE entity_kind='lead' AND entity_id=${A}`).length) break
   }
   const drafts = await sql`SELECT id, family, status, to_addrs, created_by, revision FROM mail.drafts WHERE entity_kind='lead' AND entity_id=${A}` as { id: string; family: string; status: string; to_addrs: string[]; created_by: string; revision: number }[]
   check('switched on, a qualified lead gets an Email OS draft — Marcel\'s, to the lead, family outreach — and nothing is sent', drafts.length === 1 && drafts[0].family === 'outreach' && drafts[0].status === 'draft' && drafts[0].to_addrs[0] === TEST_TO && drafts[0].created_by === marcel && await sentTo(TEST_TO) === 0)
   check('the lead is Outreach prepared', (await lead(A)).status === 'outreach_prepared')
-  await sweepLeads(sql, today, { ...deps, env: { LEAD_WORKFLOW: '1' } })
+  await sweepLeads(sql, today, { research: sweepResearch, env: { LEAD_WORKFLOW: '1' } })
   check('a second sweep does not write a second draft', (await sql`SELECT count(*)::int AS n FROM mail.drafts WHERE entity_kind='lead' AND entity_id=${A}` as { n: number }[])[0].n === 1)
   const mailDraft = drafts[0].id
 
@@ -198,8 +208,8 @@ try {
 
   /* rule 4: the follow-up comes due with no answer */
   await sql`UPDATE os_followups SET due_on = ${today}::date - 1 WHERE lead_id=${A}::uuid AND status='open'`
-  await sweepLeads(sql, today, { ...deps, env: { LEAD_WORKFLOW: '1' } })
-  await sweepLeads(sql, today, { ...deps, env: { LEAD_WORKFLOW: '1' } })
+  await sweepLeads(sql, today, { research: sweepResearch, env: { LEAD_WORKFLOW: '1' } })
+  await sweepLeads(sql, today, { research: sweepResearch, env: { LEAD_WORKFLOW: '1' } })
   const fuDrafts = await sql`SELECT id, created_by FROM mail.drafts WHERE entity_id=${A} AND family='follow_up'` as { id: string; created_by: string }[]
   check('a due "if no reply" follow-up gets one follow-up draft for Marcel — a draft, not a send', fuDrafts.length === 1 && fuDrafts[0].created_by === marcel && await sentTo(TEST_TO) === 1)
 

@@ -13,6 +13,9 @@ import { qualify, type Qualification, type UnknownCode } from './qualify.ts'
 import { INJECTION, REJECT_REASONS, SIGNAL_CODES, SOLUTIONS, TOPICS, type Evidence, type Inference, type Opportunity, type Rejection, type ResearchFindings, type SignalFact, type Solution } from './research.ts'
 import type { Coverage, PageKind } from './fetchSite.ts'
 
+/** The routes a model step can have run on — anything else is not recorded. */
+export const MODEL_ROUTES = new Set(['anthropic', 'openai', 'openrouter'])
+
 export type ResearchRecommendation = 'outreach_draft' | 'find_contact' | 'review' | 'not_a_fit'
 
 export interface ResearchWorkResult {
@@ -111,6 +114,7 @@ export function parseFindings(raw: unknown): ResearchFindings | null {
     contact: contact as ResearchFindings['contact'],
     signals: { https: g.https, mobileViewport: g.mobileViewport, generator, bookingTool, contactForm: g.contactForm, emails, phones, newestYear, ...(httpsAvailable !== undefined ? { httpsAvailable } : {}) },
     language: r.language === 'en' ? 'en' : 'de', model,
+    ...(typeof r.route === 'string' && MODEL_ROUTES.has(r.route) ? { route: r.route } : {}),
     ...extra,
   }
 }

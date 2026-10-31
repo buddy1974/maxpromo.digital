@@ -12,7 +12,9 @@
  * Idempotency is layered rather than hoped for:
  *
  *   - the caller names every logical request; a retry of a request the OS
- *     already answered gets the stored answer (os_agent_results);
+ *     already answered gets the stored answer (os_agent_results). A failure
+ *     marked retry-safe, or an attempt that died running, is not an answer:
+ *     the retry takes it over once (ADR-0033 A2);
  *   - an approval is claimed with one conditional UPDATE, so two concurrent
  *     executions cannot both win; a replay of an executed approval returns
  *     what the first execution returned and does nothing else;
@@ -33,6 +35,9 @@ import {
   type CapabilityContext, type CapabilityResult, type Sql,
 } from './types'
 import { InputError } from './validate'
+
+/** An attempt still "running" after this died with its function (every route that runs capabilities ends within 5 minutes). */
+export const STALE_REQUEST_MINUTES = 15
 
 export type EngineResponse =
   | { status: 'done'; capability: string; result: CapabilityResult }
@@ -95,8 +100,23 @@ export async function runCapability(sql: Sql, req: EngineRequest): Promise<Engin
     if (!p || p.capability !== cap.id || p.input_hash !== inputHash) {
       return { status: 'refused', capability: cap.id, code: 'request_id_reused', message: 'That request id was already used for a different request.' }
     }
-    if (p.status === 'done' && p.response) return p.response
-    return { status: 'failed', capability: cap.id, message: 'The same request is still being processed.', retrySafe: true }
+    /* ADR-0033 A2. A stored answer is final only when it is an answer. A failure that says a retry is
+       safe (nothing consequential changed), or an attempt that died while running, is taken over by
+       the retry — once, by one conditional UPDATE — instead of being replayed to it for ever. An
+       uncertain outcome (retrySafe false), a refusal and a success are replayed unchanged. */
+    const retakeable = p.status === 'done'
+      ? p.response?.status === 'failed' && p.response.retrySafe === true
+      : true
+    const retaken = retakeable ? await sql`
+      UPDATE os_agent_results SET status = 'running', response = NULL, created_at = now()
+      WHERE request_id = ${req.requestId} AND (
+        (status = 'done' AND response->>'status' = 'failed' AND response->>'retrySafe' = 'true')
+        OR (status = 'running' AND created_at < now() - make_interval(mins => ${STALE_REQUEST_MINUTES})))
+      RETURNING request_id` as { request_id: string }[] : []
+    if (!retaken.length) {
+      if (p.status === 'done' && p.response) return p.response
+      return { status: 'failed', capability: cap.id, message: 'The same request is still being processed.', retrySafe: true }
+    }
   }
 
   const ctx = context(sql, req.actor, req.channel, new Date(), req.language)
@@ -124,8 +144,9 @@ export async function runCapability(sql: Sql, req: EngineRequest): Promise<Engin
     } else {
       console.error(`[commercial] ${cap.id} failed`, err instanceof Error ? err.message : err)
       /* A GREEN read or a preparation changed nothing consequential, so a
-         retry under a new request id is safe. */
-      response = { status: 'failed', capability: cap.id, message: 'The OS could not complete this request.', retrySafe: true }
+         retry is safe — unless the capability said something left the OS
+         before it failed (ctx.committed), which a retry must not repeat. */
+      response = { status: 'failed', capability: cap.id, message: 'The OS could not complete this request.', retrySafe: !ctx.commitment() }
     }
   }
 

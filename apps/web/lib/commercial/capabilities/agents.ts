@@ -14,6 +14,7 @@
  * field calibration (lib/agents/calibration.ts). It writes the review and the audit, nothing else.
  */
 import { WORK_STATES, WORK_FAILURES, type WorkView } from '@maxpromo/config/agent-contract'
+import { MODEL_ROUTES } from '@maxpromo/research'
 import { applyWorkView, requestResearch, RESEARCH_AGENT_ACTOR } from '@/lib/agents/work'
 import { recordReview, REVIEW_ISSUES, REVIEW_VERDICTS } from '@/lib/agents/calibration'
 import { writeAudit } from '../audit'
@@ -75,6 +76,7 @@ const workView: Validator<WorkView> = {
     const rt = o!.runtime as Record<string, unknown> | undefined
     const runtime = rt && typeof rt === 'object' ? {
       model: typeof rt.model === 'string' ? rt.model.slice(0, 80) : null,
+      route: typeof rt.route === 'string' && MODEL_ROUTES.has(rt.route) ? rt.route : null,
       latencyMs: typeof rt.latencyMs === 'number' && rt.latencyMs >= 0 ? Math.round(rt.latencyMs) : null,
       attempt: typeof rt.attempt === 'number' && rt.attempt >= 1 && rt.attempt <= 10 ? Math.round(rt.attempt) : 1,
     } : undefined

@@ -12,7 +12,7 @@ export {
 export {
   researchSite, verifyEvidence, verifyFacts, groundClaims, signalFacts, researchContent, researchRequest, RESEARCH_TASK, SOLUTIONS, TOPICS, INJECTION,
   type Evidence, type ResearchFindings, type ResearchOutcome, type ResearchDeps, type Solution, type FactTopic,
-  type Inference, type Opportunity, type SignalFact, type SignalCode, type Rejection, type RejectReason,
+  type Inference, type Opportunity, type ModelAnswer, type SignalFact, type SignalCode, type Rejection, type RejectReason,
 } from './research.ts'
 export { qualify, QUALIFY_THRESHOLD, type Qualification, type Confidence, type Verdict, type Reason, type ReasonCode, type CaveatCode, type UnknownCode } from './qualify.ts'
-export { parseFindings, recommendNext, researchWorkResult, investigationPlan, type ResearchRecommendation, type ResearchWorkResult, type Check } from './work.ts'
+export { MODEL_ROUTES, parseFindings, recommendNext, researchWorkResult, investigationPlan, type ResearchRecommendation, type ResearchWorkResult, type Check } from './work.ts'

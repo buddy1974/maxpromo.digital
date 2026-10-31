@@ -168,8 +168,8 @@ export interface WorkView {
   /** Present when completed: the agent's structured result (see the agent's own result type). */
   result?: unknown
   failure?: WorkFailure
-  /** Runtime metadata: model, latency. No reasoning, no prompts. */
-  runtime?: { model?: string | null; latencyMs?: number | null; attempt: number }
+  /** Runtime metadata: model, the gateway route that answered (ADR-0033 A4), latency. No reasoning, no prompts. */
+  runtime?: { model?: string | null; route?: string | null; latencyMs?: number | null; attempt: number }
 }
 
 /** Kinds of agent outcome the Agent Control Plane reports into the OS. */

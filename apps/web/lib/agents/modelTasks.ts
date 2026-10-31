@@ -17,7 +17,7 @@ const TASKS = {
 } as const
 
 export type ModelTaskResponse =
-  | { status: 'done'; task: string; data: unknown; model: string; latencyMs: number }
+  | { status: 'done'; task: string; data: unknown; model: string; route: string; latencyMs: number }
   | { status: 'refused'; code: 'unknown_task' | 'not_permitted' | 'invalid_content'; message: string }
   | { status: 'failed'; task: string; klass: string; latencyMs: number }
 
@@ -35,6 +35,7 @@ export async function runModelTask(actor: string, body: Record<string, unknown>,
     console.warn('[agent-model]', name, actor, r.failure.klass)
     return { status: 'failed', task: name, klass: r.failure.klass, latencyMs }
   }
-  console.log('[agent-model]', name, actor, r.model, `${latencyMs}ms`)
-  return { status: 'done', task: name, data: r.data, model: r.model, latencyMs }
+  console.log('[agent-model]', name, actor, r.route, r.model, `${latencyMs}ms`)
+  /* The route that answered goes back with the answer, so the agent's evidence names it (ADR-0033 A4). */
+  return { status: 'done', task: name, data: r.data, model: r.model, route: r.route, latencyMs }
 }

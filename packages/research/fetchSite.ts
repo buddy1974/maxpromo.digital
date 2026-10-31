@@ -9,7 +9,9 @@
  *
  * - Anything but http(s) on the default port, and any host that resolves to a private, loopback,
  *   link-local or carrier-grade address — checked again after every redirect (the reader must not be
- *   usable to read its own network).
+ *   usable to read its own network). The binding check is made when connecting (net.ts), so a name
+ *   that answers differently the second time (DNS rebinding) reaches nothing; bodies are read only
+ *   up to the cap, whatever Content-Length claims.
  * - Paths robots.txt disallows for every crawler or for ours. A missing robots.txt allows.
  * - More than the home page (with up to four same-site frames, when the home page is a frameset)
  *   plus three same-site pages chosen by use — contact, appointments, services, about — and the
@@ -36,6 +38,8 @@
  */
 import { lookup as dnsLookup } from 'node:dns/promises'
 import { isIP } from 'node:net'
+import { BlockedAddressError, guardedFetch, isPrivateAddress, readCapped } from './net.ts'
+export { isPrivateAddress }
 
 export const USER_AGENT = 'MaxpromoResearch/1.0 (+https://maxpromo.digital; info@maxpromo.digital)'
 const MAX_BYTES = 1_500_000
@@ -106,18 +110,6 @@ export interface SiteDeps {
 
 const defaultLookup = async (host: string) => (await dnsLookup(host, { all: true })).map(a => a.address)
 
-/** True for every address the OS must never fetch: private, loopback, link-local, CGNAT, multicast, unspecified. */
-export function isPrivateAddress(ip: string): boolean {
-  if (isIP(ip) === 4) {
-    const [a, b] = ip.split('.').map(Number)
-    return a === 10 || a === 127 || a === 0 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31)
-      || (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127) || a >= 224
-  }
-  const v6 = ip.toLowerCase()
-  if (v6.startsWith('::ffff:')) return isPrivateAddress(v6.slice(7))
-  return v6 === '::' || v6 === '::1' || v6.startsWith('fc') || v6.startsWith('fd') || v6.startsWith('fe80') || v6.startsWith('ff')
-}
-
 /** The site's origin from what Marcel or a form typed ("example.de", "www.example.de/kontakt"). */
 export function siteOrigin(input: string | null | undefined): URL | null {
   const raw = (input ?? '').trim()
@@ -130,7 +122,9 @@ export function siteOrigin(input: string | null | undefined): URL | null {
   } catch { return null }
 }
 
-async function hostAllowed(host: string, lookup: (h: string) => Promise<string[]>): Promise<boolean> {
+/** A friendly early refusal. The binding check is at connect time (net.ts), so a second, different DNS answer reaches nothing. */
+async function hostAllowed(hostIn: string, lookup: (h: string) => Promise<string[]>): Promise<boolean> {
+  const host = hostIn.replace(/^\[|\]$/g, '').replace(/\.$/, '')
   if (isIP(host)) return false
   if (/(^|\.)(localhost|local|internal|test|invalid|example)$/i.test(host)) return false
   try {
@@ -174,14 +168,18 @@ async function get(url: string, deps: Required<SiteDeps>, accept: string): Promi
     let res: Response
     try {
       res = await deps.fetch(current, { redirect: 'manual', signal: AbortSignal.timeout(TIMEOUT_MS), headers: { 'user-agent': USER_AGENT, accept, 'accept-language': 'de,en;q=0.8' } })
-    } catch { return null }
+    } catch (err) {
+      /* The connect-time check (net.ts) refused: the name answered differently when we connected. */
+      if (err instanceof BlockedAddressError) return { refused: { ok: false, reason: 'blocked_host', detail: `${u.hostname} is not a public web host` } }
+      return null
+    }
     if (res.status >= 300 && res.status < 400 && res.headers.get('location')) {
       current = new URL(res.headers.get('location')!, current).toString()
       continue
     }
     const length = Number(res.headers.get('content-length') ?? '0')
     if (length > MAX_BYTES) return { refused: { ok: false, reason: 'too_large', detail: `${current} is larger than 1.5 MB` } }
-    const bytes = new Uint8Array(await res.arrayBuffer().catch(() => new ArrayBuffer(0))).subarray(0, MAX_BYTES)
+    const bytes = await readCapped(res, MAX_BYTES)
     const type = res.headers.get('content-type') ?? ''
     const { text, charset } = decodeBody(bytes, type)
     return { url: current, status: res.status, type, body: text, charset }
@@ -291,7 +289,7 @@ const isHtml = (type: string) => /text\/html|application\/xhtml/i.test(type)
 
 /** Reads the home page (its frames too) and up to three useful same-site pages. Never throws. */
 export async function fetchSite(website: string | null | undefined, depsIn: SiteDeps = {}): Promise<SiteResult> {
-  const deps: Required<SiteDeps> = { fetch: depsIn.fetch ?? fetch, lookup: depsIn.lookup ?? defaultLookup }
+  const deps: Required<SiteDeps> = { fetch: depsIn.fetch ?? guardedFetch, lookup: depsIn.lookup ?? defaultLookup }
   const origin = siteOrigin(website)
   if (!origin) return { ok: false, reason: 'invalid_url', detail: 'no usable website address' }
 

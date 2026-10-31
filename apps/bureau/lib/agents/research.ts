@@ -18,8 +18,7 @@
 // unavailable — each becomes `failed` with a category Marcel can act on.
 
 import { and, eq, inArray, isNull, lt, sql as dsql } from "drizzle-orm";
-import { researchSite, researchWorkResult, type ResearchDeps } from "@maxpromo/research";
-import type { JsonResult } from "@maxpromo/ai";
+import { MODEL_ROUTES, researchSite, researchWorkResult, type ModelAnswer, type ResearchDeps } from "@maxpromo/research";
 import type { WorkFailure, WorkView } from "@maxpromo/config/agent-contract";
 import { getDb } from "@/lib/db";
 import { agentRuns, agentWork } from "@/lib/db/schema";
@@ -41,15 +40,19 @@ export function viewOf(w: WorkRow): WorkView {
     finishedAt: w.finishedAt?.toISOString() ?? null,
     ...(w.state === "completed" && w.result ? { result: w.result } : {}),
     ...(w.failure ? { failure: w.failure as WorkFailure } : {}),
-    runtime: { model: w.model, latencyMs: w.latencyMs, attempt: Math.max(1, w.attempt) },
+    runtime: { model: w.model, route: (w.result as { findings?: { route?: string } } | null)?.findings?.route ?? null, latencyMs: w.latencyMs, attempt: Math.max(1, w.attempt) },
   };
 }
 
-/** The model step through the OS gateway, in the gateway's own result shape. */
-export async function completeThroughOs(content: string): Promise<JsonResult> {
+/**
+ * The model step through the OS gateway, in the gateway's own result shape. The route is the one the OS
+ * says answered; when it does not say, none is recorded — never an assumed one (ADR-0033 A4).
+ */
+export async function completeThroughOs(content: string): Promise<ModelAnswer> {
   const call = await runOsModelTask(RESEARCH_AGENT, "lead.research", content);
   if (call.ok && call.response.status === "done" && "task" in call.response) {
-    return { ok: true, data: call.response.data, model: call.response.model, route: "anthropic" };
+    const route = call.response.route && MODEL_ROUTES.has(call.response.route) ? (call.response.route as Extract<ModelAnswer, { ok: true }>["route"]) : undefined;
+    return { ok: true, data: call.response.data, model: call.response.model, ...(route ? { route } : {}) };
   }
   const klass = call.ok && call.response.status === "failed" && "klass" in call.response ? call.response.klass : "PROVIDER";
   return { ok: false, failure: { klass: klass as never, status: 503, logDetail: call.ok ? `os model door: ${call.response.status}` : `os model door: ${call.reason}` } };

@@ -214,7 +214,7 @@ export async function applyWorkView(sql: Sql, view: WorkView): Promise<ApplyOutc
   const row = await loadWork(sql, view.workId)
   if (!row) return { applied: false, state: 'failed', reason: 'unknown_work' }
   if (row.agent !== view.agent) return { applied: false, state: row.state, reason: 'agent_mismatch' }
-  if (isTerminalWork(row.state)) return { applied: false, state: row.state, reason: 'already_terminal' }
+  if (isTerminalWork(row.state)) return repairUnapplied(sql, row, view)
 
   if (view.state === 'queued' || view.state === 'running') {
     await sql`UPDATE os_agent_work SET state = ${view.state}, started_at = coalesce(started_at, ${view.startedAt ?? null}::timestamptz),
@@ -255,9 +255,7 @@ export async function applyWorkView(sql: Sql, view: WorkView): Promise<ApplyOutc
     }
     /* Claim first: two arrivals of the same result apply it once. */
     if (!await finish(sql, row.id, 'completed', { summary, runtime: view.runtime })) return { applied: false, state: 'completed', reason: 'already_terminal' }
-    await applyResearchOutcome(sql, lead, { ok: true, findings }, RESEARCH_AGENT_ACTOR)
-    await writeAudit(sql, { actor: RESEARCH_AGENT_ACTOR, channel: 'bureau', operation: 'agentwork.result', entityType: 'lead', entityId: row.subject_id, after: { work: row.id, state: 'completed', score: summary.score, qualified: summary.qualified, recommendation: summary.recommendation }, outcome: 'succeeded' })
-    return { applied: true, state: 'completed' }
+    return applyToLead(sql, row, findings, summary)
   }
 
   if (view.state === 'cancelled') {
@@ -269,6 +267,59 @@ export async function applyWorkView(sql: Sql, view: WorkView): Promise<ApplyOutc
 
   const failure: WorkFailure = view.failure ?? { category: 'internal', reason: 'unspecified', detail: 'The agent reported a failure without a reason.', retryable: true }
   return failWork(sql, row, lead, failure, view.runtime)
+}
+
+/**
+ * The lead takes a completed result only while this work still holds the lead's research claim (ADR-0033
+ * A2). A late result — the claim was taken over after it went stale, or a newer research already replaced
+ * it — is kept on the work item and never overwrites the lead. The claim is taken with one conditional
+ * UPDATE, so two arrivals write the lead once.
+ */
+async function takeLeadClaim(sql: Sql, leadId: string, workId: string): Promise<LeadRow | null> {
+  const rows = await sql`UPDATE os_leads SET research = jsonb_set(research, '{site,applying}', 'true'::jsonb), updated_at = now()
+    WHERE id = ${leadId}::uuid AND research->'site'->>'work' = ${workId} AND research->'site'->>'state' = 'running'
+      AND research->'site'->'applying' IS NULL
+    RETURNING *` as LeadRow[]
+  return rows[0] ?? null
+}
+
+async function applyToLead(sql: Sql, row: WorkRow, findings: ResearchFindings, summary: WorkSummary, repaired = false): Promise<ApplyOutcome> {
+  const lead = await takeLeadClaim(sql, row.subject_id, row.id)
+  if (!lead) {
+    await writeAudit(sql, { actor: RESEARCH_AGENT_ACTOR, channel: 'bureau', operation: 'agentwork.result', entityType: 'lead', entityId: row.subject_id, after: { work: row.id, state: 'completed', score: summary.score, superseded: true }, outcome: 'succeeded' })
+    return { applied: true, state: 'completed', reason: 'superseded' }
+  }
+  await applyResearchOutcome(sql, lead, { ok: true, findings }, RESEARCH_AGENT_ACTOR)
+  await writeAudit(sql, { actor: RESEARCH_AGENT_ACTOR, channel: 'bureau', operation: 'agentwork.result', entityType: 'lead', entityId: row.subject_id, after: { work: row.id, state: 'completed', score: summary.score, qualified: summary.qualified, recommendation: summary.recommendation, ...(repaired ? { repaired: true } : {}) }, outcome: 'succeeded' })
+  return { applied: true, state: 'completed', ...(repaired ? { reason: 'repaired' } : {}) }
+}
+
+/**
+ * A terminal item whose outcome never reached the lead: the function died after the item was finished
+ * and before the lead was written, so the lead still shows this work's claim as running. The next
+ * arrival of the same terminal report (push retry or pull) completes the write, once. Any other report
+ * about a terminal item changes nothing.
+ */
+async function repairUnapplied(sql: Sql, row: WorkRow, view: WorkView): Promise<ApplyOutcome> {
+  const unchanged: ApplyOutcome = { applied: false, state: row.state, reason: 'already_terminal' }
+  if (view.state !== row.state) return unchanged
+  const lead = await loadLead(sql, row.subject_id)
+  const site = (lead?.research as { site?: { work?: string; state?: string; applying?: boolean } } | null)?.site
+  if (!lead || site?.work !== row.id || site.state !== 'running' || site.applying) return unchanged
+  if (row.state === 'completed' && row.summary) {
+    const findings = parseFindings((view.result as { findings?: unknown } | undefined)?.findings)
+    return findings ? applyToLead(sql, row, findings, row.summary, true) : unchanged
+  }
+  if (row.state === 'completed') return unchanged
+  const taken = await takeLeadClaim(sql, lead.id, row.id)
+  if (!taken) return unchanged
+  if (row.state === 'failed') {
+    const f = row.failure ?? { category: 'internal', reason: 'unspecified', detail: 'The agent reported a failure without a reason.', retryable: true }
+    await applyResearchOutcome(sql, taken, { ok: false, stage: f.category === 'model' ? 'model' : 'site', reason: f.reason, detail: f.detail }, RESEARCH_AGENT_ACTOR)
+    return { applied: true, state: 'failed', reason: 'repaired' }
+  }
+  await releaseResearchClaim(sql, lead.id, row.id, { state: 'failed', at: new Date().toISOString(), stage: 'site', reason: 'cancelled', detail: 'The research was cancelled.' })
+  return { applied: true, state: 'cancelled', reason: 'repaired' }
 }
 
 async function failWork(sql: Sql, row: WorkRow, lead: LeadRow | null, failure: WorkFailure, runtime?: WorkView['runtime']): Promise<ApplyOutcome> {

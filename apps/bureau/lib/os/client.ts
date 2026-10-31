@@ -24,7 +24,7 @@ export type OsResponse =
 
 /** The model door's answer (ADR-0030). */
 export type OsModelResponse =
-  | { status: "done"; task: string; data: unknown; model: string; latencyMs: number }
+  | { status: "done"; task: string; data: unknown; model: string; route?: string; latencyMs: number }
   | { status: "refused"; code: string; message: string }
   | { status: "failed"; task: string; klass: string; latencyMs: number };
 

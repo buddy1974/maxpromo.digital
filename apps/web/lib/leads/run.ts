@@ -1,13 +1,13 @@
 /**
- * Researching one lead (ADR-0027 §2, ADR-0030): claim, read the site, verify, qualify, record. SERVER ONLY.
- * In this process for the lead.research capability and the workflow sweep. The claim and the recording are
- * also how delegated Bureau work (lib/agents/work.ts) reaches the lead: whoever read the site, the OS scores
- * with the one rule set and writes the record.
+ * A lead's research claim and its record (ADR-0027 §2, ADR-0030). SERVER ONLY.
+ * The site is read by the Research Agent — the one research path (ADR-0033 A3; lib/agents/work.ts). This
+ * is how its result reaches the lead: the claim while it runs, then the OS scores the findings with the one
+ * rule set and writes the record.
  */
 import type { Sql } from '@/lib/commercial/types'
 import { logActivity, type LeadRow } from '@/lib/commercial/records'
 import { leadStage } from '@/lib/commercial/pipeline'
-import { qualify, researchSite, type ResearchDeps, type ResearchOutcome } from '@maxpromo/research'
+import { qualify, type ResearchOutcome } from '@maxpromo/research'
 import type { SiteState } from './state'
 
 /** A claim older than this is an attempt that died (timeout, deploy) and may be taken over. */
@@ -84,10 +84,3 @@ export async function applyResearchOutcome(sql: Sql, lead: LeadRow, outcome: Res
   return { site, lead: updated[0] ?? lead }
 }
 
-/** Research one lead now, in this process. */
-export async function researchLead(sql: Sql, leadId: string, actor: string, deps: ResearchDeps = {}): Promise<{ claimed: false } | { claimed: true; site: SiteState; lead: LeadRow }> {
-  const lead = await claimResearch(sql, leadId, actor)
-  if (!lead) return { claimed: false }
-  const done = await applyResearchOutcome(sql, lead, await researchSite(lead.website, deps), actor)
-  return { claimed: true, ...done }
-}

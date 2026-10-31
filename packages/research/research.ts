@@ -89,6 +89,8 @@ export interface ResearchFindings {
   signals: SiteSignals
   language: 'de' | 'en'
   model: string
+  /** The gateway route that answered (anthropic | openai | openrouter). ADR-0033; absent on older research. */
+  route?: string
   coverage?: Coverage
   signal_facts?: SignalFact[]
   inferences?: Inference[]
@@ -212,10 +214,14 @@ export function researchRequest(content: string): JsonRequest {
   return { ...task, schema: { ...task.schema }, messages: [{ role: 'user', content }] }
 }
 
+/** The model step's answer. `route` is the gateway route that actually answered — absent when the caller
+ *  cannot know it (ADR-0033 A4): evidence never names a provider that did not run. */
+export type ModelAnswer = Exclude<JsonResult, { ok: true }> | { ok: true; data: unknown; model: string; route?: Extract<JsonResult, { ok: true }>['route'] }
+
 export interface ResearchDeps extends SiteDeps {
   model?: GatewayDeps
   /** Runs the model step. Default: the gateway in this process. The Bureau routes it to the OS gateway. */
-  complete?: (req: JsonRequest) => Promise<JsonResult>
+  complete?: (req: JsonRequest) => Promise<ModelAnswer>
   now?: Date
 }
 
@@ -382,6 +388,7 @@ export async function researchSite(website: string | null | undefined, deps: Res
       signals: site.signals,
       language: d.language === 'en' ? 'en' : 'de',
       model: r.model,
+      ...(r.route ? { route: r.route } : {}),
       coverage: site.coverage,
       signal_facts: signals,
       inferences: claims.inferences,

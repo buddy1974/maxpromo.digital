@@ -63,6 +63,53 @@ const site = (extra: Record<string, Page> = {}) => web({
 
 /* ── the site reader ── */
 check('private, loopback, link-local, CGNAT and mapped addresses are never fetched', ['10.1.2.3', '127.0.0.1', '169.254.169.254', '172.20.0.1', '192.168.1.1', '100.64.0.1', '::1', 'fd00::1', 'fe80::1', '::ffff:10.0.0.1', '0.0.0.0'].every(isPrivateAddress) && !isPrivateAddress('93.184.216.34'))
+/* ── A1 (ADR-0033): the address rules in every notation, and the check made when connecting ── */
+check('IPv4 hidden in IPv6 is judged by the IPv4 inside: mapped (hex and dotted), compatible, NAT64, 6to4',
+  ['::ffff:7f00:1', '::FFFF:A9FE:A9FE', '0:0:0:0:0:ffff:10.0.0.1', '::127.0.0.1', '64:ff9b::a00:1', '2002:c0a8:101::1'].every(isPrivateAddress)
+  && !isPrivateAddress('64:ff9b::808:808') && !isPrivateAddress('2002:5db8:d822::1'))
+check('the IPv6 local ranges are refused whole, not by prefix spelling: fe80::/10, fec0::/10, fc00::/7, multicast, Teredo, documentation, expanded loopback',
+  ['fe90::1', 'febf::1', 'fec0::1', 'fc12::1', 'ff02::1', '2001:0:4136:e378::1', '2001:db8::1', '0:0:0:0:0:0:0:1', '[::1]', 'fe80::1%eth0'].every(isPrivateAddress)
+  && !isPrivateAddress('2a00:1450:4001:80b::200e') && !isPrivateAddress('2606:4700::1111'))
+check('the remaining IPv4 non-public ranges and anything unparseable are refused',
+  ['198.18.0.1', '198.19.255.1', '192.0.0.170', '192.0.2.1', '198.51.100.7', '203.0.113.9', '100.100.100.200', '255.255.255.255', 'not-an-ip', ''].every(isPrivateAddress)
+  && !isPrivateAddress('8.8.8.8') && !isPrivateAddress('85.13.140.1'))
+{
+  const { createServer } = await import('node:http')
+  const { gzipSync } = await import('node:zlib')
+  const { createGuardedFetch, readCapped } = await import('../../../../packages/research/net.ts')
+  let hits = 0
+  const server = createServer((req, res) => {
+    hits++
+    if (req.url === '/endless') { res.writeHead(200, { 'content-type': 'text/html' }); const t = setInterval(() => { if (!res.write('x'.repeat(64 * 1024))) return }, 1); res.on('close', () => clearInterval(t)); return }
+    res.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'content-encoding': 'gzip' })
+    res.end(gzipSync('<p>Praxis für Physiotherapie</p>'))
+  })
+  await new Promise<void>(r => server.listen(0, '127.0.0.1', () => r()))
+  const port = (server.address() as { port: number }).port
+  const loopback = async () => [{ address: '127.0.0.1', family: 4 }]
+  /* The rebinding case: the early check saw a public answer; the name answers 127.0.0.1 at connect time. */
+  const guarded = createGuardedFetch({ resolve: loopback })
+  const refused = await guarded(`http://rebind.example-praxis.de:${port}/`).then(() => 'fetched', (e: Error) => e.name)
+  check('a name that resolves to a private address WHEN CONNECTING reaches nothing (DNS rebinding)', refused === 'BlockedAddressError' && hits === 0)
+  const literal = await guarded(`http://127.0.0.1:${port}/`).then(() => 'fetched', (e: Error) => e.name)
+  const post = await guarded(`http://x.de:${port}/`, { method: 'POST' }).then(() => 'fetched', (e: Error) => e.name)
+  check('the guarded reader refuses IP literals and anything but GET/HEAD', literal === 'BlockedAddressError' && post === 'TypeError' && hits === 0)
+  /* The same reader with the address rule lifted (test only) reads, decodes and caps. */
+  const open = createGuardedFetch({ resolve: loopback, blocked: () => false })
+  const page = await open(`http://praxis.example-test.de:${port}/`)
+  check('a public answer is read normally: status, headers, gzip decoded', page.status === 200 && (await page.text()) === '<p>Praxis für Physiotherapie</p>' && hits === 1)
+  const started = Date.now()
+  const endless = await readCapped(await open(`http://praxis.example-test.de:${port}/endless`), 200_000)
+  check('a body with no Content-Length is read only up to the cap and the connection is dropped', endless.byteLength === 200_000 && Date.now() - started < 5_000)
+  server.close()
+  const src = readFileSync(resolve(import.meta.dirname, '../../../../packages/research/fetchSite.ts'), 'utf8')
+  check('fetchSite connects through the guarded reader by default, also for the https probe', src.includes('depsIn.fetch ?? guardedFetch') && !/arrayBuffer\(\)/.test(src))
+}
+{
+  const w = site({ 'https://elektro-muster.de/': { status: 301, location: 'http://[::1]/' } })
+  const r = await fetchSite('elektro-muster.de', w)
+  check('a redirect to a bracketed IPv6 literal is refused at the hop', !r.ok && r.reason === 'blocked_host' && !w.fetched.some(u => u.includes('[::1]')))
+}
 check('a website address must be a plain public web origin', siteOrigin('elektro-muster.de/kontakt')?.toString() === 'https://elektro-muster.de/' && !siteOrigin('http://127.0.0.1') && !siteOrigin('ftp://x.de') && !siteOrigin('https://user:pw@x.de') && !siteOrigin('https://x.de:8443') && !siteOrigin('localhost'))
 {
   const w = site()
